@@ -1,7 +1,15 @@
 from __future__ import annotations
 
-"""Stable median-based guard for the two offline startup phases."""
+"""Record-only measurement of the two offline startup phases.
 
+The owner decided on 2026-10-02 that startup timing is recorded, not gated:
+CI runners vary too much for a fixed limit to be meaningful.  The test still
+fails when startup cannot complete or reports an invalid measurement.
+"""
+
+lazy import json
+lazy import math
+lazy import os
 lazy import sys
 lazy from pathlib import Path
 
@@ -11,39 +19,32 @@ sys.path.insert(0, str(ROOT))
 lazy from tools.measure_startup import measure
 
 RUNS = 7
-
-# Ticket #207 measured origin/main-equivalent HEAD e84d42a on 2026-09-29:
-# first paint median 12,873.556 ms, Q3 13,057.751 ms, IQR 238.712 ms.
-# The 1.25 regression allowance (16,091.945 ms) is larger than the observed
-# Q3 + 6*IQR noise floor (14,490.023 ms), so it defines this stable limit.
-FIRST_PAINT_LIMIT_MS = 16_091.945
-
-# The same baseline's deferred phase measured median 5,012.562 ms,
-# Q3 5,197.803 ms and IQR 207.346 ms.  Its Q3 + 6*IQR noise floor
-# (6,441.879 ms) is slightly larger than median*1.25 (6,265.703 ms), so the
-# noisier value is the limit.  This deliberately avoids a gate stricter than
-# the measured host variation.
-DEFERRED_COMPLETE_LIMIT_MS = 6_441.879
+RECORD_PATH = ROOT / ".quality-tmp" / "startup-medians.json"
 
 
-def test_offline_startup_medians_stay_within_measured_limits() -> None:
+def _record(first_paint: float, deferred: float) -> None:
+    line = (
+        f"STARTUP_MEDIANS first_paint_ms={first_paint:.3f} "
+        f"deferred_complete_ms={deferred:.3f}"
+    )
+    print(line, flush=True)
+    RECORD_PATH.parent.mkdir(parents=True, exist_ok=True)
+    RECORD_PATH.write_text(
+        json.dumps({"first_paint_ms": first_paint, "deferred_complete_ms": deferred}) + "\n",
+        encoding="utf-8",
+    )
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        with open(summary_path, "a", encoding="utf-8") as summary:
+            summary.write(f"- {line}\n")
+
+
+def test_offline_startup_completes_and_records_medians() -> None:
     report = measure(RUNS)
     summary = report["summary"]
     first_paint = summary["first_paint_ms"]["median_ms"]
     deferred = summary["deferred_complete_ms"]["median_ms"]
-    # Always report the measured medians so limits can be calibrated against
-    # the CI runners that enforce them, not only the developer workstation.
-    print(
-        f"STARTUP_MEDIANS first_paint_ms={first_paint:.3f} "
-        f"deferred_complete_ms={deferred:.3f}",
-        flush=True,
-    )
+    _record(first_paint, deferred)
 
-    assert first_paint <= FIRST_PAINT_LIMIT_MS, (
-        f"first-paint median {first_paint:.3f} ms exceeds "
-        f"{FIRST_PAINT_LIMIT_MS:.3f} ms"
-    )
-    assert deferred <= DEFERRED_COMPLETE_LIMIT_MS, (
-        f"deferred-startup median {deferred:.3f} ms exceeds "
-        f"{DEFERRED_COMPLETE_LIMIT_MS:.3f} ms"
-    )
+    for name, value in (("first-paint", first_paint), ("deferred-startup", deferred)):
+        assert math.isfinite(value) and value > 0, f"{name} median is invalid: {value!r}"
