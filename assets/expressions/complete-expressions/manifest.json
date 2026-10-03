@@ -1773,6 +1773,1674 @@
           "sha256": "b830e581bf14b58a785a69755824fa0de7c9fe1b77652b71136af3b70bd3e096"
         }
       }
+    },
+    "cheek-caught": {
+      "frames": {
+        "neutral": {
+          "rest": {
+            "path": "frames/cheek-caught-neutral-rest.rgba.png",
+            "sha256": "f5e5bd8a98173fe83c58c9add7e86957f874a5e505cac78f2ac6da59d34e2a03"
+          },
+          "half": {
+            "path": "frames/cheek-caught-neutral-half.rgba.png",
+            "sha256": "c49ae35680373c5db5660bef8e3cd23569fb327b2466310e676bc8a872e64ddc"
+          },
+          "closed": {
+            "path": "frames/cheek-caught-neutral-closed.rgba.png",
+            "sha256": "414713021ad8b091aef6eb37c6e681f86d68a1bad3f3095f90eee5cac592d49d"
+          }
+        },
+        "small": {
+          "rest": {
+            "path": "frames/cheek-caught-small-rest.rgba.png",
+            "sha256": "1e69705e617420d039b544e5f1393b129ae48156061273625f4268b71f96fb13"
+          },
+          "half": {
+            "path": "frames/cheek-caught-small-half.rgba.png",
+            "sha256": "98d652412a29dac4cca985515c3e16f79e90e5e15c3c7fb70afdf06541c918a7"
+          },
+          "closed": {
+            "path": "frames/cheek-caught-small-closed.rgba.png",
+            "sha256": "5df6fc9b9a3e4409d6304b72a661b7ed12f3611a3b80379affa0738e2d4aeb2c"
+          }
+        },
+        "a": {
+          "rest": {
+            "path": "frames/cheek-caught-a-rest.rgba.png",
+            "sha256": "63500730c69c21511bb0cdebe837d003b7fa06260f2ab559cb66b0a87d23db40"
+          },
+          "half": {
+            "path": "frames/cheek-caught-a-half.rgba.png",
+            "sha256": "edb946f5f115305ff8c4bbef1fe205c407a399b4f34955ac7987e2b5276da02a"
+          },
+          "closed": {
+            "path": "frames/cheek-caught-a-closed.rgba.png",
+            "sha256": "6b05f862831d26870f98daef2f07dad1601ae93aa8720c99135374417fde394c"
+          }
+        },
+        "o": {
+          "rest": {
+            "path": "frames/cheek-caught-o-rest.rgba.png",
+            "sha256": "f669f0d29ad99bf797b32ea2fd634d4f8ffa8f4075b6928fd6e4f78850878a36"
+          },
+          "half": {
+            "path": "frames/cheek-caught-o-half.rgba.png",
+            "sha256": "9cfd3efae98cbbaa25e8862d86eafe6c203056b604381b0378983e5c88efcef7"
+          },
+          "closed": {
+            "path": "frames/cheek-caught-o-closed.rgba.png",
+            "sha256": "6700022d49cda321d10537c82865ab5c5ed539ae2b64435081ce4cf3923a4633"
+          }
+        }
+      },
+      "source_lineage": {
+        "owner_approved_sources": {
+          "none/neutral/rest": {
+            "file": "cheek-caught-rest-v5-none.png",
+            "sha256": "f5e5bd8a98173fe83c58c9add7e86957f874a5e505cac78f2ac6da59d34e2a03",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/half": {
+            "file": "cheek-caught-half-neutral-v5-none.png",
+            "sha256": "c49ae35680373c5db5660bef8e3cd23569fb327b2466310e676bc8a872e64ddc",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/closed": {
+            "file": "cheek-caught-closed-neutral-v5-none.png",
+            "sha256": "414713021ad8b091aef6eb37c6e681f86d68a1bad3f3095f90eee5cac592d49d",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/small/rest": {
+            "file": "cheek-caught-rest-small-v5-none.png",
+            "sha256": "1e69705e617420d039b544e5f1393b129ae48156061273625f4268b71f96fb13",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/a/rest": {
+            "file": "cheek-caught-rest-a-v5-none.png",
+            "sha256": "63500730c69c21511bb0cdebe837d003b7fa06260f2ab559cb66b0a87d23db40",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/o/rest": {
+            "file": "cheek-caught-rest-o-v5-none.png",
+            "sha256": "f669f0d29ad99bf797b32ea2fd634d4f8ffa8f4075b6928fd6e4f78850878a36",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/rest": {
+            "file": "cheek-caught-rest-v5-light.png",
+            "sha256": "3137093e262193858ff88bdc7b9f837cd0ac1018a0619b426160aa58868962ce",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/half": {
+            "file": "cheek-caught-half-neutral-v5-light.png",
+            "sha256": "96046a7433b2c165ba5b4122c06da5d231aab9804f5a87a34dcae86ad0e77e04",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/closed": {
+            "file": "cheek-caught-closed-neutral-v5-light.png",
+            "sha256": "8944eb4930d55b0032648fdd95342deb3c6b1c19972cec77958f2547f78cbff1",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/small/rest": {
+            "file": "cheek-caught-rest-small-v5-light.png",
+            "sha256": "82faae7ee79c64158e59de505e7d48cc5e8424eb41e47be28e589e766d4547ac",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/a/rest": {
+            "file": "cheek-caught-rest-a-v5-light.png",
+            "sha256": "acb8580e550eb28316757edee84d4074d3fad65f85a5058fa40b4e8f43e398a6",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/o/rest": {
+            "file": "cheek-caught-rest-o-v5-light.png",
+            "sha256": "ed631a5f4b01dacb5cea2195e3e8e4f26c95c147402145b67fbaae3fe108ee7c",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/rest": {
+            "file": "cheek-caught-rest-v5-classic.png",
+            "sha256": "9941204841cc432e28a3b361e31e168e38afaecde305c7579595254f89bb6602",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/half": {
+            "file": "cheek-caught-half-neutral-v5-classic.png",
+            "sha256": "8f0b78cfce88a7def2a0067d229c72b5246941584f866e9f8bbc6d80ebe36119",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/closed": {
+            "file": "cheek-caught-closed-neutral-v5-classic.png",
+            "sha256": "f78666dc9c8c69d1cdefcf77d48d4f63b2d438c8d56deaba4578fb21eacb0761",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/small/rest": {
+            "file": "cheek-caught-rest-small-v5-classic.png",
+            "sha256": "0020eb4cefd398ac3e1e4f60218831137df374b074436ccaae04e4d2a60527f8",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/a/rest": {
+            "file": "cheek-caught-rest-a-v5-classic.png",
+            "sha256": "92a30f21338086945756cdb03ef2bb9f978b93d7b40c8850bad2033c81aa98b9",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/o/rest": {
+            "file": "cheek-caught-rest-o-v5-classic.png",
+            "sha256": "4664dd12f1ad8647806e8aeffe478a7941ef4fbad6cbd2f447215104dc9de09e",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/rest": {
+            "file": "cheek-caught-rest-v5-glamorous.png",
+            "sha256": "4aca110669b051a1cce5044b7fb47b95679bfa6e8bc156d59a6e8253c24ade2c",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/half": {
+            "file": "cheek-caught-half-neutral-v5-glamorous.png",
+            "sha256": "ec1ffe022f4d68e375926cbc1c129df4341ece68205ce0343bd19dff4a62c482",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/closed": {
+            "file": "cheek-caught-closed-neutral-v5-glamorous.png",
+            "sha256": "39812584415d566a41dd3bec8db37d048434afc7a67b5a8e5d8e727e0b7359bb",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/small/rest": {
+            "file": "cheek-caught-rest-small-v5-glamorous.png",
+            "sha256": "bd5e5553ca3827cc718f4669b6c9b50650909d188cc6d6a51114efdd61dc6688",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/a/rest": {
+            "file": "cheek-caught-rest-a-v5-glamorous.png",
+            "sha256": "64ec7d98f44e673072ffcc377925924d868aae603461c944c4e732db06aef992",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/o/rest": {
+            "file": "cheek-caught-rest-o-v5-glamorous.png",
+            "sha256": "eedb1d1a52081ecb847ea844f5049c16043039f52180167407bc52cc4944e121",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          }
+        },
+        "synthesized_endpoints": {
+          "none/small/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-caught-half-neutral-v5-none.png",
+              "cheek-caught-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "c49ae35680373c5db5660bef8e3cd23569fb327b2466310e676bc8a872e64ddc",
+              "1e69705e617420d039b544e5f1393b129ae48156061273625f4268b71f96fb13"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/small/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-caught-closed-neutral-v5-none.png",
+              "cheek-caught-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "414713021ad8b091aef6eb37c6e681f86d68a1bad3f3095f90eee5cac592d49d",
+              "1e69705e617420d039b544e5f1393b129ae48156061273625f4268b71f96fb13"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-caught-half-neutral-v5-none.png",
+              "cheek-caught-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "c49ae35680373c5db5660bef8e3cd23569fb327b2466310e676bc8a872e64ddc",
+              "63500730c69c21511bb0cdebe837d003b7fa06260f2ab559cb66b0a87d23db40"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-caught-closed-neutral-v5-none.png",
+              "cheek-caught-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "414713021ad8b091aef6eb37c6e681f86d68a1bad3f3095f90eee5cac592d49d",
+              "63500730c69c21511bb0cdebe837d003b7fa06260f2ab559cb66b0a87d23db40"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-caught-half-neutral-v5-none.png",
+              "cheek-caught-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "c49ae35680373c5db5660bef8e3cd23569fb327b2466310e676bc8a872e64ddc",
+              "f669f0d29ad99bf797b32ea2fd634d4f8ffa8f4075b6928fd6e4f78850878a36"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-caught-closed-neutral-v5-none.png",
+              "cheek-caught-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "414713021ad8b091aef6eb37c6e681f86d68a1bad3f3095f90eee5cac592d49d",
+              "f669f0d29ad99bf797b32ea2fd634d4f8ffa8f4075b6928fd6e4f78850878a36"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          }
+        },
+        "oral_masks": {
+          "small": {
+            "path": "masks/cheek-caught-oral-small.png",
+            "sha256": "aead27b965e3ef9f71695923fd8681ba805e5996f47b74b7490e3eaaba1b1f94",
+            "nonzero_alpha_pixels": 492,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "a": {
+            "path": "masks/cheek-caught-oral-a.png",
+            "sha256": "302d7509f47fa8f3273140b0818560df84e201cabf24bb31cffa6df9e3e12f69",
+            "nonzero_alpha_pixels": 733,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "o": {
+            "path": "masks/cheek-caught-oral-o.png",
+            "sha256": "8fb063576864bfc097b339199db6503702253c2aa63ab128c4237a81ef41154f",
+            "nonzero_alpha_pixels": 289,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          }
+        },
+        "eye_aperture": {
+          "mask_source": "02-mask/face-interior-mask-caught.png",
+          "measurement": ".quality-tmp/batch2-integrate/aperture-measurements.json#caught"
+        }
+      },
+      "blink_composition": "whole-frame",
+      "oral_masks": {
+        "small": {
+          "path": "masks/cheek-caught-oral-small.png",
+          "sha256": "aead27b965e3ef9f71695923fd8681ba805e5996f47b74b7490e3eaaba1b1f94"
+        },
+        "a": {
+          "path": "masks/cheek-caught-oral-a.png",
+          "sha256": "302d7509f47fa8f3273140b0818560df84e201cabf24bb31cffa6df9e3e12f69"
+        },
+        "o": {
+          "path": "masks/cheek-caught-oral-o.png",
+          "sha256": "8fb063576864bfc097b339199db6503702253c2aa63ab128c4237a81ef41154f"
+        }
+      }
+    },
+    "cheek-happy": {
+      "frames": {
+        "neutral": {
+          "rest": {
+            "path": "frames/cheek-happy-neutral-rest.rgba.png",
+            "sha256": "8476abb14dc0f27d70fc0ff91685575eea8506c5c571614170153531686a4dc9"
+          },
+          "half": {
+            "path": "frames/cheek-happy-neutral-half.rgba.png",
+            "sha256": "2126393e709adea48c9b07fd50d053c7f1880118e38268397e04d27a7a4bafeb"
+          },
+          "closed": {
+            "path": "frames/cheek-happy-neutral-closed.rgba.png",
+            "sha256": "a60464064760fab0f044c1c68d933234b3a8403f222004b8ab42e93cb26c0287"
+          }
+        },
+        "small": {
+          "rest": {
+            "path": "frames/cheek-happy-small-rest.rgba.png",
+            "sha256": "be4a382024ab5c7dbd34f6c848ec8e28d5a45d70810677c74d6466a6ee97a2fc"
+          },
+          "half": {
+            "path": "frames/cheek-happy-small-half.rgba.png",
+            "sha256": "99b35444007052366637b40696012008fe26d59b055fbffec767dee574a1c850"
+          },
+          "closed": {
+            "path": "frames/cheek-happy-small-closed.rgba.png",
+            "sha256": "0641c1ed81c5eeead3389c657c03e2ecbe5652003a27b547c4e948cb864278ea"
+          }
+        },
+        "a": {
+          "rest": {
+            "path": "frames/cheek-happy-a-rest.rgba.png",
+            "sha256": "1a73f18bd23b62577e2145462579ab5c08b283f23da6846fa82185a58b6e520e"
+          },
+          "half": {
+            "path": "frames/cheek-happy-a-half.rgba.png",
+            "sha256": "ba3b362670dcbe891a97f86847a562e589a2176bb1852357f2e81a19d04fcf7c"
+          },
+          "closed": {
+            "path": "frames/cheek-happy-a-closed.rgba.png",
+            "sha256": "414f17ff35aa9ed261ce1fd00d37634f1d10b2a0f9a9f2220817d69b238d7fd9"
+          }
+        },
+        "o": {
+          "rest": {
+            "path": "frames/cheek-happy-o-rest.rgba.png",
+            "sha256": "febd577259d6f2725f6a96fb514251c3959f5ca36695698badd70fd0e66471a0"
+          },
+          "half": {
+            "path": "frames/cheek-happy-o-half.rgba.png",
+            "sha256": "119fe4fdc011c5d897020f7648050d56050f9454cf6428cf3e2e780062698f23"
+          },
+          "closed": {
+            "path": "frames/cheek-happy-o-closed.rgba.png",
+            "sha256": "16224dd7d8758c48538f0adb0eaabfacd1f0bf541cb0e4aaaede3cca510baecb"
+          }
+        }
+      },
+      "source_lineage": {
+        "owner_approved_sources": {
+          "none/neutral/rest": {
+            "file": "cheek-happy-rest-v5-none.png",
+            "sha256": "8476abb14dc0f27d70fc0ff91685575eea8506c5c571614170153531686a4dc9",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/half": {
+            "file": "cheek-happy-half-neutral-v5-none.png",
+            "sha256": "2126393e709adea48c9b07fd50d053c7f1880118e38268397e04d27a7a4bafeb",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/closed": {
+            "file": "cheek-happy-closed-neutral-v5-none.png",
+            "sha256": "a60464064760fab0f044c1c68d933234b3a8403f222004b8ab42e93cb26c0287",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/small/rest": {
+            "file": "cheek-happy-rest-small-v5-none.png",
+            "sha256": "be4a382024ab5c7dbd34f6c848ec8e28d5a45d70810677c74d6466a6ee97a2fc",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/a/rest": {
+            "file": "cheek-happy-rest-a-v5-none.png",
+            "sha256": "1a73f18bd23b62577e2145462579ab5c08b283f23da6846fa82185a58b6e520e",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/o/rest": {
+            "file": "cheek-happy-rest-o-v5-none.png",
+            "sha256": "febd577259d6f2725f6a96fb514251c3959f5ca36695698badd70fd0e66471a0",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/rest": {
+            "file": "cheek-happy-rest-v5-light.png",
+            "sha256": "52a95308918c8972a99ce6918ecf6c3b191a7714dce57105db741974cd7d8cde",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/half": {
+            "file": "cheek-happy-half-neutral-v5-light.png",
+            "sha256": "3110afd35583b90b533580d989d3f3fff7d9fac5ce2a7e6bb578964979bc77f4",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/closed": {
+            "file": "cheek-happy-closed-neutral-v5-light.png",
+            "sha256": "0ae82bf248305b97b21897a187dd3ec970843b47404849f20d7095fca973dfb6",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/small/rest": {
+            "file": "cheek-happy-rest-small-v5-light.png",
+            "sha256": "27602d8dfb7b61df2b8de70aafb71c7f90c8012941da205e707a3fa5000e4361",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/a/rest": {
+            "file": "cheek-happy-rest-a-v5-light.png",
+            "sha256": "9ad2e7f3656ac3e48682c742dac87c1490994c8a795dd69935299249037610af",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/o/rest": {
+            "file": "cheek-happy-rest-o-v5-light.png",
+            "sha256": "80843b8e57eb3b98f797ee5f5b546e1574f01ee3f2e70201cc4ee06bac9695e5",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/rest": {
+            "file": "cheek-happy-rest-v5-classic.png",
+            "sha256": "d9fc073ed5a8f05826e09e1b8b5233cc58c7369aa04ab74944425bb023589c78",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/half": {
+            "file": "cheek-happy-half-neutral-v5-classic.png",
+            "sha256": "36c4dba65d35df2f7b7fc3d47586bf4dda0aba0480bf30522eddb486df115b4f",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/closed": {
+            "file": "cheek-happy-closed-neutral-v5-classic.png",
+            "sha256": "2a95e69f43fe9e439632f35b54d5801ec3c71769d7dbe47c0348cd51cf5c5405",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/small/rest": {
+            "file": "cheek-happy-rest-small-v5-classic.png",
+            "sha256": "f4dfff168e635493d515312df6889e5bff0567aea24927f7601b55e5234d3c77",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/a/rest": {
+            "file": "cheek-happy-rest-a-v5-classic.png",
+            "sha256": "3e88ee3becc9d360d1c09ebe56abd87812c47059ee35bb0989edfc2ba64f3774",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/o/rest": {
+            "file": "cheek-happy-rest-o-v5-classic.png",
+            "sha256": "25cf379ec613b7857db6f301296ef17741eed6a63d64c34bff6d96925be7fcbe",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/rest": {
+            "file": "cheek-happy-rest-v5-glamorous.png",
+            "sha256": "dd969f0d4bc22905ac384615969333378a66119fb4b31794c953c935f6febd8e",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/half": {
+            "file": "cheek-happy-half-neutral-v5-glamorous.png",
+            "sha256": "c076e66c86ae53ecdefdc696215dc9812996811bb3fa9facd96b86fbec377a90",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/closed": {
+            "file": "cheek-happy-closed-neutral-v5-glamorous.png",
+            "sha256": "c30d0b665b7dfe4a891bd665e525d4ad1c0ee26bb8885e38ab504d3893d11787",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/small/rest": {
+            "file": "cheek-happy-rest-small-v5-glamorous.png",
+            "sha256": "82f901d91e9715777572f4ba2f1c1e317773061417cae986ae0af929c9f619b1",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/a/rest": {
+            "file": "cheek-happy-rest-a-v5-glamorous.png",
+            "sha256": "c284c9a0447b771ec867ca2d33881ded3ae3a624d16798a1ba3b438b60c94af4",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/o/rest": {
+            "file": "cheek-happy-rest-o-v5-glamorous.png",
+            "sha256": "7191c23e4cf1b851a7c757a324951b26f2bb4b2dab15a5996563213a39fc5488",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          }
+        },
+        "synthesized_endpoints": {
+          "none/small/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-happy-half-neutral-v5-none.png",
+              "cheek-happy-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "2126393e709adea48c9b07fd50d053c7f1880118e38268397e04d27a7a4bafeb",
+              "be4a382024ab5c7dbd34f6c848ec8e28d5a45d70810677c74d6466a6ee97a2fc"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/small/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-happy-closed-neutral-v5-none.png",
+              "cheek-happy-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "a60464064760fab0f044c1c68d933234b3a8403f222004b8ab42e93cb26c0287",
+              "be4a382024ab5c7dbd34f6c848ec8e28d5a45d70810677c74d6466a6ee97a2fc"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-happy-half-neutral-v5-none.png",
+              "cheek-happy-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "2126393e709adea48c9b07fd50d053c7f1880118e38268397e04d27a7a4bafeb",
+              "1a73f18bd23b62577e2145462579ab5c08b283f23da6846fa82185a58b6e520e"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-happy-closed-neutral-v5-none.png",
+              "cheek-happy-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "a60464064760fab0f044c1c68d933234b3a8403f222004b8ab42e93cb26c0287",
+              "1a73f18bd23b62577e2145462579ab5c08b283f23da6846fa82185a58b6e520e"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-happy-half-neutral-v5-none.png",
+              "cheek-happy-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "2126393e709adea48c9b07fd50d053c7f1880118e38268397e04d27a7a4bafeb",
+              "febd577259d6f2725f6a96fb514251c3959f5ca36695698badd70fd0e66471a0"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-happy-closed-neutral-v5-none.png",
+              "cheek-happy-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "a60464064760fab0f044c1c68d933234b3a8403f222004b8ab42e93cb26c0287",
+              "febd577259d6f2725f6a96fb514251c3959f5ca36695698badd70fd0e66471a0"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          }
+        },
+        "oral_masks": {
+          "small": {
+            "path": "masks/cheek-happy-oral-small.png",
+            "sha256": "78a50b61c9799ae57c1fa8b9198370ba8e322fa610f4156d7172931c5cb4ac0e",
+            "nonzero_alpha_pixels": 785,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "a": {
+            "path": "masks/cheek-happy-oral-a.png",
+            "sha256": "49abeafeaa6c438e76ee91cc2892b75da56f6e0b3ad25275790bd03bedffdc41",
+            "nonzero_alpha_pixels": 827,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "o": {
+            "path": "masks/cheek-happy-oral-o.png",
+            "sha256": "66208b4ff5f8552d0675b07631ea58cf477c505e91ac7ed18cc8662f4fb8a458",
+            "nonzero_alpha_pixels": 465,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          }
+        },
+        "eye_aperture": {
+          "mask_source": "02-mask/face-interior-mask-happy.png",
+          "measurement": ".quality-tmp/batch2-integrate/aperture-measurements.json#happy"
+        }
+      },
+      "blink_composition": "whole-frame",
+      "oral_masks": {
+        "small": {
+          "path": "masks/cheek-happy-oral-small.png",
+          "sha256": "78a50b61c9799ae57c1fa8b9198370ba8e322fa610f4156d7172931c5cb4ac0e"
+        },
+        "a": {
+          "path": "masks/cheek-happy-oral-a.png",
+          "sha256": "49abeafeaa6c438e76ee91cc2892b75da56f6e0b3ad25275790bd03bedffdc41"
+        },
+        "o": {
+          "path": "masks/cheek-happy-oral-o.png",
+          "sha256": "66208b4ff5f8552d0675b07631ea58cf477c505e91ac7ed18cc8662f4fb8a458"
+        }
+      }
+    },
+    "cheek-worried": {
+      "frames": {
+        "neutral": {
+          "rest": {
+            "path": "frames/cheek-worried-neutral-rest.rgba.png",
+            "sha256": "4530d0aa4f0a27c1a493199a0e9762fb87ff770f6e20ca68f71f64f146a489fa"
+          },
+          "half": {
+            "path": "frames/cheek-worried-neutral-half.rgba.png",
+            "sha256": "9f569d2dec533486ead526272c60114aa5d7738f462ea03f66fa20f708d7940a"
+          },
+          "closed": {
+            "path": "frames/cheek-worried-neutral-closed.rgba.png",
+            "sha256": "d3fc89259ed816cd160e7581f1efa3c31ad4005f22e0d2382f36f6f37c9a3841"
+          }
+        },
+        "small": {
+          "rest": {
+            "path": "frames/cheek-worried-small-rest.rgba.png",
+            "sha256": "5b3f70982bdf5c038a7657af8f0ac96c0f94f204b3cea12ee057f51eb76389aa"
+          },
+          "half": {
+            "path": "frames/cheek-worried-small-half.rgba.png",
+            "sha256": "841f9206e8a4c603fb3ada4f3c68ddae306e5af1f959ba35e109e268d405f9cd"
+          },
+          "closed": {
+            "path": "frames/cheek-worried-small-closed.rgba.png",
+            "sha256": "978643966042e1a3645466e2368f798aec3da3b547d60893dd9d9d4f013f16cb"
+          }
+        },
+        "a": {
+          "rest": {
+            "path": "frames/cheek-worried-a-rest.rgba.png",
+            "sha256": "510d714b8fe81db345b0d181d195024b42ef362aabb89b4fcd1e0f3a87afeedb"
+          },
+          "half": {
+            "path": "frames/cheek-worried-a-half.rgba.png",
+            "sha256": "8fde5d7c29078e8db0bf4e39de2927aaf039035eeb79594fb16c25ec8ad56a08"
+          },
+          "closed": {
+            "path": "frames/cheek-worried-a-closed.rgba.png",
+            "sha256": "9f43d9e807115af94fbb6be65cfeece1cbbe1ff99349dbd8e2fe1174188ccc84"
+          }
+        },
+        "o": {
+          "rest": {
+            "path": "frames/cheek-worried-o-rest.rgba.png",
+            "sha256": "f9d157318b6f817171b962bc892e50de7af75c399195d002275be8341319822b"
+          },
+          "half": {
+            "path": "frames/cheek-worried-o-half.rgba.png",
+            "sha256": "a1bc6c623587295e19e2cddc4e09c74c95e6154f2e41ad4be1f638822ca18bb1"
+          },
+          "closed": {
+            "path": "frames/cheek-worried-o-closed.rgba.png",
+            "sha256": "ab12537f4490af762b978762ada93d165b93ce3a2b3964c99352a1e283a8738b"
+          }
+        }
+      },
+      "source_lineage": {
+        "owner_approved_sources": {
+          "none/neutral/rest": {
+            "file": "cheek-worried-rest-v5-none.png",
+            "sha256": "4530d0aa4f0a27c1a493199a0e9762fb87ff770f6e20ca68f71f64f146a489fa",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/half": {
+            "file": "cheek-worried-half-neutral-v5-none.png",
+            "sha256": "9f569d2dec533486ead526272c60114aa5d7738f462ea03f66fa20f708d7940a",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/closed": {
+            "file": "cheek-worried-closed-neutral-v5-none.png",
+            "sha256": "d3fc89259ed816cd160e7581f1efa3c31ad4005f22e0d2382f36f6f37c9a3841",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/small/rest": {
+            "file": "cheek-worried-rest-small-v5-none.png",
+            "sha256": "5b3f70982bdf5c038a7657af8f0ac96c0f94f204b3cea12ee057f51eb76389aa",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/a/rest": {
+            "file": "cheek-worried-rest-a-v5-none.png",
+            "sha256": "510d714b8fe81db345b0d181d195024b42ef362aabb89b4fcd1e0f3a87afeedb",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/o/rest": {
+            "file": "cheek-worried-rest-o-v5-none.png",
+            "sha256": "f9d157318b6f817171b962bc892e50de7af75c399195d002275be8341319822b",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/rest": {
+            "file": "cheek-worried-rest-v5-light.png",
+            "sha256": "e1ece24a3cc4bc429c99f55b7fbc88419a570c563d6b33e53a45aa354a515696",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/half": {
+            "file": "cheek-worried-half-neutral-v5-light.png",
+            "sha256": "449410c6698f65d98697346723f545c011e6bd83f8c94b0ce75e4ade514064aa",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/closed": {
+            "file": "cheek-worried-closed-neutral-v5-light.png",
+            "sha256": "80cb3c2963049139e7e030d0bbb7640a9049080b2ce6902170809e407adb87ae",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/small/rest": {
+            "file": "cheek-worried-rest-small-v5-light.png",
+            "sha256": "bc6527d2c460daa403e748736342abd734a56c4c8469478b332f96de193e9f92",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/a/rest": {
+            "file": "cheek-worried-rest-a-v5-light.png",
+            "sha256": "4ecd25e68351cf2d8c666d632792cd3941fc7061fb4a09bb5516b496130a73c6",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/o/rest": {
+            "file": "cheek-worried-rest-o-v5-light.png",
+            "sha256": "a322cb45440a784d217ce2e5789b3edcf281a0c95bdb9265a0082f39529a1b16",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/rest": {
+            "file": "cheek-worried-rest-v5-classic.png",
+            "sha256": "1bad9506a3ecfd1a67576d0d3118878ab3a553d94c5e9634a3c6f531519c9d1f",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/half": {
+            "file": "cheek-worried-half-neutral-v5-classic.png",
+            "sha256": "9b8e3b636da751627dbce7390903e02e8e5a77cb8a81bf0448742cd82cd80819",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/closed": {
+            "file": "cheek-worried-closed-neutral-v5-classic.png",
+            "sha256": "827ea13dda45e96cae571bab18e11c2caa3f93d22502a9fffdf11adca950d5d2",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/small/rest": {
+            "file": "cheek-worried-rest-small-v5-classic.png",
+            "sha256": "f557e20019ee8a277be64267276b15420e364f392f7aefbb79a3b71c34cbbd82",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/a/rest": {
+            "file": "cheek-worried-rest-a-v5-classic.png",
+            "sha256": "54fe3473f2fe6574326841abcdd21a55a04ddc6f494785852b1490e21ff90915",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/o/rest": {
+            "file": "cheek-worried-rest-o-v5-classic.png",
+            "sha256": "a180c4fcf7906202a6b5b180bef0344a0c2f2329c384ef336a896b698a2fd2a1",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/rest": {
+            "file": "cheek-worried-rest-v5-glamorous.png",
+            "sha256": "67b4d6f1c9b318a0e3a060bfde7188b28e1d045be3ebf7d584e9f5d61fe8bd2c",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/half": {
+            "file": "cheek-worried-half-neutral-v5-glamorous.png",
+            "sha256": "57447712fe7bb3ebe251e60a58c30ed295a370680d02a98d8f31d4f0b3ec7a8d",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/closed": {
+            "file": "cheek-worried-closed-neutral-v5-glamorous.png",
+            "sha256": "3f88b924a3d9b178788b18e2ef708d2d2b5433a017bb471dbc1bfb7fa9cbfdd6",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/small/rest": {
+            "file": "cheek-worried-rest-small-v5-glamorous.png",
+            "sha256": "30f0fae7e2231737731b8ba04a8beaf4b7c237fd0ec4b47843a0f6acd07b9305",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/a/rest": {
+            "file": "cheek-worried-rest-a-v5-glamorous.png",
+            "sha256": "e01c9c8fc84c430b4baac115336d34fd5c64e9ebe21bc90bea6f8b43723f4b77",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/o/rest": {
+            "file": "cheek-worried-rest-o-v5-glamorous.png",
+            "sha256": "71f1716608ff2813115455563edc171a2ce7b3be58ba7a1a8a3624504c73eb85",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          }
+        },
+        "synthesized_endpoints": {
+          "none/small/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-worried-half-neutral-v5-none.png",
+              "cheek-worried-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "9f569d2dec533486ead526272c60114aa5d7738f462ea03f66fa20f708d7940a",
+              "5b3f70982bdf5c038a7657af8f0ac96c0f94f204b3cea12ee057f51eb76389aa"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/small/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-worried-closed-neutral-v5-none.png",
+              "cheek-worried-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "d3fc89259ed816cd160e7581f1efa3c31ad4005f22e0d2382f36f6f37c9a3841",
+              "5b3f70982bdf5c038a7657af8f0ac96c0f94f204b3cea12ee057f51eb76389aa"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-worried-half-neutral-v5-none.png",
+              "cheek-worried-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "9f569d2dec533486ead526272c60114aa5d7738f462ea03f66fa20f708d7940a",
+              "510d714b8fe81db345b0d181d195024b42ef362aabb89b4fcd1e0f3a87afeedb"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-worried-closed-neutral-v5-none.png",
+              "cheek-worried-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "d3fc89259ed816cd160e7581f1efa3c31ad4005f22e0d2382f36f6f37c9a3841",
+              "510d714b8fe81db345b0d181d195024b42ef362aabb89b4fcd1e0f3a87afeedb"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-worried-half-neutral-v5-none.png",
+              "cheek-worried-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "9f569d2dec533486ead526272c60114aa5d7738f462ea03f66fa20f708d7940a",
+              "f9d157318b6f817171b962bc892e50de7af75c399195d002275be8341319822b"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-worried-closed-neutral-v5-none.png",
+              "cheek-worried-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "d3fc89259ed816cd160e7581f1efa3c31ad4005f22e0d2382f36f6f37c9a3841",
+              "f9d157318b6f817171b962bc892e50de7af75c399195d002275be8341319822b"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          }
+        },
+        "oral_masks": {
+          "small": {
+            "path": "masks/cheek-worried-oral-small.png",
+            "sha256": "744512bfd492bd82a8e9b93bc034d343f389f551d4d14979fbbd63fc2ecc1fd1",
+            "nonzero_alpha_pixels": 538,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "a": {
+            "path": "masks/cheek-worried-oral-a.png",
+            "sha256": "9bd25f3792936aefe37b827b01d7d4e518560ed90df1322b582cdb5ea1526bb7",
+            "nonzero_alpha_pixels": 1037,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "o": {
+            "path": "masks/cheek-worried-oral-o.png",
+            "sha256": "d0d52f9eb24a499438a86dcb261f12230ab9eb78ae5154c1163b8ae36b21799f",
+            "nonzero_alpha_pixels": 425,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          }
+        },
+        "eye_aperture": {
+          "mask_source": "02-mask/face-interior-mask-worried.png",
+          "measurement": ".quality-tmp/batch2-integrate/aperture-measurements.json#worried"
+        }
+      },
+      "blink_composition": "whole-frame",
+      "oral_masks": {
+        "small": {
+          "path": "masks/cheek-worried-oral-small.png",
+          "sha256": "744512bfd492bd82a8e9b93bc034d343f389f551d4d14979fbbd63fc2ecc1fd1"
+        },
+        "a": {
+          "path": "masks/cheek-worried-oral-a.png",
+          "sha256": "9bd25f3792936aefe37b827b01d7d4e518560ed90df1322b582cdb5ea1526bb7"
+        },
+        "o": {
+          "path": "masks/cheek-worried-oral-o.png",
+          "sha256": "d0d52f9eb24a499438a86dcb261f12230ab9eb78ae5154c1163b8ae36b21799f"
+        }
+      }
+    },
+    "cheek-reminder": {
+      "frames": {
+        "neutral": {
+          "rest": {
+            "path": "frames/cheek-reminder-neutral-rest.rgba.png",
+            "sha256": "2fca265d8075259b65239b2202fc894aebc7ee51198dcaa958901415427dab73"
+          },
+          "half": {
+            "path": "frames/cheek-reminder-neutral-half.rgba.png",
+            "sha256": "5ab73eed69ca4ad1b6b608df4a1080c93d8c40bb0b3f0448fee9f92ce1610cdd"
+          },
+          "closed": {
+            "path": "frames/cheek-reminder-neutral-closed.rgba.png",
+            "sha256": "df005be884574e5e94fa6250365e18f8152db9a057f91678fd7696bf7a623e7a"
+          }
+        },
+        "small": {
+          "rest": {
+            "path": "frames/cheek-reminder-small-rest.rgba.png",
+            "sha256": "e76d78ba7bffd02daef9a44ec371e4cf568e51774e9d0820eb538b544a18b454"
+          },
+          "half": {
+            "path": "frames/cheek-reminder-small-half.rgba.png",
+            "sha256": "d6b0734c95d070b7c20bb441f0eab6466fe994bf4311e11b16d2351230c9cce6"
+          },
+          "closed": {
+            "path": "frames/cheek-reminder-small-closed.rgba.png",
+            "sha256": "692fb65ff8fde25745777f660eb3af3c20dbe8f9299ae21eb45b5c43e78b748a"
+          }
+        },
+        "a": {
+          "rest": {
+            "path": "frames/cheek-reminder-a-rest.rgba.png",
+            "sha256": "f573eb1e453488d73eb5b3710b3070eb05370ea4a08a3bc971e3285303296abd"
+          },
+          "half": {
+            "path": "frames/cheek-reminder-a-half.rgba.png",
+            "sha256": "574bd6ef60ec1887f31b0e1e430c65a10271a79b3a0b9ad60e37005aa4d1c565"
+          },
+          "closed": {
+            "path": "frames/cheek-reminder-a-closed.rgba.png",
+            "sha256": "ec522b8ca3d8b04b7f8129caab741dbfbc8180b71f149e3a2e31416fc9342a72"
+          }
+        },
+        "o": {
+          "rest": {
+            "path": "frames/cheek-reminder-o-rest.rgba.png",
+            "sha256": "671a6748f5ec89de1e86d66937267760f585a004f97a0a825eaf34d99575a6af"
+          },
+          "half": {
+            "path": "frames/cheek-reminder-o-half.rgba.png",
+            "sha256": "0aee4cdedf116179eae7737bce150a5b9e204d3fb9e1ed96a847a4f85f0a02d4"
+          },
+          "closed": {
+            "path": "frames/cheek-reminder-o-closed.rgba.png",
+            "sha256": "e921f1c6f7473e5750087b062276b81072c965dcd3a3684561f67fe73b23468b"
+          }
+        }
+      },
+      "source_lineage": {
+        "owner_approved_sources": {
+          "none/neutral/rest": {
+            "file": "cheek-reminder-rest-v5-none.png",
+            "sha256": "2fca265d8075259b65239b2202fc894aebc7ee51198dcaa958901415427dab73",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/half": {
+            "file": "cheek-reminder-half-neutral-v5-none.png",
+            "sha256": "5ab73eed69ca4ad1b6b608df4a1080c93d8c40bb0b3f0448fee9f92ce1610cdd",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/neutral/closed": {
+            "file": "cheek-reminder-closed-neutral-v5-none.png",
+            "sha256": "df005be884574e5e94fa6250365e18f8152db9a057f91678fd7696bf7a623e7a",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/small/rest": {
+            "file": "cheek-reminder-rest-small-v5-none.png",
+            "sha256": "e76d78ba7bffd02daef9a44ec371e4cf568e51774e9d0820eb538b544a18b454",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/a/rest": {
+            "file": "cheek-reminder-rest-a-v5-none.png",
+            "sha256": "f573eb1e453488d73eb5b3710b3070eb05370ea4a08a3bc971e3285303296abd",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "none/o/rest": {
+            "file": "cheek-reminder-rest-o-v5-none.png",
+            "sha256": "671a6748f5ec89de1e86d66937267760f585a004f97a0a825eaf34d99575a6af",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/rest": {
+            "file": "cheek-reminder-rest-v5-light.png",
+            "sha256": "142dcc1dff1186813e50159b30dff8c2d916fcdb0c89afb3c0ac1e401aef4c20",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/half": {
+            "file": "cheek-reminder-half-neutral-v5-light.png",
+            "sha256": "10fef4f3efe6ba30f07fada052458602ff773ad309f0dffefebd7e4feb9b4343",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/neutral/closed": {
+            "file": "cheek-reminder-closed-neutral-v5-light.png",
+            "sha256": "b07d55269ad2c367fa7f9c6cd9f99a6a6bb5aa45d4766fd8eca229ceb09478a3",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/small/rest": {
+            "file": "cheek-reminder-rest-small-v5-light.png",
+            "sha256": "d2b3f05916ed5aedb0764a5d15add521039a060e42687b56ed878f31cb6ab0dd",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/a/rest": {
+            "file": "cheek-reminder-rest-a-v5-light.png",
+            "sha256": "f7fc3aa4b7d53562fda4f22fbbd4a7bfd214a2c862ca98d19d49c4223a333d49",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "light/o/rest": {
+            "file": "cheek-reminder-rest-o-v5-light.png",
+            "sha256": "c8683094f3649784e705bcf88f1f40fe4c317ae4c770c76fd01921d00102b55c",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/rest": {
+            "file": "cheek-reminder-rest-v5-classic.png",
+            "sha256": "a5acaf7f6dc609f5eed20e1a3fc3bba36feb57057927ec78807266435d317abe",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/half": {
+            "file": "cheek-reminder-half-neutral-v5-classic.png",
+            "sha256": "58e02650ef7a2bb03466204c4cff3ff892bf947f225b3bed1e726ee33d69e1dd",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/neutral/closed": {
+            "file": "cheek-reminder-closed-neutral-v5-classic.png",
+            "sha256": "645abcafdad29bdbebdc6c5ae701305c94712deb83a6a8086cf270bf2f5a9821",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/small/rest": {
+            "file": "cheek-reminder-rest-small-v5-classic.png",
+            "sha256": "135c3087d2eb5d022f9f8f1ecd3b71346b8ef34cc410e2985a20eb648dc55e9b",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/a/rest": {
+            "file": "cheek-reminder-rest-a-v5-classic.png",
+            "sha256": "ee2c908a2558b8db0f5539f4de6e76a4788e31abf103e1bb9d50e772e14b7f89",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "classic/o/rest": {
+            "file": "cheek-reminder-rest-o-v5-classic.png",
+            "sha256": "8e776a9e5b53fb722430eb37c7e920548ae4f0c0a270d68196a75c5c37be2d64",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/rest": {
+            "file": "cheek-reminder-rest-v5-glamorous.png",
+            "sha256": "9f8ef3885321804d71554e7399a5d5705ee2da7ec37806324615271fd5b1014f",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/half": {
+            "file": "cheek-reminder-half-neutral-v5-glamorous.png",
+            "sha256": "549b4153c48d35e7d7a25da372ca862f7d1336c51293a21c09302de22d9c9f0a",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/neutral/closed": {
+            "file": "cheek-reminder-closed-neutral-v5-glamorous.png",
+            "sha256": "8bc82d4c05dca5eee7684479503c86e6b16a80f73c51f6631d977e6fd7f21b8a",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/small/rest": {
+            "file": "cheek-reminder-rest-small-v5-glamorous.png",
+            "sha256": "e6924c6646561509a164e4567cc10c1d7af46c903d2f3ce82d64e7081ebc2155",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/a/rest": {
+            "file": "cheek-reminder-rest-a-v5-glamorous.png",
+            "sha256": "7456e514ac9a041fc8648ddcfcc6e43d6986b63dc2be60efd16fb20974adfe1c",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          },
+          "glamorous/o/rest": {
+            "file": "cheek-reminder-rest-o-v5-glamorous.png",
+            "sha256": "36bc0b449e143e195a54836c56fcfdeb46d9b408891bba93f7697026fa3fb558",
+            "width": 1254,
+            "height": 1254,
+            "mode": "RGBA"
+          }
+        },
+        "synthesized_endpoints": {
+          "none/small/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-reminder-half-neutral-v5-none.png",
+              "cheek-reminder-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "5ab73eed69ca4ad1b6b608df4a1080c93d8c40bb0b3f0448fee9f92ce1610cdd",
+              "e76d78ba7bffd02daef9a44ec371e4cf568e51774e9d0820eb538b544a18b454"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/small/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-reminder-closed-neutral-v5-none.png",
+              "cheek-reminder-rest-small-v5-none.png"
+            ],
+            "source_sha256": [
+              "df005be884574e5e94fa6250365e18f8152db9a057f91678fd7696bf7a623e7a",
+              "e76d78ba7bffd02daef9a44ec371e4cf568e51774e9d0820eb538b544a18b454"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-reminder-half-neutral-v5-none.png",
+              "cheek-reminder-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "5ab73eed69ca4ad1b6b608df4a1080c93d8c40bb0b3f0448fee9f92ce1610cdd",
+              "f573eb1e453488d73eb5b3710b3070eb05370ea4a08a3bc971e3285303296abd"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/a/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-reminder-closed-neutral-v5-none.png",
+              "cheek-reminder-rest-a-v5-none.png"
+            ],
+            "source_sha256": [
+              "df005be884574e5e94fa6250365e18f8152db9a057f91678fd7696bf7a623e7a",
+              "f573eb1e453488d73eb5b3710b3070eb05370ea4a08a3bc971e3285303296abd"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/half": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-reminder-half-neutral-v5-none.png",
+              "cheek-reminder-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "5ab73eed69ca4ad1b6b608df4a1080c93d8c40bb0b3f0448fee9f92ce1610cdd",
+              "671a6748f5ec89de1e86d66937267760f585a004f97a0a825eaf34d99575a6af"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          },
+          "none/o/closed": {
+            "construction": "copy disjoint eye rectangle from neutral eye endpoint, then mouth rectangle from rest family endpoint",
+            "source_files": [
+              "cheek-reminder-closed-neutral-v5-none.png",
+              "cheek-reminder-rest-o-v5-none.png"
+            ],
+            "source_sha256": [
+              "df005be884574e5e94fa6250365e18f8152db9a057f91678fd7696bf7a623e7a",
+              "671a6748f5ec89de1e86d66937267760f585a004f97a0a825eaf34d99575a6af"
+            ],
+            "eye_rectangle_xywh": [
+              475,
+              250,
+              280,
+              235
+            ],
+            "mouth_rectangle_xywh": [
+              500,
+              490,
+              170,
+              115
+            ],
+            "overlap_pixels": 0
+          }
+        },
+        "oral_masks": {
+          "small": {
+            "path": "masks/cheek-reminder-oral-small.png",
+            "sha256": "fa45d766699fb41e6f506f9213f63aa12f7343562ab84ea641b01ffb12408189",
+            "nonzero_alpha_pixels": 500,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "a": {
+            "path": "masks/cheek-reminder-oral-a.png",
+            "sha256": "b56db2d4f8a1bb104d1a605aa0983900c045d6d191fbcc3cb892e158fe1c4cd6",
+            "nonzero_alpha_pixels": 946,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          },
+          "o": {
+            "path": "masks/cheek-reminder-oral-o.png",
+            "sha256": "673c16417b5fe932ee34e5cccd852d16289648444ea8d50b06c486aa7b878e1f",
+            "nonzero_alpha_pixels": 348,
+            "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
+          }
+        },
+        "eye_aperture": {
+          "mask_source": "02-mask/face-interior-mask-reminder.png",
+          "measurement": ".quality-tmp/batch2-integrate/aperture-measurements.json#reminder"
+        }
+      },
+      "blink_composition": "whole-frame",
+      "oral_masks": {
+        "small": {
+          "path": "masks/cheek-reminder-oral-small.png",
+          "sha256": "fa45d766699fb41e6f506f9213f63aa12f7343562ab84ea641b01ffb12408189"
+        },
+        "a": {
+          "path": "masks/cheek-reminder-oral-a.png",
+          "sha256": "b56db2d4f8a1bb104d1a605aa0983900c045d6d191fbcc3cb892e158fe1c4cd6"
+        },
+        "o": {
+          "path": "masks/cheek-reminder-oral-o.png",
+          "sha256": "673c16417b5fe932ee34e5cccd852d16289648444ea8d50b06c486aa7b878e1f"
+        }
+      }
     }
   },
   "expressions": {
@@ -1966,6 +3634,102 @@
     },
     "glance_speech_u": {
       "pose": "cheek-glance",
+      "family": "o"
+    },
+    "caught": {
+      "pose": "cheek-caught",
+      "family": "neutral"
+    },
+    "caught_speech_mid": {
+      "pose": "cheek-caught",
+      "family": "small"
+    },
+    "caught_speech_i": {
+      "pose": "cheek-caught",
+      "family": "small"
+    },
+    "caught_speech_open": {
+      "pose": "cheek-caught",
+      "family": "a"
+    },
+    "caught_speech_round": {
+      "pose": "cheek-caught",
+      "family": "o"
+    },
+    "caught_speech_u": {
+      "pose": "cheek-caught",
+      "family": "o"
+    },
+    "happy": {
+      "pose": "cheek-happy",
+      "family": "neutral"
+    },
+    "happy_speech_mid": {
+      "pose": "cheek-happy",
+      "family": "small"
+    },
+    "happy_speech_i": {
+      "pose": "cheek-happy",
+      "family": "small"
+    },
+    "happy_speech_open": {
+      "pose": "cheek-happy",
+      "family": "a"
+    },
+    "happy_speech_round": {
+      "pose": "cheek-happy",
+      "family": "o"
+    },
+    "happy_speech_u": {
+      "pose": "cheek-happy",
+      "family": "o"
+    },
+    "worried": {
+      "pose": "cheek-worried",
+      "family": "neutral"
+    },
+    "worried_speech_mid": {
+      "pose": "cheek-worried",
+      "family": "small"
+    },
+    "worried_speech_i": {
+      "pose": "cheek-worried",
+      "family": "small"
+    },
+    "worried_speech_open": {
+      "pose": "cheek-worried",
+      "family": "a"
+    },
+    "worried_speech_round": {
+      "pose": "cheek-worried",
+      "family": "o"
+    },
+    "worried_speech_u": {
+      "pose": "cheek-worried",
+      "family": "o"
+    },
+    "reminder": {
+      "pose": "cheek-reminder",
+      "family": "neutral"
+    },
+    "reminder_speech_mid": {
+      "pose": "cheek-reminder",
+      "family": "small"
+    },
+    "reminder_speech_i": {
+      "pose": "cheek-reminder",
+      "family": "small"
+    },
+    "reminder_speech_open": {
+      "pose": "cheek-reminder",
+      "family": "a"
+    },
+    "reminder_speech_round": {
+      "pose": "cheek-reminder",
+      "family": "o"
+    },
+    "reminder_speech_u": {
+      "pose": "cheek-reminder",
       "family": "o"
     }
   }

@@ -3,11 +3,16 @@ from __future__ import annotations
 
 lazy import json
 lazy import os
+lazy from contextlib import nullcontext
 lazy from pathlib import Path
 lazy from tempfile import NamedTemporaryFile
 lazy from collections.abc import Callable
 lazy from domain._outfit_pack_models import OutfitPack
-lazy from domain.outfit_pack_assets import IncompatibleBodyProfileError, OutfitPackError
+lazy from domain.outfit_pack_assets import (
+    IncompatibleBodyProfileError,
+    OutfitPackError,
+    deferred_png_content_validation,
+)
 
 
 def _installed_pack_paths(
@@ -63,8 +68,10 @@ def _state_references_pack(path: Path, pack_id: str) -> bool:
 def inspect_cached_pack(
     path: Path, inspect: Callable[[Path], OutfitPack],
     cache: dict[Path, tuple[tuple[int, int], OutfitPack | None]],
+    *, defer_png_content_validation: bool = False,
 ) -> OutfitPack | None:
-    """Parse an installed archive once per (mtime, size); a rewritten or replaced file is read again."""
+    """Parse an installed archive once per canonical (mtime, size) token."""
+    path = Path(path).resolve()
     try:
         stat = path.stat()
     except OSError:
@@ -73,7 +80,13 @@ def inspect_cached_pack(
     cached = cache.get(path)
     if cached is None or cached[0] != token:
         try:
-            cached = (token, inspect(path))
+            validation = (
+                deferred_png_content_validation()
+                if defer_png_content_validation else nullcontext()
+            )
+            with validation:
+                inspected = inspect(path)
+            cached = (token, inspected)
         except IncompatibleBodyProfileError:
             cached = (token, None)
         except OutfitPackError as error:

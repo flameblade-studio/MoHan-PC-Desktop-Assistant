@@ -16,7 +16,10 @@ FAMILIES = frozenset({"neutral", "small", "a", "o"})
 EYES = frozenset({"rest", "half", "closed"})
 MOUTH_SHAPES = frozenset({"small", "a", "o"})
 GLANCE_COMPLETE_POSE = "cheek-glance"
-COMPLETE_POSES = POSES | frozenset({GLANCE_COMPLETE_POSE})
+COMPLETE_CHEEK_POSES = frozenset({
+    "cheek-glance", "cheek-caught", "cheek-happy", "cheek-worried", "cheek-reminder",
+})
+COMPLETE_POSES = POSES | COMPLETE_CHEEK_POSES
 PNG_HEADER_LENGTH = 26
 
 

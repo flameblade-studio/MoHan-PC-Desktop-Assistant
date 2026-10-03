@@ -210,8 +210,8 @@ HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
 EXPRESSION_FACE_OFFSETS = frozendict({
     # Measured against the installed owner-approved cheek-glance v5 face at
     # the 465px companion viewport; offsets move tracking masks only.
-    "glance": (6, -6), "caught": (0, 0), "happy": (0, 0),
-    "worried": (0, 0), "reminder": (0, 0), "thinking_front": (0, 0),
+    "glance": (6, -6), "caught": (6, -6), "happy": (6, -6),
+    "worried": (6, -6), "reminder": (6, -6), "thinking_front": (0, 0),
     "gentle_smile_front": (0, 0), "worried_front": (0, 0), "shy_front": (0, 0),
     "mock_scold": (0, 0), "surprised_front": (0, 0), "relieved_front": (0, 0),
     "tired_front": (0, 0), "proud_front": (0, 0), "shy_cute_front": (0, 0),
