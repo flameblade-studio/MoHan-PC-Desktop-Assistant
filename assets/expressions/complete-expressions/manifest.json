@@ -2214,11 +2214,11 @@
           },
           "half": {
             "path": "frames/cheek-happy-small-half.rgba.png",
-            "sha256": "7379d38affa084854e6756699952251f47f42470ffe00c5d93303d4e2f4c8cfa"
+            "sha256": "99b35444007052366637b40696012008fe26d59b055fbffec767dee574a1c850"
           },
           "closed": {
             "path": "frames/cheek-happy-small-closed.rgba.png",
-            "sha256": "e76aee0a02b6c9d7ee36c7bbc447d693b8d978d91ee9ba30b03d4d87c8acf3fa"
+            "sha256": "0641c1ed81c5eeead3389c657c03e2ecbe5652003a27b547c4e948cb864278ea"
           }
         },
         "a": {
@@ -2242,11 +2242,11 @@
           },
           "half": {
             "path": "frames/cheek-happy-o-half.rgba.png",
-            "sha256": "94a6d7bedec61ec4c71caaa7431124c7cbeb111e8c6b49a319cea2071aa90173"
+            "sha256": "119fe4fdc011c5d897020f7648050d56050f9454cf6428cf3e2e780062698f23"
           },
           "closed": {
             "path": "frames/cheek-happy-o-closed.rgba.png",
-            "sha256": "3215512dcf9001f9e887c86431e9201e215d56fb4469514788e08fd39510ab1b"
+            "sha256": "16224dd7d8758c48538f0adb0eaabfacd1f0bf541cb0e4aaaede3cca510baecb"
           }
         }
       },

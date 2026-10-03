@@ -1,14 +1,18 @@
 from __future__ import annotations
 
+lazy import math
 lazy import os
 lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
+lazy import numpy as np
+lazy from PIL import Image
+
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from PySide6.QtCore import QRect, QTimer, Qt
+lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage, QPixmap
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
@@ -112,15 +116,30 @@ def alpha_bounds(pixmap: QPixmap) -> QRect:
 
 
 def complete_expression_eye_authority_rect(expression: str) -> QRect | None:
-    """Use the measured new-face eye authority, including lid transition pixels."""
+    """Use the approved blink change region plus the registered eye-makeup region."""
     if expression not in COMPLETE_EXPRESSION_EYE_EXPRESSIONS or expression == "glance":
         return None
-    stem = f"cheek-{expression}"
-    path = PROJECT_ROOT / "assets" / "makeup-safe-regions" / stem / f"{stem}-eye-aperture-rest.png"
-    mask = QPixmap(str(path))
-    assert not mask.isNull(), path
-    scaled = mask.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-    return alpha_bounds(scaled).adjusted(-12, -18, 12, 18)
+    frames = PROJECT_ROOT / "assets" / "expressions" / "complete-expressions" / "frames"
+    rest = np.asarray(Image.open(frames / f"cheek-{expression}-neutral-rest.rgba.png").convert("RGBA"))
+    changed = np.zeros(rest.shape[:2], dtype=bool)
+    for state in ("half", "closed"):
+        frame = np.asarray(Image.open(frames / f"cheek-{expression}-neutral-{state}.rgba.png").convert("RGBA"))
+        changed |= (frame != rest).any(axis=2)
+    rows = np.flatnonzero(changed.any(axis=1))
+    columns = np.flatnonzero(changed.any(axis=0))
+    assert rows.size and columns.size, expression
+    scale = 465 / rest.shape[1]
+    left = int(columns[0] * scale)
+    top = int(rows[0] * scale)
+    right = math.ceil((columns[-1] + 1) * scale)
+    bottom = math.ceil((rows[-1] + 1) * scale)
+    authority = QRect(left, top, right - left, bottom - top)
+    # Eye makeup changes with the eye state, so its safe region is eye authority too.
+    for x, y, width, height in load_makeup_safe_regions()[f"cheek-{expression}"].rects("eyes"):
+        authority = authority.united(
+            QRect(int(x * scale), int(y * scale), math.ceil(width * scale), math.ceil(height * scale)),
+        )
+    return authority
 
 
 def complete_expression_mouth_authority_rect(expression: str) -> QRect | None:
@@ -454,8 +473,9 @@ def assert_expression_speech_blink(
     pose = EXPRESSION_POSES[expression]
     if expression == "glance":
         # The previously verified glance route uses this non-overlapping eye ROI.
-        expression_eye_rect = QRect(175, 115, 101, 71)
+        expression_eye_rect = QRect(175, 115, 101, 71).translated(eye_offset_x, eye_offset_y)
     elif (complete_eye_rect := complete_expression_eye_authority_rect(expression)) is not None:
+        # Complete portraits blink in place, so the legacy eye offset does not apply.
         expression_eye_rect = complete_eye_rect
     else:
         blink_mask = (
@@ -463,8 +483,7 @@ def assert_expression_speech_blink(
             if expression in EXPRESSION_BLINK_FRAMES
             else window.blink_masks[pose]
         )
-        expression_eye_rect = alpha_bounds(blink_mask)
-    expression_eye_rect = expression_eye_rect.translated(eye_offset_x, eye_offset_y)
+        expression_eye_rect = alpha_bounds(blink_mask).translated(eye_offset_x, eye_offset_y)
     blink_inside, blink_outside = changed_pixels(
         opened,
         blinked,
@@ -510,15 +529,10 @@ def assert_dedicated_blink_assets(window: CompanionWindow) -> None:
         dedicated = window._blink_composite(original, expression)
         pose = EXPRESSION_POSES[expression]
         offset_x, offset_y = window._expression_eye_offset(expression)
-        allowed = complete_expression_eye_authority_rect(expression)
-        if allowed is None:
-            allowed = (
-                QRect(175, 115, 101, 71)
-                if expression == "glance"
-                else alpha_bounds(window.dedicated_blink_masks[pose]).translated(
-                    offset_x, offset_y,
-                )
-            )
+        allowed = alpha_bounds(window.dedicated_blink_masks[pose]).translated(
+            offset_x,
+            offset_y,
+        )
         inside, outside = changed_pixels(
             original,
             dedicated,
