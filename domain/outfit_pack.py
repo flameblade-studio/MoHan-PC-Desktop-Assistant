@@ -630,7 +630,7 @@ _PARSED: dict[Path, tuple[tuple[int, int], OutfitPack | None]] = {}
 
 
 def inspect_installed_outfit_pack(path: Path) -> OutfitPack | None:
-    return inspect_cached_pack(path, inspect_outfit_pack, _PARSED)
+    return inspect_cached_pack(path, inspect_outfit_pack, _PARSED, defer_png_content_validation=True)
 
 
 def installed_pack_path(
