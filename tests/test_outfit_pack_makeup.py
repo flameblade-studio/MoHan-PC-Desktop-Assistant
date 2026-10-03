@@ -28,7 +28,7 @@ lazy from application.wardrobe_service import WardrobeService
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
     BUILTIN_MAKEUP_PACK_ID,
-    GLANCE_MAKEUP_SILHOUETTES,
+    COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES,
     MAKEUP_CANVASES,
     POSE_ATLAS_SILHOUETTES,
     REQUIRED_SILHOUETTES,
@@ -369,7 +369,7 @@ def test_pixel_gate_blocks_layers_outside_the_safe_region(tmp_path: Path) -> Non
 def test_safe_region_document_matches_the_rigs() -> None:
     document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
     regions = load_makeup_safe_regions()
-    assert set(regions) == set(REQUIRED_SILHOUETTES + GLANCE_MAKEUP_SILHOUETTES)
+    assert set(regions) == set(REQUIRED_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES)
     for silhouette, region in regions.items():
         assert region.canvas == canvas_for(silhouette)
         for slot in ("eyes", "cheeks", "lips"):
