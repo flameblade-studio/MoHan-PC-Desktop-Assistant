@@ -301,11 +301,18 @@ class VisionController(QObject):
         name = display_name.strip()
         if not name:
             raise ValueError("display name requires content")
+        self._generation += 1
+        self._busy = False
+        self._pool.clear()
         self._enrollment_name = name
         self._enrollment_samples.clear()
         self.enrollment_progress.emit(0, self._required_enrollment_samples)
 
     def cancel_enrollment(self) -> None:
+        if self._enrollment_name:
+            self._generation += 1
+            self._busy = False
+            self._pool.clear()
         self._enrollment_name = ""
         self._enrollment_samples.clear()
 
@@ -341,7 +348,8 @@ class VisionController(QObject):
         self._consecutive_analysis_failures = 0
         self._pool.clear()
         self._local_pipeline.reset()
-        self.cancel_enrollment()
+        self._enrollment_name = ""
+        self._enrollment_samples.clear()
 
     def _is_current(self, generation: int) -> bool:
         return self._enabled and generation == self._generation
@@ -354,7 +362,6 @@ class VisionController(QObject):
         if not self._is_current(generation):
             return
         self._busy = False
-        self._consecutive_analysis_failures = 0
         if isinstance(evidence, _AnalysisBundle):
             if evidence.face_mesh is not None:
                 self.face_mesh_changed.emit(evidence.face_mesh, float(self._clock()))
@@ -365,6 +372,7 @@ class VisionController(QObject):
                 )
             evidence = evidence.evidence
         if isinstance(evidence, SceneUnderstanding):
+            self._consecutive_analysis_failures = 0
             self.scene_changed.emit(evidence)
             return
         if not isinstance(evidence, OpenCVFrameEvidence):
@@ -383,6 +391,7 @@ class VisionController(QObject):
         except (RuntimeError, TypeError, ValueError) as exc:
             self._analysis_failed(type(exc).__name__, generation)
             return
+        self._consecutive_analysis_failures = 0
         self.scene_changed.emit(evidence.scene)
         self.lip_region_changed.emit(evidence.lip_region, observed_at)
         self.local_intelligence_changed.emit(result)

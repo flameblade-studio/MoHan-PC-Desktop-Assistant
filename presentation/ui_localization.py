@@ -552,6 +552,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'overwork_message': '久坐／过劳提醒消息',
  'minutes_suffix': ' 分钟',
  'read_replies': '让墨寒读出回复',
+ 'caught_glance_dialogue': '妾只是望向窗外，才不是在偷看主上。',
  'voice_settings_saved': '语音设置已保存。',
  'settings_saved': '设置已保存。',
  'work_timer_already_running': '工作计时器已经运行；当前工作阶段继续。',
@@ -561,6 +562,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
 _JAPANESE: Mapping[str, str] = deep_freeze({
     **JAPANESE_UI,
     'tab_wardrobe': '雲裳閣',
+    'caught_glance_dialogue': '窓の外を見ていただけです。主上を覗いていたわけではありません。',
      'cancel_without_saving': '保存済みの値を保ったまま取り消す',
      'restore_dashboard_window': 'ウィンドウを元に戻す',
      'restore_dashboard_window_tooltip': 'コントロールセンターを移動・サイズ変更可能なウィンドウに戻します',

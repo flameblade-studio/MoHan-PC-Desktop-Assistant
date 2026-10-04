@@ -86,7 +86,7 @@ class ManagerWorkerScheduler:
                 return
             for worker_id, worker in self._workers.items():
                 future = self._futures.get(worker_id)
-                if future is not None and not future.done():
+                if future is not None:
                     continue
                 if now < self._next_due[worker_id]:
                     continue
@@ -230,13 +230,13 @@ class DiagnosticReportWorker:
         signature = (str(resolved), stat.st_mtime_ns, stat.st_size)
         if signature == self._last_signature:
             return ()
-        self._last_signature = signature
         with resolved.open("rb") as handle:
             if stat.st_size > self.max_bytes:
                 handle.seek(-self.max_bytes, 2)
             raw = handle.read(self.max_bytes)
         text = raw.decode("utf-8", errors="replace")
         issues = sum(bool(self._ISSUE.search(line)) for line in text.splitlines())
+        self._last_signature = signature
         if issues <= 0:
             return ()
         return (

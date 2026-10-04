@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import inspect
+lazy import json
 lazy import re
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
@@ -112,6 +113,7 @@ _EXCEPTION_CLASSIFICATIONS: tuple[
         SafeErrorType.DECODING_ERROR,
         SafeDiagnostic.INVALID_RESPONSE,
     ),
+    (json.JSONDecodeError, SafeErrorType.DECODING_ERROR, SafeDiagnostic.INVALID_RESPONSE),
     (ValueError, SafeErrorType.VALIDATION_ERROR, SafeDiagnostic.INVALID_INPUT),
     (TypeError, SafeErrorType.VALIDATION_ERROR, SafeDiagnostic.INVALID_INPUT),
 )

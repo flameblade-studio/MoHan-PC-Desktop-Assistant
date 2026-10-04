@@ -211,7 +211,7 @@ def verify_operations(module: ModuleType) -> None:
         bytes((20, 40, 60, 80)),
         bytes((200, 100, 50, 128)),
     )
-    if actual_rgba != bytes((110, 70, 54, 167)):
+    if actual_rgba != bytes((157, 86, 52, 168)):
         raise RuntimeError("Packaged native RGBA operation returned unexpected bytes.")
 
 

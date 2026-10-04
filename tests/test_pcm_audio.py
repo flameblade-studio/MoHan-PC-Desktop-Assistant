@@ -41,6 +41,12 @@ def test_gain_clips_and_preserves_silence() -> None:
     assert scale_pcm16(pcm(100, -100), 0.0) == pcm(0, 0)
 
 
+@pytest.mark.parametrize("factor", (1e308, -1e308))
+def test_extreme_finite_gain_saturates_before_integer_conversion(factor: float) -> None:
+    expected = (-32768, 0, 32767) if factor > 0 else (32767, 0, -32768)
+    assert unpack(scale_pcm16(pcm(-32768, 0, 32767), factor)) == expected
+
+
 def test_stereo_mix_uses_complete_frames_and_saturates() -> None:
     assert unpack(
         stereo_to_mono_pcm16(pcm(1000, -1000, 1001, -1001, 32767, 32767))
@@ -108,6 +114,8 @@ def test_rate_conversion_rejects_values_outside_native_integer_contract(
 
 
 def main() -> None:
+    test_extreme_finite_gain_saturates_before_integer_conversion(1e308)
+    test_extreme_finite_gain_saturates_before_integer_conversion(-1e308)
     test_gain_clips_and_preserves_silence()
     test_stereo_mix_uses_complete_frames_and_saturates()
     test_streamed_resampling_is_continuous_across_chunk_boundaries()

@@ -18,5 +18,8 @@ def seconds_since_local_input() -> float | None:
     info.cbSize = ctypes.sizeof(info)
     if not ctypes.windll.user32.GetLastInputInfo(ctypes.byref(info)):
         return None
-    tick_count = ctypes.windll.kernel32.GetTickCount64()
-    return max(0.0, (tick_count - info.dwTime) / 1000.0)
+    get_tick_count64 = ctypes.windll.kernel32.GetTickCount64
+    get_tick_count64.restype = ctypes.c_ulonglong
+    tick_count = get_tick_count64()
+    elapsed_ms = ((tick_count & 0xFFFFFFFF) - info.dwTime) & 0xFFFFFFFF
+    return elapsed_ms / 1000.0

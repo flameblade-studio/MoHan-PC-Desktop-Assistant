@@ -318,7 +318,7 @@ def _body_framing(command: AtomicFramingCommand) -> FramingCommand:
     crop = command.crop
     return FramingCommand(
         command.generation,
-        NormalizedCrop(crop.left, crop.top, crop.right, crop.bottom),
+        NormalizedCrop(crop.left, crop.top, crop.width, crop.height),
     )
 
 

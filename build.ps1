@@ -163,7 +163,7 @@ $NativeEvidence = Join-Path $NativeWheels "mohan-native-build-evidence.json"
 if ($LASTEXITCODE -ne 0) {
     throw "MoHan $Version native acceleration build failed with exit code $LASTEXITCODE."
 }
-& $Python -c "import _mohan_accel; assert _mohan_accel.__version__ == '0.1.0'; assert _mohan_accel.__rgba_parallel_pixel_threshold__ == 262_144; assert _mohan_accel.scale_pcm16(bytes.fromhex('e80318fc'), 0.5) == bytes.fromhex('f4010cfe'); assert _mohan_accel.alpha_over_rgba(bytes((20, 40, 60, 80)), bytes((200, 100, 50, 128))) == bytes((110, 70, 54, 167))"
+& $Python -c "import _mohan_accel; assert _mohan_accel.__version__ == '0.1.0'; assert _mohan_accel.__rgba_parallel_pixel_threshold__ == 262_144; assert _mohan_accel.scale_pcm16(bytes.fromhex('e80318fc'), 0.5) == bytes.fromhex('f4010cfe'); assert _mohan_accel.alpha_over_rgba(bytes((20, 40, 60, 80)), bytes((200, 100, 50, 128))) == bytes((157, 86, 52, 168))"
 if ($LASTEXITCODE -ne 0) {
     throw "MoHan $Version native acceleration import or operation verification failed."
 }

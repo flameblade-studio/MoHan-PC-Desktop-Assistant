@@ -155,7 +155,7 @@ class AutonomousOutfitGenerationController(QObject):
             return
         self._running = True
         self._shutdown = False
-        self._cancel.clear()
+        self._cancel = threading.Event()
         self._timer.start()
         self._initial_timer.start()
 
@@ -297,8 +297,10 @@ class AutonomousOutfitGenerationController(QObject):
             ),
             user_initiated=explicit,
         )
+        cancel_event = threading.Event()
+        self._cancel = cancel_event
         worker = _GenerationWorker(
-            self._create_wardrobe(api_key), request, self._cancel
+            self._create_wardrobe(api_key), request, cancel_event
         )
         worker.signals.completed.connect(self._completed)
         worker.signals.failed.connect(self._failed)

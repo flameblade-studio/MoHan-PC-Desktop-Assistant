@@ -53,7 +53,7 @@ class _RegionCompositeInput:
 
 
 def alpha_over_rgba_python(target: bytes, source: bytes) -> bytes:
-    """Return source-over-target RGBA using the established integer formula."""
+    """Return source-over-target RGBA using straight-alpha integer arithmetic."""
     _validate_equal_rgba(target, source)
     output = bytearray(target)
     for index in range(0, len(source), RGBA_CHANNELS):
@@ -476,15 +476,19 @@ def _blend_pixel(
         return
     inverse = ALPHA_MAX - source_alpha
     target_alpha = target[target_index + 3]
-    for channel in range(3):
-        target[target_index + channel] = (
-            source[source_index + channel] * source_alpha
-            + target[target_index + channel] * inverse
-        ) // ALPHA_MAX
-    target[target_index + 3] = min(
-        ALPHA_MAX,
-        source_alpha + (target_alpha * inverse) // ALPHA_MAX,
+    output_alpha_numerator = (
+        source_alpha * ALPHA_MAX + target_alpha * inverse
     )
+    output_alpha = (output_alpha_numerator + ALPHA_MAX // 2) // ALPHA_MAX
+    for channel in range(3):
+        color_numerator = (
+            source[source_index + channel] * source_alpha * ALPHA_MAX
+            + target[target_index + channel] * target_alpha * inverse
+        )
+        target[target_index + channel] = (
+            color_numerator + output_alpha_numerator // 2
+        ) // output_alpha_numerator
+    target[target_index + 3] = output_alpha
 
 
 def _error_summary(error: Exception) -> str:
