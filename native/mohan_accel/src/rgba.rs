@@ -429,13 +429,10 @@ fn blend_pixel(target: &mut [u8], target_index: usize, source: &[u8], source_ind
     let output_alpha_numerator = source_alpha * ALPHA_MAX + target_alpha * inverse;
     let output_alpha = (output_alpha_numerator + ALPHA_MAX / 2) / ALPHA_MAX;
     for channel in 0..3 {
-        let color_numerator = u32::from(source[source_index + channel])
-            * source_alpha
-            * ALPHA_MAX
+        let color_numerator = u32::from(source[source_index + channel]) * source_alpha * ALPHA_MAX
             + u32::from(target[target_index + channel]) * target_alpha * inverse;
-        target[target_index + channel] = bounded_byte(
-            (color_numerator + output_alpha_numerator / 2) / output_alpha_numerator,
-        );
+        target[target_index + channel] =
+            bounded_byte((color_numerator + output_alpha_numerator / 2) / output_alpha_numerator);
     }
     target[target_index + 3] = bounded_byte(output_alpha);
 }
