@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy import re
 lazy from typing import Any
 
 lazy from PySide6.QtCore import QTimer
@@ -13,26 +14,72 @@ lazy from integrations.ai_client import DEFAULT_TEXT_MODEL, ActionPlannerWorker
 
 __all__ = ('FlagshipPlannerMixin',)
 
+_CHINESE_ACTIONS = (
+    "開啟", "开启", "打開", "打开", "建立", "创建", "移動", "移动", "刪除", "删除",
+    "關閉", "关闭", "控制", "執行", "执行", "啟動", "启动", "停止", "測試", "测试",
+    "檢查", "检查", "搜尋", "搜索", "查詢", "查询", "讀取", "读取", "傳送", "发送",
+    "寫入", "写入", "儲存", "保存",
+)
+_CHINESE_REQUESTS = ("幫我", "帮我", "請", "请", "替我", "為我", "为我", "麻煩", "麻烦")
+_CHINESE_NEGATIONS = ("不要", "請勿", "请勿", "別", "别", "不可", "不必", "不准", "禁止")
+_ENGLISH_ACTIONS = (
+    "open", "create", "move", "delete", "close", "control", "run", "execute",
+    "start", "stop", "search", "read", "send", "write", "save", "launch", "test",
+    "check",
+)
+_ENGLISH_ACTION = re.compile(r"\b(?:" + "|".join(_ENGLISH_ACTIONS) + r")\b", re.I)
+_ENGLISH_REQUEST = re.compile(
+    r"^(?:please\b,?\s+|(?:could|can|would|will)\s+you\s+(?:please\s+)?|"
+    r"help\s+me\s+(?:to\s+)?|i\s+(?:need|want)\s+you\s+to\s+)",
+    re.I,
+)
+_ENGLISH_NEGATIONS = re.compile(r"\b(?:not|don't|do not|never|nothing)\b", re.I)
+_JAPANESE_ACTIONS = (
+    "開いて", "開き", "作成", "作って", "移動", "移して", "削除", "消して", "閉じ", "実行",
+    "起動", "停止", "テスト", "試し", "検索", "探して", "読み", "読んで", "送信", "送って",
+    "保存",
+)
+_JAPANESE_REQUESTS = ("ください", "下さい", "もらえますか", "いただけますか", "お願いします", "てほしい")
+_JAPANESE_NEGATIONS = ("ないで", "しないで", "してはいけない", "してはいけません")
+
+
+def _first_action_position(text: str, actions: tuple[str, ...]) -> int:
+    return min((text.find(action) for action in actions if action in text), default=-1)
+
+
+def _has_explicit_action_intent(instruction: str) -> bool:
+    """Recognize direct requests in Traditional/Simplified Chinese, English, and Japanese."""
+    text = instruction.strip().casefold()
+    chinese = (
+        not text.startswith(("請問", "请问"))
+        and not any(negation in text for negation in _CHINESE_NEGATIONS)
+        and (
+            text.startswith(_CHINESE_ACTIONS)
+            or any(marker in text for marker in _CHINESE_REQUESTS)
+        )
+    )
+
+    english_prefix = _ENGLISH_REQUEST.match(text)
+    english_action = _ENGLISH_ACTION.match(text) is not None or (
+        english_prefix is not None
+        and _ENGLISH_ACTION.match(text[english_prefix.end():].lstrip()) is not None
+    )
+    english = english_action and not _ENGLISH_NEGATIONS.search(text)
+
+    japanese = (
+        _first_action_position(text, _JAPANESE_ACTIONS) >= 0
+        and any(marker in text for marker in _JAPANESE_REQUESTS)
+        and not any(negation in text for negation in _JAPANESE_NEGATIONS)
+    )
+    return bool(text) and (chinese or english or japanese)
+
 
 class FlagshipPlannerMixin:
     def plan_instruction(self, text: str, *, source: str = "local") -> None:
         instruction = str(text).strip()
         if not instruction or self.planner_busy:
             return
-        if not any(
-            marker in instruction
-            for marker in (
-                "幫我",
-                "請",
-                "替我",
-                "執行",
-                "刪除",
-                "建立",
-                "移動",
-                "控制",
-                "關閉",
-            )
-        ):
+        if not _has_explicit_action_intent(instruction):
             QMessageBox.information(
                 require_qwidget(self),
                 self._t("工具任務"),

@@ -32,7 +32,10 @@ lazy from application.wellbeing_reminder import (
     WellbeingReminderPolicy,
 )
 lazy from infrastructure.special_occasion_store import SpecialOccasionStore
-lazy from infrastructure.wellbeing_reminder_store import WellbeingReminderStore
+lazy from infrastructure.wellbeing_reminder_store import (
+    WellbeingReminderStore,
+    validate_occurrence_id,
+)
 
 
 class RuntimeSource(StrEnum):
@@ -140,23 +143,26 @@ class WellbeingRuntime:
         self,
         kind: WellbeingKind,
         attention: RuntimeAttention,
+        *,
+        event_id: str | None = None,
     ) -> RuntimeCue | None:
         with self._lock:
             now = self._now()
+            event_id = _wellbeing_event_id(now, kind, event_id)
             state = self._wellbeing_store.load(now)
-            item = state.for_kind(kind)
+            item = state.for_occurrence(kind, event_id)
             if item.snooze_until is not None:
                 if item.snooze_until > now:
                     return None
-                state = self._wellbeing_store.update_kind(
+                state = self._wellbeing_store.update_occurrence(
                     state,
                     kind,
+                    event_id,
                     snooze_until=None,
                     response=ReminderResponse.NONE,
                 )
                 self._wellbeing_store.save(state)
-                item = state.for_kind(kind)
-            event_id = _wellbeing_event_id(now, kind)
+                item = state.for_occurrence(kind, event_id)
             context = WellbeingContext(
                 local_now=now,
                 occurrence=ReminderOccurrence(
@@ -259,24 +265,34 @@ class WellbeingRuntime:
                 return self._record_occasion(runtime_cue, now)
             raise WellbeingRuntimeError("Runtime cue source needs a supported value.")
 
-    def acknowledge_wellbeing(self, kind: WellbeingKind) -> None:
-        self._respond_wellbeing(kind, ReminderResponse.ACKNOWLEDGED)
+    def acknowledge_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None:
+        self._respond_wellbeing(kind, ReminderResponse.ACKNOWLEDGED, event_id)
 
-    def complete_wellbeing(self, kind: WellbeingKind) -> None:
-        self._respond_wellbeing(kind, ReminderResponse.COMPLETED)
+    def complete_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None:
+        self._respond_wellbeing(kind, ReminderResponse.COMPLETED, event_id)
 
-    def dismiss_wellbeing(self, kind: WellbeingKind) -> None:
-        self._respond_wellbeing(kind, ReminderResponse.DISMISSED)
+    def dismiss_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None:
+        self._respond_wellbeing(kind, ReminderResponse.DISMISSED, event_id)
 
-    def snooze_wellbeing(self, kind: WellbeingKind, until: datetime) -> None:
+    def snooze_wellbeing(
+        self, kind: WellbeingKind, until: datetime, *, event_id: str | None = None
+    ) -> None:
         with self._lock:
             now = self._now()
+            event_id = _wellbeing_event_id(now, kind, event_id)
             if not isinstance(until, datetime) or until.tzinfo is None or until <= now:
                 raise WellbeingRuntimeError("Snooze deadline must be in the future.")
             state = self._wellbeing_store.load(now)
-            updated = self._wellbeing_store.update_kind(
+            updated = self._wellbeing_store.update_occurrence(
                 state,
                 kind,
+                event_id,
                 snooze_until=until,
                 response=ReminderResponse.SNOOZED,
             )
@@ -314,29 +330,43 @@ class WellbeingRuntime:
         cue = runtime_cue.cue
         if not isinstance(cue, WellbeingCue):
             raise WellbeingRuntimeError("Wellbeing cue type needs a supported value.")
-        if runtime_cue.stable_id != _wellbeing_event_id(now, cue.kind):
+        if runtime_cue.stable_id.partition(":")[0] != now.date().isoformat():
             return False
+        event_id = _wellbeing_event_id(now, cue.kind, runtime_cue.stable_id)
         state = self._wellbeing_store.load(now)
-        item = state.for_kind(cue.kind)
+        item = state.for_occurrence(cue.kind, event_id)
         if item.response is not ReminderResponse.NONE:
             return False
         if cue.stage is ReminderStage.INITIAL:
             if item.initial_delivered_at is not None:
                 return False
-            updated = self._wellbeing_store.update_kind(
-                state, cue.kind, initial_delivered_at=now
+            updated = self._wellbeing_store.update_occurrence(
+                state, cue.kind, event_id, initial_delivered_at=now
             )
         elif cue.stage is ReminderStage.RESTRAINED_REINFORCEMENT:
             if (
                 item.initial_delivered_at is None
                 or item.reinforcement_delivered_at is not None
                 or item.daily_reinforcement_count >= item.maximum_daily_reinforcements
+                or (
+                    item.last_same_kind_reinforcement_at is not None
+                    and (now - item.last_same_kind_reinforcement_at).total_seconds()
+                    < max(
+                        item.same_kind_cooldown_seconds,
+                        WELLBEING_RULES[cue.kind].reinforcement_delay_seconds,
+                    )
+                )
             ):
                 return False
-            updated = self._wellbeing_store.update_kind(
+            updated = self._wellbeing_store.update_occurrence(
                 state,
                 cue.kind,
+                event_id,
                 reinforcement_delivered_at=now,
+            )
+            updated = self._wellbeing_store.update_kind(
+                updated,
+                cue.kind,
                 daily_reinforcement_count=item.daily_reinforcement_count + 1,
                 last_same_kind_reinforcement_at=now,
             )
@@ -373,13 +403,14 @@ class WellbeingRuntime:
         return True
 
     def _respond_wellbeing(
-        self, kind: WellbeingKind, response: ReminderResponse
+        self, kind: WellbeingKind, response: ReminderResponse, event_id: str | None
     ) -> None:
         with self._lock:
             now = self._now()
+            event_id = _wellbeing_event_id(now, kind, event_id)
             state = self._wellbeing_store.load(now)
-            updated = self._wellbeing_store.update_kind(
-                state, kind, response=response, snooze_until=None
+            updated = self._wellbeing_store.update_occurrence(
+                state, kind, event_id, response=response, snooze_until=None
             )
             self._wellbeing_store.save(updated)
 
@@ -397,8 +428,10 @@ class WellbeingRuntime:
             raise WellbeingRuntimeError("Runtime cue needs a supported value.")
         if runtime_cue.source is RuntimeSource.WELLBEING:
             cue = runtime_cue.cue
-            if not isinstance(cue, WellbeingCue) or runtime_cue.line_key != (
-                wellbeing_phrase_key(cue.kind, cue.stage)
+            if (
+                not isinstance(cue, WellbeingCue)
+                or runtime_cue.stable_id != cue.event_id
+                or runtime_cue.line_key != wellbeing_phrase_key(cue.kind, cue.stage)
             ):
                 raise WellbeingRuntimeError("Runtime cue integrity validation requires attention; retry the operation.")
         elif runtime_cue.source is RuntimeSource.SPECIAL_OCCASION:
@@ -436,8 +469,15 @@ def stable_variation_index(line_key: str, stable_id: str) -> int:
     return int.from_bytes(digest, "big")
 
 
-def _wellbeing_event_id(now: datetime, kind: WellbeingKind) -> str:
-    return f"{now.date().isoformat()}:{kind.value}"
+def _wellbeing_event_id(
+    now: datetime, kind: WellbeingKind, event_id: str | None = None
+) -> str:
+    resolved = f"{now.date().isoformat()}:{kind.value}" if event_id is None else event_id
+    try:
+        validate_occurrence_id(resolved, kind, now.date())
+    except ValueError:
+        raise WellbeingRuntimeError("Wellbeing occurrence identifier needs a supported value.") from None
+    return resolved
 
 
 def _occasion_event_id(now: datetime, kind: OccasionKind) -> str:

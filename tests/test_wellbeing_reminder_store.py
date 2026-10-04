@@ -84,7 +84,7 @@ def assert_all_four_kinds_round_trip() -> None:
     store.save(state)
     assert store.load(NOW) == state
     assert set(store.export_portable(NOW)) == {
-        "format", "version", "local_date", "kinds"
+        "format", "version", "local_date", "kinds", "occurrences"
     }
     assert settings.values[WELLBEING_STATE_KEY]["format"] == WELLBEING_STATE_FORMAT
 
@@ -125,6 +125,7 @@ def assert_corruption_fails_closed_and_future_fields_are_ignored() -> None:
         "version": WELLBEING_STATE_VERSION,
         "local_date": NOW.date().isoformat(),
         "future": "ignored",
+        "occurrences": {},
         "kinds": {
             kind.value: {
                 "enabled": True,
@@ -147,7 +148,7 @@ def assert_corruption_fails_closed_and_future_fields_are_ignored() -> None:
     ).load(NOW)
     assert state.for_kind(WellbeingKind.REST).enabled is True
     assert state.for_kind(WellbeingKind.MEAL).same_kind_cooldown_seconds == SAME_KIND_COOLDOWN_SECONDS_ALT
-    for invalid_version in (True, "1", 2):
+    for invalid_version in (True, "1", WELLBEING_STATE_VERSION + 1):
         damaged = copy.deepcopy(payload)
         damaged["version"] = invalid_version
         assert WellbeingReminderStore(
