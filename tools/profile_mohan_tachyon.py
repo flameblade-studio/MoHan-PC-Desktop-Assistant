@@ -11,6 +11,7 @@ lazy import sys
 lazy import shutil
 lazy import tempfile
 lazy import time
+lazy import winreg
 lazy from collections.abc import Callable, Iterator, Mapping
 lazy from dataclasses import dataclass
 lazy from datetime import UTC, datetime
@@ -182,6 +183,7 @@ class CaptureAttempt:
             "attempt": self.number,
             "sample_read_error_percent": self.sample_read_error_percent,
             "runtime_evidence_written": self.runtime_evidence_written,
+            "sample_read_errors": _sample_read_errors(self.output),
         }
 
 
@@ -454,7 +456,7 @@ def _capture_command(
     command = [
         sys.executable,
         "-m",
-        "profiling.sampling",
+        "tools.tachyon_capture",
         "run",
         "--native",
         "--opcodes",
@@ -962,6 +964,20 @@ def _capture_once(
     combined_output = _strip_ansi(
         f"{completed.stdout}\n{completed.stderr}"
     )
+    # Persist every attempt outside the temporary binary directory, including
+    # failed captures. The observer emits categories and source basenames only.
+    _write_json(
+        artifacts.summary.with_name(
+            f"{artifacts.summary.stem}.attempt-{attempt_number}.diagnostics.json"
+        ),
+        {
+            "attempt": attempt_number,
+            "host": _host_evidence(),
+            "profiler_exit_code": completed.returncode,
+            "capture": _capture_statistics(combined_output, elapsed),
+            "sample_read_errors": _sample_read_errors(combined_output),
+        },
+    )
     if completed.returncode:
         raise RuntimeError(
             f"Tachyon target {target} failed with "
@@ -1099,14 +1115,38 @@ def _artifact_evidence(path: Path) -> dict[str, object]:
 
 
 def _host_evidence() -> dict[str, object]:
+    processor_name = platform.processor()
+    processor_lookup_error = None
+    if os.name == "nt":
+        try:
+            with winreg.OpenKey(
+                winreg.HKEY_LOCAL_MACHINE,
+                r"HARDWARE\DESCRIPTION\System\CentralProcessor\0",
+            ) as key:
+                processor_name = str(
+                    winreg.QueryValueEx(key, "ProcessorNameString")[0]
+                ).strip()
+        except OSError as error:
+            processor_lookup_error = type(error).__name__
     return {
         "system": platform.system(),
         "release": platform.release(),
         "machine": platform.machine(),
         "python": sys.version.split()[0],
+        "python_build": sys.version,
         "implementation": sys.implementation.name,
         "logical_cpu_count": os.cpu_count(),
+        "processor_name": processor_name,
+        "processor_lookup_error": processor_lookup_error,
     }
+
+
+def _sample_read_errors(output: str) -> list[dict[str, object]] | None:
+    prefix = "MOHAN_TACHYON_SAMPLE_ERRORS="
+    for line in output.splitlines():
+        if line.startswith(prefix):
+            return _json_object_list(json.loads(line.removeprefix(prefix)), prefix)
+    return None
 
 
 def _quality_violations(
