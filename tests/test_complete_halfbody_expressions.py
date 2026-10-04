@@ -276,3 +276,41 @@ def test_glance_uses_complete_expression_frames_for_speech_and_whole_frame_blink
             )
             expected = QPixmap(str(root / "frames" / f"{pose}-{family}-{eye}.rgba.png"))
             assert rgba_bytes(blink.toImage()) == rgba_bytes(expected.toImage())
+
+
+@pytest.mark.parametrize("expression", ("caught", "happy", "worried", "reminder"))
+def test_batch2_cheek_expressions_use_complete_frames_for_speech_and_blink(expression):
+    root = Path(__file__).resolve().parents[1] / "assets" / "expressions" / "complete-expressions"
+    renderer = LayeredParametricFaceRenderer(authority_dir=root.parent, use_detachable=False)
+    pose = f"cheek-{expression}"
+    families = {
+        expression: "neutral",
+        f"{expression}_speech_mid": "small",
+        f"{expression}_speech_open": "a",
+        f"{expression}_speech_round": "o",
+    }
+
+    def rgba_bytes(image):
+        converted = image.convertToFormat(QImage.Format_RGBA8888)
+        return bytes(converted.constBits())[:converted.sizeInBytes()]
+
+    for mouth_expression, family in families.items():
+        assert renderer.supports_discrete_speech(mouth_expression)
+        motion = FaceMotionFrame(
+            pose=FacePose.CHEEK,
+            expression=expression,
+            viseme=Viseme.I,
+            mouth=MouthShape(aperture=0.18),
+            expression_shape=ExpressionShape(),
+        )
+        frame = renderer.render(
+            QPixmap(), motion, SimpleNamespace(mouth_expression=mouth_expression),
+        )
+        rest = QPixmap(str(root / "frames" / f"{pose}-{family}-rest.rgba.png"))
+        assert rgba_bytes(frame.toImage()) == rgba_bytes(rest.toImage())
+        for eye in ("half", "closed"):
+            blink = renderer.render_overlay(
+                QPixmap(frame), QPixmap(), eye_state=eye, view_id="cheek-rest",
+            )
+            expected = QPixmap(str(root / "frames" / f"{pose}-{family}-{eye}.rgba.png"))
+            assert rgba_bytes(blink.toImage()) == rgba_bytes(expected.toImage())

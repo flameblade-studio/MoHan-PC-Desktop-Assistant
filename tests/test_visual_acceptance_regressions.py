@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy import json
 lazy import os
 lazy import sys
 lazy from pathlib import Path
@@ -19,6 +20,7 @@ lazy from domain.companion_animation_contract import (
 )
 lazy from presentation.companion_window import CompanionWindow
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MIN_CHANGED_PIXELS = 24
 
 
@@ -132,6 +134,15 @@ def _assert_blink_uses_discrete_authority_frames(
             window.expression_pixmaps[half_key] = half_source
 
 
+def _happy_has_complete_sources() -> bool:
+    manifest = json.loads(
+        (
+            PROJECT_ROOT / "assets" / "expressions" / "complete-expressions" / "manifest.json"
+        ).read_text(encoding="utf-8"),
+    )
+    return "happy" in manifest.get("expressions", {})
+
+
 def _assert_chin_rest_smile_uses_neutral_speech_mouth(
     window: CompanionWindow,
 ) -> None:
@@ -143,6 +154,10 @@ def _assert_chin_rest_smile_uses_neutral_speech_mouth(
     speech_closed = window.expression_pixmaps[
         window.speech_closed_expression
     ].toImage()
+    if _happy_has_complete_sources():
+        # A complete new face owns its closed mouth, so speech keeps it intact.
+        assert speech_closed == happy
+        return
     mouth_rect = EXPRESSION_SPEECH_MOUTH_RECTS["happy"]
     eye_rect = QRect(158, 145, 105, 45)
     assert changed_pixel_count(happy, speech_closed, mouth_rect) > 0

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from collections.abc import Iterable
+lazy import json
 
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
@@ -353,8 +354,22 @@ class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
             self._build_blink_viseme_frames(suffix)
 
     def _build_happy_neutral_speech_frames(self) -> None:
-        """Keep smiling eyes while every speaking mouth returns to neutral."""
+        """Keep legacy smiling eyes while complete sources are absent."""
         expression = "happy"
+        try:
+            manifest = json.loads(
+                resource_path(
+                    "assets/expressions/complete-expressions/manifest.json",
+                ).read_text(encoding="utf-8"),
+            )
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            manifest = {}
+        if isinstance(manifest, dict) and expression in manifest.get("expressions", {}):
+            self.expression_pixmaps[HAPPY_SPEECH_CLOSED_EXPRESSION] = QPixmap(
+                self.expression_pixmaps[expression],
+            )
+            self.physics_expression_poses[HAPPY_SPEECH_CLOSED_EXPRESSION] = "cheek"
+            return
         mouth_mask = self.gesture_mouth_masks[expression]
         neutral_closed = self.expression_pixmaps[CHEEK_SPEECH_CLOSED_EXPRESSION]
         happy_closed = QPixmap(self.expression_pixmaps[expression])

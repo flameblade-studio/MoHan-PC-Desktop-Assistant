@@ -30,6 +30,7 @@ ASSET_WIDTH = 512
 ASSET_HEIGHT = 768
 FIRST_COLOR = QColor(20, 80, 180, 255)
 SECOND_COLOR = QColor(180, 40, 80, 255)
+EXPECTED_CACHE_PARSE_CALLS_AFTER_REWRITE = 2
 
 
 def _colored_png(color: QColor) -> bytes:
@@ -68,7 +69,7 @@ def test_listing_and_independent_overlays_share_verified_pack(tmp_path, monkeypa
     calls = []
     original = outfit_pack.inspect_outfit_pack
 
-    def counted(path):
+    def counted(path, **_kwargs):
         calls.append(path)
         return original(path)
 
@@ -98,6 +99,35 @@ def test_listing_and_independent_overlays_share_verified_pack(tmp_path, monkeypa
         assert item.item_id == selection.item_id
         assert variant.variant_id == selection.variant_id
     assert len(calls) == 1
+
+
+def test_installed_cache_collapses_path_aliases_and_reloads_rewritten_archive(
+    tmp_path,
+    monkeypatch,
+):
+    manifest, assets = _manifest(_png())
+    archive = _pack(tmp_path / "source.mohan-outfit", manifest, assets)
+    alias = archive.parent / "." / archive.name
+    calls = []
+    original = outfit_pack.inspect_outfit_pack
+
+    def counted(path, **_kwargs):
+        calls.append(path)
+        return original(path)
+
+    monkeypatch.setattr(outfit_pack, "inspect_outfit_pack", counted)
+    assert inspect_installed_outfit_pack(archive) is not None
+    assert inspect_installed_outfit_pack(alias) is not None
+    assert len(calls) == 1
+
+    old_stat = archive.stat()
+    manifest["pack_version"] = "1.0.1"
+    replacement = _pack(tmp_path / "replacement.mohan-outfit", manifest, assets)
+    archive.write_bytes(replacement.read_bytes())
+    os.utime(archive, ns=(old_stat.st_atime_ns, old_stat.st_mtime_ns + 1_000_000_000))
+    refreshed = inspect_installed_outfit_pack(alias)
+    assert refreshed is not None and refreshed.pack_version == "1.0.1"
+    assert len(calls) == EXPECTED_CACHE_PARSE_CALLS_AFTER_REWRITE
 
 
 def test_replaced_corrupt_and_deleted_archive_never_returns_old_pack(tmp_path):

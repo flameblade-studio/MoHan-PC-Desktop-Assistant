@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+lazy import math
 lazy import os
 lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
+
+lazy import numpy as np
+lazy from PIL import Image
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -27,6 +31,7 @@ lazy from domain.companion_animation_contract import (
     NEW_EXPRESSION_ASSETS,
 )
 lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
+lazy from domain.outfit_pack_makeup import load_makeup_safe_regions
 lazy from presentation.companion_window import CompanionWindow
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +39,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ANCHOR_OFFSET_BOUND = 6
 ANCHOR_CONFIDENCE_THRESHOLD = 0.15
 ANCHOR_OFFSET_TOLERANCE = 2
+COMPLETE_EXPRESSION_EYE_EXPRESSIONS = frozenset(
+    {"glance", "caught", "happy", "worried", "reminder"},
+)
 
 FEATURES = (
     "physics_sleeves",
@@ -69,6 +77,26 @@ def changed_pixels(
     return inside, outside
 
 
+def changed_pixels_in_regions(
+    before: QPixmap,
+    after: QPixmap,
+    allowed: tuple[QRect, ...],
+) -> tuple[int, int]:
+    first = before.toImage().convertToFormat(QImage.Format_RGBA8888)
+    second = after.toImage().convertToFormat(QImage.Format_RGBA8888)
+    inside = 0
+    outside = 0
+    for y in range(first.height()):
+        for x in range(first.width()):
+            if first.pixel(x, y) == second.pixel(x, y):
+                continue
+            if any(rect.contains(x, y) for rect in allowed):
+                inside += 1
+            else:
+                outside += 1
+    return inside, outside
+
+
 def alpha_bounds(pixmap: QPixmap) -> QRect:
     image = pixmap.toImage()
     left = image.width()
@@ -85,6 +113,42 @@ def alpha_bounds(pixmap: QPixmap) -> QRect:
             bottom = max(bottom, y)
     assert right >= left and bottom >= top
     return QRect(left, top, right - left + 1, bottom - top + 1)
+
+
+def complete_expression_eye_authority_rect(expression: str) -> QRect | None:
+    """Use the approved blink change region plus the registered eye-makeup region."""
+    if expression not in COMPLETE_EXPRESSION_EYE_EXPRESSIONS or expression == "glance":
+        return None
+    frames = PROJECT_ROOT / "assets" / "expressions" / "complete-expressions" / "frames"
+    rest = np.asarray(Image.open(frames / f"cheek-{expression}-neutral-rest.rgba.png").convert("RGBA"))
+    changed = np.zeros(rest.shape[:2], dtype=bool)
+    for state in ("half", "closed"):
+        frame = np.asarray(Image.open(frames / f"cheek-{expression}-neutral-{state}.rgba.png").convert("RGBA"))
+        changed |= (frame != rest).any(axis=2)
+    rows = np.flatnonzero(changed.any(axis=1))
+    columns = np.flatnonzero(changed.any(axis=0))
+    assert rows.size and columns.size, expression
+    scale = 465 / rest.shape[1]
+    left = int(columns[0] * scale)
+    top = int(rows[0] * scale)
+    right = math.ceil((columns[-1] + 1) * scale)
+    bottom = math.ceil((rows[-1] + 1) * scale)
+    authority = QRect(left, top, right - left, bottom - top)
+    # Eye makeup changes with the eye state, so its safe region is eye authority too.
+    for x, y, width, height in load_makeup_safe_regions()[f"cheek-{expression}"].rects("eyes"):
+        authority = authority.united(
+            QRect(int(x * scale), int(y * scale), math.ceil(width * scale), math.ceil(height * scale)),
+        )
+    return authority
+
+
+def complete_expression_mouth_authority_rect(expression: str) -> QRect | None:
+    """Use the registered new-face lip safe region for speech endpoint checks."""
+    if expression not in COMPLETE_EXPRESSION_EYE_EXPRESSIONS or expression == "glance":
+        return None
+    x, y, width, height = load_makeup_safe_regions()[f"cheek-{expression}"].rects("lips")[0]
+    scale = 465 / 1254
+    return QRect(round(x * scale), round(y * scale), round(width * scale), round(height * scale))
 
 
 def eye_bounds(window: CompanionWindow, pose: str) -> QRect:
@@ -341,20 +405,25 @@ def assert_expression_speech_variants(
     frames: dict[str, str],
 ) -> None:
     original = window.expression_pixmaps[expression]
-    mouth_rect = (
-        QRect(181, 177, 68, 50)
-        if expression == "glance"
-        else EXPRESSION_SPEECH_MOUTH_RECTS[expression]
-    )
+    mouth_rect = complete_expression_mouth_authority_rect(expression)
+    if mouth_rect is None:
+        mouth_rect = (
+            QRect(181, 177, 68, 50)
+            if expression == "glance"
+            else EXPRESSION_SPEECH_MOUTH_RECTS[expression]
+        )
+    allowed_regions = (mouth_rect,)
+    if expression in COMPLETE_EXPRESSION_EYE_EXPRESSIONS and expression != "glance":
+        eye_rect = complete_expression_eye_authority_rect(expression)
+        assert eye_rect is not None
+        allowed_regions += (eye_rect,)
     for speech_expression, aperture in (
         (frames["mid"], 0.48),
         (frames["open"], 0.90),
         (frames["round"], 0.72),
     ):
-        asset_inside, asset_outside = changed_pixels(
-            original,
-            window.expression_pixmaps[speech_expression],
-            mouth_rect,
+        asset_inside, asset_outside = changed_pixels_in_regions(
+            original, window.expression_pixmaps[speech_expression], allowed_regions,
         )
         assert asset_inside > 0
         assert asset_outside == 0, (
@@ -377,14 +446,14 @@ def _has_bound_blink_source(expression: str) -> bool:
     authority over another expression's features, so those do not count.
     """
 
-    if expression == "glance":
+    if expression in COMPLETE_EXPRESSION_EYE_EXPRESSIONS:
         complete = load_complete_halfbody_frames(
             PROJECT_ROOT / "assets" / "expressions" / "complete-expressions"
         )
         return (
             complete is not None
-            and "glance" in complete.expressions
-            and "cheek-glance" in complete.whole_frame_blinks
+            and expression in complete.expressions
+            and complete.expressions[expression][0] in complete.whole_frame_blinks
         )
     return (
         expression in EXPRESSION_BLINK_FRAMES
@@ -403,17 +472,18 @@ def assert_expression_speech_blink(
     eye_offset_x, eye_offset_y = window._expression_eye_offset(expression)
     pose = EXPRESSION_POSES[expression]
     if expression == "glance":
-        # The owner-authorized new-face blink source is registered to this
-        # non-overlapping eye ROI; the closed aperture mask itself is empty.
-        expression_eye_rect = QRect(175, 115, 101, 71)
+        # The previously verified glance route uses this non-overlapping eye ROI.
+        expression_eye_rect = QRect(175, 115, 101, 71).translated(eye_offset_x, eye_offset_y)
+    elif (complete_eye_rect := complete_expression_eye_authority_rect(expression)) is not None:
+        # Complete portraits blink in place, so the legacy eye offset does not apply.
+        expression_eye_rect = complete_eye_rect
     else:
         blink_mask = (
             window.dedicated_blink_masks[pose]
             if expression in EXPRESSION_BLINK_FRAMES
             else window.blink_masks[pose]
         )
-        expression_eye_rect = alpha_bounds(blink_mask)
-    expression_eye_rect = expression_eye_rect.translated(eye_offset_x, eye_offset_y)
+        expression_eye_rect = alpha_bounds(blink_mask).translated(eye_offset_x, eye_offset_y)
     blink_inside, blink_outside = changed_pixels(
         opened,
         blinked,

@@ -10,6 +10,8 @@ from __future__ import annotations
 lazy import re
 lazy import struct
 lazy import zipfile
+lazy from contextlib import contextmanager
+lazy from contextvars import ContextVar
 lazy from pathlib import Path, PurePosixPath
 lazy from typing import Protocol
 lazy from PySide6.QtGui import QImage
@@ -30,6 +32,26 @@ SVG_ELEMENTS = frozenset({
     "svg", "g", "defs", "linearGradient", "radialGradient", "stop", "path",
     "rect", "circle", "ellipse", "line", "polyline", "polygon",
 })
+
+_PNG_CONTENT_VALIDATION = ContextVar(
+    "mohan_png_content_validation",
+    default=True,
+)
+
+
+@contextmanager
+def deferred_png_content_validation():
+    """Defer alpha-only Qt PNG decoding for installed-pack discovery.
+
+    Hashes, dimensions, geometry, archive contracts and visible-pixel rules
+    remain checked while parsing. Runtime layer loading performs the complete
+    decode and alpha checks immediately before a layer can be used.
+    """
+    token = _PNG_CONTENT_VALIDATION.set(False)
+    try:
+        yield
+    finally:
+        _PNG_CONTENT_VALIDATION.reset(token)
 
 
 class OutfitPackError(RuntimeError):
@@ -137,7 +159,11 @@ def validate_pose_assets(
             or asset.anchor_y + asset.height > canvas[1]
         ):
             raise OutfitPackError("Asset geometry escapes the runtime canvas.")
-        if Path(asset.path).suffix.lower() == ".png":
+        # Visible-pixel rules are not repeated at runtime, so only alpha-only
+        # checks may be deferred to the runtime layer decode.
+        if Path(asset.path).suffix.lower() == ".png" and (
+            require_visible or _PNG_CONTENT_VALIDATION.get()
+        ):
             validate_png_appearance(archive.read(asset.path), require_visible=require_visible)
 
 
