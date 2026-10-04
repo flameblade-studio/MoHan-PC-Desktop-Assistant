@@ -393,6 +393,33 @@ def _assert_corrupt_bundle_rejected(fixture: TransferFixture) -> None:
     ).fetchone()[0] == before
 
 
+def _assert_invalid_manifest_version_is_rejected(
+    fixture: TransferFixture,
+) -> None:
+    invalid = fixture.root / "invalid-version.mohan-profile"
+    with zipfile.ZipFile(fixture.bundle, "r") as archive:
+        manifest = json.loads(archive.read("manifest.json"))
+        profile = archive.read("profile.db")
+    manifest["format_version"] = None
+    with zipfile.ZipFile(invalid, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("manifest.json", json.dumps(manifest))
+        archive.writestr("profile.db", profile)
+    try:
+        fixture.target_manager.inspect_profile(invalid)
+    except ProfileTransferError as exc:
+        assert str(exc) == "攜帶檔版本不受支援。"
+        assert exc.safe_error is None
+        assert exc.__cause__ is None
+        assert exc.__context__ is None
+        messages = tuple(
+            localized_profile_failure(language, exc)
+            for language in _LANGUAGES
+        )
+        assert len(set(messages)) == len(_LANGUAGES)
+    else:
+        raise AssertionError("invalid manifest versions must be rejected safely")
+
+
 def _assert_duplicate_snapshot_rejected(fixture: TransferFixture) -> None:
     try:
         fixture.target_manager.import_profile(fixture.bundle)
@@ -719,6 +746,7 @@ def run() -> None:
             _assert_sanitized_export(fixture)
             _assert_imported_profile(fixture)
             _assert_corrupt_bundle_rejected(fixture)
+            _assert_invalid_manifest_version_is_rejected(fixture)
             _assert_duplicate_snapshot_rejected(fixture)
             _assert_atomic_rollback(fixture)
             _assert_unsafe_archive_rejected(fixture)

@@ -94,6 +94,29 @@ def assert_invalid_enrollment_is_rejected() -> None:
             raise AssertionError('enrollment vectors must satisfy the validation contract')
 
 
+def assert_mixed_dimension_enrollment_is_rejected() -> None:
+    secret = MemorySecretStore()
+    identities = FaceIdentityStore(secret)
+    owner = identities.enroll(
+        "Owner",
+        ((1.0, 0.0), (0.99, 0.01), (0.98, 0.02)),
+    )
+    original_value = secret.value
+    try:
+        identities.enroll(
+            "Visitor",
+            ((1.0, 0.0, 0.0), (0.99, 0.01, 0.0), (0.98, 0.02, 0.0)),
+        )
+    except ValueError as exc:
+        assert "one vector dimension" in str(exc)
+    else:
+        raise AssertionError("incompatible face dimensions must be rejected")
+    assert secret.value == original_value
+    assert tuple(profile.profile_id for profile in identities.profiles()) == (
+        owner.profile_id,
+    )
+
+
 def assert_invalid_probe_is_unknown() -> None:
     secret = MemorySecretStore()
     identities = FaceIdentityStore(secret)
@@ -106,6 +129,7 @@ def assert_invalid_probe_is_unknown() -> None:
 def run() -> None:
     assert_corruption_fails_closed()
     assert_invalid_enrollment_is_rejected()
+    assert_mixed_dimension_enrollment_is_rejected()
     assert_invalid_probe_is_unknown()
     secret = MemorySecretStore()
     identities = FaceIdentityStore(secret)

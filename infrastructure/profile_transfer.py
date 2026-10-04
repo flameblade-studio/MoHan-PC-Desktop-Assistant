@@ -272,10 +272,10 @@ class PortableProfileManager:
 
     @staticmethod
     def _manifest_from_payload(payload: dict[str, Any]) -> ProfileManifest:
-        if int(payload.get("format_version", 0)) != PROFILE_FORMAT_VERSION:
+        format_version = payload.get("format_version", 0)
+        if type(format_version) is not int or format_version != PROFILE_FORMAT_VERSION:
             raise ProfileTransferError("攜帶檔版本不受支援。")
-        counts = payload.get("record_counts")
-        if not isinstance(counts, Mapping):
+        if not isinstance(counts := payload.get("record_counts"), Mapping):
             raise ProfileTransferError("攜帶檔缺少資料筆數資訊。")
         failure: ProfileTransferError | None = None
         try:

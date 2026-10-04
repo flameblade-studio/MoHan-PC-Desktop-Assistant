@@ -254,7 +254,7 @@ class DashboardConversationMixin:
         display_text = personalize_text(self.db, text)
         safe_text = html.escape(display_text).replace("\n", "<br>")
         self.chat.append(
-            f'<p><b style="color:{color}">{speaker}</b><br>{safe_text}</p>'
+            f'<p><b style="color:{color}">{html.escape(speaker)}</b><br>{safe_text}</p>'
         )
         self.chat.verticalScrollBar().setValue(self.chat.verticalScrollBar().maximum())
 

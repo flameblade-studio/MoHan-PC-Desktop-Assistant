@@ -261,8 +261,8 @@ def test_audit_redacts_clipboard_text_but_keeps_shape() -> None:
     redacted = redact_audit_payload(payload)
     flat = repr(redacted)
     assert secret not in flat, "剪貼簿全文仍原樣進入稽核紀錄"
-    assert "sk-live-" in flat, "遮罩後應保留短預覽，否則稽核失去可讀性"
-    assert "208 chars" in flat, "遮罩後應保留長度"
+    assert "sk-live-" not in flat, "遮罩後不得保留任何剪貼簿原文"
+    assert "redacted str (208)" in flat, "遮罩後只保留型別與長度"
     assert redacted["plan_id"] == "p1"
     assert redacted["request"]["capability"] == "clipboard_write"
     assert redacted["result"]["success"] is True

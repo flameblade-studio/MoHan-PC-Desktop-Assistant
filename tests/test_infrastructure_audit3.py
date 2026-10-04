@@ -106,6 +106,19 @@ def test_unverifiable_backup_neither_satisfies_recent_nor_outranks_real(
     assert bogus.exists()  # 待驗證檔案保留原樣，排名僅納入已驗證檔案。
 
 
+def test_non_object_backup_manifest_is_unverified(tmp_path: Path) -> None:
+    manager = BackupManager(_FakeDB(tmp_path / "main.db"), tmp_path / "backups")
+    backup = manager.create("test")
+    manifest_path = backup.with_suffix(".json")
+
+    for malformed_manifest in ("[]", "null", '"not-an-object"'):
+        manifest_path.write_text(malformed_manifest, encoding="utf-8")
+        assert not manager.verify(backup)
+
+    created = manager.automatic_if_due()
+    assert created is not None and manager.verify(created)
+
+
 # ---- #7 Win32 回傳值 ----
 
 
