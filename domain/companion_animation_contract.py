@@ -127,8 +127,6 @@ EXPRESSION_SPEECH_ASSETS = tuple(
 )
 EXPRESSION_BLINK_FRAMES = frozendict({
     "thinking_front": "thinking_front_speech_blink",
-    "happy": "happy_speech_blink",
-    "worried": "worried_speech_blink", "reminder": "reminder_speech_blink",
 })
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
 EXPRESSION_HALF_BLINK_FRAMES = frozendict({

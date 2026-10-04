@@ -85,11 +85,6 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             "infrastructure.layered_face_painting",
             ("MAX_CACHED_MASK_BOUNDS",),
         ),
-        (
-            "from",
-            "domain.legacy_makeup",
-            ("select_legacy_makeup_view_id",),
-        ),
     }),
     # ``infrastructure.layered_full_body_renderer`` re-exports the speech
     # aperture threshold that tests import lazily; a lazy re-export would hand
@@ -458,11 +453,14 @@ def _tracked_python_files(root: Path) -> list[Path] | None:
     )
     if result.returncode:
         return None
-    return [
-        root / relative_path
-        for relative_path in result.stdout.split("\0")
-        if relative_path.endswith(".py")
-    ]
+    paths = []
+    for relative_path in result.stdout.split("\0"):
+        if not relative_path.endswith(".py"):
+            continue
+        path = root / relative_path
+        if path.is_file():
+            paths.append(path)
+    return paths
 
 
 def python_files(root: Path = ROOT) -> list[Path]:

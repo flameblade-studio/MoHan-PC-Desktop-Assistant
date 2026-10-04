@@ -516,12 +516,9 @@ def assert_expression_local_speech_assets(window: CompanionWindow) -> None:
 
 
 def assert_dedicated_blink_assets(window: CompanionWindow) -> None:
-    # Legacy portrait blink assets remain limited to expressions that use them.
+    # Only non-complete expressions retain a dedicated portrait blink asset.
     assert set(EXPRESSION_BLINK_FRAMES) == {
         "thinking_front",
-        "happy",
-        "worried",
-        "reminder",
     }
     for expression, blink_asset in EXPRESSION_BLINK_FRAMES.items():
         original = window.expression_pixmaps[expression]

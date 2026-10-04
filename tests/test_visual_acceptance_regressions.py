@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-lazy import json
 lazy import os
 lazy import sys
 lazy from pathlib import Path
@@ -13,14 +12,9 @@ lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from domain.companion_animation_contract import (
-    CHEEK_SPEECH_CLOSED_EXPRESSION,
-    EXPRESSION_HALF_BLINK_FRAME_SOURCES,
-    EXPRESSION_SPEECH_MOUTH_RECTS,
-)
+lazy from domain.companion_animation_contract import EXPRESSION_HALF_BLINK_FRAME_SOURCES
 lazy from presentation.companion_window import CompanionWindow
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MIN_CHANGED_PIXELS = 24
 
 
@@ -38,22 +32,6 @@ def region_signature(image: QImage, rect: QRect) -> tuple[int, ...]:
         for y in range(rect.top(), rect.bottom() + 1)
         for x in range(rect.left(), rect.right() + 1)
     )
-
-
-def mean_region_difference(first: QImage, second: QImage, rect: QRect) -> float:
-    total = 0
-    samples = 0
-    for y in range(rect.top(), rect.bottom() + 1):
-        for x in range(rect.left(), rect.right() + 1):
-            first_color = first.pixelColor(x, y)
-            second_color = second.pixelColor(x, y)
-            total += (
-                abs(first_color.red() - second_color.red())
-                + abs(first_color.green() - second_color.green())
-                + abs(first_color.blue() - second_color.blue())
-            )
-            samples += 3
-    return total / max(1, samples)
 
 
 def _assert_blush_survives_front_blink(window: CompanionWindow) -> None:
@@ -134,15 +112,6 @@ def _assert_blink_uses_discrete_authority_frames(
             window.expression_pixmaps[half_key] = half_source
 
 
-def _happy_has_complete_sources() -> bool:
-    manifest = json.loads(
-        (
-            PROJECT_ROOT / "assets" / "expressions" / "complete-expressions" / "manifest.json"
-        ).read_text(encoding="utf-8"),
-    )
-    return "happy" in manifest.get("expressions", {})
-
-
 def _assert_chin_rest_smile_uses_neutral_speech_mouth(
     window: CompanionWindow,
 ) -> None:
@@ -154,29 +123,9 @@ def _assert_chin_rest_smile_uses_neutral_speech_mouth(
     speech_closed = window.expression_pixmaps[
         window.speech_closed_expression
     ].toImage()
-    if _happy_has_complete_sources():
-        # A complete new face owns its closed mouth, so speech keeps it intact.
-        assert speech_closed == happy
-        return
-    mouth_rect = EXPRESSION_SPEECH_MOUTH_RECTS["happy"]
-    eye_rect = QRect(158, 145, 105, 45)
-    assert changed_pixel_count(happy, speech_closed, mouth_rect) > 0
-    assert region_signature(happy, eye_rect) == region_signature(
-        speech_closed,
-        eye_rect,
-    ), "neutral speech mouth must retain the smiling eyes"
-    neutral = window.expression_pixmaps[
-        CHEEK_SPEECH_CLOSED_EXPRESSION
-    ].toImage()
-    corner_regions = (
-        QRect(174, 202, 18, 20),
-        QRect(208, 202, 18, 20),
-    )
-    assert all(
-        mean_region_difference(speech_closed, neutral, region)
-        < mean_region_difference(happy, neutral, region) * 0.72
-        for region in corner_regions
-    ), 'speech corners must move sufficiently toward the neutral mouth'
+    # Complete-expression happy owns its whole closed frame; the speech alias
+    # preserves that exact endpoint instead of synthesizing a legacy mouth.
+    assert speech_closed == happy
 
 
 def _assert_left_facing_mouth_replaces_right_corner(

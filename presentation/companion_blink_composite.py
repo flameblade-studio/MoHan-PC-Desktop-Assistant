@@ -20,7 +20,6 @@ lazy from domain.companion_animation_contract import (
     outfit_silhouette,
 )
 lazy from domain.face_rig import EyeState, eye_state_for_blink
-lazy from domain.legacy_makeup import select_legacy_makeup_view_id
 lazy from presentation.companion_blink_brow_guard import GUARDED_EXPRESSIONS, preserve_gesture_brows
 
 __all__ = ("CompanionBlinkCompositeMethods",)
@@ -37,20 +36,6 @@ class CompanionBlinkCompositeMethods:
         if not callable(has_native_motion):
             return False
         return bool(has_native_motion(view_id))
-
-    def _legacy_makeup_view_id(self, appearance_view_id: str) -> str:
-        """The silhouette blink makeup should resolve against for an
-        EXPRESSION_POSES legacy portrait fallback and speech variants: the
-        pre-V5-rebind authored face, geometrically different from the
-        new-face makeup layers authored for `appearance_view_id`. When the
-        active makeup pack declares a matching "<silhouette>-legacy" view (see
-        LEGACY_MAKEUP_SILHOUETTES, domain/outfit_pack.py), this redirects to
-        it; otherwise it returns appearance_view_id unchanged.
-        """
-        overlay = getattr(self.face_renderer, "_outfit_overlay", None)
-        declares = getattr(overlay, "makeup_declares_view", None)
-        legacy_view_id = select_legacy_makeup_view_id(declares, appearance_view_id)
-        return legacy_view_id or appearance_view_id
 
     def _native_eye_composite(
         self,
@@ -138,10 +123,7 @@ class CompanionBlinkCompositeMethods:
         if base_expression in EXPRESSION_POSES:
             # Its own registered patch is the only eye authority it may stamp.
             # Only the native-eye gate is suppressed; the appearance context is
-            # kept so blink makeup still composes (see makeup_view_id).
-            appearance_view_id = CompanionBlinkCompositeMethods._legacy_makeup_view_id(
-                self, appearance_view_id,
-            )
+            # kept so the canonical silhouette's blink makeup still composes.
             view_id = None
             if not is_expression_speech:
                 return QPixmap(base_pixmap)

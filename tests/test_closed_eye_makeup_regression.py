@@ -15,7 +15,6 @@ lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-lazy from infrastructure.layered_face_renderer import select_legacy_makeup_view_id
 lazy from tools.render_marketing_portraits import ROOT
 
 CANVAS_SIZE = (1254, 1254)
@@ -142,17 +141,9 @@ def run() -> None:
         os.environ["LOCALAPPDATA"] = temp_dir
         overlay = ActiveOutfitOverlay(Path(temp_dir) / "store", ROOT)
         for pose, open_name, closed_name, silhouette in POSES:
-            # Resolve the pose-shared legacy makeup key exactly as the runtime does.
-            open_makeup_view_id = select_legacy_makeup_view_id(
-                overlay.makeup_declares_view, silhouette,
-            )
-            closed_makeup_view_id = select_legacy_makeup_view_id(
-                overlay.makeup_declares_view, silhouette,
-            )
             open_image = overlay.apply(
                 QPixmap(str(ROOT / "assets" / "expressions" / f"{open_name}.png")),
                 silhouette,
-                makeup_view_id=open_makeup_view_id,
             ).toImage().convertToFormat(QImage.Format_ARGB32)
             # 2026-09-29 round 11 (coordinator ruling, replaces round 10's
             # _non_eye_makeup_baseline PIL-reconstruction attempt, which
@@ -177,7 +168,6 @@ def run() -> None:
                 QPixmap(str(ROOT / "assets" / "expressions" / f"{closed_name}.png")),
                 silhouette,
                 suppress_makeup_slots={"eyes", "cheeks"},
-                makeup_view_id=closed_makeup_view_id,
             ).toImage().convertToFormat(QImage.Format_ARGB32)
             bare_closed = QImage(
                 str(ROOT / "assets" / "expressions" / f"{closed_name}.png")

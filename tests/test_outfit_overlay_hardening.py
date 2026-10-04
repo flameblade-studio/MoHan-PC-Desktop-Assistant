@@ -37,7 +37,7 @@ def test_runtime_cache_writers_are_visible_and_invalidated(
         options.update(suppress_makeup_slots={"eyes"}, eye_state="closed")
         overlay.set_active_mouth_state("open")
     if route in {"makeup-view", "split-state"}:
-        options["makeup_view_id"] = "cheek-rest-legacy"
+        options["makeup_view_id"] = "cheek-glance"
     if route.startswith("split"):
         overlay.apply_appearance(frame, "view")
         overlay.apply_makeup(frame, "view", **options)
@@ -56,12 +56,12 @@ def test_runtime_cache_writers_are_visible_and_invalidated(
 def test_nondefault_appearance_phase_count_uses_the_written_identity(tmp_path: Path) -> None:
     overlay = ActiveOutfitOverlay(tmp_path, tmp_path, visible_hand_region=None)
     key = OutfitLayerCacheKey.for_phase(
-        "view", "appearance", frozenset({"eyes"}), "closed", "open", "legacy",
+        "view", "appearance", frozenset({"eyes"}), "closed", "open", "complete-expression",
     )
     overlay.set_active_mouth_state("open")
     overlay._phase_layers_by_view[key] = (object(),)
     assert overlay.layer_count(
-        "view", suppress_makeup_slots={"eyes"}, eye_state="closed", makeup_view_id="legacy",
+        "view", suppress_makeup_slots={"eyes"}, eye_state="closed", makeup_view_id="complete-expression",
     ) == 1
     with pytest.raises(FrozenInstanceError):
         key.view_id = "other"

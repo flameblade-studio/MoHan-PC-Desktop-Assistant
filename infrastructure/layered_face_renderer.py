@@ -22,8 +22,6 @@ lazy from domain.companion_animation_contract import (
 )
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from domain.qt_image_io import optional_pixmap, require_pixmap
-# Eager because this function is re-exported for direct ``from ... import`` callers.
-from domain.legacy_makeup import select_legacy_makeup_view_id
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
 lazy from infrastructure.detachable_halfbody_assets import load_detachable_halfbody_assets
@@ -237,22 +235,10 @@ class LayeredParametricFaceRenderer(
             if callable(native_neutral)
             else None
         )
-        # Both sources below can supply a legacy (pre-V5-rebind) authored
-        # face that makeup_declares_view() may redirect makeup away from.
-        # native_neutral() returns the reviewed-garment "native identity"
-        # image pinned to this pose (assets/expressions/reviewed-garments/),
-        # which supplies the legacy cheek portraits. The installed glance
-        # complete-expression branch returns before reaching this fallback.
-        # _gesture_portrait() supplies the front-pose gesture portraits.
-        # Other sources (complete_halfbody, render_native_state,
-        # _detachable_portrait, render_pose) are new-face composites and
-        # never set this flag.
-        may_need_legacy_makeup = composed is not None and not composed.isNull()
         if composed is None:
             composed = self._detachable_portrait(silhouette)
         if composed.isNull() and gesture is not None:
             composed = self._gesture_portrait(gesture)
-            may_need_legacy_makeup = not composed.isNull()
         if composed.isNull():
             composed = self.render_pose(
                 self._pose(motion),
@@ -268,29 +254,10 @@ class LayeredParametricFaceRenderer(
         # anchor check requiring attention (or draw ~2.7x off), so installed outfits stay outside
         # appeared on the half-body poses at all.
         if self._outfit_overlay is not None:
-            # This frame still contains REST eyes. Select state pigment only
-            # after a registered eyelid patch is available in render_overlay;
-            # HALF source selection stays separate from makeup on the REST fallback.
-            # A legacy portrait can differ geometrically from the new-face
-            # makeup layers authored for `silhouette`; when the active makeup
-            # pack declares a matching legacy silhouette (see
-            # LEGACY_MAKEUP_SILHOUETTES, domain/outfit_pack.py), makeup
-            # resolves against that view while garments keep `silhouette`.
-            # The installed glance complete-expression branch uses its own
-            # complete-frame path before reaching this fallback.
-            # Every other composed source (new-face native/detachable/render_pose)
-            # is completely unaffected: makeup_view_id stays None for them,
-            # byte-identical to before this addition.
-            #
-            makeup_view_id = None
-            if may_need_legacy_makeup:
-                declares = getattr(self._outfit_overlay, "makeup_declares_view", None)
-                makeup_view_id = select_legacy_makeup_view_id(declares, silhouette)
             composed = require_pixmap(
                 self._outfit_overlay.apply(
                     composed,
                     silhouette,
-                    makeup_view_id=makeup_view_id,
                 )
             )
         result = (

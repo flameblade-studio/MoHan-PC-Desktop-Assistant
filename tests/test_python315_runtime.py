@@ -155,6 +155,8 @@ def test_python_file_audit_ignores_untracked_workspace_scripts() -> None:
         )
 
         assert python_files(root) == [tracked_source]
+        tracked_source.unlink()
+        assert python_files(root) == []
 
 
 def _assert_immutable_configuration() -> None:
