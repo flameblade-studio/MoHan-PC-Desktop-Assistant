@@ -332,9 +332,9 @@ class ActiveOutfitOverlay(
 
     def makeup_declares_view(self, view_id: str) -> bool:
         """Whether the *active makeup selection's* variant declares a rest
-        (poses) entry for view_id -- used by a caller (e.g. the legacy-face
-        render path) to decide whether it is safe to pass this view_id as
-        apply()'s makeup_view_id, falling back to the caller's regular
+        (poses) entry for view_id -- used by a render caller to decide whether
+        it is safe to pass this view_id as apply()'s makeup_view_id, falling
+        back to the caller's regular
         silhouette otherwise (owner-specified: "若包內無該 key 則 fallback 為
         現行行為").  Any failure (builtin/no selection, incompatible pack,
         missing item/variant) is treated as "no", never raised -- this is a

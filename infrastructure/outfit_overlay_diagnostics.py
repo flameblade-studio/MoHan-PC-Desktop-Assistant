@@ -6,12 +6,16 @@ lazy import logging
 lazy import re
 lazy from collections.abc import Iterable
 lazy from pathlib import PurePosixPath
-lazy from domain.outfit_pack import SUPPORTED_SILHOUETTES, LEGACY_MAKEUP_SILHOUETTES
+lazy from domain.outfit_pack import (
+    COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES, SUPPORTED_SILHOUETTES,
+)
 lazy from domain.character_pose import LEGACY_VIEW_ALIASES
 
 _LOGGER = logging.getLogger("mohan.outfit_overlay")
 _FALLBACK_EVENT = "outfit_overlay_fallback"
-_KNOWN_VIEWS = frozenset((*SUPPORTED_SILHOUETTES, *LEGACY_MAKEUP_SILHOUETTES, *LEGACY_VIEW_ALIASES))
+_KNOWN_VIEWS = frozenset(
+    (*SUPPORTED_SILHOUETTES, *COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES, *LEGACY_VIEW_ALIASES)
+)
 _SAFE_PACK_ID = re.compile(r"[a-z0-9][a-z0-9_.-]{0,127}\Z")
 
 

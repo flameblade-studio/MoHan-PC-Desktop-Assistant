@@ -66,15 +66,14 @@ GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "fr
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-# Optional, additive makeup-only silhouettes. Legacy face keys and the
-# glance complete-expression state keys share the 1254px cheek canvas but
-# never become required garment/body views. Makeup variants may declare any
-# subset; every other appearance category keeps REQUIRED_SILHOUETTES intact.
+# Optional, additive makeup-only silhouettes. Complete-expression state keys
+# share the 1254px cheek canvas but never become required garment/body views.
+# Makeup variants may declare any subset; every other appearance category keeps
+# REQUIRED_SILHOUETTES intact.
 GLANCE_MAKEUP_SILHOUETTES = ("cheek-glance", "cheek-glance-half", "cheek-glance-closed")
 BATCH2_MAKEUP_SILHOUETTES = tuple(f"cheek-{expression}{suffix}" for expression in ("caught", "happy", "worried", "reminder") for suffix in ("", "-half", "-closed"))
 COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = GLANCE_MAKEUP_SILHOUETTES + BATCH2_MAKEUP_SILHOUETTES
-LEGACY_MAKEUP_SILHOUETTES = ("cheek-rest-legacy", "left-neutral-legacy")
-OPTIONAL_MAKEUP_SILHOUETTES = LEGACY_MAKEUP_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
+OPTIONAL_MAKEUP_SILHOUETTES = COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
 EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
@@ -286,14 +285,13 @@ def _makeup_pose_assets(
     poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False,
 ) -> frozendict[str, tuple[AppearanceAsset, ...]]:
     """Like ``_pose_assets`` (the complete, required v2 view set) but a makeup
-    variant's poses/eye_states dict may ALSO declare any subset of
-    OPTIONAL_MAKEUP_SILHOUETTES on top of that complete set (never in place of
-    it -- the required set is still validated exactly as before, unchanged).
+    variant's poses/eye_states dict may ALSO declare any subset of the
+    complete-expression optional views on top of that complete set (never in
+    place of it -- the required set is still validated exactly as before).
 
     Each declared optional silhouette is validated the same way a required one
     is (canvas, slot set, integrity), just not required to be present at all.
-    An existing pack with no legacy key parses identically to before this
-    function existed (only REQUIRED_SILHOUETTES keys reach _pose_assets).
+    Only REQUIRED_SILHOUETTES keys reach _pose_assets.
     """
     if not isinstance(poses, dict):
         raise OutfitPackError("Every required silhouette must be declared.")
