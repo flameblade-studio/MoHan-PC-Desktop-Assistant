@@ -69,6 +69,7 @@ def prune_unused_lazy_imports(path: Path) -> int:
         and getattr(node, "is_lazy", False)
     ]
     replacements: list[tuple[int, int, str]] = []
+    byte_lines = source_bytes.splitlines()
     removed = 0
     for node in candidates:
         from_import = isinstance(node, ast.ImportFrom)
@@ -80,6 +81,15 @@ def prune_unused_lazy_imports(path: Path) -> int:
         )
         if len(aliases) == len(node.names):
             continue
+        prefix = byte_lines[node.lineno - 1][: node.col_offset].strip()
+        suffix = byte_lines[(node.end_lineno or node.lineno) - 1][
+            node.end_col_offset :
+        ].strip()
+        if prefix or (suffix and not suffix.startswith(b"#")):
+            raise RuntimeError(
+                f"Import uses a shared physical line at {path}:{node.lineno}; "
+                "place each statement on its own line before pruning"
+            )
         removed += len(node.names) - len(aliases)
         replacement = _render_import(node, aliases) if aliases else ""
         replacements.append((node.lineno, node.end_lineno or node.lineno, replacement))

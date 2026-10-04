@@ -127,7 +127,7 @@ def _repo_relative(path: Path) -> str:
         return "/".join(resolved.parts[-2:])
 
 
-def analyze(asset_dir: Path) -> dict:
+def analyze(asset_dir: Path, threshold: float = OUTLIER_THRESHOLD_PIXELS) -> dict:
     """Analyze all layered assets and return a JSON-serializable report."""
     # Ensure a QApplication exists so QImage can decode pixels offscreen.
     QApplication.instance() or QApplication([])
@@ -211,7 +211,7 @@ def analyze(asset_dir: Path) -> dict:
             expected_x = prev_x + (next_x - prev_x) * t
             expected_y = prev_y + (next_y - prev_y) * t
             jump = max(abs(curr_x - expected_x), abs(curr_y - expected_y))
-            if jump > OUTLIER_THRESHOLD_PIXELS:
+            if jump > threshold:
                 outliers.append(
                     {
                         "view_id": curr_view,
@@ -234,7 +234,7 @@ def analyze(asset_dir: Path) -> dict:
     return {
         "asset_dir": _repo_relative(asset_dir),
         "reference_layer": REFERENCE_LAYER,
-        "outlier_threshold_pixels": OUTLIER_THRESHOLD_PIXELS,
+        "outlier_threshold_pixels": threshold,
         "total_views": len(VIEW_IDS),
         "total_layers_per_view": len(LAYER_NAMES),
         "views_found": sorted(bounds.keys()),
@@ -268,10 +268,9 @@ def main(argv: list[str] | None = None) -> int:
         default=OUTLIER_THRESHOLD_PIXELS,
         help="Outlier drift threshold in pixels.",
     )
-    arguments = parser.parse_args(tuple(argv or ()))
+    arguments = parser.parse_args(tuple(argv) if argv is not None else None)
 
-    report = analyze(arguments.asset_dir)
-    report["outlier_threshold_pixels"] = arguments.threshold
+    report = analyze(arguments.asset_dir, threshold=arguments.threshold)
 
     arguments.output.write_text(
         json.dumps(report, ensure_ascii=False, indent=2),

@@ -58,6 +58,7 @@ def remove_definitions(
     source = source_bytes.decode("utf-8")
     tree = ast.parse(source, filename=str(path))
     ranges: list[tuple[int, int]] = []
+    byte_lines = source_bytes.splitlines()
     found: set[str] = set()
     scope, scope_label = _definition_scope(tree, class_name)
     for node in scope:
@@ -72,6 +73,14 @@ def remove_definitions(
             for decorator in getattr(node, "decorator_list", ())
         ]
         start_line = min((node.lineno, *decorator_lines))
+        start_column = node.col_offset
+        prefix = byte_lines[start_line - 1][:start_column].strip()
+        suffix = byte_lines[node.end_lineno - 1][node.end_col_offset :].strip()
+        if prefix or (suffix and not suffix.startswith(b"#")):
+            raise RuntimeError(
+                f"Definition uses a shared physical line at {path}:{node.lineno}; "
+                "place each statement on its own line before removing definitions"
+            )
         ranges.append((start_line, node.end_lineno))
     missing = names - found
     if missing:

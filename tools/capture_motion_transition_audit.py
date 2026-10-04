@@ -48,13 +48,15 @@ def capture_frames(
                 window.eye_overlay,
             )
         )
-        frames.append(
+        frame = (
             window
-            .grab()
+            .grab(QRect(0, window.character_base_y, window.width(), 465))
             .toImage()
             .convertToFormat(QImage.Format_ARGB32)
-            .copy(QRect(0, window.character_base_y, window.width(), 465))
+            .scaled(window.width(), 465, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
         )
+        frame.setDevicePixelRatio(1.0)
+        frames.append(frame)
     return frames
 
 
