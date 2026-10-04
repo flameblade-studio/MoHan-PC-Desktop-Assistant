@@ -13,7 +13,7 @@ lazy from profiling.sampling.binary_collector import BinaryCollector
 lazy from profiling.sampling.sample import SampleProfiler
 lazy from tools import tachyon_capture
 lazy from tools.profile_mohan_tachyon import (
-    ROOT, CaptureAttempt, _artifact_paths, _capture_once, _capture_with_retries,
+    CaptureAttempt, _artifact_paths, _capture_once, _capture_with_retries,
     _host_evidence,
 )
 
@@ -112,7 +112,7 @@ def test_retry_and_aborted_capture_keep_attempt_diagnostics() -> None:
         mode="wall", rate="1khz", duration=40, full_session=False,
         max_sample_read_error_percent=15.0,
     )
-    with tempfile.TemporaryDirectory(dir=ROOT / ".quality-tmp") as raw:
+    with tempfile.TemporaryDirectory() as raw:
         directory = Path(raw)
         artifacts = _artifact_paths("expression", directory, None)
         artifacts.summary.parent.mkdir(parents=True)
