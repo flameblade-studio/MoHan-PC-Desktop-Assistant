@@ -139,8 +139,12 @@ def test_cancellation_event_is_cleared_when_generation_restarts() -> None:
 
     source = inspect.getsource(module)
     start_body = source.split("def start(self)", 1)[1].split("def ", 1)[0]
-    assert "_cancel.clear()" in start_body, (
-        "start() 沒有清除取消旗標，abort 之後的生成會立刻被判為取消"
+    # 每次啟動與每個生成工作都換新的取消事件，已設定的舊事件不會沿用到下一次。
+    assert "self._cancel = threading.Event()" in start_body, (
+        "start() 沒有換新取消事件，abort 之後的生成會立刻被判為取消"
+    )
+    assert "cancel_event = threading.Event()" in source, (
+        "生成工作沒有使用自己的取消事件，abort 會污染下一次生成"
     )
 
 
