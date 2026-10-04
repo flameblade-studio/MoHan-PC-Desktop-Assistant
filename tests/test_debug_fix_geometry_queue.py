@@ -7,7 +7,7 @@ lazy import sys
 lazy from pathlib import Path
 
 lazy import numpy as np
-import pytest
+lazy import pytest
 
 lazy from tools.second_gen_body.probes import decision_queue
 
