@@ -180,7 +180,11 @@ def main() -> None:
         yaw = formal_yaw(folder.name)
         target = OUT / f"body2-yaw{yaw:+04d}.png"
         if target.exists():
-            print(f"skip {target.name}", flush=True)
+            verdict = verify_view(target, yaw)
+            if "FAIL" in verdict or "ok face-area=" not in verdict:
+                raise SystemExit(f"GATE_FAILED 既有輸出 {target.name}：{verdict}")
+            report.append((yaw, verdict))
+            print(f"skip {target.name} :: {verdict}", flush=True)
             gate_done = True
             continue
         image = pipe(

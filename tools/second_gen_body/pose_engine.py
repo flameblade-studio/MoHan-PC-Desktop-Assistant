@@ -337,12 +337,16 @@ def validate(rest: np.ndarray, posed: np.ndarray, faces: np.ndarray,
     for name, (_fraction, official) in TORSO_SECTIONS.items():
         found = plane_loop(posed, faces,
                            np.asarray([0.0, heights[name], 0.0]), up)
-        if not found:
-            print(f"  斷面 {name}: 取不到封閉環（姿勢已改變軀幹拓樸投影）")
+        if found is None:
+            print(f"  斷面 {name}: 缺少截面，驗收不通過")
+            worst = float("inf")
             continue
-        # 取周長最大的環，不是第一個。手臂舉過頭時會穿過胸線多出一個小環，
-        # 抓錯環會報出 40 cm 的假漂移——這是量測缺陷，不是圍度真的變了。
-        worst = max(worst, abs(max(found) - official))
+        if not found[1] or not np.isfinite(found[0]) or found[0] <= 0:
+            print(f"  斷面 {name}: 交線未閉合或周長不可量測，驗收不通過")
+            worst = float("inf")
+            continue
+        # plane_loop 已選出最大環；第二個回傳值是閉合旗標。
+        worst = max(worst, abs(found[0] - official))
     good = worst <= MAX_SECTION_DRIFT_CM
     ok &= good
     print(f"  軀幹四斷面   最大漂移 {worst:.4f} cm (上限 {MAX_SECTION_DRIFT_CM})   "

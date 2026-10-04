@@ -329,6 +329,11 @@ def _run() -> None:
     for yaw in VIEWS:
         target = OUT / f"body2-yaw{yaw:+04d}.png"
         if target.exists():
+            verdict, ok = check(target, yaw, control_mask(yaw))
+            if not ok:
+                raise SystemExit(f"GATE_FAILED 既有輸出 {target.name}：{verdict}")
+            report.append((yaw, verdict))
+            print(f"skip {target.name} :: {verdict}", flush=True)
             gated = True
             continue
         init = tinted_from_paths(

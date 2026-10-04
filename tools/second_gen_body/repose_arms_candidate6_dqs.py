@@ -190,8 +190,12 @@ def main() -> None:
     for name, (fraction, official) in TORSO_SECTIONS.items():
         found = plane_loop(result, faces,
                            np.asarray([0.0, floor + fraction * height, 0.0]), up)
-        measured = found[0] if found else None
-        delta = abs(measured - official) if measured else float("inf")
+        if found is None or not found[1] or not np.isfinite(found[0]) or found[0] <= 0:
+            problems.append(f"{name} 缺失、未閉合或周長不可量測")
+            print(f"  {name:10s} 缺失、未閉合或周長不可量測，驗收不通過")
+            continue
+        measured, _closed = found
+        delta = abs(measured - official)
         report[f"section_{name}"] = {"official": official, "after": measured,
                                      "delta_cm": delta}
         print(f"  {name:10s} {official:7.2f} → {measured:7.2f}  差 {delta:.4f} cm  "

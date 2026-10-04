@@ -43,12 +43,14 @@ def main() -> int:
             window._render_attention_layers(force=True)
             window._attention_tick()
             app.processEvents()
-            frames.append(
-                window.grab()
+            frame = (
+                window.grab(QRect(120, 330, 230, 220))
                 .toImage()
                 .convertToFormat(QImage.Format_ARGB32)
-                .copy(QRect(120, 330, 230, 220))
+                .scaled(230, 220, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
             )
+            frame.setDevicePixelRatio(1.0)
+            frames.append(frame)
 
         cell_width, cell_height = 230, 220
         title_height, margin = 36, 14

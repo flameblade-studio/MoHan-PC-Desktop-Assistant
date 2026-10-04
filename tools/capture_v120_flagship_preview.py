@@ -65,12 +65,14 @@ def main() -> int:
             window._render_attention_layers(force=True)
             window._attention_tick()
             app.processEvents()
-            captures.append(
-                window.grab()
+            captured = (
+                window.grab(QRect(0, window.character_base_y, 470, 465))
                 .toImage()
                 .convertToFormat(QImage.Format_ARGB32)
-                .copy(QRect(0, window.character_base_y, 470, 465))
+                .scaled(470, 465, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
             )
+            captured.setDevicePixelRatio(1.0)
+            captures.append(captured)
 
         margin = 20
         label_height = 48

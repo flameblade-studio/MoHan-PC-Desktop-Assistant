@@ -71,10 +71,13 @@ def render(output: Path) -> None:
             window._render_attention_layers(force=True)
             window._attention_tick()
             app.processEvents()
-            open_frame = window.grab().toImage()
+            face_rect = FACE_RECTS[pose].translated(
+                window.character_base_x, window.character_base_y,
+            )
+            open_frame = window.grab(face_rect).toImage()
             window._blink()
             app.processEvents()
-            blink_frame = window.grab().toImage()
+            blink_frame = window.grab(face_rect).toImage()
             rows.append((pose, open_frame, blink_frame))
             window._finish_blink(expression, window.blink_generation)
 
@@ -90,19 +93,16 @@ def render(output: Path) -> None:
         painter.setFont(QFont("Microsoft JhengHei UI", 14))
         painter.setPen(QColor("#e7f4f8"))
         for row, (pose, open_frame, blink_frame) in enumerate(rows):
-            face_rect = FACE_RECTS[pose].translated(
-                window.character_base_x,
-                window.character_base_y,
-            )
             for column, (label, frame) in enumerate(
                 (("睜眼", open_frame), ("雙眼眨眼", blink_frame))
             ):
-                face = frame.copy(face_rect).scaled(
+                face = frame.scaled(
                     350,
                     300,
                     Qt.KeepAspectRatio,
                     Qt.SmoothTransformation,
                 )
+                face.setDevicePixelRatio(1.0)
                 x = column * cell_width + 20
                 y = row * cell_height
                 painter.drawImage(x, y, face)

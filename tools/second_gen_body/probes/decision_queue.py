@@ -88,7 +88,7 @@ def pending_hits(path: Path) -> list[str]:
                 elif isinstance(value, (dict, list)):
                     walk(value)
         elif isinstance(node, list):
-            for item in node[:20]:
+            for item in node:
                 walk(item)
 
     walk(data)

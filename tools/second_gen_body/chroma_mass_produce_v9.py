@@ -178,7 +178,11 @@ def main() -> None:
     for yaw in sorted(VIEWS, key=abs):
         out = OUT / f"body2-yaw{yaw:+04d}.png"
         if out.exists():
-            print("skip", out.name, flush=True)
+            verdict = verify_view(out, yaw)
+            if not verdict.startswith("ok "):
+                raise SystemExit(f"GATE_FAILED 既有輸出 {out.name}：{verdict}")
+            report.append((yaw, verdict))
+            print(f"skip {out.name} :: {verdict}", flush=True)
             continue
         negative = NEG_BACK if abs(yaw) >= BACK_PROMPT_MIN else NEG_BASE
         image = pipe(

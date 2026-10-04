@@ -81,7 +81,7 @@ def capture_face_frame(window: CompanionWindow, crop: QRect) -> QImage:
         round(frame_rect.width() * ratio),
         round(frame_rect.height() * ratio),
     )
-    return (
+    frame = (
         captured
         .toImage()
         .copy(physical_rect)
@@ -91,6 +91,8 @@ def capture_face_frame(window: CompanionWindow, crop: QRect) -> QImage:
             Qt.SmoothTransformation,
         )
     )
+    frame.setDevicePixelRatio(1.0)
+    return frame
 
 
 def render_viseme_frame(
