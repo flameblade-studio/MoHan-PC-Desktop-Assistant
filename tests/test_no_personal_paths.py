@@ -9,6 +9,7 @@ Windows 使用者名稱；該目錄會進入安裝檔。此類紀錄應改用可
 from __future__ import annotations
 
 lazy import re
+lazy import pytest
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -61,7 +62,15 @@ def test_shipped_files_have_no_personal_absolute_paths() -> None:
     for path in _shipped_text_files():
         try:
             text = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, OSError):
+        except UnicodeDecodeError:
+            offenders.append(
+                f"{path.relative_to(ROOT).as_posix()}: 無法以 UTF-8 解碼"
+            )
+            continue
+        except OSError:
+            offenders.append(
+                f"{path.relative_to(ROOT).as_posix()}: 無法讀取"
+            )
             continue
         for pattern in PATTERNS:
             match = pattern.search(text)
@@ -109,3 +118,37 @@ def test_guard_does_not_match_legitimate_text() -> None:
     )
     for sample in samples:
         assert not any(p.search(sample) for p in PATTERNS), f"守衛須允收此正常內容：{sample!r}"
+
+
+def test_guard_fails_on_non_utf8_shipped_text(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    shipped = tmp_path / "shipped"
+    shipped.mkdir()
+    sample = shipped / "sample.txt"
+    sample.write_bytes(
+        ("C:" + BS + "Users" + BS + "alice" + BS + "secret.txt").encode("utf-8")
+        + b"\xff"
+    )
+    module = __import__(__name__)
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "_shipped_text_files", lambda: [sample])
+
+    with pytest.raises(AssertionError, match="UTF-8"):
+        test_shipped_files_have_no_personal_absolute_paths()
+
+
+def test_guard_fails_on_unreadable_shipped_text(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    shipped = tmp_path / "shipped"
+    shipped.mkdir()
+    sample = shipped / "missing.txt"
+    module = __import__(__name__)
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "_shipped_text_files", lambda: [sample])
+
+    with pytest.raises(AssertionError, match="missing.txt: 無法讀取"):
+        test_shipped_files_have_no_personal_absolute_paths()

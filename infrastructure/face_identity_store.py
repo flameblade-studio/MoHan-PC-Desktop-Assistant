@@ -61,8 +61,11 @@ class FaceIdentityStore:
         if not name:
             raise ValueError("display name requires content")
         validated = self._validate_embeddings(embeddings)
+        profiles = self.profiles()
+        if profiles and len(validated[0]) != len(profiles[0].embeddings[0]):
+            raise ValueError("face samples must use one vector dimension")
         profile = FaceProfile(uuid4().hex, name, validated)
-        self._write((*self.profiles(), profile))
+        self._write((*profiles, profile))
         return profile
 
     def delete(self, profile_id: str) -> bool:

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy import math
 lazy import os
 lazy import re
 lazy import struct
@@ -150,20 +151,28 @@ def _validate_svg_tree(root: ElementTree.Element) -> None:
                 raise ThemePackError("External SVG content requires supported document content.")
 
 
-def _declared_svg_dimensions(root: ElementTree.Element) -> tuple[int, int]:
-    width = root.attrib.get("width", "")
-    height = root.attrib.get("height", "")
+def _finite_svg_number(value: str) -> float | None:
     try:
-        dimensions = int(float(width)), int(float(height))
+        number = float(value)
     except ValueError:
+        return None
+    if not math.isfinite(number):
+        raise ThemePackError("SVG dimensions must be finite.")
+    return number
+
+
+def _declared_svg_dimensions(root: ElementTree.Element) -> tuple[int, int]:
+    width_value = _finite_svg_number(root.attrib.get("width", ""))
+    height_value = _finite_svg_number(root.attrib.get("height", ""))
+    if width_value is None or height_value is None:
         viewbox = root.attrib.get("viewBox", "").split()
         if len(viewbox) != VIEWBOX_DIMENSIONS:
             raise ThemePackError("SVG requires numeric dimensions.") from None
-        try:
-            dimensions = int(float(viewbox[2])), int(float(viewbox[3]))
-        except ValueError:
+        width_value = _finite_svg_number(viewbox[2])
+        height_value = _finite_svg_number(viewbox[3])
+        if width_value is None or height_value is None:
             raise ThemePackError("Provide a supported SVG dimensions.") from None
-    return dimensions
+    return int(width_value), int(height_value)
 
 
 def _validate_dimensions(width: int, height: int) -> None:

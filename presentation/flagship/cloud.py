@@ -5,6 +5,7 @@ lazy import mimetypes
 lazy import time
 lazy from datetime import datetime, timedelta
 lazy from email.message import EmailMessage
+lazy from threading import RLock
 lazy from typing import Any
 
 lazy from collections.abc import Callable
@@ -83,6 +84,12 @@ class _CloudTokenHealthWorker(QRunnable):
 
 class FlagshipCloudMixin:
     def _cloud_tab(self) -> QWidget:
+        # Workers use this locked snapshot; SQLite belongs to the UI thread.
+        self._cloud_auth_lock = RLock()
+        self._cloud_authorizations = {
+            provider: (bool(row and row["enabled"]), object())
+            for provider in PROVIDERS if (row := self.db.connector(provider)) is not None
+        }
         scroll, form = self._scroll_form()
         if self.platform_services.capabilities.secure_secret_storage:
             secret_note = self._t("權杖由作業系統安全加密保存，不寫入資料庫或設定檔。")
@@ -200,9 +207,10 @@ class FlagshipCloudMixin:
         )
         # 完成回呼必須使用發起當下的 scopes 快照；瀏覽器授權期間使用者
         # 可能已切換供應商，直接讀 UI 會把 A 供應商的 scopes 寫進 B。
+        authorization = self._cloud_authorizations.get(provider_id)
         worker.signals.done.connect(
             lambda done_provider, token, snapshot=tuple(scopes): (
-                self._cloud_connected(done_provider, token, snapshot)
+                self._cloud_connected(done_provider, token, snapshot, authorization)
             )
         )
         worker.signals.failed.connect(self._cloud_failed)
@@ -227,13 +235,18 @@ class FlagshipCloudMixin:
         provider_id: str,
         token: dict[str, Any],
         scopes: tuple[str, ...] = (),
+        authorization: tuple[bool, object] | None = None,
     ) -> None:
         self._oauth_worker = None
         if self._closed:
             return
         self._finish_cloud_connect_attempt()
         try:
-            self._oauth_store(provider_id).save(json.dumps(token, ensure_ascii=False))
+            with self._cloud_auth_lock:
+                if authorization != self._cloud_authorizations.get(provider_id):
+                    return
+                self._oauth_store(provider_id).save(json.dumps(token, ensure_ascii=False))
+                self._cloud_authorizations[provider_id] = (True, object())
         except OSError as exc:
             self.cloud_status.setText(
                 self._t(
@@ -248,24 +261,14 @@ class FlagshipCloudMixin:
             return
         provider = PROVIDERS[provider_id]
         self.db.save_connector(
-            provider_id,
-            provider.display_name,
-            True,
-            {
-                "client_id": token.get("client_id", ""),
-                "scopes": list(scopes),
-            },
+            provider_id, provider.display_name, True,
+            {"client_id": token.get("client_id", ""), "scopes": list(scopes)},
             # Stored language-neutral (canonical zh-TW catalog source); the
             # list view translates it to the active UI language on display.
             last_health="OAuth 已連線",
         )
         self.cloud_client_secret.clear()
-        self.cloud_status.setText(
-            self._t(
-                "{provider} 已安全連線",
-                provider=provider.display_name,
-            )
-        )
+        self.cloud_status.setText(self._t("{provider} 已安全連線", provider=provider.display_name))
         self._register_cloud_tools()
         self.refresh_cloud_connections()
 
@@ -283,29 +286,32 @@ class FlagshipCloudMixin:
         )
 
     def _cloud_token(self, provider_id: str) -> str:
-        raw = self._oauth_store(provider_id).load()
-        if not raw:
-            raise PermissionError(self._t('請完成 OAuth 連線'))
+        with self._cloud_auth_lock:
+            authorization = self._cloud_authorizations.get(provider_id)
+            raw = self._oauth_store(provider_id).load()
+            if not authorization or not authorization[0] or not raw:
+                raise PermissionError(self._t('請完成 OAuth 連線'))
         payload = json.loads(raw)
         expires_in = int(payload.get("expires_in", 0) or 0)
         obtained_at = int(payload.get("obtained_at", 0) or 0)
-        if expires_in and obtained_at and time.time() >= obtained_at + expires_in - 90:
+        refresh = expires_in and obtained_at and time.time() >= obtained_at + expires_in - 90
+        if refresh:
             payload = refresh_oauth_token(PROVIDERS[provider_id], payload)
-            try:
-                self._oauth_store(provider_id).save(
-                    json.dumps(payload, ensure_ascii=False)
-                )
-            except OSError as exc:
-                raise PermissionError(
-                    self._t(
+        with self._cloud_auth_lock:
+            if authorization != self._cloud_authorizations.get(provider_id):
+                raise PermissionError(self._t('請完成 OAuth 連線'))
+            if refresh:
+                try:
+                    self._oauth_store(provider_id).save(json.dumps(payload, ensure_ascii=False))
+                except OSError as exc:
+                    raise PermissionError(self._t(
                         "請檢查設定後安全更新 OAuth 權杖：{error}",
                         error=safe_error_message(self.language, exc),
-                    )
-                ) from exc
-        token = str(payload.get("access_token", ""))
-        if not token:
-            raise PermissionError(self._t("OAuth 權杖資料不完整"))
-        return token
+                    )) from exc
+            token = str(payload.get("access_token", ""))
+            if not token:
+                raise PermissionError(self._t("OAuth 權杖資料不完整"))
+            return token
 
     def _register_cloud_tools(self) -> None:
         if any(
@@ -728,16 +734,22 @@ class FlagshipCloudMixin:
             != QMessageBox.Yes
         ):
             return
-        self._oauth_store(provider_id).clear()
-        row = self.db.connector(provider_id)
-        config = json.loads(row["configuration"]) if row else {}
-        self.db.save_connector(
-            provider_id,
-            PROVIDERS[provider_id].display_name,
-            False,
-            config,
-            last_health="已撤銷",
-        )
+        with self._cloud_auth_lock:
+            self._cloud_authorizations[provider_id] = (False, object())
+            self._cloud_test_generation += 1
+            try:
+                row = self.db.connector(provider_id)
+                config = json.loads(row["configuration"]) if row else {}
+                self.db.save_connector(
+                    provider_id, PROVIDERS[provider_id].display_name, False, config,
+                    last_health="已撤銷",
+                )
+            finally:
+                self._oauth_store(provider_id).clear()
+        self.cloud_test_timeout.stop()
+        self._cloud_test_worker = None
+        self.cloud_test_button.setEnabled(True)
+        self.cloud_test_button.setText(self._t("測試選取服務"))
         self._configure_executor()
         self.refresh_cloud_connections()
         self.cloud_status.setText(self._t("本機權杖已移除"))

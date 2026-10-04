@@ -62,6 +62,8 @@ class BackupManager:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return False
+        if not isinstance(manifest, dict):
+            return False
         if hashlib.sha256(target.read_bytes()).hexdigest() != manifest.get("sha256"):
             return False
         connection = sqlite3.connect(f"file:{target}?mode=ro", uri=True)

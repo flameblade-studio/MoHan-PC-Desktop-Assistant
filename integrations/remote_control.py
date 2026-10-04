@@ -208,11 +208,22 @@ class RemoteControlServer:
             for value in services.allowed_folders
             if str(value).strip()
         ]
+        self._allowed_folders_lock = threading.Lock()
         self._server: RemoteThreadingHTTPServer | None = None
         self._thread: threading.Thread | None = None
         self._rate: dict[str, list[float]] = {}
         self._lock = threading.Lock()
         self._lifecycle_lock = threading.Lock()
+
+    def set_allowed_folders(self, folders: tuple[str, ...]) -> None:
+        """Replace remote file roots after the user changes the allowlist."""
+        with self._allowed_folders_lock:
+            self.allowed_folders = []
+            self.allowed_folders = [
+                Path(value).expanduser().resolve()
+                for value in folders
+                if str(value).strip()
+            ]
 
     @property
     def running(self) -> bool:
@@ -292,7 +303,9 @@ class RemoteControlServer:
 
     def _allowed_file_catalog(self) -> Iterator[Path]:
         seen: set[str] = set()
-        for root in self.allowed_folders:
+        with self._allowed_folders_lock:
+            roots = tuple(self.allowed_folders)
+        for root in roots:
             root_prefix = os.path.normcase(os.path.join(str(root), ""))
             for directory, folder_names, file_names in os.walk(
                 root,

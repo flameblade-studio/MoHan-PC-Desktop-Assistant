@@ -449,6 +449,7 @@ class FlagshipSettingsSecurityMixin:
             path,
             access_mode,
         )
+        self._refresh_remote_file_whitelist()
         self.refresh_allowed_targets()
         self._configure_executor()
 
@@ -517,9 +518,26 @@ class FlagshipSettingsSecurityMixin:
             != QMessageBox.Yes
         ):
             return
+        remote_server = getattr(self, "remote_server", None)
+        if remote_server is not None:
+            remote_server.set_allowed_folders(())
         self.db.remove_allowed_target(int(item.data(Qt.UserRole)))
+        self._refresh_remote_file_whitelist()
         self.refresh_allowed_targets()
         self._configure_executor()
+
+    def _refresh_remote_file_whitelist(self) -> None:
+        remote_server = getattr(self, "remote_server", None)
+        if remote_server is None:
+            return
+        # 先清空，再查詢目前白名單；查詢失敗時遠端下載維持拒絕。
+        remote_server.set_allowed_folders(())
+        folders = tuple(
+            str(row["target_value"])
+            for row in self.db.allowed_targets("folder")
+            if str(row["access_mode"]) in {"read", "write"}
+        )
+        remote_server.set_allowed_folders(folders)
 
     def save_security(self) -> None:
         values = {

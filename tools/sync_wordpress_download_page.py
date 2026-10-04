@@ -8,7 +8,7 @@ lazy import os
 lazy from pathlib import Path
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.parse import urlencode, urlparse
-lazy from urllib.request import Request, urlopen
+lazy from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 START_MARKER = "<!-- MOHAN_RELEASE_START -->"
 END_MARKER = "<!-- MOHAN_RELEASE_END -->"
@@ -31,6 +31,25 @@ DOWNLOAD_LABELS = {
     "dmg": "macOS DMG（功能受限 Preview）",
     "appimage": "Linux AppImage（功能受限 Preview）",
 }
+
+
+class _NoRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        request: Request,
+        response: object,
+        code: int,
+        message: str,
+        headers: object,
+        _new_url: str,
+    ) -> None:
+        return None
+
+
+def urlopen(request: Request, timeout: float = 30):
+    """Open one WordPress request and reject redirects before reusing credentials."""
+    opener = build_opener(_NoRedirectHandler())
+    return opener.open(request, timeout=timeout)
 
 
 def _wordpress_credentials(url: str) -> tuple[str, str]:

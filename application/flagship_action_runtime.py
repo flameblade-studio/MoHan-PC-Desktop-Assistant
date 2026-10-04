@@ -42,7 +42,6 @@ PII_AUDIT_KEYS = frozenset(
         "attributes", "latitude", "longitude", "friendly_name",
     }
 )
-AUDIT_PREVIEW_CHARS = 64
 
 
 @overload
@@ -58,17 +57,17 @@ def redact_audit_payload(value: object) -> object: ...
 
 
 def redact_audit_payload(value: object) -> object:
-    """遞迴遮罩敏感欄位，只留長度與短預覽：稽核仍可讀，但不再是資料倉。"""
+    """遞迴遮罩敏感欄位，只留下型別與長度，不保存欄位原文。"""
     if isinstance(value, dict):
         redacted: dict[str, object] = {}
         for key, item in value.items():
-            if key in PII_AUDIT_KEYS and not isinstance(item, bool) and isinstance(item, (str, int, float, dict, list)):
+            if key in REDACTED_AUDIT_KEYS or (
+                key in PII_AUDIT_KEYS
+                and not isinstance(item, bool)
+                and isinstance(item, (str, int, float, dict, list))
+            ):
                 size = len(item) if isinstance(item, (str, dict, list)) else 1
                 redacted[key] = f"<redacted {type(item).__name__} ({size})>"
-            elif key in REDACTED_AUDIT_KEYS and isinstance(item, str):
-                preview = item[:AUDIT_PREVIEW_CHARS]
-                more = "..." if len(item) > AUDIT_PREVIEW_CHARS else ""
-                redacted[key] = f"<redacted {len(item)} chars: {preview}{more}>"
             else:
                 redacted[key] = redact_audit_payload(item)
         return redacted
