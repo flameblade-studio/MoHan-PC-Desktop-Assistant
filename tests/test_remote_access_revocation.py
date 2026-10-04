@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import os
 lazy import sys
 lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -22,20 +23,28 @@ lazy from integrations.remote_control import (
 )
 
 
+@pytest.fixture
+def remote_root():
+    # Remote access refuses AppData paths, so stay outside the system temp folder
+    # like the other remote file tests.
+    with TemporaryDirectory(dir=Path.cwd()) as tmp:
+        yield Path(tmp)
+
+
 def test_removing_allowed_folder_revokes_running_remote_downloads(
-    tmp_path: Path,
+    remote_root: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    folder = tmp_path / "shared"
+    folder = remote_root / "shared"
     folder.mkdir()
     allowed_file = folder / "notes.txt"
     allowed_file.write_text("private", encoding="utf-8")
-    other_folder = tmp_path / "other-shared"
+    other_folder = remote_root / "other-shared"
     other_folder.mkdir()
     other_file = other_folder / "notes.txt"
     other_file.write_text("still allowed", encoding="utf-8")
 
-    db = StudioDB(tmp_path / "profile.db")
+    db = StudioDB(remote_root / "profile.db")
     target_id = db.add_allowed_target(
         "folder",
         folder.name,
