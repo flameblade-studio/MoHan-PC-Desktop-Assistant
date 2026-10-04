@@ -237,6 +237,182 @@ def assert_connector_test_plans(
         assert information.call_count == 0
 
 
+class _PlannerTestSignal:
+    def __init__(self) -> None:
+        self._callbacks = []
+
+    def connect(self, callback) -> None:
+        self._callbacks.append(callback)
+
+    def emit(self, *values) -> None:
+        for callback in tuple(self._callbacks):
+            callback(*values)
+
+
+class _CapturedPlannerSignals:
+    def __init__(self) -> None:
+        self.done = _PlannerTestSignal()
+        self.failed = _PlannerTestSignal()
+
+
+class _CapturedPlannerWorker:
+    def __init__(self, instruction: str, **kwargs) -> None:
+        self.instruction = instruction
+        self.kwargs = kwargs
+        self.signals = _CapturedPlannerSignals()
+
+    def setAutoDelete(self, _enabled: bool) -> None:
+        pass
+
+
+class _PlannerCapturePool:
+    def __init__(self) -> None:
+        self.started = []
+
+    def start(self, worker) -> None:
+        self.started.append(worker)
+
+
+def _open_web_plan(language: str) -> dict[str, object]:
+    return {
+        "title": f"Open the requested work folder ({language})",
+        "steps": [
+            {
+                "capability": "open_web",
+                "description": "Open the requested work folder",
+                "arguments": {"url": "https://example.com"},
+                "reversible": True,
+            }
+        ],
+    }
+
+
+def assert_multilingual_planner_intent(
+    app: QApplication,
+    center: FlagshipControlCenter,
+) -> None:
+    explicit_requests = (
+        ("English", "Please open my work folder"),
+        ("繁體中文", "請幫我開啟工作資料夾"),
+        ("简体中文", "请帮我打开工作文件夹"),
+        ("日本語", "作業フォルダーを開いてください"),
+        ("繁體中文未知動詞", "請幫我整理工作資料夾"),
+        ("繁體中文未知動詞", "幫我播放音樂"),
+        ("繁體中文未知動詞", "替我安排明天的工作"),
+    )
+    ordinary_chat = (
+        ("繁體中文", "昨天我整理了工作資料夾，今天想聊聊這件事。"),
+        ("简体中文", "我昨天打开了工作文件夹，心情有点复杂。"),
+        ("English", "I opened my work folder yesterday and felt distracted."),
+        ("日本語", "昨日は作業フォルダーを開きました。"),
+        ("繁體中文否定句", "請不要刪除工作檔案。"),
+        ("简体中文否定句", "请不要删除工作文件。"),
+        ("English negative request", "Could you please not delete that file?"),
+        ("日本語否定文", "ファイルを削除しないでください。"),
+    )
+    pool = _PlannerCapturePool()
+    with (
+        patch.object(center, "thread_pool", pool),
+        patch(
+            "presentation.flagship.planner.ActionPlannerWorker",
+            _CapturedPlannerWorker,
+        ),
+        patch("PySide6.QtWidgets.QMessageBox.information") as information,
+        patch(
+            "PySide6.QtWidgets.QMessageBox.question",
+            return_value=QMessageBox.No,
+        ) as question,
+        patch.object(center.executor, "execute") as execute,
+    ):
+        for index, (language, instruction) in enumerate(explicit_requests, 1):
+            center.plan_instruction(instruction)
+            assert information.call_count == 0, (
+                f"{language} explicit task was rejected before planning"
+            )
+            assert center.planner_busy is True
+            assert len(pool.started) == index
+            worker = pool.started[-1]
+            assert worker.instruction == instruction
+            worker.signals.done.emit(_open_web_plan(language))
+            app.processEvents()
+            assert question.call_count == index
+            assert center.planner_busy is False
+            execute.assert_not_called()
+
+        for language, message in ordinary_chat:
+            started_before = len(pool.started)
+            notices_before = information.call_count
+            center.plan_instruction(message)
+            assert len(pool.started) == started_before, (
+                f"{language} ordinary chat unexpectedly started a planner"
+            )
+            assert information.call_count == notices_before + 1, (
+                f"{language} ordinary chat did not stay out of the planner"
+            )
+            assert center.planner_busy is False
+
+
+def assert_planner_authorization_stays_fail_closed(
+    center: FlagshipControlCenter,
+) -> None:
+    executor = center.executor
+    assert executor.policy.permission_mode("delete_file") == "禁止"
+    pool = _PlannerCapturePool()
+    denied_results = []
+    delete_handler_calls = []
+    original_execute = executor.execute
+
+    def capture_execute(plan):
+        results = original_execute(plan)
+        denied_results.extend(results)
+        return results
+
+    def forbidden_delete_handler(request):
+        delete_handler_calls.append(request)
+        raise RuntimeError("a denied action reached its handler")
+
+    handlers = dict(executor.handlers)
+    handlers["delete_file"] = (forbidden_delete_handler, None)
+    with (
+        patch.object(center, "thread_pool", pool),
+        patch(
+            "presentation.flagship.planner.ActionPlannerWorker",
+            _CapturedPlannerWorker,
+        ),
+        patch.object(executor, "handlers", handlers),
+        patch.object(executor, "execute", side_effect=capture_execute),
+        patch(
+            "PySide6.QtWidgets.QMessageBox.question",
+            return_value=QMessageBox.Yes,
+        ) as question,
+        patch("PySide6.QtWidgets.QMessageBox.information") as information,
+    ):
+        center.plan_instruction("Please delete a work file")
+        assert center.planner_busy is True
+        assert len(pool.started) == 1
+        pool.started[0].signals.done.emit(
+            {
+                "title": "Delete a work file",
+                "steps": [
+                    {
+                        "capability": "delete_file",
+                        "description": "Delete the requested work file",
+                        "arguments": {"path": "work-file.txt"},
+                        "reversible": False,
+                    }
+                ],
+            }
+        )
+
+    assert question.call_count == 1
+    assert information.call_count == 1
+    assert len(denied_results) == 1
+    assert denied_results[0].success is False
+    assert "安全政策已阻擋" in denied_results[0].message
+    assert delete_handler_calls == []
+    assert center.planner_busy is False
+
+
 def assert_planner_timeout(center: FlagshipControlCenter) -> None:
     center.planner_busy = True
     center._planner_generation = 3
@@ -281,6 +457,15 @@ def run() -> None:
         assert_known_safe_plans(center)
         assert_explicit_provider_resolution(center)
         assert_stored_provider_resolution(center)
+        try:
+            assert_multilingual_planner_intent(app, center)
+            assert_planner_authorization_stays_fail_closed(center)
+        except Exception:
+            center.close_services()
+            db.close()
+            center.deleteLater()
+            app.processEvents()
+            raise
         assert_calendar_read(center)
         assert_drive_read(center)
         assert_local_planner_fast_path(app, db, center)

@@ -63,17 +63,27 @@ class WellbeingRuntimePort(Protocol):
         self,
         kind: WellbeingKind,
         attention: RuntimeAttention,
+        *,
+        event_id: str | None = None,
     ) -> RuntimeCue | None: ...
 
     def record_delivery(self, runtime_cue: RuntimeCue, *, succeeded: bool) -> bool: ...
 
-    def acknowledge_wellbeing(self, kind: WellbeingKind) -> None: ...
+    def acknowledge_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None: ...
 
-    def complete_wellbeing(self, kind: WellbeingKind) -> None: ...
+    def complete_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None: ...
 
-    def snooze_wellbeing(self, kind: WellbeingKind, until: datetime) -> None: ...
+    def snooze_wellbeing(
+        self, kind: WellbeingKind, until: datetime, *, event_id: str | None = None
+    ) -> None: ...
 
-    def dismiss_wellbeing(self, kind: WellbeingKind) -> None: ...
+    def dismiss_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -131,7 +141,9 @@ class WellbeingAppBridge:
             occurrence = normalize_occurrence(normalized, now)
             if occurrence.event_id in self._pending_event_ids:
                 return None
-            cue = self._runtime.decide_wellbeing(occurrence.kind, attention)
+            cue = self._runtime.decide_wellbeing(
+                occurrence.kind, attention, event_id=occurrence.event_id
+            )
             if cue is None:
                 return None
             if cue.delivery_token in self._pending:
@@ -193,17 +205,18 @@ class WellbeingAppBridge:
             raise WellbeingAppBridgeError("Reminder enabled state must be boolean.")
         if not enabled:
             return
-        kind = TRIGGER_KINDS[normalized]
+        occurrence = normalize_occurrence(normalized, self._now())
+        kind, event_id = occurrence.kind, occurrence.event_id
         if normalized_command is ReminderCommand.ACKNOWLEDGE:
-            self._runtime.acknowledge_wellbeing(kind)
+            self._runtime.acknowledge_wellbeing(kind, event_id=event_id)
         elif normalized_command is ReminderCommand.COMPLETE:
-            self._runtime.complete_wellbeing(kind)
+            self._runtime.complete_wellbeing(kind, event_id=event_id)
         elif normalized_command is ReminderCommand.DISMISS:
-            self._runtime.dismiss_wellbeing(kind)
+            self._runtime.dismiss_wellbeing(kind, event_id=event_id)
         elif normalized_command is ReminderCommand.SNOOZE:
             if snooze_until is None:
                 raise WellbeingAppBridgeError("Snooze requires a deadline.")
-            self._runtime.snooze_wellbeing(kind, snooze_until)
+            self._runtime.snooze_wellbeing(kind, snooze_until, event_id=event_id)
         else:
             raise WellbeingAppBridgeError("Reminder command needs a supported value.")
 
@@ -237,7 +250,7 @@ def normalize_occurrence(
     if not isinstance(now, datetime) or now.tzinfo is None:
         raise WellbeingAppBridgeError("Occurrence time must be timezone-aware.")
     return ReminderOccurrence(
-        event_id=f"{now.date().isoformat()}:{normalized.value}",
+        event_id=f"{now.date().isoformat()}:trigger:{normalized.value}",
         kind=TRIGGER_KINDS[normalized],
     )
 

@@ -40,9 +40,11 @@ class FakeRuntime:
         self.delivery_results: list[tuple[str, bool]] = []
         self.commands: list[tuple[str, WellbeingKind, datetime | None]] = []
         self.return_cue = True
+        self.event_ids: list[str | None] = []
 
-    def decide_wellbeing(self, kind, _attention):
+    def decide_wellbeing(self, kind, _attention, *, event_id=None):
         self.decisions.append(kind)
+        self.event_ids.append(event_id)
         if not self.return_cue:
             return None
         stage = ReminderStage.INITIAL
@@ -71,16 +73,20 @@ class FakeRuntime:
         self.delivery_results.append((cue.delivery_token, succeeded))
         return succeeded
 
-    def acknowledge_wellbeing(self, kind):
+    def acknowledge_wellbeing(self, kind, *, event_id=None):
+        self.event_ids.append(event_id)
         self.commands.append(("acknowledge", kind, None))
 
-    def complete_wellbeing(self, kind):
+    def complete_wellbeing(self, kind, *, event_id=None):
+        self.event_ids.append(event_id)
         self.commands.append(("complete", kind, None))
 
-    def snooze_wellbeing(self, kind, until):
+    def snooze_wellbeing(self, kind, until, *, event_id=None):
+        self.event_ids.append(event_id)
         self.commands.append(("snooze", kind, until))
 
-    def dismiss_wellbeing(self, kind):
+    def dismiss_wellbeing(self, kind, *, event_id=None):
+        self.event_ids.append(event_id)
         self.commands.append(("dismiss", kind, None))
 
 
@@ -108,7 +114,7 @@ def assert_trigger_normalization_and_stable_occurrences() -> None:
         second = normalize_occurrence(trigger.value, NOW + timedelta(hours=1))
         assert first == second
         assert first.kind is kind
-        assert first.event_id == f"2027-01-09:{trigger.value}"
+        assert first.event_id == f"2027-01-09:trigger:{trigger.value}"
 
 
 def assert_four_languages_and_private_override() -> None:
@@ -181,6 +187,7 @@ def assert_legacy_meal_triggers_dedupe_by_runtime_cue() -> None:
         language="en",
     ) is None
     assert runtime.decisions == [WellbeingKind.MEAL, WellbeingKind.MEAL]
+    assert runtime.event_ids == ["2027-01-09:trigger:lunch", "2027-01-09:trigger:dinner"]
 
 
 def assert_stale_and_date_rollover_do_not_commit() -> None:
@@ -230,6 +237,10 @@ def assert_command_mapping() -> None:
         ("complete", WellbeingKind.MEAL, None),
         ("snooze", WellbeingKind.PROLONGED_SITTING, deadline),
         ("dismiss", WellbeingKind.REST, None),
+    ]
+    assert runtime.event_ids == [
+        "2027-01-09:trigger:lunch", "2027-01-09:trigger:dinner",
+        "2027-01-09:trigger:overwork", "2027-01-09:trigger:rest",
     ]
     try:
         bridge.command("hydration", "snooze")
