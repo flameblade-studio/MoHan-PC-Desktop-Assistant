@@ -48,7 +48,8 @@ class _NoRedirectHandler(HTTPRedirectHandler):
 
 def urlopen(request: Request, timeout: float = 30):
     """Open one WordPress request and reject redirects before reusing credentials."""
-    return build_opener(_NoRedirectHandler()).open(request, timeout=timeout)
+    opener = build_opener(_NoRedirectHandler())
+    return opener.open(request, timeout=timeout)
 
 
 def _wordpress_credentials(url: str) -> tuple[str, str]:
