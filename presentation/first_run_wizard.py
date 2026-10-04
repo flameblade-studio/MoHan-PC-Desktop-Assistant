@@ -117,7 +117,7 @@ class FirstRunWizard(QDialog):
         hero_layout = QVBoxLayout(hero_panel)
         hero_layout.setContentsMargins(16, 24, 16, 14)
         hero_layout.setSpacing(10)
-        self.hero_brand = QLabel("墨寒  MoHan")
+        self.hero_brand = QLabel("墨寒")
         self.hero_brand.setObjectName("onboardingBrand")
         self.hero_tagline = QLabel()
         self.hero_tagline.setObjectName("onboardingTagline")
@@ -309,7 +309,7 @@ class FirstRunWizard(QDialog):
 
     def _update_wizard_headings(self) -> None:
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
-        self.hero_brand.setText(self._t("first_run_brand", "墨寒  MoHan"))
+        self.hero_brand.setText(self._t("first_run_brand", "墨寒"))
         self.hero_tagline.setText(
             self._t(
                 "first_run_hero_tagline",
