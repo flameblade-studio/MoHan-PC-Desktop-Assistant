@@ -348,6 +348,84 @@ def assert_parallel_stale_and_cancelled_loads_never_switch() -> None:
     assert engine.active_atlas.pack_id == "builtin-three-view"
 
 
+def assert_stale_activation_cannot_roll_back_a_newer_generation() -> None:
+    old_specification = replace(manifest(), pack_id="atlas-old")
+    newer_specification = replace(manifest(), pack_id="atlas-new")
+    newer_audited = threading.Event()
+    newer_activated = threading.Event()
+    old_activation_entered = threading.Event()
+    release_old_activation = threading.Event()
+
+    class SignalingAuditor(Auditor):
+        def audit(self, atlas: PoseRuntimeAtlas) -> AtlasApproval:
+            approval = super().audit(atlas)
+            if atlas.pack_id == "atlas-new":
+                newer_audited.set()
+            return approval
+
+    class BlockingActivator:
+        def __init__(self) -> None:
+            self.current = legacy_atlas()
+
+        def activate(self, atlas: PoseRuntimeAtlas) -> None:
+            self.current = atlas
+            if atlas.pack_id == "atlas-old":
+                old_activation_entered.set()
+                assert release_old_activation.wait(timeout=3.0)
+            elif atlas.pack_id == "atlas-new":
+                newer_activated.set()
+
+    source = source_for(old_specification)
+    activator = BlockingActivator()
+    engine = PoseRuntimeLoader(
+        legacy_atlas(),
+        source,
+        Decoder(),
+        SignalingAuditor(),
+        activator,
+    )
+    results: dict[str, object] = {}
+
+    old_generation = engine.begin_load()
+    old_worker = threading.Thread(
+        target=lambda: results.setdefault(
+            "old", engine.load(old_generation, old_specification)
+        )
+    )
+    old_worker.start()
+    assert old_activation_entered.wait(timeout=2.0)
+
+    newer_generation = engine.begin_load()
+    newer_worker = threading.Thread(
+        target=lambda: results.setdefault(
+            "new", engine.load(newer_generation, newer_specification)
+        )
+    )
+    newer_worker.start()
+    assert newer_audited.wait(timeout=2.0)
+    newer_finished_before_old_returned = newer_activated.wait(timeout=2.0)
+
+    release_old_activation.set()
+    old_worker.join(timeout=2.0)
+    newer_worker.join(timeout=2.0)
+    assert not old_worker.is_alive()
+    assert not newer_worker.is_alive()
+
+    old_result = results["old"]
+    newer_result = results["new"]
+    state = (
+        f"newer_finished_before_old_returned={newer_finished_before_old_returned}; "
+        f"second_status={newer_result.status}; first_status={old_result.status}; "
+        f"loader_active={engine.active_atlas.pack_id}; "
+        f"activator_current={activator.current.pack_id}"
+    )
+    assert not newer_finished_before_old_returned, state
+    assert old_result.status == "stale", state
+    assert newer_result.status == "activated", state
+    assert engine.active_atlas.pack_id == "atlas-new", state
+    assert activator.current.pack_id == "atlas-new", state
+
+
 def assert_resource_limits_fail_closed() -> None:
     specification = manifest()
     tiny_limits = PoseRuntimeLimits(
@@ -374,6 +452,7 @@ def run() -> None:
     assert_bad_image_hand_failure_and_asset_change_roll_back()
     assert_activation_failure_restores_previous()
     assert_parallel_stale_and_cancelled_loads_never_switch()
+    assert_stale_activation_cannot_roll_back_a_newer_generation()
     assert_resource_limits_fail_closed()
     print("POSE_RUNTIME_LOADER_OK")
 

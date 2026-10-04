@@ -338,16 +338,15 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
     def _character_clicked(self) -> None:
         if self.state == "glance":
             self._show_caught_reaction()
-            QTimer.singleShot(
-                1_700,
-                lambda: None if self._closing else self.open_dashboard(),
-            )
+            QTimer.singleShot(1_700, lambda: None if self._closing else self.open_dashboard())
             return
         self.open_dashboard()
 
     def _show_caught_reaction(self) -> None:
         self.set_state("caught", source="user_direct")
-        self._show_bubble("????????????????????????????????????")
+        dialogue = self._t("caught_glance_dialogue", "妾只是望向窗外，才不是在偷看主上。")
+        if dialogue:
+            self._show_bubble(dialogue)
         self._schedule_return_to_idle(2_800, "caught")
         QTimer.singleShot(3_400, self._hide_bubble_unless_speaking)
 

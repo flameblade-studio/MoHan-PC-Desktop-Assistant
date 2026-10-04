@@ -159,6 +159,7 @@ class PoseRuntimeLoader:
         self._activator = activator  # type: ignore[assignment]
         self._limits = limits
         self._lock = threading.Lock()
+        self._activation_lock = threading.Lock()
         self._generation = 0
         self._cancelled_generation: int | None = None
 
@@ -288,26 +289,28 @@ class PoseRuntimeLoader:
         generation: int,
         candidate: PoseRuntimeAtlas,
     ) -> PoseLoadResult:
-        previous = self.active_atlas
-        try:
-            self._activator.activate(candidate)
-        except Exception:
+        with self._activation_lock:
+            with self._lock:
+                if generation == self._cancelled_generation:
+                    return PoseLoadResult("cancelled", self._active)
+                if generation != self._generation:
+                    return PoseLoadResult("stale", self._active)
+                previous = self._active
+            try:
+                self._activator.activate(candidate)
+            except Exception:
+                self._activator.activate(previous)
+                raise
+            with self._lock:
+                if generation == self._cancelled_generation:
+                    status: LoadStatus = "cancelled"
+                elif generation != self._generation:
+                    status = "stale"
+                else:
+                    self._active = candidate
+                    return PoseLoadResult("activated", candidate)
             self._activator.activate(previous)
-            raise
-        with self._lock:
-            if (
-                generation != self._generation
-                or generation == self._cancelled_generation
-            ):
-                stale = generation != self._generation
-            else:
-                self._active = candidate
-                return PoseLoadResult("activated", candidate)
-        self._activator.activate(previous)
-        return PoseLoadResult(
-            "stale" if stale else "cancelled",
-            previous,
-        )
+            return PoseLoadResult(status, previous)
 
     def _generation_state(self, generation: int) -> LoadStatus | None:
         with self._lock:

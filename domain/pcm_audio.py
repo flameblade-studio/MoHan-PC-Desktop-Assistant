@@ -217,7 +217,11 @@ def _encode_pcm16(samples: array[int]) -> bytes:
 
 
 def _clip_pcm16(value: float) -> int:
-    return max(-32768, min(32767, math.floor(value)))
+    if value <= MIN_PCM16_SAMPLE:
+        return MIN_PCM16_SAMPLE
+    if value >= MAX_PCM16_SAMPLE:
+        return MAX_PCM16_SAMPLE
+    return math.floor(value)
 
 
 def scale_pcm16(data: Pcm16Buffer, factor: float) -> bytes:

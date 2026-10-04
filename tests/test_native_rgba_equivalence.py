@@ -58,6 +58,35 @@ def test_native_alpha_over_matches_python_for_deterministic_frames() -> None:
         )
 
 
+def test_native_alpha_over_matches_straight_alpha_examples() -> None:
+    cases = (
+        (bytes((0, 0, 0, 0)), bytes((255, 0, 0, 128)), bytes((255, 0, 0, 128))),
+        (
+            bytes((0, 0, 255, 128)),
+            bytes((255, 0, 0, 128)),
+            bytes((170, 0, 85, 192)),
+        ),
+    )
+    for target, source, expected in cases:
+        assert alpha_over_rgba_python(target, source) == expected
+        assert NATIVE.alpha_over_rgba(target, source) == expected
+    region_arguments = (
+        bytes((0, 0, 0, 0)),
+        1,
+        1,
+        bytes((255, 0, 0, 128)),
+        1,
+        1,
+        0,
+        0,
+        b"\x01",
+        b"\x00",
+    )
+    expected_region = bytes((255, 0, 0, 128))
+    assert composite_region_rgba_python(*region_arguments) == expected_region
+    assert NATIVE.composite_region_rgba(*region_arguments) == expected_region
+
+
 def test_native_crossfade_matches_python_for_every_rounding_boundary() -> None:
     generator = random.Random(2026081402)
     first = _random_bytes(generator, 4_096 * 4)

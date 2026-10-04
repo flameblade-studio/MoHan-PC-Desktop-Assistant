@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy import re
 lazy from typing import Any
 
 lazy from PySide6.QtWidgets import (
@@ -153,7 +154,7 @@ class WorkflowEditor(QDialog):
             line = raw_line.strip()
             if not line:
                 continue
-            parts = [part.strip() for part in line.split("｜", 2)]
+            parts = [part.strip() for part in re.split(r"[｜|]", line, maxsplit=2)]
             if len(parts) != STEP_PART_COUNT:
                 raise ValueError(self._t("步驟格式不正確：{line}", line=line))
             capability, description, raw_argument = parts

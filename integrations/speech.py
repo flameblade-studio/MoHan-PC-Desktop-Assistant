@@ -868,14 +868,7 @@ class SpeechListener(QObject):
         self.audio_path = audio_path
         self.process = QProcess(self)
         self.process.finished.connect(self._finished)
-        self.process.errorOccurred.connect(
-            lambda _error: self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_RECOGNITION_START_FAILED,
-                )
-            )
-        )
+        self.process.errorOccurred.connect(self._process_error)
         if audio_path is None:
             self.listening_changed.emit(True)
             self.status_changed.emit(
@@ -903,10 +896,35 @@ class SpeechListener(QObject):
         ]
         if audio_path is not None:
             arguments.extend(["-InputPath", str(audio_path)])
-        self.process.start(
-            "powershell.exe",
-            arguments,
+        self.process.start("powershell.exe", arguments)
+
+    def _process_error(self, error: object) -> None:
+        failure = service_status(
+            self.language,
+            ServiceStatus.SPEECH_RECOGNITION_START_FAILED,
         )
+        try:
+            if error == QProcess.FailedToStart:
+                self._release_process()
+        finally:
+            self.failed.emit(failure)
+
+    def _release_process(self) -> None:
+        process, self.process = self.process, None
+        output_path, self.output_path = self.output_path, None
+        audio_path, self.audio_path = self.audio_path, None
+        was_recording = self._recording_active.is_set()
+        self._busy.clear()
+        self._recording_active.clear()
+        self._stop_recording.clear()
+        if was_recording:
+            self.recording_changed.emit(False)
+        self.listening_changed.emit(False)
+        if process is not None:
+            process.deleteLater()
+        for path in (output_path, audio_path):
+            if path is not None:
+                path.unlink(missing_ok=True)
 
     def _start_windows_fallback(
         self,
@@ -1131,65 +1149,47 @@ class SpeechListener(QObject):
                 self.listening_changed.emit(False)
 
     def _finished(self) -> None:
-        self._busy.clear()
-        self.listening_changed.emit(False)
         text = ""
         stderr = ""
-        if self.process:
-            stderr = (
-                bytes(self.process.readAllStandardError())
-                .decode("utf-8", errors="replace")
-                .strip()
-            )
-        if self.output_path and self.output_path.exists():
-            text = self.output_path.read_text(encoding="utf-8-sig").strip()
-            self.output_path.unlink(missing_ok=True)
-        if self.audio_path and self.audio_path.exists():
-            self.audio_path.unlink(missing_ok=True)
-        self.audio_path = None
-        if self.process is not None:
-            # The finished QProcess stays parented to this listener; release
-            # the native object so repeated recognitions keep one live object.
-            self.process.deleteLater()
-        self.process = None
-        if text == "__ERROR__:NO_RECOGNIZER":
-            self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_WINDOWS_RECOGNIZER_MISSING,
+        try:
+            if self.process:
+                stderr = (
+                    bytes(self.process.readAllStandardError())
+                    .decode("utf-8", errors="replace")
+                    .strip()
                 )
+            if self.output_path and self.output_path.exists():
+                text = self.output_path.read_text(encoding="utf-8-sig").strip()
+        finally:
+            self._release_process()
+        failure: str | None = None
+        if text == "__ERROR__:NO_RECOGNIZER":
+            failure = service_status(
+                self.language, ServiceStatus.SPEECH_WINDOWS_RECOGNIZER_MISSING
             )
         elif text.startswith("__ERROR__:"):
             detail = text.removeprefix("__ERROR__:")
             if "0x80070005" in detail or "Access is denied" in detail:
-                self.failed.emit(
-                    service_status(
-                        self.language,
-                        ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED,
-                    )
+                failure = service_status(
+                    self.language, ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED
                 )
             else:
-                self.failed.emit(
-                    service_status(
-                        self.language,
-                        ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR,
-                        detail=sanitize_error(detail),
-                    )
+                failure = service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR,
+                    detail=sanitize_error(detail),
                 )
         elif text and text != "__EMPTY__":
             self.recognized.emit(text)
         elif stderr:
-            self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_WINDOWS_RECOGNITION_START_ERROR,
-                    detail=sanitize_error(stderr),
-                )
+            failure = service_status(
+                self.language,
+                ServiceStatus.SPEECH_WINDOWS_RECOGNITION_START_ERROR,
+                detail=sanitize_error(stderr),
             )
         else:
-            self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_NOT_UNDERSTOOD,
-                )
+            failure = service_status(
+                self.language, ServiceStatus.SPEECH_NOT_UNDERSTOOD
             )
+        if failure is not None:
+            self.failed.emit(failure)

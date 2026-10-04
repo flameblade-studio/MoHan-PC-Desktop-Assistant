@@ -752,6 +752,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "overwork_message": "Sitting / overwork reminder message",
     "minutes_suffix": " minutes",
     "read_replies": "Read MoHan's replies aloud",
+    "caught_glance_dialogue": "I was only looking out the window, not sneaking a glance at you.",
     "voice_settings_saved": "Voice settings saved.",
     "settings_saved": "Settings saved.",
     "work_timer_already_running": (

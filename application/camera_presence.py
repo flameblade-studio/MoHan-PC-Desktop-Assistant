@@ -274,7 +274,13 @@ def _transient_rgb_frame(image: QImage) -> tuple[bytes, int, int]:
     )
     width = rgb.width()
     height = rgb.height()
-    if rgb.bytesPerLine() != width * 3:
-        return b"", 0, 0
-    byte_count = rgb.bytesPerLine() * height
-    return bytes(rgb.constBits()[:byte_count]), width, height
+    row_bytes = width * 3
+    stride = rgb.bytesPerLine()
+    bits = rgb.constBits()
+    if stride == row_bytes:
+        return bytes(bits[:stride * height]), width, height
+    raw = b"".join(
+        bytes(bits[row * stride : row * stride + row_bytes])
+        for row in range(height)
+    )
+    return raw, width, height

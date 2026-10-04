@@ -11,6 +11,7 @@ lazy from application.adaptive_character_runtime import (
     AdaptiveCharacterDisposition,
     AdaptiveCharacterRequest,
     AdaptiveCharacterRuntime,
+    _body_framing,
 )
 lazy from application.behavior_director import BreathStyle, GazeTarget, TransitionStyle
 lazy from application.body_pose_renderer import BodyPoseFrame
@@ -38,6 +39,7 @@ lazy from application.full_body_performance_bridge import (
 lazy from application.performance_coordinator import PerformanceFrame
 lazy from application.performance_runtime import AtomicPerformanceFrame
 lazy from application.speech_performance import SpeechEventKind, SpeechPerformancePhase
+lazy from application.full_body_render_adapter import NormalizedCrop
 
 
 def pixels(shade: int) -> bytes:
@@ -394,6 +396,20 @@ def assert_speech_hold_and_settle_do_not_jump_body_height() -> None:
     assert settled.framing.mode is not FramingMode.FULL_BODY
 
 
+def assert_body_framing_converts_rect_edges_to_crop_extents() -> None:
+    rect = FRAMING_RECTS[FramingMode.THREE_QUARTER]
+    crop = _body_framing(
+        AtomicFramingCommand(
+            1,
+            FramingMode.THREE_QUARTER,
+            rect,
+            480,
+            (FramingAuditEntry("test", "three-quarter"),),
+        )
+    ).crop
+    assert crop == NormalizedCrop(rect.left, rect.top, rect.width, rect.height)
+
+
 def run() -> None:
     assert_atomic_publish_uses_both_ports_once()
     assert_continuous_face_motion_is_never_deduplicated()
@@ -403,6 +419,7 @@ def run() -> None:
     assert_failure_preserves_last_known_good()
     assert_50hz_speech_keeps_static_full_body_and_framing_stable()
     assert_speech_hold_and_settle_do_not_jump_body_height()
+    assert_body_framing_converts_rect_edges_to_crop_extents()
     print("ADAPTIVE_CHARACTER_RUNTIME_OK")
 
 
