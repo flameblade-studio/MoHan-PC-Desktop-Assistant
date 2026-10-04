@@ -498,17 +498,53 @@ def _assert_audio_queue_is_bounded_under_pressure() -> None:
     writer.start()
     buffer = bytearray(65_536)
     consumed = bytearray()
-    while writer.is_alive() or not reader._chunks.empty():
-        read = reader.read(buffer)
-        assert read <= len(buffer)
-        consumed.extend(buffer[:read])
-        assert reader._chunks.qsize() <= reader._chunks.maxsize == AUDIO_QUEUE_MAXSIZE
-    writer.join(timeout=1.0)
-    reader.close()
+    try:
+        while len(consumed) < len(payload):
+            read = reader.read(buffer)
+            assert 0 < read <= len(buffer)
+            consumed.extend(buffer[:read])
+            assert reader._chunks.qsize() <= reader._chunks.maxsize == AUDIO_QUEUE_MAXSIZE
+    finally:
+        reader.close()
+        writer.join(timeout=1.0)
 
     assert not writer.is_alive()
     assert bytes(consumed) == payload
     assert reader.read(buffer) == 0
+
+
+def _assert_audio_queue_pressure_finishes_before_writer_exit() -> None:
+    release_writer = threading.Event()
+
+    class DelayedWriterReader(_PushAudioReader):
+        def __init__(self) -> None:
+            super().__init__()
+            self.expected_bytes = 0
+            self.consumed_bytes = 0
+
+        def write(self, audio_buffer: memoryview) -> int:
+            self.expected_bytes = len(audio_buffer)
+            written = super().write(audio_buffer)
+            assert release_writer.wait(timeout=5.0), "test did not release writer"
+            return written
+
+        def read(self, audio_buffer: bytearray) -> int:
+            assert not self.expected_bytes or self.consumed_bytes < self.expected_bytes or self._closed.is_set(), (
+                "pressure test entered a blocking read after consuming the payload"
+            )
+            read = super().read(audio_buffer)
+            self.consumed_bytes += read
+            return read
+
+        def close(self) -> None:
+            super().close()
+            release_writer.set()
+
+    try:
+        with patch.dict(globals(), _PushAudioReader=DelayedWriterReader):
+            _assert_audio_queue_is_bounded_under_pressure()
+    finally:
+        release_writer.set()
 
 
 class _CredentialBoundCatalogService:
@@ -771,6 +807,7 @@ def run() -> None:
     _assert_native_timing_is_private_current_and_deduplicated()
     _assert_native_timing_falls_back_without_sdk_signals()
     _assert_audio_queue_is_bounded_under_pressure()
+    _assert_audio_queue_pressure_finishes_before_writer_exit()
     _assert_dynamic_voice_trust_is_credential_bound()
     _assert_dynamic_voice_query_does_not_block_speak()
     _assert_stale_catalog_query_cannot_emit_after_invalidation()

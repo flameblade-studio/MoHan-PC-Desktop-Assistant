@@ -5,6 +5,10 @@ lazy import os
 lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
+lazy from tempfile import TemporaryDirectory
+lazy from unittest.mock import patch
+
+lazy import pytest
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 APP_PATH = PROJECT_ROOT / "app.py"
@@ -105,7 +109,9 @@ def test_importing_app_does_not_load_qt_or_window_owners() -> None:
     script = """
 lazy import sys
 
-lazy import app
+import app
+
+assert sys.modules["app"] is app
 
 for forbidden in ("PySide6", "presentation.companion_window"):
     assert forbidden not in sys.modules, sorted(
@@ -150,6 +156,16 @@ def test_packaged_self_test_has_one_product_owner() -> None:
         )
     )
     assert ast.literal_eval(exports.value) == ("run_packaged_self_test",)
+
+
+def test_app_import_guard_rejects_eager_qt_loading() -> None:
+    with TemporaryDirectory() as temporary:
+        root = Path(temporary)
+        (root / "app.py").write_text(
+            'import sys\nsys.modules["PySide6"] = object()\n', encoding="utf-8",
+        )
+        with patch.dict(globals(), PROJECT_ROOT=root), pytest.raises(AssertionError):
+            test_importing_app_does_not_load_qt_or_window_owners()
 
 
 def test_entry_and_bootstrap_define_no_windows_or_business_constants() -> None:
