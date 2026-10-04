@@ -4,7 +4,6 @@ lazy import ast
 lazy import os
 lazy import socket
 lazy import sys
-lazy from copy import deepcopy
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from unittest.mock import patch
@@ -19,8 +18,10 @@ lazy from PySide6.QtTest import QSignalSpy
 
 lazy from application import camera_presence
 lazy from application.camera_presence import CameraPresenceController
+lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_identity_store import FaceIdentityStore
 lazy from application.vision_controller import VisionController
+lazy from presentation.flagship.vision import FlagshipVisionMixin
 lazy from domain.vision_domain import (
     IdentityObservation,
     IdentityState,
@@ -60,6 +61,16 @@ FORBIDDEN_LEGACY_ROOTS = frozenset(
         "realtime_voice",
         "speech",
         "speech_providers",
+    }
+)
+FORBIDDEN_LEGACY_IMPORT_PATHS = frozenset(
+    {
+        "domain.speech_providers",
+        "infrastructure.db",
+        "integrations.ai_client",
+        "integrations.realtime_voice",
+        "integrations.speech",
+        "integrations.speech_providers",
     }
 )
 
@@ -125,16 +136,54 @@ class StaticVideoFrame:
         return self._image
 
 
-def _local_import_roots(filename: str) -> set[str]:
-    path = PROJECT / filename
-    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
-    roots: set[str] = set()
-    for node in ast.walk(tree):
+def _imported_module_paths(syntax: ast.AST) -> set[str]:
+    modules: set[str] = set()
+    for node in ast.walk(syntax):
         if isinstance(node, ast.Import):
-            roots.update(alias.name.split(".", 1)[0] for alias in node.names)
+            modules.update(alias.name for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module:
-            roots.add(node.module.split(".", 1)[0])
-    return roots
+            modules.add(node.module)
+            modules.update(
+                f"{node.module}.{alias.name}"
+                for alias in node.names
+                if alias.name != "*"
+            )
+    return modules
+
+
+def _local_import_paths(filename: str) -> set[str]:
+    path = PROJECT / filename
+    syntax = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    return _imported_module_paths(syntax)
+
+
+def _local_import_roots(filename: str) -> set[str]:
+    return {
+        imported.partition(".")[0]
+        for imported in _local_import_paths(filename)
+    }
+
+
+def _forbidden_legacy_imports(imports: set[str]) -> set[str]:
+    roots = {imported.partition(".")[0] for imported in imports}
+    return (roots & FORBIDDEN_LEGACY_ROOTS) | (
+        imports & FORBIDDEN_LEGACY_IMPORT_PATHS
+    )
+
+
+def assert_legacy_import_guard_detects_dotted_paths() -> None:
+    imports = _imported_module_paths(
+        ast.parse(
+            "from integrations.ai_client import ActionPlannerWorker\n"
+            "from infrastructure.db import StudioDB\n"
+            "from integrations import ai_client\n"
+            "from infrastructure import db\n"
+        )
+    )
+    assert _forbidden_legacy_imports(imports) == {
+        "integrations.ai_client",
+        "infrastructure.db",
+    }
 
 
 def assert_disabled_camera_never_creates_inference() -> None:
@@ -337,14 +386,6 @@ def assert_visual_pipeline_has_no_network_path(
 
 
 def assert_legacy_voice_and_chat_settings_are_unrelated() -> None:
-    settings = {
-        "voice_engine": "openai-speech",
-        "tts_voice": "coral",
-        "realtime_voice": "shimmer",
-        "chat_zoom_percent": 130,
-        "persona_prompt": "private persona",
-    }
-    expected = deepcopy(settings)
     for filename in VISION_MODULES:
         roots = _local_import_roots(filename)
         assert not roots & FORBIDDEN_LEGACY_ROOTS, (
@@ -354,7 +395,107 @@ def assert_legacy_voice_and_chat_settings_are_unrelated() -> None:
     controller = VisionController(FaceIdentityStore(MemorySecretStore()))
     controller.configure(enabled=False, camera_available=False)
     controller.stop()
-    assert settings == expected
+
+
+def assert_persisted_voice_and_chat_settings_survive_vision_disable() -> None:
+    voice_and_chat_settings = {
+        "voice_engine": "openai-speech",
+        "tts_voice": "coral",
+        "realtime_voice": "shimmer",
+        "chat_zoom_percent": 130,
+        "persona_prompt": "private persona",
+    }
+    application = QCoreApplication.instance() or QCoreApplication([])
+    assert application is not None
+    with TemporaryDirectory() as temporary:
+        db = StudioDB(Path(temporary) / "mohan.db")
+        try:
+            for key, value in voice_and_chat_settings.items():
+                db.set_setting(key, value)
+            db.set_setting("camera_presence_enabled", True)
+            db.set_setting("face_identity_enabled", True)
+            before = db.settings_snapshot()
+            expected = {
+                key: before[key]
+                for key in voice_and_chat_settings
+            }
+
+            harness = _VisionSettingsHarness(db)
+            harness.vision_controller._enabled = True
+            harness.apply_camera_settings()
+
+            after = db.settings_snapshot()
+            actual = {
+                key: after[key]
+                for key in voice_and_chat_settings
+            }
+            assert actual == expected, (
+                "vision disable changed persisted voice/chat settings: "
+                f"expected={expected!r}, actual={actual!r}"
+            )
+            assert after["camera_presence_enabled"] == "false"
+            assert after["face_identity_enabled"] == "false"
+            assert not harness.vision_controller._enabled
+        finally:
+            db.close()
+
+
+class _SettingsControl:
+    def __init__(self, checked: bool = False) -> None:
+        self.checked = checked
+        self.enabled = True
+        self.text = ""
+
+    def isChecked(self) -> bool:
+        return self.checked
+
+    def setEnabled(self, enabled: bool) -> None:
+        self.enabled = enabled
+
+    def setText(self, text: str) -> None:
+        self.text = text
+
+
+class _CameraPresenceBoundary:
+    def stop(self) -> None:
+        return None
+
+    def configure_gesture_sampling(self, _enabled: bool) -> None:
+        return None
+
+
+class _MultimodalBoundary:
+    def configure(self, *, enabled: bool) -> None:
+        return None
+
+
+class _VisionSettingsHarness(FlagshipVisionMixin):
+    def __init__(self, db: StudioDB) -> None:
+        self.db = db
+        self.camera_enabled = _SettingsControl(checked=False)
+        self.face_identity = _SettingsControl(checked=True)
+        self.local_perception_status = _SettingsControl()
+        self.camera_presence = _CameraPresenceBoundary()
+        self.vision_controller = VisionController(
+            FaceIdentityStore(MemorySecretStore())
+        )
+        self.multimodal_controller = _MultimodalBoundary()
+        self._gesture_controller = None
+        self.cloud_vision_service = None
+
+    @staticmethod
+    def _t(text: str, **_values: object) -> str:
+        return text
+
+
+def assert_vision_modules_import_no_legacy_paths() -> None:
+    for filename in VISION_MODULES:
+        imports = _local_import_paths(filename)
+        forbidden = _forbidden_legacy_imports(imports)
+        assert not forbidden, (
+            filename,
+            forbidden,
+        )
 
 
 def run() -> None:
@@ -386,8 +527,20 @@ def run() -> None:
             lambda: assert_visual_pipeline_has_no_network_path(application),
         ),
         (
-            "legacy voice and chat settings are unrelated",
+            "legacy imports are checked by complete path",
+            assert_legacy_import_guard_detects_dotted_paths,
+        ),
+        (
+            "vision modules avoid legacy canonical owners",
+            assert_vision_modules_import_no_legacy_paths,
+        ),
+        (
+            "voice and chat settings stay unrelated to vision",
             assert_legacy_voice_and_chat_settings_are_unrelated,
+        ),
+        (
+            "persisted voice and chat settings survive vision disable",
+            assert_persisted_voice_and_chat_settings_survive_vision_disable,
         ),
     )
     failures: list[AssertionError] = []

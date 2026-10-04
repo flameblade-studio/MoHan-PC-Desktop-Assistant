@@ -32,26 +32,36 @@ EXEMPT_SELECTOR = re.compile(r":disabled")
 def _violations(name: str, stylesheet: str) -> list[str]:
     found: list[str] = []
     for match in RULE.finditer(stylesheet):
-        selector = " ".join(match.group(1).split())
+        selectors = tuple(
+            " ".join(selector.split())
+            for selector in match.group(1).split(",")
+            if selector.strip()
+        )
         body = match.group(2)
-        exempt = bool(EXEMPT_SELECTOR.search(selector))
         checks: list[tuple[str, str, str]] = []
-        foreground = FOREGROUND.search(body)
-        background = BACKGROUND.search(body)
+        foreground = _last_declaration(FOREGROUND, body)
+        background = _last_declaration(BACKGROUND, body)
         if foreground and background:
-            checks.append((foreground.group(1), background.group(1), "text"))
-        sel_fg = SELECTION_FG.search(body)
-        sel_bg = SELECTION_BG.search(body)
+            checks.append((foreground, background, "text"))
+        sel_fg = _last_declaration(SELECTION_FG, body)
+        sel_bg = _last_declaration(SELECTION_BG, body)
         if sel_fg and sel_bg:
-            checks.append((sel_fg.group(1), sel_bg.group(1), "selection"))
+            checks.append((sel_fg, sel_bg, "selection"))
         for fg, bg, kind in checks:
             ratio = _contrast_ratio(bg, fg)
-            if ratio < MINIMUM_RATIO and not exempt:
-                found.append(
+            if ratio < MINIMUM_RATIO:
+                found.extend(
                     f"{name}: {selector[:70]} [{kind}] "
                     f"{fg} on {bg} = {ratio:.2f}"
+                    for selector in selectors
+                    if not EXEMPT_SELECTOR.search(selector)
                 )
     return found
+
+
+def _last_declaration(pattern: re.Pattern[str], body: str) -> str | None:
+    matches = pattern.findall(body)
+    return matches[-1] if matches else None
 
 
 def test_all_stylesheets_meet_wcag_contrast() -> None:
@@ -84,7 +94,29 @@ def test_flagship_selection_colors_are_readable() -> None:
             )
 
 
+def test_mixed_disabled_and_enabled_selectors_are_checked_independently() -> None:
+    violations = _violations(
+        "mixed-selectors",
+        "QPushButton:disabled, QLabel { color:#ffffff; background:#ffffff; }",
+    )
+
+    assert len(violations) == 1
+    assert "QLabel" in violations[0]
+
+
+def test_last_color_declaration_controls_contrast() -> None:
+    violations = _violations(
+        "duplicate-colors",
+        "QLabel { color:#000000; color:#ffffff; background:#ffffff; }",
+    )
+
+    assert len(violations) == 1
+    assert "#ffffff on #ffffff" in violations[0]
+
+
 if __name__ == "__main__":
     test_all_stylesheets_meet_wcag_contrast()
     test_flagship_selection_colors_are_readable()
+    test_mixed_disabled_and_enabled_selectors_are_checked_independently()
+    test_last_color_declaration_controls_contrast()
     print("WCAG_CONTRAST_GOVERNANCE_OK")

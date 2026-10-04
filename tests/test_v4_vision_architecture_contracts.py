@@ -84,12 +84,32 @@ FORBIDDEN_LOCAL_ROOTS = frozenset({
     "urllib",
     "websocket",
 })
+FORBIDDEN_LOCAL_IMPORT_PATHS = frozenset({
+    "application.cloud_vision_runtime",
+    "domain.cloud_scene_interpreter",
+    "infrastructure.db",
+    "infrastructure.openai_vision_preferences_store",
+    "integrations.ai_client",
+    "integrations.openai_vision_provider",
+})
+FORBIDDEN_PERSISTENCE_IMPORT_PATHS = frozenset({
+    "infrastructure.db",
+})
 FORBIDDEN_CLOUD_CONTROL_ROOTS = frozenset({
     "action_planner",
     "ai_client",
     "computer_tools",
     "speech",
     "speech_providers",
+})
+FORBIDDEN_CLOUD_CONTROL_IMPORT_PATHS = frozenset({
+    "application.action_planner",
+    "application.computer_tools",
+    "domain.speech_providers",
+    "integrations.ai_client",
+    "integrations.realtime_voice",
+    "integrations.speech",
+    "integrations.speech_providers",
 })
 SENSITIVE_NAMES = frozenset({
     "api_key",
@@ -128,14 +148,88 @@ def tree(module: str) -> ast.Module:
     return ast.parse(source(module), filename=STATIC_SOURCE_PATHS[module])
 
 
-def imported_roots(module: str) -> set[str]:
-    roots: set[str] = set()
-    for node in ast.walk(tree(module)):
+def project_module_sources() -> dict[str, Path]:
+    modules = {path.stem: path for path in ROOT.glob("*.py")}
+    for package in (
+        "application",
+        "domain",
+        "integrations",
+        "infrastructure",
+        "presentation",
+    ):
+        for path in (ROOT / package).rglob("*.py"):
+            parts = list(path.relative_to(ROOT).with_suffix("").parts)
+            if parts[-1] == "__init__":
+                parts.pop()
+            if parts:
+                modules[".".join(parts)] = path
+    return modules
+
+
+def imported_modules_from_syntax(syntax: ast.AST) -> set[str]:
+    modules: set[str] = set()
+    for node in ast.walk(syntax):
         if isinstance(node, ast.Import):
-            roots.update(alias.name.partition(".")[0] for alias in node.names)
+            modules.update(alias.name for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module:
-            roots.add(node.module.partition(".")[0])
-    return roots
+            modules.add(node.module)
+            modules.update(
+                f"{node.module}.{alias.name}"
+                for alias in node.names
+                if alias.name != "*"
+            )
+    return modules
+
+
+def imported_roots(module: str) -> set[str]:
+    return {
+        imported.partition(".")[0]
+        for imported in imported_modules_from_syntax(tree(module))
+    }
+
+
+def forbidden_imports(
+    syntax: ast.AST,
+    forbidden_roots: frozenset[str],
+    forbidden_paths: frozenset[str],
+) -> set[str]:
+    modules = imported_modules_from_syntax(syntax)
+    roots = {module.partition(".")[0] for module in modules}
+    return (roots & forbidden_roots) | (modules & forbidden_paths)
+
+
+def syntax_for_module_source(source_path: Path | ast.AST) -> ast.AST:
+    if isinstance(source_path, ast.AST):
+        return source_path
+    return ast.parse(source_path.read_text(encoding="utf-8"), filename=str(source_path))
+
+
+def local_module_dependency_graph(
+    start_modules: tuple[str, ...],
+    module_sources: dict[str, Path | ast.AST],
+) -> dict[str, set[str]]:
+    graph: dict[str, set[str]] = {}
+    pending = list(start_modules)
+    while pending:
+        module = pending.pop()
+        if module in graph or module not in module_sources:
+            continue
+        syntax = syntax_for_module_source(module_sources[module])
+        dependencies: set[str] = set()
+        for imported in imported_modules_from_syntax(syntax):
+            parts = imported.split(".")
+            for length in range(len(parts), 0, -1):
+                candidate = ".".join(parts[:length])
+                if candidate in module_sources:
+                    dependencies.add(candidate)
+                    break
+        graph[module] = dependencies
+        pending.extend(sorted(dependencies - graph.keys()))
+    return graph
+
+
+def canonical_module_name(module: str) -> str:
+    return ".".join(Path(STATIC_SOURCE_PATHS[module]).with_suffix("").parts)
 
 
 def call_name(node: ast.Call) -> str:
@@ -160,27 +254,75 @@ def string_constants(syntax: ast.AST) -> set[str]:
 
 
 def test_local_visual_core_has_no_cloud_ui_db_or_network_dependency() -> None:
-    local_modules = {path.stem for path in ROOT.glob("*.py")}
-    graph = {
-        module: imported_roots(module) & local_modules
-        for module in LOCAL_CORE_MODULES
-    }
-    pending = list(LOCAL_CORE_MODULES)
-    visited: set[str] = set()
-    while pending:
-        module = pending.pop()
-        if module in visited:
-            continue
-        visited.add(module)
-        imports = imported_roots(module)
-        forbidden = imports & FORBIDDEN_LOCAL_ROOTS
+    module_sources = project_module_sources()
+    entrypoints = tuple(canonical_module_name(module) for module in LOCAL_CORE_MODULES)
+    graph = local_module_dependency_graph(entrypoints, module_sources)
+    assert set(entrypoints) <= graph.keys(), (entrypoints, sorted(graph))
+    for module in sorted(graph):
+        syntax = syntax_for_module_source(module_sources[module])
+        forbidden = forbidden_imports(
+            syntax,
+            FORBIDDEN_LOCAL_ROOTS,
+            FORBIDDEN_LOCAL_IMPORT_PATHS,
+        )
         assert not forbidden, f"{module} imports forbidden local-core dependency: {forbidden}"
-        pending.extend(graph.get(module, ()))
+
+
+def test_local_core_dependency_graph_finds_transitive_forbidden_path() -> None:
+    module_sources: dict[str, Path | ast.AST] = {
+        "application.local_visual_intelligence": ast.parse(
+            "from application.visual_perception import PresenceState"
+        ),
+        "application.visual_perception": ast.parse(
+            "from integrations.ai_client import ActionPlannerWorker"
+        ),
+        "integrations.ai_client": ast.parse(""),
+    }
+    graph = local_module_dependency_graph(
+        ("application.local_visual_intelligence",),
+        module_sources,
+    )
+    assert graph == {
+        "application.local_visual_intelligence": {"application.visual_perception"},
+        "application.visual_perception": {"integrations.ai_client"},
+        "integrations.ai_client": set(),
+    }
+    assert forbidden_imports(
+        syntax_for_module_source(module_sources["application.visual_perception"]),
+        FORBIDDEN_LOCAL_ROOTS,
+        FORBIDDEN_LOCAL_IMPORT_PATHS,
+    ) == {"integrations.ai_client"}
+
+
+def test_forbidden_dotted_imports_are_detected_by_full_path() -> None:
+    syntax = ast.parse(
+        "from integrations.ai_client import ActionPlannerWorker\n"
+        "from infrastructure.db import StudioDB\n"
+        "from integrations import ai_client\n"
+        "from infrastructure import db\n"
+    )
+    assert forbidden_imports(
+        syntax,
+        FORBIDDEN_LOCAL_ROOTS,
+        FORBIDDEN_LOCAL_IMPORT_PATHS,
+    ) == {"integrations.ai_client", "infrastructure.db"}
+    assert forbidden_imports(
+        syntax,
+        FORBIDDEN_CLOUD_CONTROL_ROOTS,
+        FORBIDDEN_CLOUD_CONTROL_IMPORT_PATHS,
+    ) == {"integrations.ai_client"}
+    assert forbidden_imports(
+        syntax,
+        frozenset({"db", "logging", "sqlite3"}),
+        FORBIDDEN_PERSISTENCE_IMPORT_PATHS,
+    ) == {"infrastructure.db"}
 
 
 def test_cloud_interpreter_cannot_identify_speak_or_execute_actions() -> None:
-    assert not (
-        imported_roots("cloud_scene_interpreter") & FORBIDDEN_CLOUD_CONTROL_ROOTS
+    assert not forbidden_imports(
+        tree("cloud_scene_interpreter"),
+        FORBIDDEN_CLOUD_CONTROL_ROOTS,
+        FORBIDDEN_CLOUD_CONTROL_IMPORT_PATHS,
     )
     syntax = tree("cloud_scene_interpreter")
     forbidden_calls = {
@@ -203,7 +345,15 @@ def test_cloud_interpreter_cannot_identify_speak_or_execute_actions() -> None:
 def test_stdlib_https_transport_is_private_and_non_persistent() -> None:
     for module in VISION_CONTRACT_MODULES:
         syntax = tree(module)
-        assert not imported_roots(module) & {"db", "logging", "sqlite3"}
+        forbidden_persistence_imports = forbidden_imports(
+            syntax,
+            frozenset({"db", "logging", "sqlite3"}),
+            FORBIDDEN_PERSISTENCE_IMPORT_PATHS,
+        )
+        assert not forbidden_persistence_imports, (
+            module,
+            forbidden_persistence_imports,
+        )
         for node in ast.walk(syntax):
             if not isinstance(node, ast.Call) or call_name(node) not in PERSISTENCE_OR_LOG_CALLS:
                 continue
@@ -488,6 +638,8 @@ def test_python315_lazy_import_and_zen_contracts_do_not_regress() -> None:
 def run() -> None:
     checks = (
         test_local_visual_core_has_no_cloud_ui_db_or_network_dependency,
+        test_local_core_dependency_graph_finds_transitive_forbidden_path,
+        test_forbidden_dotted_imports_are_detected_by_full_path,
         test_cloud_interpreter_cannot_identify_speak_or_execute_actions,
         test_stdlib_https_transport_is_private_and_non_persistent,
         test_http_errors_are_sanitized_without_secret_echo,

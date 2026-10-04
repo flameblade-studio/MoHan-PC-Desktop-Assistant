@@ -27,7 +27,7 @@ lazy import sys
 lazy import tempfile
 lazy from pathlib import Path
 
-PROJECT_ROOT = Path(r"D:/FlamebladeStudio/CodexProjects/2026-09-02/mohan-front-layer-repair")
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 lazy from tools.art_pipeline.output_guard import (
@@ -36,6 +36,19 @@ lazy from tools.art_pipeline.output_guard import (
     WriteRefused,
     sha256_file,
 )
+
+
+def _current_output_guard_path() -> Path:
+    return Path(__file__).resolve().with_name("output_guard.py")
+
+
+def test_output_guard_imports_from_current_worktree() -> None:
+    imported_path = Path(sys.modules[OutputGuard.__module__].__file__).resolve()
+    expected_path = _current_output_guard_path()
+    assert imported_path == expected_path, (
+        f"loaded {imported_path}, expected current checkout {expected_path}"
+    )
+
 
 RESULTS: list[dict] = []
 BAD_REGISTRIES = ("missing", "malformed", "no-entries", "entry-without-path")
@@ -204,6 +217,14 @@ def main() -> int:
         root, handoff, stage = make_sandbox(tmp)
         sealed = root / SEALED_RELATIVE
         pins_path = handoff / "SOURCE_PINS.json"
+
+        imported_path = Path(sys.modules[OutputGuard.__module__].__file__).resolve()
+        expected_path = _current_output_guard_path()
+        check(
+            "current_worktree_imported",
+            imported_path == expected_path,
+            str(imported_path),
+        )
 
         def guard(**kwargs) -> OutputGuard:
             return OutputGuard(root, stage_dir=stage, handoff_dir=handoff, **kwargs)
