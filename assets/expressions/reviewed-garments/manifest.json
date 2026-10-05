@@ -11,11 +11,11 @@
       "ordered_layers": [
         {
           "path": "cheek-rest/source-bcc8/garment-source.rgba.png",
-          "sha256": "0b102914f558dc2c547e41183bc859188db6b340401c609145d902713ec6a8c8"
+          "sha256": "fa229464191c1715142cba236e05b41d44b2a5b2cb453a67d7abedc6853bf0c5"
         },
         {
           "path": "cheek-rest/source-bcc8/native-hands-foreground.rgba.png",
-          "sha256": "59f5fc7c7efc9ddb533aa660e2be016a71c7bedc699f56ffb7ceaf2e6e76f27a"
+          "sha256": "2fad5c89c3ddeaa3f318f3fece503d7dfc49c807bb2a0de72902af4ebe8697ef"
         }
       ],
       "selection_exact": {
