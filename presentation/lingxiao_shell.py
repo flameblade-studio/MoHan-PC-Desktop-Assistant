@@ -33,6 +33,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from presentation.dashboard_artwork import CelestialFrame
+lazy from presentation.desktop_companion_status import DESKTOP_STATUS_COLLAPSED_SETTING
 lazy from presentation.lingxiao_themes import palette_for_theme
 lazy from presentation.lingxiao_widgets import (
     MotesLayer,
@@ -294,7 +295,12 @@ def _navigation_button_text(
         f"{_NAVIGATION_COMPACT_BUTTON_PADDING}px; }}"
     )
     width = _navigation_text_width(navigation, button, title)
-    return _wrapped_text(title, metrics, width)
+    return _wrapped_text(
+        title,
+        metrics,
+        width,
+        break_long_words=True,
+    )
 
 
 def _refresh_navigation_layout(navigation: QFrame) -> None:
@@ -658,7 +664,9 @@ def update_draft_bar(shell) -> int | str:
         )
         return DRAFT_BAR_READ_ERROR
     changed = 0
-    keys = set(baseline) | set(current)
+    keys = (set(baseline) | set(current)) - {
+        DESKTOP_STATUS_COLLAPSED_SETTING
+    }
     for key in keys:
         if baseline.get(key) != current.get(key):
             changed += 1

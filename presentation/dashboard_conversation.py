@@ -142,10 +142,10 @@ class DashboardConversationMixin:
         history_row = QHBoxLayout()
         self.chat_retention = QLabel(
             self._t(
-                "chat_retention",
-                '對話持續保留在本機，由您明確決定刪除',
+                "chat_retention", '對話持續保留在本機，由您明確決定刪除',
             )
         )
+        self.chat_retention.setWordWrap(True)
         self.chat_retention.setStyleSheet("color: #356d88;")
         self.load_older_chat_btn = QPushButton(
             self._t("load_older_chat", "載入較早對話")

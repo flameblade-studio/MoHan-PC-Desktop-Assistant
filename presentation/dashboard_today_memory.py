@@ -281,6 +281,7 @@ class DashboardTodayMemoryMixin:
                 "只刪除已勾選的記憶，執行前會再次確認",
             )
         )
+        delete_button.setMinimumWidth(delete_button.sizeHint().width())
         filter_row.addWidget(edit_button)
         filter_row.addWidget(delete_button)
         return filter_row, edit_button, delete_button
