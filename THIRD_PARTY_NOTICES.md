@@ -71,7 +71,7 @@ Face Mesh、虹膜與 Silero VAD 已隨 Windows 正式封裝提供；它們由 O
 
 ### Preview 封裝工具
 
-Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 組裝。建置流程會下載上游 `continuous` x86_64 資產，但只有在其 SHA-256 等於 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` 時才接受。所記錄的上游來源 commit 為 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 資產 ID 為 `324406882`。
+Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 組裝。建置流程會下載上游固定正式版 `1.9.1` 的 x86_64 資產，但只有在其 SHA-256 等於 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` 時才接受。所記錄的上游來源 commit 為 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 資產 ID 為 `324406736`。
 
 `appimagetool` 仍受其自身的上游授權條款約束。
 
@@ -164,7 +164,7 @@ Face Mesh、虹膜与 Silero VAD 已随 Windows 正式封装提供；它们由 O
 
 ### Preview 封装工具
 
-Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 组装。构建流程会下载上游 `continuous` x86_64 资产，但只有在其 SHA-256 等于 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` 时才接受。所记录的上游源 commit 为 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 资产 ID 为 `324406882`。
+Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 组装。构建流程会下载上游固定正式版 `1.9.1` 的 x86_64 资产，但只有在其 SHA-256 等于 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` 时才接受。所记录的上游源 commit 为 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 资产 ID 为 `324406736`。
 
 `appimagetool` 仍受其自身的上游许可条款约束。
 
@@ -257,7 +257,7 @@ An outfit pack may contain multiple garments, colorways, and accessories, but ma
 
 ### Preview packaging tool
 
-The Linux x86_64 limited Preview is assembled with the official [AppImage `appimagetool`](https://github.com/AppImage/appimagetool). The build downloads the upstream `continuous` x86_64 asset but accepts it only when its SHA-256 equals `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`. The recorded upstream source commit is `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, and the GitHub asset ID is `324406882`.
+The Linux x86_64 limited Preview is assembled with the official [AppImage `appimagetool`](https://github.com/AppImage/appimagetool). The build downloads the upstream immutable `1.9.1` release x86_64 asset but accepts it only when its SHA-256 equals `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0`. The recorded upstream source commit is `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, and the GitHub asset ID is `324406736`.
 
 `appimagetool` remains governed by its own upstream license.
 
@@ -350,7 +350,7 @@ Face Mesh、虹彩、Silero VAD は正式な Windows パッケージに同梱さ
 
 ### Preview パッケージ作成ツール
 
-Linux x86_64 の機能制限付き Preview は、公式の [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) で組み立てられます。ビルドは上流の `continuous` x86_64 アセットをダウンロードしますが、その SHA-256 が `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` と一致する場合にのみ受け入れます。記録されている上流ソースの commit は `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、GitHub アセット ID は `324406882` です。
+Linux x86_64 の機能制限付き Preview は、公式の [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) で組み立てられます。ビルドは上流の固定正式版 `1.9.1` の x86_64 アセットをダウンロードしますが、その SHA-256 が `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` と一致する場合にのみ受け入れます。記録されている上流ソースの commit は `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、GitHub アセット ID は `324406736` です。
 
 `appimagetool` には、引き続き上流独自のライセンスが適用されます。
 

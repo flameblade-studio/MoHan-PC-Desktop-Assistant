@@ -199,7 +199,7 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
 
 def test_build_tool_is_pinned() -> None:
     assert re.fullmatch(r"[0-9a-f]{40}", APPIMAGETOOL_SOURCE_COMMIT)
-    assert APPIMAGETOOL_ASSET_ID == "324406882"
+    assert APPIMAGETOOL_ASSET_ID == "324406736"
     assert re.fullmatch(r"[0-9a-f]{64}", APPIMAGETOOL_SHA256)
     assert APPIMAGETOOL_URL.startswith(
         "https://github.com/AppImage/appimagetool/releases/download/"

@@ -31,12 +31,12 @@ VERSION_PATTERN = re.compile(
     r"^[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.(?:0|[1-9][0-9]*))?$"
 )
 APPIMAGETOOL_SOURCE_COMMIT = "8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81"
-APPIMAGETOOL_ASSET_ID = "324406882"
+APPIMAGETOOL_ASSET_ID = "324406736"
 APPIMAGETOOL_SHA256 = (
-    "a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0"
+    "ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0"
 )
 APPIMAGETOOL_URL = (
-    "https://github.com/AppImage/appimagetool/releases/download/continuous/"
+    "https://github.com/AppImage/appimagetool/releases/download/1.9.1/"
     "appimagetool-x86_64.AppImage"
 )
 # Source directories and the PyInstaller ``--add-data`` destinations below

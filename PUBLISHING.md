@@ -136,7 +136,7 @@ GitHub 自動化必須使用一條可預測的憑證路徑。Pull Request 的讀
 
 發布中繼資料工作必須以已保存的 Python 3.15 執行路徑執行所有墨寒專案工具。隔離的 Python 3.14 使用範圍限於等待 3.15 支援的第三方 SBOM 工具鏈；後續專案工具固定使用已保存的 Python 3.15 執行路徑。
 
-發行與 PR 套件工作流程會將每個 GitHub Action 鎖定至完整 commit。Linux 封裝還會把官方 `appimagetool` 產物鎖定至來源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、產物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
+發行與 PR 套件工作流程會將每個 GitHub Action 鎖定至完整 commit。Linux 封裝還會把官方 `appimagetool` 產物鎖定至來源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、產物 ID `324406736` 及 SHA-256 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0`。
 
 Windows 安裝程式建置會鎖定 Inno Setup `7.0.2` 與 WiX `7.0.0`。Inno Setup 編譯器只能從不可變的官方 `jrsoftware/issrc` Release 下載，使用前必須驗證 GitHub Release 證明與 Pyrsys B.V. Authenticode 簽章。WiX 會使用已明確授權的 `-acceptEula wix7` CI 引數，並使用持續維護的 `Files` harvester。
 
@@ -315,7 +315,7 @@ GitHub 自动化必须使用一条可预测的凭证路径。Pull Request 的读
 
 发布元数据工作必须使用已保存的 Python 3.15 执行路径运行所有墨寒项目工具。隔离的 Python 3.14 使用范围限于等待 3.15 支持的第三方 SBOM 工具链；后续项目工具固定使用已保存的 Python 3.15 执行路径。
 
-发布与 PR 软件包工作流会将每个 GitHub Action 锁定至完整 commit。Linux 打包还会把官方 `appimagetool` 产物锁定至源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、产物 ID `324406882` 及 SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`。
+发布与 PR 软件包工作流会将每个 GitHub Action 锁定至完整 commit。Linux 打包还会把官方 `appimagetool` 产物锁定至源 commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、产物 ID `324406736` 及 SHA-256 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0`。
 
 Windows 安装程序构建会锁定 Inno Setup `7.0.2` 与 WiX `7.0.0`。Inno Setup 编译器只能从不可变的官方 `jrsoftware/issrc` Release 下载，使用前必须验证 GitHub Release 证明与 Pyrsys B.V. Authenticode 签名。WiX 会使用已明确授权的 `-acceptEula wix7` CI 参数，并使用持续维护的 `Files` harvester。
 
@@ -494,7 +494,7 @@ Every `vN.N.N-rc.N` tag must publish as a pre-release, while a plain `vN.N.N` ta
 
 The release metadata job must run every MoHan-owned tool with the saved Python 3.15 executable. The isolated Python 3.14 runtime is restricted to third-party SBOM tooling that awaits 3.15 support; later project tools keep using the saved Python 3.15 executable.
 
-The release and PR package workflows pin every GitHub Action to a full commit. Linux packaging additionally pins the official `appimagetool` asset to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID `324406882`, and SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`.
+The release and PR package workflows pin every GitHub Action to a full commit. Linux packaging additionally pins the official `appimagetool` asset to source commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, asset ID `324406736`, and SHA-256 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0`.
 
 Windows installer builds pin Inno Setup `7.0.2` and WiX `7.0.0`. The Inno Setup compiler is downloaded only from the immutable official `jrsoftware/issrc` Release, then checked with GitHub Release attestation and its Pyrsys B.V. Authenticode signature before use. WiX runs with the explicitly authorized `-acceptEula wix7` CI argument and uses its maintained `Files` harvester instead of the removed Heat tool.
 
@@ -673,7 +673,7 @@ GitHub 自動化では、予測可能な認証経路を一つだけ使用しま�
 
 リリースメタデータジョブでは、保存済みの Python 3.15 実行パスを使って墨寒所有の全ツールを実行しなければなりません。隔離した Python 3.14 は、まだ 3.15 をサポートしていない第三者 SBOM ツールチェーンだけに限定し、後続のプロジェクトツールは保存済みの Python 3.15 実行パスを固定して使用します。
 
-リリースおよび PR パッケージワークフローは、すべての GitHub Action を完全な commit に固定します。Linux パッケージ化ではさらに、公式 `appimagetool` 成果物をソース commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、成果物 ID `324406882`、SHA-256 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` に固定します。
+リリースおよび PR パッケージワークフローは、すべての GitHub Action を完全な commit に固定します。Linux パッケージ化ではさらに、公式 `appimagetool` 成果物をソース commit `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、成果物 ID `324406736`、SHA-256 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` に固定します。
 
 Windows インストーラービルドでは Inno Setup `7.0.2` と WiX `7.0.0` を固定します。Inno Setup コンパイラーは不変の公式 `jrsoftware/issrc` Release からだけダウンロードし、使用前に GitHub Release 証明と Pyrsys B.V. Authenticode 署名を検証します。WiX は明示的に許可された `-acceptEula wix7` CI 引数を使用し、削除済みの Heat ではなく、保守中の `Files` harvester を使用します。
 
