@@ -10,6 +10,7 @@ lazy import shutil
 lazy import subprocess
 lazy import uuid
 lazy import zipfile
+lazy from dataclasses import replace
 lazy from itertools import product
 lazy from pathlib import Path
 
@@ -18,6 +19,7 @@ lazy from PIL import Image
 
 lazy from tools.golden_render import (
     APPROVAL_SCHEMA,
+    DEFAULT_CHARACTER_SETTINGS,
     MANIFEST_PATH,
     GIT_REVISION_LENGTH,
     ROOT,
@@ -59,6 +61,106 @@ def test_manifest_covers_the_complete_matrix() -> None:
     validate_approval(approval, frozenset(cell.cell_id for cell in cells))
     source = manifest["harness"]["source"].encode("utf-8")
     assert hashlib.sha256(source).hexdigest() == manifest["harness"]["sha256"]
+
+
+def test_default_character_settings_preserve_the_approved_matrix() -> None:
+    manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    settings = DEFAULT_CHARACTER_SETTINGS
+    assert settings.character_id == "flameblade.mohan"
+    assert settings.manifest_schema == SCHEMA
+    assert settings.approval_schema == APPROVAL_SCHEMA
+    assert settings.makeups == ("none", "light", "classic", "glamorous")
+    assert settings.half_size == (465, 465)
+    assert settings.full_size == (1024, 1536)
+    assert sorted(cell.cell_id for cell in matrix_cells(settings)) == [
+        cell["id"] for cell in manifest["cells"]
+    ]
+
+
+def test_fake_character_settings_drive_catalogs_and_asset_paths(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from tools import golden_render
+
+    settings = replace(
+        DEFAULT_CHARACTER_SETTINGS,
+        character_id="example.test-character",
+        manifest_schema="example.golden-render.v1",
+        makeups=("bare",),
+        eye_states=("rest",),
+        half_expressions=(),
+        expression_poses=(),
+        expression_assets=(),
+        full_body_views=("profile-left",),
+        full_size=(7, 9),
+        official_pack_root="characters/example/appearance",
+        half_expression_root="characters/example/portraits",
+        half_layered_root="characters/example/half-layers",
+        half_detachable_root="characters/example/detachable",
+        full_layered_root="characters/example/full-layers",
+        full_authority_root="characters/example/full-authority",
+    )
+    observed = {}
+
+    class FakePixmap:
+        def isNull(self):
+            return False
+
+        def width(self):
+            return 7
+
+        def height(self):
+            return 9
+
+    class FakeFullRenderer:
+        def __init__(self, manifest, *, outfit_overlay, authority_root):
+            observed["manifest"] = manifest
+            observed["authority_root"] = authority_root
+
+        def render_view(self, view_id, _motion):
+            observed["view_id"] = view_id
+            return FakePixmap()
+
+    def fake_load(path):
+        observed["layered_root"] = path
+        return "fake-manifest"
+
+    monkeypatch.setattr(golden_render, "_prepare_store", lambda *_args: None)
+    monkeypatch.setattr(golden_render, "ActiveOutfitOverlay", lambda *_args: object())
+    monkeypatch.setattr(golden_render, "load_layered_full_body_assets", fake_load)
+    monkeypatch.setattr(golden_render, "LayeredFullBodyRenderer", FakeFullRenderer)
+    monkeypatch.setattr(
+        golden_render,
+        "_save_pixmap",
+        lambda _pixmap, _path: {
+            "width": 7,
+            "height": 9,
+            "mode": "RGBA",
+            "pixel_sha256": "0" * SHA256_HEX_LENGTH,
+            "png_sha256": "1" * SHA256_HEX_LENGTH,
+        },
+    )
+    asset_root = tmp_path / "fake-pack"
+    rendered = render_matrix(
+        tmp_path / "rendered",
+        asset_root=asset_root,
+        settings=settings,
+    )
+
+    assert rendered["schema"] == "example.golden-render.v1"
+    assert rendered["matrix"] == {
+        "full_body_cells": 1,
+        "half_body_cells": 0,
+        "total_cells": 1,
+    }
+    assert rendered["cells"][0]["id"] == "full__profile-left__bare__rest"
+    assert observed == {
+        "manifest": "fake-manifest",
+        "authority_root": (asset_root / "characters/example/full-authority").resolve(),
+        "view_id": "profile-left",
+        "layered_root": (asset_root / "characters/example/full-layers").resolve(),
+    }
 
 
 def test_update_requires_an_exact_owner_approval(tmp_path: Path) -> None:

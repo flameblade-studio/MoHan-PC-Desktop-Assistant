@@ -32,10 +32,6 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from domain.companion_animation_contract import (
-    EXPRESSION_IMAGE_ASSETS,
-    EXPRESSION_POSES,
-)
 lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -44,7 +40,6 @@ lazy from domain.face_rig import (
     Viseme,
     blink_for_eye_state,
 )
-lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME
 lazy from domain.outfit_pack import clear_appearance_selection, restore_builtin_outfit
 lazy from domain.outfit_pack_makeup import (
     DEFAULT_MAKEUP_INTENSITY,
@@ -60,16 +55,47 @@ lazy from infrastructure.layered_full_body_assets import load_layered_full_body_
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 
-SCHEMA = "mohan.golden-render.v1"
-APPROVAL_SCHEMA = "mohan.golden-render-approval.v1"
-MANIFEST_PATH = ROOT / "tests" / "golden" / "golden-manifest.json"
 DEFAULT_OUTPUT = ROOT / ".quality-tmp" / "golden-render" / "current"
 DEFAULT_BASELINE = ROOT / ".quality-tmp" / "golden-render" / "baseline"
 DEFAULT_DIFF = ROOT / ".quality-tmp" / "golden-diff"
-MAKEUPS = ("none", "light", "classic", "glamorous")
-EYE_STATES = ("rest", "half", "closed")
-HALF_EXPRESSIONS = ("idle", "idle_lean", "idle_front", *EXPRESSION_POSES)
-FULL_BODY_VIEWS = (
+GIT_REVISION_LENGTH = 40
+
+_MOHAN_EXPRESSION_POSES = (
+    ("glance", "cheek"), ("caught", "cheek"), ("happy", "cheek"),
+    ("worried", "cheek"), ("reminder", "cheek"), ("thinking_front", "front"),
+    ("gentle_smile_front", "front"), ("worried_front", "front"),
+    ("shy_front", "front"), ("mock_scold", "front"),
+    ("surprised_front", "front"), ("relieved_front", "front"),
+    ("tired_front", "front"), ("proud_front", "front"),
+    ("shy_cute_front", "front"), ("mock_hit_front", "front"),
+    ("attentive_front", "front"), ("determined_front", "front"),
+    ("restrained_amused_front", "front"), ("exasperated_front", "front"),
+    ("eureka_front", "front"), ("protective_front", "front"),
+)
+_MOHAN_EXPRESSION_ASSETS = (
+    "idle", "idle_lean", "idle_front", "blink", "blink_lean", "blink_front",
+    "glance", "caught", "speaking", "speaking_lean", "speaking_front",
+    "happy", "worried", "reminder", "thinking_front", "gentle_smile_front",
+    "worried_front", "shy_front", "mock_scold", "surprised_front",
+    "relieved_front", "tired_front", "proud_front", "shy_cute_front",
+    "mock_hit_front", "attentive_front", "determined_front",
+    "restrained_amused_front", "exasperated_front", "eureka_front",
+    "protective_front",
+    *(
+        f"{expression}_speech_{frame}"
+        for expression, _pose in _MOHAN_EXPRESSION_POSES
+        for frame in ("mid", "open", "round")
+    ),
+    "thinking_front_speech_blink",
+    "idle_front_half", "idle_lean_half", "eureka_front_half",
+    "mock_hit_front_half", "mock_scold_half", "idle_lean_closed",
+    "idle_front_closed", "eureka_front_closed", "mock_hit_front_closed",
+    "mock_scold_closed", "viseme_mid_front", "viseme_wide_front",
+    "viseme_round", "viseme_round_lean", "viseme_round_front", "viseme_i",
+    "viseme_i_lean", "viseme_i_front", "viseme_o", "viseme_o_lean",
+    "viseme_o_front",
+)
+_MOHAN_FULL_BODY_VIEWS = (
     "yaw+000-pitch+00",
     "yaw+015-pitch+00", "yaw-015-pitch+00",
     "yaw+030-pitch+00", "yaw-030-pitch+00",
@@ -78,9 +104,115 @@ FULL_BODY_VIEWS = (
     "yaw+075-pitch+00", "yaw-075-pitch+00",
     "yaw+090-pitch+00", "yaw-090-pitch+00",
 )
-HALF_SIZE = (465, 465)
-FULL_SIZE = (1024, 1536)
-GIT_REVISION_LENGTH = 40
+
+
+@dataclass(frozen=True, slots=True)
+class GoldenCharacterSettings:
+    """Character-owned catalogs and paths consumed by the golden harness."""
+
+    character_id: str
+    manifest_schema: str
+    approval_schema: str
+    makeups: tuple[str, ...]
+    eye_states: tuple[str, ...]
+    half_expressions: tuple[str, ...]
+    expression_poses: tuple[tuple[str, str], ...]
+    expression_assets: tuple[str, ...]
+    full_body_views: tuple[str, ...]
+    half_size: tuple[int, int]
+    full_size: tuple[int, int]
+    official_pack_root: str
+    half_expression_root: str
+    half_layered_root: str
+    half_detachable_root: str
+    full_layered_root: str
+    full_authority_root: str
+
+    def __post_init__(self) -> None:
+        text_fields = (
+            self.character_id,
+            self.manifest_schema,
+            self.approval_schema,
+            *self.makeups,
+            *self.eye_states,
+            *self.half_expressions,
+            *self.expression_assets,
+            *self.full_body_views,
+        )
+        if not all(isinstance(value, str) and value for value in text_fields):
+            raise ValueError("角色設定的識別碼、schema 與清單項目必須是非空字串。")
+        if len(set(self.makeups)) != len(self.makeups):
+            raise ValueError("角色設定的妝容清單不得重複。")
+        if len(set(self.eye_states)) != len(self.eye_states):
+            raise ValueError("角色設定的眼態清單不得重複。")
+        if len(set(self.half_expressions)) != len(self.half_expressions):
+            raise ValueError("角色設定的表情清單不得重複。")
+        if len(set(self.full_body_views)) != len(self.full_body_views):
+            raise ValueError("角色設定的全身視角清單不得重複。")
+        pose_names = [expression for expression, _pose in self.expression_poses]
+        if len(set(pose_names)) != len(pose_names):
+            raise ValueError("角色設定的表情姿勢映射不得重複。")
+        if any(value <= 0 for value in (*self.half_size, *self.full_size)):
+            raise ValueError("角色設定的畫布尺寸必須是正整數。")
+        for value in self.asset_paths():
+            path = Path(value)
+            if path.is_absolute() or ".." in path.parts or not path.parts:
+                raise ValueError(f"角色素材路徑必須是安全的相對路徑：{value}")
+
+    def asset_paths(self) -> tuple[str, ...]:
+        return (
+            self.official_pack_root,
+            self.half_expression_root,
+            self.half_layered_root,
+            self.half_detachable_root,
+            self.full_layered_root,
+            self.full_authority_root,
+        )
+
+    def expression_pose_map(self) -> dict[str, str]:
+        return dict(self.expression_poses)
+
+    def resolve_asset_path(self, asset_root: Path, relative: str) -> Path:
+        root = Path(asset_root).resolve()
+        resolved = (root / relative).resolve()
+        if not resolved.is_relative_to(root):
+            raise ValueError(f"角色素材路徑逸出素材根目錄：{relative}")
+        return resolved
+
+
+DEFAULT_CHARACTER_SETTINGS = GoldenCharacterSettings(
+    character_id="flameblade.mohan",
+    manifest_schema="mohan.golden-render.v1",
+    approval_schema="mohan.golden-render-approval.v1",
+    makeups=("none", "light", "classic", "glamorous"),
+    eye_states=("rest", "half", "closed"),
+    half_expressions=(
+        "idle", "idle_lean", "idle_front",
+        *(expression for expression, _pose in _MOHAN_EXPRESSION_POSES),
+    ),
+    expression_poses=_MOHAN_EXPRESSION_POSES,
+    expression_assets=_MOHAN_EXPRESSION_ASSETS,
+    full_body_views=_MOHAN_FULL_BODY_VIEWS,
+    half_size=(465, 465),
+    full_size=(1024, 1536),
+    official_pack_root="assets/official-packs",
+    half_expression_root="assets/expressions",
+    half_layered_root="assets/expressions/layered",
+    half_detachable_root="assets/expressions/detachable",
+    full_layered_root="assets/pose-atlas/v5-base-layered",
+    full_authority_root="assets/pose-atlas/v5-base",
+)
+
+# Public compatibility aliases keep existing callers and the approved manifest stable.
+SCHEMA = DEFAULT_CHARACTER_SETTINGS.manifest_schema
+APPROVAL_SCHEMA = DEFAULT_CHARACTER_SETTINGS.approval_schema
+MANIFEST_PATH = ROOT / "tests" / "golden" / "golden-manifest.json"
+MAKEUPS = DEFAULT_CHARACTER_SETTINGS.makeups
+EYE_STATES = DEFAULT_CHARACTER_SETTINGS.eye_states
+HALF_EXPRESSIONS = DEFAULT_CHARACTER_SETTINGS.half_expressions
+FULL_BODY_VIEWS = DEFAULT_CHARACTER_SETTINGS.full_body_views
+HALF_SIZE = DEFAULT_CHARACTER_SETTINGS.half_size
+FULL_SIZE = DEFAULT_CHARACTER_SETTINGS.full_size
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,10 +238,13 @@ class GoldenCell:
         return values
 
 
-def matrix_cells() -> tuple[GoldenCell, ...]:
+def matrix_cells(
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+) -> tuple[GoldenCell, ...]:
     cells: list[GoldenCell] = []
-    for expression in HALF_EXPRESSIONS:
-        pose = EXPRESSION_POSES.get(
+    expression_poses = settings.expression_pose_map()
+    for expression in settings.half_expressions:
+        pose = expression_poses.get(
             expression,
             "lean" if expression == "idle_lean" else "front" if expression == "idle_front" else "cheek",
         )
@@ -118,16 +253,16 @@ def matrix_cells() -> tuple[GoldenCell, ...]:
                     f"half__{expression}__{makeup}__{eye_state}",
                     "half-body", makeup, eye_state, expression=expression, pose=pose,
             )
-            for makeup in MAKEUPS
-            for eye_state in EYE_STATES
+            for makeup in settings.makeups
+            for eye_state in settings.eye_states
         )
-    for view_id in FULL_BODY_VIEWS:
+    for view_id in settings.full_body_views:
         cells.extend(
             GoldenCell(
                 f"full__{view_id}__{makeup}__rest",
                 "full-body", makeup, "rest", view_id=view_id,
             )
-            for makeup in MAKEUPS
+            for makeup in settings.makeups
         )
     return tuple(cells)
 
@@ -205,11 +340,13 @@ def _network_disabled():
 
 
 @contextmanager
-def _official_pack_root(asset_root: Path):
+def _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):
     from domain import outfit_pack
 
     previous = outfit_pack.OFFICIAL_PACK_ROOT
-    outfit_pack.OFFICIAL_PACK_ROOT = asset_root / "assets" / "official-packs"
+    outfit_pack.OFFICIAL_PACK_ROOT = settings.resolve_asset_path(
+        asset_root, settings.official_pack_root,
+    )
     try:
         yield
     finally:
@@ -251,29 +388,40 @@ def _motion(expression: str, pose: str, eye_state: str = "rest") -> FaceMotionFr
     )
 
 
-def _scaled_expression(asset_root: Path, stem: str) -> QPixmap:
-    pixmap = QPixmap(str(asset_root / "assets" / "expressions" / f"{stem}.png"))
+def _scaled_expression(
+    asset_root: Path,
+    stem: str,
+    settings: GoldenCharacterSettings,
+) -> QPixmap:
+    expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)
+    pixmap = QPixmap(str(expression_root / f"{stem}.png"))
     if pixmap.isNull():
         raise FileNotFoundError(f"缺少表情素材：{stem}")
-    return pixmap.scaled(*HALF_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    return pixmap.scaled(*settings.half_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
 
 class _BlinkHarness(CompanionFaceAssetMethods):
     """Small runtime-equivalent host for the real companion blink compositor."""
 
-    def __init__(self, asset_root: Path, renderer: LayeredParametricFaceRenderer) -> None:
+    def __init__(
+        self,
+        asset_root: Path,
+        renderer: LayeredParametricFaceRenderer,
+        settings: GoldenCharacterSettings,
+    ) -> None:
         self.state = "idle"
         self.face_renderer = renderer
         self.active_physics_pose = "front"
         self.physics_expression_poses = {
             "idle": "cheek", "idle_lean": "lean", "idle_front": "front",
-            **EXPRESSION_POSES,
+            **settings.expression_pose_map(),
         }
         self.expression_anchor_profiles = {}
+        expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)
         self.expression_pixmaps = {
-            stem: _scaled_expression(asset_root, stem)
-            for stem in EXPRESSION_IMAGE_ASSETS
-            if (asset_root / "assets" / "expressions" / f"{stem}.png").is_file()
+            stem: _scaled_expression(asset_root, stem, settings)
+            for stem in settings.expression_assets
+            if (expression_root / f"{stem}.png").is_file()
         }
         self._build_expression_anchor_profiles()
         self._build_blink_masks(self._blink_regions())
@@ -283,11 +431,12 @@ def _render_half_cell(
     cell: GoldenCell,
     renderer: LayeredParametricFaceRenderer,
     harness: _BlinkHarness,
+    settings: GoldenCharacterSettings,
 ) -> QPixmap:
-    base = QPixmap(*HALF_SIZE)
+    base = QPixmap(*settings.half_size)
     base.fill(Qt.transparent)
     rest = renderer.render(base, _motion(cell.expression or "idle", cell.pose or "front"), None)
-    if rest.isNull() or (rest.width(), rest.height()) != HALF_SIZE:
+    if rest.isNull() or (rest.width(), rest.height()) != settings.half_size:
         raise RuntimeError(f"半身渲染尺寸錯誤：{cell.cell_id}")
     if cell.eye_state == "rest":
         return rest
@@ -302,12 +451,16 @@ def _render_half_cell(
     )
 
 
-def _render_full_cell(cell: GoldenCell, renderer: LayeredFullBodyRenderer) -> QPixmap:
+def _render_full_cell(
+    cell: GoldenCell,
+    renderer: LayeredFullBodyRenderer,
+    settings: GoldenCharacterSettings,
+) -> QPixmap:
     rendered = renderer.render_view(
-        cell.view_id or FULL_BODY_VIEWS[0],
+        cell.view_id or settings.full_body_views[0],
         _motion("idle_front", "front"),
     )
-    if rendered.isNull() or (rendered.width(), rendered.height()) != FULL_SIZE:
+    if rendered.isNull() or (rendered.width(), rendered.height()) != settings.full_size:
         raise RuntimeError(f"全身渲染尺寸錯誤：{cell.cell_id}")
     return rendered
 
@@ -317,8 +470,9 @@ def render_matrix(
     *,
     asset_root: Path = ROOT,
     cells: Iterable[GoldenCell] | None = None,
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
 ) -> dict[str, object]:
-    selected = tuple(matrix_cells() if cells is None else cells)
+    selected = tuple(matrix_cells(settings) if cells is None else cells)
     output = Path(output).resolve()
     asset_root = Path(asset_root).resolve()
     runtime_root = output / "runtime"
@@ -331,8 +485,10 @@ def render_matrix(
     started = time.perf_counter()
     entries: list[dict[str, object]] = []
 
-    with _render_environment(local_appdata), _network_disabled(), _official_pack_root(asset_root):
-        for makeup in MAKEUPS:
+    with _render_environment(local_appdata), _network_disabled(), _official_pack_root(
+        asset_root, settings,
+    ):
+        for makeup in settings.makeups:
             makeup_cells = tuple(cell for cell in selected if cell.makeup == makeup)
             if not makeup_cells:
                 continue
@@ -340,25 +496,36 @@ def render_matrix(
             _prepare_store(store, makeup)
             overlay = ActiveOutfitOverlay(store, asset_root)
             half_renderer = LayeredParametricFaceRenderer(
-                manifest=load_layered_face_assets(asset_root / "assets" / "expressions" / "layered"),
+                manifest=load_layered_face_assets(settings.resolve_asset_path(
+                    asset_root, settings.half_layered_root,
+                )),
                 outfit_overlay=overlay,
-                authority_dir=asset_root / "assets" / "expressions",
-                detachable_dir=asset_root / "assets" / "expressions" / "detachable",
+                authority_dir=settings.resolve_asset_path(
+                    asset_root, settings.half_expression_root,
+                ),
+                detachable_dir=settings.resolve_asset_path(
+                    asset_root, settings.half_detachable_root,
+                ),
             ) if any(cell.kind == "half-body" for cell in makeup_cells) else None
-            harness = _BlinkHarness(asset_root, half_renderer) if half_renderer is not None else None
+            harness = (
+                _BlinkHarness(asset_root, half_renderer, settings)
+                if half_renderer is not None else None
+            )
             full_manifest = load_layered_full_body_assets(
-                asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+                settings.resolve_asset_path(asset_root, settings.full_layered_root)
             ) if any(cell.kind == "full-body" for cell in makeup_cells) else None
             full_renderer = LayeredFullBodyRenderer(
                 full_manifest,
                 outfit_overlay=overlay,
-                authority_root=asset_root / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME,
+                authority_root=settings.resolve_asset_path(
+                    asset_root, settings.full_authority_root,
+                ),
             ) if full_manifest is not None else None
             for cell in makeup_cells:
                 frame = (
-                    _render_half_cell(cell, half_renderer, harness)
+                    _render_half_cell(cell, half_renderer, harness, settings)
                     if cell.kind == "half-body"
-                    else _render_full_cell(cell, full_renderer)
+                    else _render_full_cell(cell, full_renderer, settings)
                 )
                 path = output / cell.filename
                 measurements = _save_pixmap(frame, path)
@@ -371,7 +538,7 @@ def render_matrix(
 
     entries.sort(key=lambda item: str(item["id"]))
     return {
-        "schema": SCHEMA,
+        "schema": settings.manifest_schema,
         "hash_contract": "sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)",
         "pixel_tolerance": 0,
         "matrix": {
@@ -398,12 +565,16 @@ def _load_json(path: Path) -> dict[str, object]:
 
 
 def validate_approval(
-    path: Path, cell_ids: frozenset[str], *, known_ids: frozenset[str] | None = None,
+    path: Path,
+    cell_ids: frozenset[str],
+    *,
+    known_ids: frozenset[str] | None = None,
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
 ) -> dict[str, object]:
     approval = _load_json(path)
     required = {"schema", "owner", "date", "quote", "cells"}
-    if set(approval) != required or approval.get("schema") != APPROVAL_SCHEMA:
-        raise ValueError("核准紀錄必須符合 mohan.golden-render-approval.v1。")
+    if set(approval) != required or approval.get("schema") != settings.approval_schema:
+        raise ValueError(f"核准紀錄必須符合 {settings.approval_schema}。")
     for key in ("owner", "date", "quote"):
         if not isinstance(approval[key], str) or not approval[key].strip():
             raise ValueError(f"核准紀錄欄位 {key} 必須是非空字串。")
