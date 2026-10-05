@@ -6,7 +6,7 @@ lazy from domain.immutable_config import deep_freeze
 
 JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "first_run_title": "初回セットアップ",
-    "first_run_brand": "墨寒  MoHan",
+    "first_run_brand": "墨寒",
     "first_run_heading": "<b>墨寒デスクトップアシスタントへようこそ</b>",
     "first_run_hero_tagline": (
         "北宋から来た千年の女剣魂。話を聴き、記憶し、仕事を整えるあなたの伴侶です。"
@@ -22,11 +22,11 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "work_type": "仕事の種類",
     "ui_language": "画面と返答の言語",
     "wake_word": "音声ウェイクワード",
-    "assistant_name_placeholder": "例：墨寒、MoHan、Ava",
+    "assistant_name_placeholder": "例：墨寒、Ava、Office Mate",
     "user_title_placeholder": "例：主様、Alex、マネージャー",
     "organization_placeholder": "会社、スタジオ、チーム名（任意）",
     "window_title_placeholder": "空欄なら「アシスタント名・組織名」を使用",
-    "wake_word_placeholder": "例：墨寒、MoHan",
+    "wake_word_placeholder": "例：墨寒",
     "first_run_note": (
         '仕事プラットフォームのページを会社のシステム用に準備しました。使用するシステム、共同作業ツール、管理画面、ウェブサイトを追加してください。'
     ),
@@ -406,7 +406,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     ),
     "azure_hd_key_save_failed": 'Dragon HD S0 キーの保存設定を確認してください：{error}',
     "azure_hd_speech_note": (
-        '任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。MoHan は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'
+        '任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。墨寒は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'
     ),
     "azure_speech_note": (
         'プレビュー機能です。Azure Speech リソースキーと対応リージョンを用意してください。確認済みの女性音声だけを表示します。設定の補完またはサービスの確認が必要な場合は Windows 女性音声へ戻ります。Azure の利用量と料金は Microsoft の規定に従います。'
