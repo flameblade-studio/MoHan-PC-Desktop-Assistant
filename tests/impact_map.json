@@ -840,6 +840,7 @@
         "test_dashboard_control_consistency.py",
         "test_dashboard_conversation_security.py",
         "test_dashboard_dynamic_default_buttons.py",
+        "test_dashboard_readability_preferences.py",
         "test_dashboard_resize_contract.py",
         "test_dashboard_theme_materials.py",
         "test_dashboard_visual_consistency.py",
@@ -2304,6 +2305,7 @@
         "test_dashboard_artwork.py",
         "test_dashboard_control_consistency.py",
         "test_dashboard_conversation_security.py",
+        "test_dashboard_readability_preferences.py",
         "test_dashboard_resize_contract.py",
         "test_dashboard_theme_materials.py",
         "test_dashboard_visual_consistency.py",
@@ -3769,6 +3771,7 @@
       "tests": [
         "test_bundled_fonts.py",
         "test_dashboard_artwork.py",
+        "test_dashboard_readability_preferences.py",
         "test_dashboard_theme_materials.py",
         "test_lingxiao_theme.py",
         "test_lingxiao_theme_packs.py"
@@ -4694,6 +4697,26 @@
         "test_multisensory_speech_regression.py",
         "test_null_outfit_overlay.py",
         "test_portable_secret_wiring.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "presentation/desktop_companion_status.py"
+      ],
+      "tests": [
+        "test_dashboard_readability_preferences.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "presentation/lingxiao_shell.py"
+      ],
+      "tests": [
+        "test_dashboard_readability_preferences.py",
+        "test_lingxiao_theme.py",
+        "test_swallowed_error_d06.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6227,16 +6250,6 @@
       ],
       "tests": [
         "test_lingxiao_theme.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "presentation/lingxiao_shell.py"
-      ],
-      "tests": [
-        "test_lingxiao_theme.py",
-        "test_swallowed_error_d06.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
