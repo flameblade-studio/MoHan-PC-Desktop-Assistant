@@ -807,6 +807,7 @@
         "test_character_framing_app_bridge.py",
         "test_character_full_body_rig.py",
         "test_character_identity_audit.py",
+        "test_character_pack.py",
         "test_character_pose.py",
         "test_character_scale.py",
         "test_chat_timer_isolation.py",
@@ -1382,6 +1383,7 @@
         "test_character_framing_app_bridge.py",
         "test_character_full_body_rig.py",
         "test_character_identity_audit.py",
+        "test_character_pack.py",
         "test_character_pose.py",
         "test_character_scale.py",
         "test_check_pose_atlas_release.py",
@@ -2290,6 +2292,7 @@
         "test_background_agent_ui.py",
         "test_bundled_fonts.py",
         "test_cancellation_semantics.py",
+        "test_character_pack.py",
         "test_character_scale.py",
         "test_chat_timer_isolation.py",
         "test_cloud_health.py",
@@ -4019,6 +4022,20 @@
         "test_character_identity_audit.py",
         "test_pose_atlas_identity_measurements.py",
         "test_visible_identity_audit.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "docs/character-pack/example-source.json",
+        "docs/character-pack/minimal-manifest.json",
+        "domain/character_pack/__init__.py",
+        "domain/character_pack/archive.py",
+        "domain/character_pack/models.py",
+        "domain/character_pack/validation.py"
+      ],
+      "tests": [
+        "test_character_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
