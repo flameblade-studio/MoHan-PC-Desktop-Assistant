@@ -880,6 +880,7 @@
         "test_face_motion_interpolation.py",
         "test_face_renderer.py",
         "test_favor_exclusive.py",
+        "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
         "test_flagship_lifecycle.py",
         "test_flagship_localization.py",
@@ -1421,6 +1422,7 @@
         "test_face_motion_interpolation.py",
         "test_face_renderer.py",
         "test_favor_exclusive.py",
+        "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
         "test_flagship_openai_vision_ui.py",
         "test_flagship_proactivity_ui.py",
@@ -1711,6 +1713,7 @@
         "test_face_assets.py",
         "test_face_identity_store.py",
         "test_face_renderer.py",
+        "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
         "test_flagship_lifecycle.py",
         "test_flagship_localization.py",
@@ -2320,6 +2323,7 @@
         "test_expression_pipeline.py",
         "test_expression_speech_runtime.py",
         "test_extracted_ui_equivalence.py",
+        "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
         "test_flagship_lifecycle.py",
         "test_flagship_localization.py",
@@ -2757,6 +2761,7 @@
         "test_drag_click.py",
         "test_duration_localization.py",
         "test_english_localization.py",
+        "test_first_run_wizard.py",
         "test_flagship_lifecycle.py",
         "test_flagship_localization.py",
         "test_flagship_openai_vision_ui.py",
@@ -3108,6 +3113,7 @@
         "test_app_module_boundaries.py",
         "test_english_localization.py",
         "test_extracted_ui_equivalence.py",
+        "test_first_run_wizard.py",
         "test_japanese_localization.py",
         "test_presentation_owner_contract.py",
         "test_translation_completeness.py",
@@ -3124,6 +3130,7 @@
         "test_app_module_boundaries.py",
         "test_english_localization.py",
         "test_extracted_ui_equivalence.py",
+        "test_first_run_wizard.py",
         "test_japanese_localization.py",
         "test_public_profile_persona.py",
         "test_python315_runtime.py"
@@ -3513,6 +3520,7 @@
       ],
       "tests": [
         "test_auxiliary_ui_localization.py",
+        "test_first_run_wizard.py",
         "test_framing_preferences_wiring.py",
         "test_gesture_configuration_ui.py",
         "test_infrastructure_audit3.py",
@@ -3560,7 +3568,8 @@
         "test_auxiliary_ui_localization.py",
         "test_presentation_owner_contract.py",
         "test_profile_transfer_ui.py",
-        "test_translation_completeness.py"
+        "test_translation_completeness.py",
+        "test_ui_localization_completeness.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4721,6 +4730,7 @@
         "test_lingxiao_theme_packs.py",
         "test_presentation_owner_contract.py",
         "test_translation_completeness.py",
+        "test_ui_localization_completeness.py",
         "test_v4_vision_architecture_contracts.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
