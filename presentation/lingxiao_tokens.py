@@ -98,14 +98,14 @@ PALETTE_HIGH_CONTRAST: Final = LingxiaoPalette(
 # 字級（px，scale=1.0）：標籤／內文／強調內文／卡題／頁題／區題／品牌。
 TYPE_SCALE: Final = frozendict(
     {
-        "label": 12,
-        "body": 14,
-        "body_strong": 15,
-        "card_title": 17,
-        "page_title": 24,
-        "section_title": 30,
-        "brand": 22,
-        "numeral": 16,
+        "label": 13,
+        "body": 15,
+        "body_strong": 16,
+        "card_title": 18,
+        "page_title": 25,
+        "section_title": 32,
+        "brand": 23,
+        "numeral": 17,
     }
 )
 

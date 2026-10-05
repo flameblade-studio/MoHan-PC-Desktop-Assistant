@@ -489,6 +489,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
     ),
     "desktop_status_title": "MoHan is interacting with you on the desktop",
+    "desktop_status_expand": "Expand status",
+    "desktop_status_collapse": "Collapse status",
     "desktop_status_description": (
         "The desktop MoHan is the only visible, draggable character that responds to you."
     ),

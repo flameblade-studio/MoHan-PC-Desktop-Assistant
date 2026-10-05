@@ -298,6 +298,8 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。"
     ),
     "desktop_status_title": "墨寒はデスクトップであなたと対話しています",
+    "desktop_status_expand": "状態を展開",
+    "desktop_status_collapse": "状態を閉じる",
     "desktop_status_description": (
         "デスクトップ上の墨寒だけが表示・ドラッグ・応答するキャラクターです。"
     ),

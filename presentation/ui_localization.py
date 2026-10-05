@@ -372,6 +372,8 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'voice_muted_short': '已静音',
  'sleep_mode_status': '休眠模式已启动；墨寒会保持安静，提醒与紧急警报仍会按规则处理。',
  'desktop_status_title': '墨寒正在桌面上与你互动',
+ 'desktop_status_expand': '展开状态',
+ 'desktop_status_collapse': '收起状态',
  'desktop_status_description': '桌面上的墨寒是唯一可见、可拖动并会回应你的角色。',
  'desktop_status_mode': '模式',
  'desktop_status_expression': '姿态／表情',
