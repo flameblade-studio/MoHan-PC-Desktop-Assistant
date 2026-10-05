@@ -794,6 +794,7 @@
         "test_body_profile_candidate.py",
         "test_body_sidecar_profile_knee.py",
         "test_brow_tension_mirror.py",
+        "test_build_character_inventory.py",
         "test_build_half_body_layered_rig.py",
         "test_build_makeup_safe_regions.py",
         "test_build_v120_physics_layers.py",
@@ -3711,6 +3712,45 @@
     },
     {
       "paths": [
+        "assets/expressions/cheek_native_bcc8.png",
+        "assets/expressions/cheek_native_gray_20260914.png",
+        "assets/pose-atlas/v5-base/DISPLAY-PLACEMENT.json",
+        "assets/pose-atlas/v5-base/yaw+000-pitch+00.blink-binding.json",
+        "assets/pose-atlas/v5-base/yaw+000-pitch+00.hands.json",
+        "changelog.d/mohan-character-inventory.md",
+        "docs/character-pack/mohan-inventory-summary.md",
+        "docs/character-pack/mohan-inventory.json",
+        "tools/build_character_inventory.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/check_four_language_docs.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_four_language_documentation.py",
+        "test_github_governance.py",
+        "test_release_notes_generation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/mohan-taskbar-icon.png"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/layered_face_calibration.py"
       ],
       "tests": [
@@ -5473,17 +5513,6 @@
     },
     {
       "paths": [
-        "tools/check_four_language_docs.py"
-      ],
-      "tests": [
-        "test_four_language_documentation.py",
-        "test_github_governance.py",
-        "test_release_notes_generation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "README.md"
       ],
       "tests": [
@@ -7218,7 +7247,6 @@
     {
       "paths": [
         "assets/mohan-halfbody.ico",
-        "assets/mohan-taskbar-icon.png",
         "assets/ui/checkmark.svg",
         "docs/PYTHON-3.15-MIGRATION.md",
         "docs/media/portraits/gentle_smile_front.png",
