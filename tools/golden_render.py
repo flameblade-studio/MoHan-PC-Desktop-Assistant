@@ -6,6 +6,7 @@ lazy import argparse
 lazy import hashlib
 lazy import json
 lazy import os
+lazy import re
 lazy import shutil
 lazy import socket
 lazy import struct
@@ -16,9 +17,9 @@ lazy import uuid
 lazy import zipfile
 lazy from collections.abc import Iterable
 lazy from contextlib import contextmanager
-lazy from dataclasses import dataclass
+lazy from dataclasses import asdict, dataclass, fields
 lazy from datetime import date
-lazy from pathlib import Path
+lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 
@@ -59,6 +60,7 @@ DEFAULT_OUTPUT = ROOT / ".quality-tmp" / "golden-render" / "current"
 DEFAULT_BASELINE = ROOT / ".quality-tmp" / "golden-render" / "baseline"
 DEFAULT_DIFF = ROOT / ".quality-tmp" / "golden-diff"
 GIT_REVISION_LENGTH = 40
+PAIR_LENGTH = 2
 
 _MOHAN_EXPRESSION_POSES = (
     ("glance", "cheek"), ("caught", "cheek"), ("happy", "cheek"),
@@ -127,6 +129,10 @@ class GoldenCharacterSettings:
     half_detachable_root: str
     full_layered_root: str
     full_authority_root: str
+    bare_makeup: str = "none"
+    full_eye_state: str = "rest"
+    neutral_expression: str = "idle_front"
+    neutral_pose: str = "front"
 
     def __post_init__(self) -> None:
         text_fields = (
@@ -138,9 +144,17 @@ class GoldenCharacterSettings:
             *self.half_expressions,
             *self.expression_assets,
             *self.full_body_views,
+            self.bare_makeup,
+            self.full_eye_state,
+            self.neutral_expression,
+            self.neutral_pose,
         )
         if not all(isinstance(value, str) and value for value in text_fields):
             raise ValueError("角色設定的識別碼、schema 與清單項目必須是非空字串。")
+        for value in (*self.makeups, *self.eye_states, *self.half_expressions,
+                      *self.expression_assets, *self.full_body_views):
+            if re.fullmatch(r"[A-Za-z0-9_+.-]+", value) is None or value in {".", ".."}:
+                raise ValueError("角色清單項目必須是安全的檔名識別碼。")
         if len(set(self.makeups)) != len(self.makeups):
             raise ValueError("角色設定的妝容清單不得重複。")
         if len(set(self.eye_states)) != len(self.eye_states):
@@ -150,13 +164,20 @@ class GoldenCharacterSettings:
         if len(set(self.full_body_views)) != len(self.full_body_views):
             raise ValueError("角色設定的全身視角清單不得重複。")
         pose_names = [expression for expression, _pose in self.expression_poses]
+        if any(not isinstance(value, str) or not value for pair in self.expression_poses for value in pair):
+            raise ValueError("角色設定的表情姿勢映射必須是非空字串。")
         if len(set(pose_names)) != len(pose_names):
             raise ValueError("角色設定的表情姿勢映射不得重複。")
-        if any(value <= 0 for value in (*self.half_size, *self.full_size)):
+        if set(self.half_expressions) - set(pose_names):
+            raise ValueError("每個半身表情必須提供姿勢映射。")
+        if any(len(size) != PAIR_LENGTH or any(type(value) is not int or value <= 0 for value in size)
+               for size in (self.half_size, self.full_size)):
             raise ValueError("角色設定的畫布尺寸必須是正整數。")
         for value in self.asset_paths():
-            path = Path(value)
-            if path.is_absolute() or ".." in path.parts or not path.parts:
+            if not isinstance(value, str):
+                raise ValueError("角色素材路徑必須是字串。")
+            path = PurePosixPath(value)
+            if PureWindowsPath(value).drive or "\\" in value or path.is_absolute() or ".." in path.parts or not path.parts:
                 raise ValueError(f"角色素材路徑必須是安全的相對路徑：{value}")
 
     def asset_paths(self) -> tuple[str, ...]:
@@ -190,7 +211,8 @@ DEFAULT_CHARACTER_SETTINGS = GoldenCharacterSettings(
         "idle", "idle_lean", "idle_front",
         *(expression for expression, _pose in _MOHAN_EXPRESSION_POSES),
     ),
-    expression_poses=_MOHAN_EXPRESSION_POSES,
+    expression_poses=(("idle", "cheek"), ("idle_lean", "lean"), ("idle_front", "front"),
+                      *_MOHAN_EXPRESSION_POSES),
     expression_assets=_MOHAN_EXPRESSION_ASSETS,
     full_body_views=_MOHAN_FULL_BODY_VIEWS,
     half_size=(465, 465),
@@ -213,6 +235,25 @@ HALF_EXPRESSIONS = DEFAULT_CHARACTER_SETTINGS.half_expressions
 FULL_BODY_VIEWS = DEFAULT_CHARACTER_SETTINGS.full_body_views
 HALF_SIZE = DEFAULT_CHARACTER_SETTINGS.half_size
 FULL_SIZE = DEFAULT_CHARACTER_SETTINGS.full_size
+
+
+def load_character_settings(path: Path) -> GoldenCharacterSettings:
+    """Read a complete data-only character configuration without path fallback."""
+    payload = _load_json(path)
+    required = {field.name for field in fields(GoldenCharacterSettings)}
+    if set(payload) != required:
+        raise ValueError("角色設定必須完整提供 GoldenCharacterSettings 的欄位。")
+    for key in ("makeups", "eye_states", "half_expressions", "expression_assets",
+                "full_body_views", "half_size", "full_size", "expression_poses"):
+        if not isinstance(payload[key], list):
+            raise ValueError(f"角色設定欄位 {key} 必須是陣列。")
+        if key == "expression_poses":
+            if any(not isinstance(pair, list) or len(pair) != PAIR_LENGTH for pair in payload[key]):
+                raise ValueError("表情姿勢映射必須是兩元素陣列。")
+            payload[key] = tuple(tuple(pair) for pair in payload[key])
+        else:
+            payload[key] = tuple(payload[key])
+    return GoldenCharacterSettings(**payload)
 
 
 @dataclass(frozen=True, slots=True)
@@ -244,10 +285,7 @@ def matrix_cells(
     cells: list[GoldenCell] = []
     expression_poses = settings.expression_pose_map()
     for expression in settings.half_expressions:
-        pose = expression_poses.get(
-            expression,
-            "lean" if expression == "idle_lean" else "front" if expression == "idle_front" else "cheek",
-        )
+        pose = expression_poses[expression]
         cells.extend(
             GoldenCell(
                     f"half__{expression}__{makeup}__{eye_state}",
@@ -259,8 +297,8 @@ def matrix_cells(
     for view_id in settings.full_body_views:
         cells.extend(
             GoldenCell(
-                f"full__{view_id}__{makeup}__rest",
-                "full-body", makeup, "rest", view_id=view_id,
+                f"full__{view_id}__{makeup}__{settings.full_eye_state}",
+                "full-body", makeup, settings.full_eye_state, view_id=view_id,
             )
             for makeup in settings.makeups
         )
@@ -353,13 +391,16 @@ def _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):
         outfit_pack.OFFICIAL_PACK_ROOT = previous
 
 
-def _prepare_store(store: Path, makeup: str) -> None:
+def _prepare_store(
+    store: Path, makeup: str,
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+) -> None:
     store.mkdir(parents=True, exist_ok=True)
     restore_builtin_outfit(store)
     write_makeup_intensity(store, DEFAULT_MAKEUP_INTENSITY)
     for slot, intensity in DEFAULT_SLOT_INTENSITIES_V2.items():
         write_makeup_slot_intensity(store, slot, intensity)
-    if makeup == "none":
+    if makeup == settings.bare_makeup:
         clear_appearance_selection(store, "makeup")
     else:
         select_builtin_makeup(store, makeup)
@@ -412,10 +453,7 @@ class _BlinkHarness(CompanionFaceAssetMethods):
         self.state = "idle"
         self.face_renderer = renderer
         self.active_physics_pose = "front"
-        self.physics_expression_poses = {
-            "idle": "cheek", "idle_lean": "lean", "idle_front": "front",
-            **settings.expression_pose_map(),
-        }
+        self.physics_expression_poses = settings.expression_pose_map()
         self.expression_anchor_profiles = {}
         expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)
         self.expression_pixmaps = {
@@ -458,7 +496,7 @@ def _render_full_cell(
 ) -> QPixmap:
     rendered = renderer.render_view(
         cell.view_id or settings.full_body_views[0],
-        _motion("idle_front", "front"),
+        _motion(settings.neutral_expression, settings.neutral_pose, settings.full_eye_state),
     )
     if rendered.isNull() or (rendered.width(), rendered.height()) != settings.full_size:
         raise RuntimeError(f"全身渲染尺寸錯誤：{cell.cell_id}")
@@ -493,7 +531,7 @@ def render_matrix(
             if not makeup_cells:
                 continue
             store = runtime_root / "stores" / makeup
-            _prepare_store(store, makeup)
+            _prepare_store(store, makeup, settings)
             overlay = ActiveOutfitOverlay(store, asset_root)
             half_renderer = LayeredParametricFaceRenderer(
                 manifest=load_layered_face_assets(settings.resolve_asset_path(
@@ -593,7 +631,10 @@ def validate_approval(
     return approval
 
 
-def _manifest_for_commit(rendered: dict[str, object], approval_path: Path) -> dict[str, object]:
+def _manifest_for_commit(
+    rendered: dict[str, object], approval_path: Path,
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+) -> dict[str, object]:
     manifest = dict(rendered)
     manifest.pop("elapsed_seconds", None)
     manifest["source_revision"] = subprocess.check_output(
@@ -608,6 +649,8 @@ def _manifest_for_commit(rendered: dict[str, object], approval_path: Path) -> di
         "path": approval_path.relative_to(ROOT).as_posix(),
         "sha256": hashlib.sha256(approval_path.read_bytes()).hexdigest(),
     }
+    if settings != DEFAULT_CHARACTER_SETTINGS:
+        manifest["character_settings"] = asdict(settings)
     for cell in manifest["cells"]:
         cell.pop("png_sha256", None)
     return manifest
@@ -650,10 +693,23 @@ def _recover_originals(expected: dict[str, object], cells: list[dict], baseline_
         "ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); "
         "render_matrix(Path(sys.argv[2]),cells=[c for c in matrix_cells() if c.cell_id in ids])"
     )
+    arguments = [sys.executable, "-c", script, str(request_path), str(output)]
+    if "character_settings" in expected:
+        settings_path = staging / "character-settings.json"
+        _write_manifest(settings_path, expected["character_settings"])
+        script = (
+            "import json,sys; from pathlib import Path; "
+            "from tools.golden_render import matrix_cells,render_matrix,load_character_settings; "
+            "ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); "
+            "settings=load_character_settings(Path(sys.argv[3])); "
+            "render_matrix(Path(sys.argv[2]),settings=settings,"
+            "cells=[c for c in matrix_cells(settings) if c.cell_id in ids])"
+        )
+        arguments = [sys.executable, "-c", script, str(request_path), str(output), str(settings_path)]
     environment = dict(os.environ)
     environment["PYTHONPATH"] = str(reference_root)
     subprocess.run(
-        [sys.executable, "-c", script, str(request_path), str(output)],
+        arguments,
         cwd=reference_root, env=environment, check=True,
     )
     baseline_dir.mkdir(parents=True, exist_ok=True)
@@ -751,9 +807,12 @@ def _write_manifest(path: Path, manifest: dict[str, object]) -> None:
     )
 
 
-def _require_committed_render_sources() -> None:
+def _require_committed_render_sources(
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+) -> None:
     changed = subprocess.check_output(
-        ["git", "status", "--porcelain", "--", "assets", "domain", "infrastructure", "presentation"],
+        ["git", "status", "--porcelain", "--", "assets", "domain", "infrastructure", "presentation",
+         *settings.asset_paths()],
         cwd=ROOT, text=True,
     ).strip()
     if changed:
@@ -766,17 +825,24 @@ def main(argv: Iterable[str] | None = None) -> int:
     parser.add_argument("--manifest", type=Path, default=MANIFEST_PATH)
     parser.add_argument("--update", action="store_true")
     parser.add_argument("--approval", type=Path)
+    parser.add_argument("--character-settings", type=Path)
+    parser.add_argument("--asset-root", type=Path, default=ROOT)
     args = parser.parse_args(tuple(argv) if argv is not None else None)
     if args.update != (args.approval is not None):
         parser.error("--update 必須與 --approval <核准紀錄 JSON> 同時使用")
+    settings = load_character_settings(args.character_settings) if args.character_settings else DEFAULT_CHARACTER_SETTINGS
+    if args.character_settings and args.manifest.resolve() == MANIFEST_PATH.resolve():
+        parser.error("自訂角色設定必須指定獨立的 --manifest 路徑。")
     if args.update:
+        if args.asset_root.resolve() != ROOT:
+            parser.error("--update 的素材根目錄必須是目前儲存庫，才能由 Git 重建核准基準。")
         validate_approval(
             args.approval, frozenset(),
-            known_ids=frozenset(cell.cell_id for cell in matrix_cells()),
+            known_ids=frozenset(cell.cell_id for cell in matrix_cells(settings)), settings=settings,
         )
-        _require_committed_render_sources()
+        _require_committed_render_sources(settings)
 
-    rendered = render_matrix(args.output)
+    rendered = render_matrix(args.output, asset_root=args.asset_root, settings=settings)
     output_manifest = dict(rendered)
     output_manifest.pop("elapsed_seconds", None)
     _write_manifest(args.output / "render-manifest.json", output_manifest)
@@ -798,19 +864,24 @@ def main(argv: Iterable[str] | None = None) -> int:
                 for field in ("pixel_sha256", "inputs", "width", "height", "mode", "file")
             )
         ) | (frozenset(old_cells) - cell_ids)
-        validate_approval(approval_path, changed_ids, known_ids=cell_ids | frozenset(old_cells))
-        manifest = _manifest_for_commit(rendered, approval_path)
+        validate_approval(approval_path, changed_ids, known_ids=cell_ids | frozenset(old_cells), settings=settings)
+        manifest = _manifest_for_commit(rendered, approval_path, settings)
         _write_manifest(args.manifest, manifest)
-        DEFAULT_BASELINE.mkdir(parents=True, exist_ok=True)
+        baseline = args.output / "baseline" if args.character_settings else DEFAULT_BASELINE
+        baseline.mkdir(parents=True, exist_ok=True)
         for cell in rendered["cells"]:
-            shutil.copy2(args.output / str(cell["file"]), DEFAULT_BASELINE / str(cell["file"]))
+            shutil.copy2(args.output / str(cell["file"]), baseline / str(cell["file"]))
         print(f"GOLDEN_UPDATED manifest={args.manifest} approval={approval_path}")
         return 0
 
     if not args.manifest.is_file():
         print(f"缺少 golden 清單：{args.manifest}", file=sys.stderr)
         return 2
-    changed = compare_manifest(rendered, _load_json(args.manifest), output=args.output)
+    changed = compare_manifest(
+        rendered, _load_json(args.manifest), output=args.output,
+        baseline_dir=args.output / "baseline" if args.character_settings else DEFAULT_BASELINE,
+        diff_dir=args.output / "diff" if args.character_settings else DEFAULT_DIFF,
+    )
     if changed:
         print("GOLDEN_CHANGED " + " ".join(changed), file=sys.stderr)
         return 1

@@ -6,7 +6,7 @@ lazy import json
 lazy import os
 lazy import shutil
 lazy from dataclasses import dataclass
-lazy from pathlib import Path
+lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,8 +40,8 @@ class AssetInstallCharacterSettings:
         if not all(isinstance(value, str) and value for value in values):
             raise ValueError("角色安裝設定的 schema、路徑與欄位名稱必須是非空字串。")
         for value in (self.target_root, self.staging_root, self.evidence_root):
-            path = Path(value)
-            if path.is_absolute() or ".." in path.parts or not path.parts:
+            path = PurePosixPath(value)
+            if PureWindowsPath(value).drive or "\\" in value or path.is_absolute() or ".." in path.parts or not path.parts:
                 raise ValueError(f"角色安裝根目錄必須是安全的相對路徑：{value}")
 
 
@@ -156,6 +156,8 @@ def install(
     root = root.resolve()
     output = output.resolve()
     evidence_root = (root / settings.evidence_root).resolve()
+    if not evidence_root.is_relative_to(root):
+        raise ValueError("Installation evidence root escapes the project.")
     if not output.is_relative_to(evidence_root):
         raise ValueError("Installation evidence must stay under project scratchpad.")
     if output.exists():

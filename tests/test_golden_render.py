@@ -5,13 +5,12 @@ from __future__ import annotations
 lazy import hashlib
 lazy import io
 lazy import json
-lazy import os
 lazy import shutil
 lazy import subprocess
-lazy import uuid
 lazy import zipfile
-lazy from dataclasses import replace
+lazy from dataclasses import asdict, replace
 lazy from itertools import product
+lazy from importlib import import_module
 lazy from pathlib import Path
 
 lazy import pytest
@@ -64,6 +63,9 @@ def test_manifest_covers_the_complete_matrix() -> None:
 
 
 def test_default_character_settings_preserve_the_approved_matrix() -> None:
+    from domain.companion_animation_contract import EXPRESSION_IMAGE_ASSETS, EXPRESSION_POSES
+    from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME
+
     manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
     settings = DEFAULT_CHARACTER_SETTINGS
     assert settings.character_id == "flameblade.mohan"
@@ -72,6 +74,15 @@ def test_default_character_settings_preserve_the_approved_matrix() -> None:
     assert settings.makeups == ("none", "light", "classic", "glamorous")
     assert settings.half_size == (465, 465)
     assert settings.full_size == (1024, 1536)
+    # Runtime speech assets come from a frozenset, so their order varies with
+    # the interpreter hash seed. The character config fixes a stable order.
+    assert len(settings.expression_assets) == len(EXPRESSION_IMAGE_ASSETS)
+    assert frozenset(settings.expression_assets) == frozenset(EXPRESSION_IMAGE_ASSETS)
+    assert settings.expression_pose_map() == {
+        "idle": "cheek", "idle_lean": "lean", "idle_front": "front", **EXPRESSION_POSES,
+    }
+    assert settings.full_layered_root == f"assets/pose-atlas/{POSE_ATLAS_LAYERED_ROOT_NAME}"
+    assert settings.full_authority_root == f"assets/pose-atlas/{POSE_ATLAS_ROOT_NAME}"
     assert sorted(cell.cell_id for cell in matrix_cells(settings)) == [
         cell["id"] for cell in manifest["cells"]
     ]
@@ -185,6 +196,136 @@ def test_update_requires_an_exact_owner_approval(tmp_path: Path) -> None:
     assert validate_approval(approval, cell_ids)["owner"] == "owner"
 
 
+def test_settings_json_roundtrip_and_cli_use_explicit_character(tmp_path, monkeypatch):
+    from tools import golden_render
+
+    settings = replace(
+        DEFAULT_CHARACTER_SETTINGS,
+        character_id="example.test", half_expressions=("sample",),
+        expression_poses=(("sample", "front"),), expression_assets=("sample",),
+        makeups=("bare",), bare_makeup="bare", eye_states=("rest",),
+        full_body_views=(),
+    )
+    path = tmp_path / "character.json"
+    path.write_text(json.dumps(asdict(settings)), encoding="utf-8")
+    assert golden_render.load_character_settings(path) == settings
+    observed = {}
+
+    def capture(output, *, asset_root, settings):
+        observed.update(output=output, asset_root=asset_root, settings=settings)
+        return {"matrix": {"total_cells": 0}, "elapsed_seconds": 0.0, "cells": []}
+
+    monkeypatch.setattr(golden_render, "render_matrix", capture)
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text('{"cells": []}', encoding="utf-8")
+    output = tmp_path / "output"
+    root = tmp_path / "character-pack"
+    assert main(("--character-settings", str(path), "--asset-root", str(root),
+                 "--manifest", str(manifest), "--output", str(output))) == 0
+    assert observed == {"output": output, "asset_root": root, "settings": settings}
+    with pytest.raises(SystemExit) as failure:
+        main(("--character-settings", str(path)))
+    assert failure.value.code == ARGUMENT_ERROR_EXIT_CODE
+
+
+def test_fake_half_character_reads_its_portraits_layers_and_detachable(tmp_path, monkeypatch):
+    from tools import golden_render
+    from PySide6.QtGui import QPixmap
+    from PySide6.QtWidgets import QApplication
+
+    QApplication.instance() or QApplication([])
+    settings = replace(
+        DEFAULT_CHARACTER_SETTINGS, makeups=("none",), eye_states=("rest",),
+        half_expressions=("sample",), expression_poses=(("sample", "front"),),
+        expression_assets=("sample",), full_body_views=(), half_size=(8, 8),
+        half_expression_root="sample/portraits", half_layered_root="sample/layers",
+        half_detachable_root="sample/detachable", official_pack_root="sample/packs",
+    )
+    portraits = tmp_path / "sample/portraits"
+    portraits.mkdir(parents=True)
+    Image.new("RGBA", (8, 8), (23, 45, 67, OPAQUE_ALPHA)).save(portraits / "sample.png")
+    observed = {}
+
+    class HalfRenderer:
+        def __init__(self, *, manifest, outfit_overlay, authority_dir, detachable_dir):
+            observed.update(manifest=manifest, authority=authority_dir, detachable=detachable_dir)
+
+        def render(self, base, motion, _unused):
+            observed["expression"] = motion.expression
+            return base
+
+    def load(path):
+        observed["layers"] = path
+        return "sample-manifest"
+
+    def harness(root, renderer, configuration):
+        portrait = golden_render._scaled_expression(root, "sample", configuration)
+        observed["portrait_size"] = (portrait.width(), portrait.height())
+        return object()
+
+    monkeypatch.setattr(golden_render, "load_layered_face_assets", load)
+    monkeypatch.setattr(golden_render, "LayeredParametricFaceRenderer", HalfRenderer)
+    monkeypatch.setattr(golden_render, "_BlinkHarness", harness)
+    monkeypatch.setattr(golden_render, "_prepare_store", lambda *_args: None)
+    monkeypatch.setattr(golden_render, "ActiveOutfitOverlay", lambda *_args: object())
+    assert isinstance(golden_render._scaled_expression(tmp_path, "sample", settings), QPixmap)
+    result = render_matrix(tmp_path / "render", asset_root=tmp_path, settings=settings)
+    assert result["matrix"]["total_cells"] == 1
+    assert observed == {
+        "manifest": "sample-manifest", "authority": portraits.resolve(),
+        "detachable": (tmp_path / "sample/detachable").resolve(),
+        "layers": (tmp_path / "sample/layers").resolve(), "expression": "sample",
+        "portrait_size": settings.half_size,
+    }
+
+
+@pytest.mark.parametrize("changes", [
+    {"half_expression_root": "../escape"}, {"half_expression_root": "C:relative"},
+    {"makeups": ("../escape",)}, {"half_size": (True, 10)},
+    {"half_size": (10,)}, {"expression_poses": ()},
+])
+def test_character_settings_reject_unsafe_or_incomplete_input(changes):
+    with pytest.raises(ValueError):
+        replace(DEFAULT_CHARACTER_SETTINGS, **changes)
+
+
+def test_custom_baseline_pins_settings_and_uses_separate_cache(tmp_path, monkeypatch):
+    from tools import golden_render
+
+    settings = replace(DEFAULT_CHARACTER_SETTINGS, character_id="example.test")
+    config = tmp_path / "settings.json"
+    config.write_text(json.dumps(asdict(settings)), encoding="utf-8")
+    approval = tmp_path / "approval.json"
+    approval.write_text(json.dumps({
+        "schema": settings.approval_schema, "owner": "example owner",
+        "date": "2026-10-06", "quote": "approved", "cells": "*",
+    }), encoding="utf-8")
+    output = tmp_path / "rendered"
+    output.mkdir()
+    (output / "sample.png").write_bytes(b"example pixels")
+    cell = {"id": "sample", "file": "sample.png", "png_sha256": "unused"}
+    rendered = {"cells": [cell], "matrix": {"total_cells": 1}, "elapsed_seconds": 0.0}
+    monkeypatch.setattr(golden_render, "ROOT", tmp_path)
+    monkeypatch.setattr(golden_render, "_require_committed_render_sources", lambda _settings: None)
+    monkeypatch.setattr(import_module("subprocess"), "check_output", lambda *_args, **_kwargs: "a" * GIT_REVISION_LENGTH)
+    monkeypatch.setattr(golden_render, "render_matrix", lambda *_args, **_kwargs: rendered)
+    manifest = tmp_path / "manifest.json"
+    assert main(("--character-settings", str(config), "--asset-root", str(tmp_path),
+                 "--manifest", str(manifest), "--output", str(output),
+                 "--update", "--approval", str(approval))) == 0
+    pinned = json.loads(manifest.read_text(encoding="utf-8"))
+    assert golden_render.load_character_settings(config) == settings
+    assert pinned["character_settings"] == json.loads(config.read_text(encoding="utf-8"))
+    assert (output / "baseline/sample.png").read_bytes() == b"example pixels"
+
+
+def test_update_rejects_unreconstructable_external_asset_root(tmp_path):
+    with pytest.raises(SystemExit) as failure:
+        main(("--update", "--approval", str(tmp_path / "approval.json"),
+              "--asset-root", str(tmp_path)))
+    assert failure.value.code == ARGUMENT_ERROR_EXIT_CODE
+
+
 def test_update_without_approval_exits_before_rendering(tmp_path: Path) -> None:
     manifest = tmp_path / "manifest.json"
     manifest.write_text("existing baseline", encoding="utf-8")
@@ -237,27 +378,16 @@ def test_capture_resets_existing_makeup_intensities(tmp_path: Path) -> None:
 
 
 def _clone_assets_for_mutation(target_root: Path) -> None:
-    def clone(source: str, target: str) -> str:
-        if source.endswith("mohan.makeup.builtin.mohan-outfit"):
-            return shutil.copy2(source, target)
-        os.link(source, target)
-        return target
-
-    shutil.copytree(ROOT / "assets", target_root / "assets", copy_function=clone)
+    # Copies support pytest temporary roots on another volume and keep any
+    # fixture mutation isolated from the approved production assets.
+    shutil.copytree(ROOT / "assets", target_root / "assets")
 
 
 @pytest.fixture
-def mutable_asset_root():
-    temporary_parent = (ROOT / ".quality-tmp" / "golden-mutation-tests").resolve()
-    asset_root = (temporary_parent / uuid.uuid4().hex).resolve()
-    assert asset_root.is_relative_to(temporary_parent)
-    temporary_parent.mkdir(parents=True, exist_ok=True)
+def mutable_asset_root(tmp_path):
+    asset_root = tmp_path / "mutable-assets"
     _clone_assets_for_mutation(asset_root)
-    try:
-        yield asset_root
-    finally:
-        assert asset_root.is_relative_to(temporary_parent)
-        shutil.rmtree(asset_root)
+    return asset_root
 
 
 def _replace_hash(value: object, member: str, digest: str) -> None:
@@ -333,7 +463,7 @@ def test_one_makeup_pixel_change_fails_and_writes_three_diff_images(
     _mutate_one_makeup_pixel(archive)
     changed_output = tmp_path / "changed"
     actual = render_matrix(changed_output, asset_root=asset_root, cells=(cell,))
-    diff = ROOT / ".quality-tmp" / "golden-diff" / "mutation-proof" / asset_root.name
+    diff = tmp_path / "diff"
     changed = compare_manifest(
         actual,
         expected,

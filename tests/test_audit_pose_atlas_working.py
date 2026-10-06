@@ -6,6 +6,7 @@ lazy import subprocess
 lazy import sys
 lazy import zlib
 lazy from itertools import pairwise
+lazy from dataclasses import replace
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from importlib import import_module
@@ -251,23 +252,11 @@ def test_dimension_mismatch_fails_closed() -> None:
 
 
 def _run_with_custom_count(root: Path, extra_yaw: int, extra_view_id: str) -> dict[str, object]:
-    # Iteration forces a PEP 810 lazy import before this test monkeypatches the
-    # module attribute. Direct tuple unpacking can otherwise see lazy_import.
-    original_yaws = tuple(yaw for yaw in CANONICAL_YAWS)
-    original_view_id = import_module("domain.character_pose").canonical_view_id
-    try:
-        audit_tool.CANONICAL_YAWS = (*original_yaws, extra_yaw)
-
-        def patched_view_id(value: int) -> str:
-            if value == extra_yaw:
-                return extra_view_id
-            return original_view_id(value)
-
-        audit_tool.canonical_view_id = patched_view_id
-        return audit_tool.audit(root)
-    finally:
-        audit_tool.CANONICAL_YAWS = original_yaws
-        audit_tool.canonical_view_id = original_view_id
+    settings = replace(
+        audit_tool.DEFAULT_CHARACTER_SETTINGS,
+        views=(*audit_tool.DEFAULT_CHARACTER_SETTINGS.views, (extra_view_id, extra_yaw)),
+    )
+    return audit_tool.audit(root, settings=settings)
 
 
 def test_view_count_mismatch_fails_for_missing_or_extra_angles() -> None:
@@ -289,6 +278,48 @@ def test_view_count_mismatch_fails_for_missing_or_extra_angles() -> None:
             item for item in payload["views"] if item["view_id"] == extra_view_id
         )
         assert "asset_missing" in extra_view["issues"]
+
+
+def test_default_settings_match_existing_views_and_schema():
+    settings = audit_tool.DEFAULT_CHARACTER_SETTINGS
+    assert settings.views == tuple((canonical_view_id(yaw), yaw) for yaw in CANONICAL_YAWS)
+    assert (settings.width, settings.height) == (WIDTH, HEIGHT)
+    assert settings.schema == "mohan.pose-atlas.working-audit.v1"
+
+
+def test_fake_character_audit_reads_only_configured_paths_and_dimensions(tmp_path, monkeypatch):
+    settings_path = tmp_path / "settings.json"
+    settings_path.write_text(json.dumps({
+        "schema": "example.asset-audit.v1", "views": [["sample-profile", 30]],
+        "width": 8, "height": 9,
+    }), encoding="utf-8")
+    settings = audit_tool.load_character_settings(settings_path)
+    root = tmp_path / "example-assets"
+    root.mkdir()
+    (root / "sample-profile.png").write_bytes(b"fake image")
+    (root / "sample-profile.hands.json").write_text("{}", encoding="utf-8")
+    observed = []
+
+    class Result:
+        passed = True
+        problems = issues = skipped_checks = ()
+        visible_sides = occluded_sides = frozenset()
+
+    def build(path, evidence):
+        observed.append((path, evidence))
+        return Result()
+
+    monkeypatch.setattr(audit_tool, "build_hand_asset_evidence", build)
+    report = audit_tool.audit(root, settings=settings)
+    assert report["passed"] is True
+    assert report["schema"] == settings.schema
+    assert report["view_count"] == 1
+    assert observed[0][0] == root.resolve()
+    evidence = observed[0][1]
+    assert (evidence.view_id, evidence.yaw_degrees, evidence.width, evidence.height) == (
+        "sample-profile", 30, 8, 9,
+    )
+    assert report["views"][0]["view_id"] == "sample-profile"
 
 
 def main() -> int:
