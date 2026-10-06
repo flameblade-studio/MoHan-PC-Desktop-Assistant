@@ -225,6 +225,7 @@ def test_build_tool_is_pinned() -> None:
     assert "POSE_ATLAS_LAYERED_RELATIVE_ROOT" in build_source
     assert "assets/pose-atlas/v4" not in build_source
     assert "assets/expressions" in build_source
+    assert "assets/characters/mohan" in build_source
     assert "expected_full_body_layers = VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT" in build_source
     assert "expected_half_body_layers = HALF_BODY_POSE_COUNT * FULL_BODY_LAYER_COUNT" in build_source
     assert "--require-pose-atlas" in build_source
