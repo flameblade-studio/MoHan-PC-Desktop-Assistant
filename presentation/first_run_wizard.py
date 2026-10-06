@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from collections.abc import Mapping
+
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPixmap
 lazy from PySide6.QtWidgets import (
@@ -54,6 +56,10 @@ __all__ = ("FirstRunWizard",)
 class FirstRunWizard(QDialog):
     """Collect identity and workflow choices while supporting every profession."""
 
+    LOCALIZED_DEFAULT_KEYS = frozenset(
+        {"assistant_name", "user_title", "window_title", "wake_word"}
+    )
+
     WORK_TYPES = (
         "一般辦公／行政",
         "專案管理",
@@ -79,6 +85,8 @@ class FirstRunWizard(QDialog):
         self.platform_services = (
             platform_services or fallback_platform_services()
         )
+        self._applying_localized_defaults = False
+        self._unsaved_default_keys = self._find_unsaved_default_keys()
         self.language = profile_setting(db, "ui_language")
         self._configure_window()
         root = QHBoxLayout(self)
@@ -117,7 +125,7 @@ class FirstRunWizard(QDialog):
         hero_layout = QVBoxLayout(hero_panel)
         hero_layout.setContentsMargins(16, 24, 16, 14)
         hero_layout.setSpacing(10)
-        self.hero_brand = QLabel("墨寒  MoHan")
+        self.hero_brand = QLabel("墨寒")
         self.hero_brand.setObjectName("onboardingBrand")
         self.hero_tagline = QLabel()
         self.hero_tagline.setObjectName("onboardingTagline")
@@ -178,6 +186,33 @@ class FirstRunWizard(QDialog):
         self.wake_word.setPlaceholderText(
             "語音喚醒詞，例如：墨寒"
         )
+        for key, editor in self._localized_default_editors().items():
+            editor.textChanged.connect(
+                lambda _value, field=key: self._mark_default_as_modified(field)
+            )
+
+    def _find_unsaved_default_keys(self) -> set[str]:
+        if bool(self.db.setting("onboarding_complete", False)):
+            return set()
+        snapshotter = getattr(self.db, "settings_snapshot", None)
+        if not callable(snapshotter):
+            return set()
+        snapshot = snapshotter()
+        if not isinstance(snapshot, Mapping):
+            return set()
+        return set(self.LOCALIZED_DEFAULT_KEYS).difference(snapshot)
+
+    def _localized_default_editors(self) -> dict[str, QLineEdit]:
+        return {
+            "assistant_name": self.assistant_name,
+            "user_title": self.user_title,
+            "window_title": self.window_title,
+            "wake_word": self.wake_word,
+        }
+
+    def _mark_default_as_modified(self, key: str) -> None:
+        if not self._applying_localized_defaults:
+            self._unsaved_default_keys.discard(key)
 
     def _initialize_work_type(self) -> None:
         self.work_type = QComboBox()
@@ -269,31 +304,41 @@ class FirstRunWizard(QDialog):
     def _apply_localized_identity_defaults(self) -> None:
         if is_english(self.language):
             replacements = (
-                (self.assistant_name, {"墨寒"}, "MoHan"),
-                (self.user_title, {"主上", "主様"}, "Commander"),
-                (self.wake_word, {"墨寒"}, "MoHan"),
+                ("assistant_name", {"墨寒"}, "MoHan"),
+                ("user_title", {"主上", "主様"}, "Commander"),
+                ("window_title", {"墨寒"}, "MoHan"),
+                ("wake_word", {"墨寒"}, "MoHan"),
             )
         elif is_japanese(self.language):
             replacements = (
-                (self.assistant_name, {"MoHan"}, "墨寒"),
-                (self.user_title, {"主上", "Commander"}, "主様"),
-                (self.wake_word, {"MoHan"}, "墨寒"),
+                ("assistant_name", {"MoHan"}, "墨寒"),
+                ("user_title", {"主上", "Commander"}, "主様"),
+                ("window_title", {"MoHan"}, "墨寒"),
+                ("wake_word", {"MoHan"}, "墨寒"),
             )
         else:
             replacements = (
-                (self.assistant_name, {"MoHan"}, "墨寒"),
-                (self.user_title, {"Commander", "主様"}, "主上"),
-                (self.wake_word, {"MoHan"}, "墨寒"),
+                ("assistant_name", {"MoHan"}, "墨寒"),
+                ("user_title", {"Commander", "主様"}, "主上"),
+                ("window_title", {"MoHan"}, "墨寒"),
+                ("wake_word", {"MoHan"}, "墨寒"),
             )
-        for editor, defaults, replacement in replacements:
-            if editor.text().strip() in defaults:
-                editor.setText(replacement)
+        editors = self._localized_default_editors()
+        self._applying_localized_defaults = True
+        try:
+            for key, defaults, replacement in replacements:
+                editor = editors[key]
+                if (
+                    key in self._unsaved_default_keys
+                    and editor.text().strip() in defaults
+                ):
+                    editor.setText(replacement)
+        finally:
+            self._applying_localized_defaults = False
 
     def _apply_language(self, _index: int | None = None) -> None:
-        previous = self.language
         self.language = str(self.ui_language.currentData() or "zh-TW")
-        if previous != self.language:
-            self._apply_localized_identity_defaults()
+        self._apply_localized_identity_defaults()
         self._update_wizard_headings()
         self._update_wizard_form()
         self._update_work_type_labels()
@@ -309,7 +354,7 @@ class FirstRunWizard(QDialog):
 
     def _update_wizard_headings(self) -> None:
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
-        self.hero_brand.setText(self._t("first_run_brand", "墨寒  MoHan"))
+        self.hero_brand.setText(self._t("first_run_brand", "墨寒"))
         self.hero_tagline.setText(
             self._t(
                 "first_run_hero_tagline",

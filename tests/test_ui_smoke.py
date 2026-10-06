@@ -135,7 +135,7 @@ def _assert_first_run_wizard(app: QApplication, tmp: str) -> None:
         abs(delta) <= 1
         for delta in onboarding_center_deltas.values()
     ), onboarding_center_deltas
-    assert wizard.hero_brand.text() == "墨寒  MoHan"
+    assert wizard.hero_brand.text() == "墨寒"
     assert "千年女劍魂" in wizard.hero_tagline.text()
     assert wizard.organization_name.text() == ""
     assert wizard.work_type.currentText() == "一般辦公／行政"

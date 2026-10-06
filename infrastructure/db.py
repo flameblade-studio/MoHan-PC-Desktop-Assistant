@@ -21,8 +21,8 @@ lazy from infrastructure.sqlite_safety import classify_db_file, table_column_nam
 
 MAX_MEMORY_TITLE_LENGTH = 36
 
-# 裁決 2026-08-28：這些鍵是執行期狀態（好感、天氣、自主衣櫥、新裝披露），
-# 而非使用者可編輯的設定；restore_settings_snapshot 於快照回復時保留當前值。
+# 這些鍵是執行期狀態或立即保存的 UI 偏好，不屬於底部設定交易；
+# restore_settings_snapshot 於快照回復時保留當前值。
 RUNTIME_PRESERVED_KEYS = frozenset({
     "affinity_value", "jealousy_value", "affinity_interaction_count",
     "favor_value", "satiety_value", "camera_presence_state",
@@ -30,7 +30,7 @@ RUNTIME_PRESERVED_KEYS = frozenset({
     "wardrobe_generation_last_error", "wardrobe_last_generated_at",
     "active_outfit_id", "wardrobe_last_changed_at", "wardrobe_manual_lock_until",
     "wardrobe_current_weight", "weather_temperature_c", "weather_condition",
-    "wardrobe_reveal_pending_outfit_id",
+    "wardrobe_reveal_pending_outfit_id", "desktop_status_collapsed",
 })
 
 DEFAULT_REMINDERS = frozendict({

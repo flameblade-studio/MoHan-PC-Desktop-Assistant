@@ -9,7 +9,7 @@ lazy from domain.language_support import is_english, is_japanese, is_simplified_
 
 _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
 {'first_run_title': '首次启动设置',
- 'first_run_brand': '墨寒  MoHan',
+ 'first_run_brand': '墨寒',
  'first_run_heading': '<b>欢迎使用墨寒桌面助手</b>',
  'first_run_hero_tagline': '来自北宋的千年女剑魂，陪您说话、记忆，也陪您把工作做好。',
  'first_run_intro': '请先建立用户设置。以下内容以后都能在“设置”页修改，不会绑定特定公司、职业或工作平台。',
@@ -372,6 +372,8 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'voice_muted_short': '已静音',
  'sleep_mode_status': '休眠模式已启动；墨寒会保持安静，提醒与紧急警报仍会按规则处理。',
  'desktop_status_title': '墨寒正在桌面上与你互动',
+ 'desktop_status_expand': '展开状态',
+ 'desktop_status_collapse': '收起状态',
  'desktop_status_description': '桌面上的墨寒是唯一可见、可拖动并会回应你的角色。',
  'desktop_status_mode': '模式',
  'desktop_status_expression': '姿态／表情',
@@ -456,7 +458,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'azure_hd_remove_key': '移除 Dragon HD S0 密钥',
  'azure_hd_remove_key_confirm': '确定移除由 {platform} 安全保存的 Dragon HD S0 密钥吗？',
  'azure_hd_key_save_failed': '请检查 Dragon HD S0 密钥存储设置：{error}',
- 'azure_hd_speech_note': '可选预览功能。请使用独立的 S0 Speech 资源、密钥与相符的支持区域。MoHan 使用 Dragon HD 的音频驱动嘴型同步。语音开始延迟取决于网络与区域距离。合成需要检查时，会各尝试一次回退到标准 Azure Speech 与 Windows 本机语音。',
+ 'azure_hd_speech_note': '可选预览功能。请使用独立的 S0 Speech 资源、密钥与相符的支持区域。墨寒使用 Dragon HD 的音频驱动嘴型同步。语音开始延迟取决于网络与区域距离。合成需要检查时，会各尝试一次回退到标准 Azure Speech 与 Windows 本机语音。',
  'azure_speech_note': '预览功能。请自备 Azure Speech 资源密钥及相符区域。只列出已验证的女性语音。设置需补全或服务需要检查时，会回退到 Windows 女性语音。Azure 使用量与费用由 Microsoft 规定。',
  'azure_speech_note_no_local_fallback': '预览功能。请自备 Azure Speech 资源密钥及相符区域。本机语音等待验证；服务需要检查时会安全停止播放。',
  'azure_fallback_missing_settings': '请完成 Azure Speech 设置以使用云端语音。本次语句仅在本机使用 Windows 女性语音。',

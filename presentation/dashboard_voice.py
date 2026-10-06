@@ -988,10 +988,10 @@ class DashboardVoiceMixin:
             ),
             self.realtime_transcription_model,
         )
-        form.addRow(
-            self._t("realtime_noise", "Realtime 麥克風降噪"),
-            self.realtime_noise_reduction,
-        )
+        noise_label = QLabel(self._t("realtime_noise", "Realtime 麥克風降噪"))
+        noise_label.setWordWrap(True)
+        noise_label.setMinimumHeight(noise_label.fontMetrics().lineSpacing() * 4)
+        form.addRow(noise_label, self.realtime_noise_reduction)
         form.addRow(
             self._t("realtime_turn", "Realtime 發言切段"),
             self.realtime_turn_detection,

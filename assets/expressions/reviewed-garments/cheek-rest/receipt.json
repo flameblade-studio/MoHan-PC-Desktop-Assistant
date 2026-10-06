@@ -75,5 +75,58 @@
       "sha256": "3883d7974eed8f2299d667c6d98d15a52608df3eda8c4ea3e0234a5f1e4bb088"
     }
   },
-  "cosmetic_strength_revision": "scratchpad\\halfbody-makeup-consistency-20260913-01\\cheek-final-evidence.json"
+  "cosmetic_strength_revision": "scratchpad\\halfbody-makeup-consistency-20260913-01\\cheek-final-evidence.json",
+  "ticket_212_candidate_l_installation": {
+    "schema": "mohan.owner-approved-asset-installation.v1",
+    "owner": "CHOU MING HUA",
+    "date": "2026-10-05",
+    "quote": "問「托腮衣領 #212 候選 L（衣領尖端貼頸、手部重烘）可以安裝嗎？」答「核准 L，白塊另開工單」。",
+    "installed_layers": [
+      {
+        "path": "source-bcc8/garment-source.rgba.png",
+        "before_sha256": "0b102914f558dc2c547e41183bc859188db6b340401c609145d902713ec6a8c8",
+        "sha256": "fa229464191c1715142cba236e05b41d44b2a5b2cb453a67d7abedc6853bf0c5"
+      },
+      {
+        "path": "source-bcc8/native-hands-foreground.rgba.png",
+        "before_sha256": "59f5fc7c7efc9ddb533aa660e2be016a71c7bedc699f56ffb7ceaf2e6e76f27a",
+        "sha256": "2fad5c89c3ddeaa3f318f3fece503d7dfc49c807bb2a0de72902af4ebe8697ef"
+      }
+    ],
+    "unchanged_assets": [
+      {
+        "path": "source-bcc8/body-visibility.png",
+        "sha256": "4c91cae792638863b3f2c2f0119e3fa9e1e99c0ffd74d0ab96d6fc225b8be52d"
+      }
+    ],
+    "excluded_scope": "耳下白塊另開工單",
+    "reviewed_garments_manifest_sha256": "5812f665ecddec7dc31450b77102c4865ef12074345d31ac43943d4d6380b443",
+    "installation_receipt": {
+      "path": ".quality-tmp/install/asset-install/receipt.json",
+      "sha256": "cd9036eea67efe898e0dc5d58113f044ad260fce02a6f16ea04f944b8bbba906"
+    },
+    "runtime_acceptance": {
+      "path": ".quality-tmp/install/runtime-comparison.json",
+      "sha256": "0336b38ee98d6ed7133408dd47455b0fb9f20bdb1243fe2ed85f9eb502cb3caa",
+      "expressions": 5,
+      "makeups": 4,
+      "mouths": 4,
+      "eye_states": 3,
+      "pixel_exact_matches": 240,
+      "mismatches": 0
+    },
+    "golden_scope_acceptance": {
+      "path": ".quality-tmp/install/golden-scope-check.json",
+      "sha256": "09bef9d078ab6886984a943f7abf0648ca7cdaba2cf208886934f5f8a2d3f23e",
+      "total_cells": 352,
+      "changed_cheek_hanfu_cells": 72,
+      "unchanged_cells": 280,
+      "unexpected_changed_cells": 0,
+      "baseline_update": "blocked_uncommitted_render_sources"
+    },
+    "golden_approval": {
+      "path": "docs/release-evidence/ticket-212-cheek-rest-collar-hands-approval.json",
+      "sha256": "f394ca25a679cd97b642599e2f217f6a99dbc929583709ddeddd4baf51fff230e"
+    }
+  }
 }
