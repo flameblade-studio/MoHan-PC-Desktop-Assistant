@@ -20,6 +20,14 @@ ROOT = Path(__file__).resolve().parents[1]
 MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
+DERIVATIVE_COUNT = 234
+DERIVATIVE_COUNTS = {
+    "fullbody_blink": 24,
+    "fullbody_visible_hand": 8,
+    "fullbody_complete_frames": 156,
+    "fullbody_complete_masks": 13,
+    "fullbody_complete_oral": 33,
+}
 
 
 @pytest.fixture(scope="module")
@@ -75,11 +83,22 @@ def test_formal_counts_and_archive_separation(inventory: dict[str, Any]) -> None
     counts = inventory["runtime_file_counts"]
     assert counts["fullbody_master"] == MASTER_COUNT
     assert counts["fullbody_core_layer"] == CORE_COUNT
-    assert {key: counts[key] for key in ("fullbody_blink", "fullbody_visible_hand", "fullbody_complete_frames", "fullbody_complete_masks", "fullbody_complete_oral")} == {
-        "fullbody_blink": 24, "fullbody_visible_hand": 8, "fullbody_complete_frames": 156,
-        "fullbody_complete_masks": 13, "fullbody_complete_oral": 33,
-    }
+    assert {key: counts[key] for key in DERIVATIVE_COUNTS} == DERIVATIVE_COUNTS
+    assert sum(DERIVATIVE_COUNTS.values()) == DERIVATIVE_COUNT
     by_path = {row["path"]: row for row in inventory["files"]}
+    formal_image_categories = {
+        "fullbody_master", "fullbody_core_layer", *DERIVATIVE_COUNTS,
+    }
+    formal_images = [
+        row for row in inventory["files"]
+        if row["scope"] == "runtime_data" and row["category"] in formal_image_categories
+    ]
+    assert len(formal_images) == MASTER_COUNT + CORE_COUNT + DERIVATIVE_COUNT
+    assert all(
+        row["image"] == {"width": 1024, "height": 1536, "mode": "RGBA"}
+        for row in formal_images
+    )
+    assert all(row["migration"] == builder.DIRECT for row in formal_images)
     for name, row in by_path.items():
         if name.startswith(("assets/pose-atlas/v4", "docs/media/")):
             assert row["scope"].startswith("excluded_"), name
@@ -88,11 +107,61 @@ def test_formal_counts_and_archive_separation(inventory: dict[str, Any]) -> None
     assert by_path["assets/pose-atlas/v5-base/yaw+000-pitch+00.hands.json"]["scope"] == "product_validation_data"
     assert by_path["assets/expressions/cheek_native_bcc8.png"]["scope"] == "excluded_review_source"
     assert by_path["assets/expressions/cheek_native_gray_20260914.png"]["scope"] == "runtime_data"
-    assert by_path["assets/mohan-taskbar-icon.png"]["scope"] == "excluded_support"
+    taskbar = by_path["assets/mohan-taskbar-icon.png"]
+    assert taskbar["scope"] == "excluded_product_build_output"
+    assert taskbar["category"] == "ui_character_icon_build_output"
+    assert "mohan-halfbody.ico" in taskbar["reason"]
     assert counts["appearance_pack"] == PACK_COUNT
     assert any("hairstyles" in row.get("appearance_categories", []) for row in inventory["files"])
     assert any("headwear" in row.get("appearance_categories", []) for row in inventory["files"])
     assert {p.relative_to(ROOT).as_posix() for p in (ROOT / "assets").rglob("*") if p.is_file()} <= set(by_path)
+
+
+def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[str, Any]) -> None:
+    assert inventory["non_product_roots"] == [dict(row) for row in builder.NON_PRODUCT_ROOTS]
+    paths = {row["path"] for row in inventory["non_product_roots"]}
+    assert {
+        ".quality-tmp/", "artifacts/", "assets/pose-atlas/v4/",
+        "assets/pose-atlas/v4-layered/", "assets/pose-atlas/v4-source/",
+        "assets/pose-atlas/v4-working/", "docs/media/",
+        "docs/release-evidence/", "tests/golden/",
+    } == paths
+    assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
+
+
+def test_required_embedded_content_locations_are_indexed(inventory: dict[str, Any]) -> None:
+    required = {
+        "identity_persona_dialogue": {
+            "domain/persona_defaults.py", "domain/app_profile.py", "domain/language_support.py",
+            "infrastructure/db.py", "integrations/ai_client.py",
+            "application/companion_phrasebook.py", "application/special_occasion.py",
+            "application/wellbeing_reminder.py", "application/wellbeing_runtime.py",
+            "presentation/ui_localization.py", "presentation/ui_localization_en.py",
+            "presentation/ui_localization_ja.py", "presentation/auxiliary_ui_localization.py",
+            "presentation/flagship/localization_remote_vision.py",
+        },
+        "voice_preferences": {
+            "domain/speech_configuration.py", "application/presentation_ports.py",
+            "presentation/dashboard_voice.py", "integrations/speech_voice_catalog.py",
+            "integrations/azure_voice_catalog.py",
+        },
+        "rig_angle_expression_pose_rules": {
+            "domain/character_body_profile.py", "domain/constants.py", "domain/character_pose.py",
+            "domain/companion_animation_contract.py", "domain/expression_system.py",
+            "presentation/companion_wait_expression.py", "presentation/companion_face_assets.py",
+            "presentation/companion_visual_physics.py",
+        },
+    }
+    by_path = {row["path"]: row for row in inventory["files"]}
+    for category, paths in required.items():
+        for path in paths:
+            row = by_path[path]
+            assert row["scope"] == "embedded_code"
+            assert row["migration"] == builder.EMBEDDED
+            assert category in row["content_categories"]
+            assert row["symbols"]
+            line_count = len((ROOT / path).read_text(encoding="utf-8").splitlines())
+            assert all(1 <= symbol["line"] <= symbol["end_line"] <= line_count for symbol in row["symbols"])
 
 
 def test_lineage_is_excluded_but_actual_manifest_paths_are_retained(tmp_path: Path) -> None:
@@ -139,7 +208,8 @@ def test_summary_fragment_and_owner_boundaries(inventory: dict[str, Any]) -> Non
     assert not audit_fragment(fragment)
     decisions = inventory["owner_decisions"]
     assert decisions["standalone_download_design"] is True
-    for key in ("pack_visibility", "character_asset_license", "dlc_relationship"):
+    assert decisions["pack_visibility"] == "private_repository"
+    for key in ("character_asset_license", "dlc_relationship"):
         assert decisions[key] == "owner_decision_pending"
     for row in inventory["files"]:
         if row["scope"] == "embedded_code":

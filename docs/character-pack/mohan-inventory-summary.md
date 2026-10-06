@@ -43,9 +43,9 @@
 
 圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。
 
-封存、一代校準、製作鏡像、未引用審閱原圖與來源證據另列排除。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。文件行銷圖另列，不進產品角色包。
+v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence 審閱證據、tests/golden 回歸證據、製作鏡像與未引用審閱原圖都不進產品包；完整機器分類見 non_product_roots。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。
 
-角色包自開始就支援獨立下載；公開或私有、角色素材授權及 DLC 關係均待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。
+角色包自開始就支援獨立下載；墨寒角色包放在私有倉庫（擁有者 2026-10-05 裁定）；角色素材授權及 DLC 關係待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。
 
 `mohan-inventory.json` · `python tools/build_character_inventory.py --check`
 
@@ -92,9 +92,9 @@
 
 图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。
 
-封存、一代校准、制作镜像、未引用审阅原图与来源证据另列排除。reviewed-garments 与 source-bound-exasperated 内正式加载或验证的数据保留。文档营销图另列，不进产品角色包。
+v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence 审阅证据、tests/golden 回归证据、制作镜像和未引用审阅原图均不进入产品包；完整机器分类见 non_product_roots。reviewed-garments 与 source-bound-exasperated 中正式加载或验证的数据予以保留。
 
-角色包从开始就支持独立下载；公开或私有、角色素材授权及 DLC 关系均待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。
+角色包从开始就支持独立下载；墨寒角色包放在私有仓库（所有者 2026-10-05 裁定）；角色素材授权及 DLC 关系待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。
 
 `mohan-inventory.json` · `python tools/build_character_inventory.py --check`
 
@@ -141,9 +141,9 @@ Official archives declare 1 garment, 1 hairstyle, 1 headwear and 1 makeup item. 
 
 Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.
 
-Archives, generation-1 calibration, authoring mirrors, unreferenced review originals and provenance are excluded. Formally loaded or verified data in reviewed-garments and source-bound-exasperated remains included. Documentation and marketing images are listed separately from product payloads.
+Generation-1 v4 calibration, artifacts candidates, .quality-tmp temporaries, docs/release-evidence reviews, tests/golden regression evidence, authoring mirrors and unreferenced review originals stay outside the product pack; non_product_roots records the machine-readable boundary. Formally loaded or verified reviewed-garments and source-bound-exasperated data remains included.
 
-Independent download is a design requirement from inception. Public or private visibility, character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope.
+Independent download is a design requirement from inception. The MoHan character pack lives in a private repository (owner decision, 2026-10-05); character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope.
 
 `mohan-inventory.json` · `python tools/build_character_inventory.py --check`
 
@@ -190,8 +190,8 @@ Independent download is a design requirement from inception. Public or private v
 
 画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。
 
-封存、第一世代の校正、制作ミラー、未参照の審査原画と出典証拠は除外します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。文書と宣伝用の画像は製品パックから分離します。
+v4 の第一世代校正、artifacts の候補、.quality-tmp の一時出力、docs/release-evidence の審査証拠、tests/golden の回帰証拠、制作ミラー、未参照の審査原画は製品パックに含めません。機械可読の境界は non_product_roots に記録します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。
 
-独立ダウンロードは当初からの設計要件です。公開か非公開か、素材ライセンス、DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。
+独立ダウンロードは当初からの設計要件です。墨寒キャラクターパックは非公開リポジトリに置きます（所有者決定、2026-10-05）。素材ライセンスと DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。
 
 `mohan-inventory.json` · `python tools/build_character_inventory.py --check`

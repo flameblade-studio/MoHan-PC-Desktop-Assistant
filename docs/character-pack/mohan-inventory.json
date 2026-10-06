@@ -21587,7 +21587,7 @@
     },
     {
       "bytes": 1087689,
-      "category": "archive_or_support",
+      "category": "ui_character_icon_build_output",
       "image": {
         "height": 1024,
         "mode": "RGBA",
@@ -21597,8 +21597,8 @@
       "migration": "純資料可直接搬",
       "path": "assets/mohan-taskbar-icon.png",
       "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "reason": "Windows 圖示建置產物；執行期讀取 mohan-halfbody.ico",
+      "scope": "excluded_product_build_output",
       "sha256": "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
     },
     {
@@ -101131,7 +101131,8 @@
       "bytes": 41884,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -103917,7 +103918,8 @@
       "bytes": 16941,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -103970,7 +103972,8 @@
       "bytes": 25117,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -104033,7 +104036,8 @@
       "bytes": 24114,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -104206,7 +104210,8 @@
       "bytes": 15409,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -104339,7 +104344,8 @@
       "bytes": 847,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -104382,7 +104388,8 @@
       "bytes": 19123,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -104883,7 +104890,8 @@
       "bytes": 14104,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -105658,7 +105666,8 @@
       "bytes": 49575,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -106219,7 +106228,8 @@
       "bytes": 36859,
       "category": "embedded_character_content",
       "content_categories": [
-        "character_literal_sites"
+        "character_literal_sites",
+        "identity_persona_dialogue"
       ],
       "content_locations": [
         {
@@ -106444,12 +106454,50 @@
       ]
     }
   ],
+  "non_product_roots": [
+    {
+      "classification": "temporary_or_candidate_output",
+      "path": ".quality-tmp/"
+    },
+    {
+      "classification": "candidate_or_generated_output",
+      "path": "artifacts/"
+    },
+    {
+      "classification": "generation_1_calibration_reference",
+      "path": "assets/pose-atlas/v4/"
+    },
+    {
+      "classification": "generation_1_calibration_archive",
+      "path": "assets/pose-atlas/v4-layered/"
+    },
+    {
+      "classification": "generation_1_review_sources",
+      "path": "assets/pose-atlas/v4-source/"
+    },
+    {
+      "classification": "generation_1_calibration_archive",
+      "path": "assets/pose-atlas/v4-working/"
+    },
+    {
+      "classification": "documentation_and_marketing_media",
+      "path": "docs/media/"
+    },
+    {
+      "classification": "review_and_release_evidence",
+      "path": "docs/release-evidence/"
+    },
+    {
+      "classification": "regression_evidence",
+      "path": "tests/golden/"
+    }
+  ],
   "owner_decisions": {
     "art_tool_license": "MIT",
     "character_asset_license": "owner_decision_pending",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
-    "pack_visibility": "owner_decision_pending",
+    "pack_visibility": "private_repository",
     "standalone_download_design": true
   },
   "purpose": "existing_content_index_only",
@@ -106490,9 +106538,10 @@
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
+    "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 18,
+    "excluded_support": 17,
     "product_validation_data": 48,
     "runtime_data": 2973
   },

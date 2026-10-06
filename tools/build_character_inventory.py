@@ -27,6 +27,17 @@ DIRECT = "純資料可直接搬"
 EMBEDDED = "被程式寫死需先改"
 SOURCE_ROOTS = ("domain", "application", "infrastructure", "integrations", "presentation")
 IMAGE_SUFFIXES = frozenset({".png", ".ico", ".webp", ".gif", ".jpg", ".jpeg"})
+NON_PRODUCT_ROOTS = (
+    {"path": ".quality-tmp/", "classification": "temporary_or_candidate_output"},
+    {"path": "artifacts/", "classification": "candidate_or_generated_output"},
+    {"path": "assets/pose-atlas/v4/", "classification": "generation_1_calibration_reference"},
+    {"path": "assets/pose-atlas/v4-layered/", "classification": "generation_1_calibration_archive"},
+    {"path": "assets/pose-atlas/v4-source/", "classification": "generation_1_review_sources"},
+    {"path": "assets/pose-atlas/v4-working/", "classification": "generation_1_calibration_archive"},
+    {"path": "docs/media/", "classification": "documentation_and_marketing_media"},
+    {"path": "docs/release-evidence/", "classification": "review_and_release_evidence"},
+    {"path": "tests/golden/", "classification": "regression_evidence"},
+)
 CATEGORY_LABELS = {
     "appearance_pack": "正式外觀包／正式外观包／Official appearance archives／正式外観パック",
     "appearance_replacement_mask": "外觀替換遮罩／外观替换遮罩／Appearance replacement masks／外観置換マスク",
@@ -101,7 +112,15 @@ CODE_CATEGORIES = {
         "application/special_occasion.py", "application/proactive_companion_runtime.py",
         "application/wellbeing_reminder.py", "application/wellbeing_runtime.py",
         "presentation/companion_visual_dynamics.py", "presentation/companion_face_animation.py",
-        "presentation/ui_localization_en.py",
+        "presentation/ui_localization.py", "presentation/ui_localization_en.py",
+        "presentation/ui_localization_ja.py", "presentation/auxiliary_ui_localization.py",
+        "presentation/flagship/localization_cloud_home.py",
+        "presentation/flagship/localization_interaction.py",
+        "presentation/flagship/localization_remote_vision.py",
+        "presentation/flagship/localization_security_audit.py",
+        "presentation/flagship/localization_themes.py",
+        "presentation/flagship/localization_workflows.py",
+        "presentation/flagship_ui_localization.py",
         "domain/somniloquy.py", "domain/wardrobe_intuition.py", "domain/affective_state.py",
         "domain/shyness.py", "domain/shy_gaze.py", "domain/affinity_state.py",
         "domain/personality_state.py", "domain/emotional_resonance.py", "domain/sword_soul_resonance.py",
@@ -207,6 +226,8 @@ def _reference_index(root: Path) -> dict[str, list[dict[str, str]]]:
 
 
 def _excluded_scope(path: str) -> tuple[str, str]:
+    if path == "assets/mohan-taskbar-icon.png":
+        return "excluded_product_build_output", "Windows 圖示建置產物；執行期讀取 mohan-halfbody.ico"
     if path.startswith("assets/pose-atlas/v4"):
         return "excluded_calibration_archive", "一代封存與校準參考"
     if path.startswith("docs/media/"):
@@ -356,6 +377,8 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
         relative = path.relative_to(root).as_posix()
         group = next((g for g in GROUPS if relative.startswith(g.prefix)), None)
         category = group.category if group else "archive_or_support"
+        if relative == "assets/mohan-taskbar-icon.png":
+            category = "ui_character_icon_build_output"
         if category == "fullbody_core_layer":
             category = _fullbody_category(relative)
         scope, reason = _asset_scope(relative, group, references)
@@ -389,8 +412,9 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
     return {
         "schema": "mohan.character-inventory.v1", "schema_version": 1,
         "purpose": "existing_content_index_only",
-        "owner_decisions": {"standalone_download_design": True, "pack_visibility": "owner_decision_pending", "character_asset_license": "owner_decision_pending", "dlc_relationship": "owner_decision_pending", "engine_license": "MIT", "art_tool_license": "MIT"},
+        "owner_decisions": {"standalone_download_design": True, "pack_visibility": "private_repository", "character_asset_license": "owner_decision_pending", "dlc_relationship": "owner_decision_pending", "engine_license": "MIT", "art_tool_license": "MIT"},
         "scope_notes": ["runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤", "embedded_code 是定位清冊，不可執行碼角色包內容", "readers 的 line 與 text 指向讀取或模板；manifest_references 點名精確宣告", "封存、製作鏡像、審閱原圖與來源 sidecar 均明確排除；既有核准 scope 沿用", "scratchpad、artifacts、.quality-tmp、docs/release-evidence、tests/golden 全樹不屬產品包輸入"],
+        "non_product_roots": [dict(row) for row in NON_PRODUCT_ROOTS],
         "runtime_file_counts": dict(sorted(counts.items())),
         "appearance_catalog": appearance_catalog,
         "scope_counts": dict(sorted(Counter(row["scope"] for row in records).items())),
@@ -425,10 +449,10 @@ def render_summary(inventory: dict[str, Any]) -> str:
         f"正式パック内には衣装 {look}、髪型 {hair}、髪飾り {headwear}、メイク {makeup} 項目があります。差分と四言語の名称は appearance_catalog に記録します。",
     )
     sections = (
-        ("繁體中文", "這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。", "類別", "檔案數", f"有 {code_count} 個程式檔包含角色內容或規則，需先按清冊的 symbol 與行號改成讀資料：名字、稱謂、人格與系統提示、提醒與節日台詞、聲音偏好、角度、表情、姿勢、嘴型與圖層順序。清冊也搜尋額外角色字串位置；整個模組不等於全部要搬。", "圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。", "封存、一代校準、製作鏡像、未引用審閱原圖與來源證據另列排除。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。文件行銷圖另列，不進產品角色包。", "角色包自開始就支援獨立下載；公開或私有、角色素材授權及 DLC 關係均待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。"),
-        ("简体中文", "本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。", "类别", "文件数", f"有 {code_count} 个程序文件包含角色内容或规则，需要按清册的 symbol 和行号改为读取数据：名字、称谓、人格与系统提示、提醒与节日台词、声音偏好、角度、表情、姿势、嘴型与图层顺序。清册也搜索额外角色字符串位置；整个模块不等于全部要搬。", "图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。", "封存、一代校准、制作镜像、未引用审阅原图与来源证据另列排除。reviewed-garments 与 source-bound-exasperated 内正式加载或验证的数据保留。文档营销图另列，不进产品角色包。", "角色包从开始就支持独立下载；公开或私有、角色素材授权及 DLC 关系均待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。"),
-        ("English", "This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.", "Category", "Files", f"{code_count} source files contain character content or rules. Use indexed symbols and lines to extract names, titles, persona and system prompts, reminders and occasion dialogue, voice preferences, angles, expressions, poses, mouth geometry and layer order. Additional character literals are searched; entire modules are not extraction payloads.", "Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.", "Archives, generation-1 calibration, authoring mirrors, unreferenced review originals and provenance are excluded. Formally loaded or verified data in reviewed-garments and source-bound-exasperated remains included. Documentation and marketing images are listed separately from product payloads.", "Independent download is a design requirement from inception. Public or private visibility, character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope."),
-        ("日本語", "この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。", "分類", "ファイル数", f"{code_count} 個のソースファイルにキャラクター内容や規則があります。symbol と行番号に従い、名前、呼称、人格とシステムプロンプト、通知と行事の台詞、声の好み、角度、表情、姿勢、口の形とレイヤー順をデータ化します。追加の文字列も検索し、モジュール全体を移行対象とは扱いません。", "画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。", "封存、第一世代の校正、制作ミラー、未参照の審査原画と出典証拠は除外します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。文書と宣伝用の画像は製品パックから分離します。", "独立ダウンロードは当初からの設計要件です。公開か非公開か、素材ライセンス、DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。"),
+        ("繁體中文", "這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。", "類別", "檔案數", f"有 {code_count} 個程式檔包含角色內容或規則，需先按清冊的 symbol 與行號改成讀資料：名字、稱謂、人格與系統提示、提醒與節日台詞、聲音偏好、角度、表情、姿勢、嘴型與圖層順序。清冊也搜尋額外角色字串位置；整個模組不等於全部要搬。", "圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。", "v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence 審閱證據、tests/golden 回歸證據、製作鏡像與未引用審閱原圖都不進產品包；完整機器分類見 non_product_roots。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。", "角色包自開始就支援獨立下載；墨寒角色包放在私有倉庫（擁有者 2026-10-05 裁定）；角色素材授權及 DLC 關係待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。"),
+        ("简体中文", "本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。", "类别", "文件数", f"有 {code_count} 个程序文件包含角色内容或规则，需要按清册的 symbol 和行号改为读取数据：名字、称谓、人格与系统提示、提醒与节日台词、声音偏好、角度、表情、姿势、嘴型与图层顺序。清册也搜索额外角色字符串位置；整个模块不等于全部要搬。", "图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。", "v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence 审阅证据、tests/golden 回归证据、制作镜像和未引用审阅原图均不进入产品包；完整机器分类见 non_product_roots。reviewed-garments 与 source-bound-exasperated 中正式加载或验证的数据予以保留。", "角色包从开始就支持独立下载；墨寒角色包放在私有仓库（所有者 2026-10-05 裁定）；角色素材授权及 DLC 关系待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。"),
+        ("English", "This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.", "Category", "Files", f"{code_count} source files contain character content or rules. Use indexed symbols and lines to extract names, titles, persona and system prompts, reminders and occasion dialogue, voice preferences, angles, expressions, poses, mouth geometry and layer order. Additional character literals are searched; entire modules are not extraction payloads.", "Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.", "Generation-1 v4 calibration, artifacts candidates, .quality-tmp temporaries, docs/release-evidence reviews, tests/golden regression evidence, authoring mirrors and unreferenced review originals stay outside the product pack; non_product_roots records the machine-readable boundary. Formally loaded or verified reviewed-garments and source-bound-exasperated data remains included.", "Independent download is a design requirement from inception. The MoHan character pack lives in a private repository (owner decision, 2026-10-05); character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope."),
+        ("日本語", "この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。", "分類", "ファイル数", f"{code_count} 個のソースファイルにキャラクター内容や規則があります。symbol と行番号に従い、名前、呼称、人格とシステムプロンプト、通知と行事の台詞、声の好み、角度、表情、姿勢、口の形とレイヤー順をデータ化します。追加の文字列も検索し、モジュール全体を移行対象とは扱いません。", "画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。", "v4 の第一世代校正、artifacts の候補、.quality-tmp の一時出力、docs/release-evidence の審査証拠、tests/golden の回帰証拠、制作ミラー、未参照の審査原画は製品パックに含めません。機械可読の境界は non_product_roots に記録します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。", "独立ダウンロードは当初からの設計要件です。墨寒キャラクターパックは非公開リポジトリに置きます（所有者決定、2026-10-05）。素材ライセンスと DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。"),
     )
     parts = ["# 墨寒角色內容清冊摘要／墨寒角色内容清册摘要／MoHan Character Inventory Summary／墨寒キャラクター内容一覧\n"]
     for locale, (language, intro, category, files, code, data, exclusions, decisions) in enumerate(sections):
