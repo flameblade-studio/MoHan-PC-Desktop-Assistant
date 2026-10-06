@@ -41,6 +41,7 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 | 項目 | 預設上限 |
 |---|---|
 | ZIP 容器 | 256 MiB |
+| ZIP 中央目錄 metadata | 8 MiB |
 | 入口清單 | 1 MiB |
 | 單一 payload | 64 MiB |
 | 清單與解壓後 payload 合計 | 512 MiB |
@@ -48,6 +49,12 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 | 單成員解壓長度對壓縮長度比例 | 100 |
 
 `ValidationLimits` 允許呼叫端調整正整數上限；依實際大小與串流讀取雙重檢查，ZIP 不解壓到磁碟。拒絕絕對路徑、父目錄跳脫、反斜線、空段、點段、Windows 保留名與特殊字元、尾端點或空白、symlink、junction、特殊檔案、加密成員及常見執行檔副檔名。ZIP 目錄項允許尾端斜線且必須無 payload。檢驗中的資料夾須保持唯讀且不受其他行程修改；本工具不建立防止外部並行置換的作業系統快照。
+
+ZIP 建立記憶體索引前，先串流核對中央目錄的實際項目數、宣告數與範圍，並套用 metadata 大小上限。首版接受單磁碟、一般結尾紀錄的 ZIP；ZIP64 結尾紀錄與跨磁碟封包會被拒絕，小型封包的 ZIP64 本地標頭可接受。ZIP 名稱須符合宣告的檔案或目錄類型；檔案也不得成為其他項目的父目錄，包括大小寫折疊後的衝突。Windows 保留裝置名稱檢查涵蓋 COM 與 LPT 的上標數字 ¹、²、³。
+
+ZIP 大小、預檢與內容讀取使用同一個已開啟檔案，避免預檢後因路徑置換而讀取另一個 ZIP。資料夾與 ZIP 都須在驗證期間保持不被並行改寫。
+
+資料夾逐項串流列舉，項目數超過上限一筆就停止，避免先把大量目錄項目收集到記憶體。
 
 ### API 與最小範例
 
@@ -116,6 +123,7 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 | 项目 | 默认上限 |
 |---|---|
 | ZIP 容器 | 256 MiB |
+| ZIP 中央目录 metadata | 8 MiB |
 | 入口清单 | 1 MiB |
 | 单个 payload | 64 MiB |
 | 清单与解压后 payload 合计 | 512 MiB |
@@ -123,6 +131,12 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 | 单成员解压长度对压缩长度比例 | 100 |
 
 `ValidationLimits` 允许调用端调整正整数上限；根据实际大小与流式读取双重检查，ZIP 不解压到磁盘。拒绝绝对路径、父目录跳脱、反斜线、空段、点段、Windows 保留名称与特殊字符、末尾点或空格、symlink、junction、特殊文件、加密成员及常见可执行文件扩展名。ZIP 目录项允许末尾斜线且必须无 payload。检验中的文件夹须保持只读且不受其他进程修改；本工具不建立防止外部并行替换的操作系统快照。
+
+ZIP 建立内存索引前，先流式核对中央目录的实际项目数、声明数与范围，并应用 metadata 大小上限。首版接受单磁盘、普通结尾记录的 ZIP；ZIP64 结尾记录与跨磁盘包会被拒绝，小型包的 ZIP64 本地头可接受。ZIP 名称须符合声明的文件或目录类型；文件也不得成为其他项目的父目录，包括大小写折叠后的冲突。Windows 保留设备名称检查涵盖 COM 与 LPT 的上标数字 ¹、²、³。
+
+ZIP 大小、预检与内容读取使用同一个已打开文件，避免预检后因路径替换而读取另一个 ZIP。文件夹与 ZIP 都须在验证期间保持不被并行改写。
+
+文件夹逐项流式枚举，项目数超过上限一项就停止，避免先把大量目录项目收集到内存。
 
 ### API 与最小示例
 
@@ -191,6 +205,7 @@ Optional `signature` is null or an object containing exactly `algorithm`, `key_i
 | Item | Default ceiling |
 |---|---|
 | ZIP container | 256 MiB |
+| ZIP central-directory metadata | 8 MiB |
 | Entry manifest | 1 MiB |
 | Individual payload | 64 MiB |
 | Manifest plus expanded payload | 512 MiB |
@@ -198,6 +213,12 @@ Optional `signature` is null or an object containing exactly `algorithm`, `key_i
 | Per-member expanded to compressed size ratio | 100 |
 
 `ValidationLimits` lets callers set positive integer ceilings; actual sizes and bounded stream reads are checked, and ZIPs are never extracted to disk. Reject absolute paths, parent traversal, backslashes, empty or dot segments, Windows reserved names and special characters, trailing dots or spaces, symlinks, junctions, special files, encrypted members, and common executable extensions. ZIP directory entries may have trailing slashes and must have no payload. Directories being validated must remain read-only and untouched by other processes; the tool does not create an operating-system snapshot against concurrent external replacement.
+
+Before allocating the ZIP index, stream through the central directory to check actual and declared entry counts and bounds, and enforce the metadata size limit. v1 accepts single-disk ZIPs with classic end records. ZIP64 end records and multi-disk packages are rejected; local ZIP64 headers in small packages are accepted. ZIP names must agree with their declared file or directory types. A file must also remain separate from the parent directories of other entries, including case-folded collisions. Windows device-name checks cover COM and LPT with superscript digits ¹, ², and ³.
+
+ZIP size checks, preflight, and payload reads share one open file so replacing the path after preflight cannot select another ZIP. Both directories and ZIPs must remain untouched by concurrent writers during validation.
+
+Directory enumeration streams entries and stops after one entry beyond the ceiling, avoiding allocation of a complete directory listing before enforcing the limit.
 
 ### API and minimal example
 
@@ -266,6 +287,7 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 | 項目 | 既定の上限 |
 |---|---|
 | ZIP 容器 | 256 MiB |
+| ZIP 中央ディレクトリーの metadata | 8 MiB |
 | 入口の一覧 | 1 MiB |
 | 個別 payload | 64 MiB |
 | 一覧と展開後 payload の合計 | 512 MiB |
@@ -273,6 +295,12 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 | 各メンバーの展開長と圧縮長の比率 | 100 |
 
 `ValidationLimits` で呼び出し側が正整数の上限を設定できます。実際のサイズと制限付きストリーム読み取りを確認し、ZIP はディスクへ展開しません。絶対パス、親への移動、逆斜線、空または点の区間、Windows の予約名と特殊文字、末尾の点や空白、symlink、junction、特殊ファイル、暗号化メンバー、一般的な実行形式拡張子を拒否します。ZIP のディレクトリー項目は末尾の斜線を許し、payload は空である必要があります。検証対象のフォルダーは読み取り専用で、他のプロセスが変更しない状態を維持します。本ツールは外部からの並行置換を防ぐ OS スナップショットを作成しません。
+
+ZIP のメモリー索引を作る前に、中央ディレクトリーをストリームで読み、実際と宣言上の項目数、範囲、metadata のサイズ上限を確認します。v1 は単一ディスクと通常の終端レコードを持つ ZIP を受け入れます。ZIP64 終端レコードと複数ディスクのパックは拒否し、小型パックの ZIP64 ローカルヘッダーは受け入れます。ZIP の名前は宣言されたファイルまたはディレクトリーの種類と一致する必要があります。大小文字の正規化後も、ファイルが他の項目の親ディレクトリーになる構成を拒否します。Windows の予約デバイス名検査は、COM と LPT の上付き数字 ¹、²、³ も対象にします。
+
+ZIP のサイズ確認、事前検査、内容の読み取りには同じ開いたファイルを使い、検査後のパス置換で別の ZIP を読むことを防ぎます。検証中は、フォルダーと ZIP の両方を他の処理が書き換えない状態に保ちます。
+
+フォルダーは項目を一つずつ列挙し、上限を一項目超えた時点で停止します。大量の項目を先にメモリーへ集める処理を避けます。
 
 ### API と最小例
 

@@ -12,6 +12,7 @@ class ValidationLimits:
     """Resource ceilings applied before and while package content is read."""
 
     max_archive_bytes: int = 256 * 1024 * 1024
+    max_zip_directory_bytes: int = 8 * 1024 * 1024
     max_manifest_bytes: int = 1024 * 1024
     max_file_bytes: int = 64 * 1024 * 1024
     max_total_bytes: int = 512 * 1024 * 1024

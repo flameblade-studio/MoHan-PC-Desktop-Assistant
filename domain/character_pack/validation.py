@@ -176,6 +176,7 @@ def validate_character_pack(
 def _validate_limits(limits: ValidationLimits) -> None:
     values = (
         limits.max_archive_bytes,
+        limits.max_zip_directory_bytes,
         limits.max_manifest_bytes,
         limits.max_file_bytes,
         limits.max_total_bytes,

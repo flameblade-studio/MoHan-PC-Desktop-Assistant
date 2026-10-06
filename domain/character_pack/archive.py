@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 lazy import stat
+lazy import os
+lazy import struct
 lazy import unicodedata
 lazy import zipfile
 lazy import zlib
@@ -15,8 +17,15 @@ lazy from domain.character_pack.models import ValidationLimits
 MANIFEST_PATH = "manifest.json"
 MAX_PATH_LENGTH = 512
 READ_CHUNK_BYTES = 64 * 1024
-WINDOWS_RESERVED = frozenset({"con", "prn", "aux", "nul", *(f"com{i}" for i in range(1, 10)), *(f"lpt{i}" for i in range(1, 10))})
+WINDOWS_RESERVED = frozenset({
+    "con", "prn", "aux", "nul",
+    *(f"{prefix}{number}" for prefix in ("com", "lpt") for number in "123456789\u00b9\u00b2\u00b3"),
+})
 CONTROL_CHARACTER_BOUNDARY = 32
+ZIP_END_BYTES = 22
+ZIP_MAX_COMMENT_BYTES = 65535
+ZIP_CENTRAL_HEADER_BYTES = 46
+ZIP64_SIZE_SENTINEL = 0xFFFFFFFF
 
 
 class _ValidationFailure(ValueError):
@@ -98,12 +107,16 @@ class _ZipReader(_PackageReader):
     source_kind = "zip"
 
     def __init__(self, source: Path, limits: ValidationLimits) -> None:
-        if source.stat().st_size > limits.max_archive_bytes:
-            raise _ValidationFailure("archive_too_large", "The archive exceeds the configured size limit.")
+        self._stream = source.open("rb")
         try:
-            self._archive = zipfile.ZipFile(source)
-        except (OSError, zipfile.BadZipFile):
-            raise _ValidationFailure("invalid_archive", "Use a readable ZIP character pack.") from None
+            _preflight_zip_directory(self._stream, limits)
+            try:
+                self._archive = zipfile.ZipFile(self._stream)
+            except (OSError, zipfile.BadZipFile):
+                raise _ValidationFailure("invalid_archive", "Use a readable ZIP character pack.") from None
+        except BaseException:
+            self._stream.close()
+            raise
         infos: dict[str, zipfile.ZipInfo] = {}
         folded_names: set[str] = set()
         total_bytes = 0
@@ -124,6 +137,8 @@ class _ZipReader(_PackageReader):
                 file_type = (info.external_attr >> 16) & 0o170000
                 if file_type not in {0, stat.S_IFREG, stat.S_IFDIR}:
                     raise _ValidationFailure("unsafe_path", "ZIP entries must be regular files or directories.", name)
+                if (file_type == stat.S_IFDIR and not info.is_dir()) or (file_type == stat.S_IFREG and info.is_dir()):
+                    raise _ValidationFailure("invalid_archive", "ZIP names and declared entry types must agree.", name)
                 folded_names.add(folded)
                 if len(folded_names) > limits.max_files:
                     raise _ValidationFailure("too_many_files", "The ZIP entry count exceeds the configured limit.")
@@ -143,8 +158,10 @@ class _ZipReader(_PackageReader):
                 total_bytes += info.file_size
                 _validate_inventory_limits(infos, total_bytes, limits)
             _validate_inventory_limits(infos, total_bytes, limits)
+            _validate_zip_hierarchy(infos, folded_names)
         except BaseException:
             self._archive.close()
+            self._stream.close()
             raise
         self._infos = infos
 
@@ -171,6 +188,51 @@ class _ZipReader(_PackageReader):
 
     def __exit__(self, _exc_type: object, _exc: object, _traceback: object) -> None:
         self._archive.close()
+        self._stream.close()
+
+
+def _preflight_zip_directory(stream: IO[bytes], limits: ValidationLimits) -> None:
+    """Bound ZIP index allocation before ZipFile constructs its in-memory index.
+
+    v1 supports single-disk ZIPs with a classic end record. Count actual central
+    headers as well as the declared count, so a forged count cannot bypass the
+    ceiling. Variable metadata is skipped rather than allocated.
+    """
+    stream.seek(0, 2)
+    archive_size = stream.tell()
+    if archive_size > limits.max_archive_bytes:
+        raise _ValidationFailure("archive_too_large", "The archive exceeds the configured size limit.")
+    tail_start = max(0, archive_size - ZIP_END_BYTES - ZIP_MAX_COMMENT_BYTES)
+    stream.seek(tail_start)
+    tail = stream.read(ZIP_END_BYTES + ZIP_MAX_COMMENT_BYTES)
+    position = tail.rfind(b"PK\x05\x06")
+    if position < 0 or len(tail) - position < ZIP_END_BYTES:
+        raise _ValidationFailure("invalid_archive", "The ZIP end record is missing or truncated.")
+    _, disk, directory_disk, disk_count, count, size, offset, comment_size = struct.unpack_from("<4s4H2IH", tail, position)
+    if disk or directory_disk or disk_count != count or count == ZIP_MAX_COMMENT_BYTES or ZIP64_SIZE_SENTINEL in {size, offset}:
+        raise _ValidationFailure("invalid_archive", "Use a single-disk ZIP with a classic end record; ZIP64 is unsupported.")
+    if count > limits.max_files:
+        raise _ValidationFailure("too_many_files", "The ZIP entry count exceeds the configured limit.")
+    if size > limits.max_zip_directory_bytes:
+        raise _ValidationFailure("zip_directory_too_large", "The ZIP central metadata exceeds the configured limit.")
+    end_position = tail_start + position
+    if position + ZIP_END_BYTES + comment_size != len(tail) or offset + size != end_position:
+        raise _ValidationFailure("invalid_archive", "The ZIP directory and end-record bounds must agree.")
+    stream.seek(offset)
+    actual_count = 0
+    while stream.tell() < end_position:
+        header = stream.read(ZIP_CENTRAL_HEADER_BYTES)
+        if len(header) != ZIP_CENTRAL_HEADER_BYTES or header[:4] != b"PK\x01\x02":
+            raise _ValidationFailure("invalid_archive", "The ZIP central directory is malformed.")
+        actual_count += 1
+        if actual_count > limits.max_files:
+            raise _ValidationFailure("too_many_files", "The actual ZIP entry count exceeds the configured limit.")
+        name_size, extra_size, entry_comment_size = struct.unpack_from("<HHH", header, 28)
+        stream.seek(name_size + extra_size + entry_comment_size, 1)
+        if stream.tell() > end_position:
+            raise _ValidationFailure("invalid_archive", "A ZIP central entry escapes the directory bounds.")
+    if actual_count != count:
+        raise _ValidationFailure("invalid_archive", "The ZIP central entry count differs from its end record.")
 
 
 def _open_reader(source: Path, limits: ValidationLimits) -> _PackageReader:
@@ -183,20 +245,30 @@ def _open_reader(source: Path, limits: ValidationLimits) -> _PackageReader:
     raise _ValidationFailure("source_not_found", "Provide an existing character-pack directory or ZIP.")
 
 
+def _validate_zip_hierarchy(files: Mapping[str, object], entries: set[str]) -> None:
+    """Require a hierarchy that can also exist as a regular directory pack."""
+    folded_files = {_fold_path(name) for name in files}
+    for name in sorted(entries):
+        for parent in PurePosixPath(name).parents:
+            if parent.as_posix() in folded_files:
+                raise _ValidationFailure("unsafe_path", "A ZIP file cannot also be a parent directory.", name)
+
+
 def _directory_entries(root: Path, limits: ValidationLimits) -> Iterator[Path]:
     count = 0
-    for parent, directories, filenames in root.walk(on_error=_raise_walk_error):
-        for name in (*directories, *filenames):
-            count += 1
-            if count > limits.max_files:
-                raise _ValidationFailure("too_many_files", "The directory entry count exceeds the configured limit.")
-            entry = parent / name
-            _check_directory_path(root, entry)
-            yield entry
-
-
-def _raise_walk_error(error: OSError) -> None:
-    raise error
+    pending = [root]
+    while pending:
+        parent = pending.pop()
+        with os.scandir(parent) as entries:
+            for item in entries:
+                count += 1
+                if count > limits.max_files:
+                    raise _ValidationFailure("too_many_files", "The directory entry count exceeds the configured limit.")
+                entry = parent / item.name
+                _check_directory_path(root, entry)
+                if item.is_dir(follow_symlinks=False):
+                    pending.append(entry)
+                yield entry
 
 
 def _check_directory_path(root: Path, candidate: Path) -> None:

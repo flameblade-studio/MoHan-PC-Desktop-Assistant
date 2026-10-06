@@ -6,15 +6,19 @@ lazy import copy
 lazy import hashlib
 lazy import io
 lazy import json
+lazy import os
 lazy import stat
+lazy import struct
 lazy import sys
 lazy import zipfile
 lazy from dataclasses import replace
+lazy from contextlib import contextmanager
 lazy from pathlib import Path
 
 lazy import pytest
 
 lazy from domain.character_pack.models import CharacterPackSignature, ValidationLimits
+lazy from domain.character_pack import archive as character_archive
 lazy from domain.character_pack.archive import _read_limited
 lazy from domain.character_pack.validation import (
     SCHEMA,
@@ -117,7 +121,7 @@ def test_invalid_schema_fields(tmp_path: Path, kind: str, field: str, value: obj
 
 
 @pytest.mark.parametrize("kind", ["directory", "zip"])
-@pytest.mark.parametrize("path", ["../escape.json", "/absolute.json", "C:/absolute.json", "a/../b.json", "a\\b.json", "./file.json", "a//b.json", "a:stream", "CON.txt", "file. ", "a\x00b", "a\nb", "a?b", "cafe\u0301.json"])
+@pytest.mark.parametrize("path", ["../escape.json", "/absolute.json", "C:/absolute.json", "a/../b.json", "a\\b.json", "./file.json", "a//b.json", "a:stream", "CON.txt", "COM\u00b9.txt", "lpt\u00b2.json", "COM\u00b3", "file. ", "a\x00b", "a\nb", "a?b", "cafe\u0301.json"])
 def test_manifest_paths_fail_closed(tmp_path: Path, kind: str, path: str) -> None:
     manifest = minimal_manifest()
     manifest["files"][0]["path"] = path
@@ -327,3 +331,169 @@ def test_streaming_limit_stops_after_one_excess_byte() -> None:
     with pytest.raises(ValueError, match="read limit"):
         _read_limited(stream, limit, "synthetic.bin")
     assert stream.tell() == limit + 1
+
+
+@pytest.mark.parametrize("parent", ["provenance", "PROVENANCE"])
+@pytest.mark.parametrize("child", ["provenance/source.json", "PROVENANCE/source.json"])
+@pytest.mark.parametrize("parent_first", [True, False])
+def test_zip_file_cannot_be_an_implicit_directory(tmp_path: Path, parent: str, child: str, parent_first: bool) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "zip")
+    with zipfile.ZipFile(source) as archive:
+        entries = [(child if info.filename == "provenance/source.json" else info.filename, archive.read(info)) for info in archive.infolist()]
+    entry = (parent, b"file blocking the source directory")
+    entries = [entry, *entries] if parent_first else [*entries, entry]
+    with zipfile.ZipFile(source, "w") as archive:
+        for name, data in entries:
+            archive.writestr(name, data)
+    assert_rejected(source, "unsafe_path")
+
+
+@pytest.mark.parametrize(("name", "file_type"), [("folder", stat.S_IFDIR), ("folder/", stat.S_IFREG)])
+def test_zip_entry_name_must_agree_with_type(tmp_path: Path, name: str, file_type: int) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "zip")
+    info = zipfile.ZipInfo(name)
+    info.create_system = 3
+    info.external_attr = (file_type | 0o755) << 16
+    with zipfile.ZipFile(source, "a") as archive:
+        archive.writestr(info, b"")
+    assert_rejected(source, "invalid_archive")
+
+
+@pytest.mark.parametrize("case", ["encrypted", "unsupported_compression", "bad_crc"])
+def test_damaged_or_unsupported_zip_members_fail_closed(tmp_path: Path, case: str) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "zip")
+    data = bytearray(source.read_bytes())
+    central = data.index(b"PK\x01\x02")
+    if case == "encrypted":
+        struct.pack_into("<H", data, 6, 1)
+        struct.pack_into("<H", data, central + 8, 1)
+        code = "encrypted_member"
+    elif case == "unsupported_compression":
+        struct.pack_into("<H", data, 8, 99)
+        struct.pack_into("<H", data, central + 10, 99)
+        code = "invalid_archive"
+    else:
+        name_size, extra_size = struct.unpack_from("<HH", data, 26)
+        data[30 + name_size + extra_size] ^= 1
+        code = "invalid_archive"
+    source.write_bytes(data)
+    assert_rejected(source, code)
+
+
+@pytest.mark.parametrize("kind", ["directory", "zip"])
+def test_all_resource_boundaries_are_inclusive(tmp_path: Path, kind: str) -> None:
+    manifest = minimal_manifest()
+    source = write_package(tmp_path, manifest, kind)
+    manifest_size = len((json.dumps(manifest, ensure_ascii=False) + "\n").encode("utf-8"))
+    limits = replace(
+        DEFAULT_LIMITS,
+        max_manifest_bytes=manifest_size,
+        max_file_bytes=len(PAYLOAD),
+        max_total_bytes=manifest_size + len(PAYLOAD),
+        max_files=3,
+        max_archive_bytes=source.stat().st_size if kind == "zip" else DEFAULT_LIMITS.max_archive_bytes,
+    )
+    result = validate_character_pack(source, engine_version="1.0.0", limits=limits)
+    assert result.valid and result.checked_bytes == len(PAYLOAD)
+
+
+def test_directory_and_zip_share_the_same_logical_hash(tmp_path: Path) -> None:
+    directory = write_package(tmp_path, minimal_manifest(), "directory")
+    archive = write_package(tmp_path, minimal_manifest(), "zip")
+    results = [validate_character_pack(source, engine_version=ENGINE_VERSION) for source in (directory, archive)]
+    assert all(result.valid for result in results)
+    assert results[0].package_hash == results[1].package_hash
+
+
+@pytest.mark.parametrize(("case", "code"), [
+    ("count", "too_many_files"),
+    ("forged_count", "too_many_files"),
+    ("metadata", "zip_directory_too_large"),
+    ("bounds", "invalid_archive"),
+    ("zip64", "invalid_archive"),
+    ("multidisk", "invalid_archive"),
+])
+def test_zip_preflight_rejects_before_allocating_index(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, case: str, code: str,
+) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "zip", extra={"extra": b""})
+    limits = DEFAULT_LIMITS
+    data = bytearray(source.read_bytes())
+    end = data.rindex(b"PK\x05\x06")
+    if case in {"count", "forged_count"}:
+        limits = replace(limits, max_files=2)
+        if case == "forged_count":
+            struct.pack_into("<HH", data, end + 8, 2, 2)
+    elif case == "metadata":
+        limits = replace(limits, max_zip_directory_bytes=1)
+    elif case == "bounds":
+        struct.pack_into("<I", data, end + 16, 0)
+    elif case == "zip64":
+        struct.pack_into("<HH", data, end + 8, 65535, 65535)
+    else:
+        struct.pack_into("<H", data, end + 4, 1)
+    source.write_bytes(data)
+    monkeypatch.setattr(zipfile, "ZipFile", lambda _source: pytest.fail("ZIP index was allocated before preflight rejection"))
+    assert_rejected(source, code, limits=limits)
+
+
+def test_zip_comments_and_local_zip64_headers_are_supported(tmp_path: Path) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "zip")
+    with zipfile.ZipFile(source) as archive:
+        entries = [(info.filename, archive.read(info)) for info in archive.infolist()]
+    with zipfile.ZipFile(source, "w") as archive:
+        archive.comment = b"ordinary character-pack comment"
+        for name, data in entries:
+            with archive.open(name, "w", force_zip64=True) as stream:
+                stream.write(data)
+    assert validate_character_pack(source, engine_version=ENGINE_VERSION).valid
+
+
+@pytest.mark.parametrize("case", ["valid", "too_many_entries", "bad_payload_hash"])
+def test_zip_preflight_and_reads_share_one_closed_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, case: str,
+) -> None:
+    manifest = minimal_manifest()
+    if case == "bad_payload_hash":
+        manifest["files"][0]["sha256"] = manifest["source_refs"][0]["sha256"] = "0" * 64
+    source = write_package(tmp_path, manifest, "zip")
+    original_preflight = character_archive._preflight_zip_directory
+    original_zip = zipfile.ZipFile
+    streams = []
+
+    def preflight(stream, limits):
+        assert not isinstance(stream, (str, Path))
+        streams.append(stream)
+        original_preflight(stream, limits)
+
+    def indexed_zip(stream):
+        assert stream is streams[0]
+        return original_zip(stream)
+
+    monkeypatch.setattr(character_archive, "_preflight_zip_directory", preflight)
+    monkeypatch.setattr(zipfile, "ZipFile", indexed_zip)
+    limits = replace(DEFAULT_LIMITS, max_files=1) if case == "too_many_entries" else DEFAULT_LIMITS
+    result = validate_character_pack(source, engine_version=ENGINE_VERSION, limits=limits)
+    assert result.valid == (case == "valid")
+    assert len(streams) == EXPECTED_FILES and streams[0].closed
+
+
+def test_directory_entry_limit_stops_enumeration_early(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "directory", extra={f"extra-{index}": b"" for index in range(20)})
+    limit = 4
+    original_scandir = os.scandir
+    consumed = []
+
+    def tracked_entries(entries):
+        for entry in entries:
+            consumed.append(entry.name)
+            yield entry
+
+    @contextmanager
+    def tracked_scandir(path):
+        with original_scandir(path) as entries:
+            yield tracked_entries(entries)
+
+    monkeypatch.setattr(os, "scandir", tracked_scandir)
+    assert_rejected(source, "too_many_files", limits=replace(DEFAULT_LIMITS, max_files=limit))
+    assert len(consumed) == limit + 1
