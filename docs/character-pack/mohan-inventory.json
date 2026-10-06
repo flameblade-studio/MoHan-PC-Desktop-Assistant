@@ -1011,7 +1011,7 @@
           "text": "lazy from application.presentation_ports import PresentationDatabasePort"
         },
         {
-          "line": 18,
+          "line": 20,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from application.presentation_ports import ("
         },
@@ -11439,7 +11439,7 @@
       "sha256": "fa29d0e041a2697fa0e35a64d55b63772adfce81656dc1a886c3f5819fe9fa5a"
     },
     {
-      "bytes": 4616,
+      "bytes": 6904,
       "category": "native_garment_motion",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -11447,7 +11447,7 @@
       "readers": [],
       "reason": "執行期 manifest 未引用的審閱原圖或舊候選",
       "scope": "excluded_review_source",
-      "sha256": "8ef328a82089e5c3a9737e11fa0bbcf9c91d208f0dda6313849785c64745d346"
+      "sha256": "878dea6165494a6b33b197dab6096546ebe70fba0a851f649529dd03639acab2"
     },
     {
       "bytes": 5579,
@@ -11477,7 +11477,7 @@
       "sha256": "4c91cae792638863b3f2c2f0119e3fa9e1e99c0ffd74d0ab96d6fc225b8be52d"
     },
     {
-      "bytes": 2256555,
+      "bytes": 961587,
       "category": "native_garment_motion",
       "image": {
         "height": 1254,
@@ -11501,10 +11501,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "0b102914f558dc2c547e41183bc859188db6b340401c609145d902713ec6a8c8"
+      "sha256": "fa229464191c1715142cba236e05b41d44b2a5b2cb453a67d7abedc6853bf0c5"
     },
     {
-      "bytes": 2247783,
+      "bytes": 119570,
       "category": "native_garment_motion",
       "image": {
         "height": 1254,
@@ -11528,7 +11528,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "59f5fc7c7efc9ddb533aa660e2be016a71c7bedc699f56ffb7ceaf2e6e76f27a"
+      "sha256": "2fad5c89c3ddeaa3f318f3fece503d7dfc49c807bb2a0de72902af4ebe8697ef"
     },
     {
       "bytes": 4162,
@@ -11855,7 +11855,7 @@
       "sha256": "5cf12a44ae74de1733eca425e1b6bdb659c24603f4bcca28f798056ba9c11355"
     },
     {
-      "bytes": 9234,
+      "bytes": 9232,
       "category": "native_garment_motion",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -11869,7 +11869,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "b2b756e7839cf2595d53c3d6b125482baaa9aecf802b05ef1803498d956f6089"
+      "sha256": "5812f665ecddec7dc31450b77102c4865ef12074345d31ac43943d4d6380b443"
     },
     {
       "bytes": 730241,
@@ -52270,7 +52270,7 @@
       "path": "assets/onboarding/first-run-ink-tech.png",
       "readers": [
         {
-          "line": 106,
+          "line": 114,
           "path": "presentation/first_run_wizard.py",
           "text": "\"assets/onboarding/first-run-ink-tech.png\""
         }
@@ -90446,7 +90446,7 @@
       "path": "assets/ui/mohan-strategist-lobby-v1.png",
       "readers": [
         {
-          "line": 93,
+          "line": 94,
           "path": "presentation/lingxiao_shell.py",
           "text": "_LOBBY_BACKDROP = resource_path(\"assets/ui/mohan-strategist-lobby-v1.png\")"
         }
@@ -91278,12 +91278,12 @@
           "text": "lazy from domain.app_profile import profile_setting"
         },
         {
-          "line": 23,
+          "line": 25,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from domain.app_profile import default_persona_for_language, profile_setting"
         },
         {
-          "line": 44,
+          "line": 45,
           "path": "presentation/lingxiao_shell.py",
           "text": "lazy from domain.app_profile import profile_window_title"
         }
@@ -94982,7 +94982,7 @@
           "text": "lazy from domain.language_support import localized_transcription_prompt"
         },
         {
-          "line": 24,
+          "line": 26,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from domain.language_support import ("
         },
@@ -97404,7 +97404,7 @@
           "text": "lazy from domain.speech_configuration import ("
         },
         {
-          "line": 31,
+          "line": 33,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from domain.speech_configuration import ("
         }
@@ -98024,7 +98024,7 @@
       ]
     },
     {
-      "bytes": 43960,
+      "bytes": 43939,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites",
@@ -98113,7 +98113,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "3ebff517fd02390703791e7e698b3381c642b40e7a743d0eeb31ffdf9dfa8f64",
+      "sha256": "495568e8ccc18b178ff984d2e51ec7dc758b6af2f6169e6aaeabed7e111a3029",
       "symbols": [
         {
           "end_line": 22,
@@ -102586,7 +102586,7 @@
       ]
     },
     {
-      "bytes": 31265,
+      "bytes": 31295,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites"
@@ -102719,7 +102719,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "d00aaf65ca67e1433480ad735d244fe17b94403fc2cfd26b604f9bdfb87f0a95",
+      "sha256": "5e637125465cd252ee05bcd649730a79d78cb18e9067361ab5375d3d37a7ed5a",
       "symbols": [
         {
           "end_line": 31,
@@ -102998,7 +102998,7 @@
       ]
     },
     {
-      "bytes": 28488,
+      "bytes": 28560,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites"
@@ -103015,22 +103015,22 @@
           "text": "\"例如：主上偏好先完成漫畫，再處理行政工作\","
         },
         {
-          "line": 449,
+          "line": 450,
           "path": "presentation/dashboard_today_memory.py",
           "text": "\"今日卷冊尚空。\\n主上先寫下一件真正重要的事。\","
         },
         {
-          "line": 544,
+          "line": 545,
           "path": "presentation/dashboard_today_memory.py",
           "text": "\"靈光稍縱即逝，妾已替主上收好。\","
         },
         {
-          "line": 651,
+          "line": 652,
           "path": "presentation/dashboard_today_memory.py",
           "text": "\"妾已記下。主上日後若要更改，也可逐項整理。\","
         },
         {
-          "line": 764,
+          "line": 765,
           "path": "presentation/dashboard_today_memory.py",
           "text": "'確定永久刪除墨寒保存的全部長期記憶嗎？',"
         }
@@ -103046,7 +103046,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "bb535a735de0780f646749e0de16e19704937afc2048bf800b48aca9d0ab0321",
+      "sha256": "db8d2c1ee078bbfafb3b0f23f4fbccb252f4db0e3a903b5a15e46e5ee7c699f4",
       "symbols": [
         {
           "end_line": 37,
@@ -103069,14 +103069,14 @@
           "name": "MemoryTabActions"
         },
         {
-          "end_line": 795,
+          "end_line": 796,
           "line": 53,
           "name": "DashboardTodayMemoryMixin"
         }
       ]
     },
     {
-      "bytes": 39656,
+      "bytes": 39783,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites",
@@ -103250,7 +103250,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "8c00f25db8bc5830a8fb65e273f27607847b815064d94faf89a95af6f667c7a7",
+      "sha256": "91a6f6520ef36cfbfe82b8238799b508ce545168ef09a613efe14e4a6b66265c",
       "symbols": [
         {
           "end_line": 49,
@@ -103522,19 +103522,19 @@
       ]
     },
     {
-      "bytes": 6579,
+      "bytes": 8884,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites"
       ],
       "content_locations": [
         {
-          "line": 91,
+          "line": 138,
           "path": "presentation/desktop_companion_status.py",
           "text": "shell._t(\"desktop_status_title\", \"墨寒正在桌面上與您互動\")"
         },
         {
-          "line": 99,
+          "line": 146,
           "path": "presentation/desktop_companion_status.py",
           "text": "\"桌面上的墨寒是唯一可見、可拖移並會回應您的角色。\","
         }
@@ -103547,172 +103547,217 @@
           "line": 34,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.desktop_companion_status import ("
+        },
+        {
+          "line": 36,
+          "path": "presentation/lingxiao_shell.py",
+          "text": "lazy from presentation.desktop_companion_status import DESKTOP_STATUS_COLLAPSED_SETTING"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "ea40ca8f3cd5ae521d12fb2e4588e535fc59d81043ddf3bdc7b0549c5c440832",
+      "sha256": "4a25b06cafd18d5a71976d1e7cec044713b215f8917da899f4bb421e0569ca71",
       "symbols": [
         {
-          "end_line": 35,
-          "line": 28,
+          "end_line": 39,
+          "line": 30,
           "name": "__all__"
         },
         {
-          "end_line": 47,
-          "line": 38,
+          "end_line": 41,
+          "line": 41,
+          "name": "DESKTOP_STATUS_COLLAPSED_SETTING"
+        },
+        {
+          "end_line": 53,
+          "line": 44,
           "name": "desktop_companion_initial_status"
         },
         {
-          "end_line": 59,
-          "line": 50,
+          "end_line": 65,
+          "line": 56,
           "name": "mode_status_label"
         },
         {
-          "end_line": 133,
-          "line": 62,
+          "end_line": 92,
+          "line": 68,
+          "name": "_apply_collapsed_stage"
+        },
+        {
+          "end_line": 106,
+          "line": 95,
+          "name": "set_desktop_companion_collapsed"
+        },
+        {
+          "end_line": 200,
+          "line": 109,
           "name": "build_desktop_companion_stage"
         },
         {
-          "end_line": 160,
-          "line": 136,
+          "end_line": 227,
+          "line": 203,
           "name": "update_desktop_companion_status"
         },
         {
-          "end_line": 175,
-          "line": 163,
+          "end_line": 242,
+          "line": 230,
           "name": "visual_status_message"
         },
         {
-          "end_line": 183,
-          "line": 178,
+          "end_line": 250,
+          "line": 245,
           "name": "gesture_status_message"
         }
       ]
     },
     {
-      "bytes": 15976,
+      "bytes": 17723,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites"
       ],
       "content_locations": [
         {
-          "line": 32,
+          "line": 34,
           "path": "presentation/first_run_wizard.py",
           "text": "VOICE_ENGINE_OPENAI,"
         },
         {
-          "line": 33,
+          "line": 35,
           "path": "presentation/first_run_wizard.py",
           "text": "VOICE_ENGINE_SYSTEM,"
         },
         {
-          "line": 34,
+          "line": 36,
           "path": "presentation/first_run_wizard.py",
           "text": "VOICE_GENERATION_PROMPT,"
         },
         {
-          "line": 120,
+          "line": 59,
           "path": "presentation/first_run_wizard.py",
-          "text": "self.hero_brand = QLabel(\"墨寒  MoHan\")"
+          "text": "LOCALIZED_DEFAULT_KEYS = frozenset("
         },
         {
-          "line": 157,
+          "line": 128,
+          "path": "presentation/first_run_wizard.py",
+          "text": "self.hero_brand = QLabel(\"墨寒\")"
+        },
+        {
+          "line": 165,
           "path": "presentation/first_run_wizard.py",
           "text": "\"例如：墨寒、Ava、Office Mate\""
         },
         {
-          "line": 161,
+          "line": 169,
           "path": "presentation/first_run_wizard.py",
           "text": "\"助理如何稱呼你，例如：主上、Alex、主管\""
         },
         {
-          "line": 179,
+          "line": 187,
           "path": "presentation/first_run_wizard.py",
           "text": "\"語音喚醒詞，例如：墨寒\""
         },
         {
-          "line": 272,
+          "line": 203,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.assistant_name, {\"墨寒\"}, \"MoHan\"),"
+          "text": "return set(self.LOCALIZED_DEFAULT_KEYS).difference(snapshot)"
         },
         {
-          "line": 273,
+          "line": 307,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.user_title, {\"主上\", \"主様\"}, \"Commander\"),"
+          "text": "(\"assistant_name\", {\"墨寒\"}, \"MoHan\"),"
         },
         {
-          "line": 274,
+          "line": 308,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.wake_word, {\"墨寒\"}, \"MoHan\"),"
+          "text": "(\"user_title\", {\"主上\", \"主様\"}, \"Commander\"),"
         },
         {
-          "line": 278,
+          "line": 309,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.assistant_name, {\"MoHan\"}, \"墨寒\"),"
+          "text": "(\"window_title\", {\"墨寒\"}, \"MoHan\"),"
         },
         {
-          "line": 279,
+          "line": 310,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.user_title, {\"主上\", \"Commander\"}, \"主様\"),"
+          "text": "(\"wake_word\", {\"墨寒\"}, \"MoHan\"),"
         },
         {
-          "line": 280,
+          "line": 314,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.wake_word, {\"MoHan\"}, \"墨寒\"),"
+          "text": "(\"assistant_name\", {\"MoHan\"}, \"墨寒\"),"
         },
         {
-          "line": 284,
+          "line": 315,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.assistant_name, {\"MoHan\"}, \"墨寒\"),"
+          "text": "(\"user_title\", {\"主上\", \"Commander\"}, \"主様\"),"
         },
         {
-          "line": 285,
+          "line": 316,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.user_title, {\"Commander\", \"主様\"}, \"主上\"),"
+          "text": "(\"window_title\", {\"MoHan\"}, \"墨寒\"),"
         },
         {
-          "line": 286,
+          "line": 317,
           "path": "presentation/first_run_wizard.py",
-          "text": "(self.wake_word, {\"MoHan\"}, \"墨寒\"),"
+          "text": "(\"wake_word\", {\"MoHan\"}, \"墨寒\"),"
         },
         {
-          "line": 312,
+          "line": 321,
           "path": "presentation/first_run_wizard.py",
-          "text": "self.hero_brand.setText(self._t(\"first_run_brand\", \"墨寒  MoHan\"))"
+          "text": "(\"assistant_name\", {\"MoHan\"}, \"墨寒\"),"
         },
         {
           "line": 322,
           "path": "presentation/first_run_wizard.py",
+          "text": "(\"user_title\", {\"Commander\", \"主様\"}, \"主上\"),"
+        },
+        {
+          "line": 323,
+          "path": "presentation/first_run_wizard.py",
+          "text": "(\"window_title\", {\"MoHan\"}, \"墨寒\"),"
+        },
+        {
+          "line": 324,
+          "path": "presentation/first_run_wizard.py",
+          "text": "(\"wake_word\", {\"MoHan\"}, \"墨寒\"),"
+        },
+        {
+          "line": 357,
+          "path": "presentation/first_run_wizard.py",
+          "text": "self.hero_brand.setText(self._t(\"first_run_brand\", \"墨寒\"))"
+        },
+        {
+          "line": 367,
+          "path": "presentation/first_run_wizard.py",
           "text": "\"<b>歡迎使用墨寒桌面陪伴工作助理</b>\","
         },
         {
-          "line": 345,
+          "line": 390,
           "path": "presentation/first_run_wizard.py",
           "text": "self._t(\"assistant_name_placeholder\", \"例如：墨寒、Ava、Office Mate\")"
         },
         {
-          "line": 350,
+          "line": 395,
           "path": "presentation/first_run_wizard.py",
           "text": "\"助理如何稱呼你，例如：主上、Alex、主管\","
         },
         {
-          "line": 366,
+          "line": 411,
           "path": "presentation/first_run_wizard.py",
           "text": "self._t(\"wake_word_placeholder\", \"語音喚醒詞，例如：墨寒\")"
         },
         {
-          "line": 406,
+          "line": 451,
           "path": "presentation/first_run_wizard.py",
           "text": "VOICE_ENGINE_SYSTEM"
         },
         {
-          "line": 408,
+          "line": 453,
           "path": "presentation/first_run_wizard.py",
           "text": "else VOICE_ENGINE_OPENAI"
         },
         {
-          "line": 432,
+          "line": 477,
           "path": "presentation/first_run_wizard.py",
           "text": "VOICE_GENERATION_PROMPT,"
         }
@@ -103733,16 +103778,16 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "769a86797fe47b5433c10e72c4ae79c14e699847f7694b2aa537f5e4e64ba7a0",
+      "sha256": "957bb65b8fe70b839f45a608f4583096904d7aa3e8e33dce251ecb594da0ce64",
       "symbols": [
         {
-          "end_line": 51,
-          "line": 51,
+          "end_line": 53,
+          "line": 53,
           "name": "__all__"
         },
         {
-          "end_line": 439,
-          "line": 54,
+          "end_line": 484,
+          "line": 56,
           "name": "FirstRunWizard"
         }
       ]
@@ -104991,14 +105036,14 @@
       ]
     },
     {
-      "bytes": 25974,
+      "bytes": 26177,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites"
       ],
       "content_locations": [
         {
-          "line": 498,
+          "line": 504,
           "path": "presentation/lingxiao_shell.py",
           "text": "title = QLabel(shell._t(\"navigation_brand\", \"墨寒\"))"
         }
@@ -105019,181 +105064,181 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "2cb1352137d3ae8142f0bbdd70ea86f11d55fa8ceccbe8d71bf2682720f500f9",
+      "sha256": "d03086de6b6ff3bc53e3fb3ffbf4f56166f9fb36ba429069d60d6c2b8bbf4993",
       "symbols": [
         {
-          "end_line": 59,
-          "line": 49,
+          "end_line": 60,
+          "line": 50,
           "name": "__all__"
         },
         {
-          "end_line": 61,
-          "line": 61,
+          "end_line": 62,
+          "line": 62,
           "name": "DRAFT_BAR_READ_ERROR"
         },
         {
-          "end_line": 74,
-          "line": 64,
+          "end_line": 75,
+          "line": 65,
           "name": "_shell_palette"
         },
         {
-          "end_line": 83,
-          "line": 78,
-          "name": "REALMS"
-        },
-        {
           "end_line": 84,
-          "line": 84,
-          "name": "NAVIGATION_WIDTH"
+          "line": 79,
+          "name": "REALMS"
         },
         {
           "end_line": 85,
           "line": 85,
-          "name": "_NAVIGATION_LAYOUT_MARGIN"
+          "name": "NAVIGATION_WIDTH"
         },
         {
           "end_line": 86,
           "line": 86,
-          "name": "_NAVIGATION_BUTTON_PADDING"
+          "name": "_NAVIGATION_LAYOUT_MARGIN"
         },
         {
           "end_line": 87,
           "line": 87,
-          "name": "_NAVIGATION_ACTIVE_EDGE"
+          "name": "_NAVIGATION_BUTTON_PADDING"
         },
         {
           "end_line": 88,
           "line": 88,
-          "name": "_NAVIGATION_BUTTON_BORDER_BUFFER"
+          "name": "_NAVIGATION_ACTIVE_EDGE"
         },
         {
           "end_line": 89,
           "line": 89,
-          "name": "_NAVIGATION_CAPTION_PADDING"
+          "name": "_NAVIGATION_BUTTON_BORDER_BUFFER"
         },
         {
           "end_line": 90,
           "line": 90,
-          "name": "_NAVIGATION_CAPTION_BORDER_BUFFER"
+          "name": "_NAVIGATION_CAPTION_PADDING"
         },
         {
           "end_line": 91,
           "line": 91,
-          "name": "_NAVIGATION_WIDTH_BUFFER"
+          "name": "_NAVIGATION_CAPTION_BORDER_BUFFER"
         },
         {
           "end_line": 92,
           "line": 92,
-          "name": "_NAVIGATION_COMPACT_BUTTON_PADDING"
+          "name": "_NAVIGATION_WIDTH_BUFFER"
         },
         {
           "end_line": 93,
           "line": 93,
+          "name": "_NAVIGATION_COMPACT_BUTTON_PADDING"
+        },
+        {
+          "end_line": 94,
+          "line": 94,
           "name": "_LOBBY_BACKDROP"
         },
         {
-          "end_line": 105,
-          "line": 96,
+          "end_line": 106,
+          "line": 97,
           "name": "_navigation_scale"
         },
         {
-          "end_line": 176,
-          "line": 108,
+          "end_line": 177,
+          "line": 109,
           "name": "_navigation_preferred_width"
         },
         {
-          "end_line": 218,
-          "line": 179,
+          "end_line": 219,
+          "line": 180,
           "name": "_wrap_text_line"
         },
         {
-          "end_line": 239,
-          "line": 221,
+          "end_line": 240,
+          "line": 222,
           "name": "_wrapped_text"
         },
         {
-          "end_line": 246,
-          "line": 242,
+          "end_line": 247,
+          "line": 243,
           "name": "_layout_margins"
         },
         {
-          "end_line": 271,
-          "line": 249,
+          "end_line": 272,
+          "line": 250,
           "name": "_navigation_text_width"
         },
         {
-          "end_line": 297,
-          "line": 274,
+          "end_line": 303,
+          "line": 275,
           "name": "_navigation_button_text"
         },
         {
-          "end_line": 309,
-          "line": 300,
+          "end_line": 315,
+          "line": 306,
           "name": "_refresh_navigation_layout"
         },
         {
-          "end_line": 352,
-          "line": 312,
+          "end_line": 358,
+          "line": 318,
           "name": "_ResponsiveNavigationButton"
         },
         {
-          "end_line": 396,
-          "line": 355,
+          "end_line": 402,
+          "line": 361,
           "name": "_ResponsiveNavigationLabel"
         },
         {
-          "end_line": 437,
-          "line": 399,
+          "end_line": 443,
+          "line": 405,
           "name": "_ResponsiveStatusLabel"
         },
         {
-          "end_line": 458,
-          "line": 440,
+          "end_line": 464,
+          "line": 446,
           "name": "realm_layout_order"
         },
         {
-          "end_line": 472,
-          "line": 461,
+          "end_line": 478,
+          "line": 467,
           "name": "_realm_caption"
         },
         {
-          "end_line": 526,
-          "line": 475,
+          "end_line": 532,
+          "line": 481,
           "name": "build_navigation"
         },
         {
-          "end_line": 574,
-          "line": 529,
+          "end_line": 580,
+          "line": 535,
           "name": "build_ribbon"
         },
         {
-          "end_line": 608,
-          "line": 577,
+          "end_line": 614,
+          "line": 583,
           "name": "build_draft_bar"
         },
         {
-          "end_line": 622,
-          "line": 611,
+          "end_line": 628,
+          "line": 617,
           "name": "_style_save_settings_button"
         },
         {
-          "end_line": 638,
-          "line": 625,
+          "end_line": 644,
+          "line": 631,
           "name": "refresh_runtime_palette"
         },
         {
-          "end_line": 677,
-          "line": 641,
+          "end_line": 685,
+          "line": 647,
           "name": "update_draft_bar"
         },
         {
-          "end_line": 687,
-          "line": 680,
+          "end_line": 695,
+          "line": 688,
           "name": "set_ribbon_state"
         },
         {
-          "end_line": 698,
-          "line": 690,
+          "end_line": 706,
+          "line": 698,
           "name": "install_lobby_motion"
         }
       ]
@@ -105271,7 +105316,7 @@
           "text": "lazy from presentation.lingxiao_themes import ("
         },
         {
-          "line": 36,
+          "line": 37,
           "path": "presentation/lingxiao_shell.py",
           "text": "lazy from presentation.lingxiao_themes import palette_for_theme"
         }
@@ -105415,7 +105460,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "d60aec8dd0e341d1b461437d000547ffa477596194d191e5dceafa19057192a0",
+      "sha256": "d87d11c899c2dc788107c54df9393d9038b428cd41618af30955ba5da5e5beed",
       "symbols": [
         {
           "end_line": 29,
@@ -105663,7 +105708,7 @@
       ]
     },
     {
-      "bytes": 49575,
+      "bytes": 49654,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites",
@@ -105673,7 +105718,7 @@
         {
           "line": 12,
           "path": "presentation/ui_localization.py",
-          "text": "'first_run_brand': '墨寒  MoHan',"
+          "text": "'first_run_brand': '墨寒',"
         },
         {
           "line": 13,
@@ -105771,142 +105816,142 @@
           "text": "'desktop_status_title': '墨寒正在桌面上与你互动',"
         },
         {
-          "line": 375,
+          "line": 377,
           "path": "presentation/ui_localization.py",
           "text": "'desktop_status_description': '桌面上的墨寒是唯一可见、可拖动并会回应你的角色。',"
         },
         {
-          "line": 395,
+          "line": 397,
           "path": "presentation/ui_localization.py",
           "text": "'tray_quit': '退出墨寒',"
         },
         {
-          "line": 399,
+          "line": 401,
           "path": "presentation/ui_localization.py",
           "text": "'chat_placeholder': '对墨寒说话……',"
         },
         {
-          "line": 433,
+          "line": 435,
           "path": "presentation/ui_localization.py",
           "text": "'mohan_volume': '墨寒音量',"
         },
         {
-          "line": 459,
+          "line": 461,
           "path": "presentation/ui_localization.py",
-          "text": "'azure_hd_speech_note': '可选预览功能。请使用独立的 S0 Speech 资源、密钥与相符的支持区域。MoHan 使用 Dragon HD 的音频驱动嘴型同步。语音开始延迟取决于网络与区域距离。合成需要检查时，会各尝试一次回退到标准 Azure Speech 与 Windows 本机语音。',"
+          "text": "'azure_hd_speech_note': '可选预览功能。请使用独立的 S0 Speech 资源、密钥与相符的支持区域。墨寒使用 Dragon HD 的音频驱动嘴型同步。语音开始延迟取决于网络与区域距离。合成需要检查时，会各尝试一次回退到标准 Azure Speech 与 Windows 本机语音。',"
         },
         {
-          "line": 466,
+          "line": 468,
           "path": "presentation/ui_localization.py",
           "text": "'platform_local_voice_note': '{platform} 本机语音等待设备验证。墨寒只会列出当前平台已验证的语音，并通过设备测试确认离线语音支持。',"
         },
         {
-          "line": 472,
+          "line": 474,
           "path": "presentation/ui_localization.py",
           "text": "'preview_voice': '试听：主上，妾在。',"
         },
         {
-          "line": 486,
+          "line": 488,
           "path": "presentation/ui_localization.py",
           "text": "'echo_guard_option': '防止墨寒听见自己的声音',"
         },
         {
-          "line": 494,
+          "line": 496,
           "path": "presentation/ui_localization.py",
           "text": "'echo_guard_note': '启用回声防护后，墨寒说话时会暂停上传麦克风音频，播放结束后再恢复。对话页只显示最终准确转录。',"
         },
         {
-          "line": 509,
+          "line": 511,
           "path": "presentation/ui_localization.py",
           "text": "'permissions_warning': '安全规则：对话会让墨寒停留在已配置的权限范围内。AI 可以提出工具请求，但实际能运行的内容由本机权限决定。',"
         },
         {
-          "line": 512,
+          "line": 514,
           "path": "presentation/ui_localization.py",
           "text": "'permission_blocked_message': '请先为墨寒启用执行 {action} 所需的权限。',"
         },
         {
-          "line": 513,
+          "line": 515,
           "path": "presentation/ui_localization.py",
           "text": "'permission_request': '墨寒请求电脑权限',"
         },
         {
-          "line": 514,
+          "line": 516,
           "path": "presentation/ui_localization.py",
           "text": "'permission_request_message': '是否允许墨寒本次{action}？',"
         },
         {
-          "line": 532,
+          "line": 534,
           "path": "presentation/ui_localization.py",
           "text": "'restart_language_note': '保存界面语言后，重新启动墨寒即可完整应用。',"
         },
         {
-          "line": 533,
+          "line": 535,
           "path": "presentation/ui_localization.py",
           "text": "'about_heading': '<b>关于墨寒</b>',"
         },
         {
-          "line": 535,
+          "line": 537,
           "path": "presentation/ui_localization.py",
           "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
         },
         {
-          "line": 536,
+          "line": 538,
           "path": "presentation/ui_localization.py",
           "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
         },
         {
-          "line": 550,
+          "line": 552,
           "path": "presentation/ui_localization.py",
           "text": "'reminder_message_placeholder': '此提醒触发时墨寒要说的内容',"
         },
         {
-          "line": 554,
+          "line": 556,
           "path": "presentation/ui_localization.py",
           "text": "'read_replies': '让墨寒读出回复',"
         },
         {
-          "line": 555,
+          "line": 557,
           "path": "presentation/ui_localization.py",
           "text": "'caught_glance_dialogue': '妾只是望向窗外，才不是在偷看主上。',"
         },
         {
-          "line": 565,
+          "line": 567,
           "path": "presentation/ui_localization.py",
           "text": "'caught_glance_dialogue': '窓の外を見ていただけです。主上を覗いていたわけではありません。',"
         },
         {
-          "line": 585,
+          "line": 587,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_autonomous_enabled': '墨寒による自律的な衣装選択を許可',"
         },
         {
-          "line": 586,
+          "line": 588,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_self_generation_enabled': '墨寒によるクラウドでの新衣装生成を許可（料金が発生する場合があります）',"
         },
         {
-          "line": 609,
+          "line": 611,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_generation_rate_limited': '画像サービスが混み合っています。墨寒は安全に再試行済みで、保存された進捗から後ほど再開できます。',"
         },
         {
-          "line": 618,
+          "line": 620,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_automatic_outfit_selected': '墨寒が状況に合わせて自律的に着替えました。',"
         },
         {
-          "line": 619,
+          "line": 621,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_pavilion_subtitle': '天候・気分・場面に合わせて墨寒が一式を選び、あなたの決定も尊重します。',"
         },
         {
-          "line": 620,
+          "line": 622,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_source_policy': '提供元を分離：炎剣公式・ユーザー導入・墨寒の自作',"
         },
         {
-          "line": 622,
+          "line": 624,
           "path": "presentation/ui_localization.py",
           "text": "'wardrobe_character_preview': '墨寒スタイルプレビュー',"
         }
@@ -105961,12 +106006,12 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 20,
+          "line": 22,
           "path": "presentation/desktop_companion_status.py",
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 43,
+          "line": 45,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -105977,37 +106022,37 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "33c6a73fba6f8389c837ae9706cad87cb203f4dd9fe7f6b026fc5fe2079c4502",
+      "sha256": "584174bc7126c7af654f647e510864b7679ff5d9be2fb420cdf3eff60bc54267",
       "symbols": [
         {
-          "end_line": 560,
+          "end_line": 562,
           "line": 10,
           "name": "_SIMPLIFIED_CHINESE"
         },
         {
-          "end_line": 685,
-          "line": 562,
+          "end_line": 687,
+          "line": 564,
           "name": "_JAPANESE"
         },
         {
-          "end_line": 709,
-          "line": 700,
+          "end_line": 711,
+          "line": 702,
           "name": "ui_text"
         },
         {
-          "end_line": 725,
-          "line": 712,
+          "end_line": 727,
+          "line": 714,
           "name": "display_label"
         },
         {
-          "end_line": 742,
-          "line": 728,
+          "end_line": 744,
+          "line": 730,
           "name": "__all__"
         }
       ]
     },
     {
-      "bytes": 41251,
+      "bytes": 41347,
       "category": "embedded_character_content",
       "content_categories": [
         "identity_persona_dialogue"
@@ -106104,97 +106149,97 @@
           "text": "\"desktop_status_title\": \"MoHan is interacting with you on the desktop\","
         },
         {
-          "line": 493,
+          "line": 495,
           "path": "presentation/ui_localization_en.py",
           "text": "\"The desktop MoHan is the only visible, draggable character that responds to you.\""
         },
         {
-          "line": 514,
+          "line": 516,
           "path": "presentation/ui_localization_en.py",
           "text": "\"tray_quit\": \"Quit MoHan\","
         },
         {
-          "line": 518,
+          "line": 520,
           "path": "presentation/ui_localization_en.py",
           "text": "\"chat_placeholder\": \"Talk to MoHan…\","
         },
         {
-          "line": 567,
+          "line": 569,
           "path": "presentation/ui_localization_en.py",
           "text": "\"mohan_volume\": \"MoHan volume\","
         },
         {
-          "line": 598,
+          "line": 600,
           "path": "presentation/ui_localization_en.py",
           "text": "'Optional Preview. Use a separate S0 Speech resource, key, and matching supported region. MoHan uses audio-driven lip sync with Dragon HD. Speech-start delay depends on network and region distance. A synthesis error falls back once each to standard Azure Speech and then Windows local speech.'"
         },
         {
-          "line": 618,
+          "line": 620,
           "path": "presentation/ui_localization_en.py",
           "text": "'{platform} local voice awaits device verification. MoHan lists only verified voices for the current platform and confirms offline speech support through device testing.'"
         },
         {
-          "line": 643,
+          "line": 645,
           "path": "presentation/ui_localization_en.py",
           "text": "\"echo_guard_option\": \"Prevent MoHan from hearing her own voice\","
         },
         {
-          "line": 661,
+          "line": 663,
           "path": "presentation/ui_localization_en.py",
           "text": "\"With echo guard enabled, microphone upload pauses while MoHan speaks \""
         },
         {
-          "line": 682,
+          "line": 684,
           "path": "presentation/ui_localization_en.py",
           "text": "\"Grant each capability separately. With Ask every time, MoHan shows a \""
         },
         {
-          "line": 694,
+          "line": 696,
           "path": "presentation/ui_localization_en.py",
           "text": "\"Safety rule: conversation keeps MoHan within her configured authority. \""
         },
         {
-          "line": 700,
+          "line": 702,
           "path": "presentation/ui_localization_en.py",
           "text": "\"permission_blocked_message\": 'Enable permission for MoHan to {action} before continuing.',"
         },
         {
-          "line": 701,
+          "line": 703,
           "path": "presentation/ui_localization_en.py",
           "text": "\"permission_request\": \"MoHan requests computer permission\","
         },
         {
-          "line": 702,
+          "line": 704,
           "path": "presentation/ui_localization_en.py",
           "text": "\"permission_request_message\": \"Allow MoHan to {action} this time?\","
         },
         {
-          "line": 729,
+          "line": 731,
           "path": "presentation/ui_localization_en.py",
           "text": "\"The interface language will be fully applied after restarting MoHan.\""
         },
         {
-          "line": 731,
+          "line": 733,
           "path": "presentation/ui_localization_en.py",
           "text": "\"about_heading\": \"<b>About MoHan</b>\","
         },
         {
-          "line": 733,
+          "line": 735,
           "path": "presentation/ui_localization_en.py",
           "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
         },
         {
-          "line": 734,
+          "line": 736,
           "path": "presentation/ui_localization_en.py",
           "text": "\" and MoHan Desktop Assistant contributors, released under the\""
         },
         {
-          "line": 750,
+          "line": 752,
           "path": "presentation/ui_localization_en.py",
           "text": "\"reminder_message_placeholder\": \"What MoHan says when this reminder fires\","
         },
         {
-          "line": 754,
+          "line": 756,
           "path": "presentation/ui_localization_en.py",
           "text": "\"read_replies\": \"Read MoHan's replies aloud\","
         }
@@ -106210,22 +106255,22 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "fce6102abd14bd1b3d40549a32464d026d978e26763cf54e70c0bb07d90788a2",
+      "sha256": "5be7baab7243630cf04bf1b50c5e988668c638a0e00c9636a12e42842a0e68dd",
       "symbols": [
         {
-          "end_line": 762,
+          "end_line": 764,
           "line": 7,
           "name": "ENGLISH_UI_TEXT"
         },
         {
-          "end_line": 764,
-          "line": 764,
+          "end_line": 766,
+          "line": 766,
           "name": "__all__"
         }
       ]
     },
     {
-      "bytes": 36859,
+      "bytes": 36951,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites",
@@ -106235,7 +106280,7 @@
         {
           "line": 9,
           "path": "presentation/ui_localization_ja.py",
-          "text": "\"first_run_brand\": \"墨寒  MoHan\","
+          "text": "\"first_run_brand\": \"墨寒\","
         },
         {
           "line": 10,
@@ -106245,12 +106290,12 @@
         {
           "line": 25,
           "path": "presentation/ui_localization_ja.py",
-          "text": "\"assistant_name_placeholder\": \"例：墨寒、MoHan、Ava\","
+          "text": "\"assistant_name_placeholder\": \"例：墨寒、Ava、Office Mate\","
         },
         {
           "line": 29,
           "path": "presentation/ui_localization_ja.py",
-          "text": "\"wake_word_placeholder\": \"例：墨寒、MoHan\","
+          "text": "\"wake_word_placeholder\": \"例：墨寒\","
         },
         {
           "line": 46,
@@ -106288,92 +106333,92 @@
           "text": "\"desktop_status_title\": \"墨寒はデスクトップであなたと対話しています\","
         },
         {
-          "line": 302,
+          "line": 304,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"デスクトップ上の墨寒だけが表示・ドラッグ・応答するキャラクターです。\""
         },
         {
-          "line": 323,
+          "line": 325,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"tray_quit\": \"墨寒を終了\","
         },
         {
-          "line": 327,
+          "line": 329,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"chat_placeholder\": \"墨寒に話しかける……\","
         },
         {
-          "line": 378,
+          "line": 380,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"mohan_volume\": \"墨寒の音量\","
         },
         {
-          "line": 409,
+          "line": 411,
           "path": "presentation/ui_localization_ja.py",
-          "text": "'任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。MoHan は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'"
+          "text": "'任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。墨寒は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'"
         },
         {
-          "line": 429,
+          "line": 431,
           "path": "presentation/ui_localization_ja.py",
           "text": "'{platform} の本機音声は端末確認を待っています。墨寒は現在のプラットフォームで確認済みの音声だけを表示し、端末テストでオフライン音声対応を確認します。'"
         },
         {
-          "line": 452,
+          "line": 454,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"echo_guard_option\": \"墨寒が自分の声を聞かないようにする\","
         },
         {
-          "line": 467,
+          "line": 469,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"エコー防止を有効にすると、墨寒の発話中はマイク送信を止め、再生終了後に\""
         },
         {
-          "line": 497,
+          "line": 499,
           "path": "presentation/ui_localization_ja.py",
           "text": "'安全規則：会話は墨寒の設定済み権限の範囲内で動作します。AI はツール要求を提案できますが、実行できる内容は本機の権限設定で決まります。'"
         },
         {
-          "line": 501,
+          "line": 503,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"permission_blocked_message\": '続行するには、墨寒の {action} 権限を有効にしてください。',"
         },
         {
-          "line": 502,
+          "line": 504,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"permission_request\": \"墨寒がパソコンの権限を求めています\","
         },
         {
-          "line": 503,
+          "line": 505,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"permission_request_message\": \"今回だけ墨寒に{action}ことを許可しますか？\","
         },
         {
-          "line": 527,
+          "line": 529,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"restart_language_note\": \"画面言語は墨寒の再起動後に完全適用されます。\","
         },
         {
-          "line": 528,
+          "line": 530,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"about_heading\": \"<b>墨寒について</b>\","
         },
         {
-          "line": 530,
+          "line": 532,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
         },
         {
-          "line": 531,
+          "line": 533,
           "path": "presentation/ui_localization_ja.py",
           "text": "\" CHOU MING HUA および MoHan Desktop Assistant コントリビューター、\""
         },
         {
-          "line": 547,
+          "line": 549,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"reminder_message_placeholder\": \"このリマインダーで墨寒が話す内容\","
         },
         {
-          "line": 551,
+          "line": 553,
           "path": "presentation/ui_localization_ja.py",
           "text": "\"read_replies\": \"墨寒の返答を読み上げる\","
         }
@@ -106403,12 +106448,12 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS"
         },
         {
-          "line": 25,
+          "line": 27,
           "path": "presentation/desktop_companion_status.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS"
         },
         {
-          "line": 49,
+          "line": 51,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS"
         },
@@ -106419,36 +106464,36 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "42770a36ce2bde3594e27fc5dd127c5afa12f30094d644bfbaa8f0e0b69ebf95",
+      "sha256": "5f700767a6854e6bcf0ad4ecd2779b687121b81ab702291449622dd9e7c215c8",
       "symbols": [
         {
-          "end_line": 556,
+          "end_line": 558,
           "line": 7,
           "name": "JAPANESE_UI"
         },
         {
-          "end_line": 566,
-          "line": 559,
+          "end_line": 568,
+          "line": 561,
           "name": "JAPANESE_MODE_LABELS"
         },
         {
-          "end_line": 578,
-          "line": 569,
+          "end_line": 580,
+          "line": 571,
           "name": "JAPANESE_WORK_TYPE_LABELS"
         },
         {
-          "end_line": 593,
-          "line": 581,
+          "end_line": 595,
+          "line": 583,
           "name": "JAPANESE_PLATFORM_STATUS_LABELS"
         },
         {
-          "end_line": 603,
-          "line": 596,
+          "end_line": 605,
+          "line": 598,
           "name": "JAPANESE_MEMORY_CATEGORY_LABELS"
         },
         {
-          "end_line": 612,
-          "line": 606,
+          "end_line": 614,
+          "line": 608,
           "name": "__all__"
         }
       ]
