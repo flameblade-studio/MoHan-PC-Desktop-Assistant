@@ -1,0 +1,73 @@
+{
+  "schema": "flameblade.character-pack.v1",
+  "pack_id": "example.synthetic",
+  "pack_version": "1.0.0",
+  "display_names": {
+    "zh-TW": "合成測試",
+    "zh-CN": "合成测试",
+    "en": "Synthetic test",
+    "ja-JP": "合成テスト"
+  },
+  "character": {
+    "id": "example.synthetic",
+    "canonical_name": "Synthetic",
+    "aliases": [
+      "Fixture"
+    ]
+  },
+  "engine_compatibility": {
+    "api_version": 1,
+    "min_engine_version": "1.0.0",
+    "max_engine_version_exclusive": "2.0.0",
+    "required_features": []
+  },
+  "distribution": {
+    "standalone_downloadable": true,
+    "access": "owner_decision_pending",
+    "redistribution": "owner_decision_pending"
+  },
+  "licenses": {
+    "program_data": {
+      "status": "owner_decision_pending",
+      "rights_holder": "Synthetic fixture author",
+      "license_expression": null,
+      "notice_path": null
+    },
+    "character_art": {
+      "status": "owner_decision_pending",
+      "rights_holder": "Synthetic fixture author",
+      "license_expression": null,
+      "notice_path": null
+    },
+    "persona_dialogue": {
+      "status": "owner_decision_pending",
+      "rights_holder": "Synthetic fixture author",
+      "license_expression": null,
+      "notice_path": null
+    },
+    "voice": {
+      "status": "owner_decision_pending",
+      "rights_holder": "Synthetic fixture author",
+      "license_expression": null,
+      "notice_path": null
+    }
+  },
+  "source_refs": [
+    {
+      "path": "provenance/source.json",
+      "sha256": "f444f2aef3046197e557ea94972f38a7ad997e02e16a51d813fff552799442fe",
+      "scope": "synthetic fixture only"
+    }
+  ],
+  "approval_refs": [],
+  "files": [
+    {
+      "path": "provenance/source.json",
+      "sha256": "f444f2aef3046197e557ea94972f38a7ad997e02e16a51d813fff552799442fe",
+      "bytes": 33,
+      "media_type": "application/json",
+      "license_component": "program_data"
+    }
+  ],
+  "package_hash": "d0badb3e54bd62c8f37eaf548ebf54ad2af6d0bb1cee88f919684432e7abf355"
+}

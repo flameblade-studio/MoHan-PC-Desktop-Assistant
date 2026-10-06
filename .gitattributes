@@ -27,3 +27,9 @@ tests/golden/*.json -text
 docs/release-evidence/ticket-210-*.json -text
 docs/release-evidence/ticket-212-*.json -text
 docs/release-evidence/ticket-211-*.json -text
+
+# 繁體中文：角色包規格範例與清冊以位元組雜湊互相驗證，任何平台簽出時都不得轉換行尾。
+# 简体中文：角色包规格示例与清册以字节哈希互相验证，任何平台检出时都不得转换行尾。
+# English: character pack spec examples and the inventory cross-check byte hashes, so no platform may convert their line endings on checkout.
+# 日本語：キャラクターパック仕様の例と一覧はバイトハッシュで相互検証するため、どのプラットフォームでもチェックアウト時に改行を変換してはいけません。
+docs/character-pack/*.json -text
