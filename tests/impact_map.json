@@ -3714,6 +3714,11 @@
       "paths": [
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
+        "assets/expressions/complete-expressions/manifest.json",
+        "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
+        "assets/expressions/reviewed-garments/manifest.json",
+        "assets/expressions/source-bound-exasperated/receipt.json",
+        "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-closed.rgba.png",
         "assets/pose-atlas/v5-base/DISPLAY-PLACEMENT.json",
         "assets/pose-atlas/v5-base/yaw+000-pitch+00.blink-binding.json",
         "assets/pose-atlas/v5-base/yaw+000-pitch+00.hands.json",
@@ -3741,11 +3746,32 @@
     },
     {
       "paths": [
+        "domain/pose_pack.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_pose_pack.py",
+        "test_wardrobe_body_profile_gate.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "assets/mohan-taskbar-icon.png"
       ],
       "tests": [
         "test_build_character_inventory.py",
         "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/pose-atlas/v5-garment-visibility/manifest.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_source_bound_garment_visibility.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6979,16 +7005,6 @@
     },
     {
       "paths": [
-        "domain/pose_pack.py"
-      ],
-      "tests": [
-        "test_pose_pack.py",
-        "test_wardrobe_body_profile_gate.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "infrastructure/active_outfit_overlay_layers.py",
         "presentation/companion_legacy_frame.py"
       ],
@@ -7462,7 +7478,6 @@
     },
     {
       "paths": [
-        "assets/pose-atlas/v5-garment-visibility/manifest.json",
         "infrastructure/active_outfit_base_clear.py",
         "infrastructure/source_bound_garment_visibility.py"
       ],

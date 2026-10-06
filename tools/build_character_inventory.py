@@ -14,7 +14,7 @@ lazy import io
 lazy import json
 lazy import re
 lazy import zipfile
-lazy import xml.etree.ElementTree as ET
+lazy from xml.etree import ElementTree as ET
 lazy from collections import Counter
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
@@ -114,7 +114,7 @@ CODE_CATEGORIES = {
     ),
     "rig_angle_expression_pose_rules": (
         "domain/character_body_profile.py", "domain/outfit_pack_archive.py", "domain/constants.py",
-        "domain/character_pose.py", "domain/face_rig.py", "domain/companion_animation_contract.py",
+        "domain/character_pose.py", "domain/pose_pack.py", "domain/face_rig.py", "domain/companion_animation_contract.py",
         "domain/character_full_body_rig.py", "domain/character_framing.py",
         "domain/framing_context_policy.py", "application/framing_orchestrator.py",
         "domain/expression_system.py", "domain/outfit_pack_makeup.py", "domain/makeup_eye_states.py",
@@ -131,11 +131,14 @@ CODE_CATEGORIES = {
 }
 
 
-def source_evidence(root: Path, path: str, anchor: str) -> dict[str, Any]:
+def source_evidence(root: Path, path: str, anchor: str, *, after: str | None = None) -> dict[str, Any]:
     """Bind a reader claim to an actual line, failing when the anchor drifts."""
     lines = (root / path).read_text(encoding="utf-8").splitlines()
+    active = after is None
     for number, line in enumerate(lines, 1):
-        if anchor in line:
+        if after is not None and after in line:
+            active = True
+        if active and anchor in line:
             return {"path": path, "line": number, "text": line.strip()}
     raise ValueError(f"Reader anchor missing: {path}: {anchor}")
 
@@ -250,9 +253,28 @@ def _readers(root: Path, group: Group, category: str, path: str) -> list[dict[st
         reader = "infrastructure/core_hand_regions.py"
         anchor = 'directory / f"{view_id}_visible_hand_{side}.png"' if category == "fullbody_visible_hand" else 'directory / f"{prefix}_visible_hand_{side}.png"'
     elif category.startswith("fullbody_complete_"):
-        anchor = "def _resolve_complete_expression_asset("
+        return [source_evidence(root, reader, "data = path.read_bytes()", after="def _resolve_complete_expression_asset(")]
     elif category == "native_garment_motion" and "/motion/" in path:
         reader, anchor = "infrastructure/reviewed_pose_motion.py", "payload = path.read_bytes()"
+    if category == "source_bound_expression":
+        anchor = 'hashlib.sha256(path.read_bytes()).hexdigest() != digest'
+        if path.endswith("/receipt.json"):
+            anchor = 'receipt = json.loads((root / "receipt.json").read_text(encoding="utf-8"))'
+        elif path.endswith("/appearance/manifest.json"):
+            anchor = 'appearance = json.loads((root / "appearance" / "manifest.json").read_text(encoding="utf-8"))'
+        elif path.endswith("/manifest.json"):
+            anchor = 'manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))'
+    manifest_readers = {
+        "assets/expressions/complete-expressions/manifest.json": ("infrastructure/complete_halfbody_expressions.py", 'data = json.loads(path.read_text(encoding="utf-8"))'),
+        "assets/expressions/reviewed-garments/manifest.json": ("infrastructure/reviewed_garment_assets.py", 'manifest = json.loads(manifest_path.read_text(encoding="utf-8"))'),
+        "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json": ("infrastructure/reviewed_pose_motion.py", 'value = json.loads(manifest_path.read_text(encoding="utf-8"))'),
+        "assets/pose-atlas/v5-garment-visibility/manifest.json": ("infrastructure/source_bound_garment_visibility.py", 'manifest = json.loads(manifest_path.read_text(encoding="utf-8"))'),
+        "assets/makeup-safe-regions.json": ("domain/outfit_pack_makeup.py", 'payload = json.loads(source.read_text(encoding="utf-8"))'),
+    }
+    if path in manifest_readers:
+        reader, anchor = manifest_readers[path]
+    elif category == "garment_visibility":
+        anchor = "payload = target.read_bytes()"
     suffix_readers = (
         ("mouth_authority_manifest.json", group.reader, 'path = root / "mouth_authority_manifest.json"'),
         ("complete_expression_manifest.json", group.reader, "path = root / COMPLETE_EXPRESSION_MANIFEST_NAME"),
@@ -306,7 +328,14 @@ def _code_records(root: Path) -> list[dict[str, Any]]:
         symbols = [{"name": node.name if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) else ast.unparse(node.targets[0] if isinstance(node, ast.Assign) else node.target), "line": node.lineno, "end_line": node.end_lineno} for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Assign, ast.AnnAssign))]
         evidence = [{"path": path, "line": number, "text": line.strip()} for number, line in enumerate(lines, 1) if re.search(r"墨寒|主上|赤焰|MoHan|MOHAN_|coral|Yating|DEFAULT_|PROMPT|EXPRESSION_|POSE_|VOICE|CANONICAL_YAWS|BODY_PROFILE|LAYER_Z_ORDER", line)]
         module = path.removesuffix(".py").replace("/", ".")
-        consumers = [{"path": source_path, "line": number, "text": line.strip()} for source_path, source in sorted(sources.items()) for number, line in enumerate(source.splitlines(), 1) if re.search(rf"\b(?:from|import) {re.escape(module)}\b", line)]
+        consumer_pattern = re.compile(rf"\b(?:from|import) {re.escape(module)}\b")
+        consumers = []
+        for source_path, source in sorted(sources.items()):
+            consumers.extend(
+                {"path": source_path, "line": number, "text": line.strip()}
+                for number, line in enumerate(source.splitlines(), 1)
+                if consumer_pattern.search(line)
+            )
         if path == "presentation/preview_app.py":
             consumers.append(source_evidence(root, "tools/build_preview_package.py", 'command.append(str(ROOT / "presentation" / "preview_app.py"))'))
         records.append({"path": path, "category": "embedded_character_content", "content_categories": sorted(groups), "scope": "embedded_code", "migration": EMBEDDED, "readers": consumers, "content_locations": evidence, "symbols": symbols, "note": "整個模組只作定位證據；通用邏輯留引擎，角色字串、預設值與規則需按 symbol 分流；readers 列靜態匯入者，事件內使用可查 symbol", **file_metadata(root / path)})
@@ -319,7 +348,10 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
     references = _reference_index(root)
     records = []
     appearance_catalog = []
-    paths = sorted([p for directory in ("assets", "docs/media") for p in (root / directory).rglob("*") if p.is_file()], key=lambda p: p.relative_to(root).as_posix())
+    paths = []
+    for directory in ("assets", "docs/media"):
+        paths.extend(path for path in (root / directory).rglob("*") if path.is_file())
+    paths.sort(key=lambda path: path.relative_to(root).as_posix())
     for path in paths:
         relative = path.relative_to(root).as_posix()
         group = next((g for g in GROUPS if relative.startswith(g.prefix)), None)
@@ -374,6 +406,16 @@ def render_summary(inventory: dict[str, Any]) -> str:
     """Render parallel owner-facing summaries from the same measured counts."""
     counts = inventory["runtime_file_counts"]
     code_count = inventory["scope_counts"]["embedded_code"]
+    runtime_physical = sum(row["scope"] == "runtime_data" and "!" not in row["path"] for row in inventory["files"])
+    archive_members = sum(row["scope"] == "runtime_data" and "!" in row["path"] for row in inventory["files"])
+    validation_count = inventory["scope_counts"]["product_validation_data"]
+    excluded_count = sum(count for scope, count in inventory["scope_counts"].items() if scope.startswith("excluded_"))
+    scope_details = (
+        f"產品資料合計 {runtime_physical + validation_count} 個實體檔案：執行期 {runtime_physical} 個，產品自測必需 {validation_count} 個（landmarks 與 hands 中繼資料）。兩個外觀包的 {archive_members} 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 {excluded_count} 個排除檔案與 {code_count} 個程式定位檔。下表只計執行期實體檔案。",
+        f"产品数据合计 {runtime_physical + validation_count} 个实体文件：运行时 {runtime_physical} 个，产品自测必需 {validation_count} 个（landmarks 与 hands 元数据）。两个外观包的 {archive_members} 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 {excluded_count} 个排除文件和 {code_count} 个程序定位文件。下表只计运行时实体文件。",
+        f"Product data totals {runtime_physical + validation_count} physical files: {runtime_physical} runtime files and {validation_count} required self-test sidecars (landmarks and hands). The {archive_members} members inside two appearance archives are indexed separately and already included in those archives. There are also {excluded_count} excluded files and {code_count} source-location files. The table counts runtime physical files only.",
+        f"製品データは実ファイル {runtime_physical + validation_count} 個です。実行時に {runtime_physical} 個、製品自己テストに landmarks と hands のメタデータ {validation_count} 個が必要です。外観アーカイブ 2 個に含まれる {archive_members} メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル {excluded_count} 個とコード位置ファイル {code_count} 個も記録します。下表は実行時の実ファイルのみを数えます。",
+    )
     appearance_counts = Counter(item["category"] for item in inventory["appearance_catalog"])
     look, hair, headwear, makeup = (appearance_counts[key] for key in ("looks", "hairstyles", "headwear", "makeup"))
     appearance_details = (
@@ -391,7 +433,7 @@ def render_summary(inventory: dict[str, Any]) -> str:
     parts = ["# 墨寒角色內容清冊摘要／墨寒角色内容清册摘要／MoHan Character Inventory Summary／墨寒キャラクター内容一覧\n"]
     for locale, (language, intro, category, files, code, data, exclusions, decisions) in enumerate(sections):
         rows = "\n".join(f"| {CATEGORY_LABELS[key].split('／')[locale]} (`{key}`) | {count} |" for key, count in counts.items())
-        parts.append(f"## {language}\n\n{intro}\n\n| {category} | {files} |\n|---|---:|\n{rows}\n\n{appearance_details[locale]}\n\n{code}\n\n{data}\n\n{exclusions}\n\n{decisions}\n\n`mohan-inventory.json` · `python tools/build_character_inventory.py --check`\n")
+        parts.append(f"## {language}\n\n{intro}\n\n{scope_details[locale]}\n\n| {category} | {files} |\n|---|---:|\n{rows}\n\n{appearance_details[locale]}\n\n{code}\n\n{data}\n\n{exclusions}\n\n{decisions}\n\n`mohan-inventory.json` · `python tools/build_character_inventory.py --check`\n")
     return "\n".join(parts)
 
 

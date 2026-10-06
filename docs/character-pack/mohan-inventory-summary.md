@@ -4,6 +4,8 @@
 
 這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。
 
+產品資料合計 1689 個實體檔案：執行期 1641 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1332 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1105 個排除檔案與 120 個程式定位檔。下表只計執行期實體檔案。
+
 | 類別 | 檔案數 |
 |---|---:|
 | 正式外觀包 (`appearance_pack`) | 2 |
@@ -37,7 +39,7 @@
 
 正式包內點名：服裝項目 1、髮型項目 1、髮飾項目 1、妝容項目 1。變體與四語名稱見清冊 appearance_catalog。
 
-有 119 個程式檔包含角色內容或規則，需先按清冊的 symbol 與行號改成讀資料：名字、稱謂、人格與系統提示、提醒與節日台詞、聲音偏好、角度、表情、姿勢、嘴型與圖層順序。清冊也搜尋額外角色字串位置；整個模組不等於全部要搬。
+有 120 個程式檔包含角色內容或規則，需先按清冊的 symbol 與行號改成讀資料：名字、稱謂、人格與系統提示、提醒與節日台詞、聲音偏好、角度、表情、姿勢、嘴型與圖層順序。清冊也搜尋額外角色字串位置；整個模組不等於全部要搬。
 
 圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。
 
@@ -50,6 +52,8 @@
 ## 简体中文
 
 本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。
+
+产品数据合计 1689 个实体文件：运行时 1641 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1332 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1105 个排除文件和 120 个程序定位文件。下表只计运行时实体文件。
 
 | 类别 | 文件数 |
 |---|---:|
@@ -84,7 +88,7 @@
 
 正式包内列明：服装项目 1、发型项目 1、发饰项目 1、妆容项目 1。变体与四语名称见清册 appearance_catalog。
 
-有 119 个程序文件包含角色内容或规则，需要按清册的 symbol 和行号改为读取数据：名字、称谓、人格与系统提示、提醒与节日台词、声音偏好、角度、表情、姿势、嘴型与图层顺序。清册也搜索额外角色字符串位置；整个模块不等于全部要搬。
+有 120 个程序文件包含角色内容或规则，需要按清册的 symbol 和行号改为读取数据：名字、称谓、人格与系统提示、提醒与节日台词、声音偏好、角度、表情、姿势、嘴型与图层顺序。清册也搜索额外角色字符串位置；整个模块不等于全部要搬。
 
 图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。
 
@@ -97,6 +101,8 @@
 ## English
 
 This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.
+
+Product data totals 1689 physical files: 1641 runtime files and 48 required self-test sidecars (landmarks and hands). The 1332 members inside two appearance archives are indexed separately and already included in those archives. There are also 1105 excluded files and 120 source-location files. The table counts runtime physical files only.
 
 | Category | Files |
 |---|---:|
@@ -131,7 +137,7 @@ This measured index names existing content for subsequent extraction. There are 
 
 Official archives declare 1 garment, 1 hairstyle, 1 headwear and 1 makeup item. Variants and names are indexed in appearance_catalog.
 
-119 source files contain character content or rules. Use indexed symbols and lines to extract names, titles, persona and system prompts, reminders and occasion dialogue, voice preferences, angles, expressions, poses, mouth geometry and layer order. Additional character literals are searched; entire modules are not extraction payloads.
+120 source files contain character content or rules. Use indexed symbols and lines to extract names, titles, persona and system prompts, reminders and occasion dialogue, voice preferences, angles, expressions, poses, mouth geometry and layer order. Additional character literals are searched; entire modules are not extraction payloads.
 
 Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.
 
@@ -144,6 +150,8 @@ Independent download is a design requirement from inception. Public or private v
 ## 日本語
 
 この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。
+
+製品データは実ファイル 1689 個です。実行時に 1641 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1332 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1105 個とコード位置ファイル 120 個も記録します。下表は実行時の実ファイルのみを数えます。
 
 | 分類 | ファイル数 |
 |---|---:|
@@ -178,7 +186,7 @@ Independent download is a design requirement from inception. Public or private v
 
 正式パック内には衣装 1、髪型 1、髪飾り 1、メイク 1 項目があります。差分と四言語の名称は appearance_catalog に記録します。
 
-119 個のソースファイルにキャラクター内容や規則があります。symbol と行番号に従い、名前、呼称、人格とシステムプロンプト、通知と行事の台詞、声の好み、角度、表情、姿勢、口の形とレイヤー順をデータ化します。追加の文字列も検索し、モジュール全体を移行対象とは扱いません。
+120 個のソースファイルにキャラクター内容や規則があります。symbol と行番号に従い、名前、呼称、人格とシステムプロンプト、通知と行事の台詞、声の好み、角度、表情、姿勢、口の形とレイヤー順をデータ化します。追加の文字列も検索し、モジュール全体を移行対象とは扱いません。
 
 画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。
 

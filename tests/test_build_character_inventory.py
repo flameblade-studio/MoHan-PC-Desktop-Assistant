@@ -6,7 +6,7 @@ lazy import hashlib
 lazy import io
 lazy import json
 lazy import zipfile
-lazy import xml.etree.ElementTree as ET
+lazy from xml.etree import ElementTree as ET
 lazy from pathlib import Path
 lazy from typing import Any
 
@@ -103,6 +103,25 @@ def test_lineage_is_excluded_but_actual_manifest_paths_are_retained(tmp_path: Pa
     refs = builder.manifest_references(tmp_path, manifest)
     assert set(refs) == {"frame.png"}
     assert refs["frame.png"] == [{"path": "manifest.json", "pointer": "/frame/path"}]
+
+
+def test_reader_evidence_names_the_actual_format_and_function(inventory: dict[str, Any]) -> None:
+    by_path = {row["path"]: row for row in inventory["files"]}
+    for name in (
+        "assets/expressions/complete-expressions/manifest.json",
+        "assets/expressions/reviewed-garments/manifest.json",
+        "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
+        "assets/pose-atlas/v5-garment-visibility/manifest.json",
+        "assets/expressions/source-bound-exasperated/receipt.json",
+    ):
+        assert "read_text" in by_path[name]["readers"][0]["text"], name
+    row = by_path["assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-closed.rgba.png"]
+    evidence = row["readers"][0]
+    source = by_path[evidence["path"]]
+    resolver = next(symbol for symbol in source["symbols"] if symbol["name"] == "_resolve_complete_expression_asset")
+    assert resolver["line"] < evidence["line"] <= resolver["end_line"]
+    assert "read_bytes" in evidence["text"]
+    assert any(location["text"].startswith("CANONICAL_YAWS =") for location in by_path["domain/pose_pack.py"]["content_locations"])
 
 
 def test_cli_checks_both_outputs_and_detects_stale_summary(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, inventory: dict[str, Any]) -> None:

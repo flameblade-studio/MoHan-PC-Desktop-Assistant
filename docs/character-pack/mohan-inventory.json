@@ -6456,9 +6456,9 @@
       "path": "assets/expressions/complete-expressions/manifest.json",
       "readers": [
         {
-          "line": 51,
+          "line": 110,
           "path": "infrastructure/complete_halfbody_expressions.py",
-          "text": "data = path.read_bytes()"
+          "text": "data = json.loads(path.read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "執行期 manifest 引用",
@@ -11151,9 +11151,9 @@
       "path": "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
       "readers": [
         {
-          "line": 227,
+          "line": 254,
           "path": "infrastructure/reviewed_pose_motion.py",
-          "text": "payload = path.read_bytes()"
+          "text": "value = json.loads(manifest_path.read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "執行期 manifest 引用",
@@ -11862,9 +11862,9 @@
       "path": "assets/expressions/reviewed-garments/manifest.json",
       "readers": [
         {
-          "line": 260,
+          "line": 381,
           "path": "infrastructure/reviewed_garment_assets.py",
-          "text": "payload = path.read_bytes()"
+          "text": "manifest = json.loads(manifest_path.read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "執行期 manifest 引用",
@@ -12060,9 +12060,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/mid/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12082,9 +12082,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/mid/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12104,9 +12104,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/mid/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12126,9 +12126,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/mid/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12148,9 +12148,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/open/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12170,9 +12170,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/open/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12192,9 +12192,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/open/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12214,9 +12214,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/open/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12236,9 +12236,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/rest/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12258,9 +12258,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/rest/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12280,9 +12280,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/rest/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12302,9 +12302,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/rest/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12324,9 +12324,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/round/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12346,9 +12346,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/round/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12368,9 +12368,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/round/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12390,9 +12390,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/classic/round/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12412,9 +12412,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/garment.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12434,9 +12434,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/mid/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12456,9 +12456,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/mid/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12478,9 +12478,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/mid/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12500,9 +12500,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/mid/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12522,9 +12522,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/open/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12544,9 +12544,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/open/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12566,9 +12566,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/open/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12588,9 +12588,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/open/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12610,9 +12610,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/rest/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12632,9 +12632,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/rest/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12654,9 +12654,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/rest/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12676,9 +12676,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/rest/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12698,9 +12698,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/round/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12720,9 +12720,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/round/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12742,9 +12742,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/round/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12764,9 +12764,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/glamorous/round/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12786,9 +12786,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/mid/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12808,9 +12808,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/mid/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12830,9 +12830,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/mid/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12852,9 +12852,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/mid/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12874,9 +12874,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/open/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12896,9 +12896,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/open/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12918,9 +12918,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/open/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12940,9 +12940,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/open/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12962,9 +12962,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/rest/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12984,9 +12984,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/rest/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13006,9 +13006,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/rest/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13028,9 +13028,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/rest/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13050,9 +13050,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/round/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13072,9 +13072,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/round/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13094,9 +13094,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/round/foundation.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13116,9 +13116,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/light/round/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13133,9 +13133,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/manifest.json",
       "readers": [
         {
-          "line": 203,
+          "line": 165,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "appearance = json.loads((root / \"appearance\" / \"manifest.json\").read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13155,9 +13155,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/mid/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13177,9 +13177,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/mid/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13199,9 +13199,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/mid/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13221,9 +13221,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/open/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13243,9 +13243,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/open/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13265,9 +13265,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/open/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13287,9 +13287,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/replace_mask.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13309,9 +13309,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/rest/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13331,9 +13331,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/rest/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13353,9 +13353,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/rest/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13375,9 +13375,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/round/cheeks.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13397,9 +13397,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/round/eyes.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13419,9 +13419,9 @@
       "path": "assets/expressions/source-bound-exasperated/appearance/round/lips.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13436,9 +13436,9 @@
       "path": "assets/expressions/source-bound-exasperated/approval/garment-approval.json",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13453,9 +13453,9 @@
       "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13470,9 +13470,9 @@
       "path": "assets/expressions/source-bound-exasperated/manifest.json",
       "readers": [
         {
-          "line": 203,
+          "line": 135,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "manifest = json.loads((root / \"manifest.json\").read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13492,9 +13492,9 @@
       "path": "assets/expressions/source-bound-exasperated/mouths/mid.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13514,9 +13514,9 @@
       "path": "assets/expressions/source-bound-exasperated/mouths/open.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13536,9 +13536,9 @@
       "path": "assets/expressions/source-bound-exasperated/mouths/round.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13558,9 +13558,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_core_hair.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13580,9 +13580,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_head_neck_chest_skin.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13602,9 +13602,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_left_arm.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13624,9 +13624,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_left_hand.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13646,9 +13646,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_right_arm.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13668,9 +13668,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_right_hand.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13690,9 +13690,9 @@
       "path": "assets/expressions/source-bound-exasperated/parts/visible_upper_garment.rgba.png",
       "readers": [
         {
-          "line": 203,
+          "line": 210,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "if not path.is_relative_to(root) or hashlib.sha256(path.read_bytes()).hexdigest() != digest:"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13707,9 +13707,9 @@
       "path": "assets/expressions/source-bound-exasperated/receipt.json",
       "readers": [
         {
-          "line": 203,
+          "line": 156,
           "path": "infrastructure/exasperated_candidate_assets.py",
-          "text": "records = receipt.get(\"installed_files_sha256\")"
+          "text": "receipt = json.loads((root / \"receipt.json\").read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -17241,9 +17241,9 @@
       "path": "assets/makeup-safe-regions.json",
       "readers": [
         {
-          "line": 45,
+          "line": 335,
           "path": "domain/outfit_pack_makeup.py",
-          "text": "SAFE_REGION_FILE = \"makeup-safe-regions.json\""
+          "text": "payload = json.loads(source.read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65464,9 +65464,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65491,9 +65491,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65518,9 +65518,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65545,9 +65545,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65572,9 +65572,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65599,9 +65599,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65630,9 +65630,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65661,9 +65661,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65692,9 +65692,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65727,9 +65727,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65762,9 +65762,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65797,9 +65797,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65824,9 +65824,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65851,9 +65851,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65878,9 +65878,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65905,9 +65905,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65932,9 +65932,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65959,9 +65959,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -65990,9 +65990,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66021,9 +66021,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66052,9 +66052,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66087,9 +66087,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66122,9 +66122,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66157,9 +66157,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus030-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66184,9 +66184,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66211,9 +66211,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66238,9 +66238,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66265,9 +66265,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66292,9 +66292,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66319,9 +66319,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66350,9 +66350,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66381,9 +66381,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66412,9 +66412,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66447,9 +66447,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66482,9 +66482,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66517,9 +66517,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus045-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66544,9 +66544,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66571,9 +66571,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66598,9 +66598,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66625,9 +66625,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66652,9 +66652,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66679,9 +66679,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66710,9 +66710,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66741,9 +66741,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66772,9 +66772,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66807,9 +66807,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66842,9 +66842,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66877,9 +66877,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus060-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66904,9 +66904,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66931,9 +66931,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66958,9 +66958,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -66985,9 +66985,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67012,9 +67012,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67039,9 +67039,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67070,9 +67070,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67101,9 +67101,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67132,9 +67132,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67167,9 +67167,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67202,9 +67202,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67237,9 +67237,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus075-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67264,9 +67264,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67291,9 +67291,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67318,9 +67318,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67345,9 +67345,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67372,9 +67372,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67399,9 +67399,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67430,9 +67430,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67461,9 +67461,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67492,9 +67492,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67527,9 +67527,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67562,9 +67562,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67597,9 +67597,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus090-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67624,9 +67624,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67651,9 +67651,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67678,9 +67678,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67705,9 +67705,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67732,9 +67732,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67759,9 +67759,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67790,9 +67790,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67821,9 +67821,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67852,9 +67852,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67887,9 +67887,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67922,9 +67922,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67957,9 +67957,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus015-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -67984,9 +67984,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68011,9 +68011,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68038,9 +68038,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68065,9 +68065,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68092,9 +68092,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68119,9 +68119,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68150,9 +68150,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68181,9 +68181,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68212,9 +68212,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68247,9 +68247,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68282,9 +68282,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68317,9 +68317,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus030-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68344,9 +68344,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68371,9 +68371,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68398,9 +68398,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68425,9 +68425,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68452,9 +68452,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68479,9 +68479,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68510,9 +68510,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68541,9 +68541,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68572,9 +68572,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68607,9 +68607,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68642,9 +68642,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68677,9 +68677,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus045-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68704,9 +68704,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68731,9 +68731,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68758,9 +68758,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68785,9 +68785,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68812,9 +68812,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68839,9 +68839,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68870,9 +68870,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68901,9 +68901,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68932,9 +68932,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -68967,9 +68967,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69002,9 +69002,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69037,9 +69037,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus060-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69064,9 +69064,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69091,9 +69091,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69118,9 +69118,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69145,9 +69145,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69172,9 +69172,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69199,9 +69199,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69230,9 +69230,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69261,9 +69261,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69292,9 +69292,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69327,9 +69327,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69362,9 +69362,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69397,9 +69397,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus075-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69424,9 +69424,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69451,9 +69451,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69478,9 +69478,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69505,9 +69505,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69532,9 +69532,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69559,9 +69559,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69590,9 +69590,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69621,9 +69621,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69652,9 +69652,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69687,9 +69687,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69722,9 +69722,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69757,9 +69757,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/plus090-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69784,9 +69784,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-a-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69811,9 +69811,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-a-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69838,9 +69838,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-a-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69865,9 +69865,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69892,9 +69892,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69919,9 +69919,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69950,9 +69950,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-o-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -69981,9 +69981,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-o-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70012,9 +70012,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-o-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70047,9 +70047,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-small-closed.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70082,9 +70082,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-small-half.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70117,9 +70117,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/frames/zero000-small-rest.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70144,9 +70144,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/minus015-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70171,9 +70171,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/minus030-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70198,9 +70198,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/minus045-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70225,9 +70225,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/minus060-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70252,9 +70252,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/minus075-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70279,9 +70279,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/minus090-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70306,9 +70306,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/plus015-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70333,9 +70333,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/plus030-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70360,9 +70360,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/plus045-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70387,9 +70387,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/plus060-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70414,9 +70414,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/plus075-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70441,9 +70441,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/plus090-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70468,9 +70468,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/masks/zero000-head-neck.mask.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70503,9 +70503,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus015-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70550,9 +70550,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus015-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70609,9 +70609,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus015-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70644,9 +70644,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus030-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70691,9 +70691,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus030-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70750,9 +70750,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus030-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70785,9 +70785,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus045-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70832,9 +70832,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus045-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70891,9 +70891,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus045-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70926,9 +70926,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus060-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -70973,9 +70973,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus060-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71032,9 +71032,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus060-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71067,9 +71067,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus075-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71114,9 +71114,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus075-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71173,9 +71173,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/minus075-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71208,9 +71208,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus015-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71255,9 +71255,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus015-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71314,9 +71314,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus015-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71349,9 +71349,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus030-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71396,9 +71396,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus030-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71455,9 +71455,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus030-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71490,9 +71490,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus045-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71537,9 +71537,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus045-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71596,9 +71596,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus045-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71631,9 +71631,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus060-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71678,9 +71678,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus060-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71737,9 +71737,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus060-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71772,9 +71772,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus075-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71819,9 +71819,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus075-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71878,9 +71878,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/plus075-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71913,9 +71913,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/zero000-a-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -71960,9 +71960,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/zero000-o-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -72019,9 +72019,9 @@
       "path": "assets/pose-atlas/v5-base-layered/complete-expressions/oral/zero000-small-oral.rgba.png",
       "readers": [
         {
-          "line": 406,
+          "line": 436,
           "path": "infrastructure/layered_full_body_assets.py",
-          "text": "def _resolve_complete_expression_asset("
+          "text": "data = path.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88202,9 +88202,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/manifest.json",
       "readers": [
         {
-          "line": 26,
+          "line": 124,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "manifest = json.loads(manifest_path.read_text(encoding=\"utf-8\"))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88229,9 +88229,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+060-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88256,9 +88256,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+075-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88283,9 +88283,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+075-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88310,9 +88310,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+075-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88337,9 +88337,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+090-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88364,9 +88364,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+090-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88391,9 +88391,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+090-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88418,9 +88418,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+105-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88445,9 +88445,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+105-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88472,9 +88472,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+105-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88499,9 +88499,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+120-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88526,9 +88526,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+120-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88553,9 +88553,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+120-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88580,9 +88580,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+135-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88607,9 +88607,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+135-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88634,9 +88634,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+135-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88661,9 +88661,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+150-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88688,9 +88688,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+150-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88715,9 +88715,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+150-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88742,9 +88742,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+165-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88769,9 +88769,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+165-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88796,9 +88796,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw+165-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88823,9 +88823,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-060-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88850,9 +88850,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-075-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88877,9 +88877,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-075-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88904,9 +88904,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-075-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88931,9 +88931,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-090-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88958,9 +88958,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-090-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -88985,9 +88985,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-090-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89012,9 +89012,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-105-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89039,9 +89039,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-105-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89066,9 +89066,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-105-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89093,9 +89093,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-120-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89120,9 +89120,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-120-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89147,9 +89147,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-120-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89174,9 +89174,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-135-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89201,9 +89201,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-135-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89228,9 +89228,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-135-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89255,9 +89255,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-150-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89282,9 +89282,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-150-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89309,9 +89309,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-150-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89336,9 +89336,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-165-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89363,9 +89363,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-165-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89390,9 +89390,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-165-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89417,9 +89417,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-180-pitch+00-left-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89444,9 +89444,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-180-pitch+00-right-native-hand.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89471,9 +89471,9 @@
       "path": "assets/pose-atlas/v5-garment-visibility/yaw-180-pitch+00.png",
       "readers": [
         {
-          "line": 26,
+          "line": 59,
           "path": "infrastructure/source_bound_garment_visibility.py",
-          "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
+          "text": "payload = target.read_bytes()"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -96166,6 +96166,423 @@
           "end_line": 136,
           "line": 135,
           "name": "_clamp"
+        }
+      ]
+    },
+    {
+      "bytes": 21178,
+      "category": "embedded_character_content",
+      "content_categories": [
+        "rig_angle_expression_pose_rules"
+      ],
+      "content_locations": [
+        {
+          "line": 13,
+          "path": "domain/pose_pack.py",
+          "text": "lazy from domain.character_body_profile import MOHAN_BODY_PROFILE"
+        },
+        {
+          "line": 20,
+          "path": "domain/pose_pack.py",
+          "text": "BODY_PROFILE = frozendict({\"id\": MOHAN_BODY_PROFILE.profile_id, \"version\": MOHAN_BODY_PROFILE.version})"
+        },
+        {
+          "line": 24,
+          "path": "domain/pose_pack.py",
+          "text": "CANONICAL_YAWS = tuple(range(-180, 180, 15))"
+        },
+        {
+          "line": 228,
+          "path": "domain/pose_pack.py",
+          "text": "MOHAN_BODY_PROFILE.profile_id,"
+        },
+        {
+          "line": 229,
+          "path": "domain/pose_pack.py",
+          "text": "f\">={MOHAN_BODY_PROFILE.version},<{MOHAN_BODY_PROFILE.version + 1}\","
+        },
+        {
+          "line": 240,
+          "path": "domain/pose_pack.py",
+          "text": "or value[\"body_profile_id\"] != MOHAN_BODY_PROFILE.profile_id"
+        },
+        {
+          "line": 246,
+          "path": "domain/pose_pack.py",
+          "text": "or not _range_contains(value[\"body_profile_version_range\"], MOHAN_BODY_PROFILE.version)"
+        },
+        {
+          "line": 273,
+          "path": "domain/pose_pack.py",
+          "text": "allowed_yaws = CANONICAL_YAWS if context.pack_rig.complete else LEGACY_YAWS"
+        },
+        {
+          "line": 359,
+          "path": "domain/pose_pack.py",
+          "text": "if manifest[\"compatible_body_profile\"] != dict(BODY_PROFILE):"
+        },
+        {
+          "line": 425,
+          "path": "domain/pose_pack.py",
+          "text": "required_yaws = CANONICAL_YAWS if context.pack_rig.complete else LEGACY_YAWS"
+        }
+      ],
+      "migration": "被程式寫死需先改",
+      "note": "整個模組只作定位證據；通用邏輯留引擎，角色字串、預設值與規則需按 symbol 分流；readers 列靜態匯入者，事件內使用可查 symbol",
+      "path": "domain/pose_pack.py",
+      "readers": [],
+      "scope": "embedded_code",
+      "sha256": "cd49b872e969315810aa4bd72a4db8882a693d297b919364dbabcd2e77e0a318",
+      "symbols": [
+        {
+          "end_line": 16,
+          "line": 16,
+          "name": "FORMAT"
+        },
+        {
+          "end_line": 17,
+          "line": 17,
+          "name": "VERSION"
+        },
+        {
+          "end_line": 18,
+          "line": 18,
+          "name": "LEGACY_VERSION"
+        },
+        {
+          "end_line": 19,
+          "line": 19,
+          "name": "MANIFEST"
+        },
+        {
+          "end_line": 20,
+          "line": 20,
+          "name": "BODY_PROFILE"
+        },
+        {
+          "end_line": 21,
+          "line": 21,
+          "name": "FULL_BODY_RIG_ID"
+        },
+        {
+          "end_line": 22,
+          "line": 22,
+          "name": "FULL_BODY_CONTRACT"
+        },
+        {
+          "end_line": 23,
+          "line": 23,
+          "name": "LEGACY_CONTRACT"
+        },
+        {
+          "end_line": 24,
+          "line": 24,
+          "name": "CANONICAL_YAWS"
+        },
+        {
+          "end_line": 25,
+          "line": 25,
+          "name": "LEGACY_YAWS"
+        },
+        {
+          "end_line": 26,
+          "line": 26,
+          "name": "BUILTIN_POSES"
+        },
+        {
+          "end_line": 33,
+          "line": 27,
+          "name": "LAYER_ROLES"
+        },
+        {
+          "end_line": 37,
+          "line": 34,
+          "name": "REQUIRED_CORRECTIONS"
+        },
+        {
+          "end_line": 42,
+          "line": 38,
+          "name": "FULL_BODY_CORRECTIONS"
+        },
+        {
+          "end_line": 46,
+          "line": 43,
+          "name": "OCCLUSION_RULES"
+        },
+        {
+          "end_line": 47,
+          "line": 47,
+          "name": "COMPATIBILITY_KEYS"
+        },
+        {
+          "end_line": 48,
+          "line": 48,
+          "name": "COMPATIBILITY_VALUES"
+        },
+        {
+          "end_line": 49,
+          "line": 49,
+          "name": "LANGUAGES"
+        },
+        {
+          "end_line": 50,
+          "line": 50,
+          "name": "MAX_ARCHIVE_BYTES"
+        },
+        {
+          "end_line": 51,
+          "line": 51,
+          "name": "MAX_MEMBER_BYTES"
+        },
+        {
+          "end_line": 52,
+          "line": 52,
+          "name": "MAX_TOTAL_BYTES"
+        },
+        {
+          "end_line": 53,
+          "line": 53,
+          "name": "MAX_MEMBERS"
+        },
+        {
+          "end_line": 54,
+          "line": 54,
+          "name": "MAX_COMPRESSION_RATIO"
+        },
+        {
+          "end_line": 55,
+          "line": 55,
+          "name": "MAX_DIMENSION"
+        },
+        {
+          "end_line": 56,
+          "line": 56,
+          "name": "MIN_ANCHOR_COORDINATE"
+        },
+        {
+          "end_line": 57,
+          "line": 57,
+          "name": "MAX_ANCHOR_COORDINATE"
+        },
+        {
+          "end_line": 58,
+          "line": 58,
+          "name": "MIN_DEPTH"
+        },
+        {
+          "end_line": 59,
+          "line": 59,
+          "name": "MAX_DEPTH"
+        },
+        {
+          "end_line": 60,
+          "line": 60,
+          "name": "MAX_NAME_LENGTH"
+        },
+        {
+          "end_line": 61,
+          "line": 61,
+          "name": "MIN_PNG_HEADER_LENGTH"
+        },
+        {
+          "end_line": 62,
+          "line": 62,
+          "name": "MIN_WEBP_HEADER_LENGTH"
+        },
+        {
+          "end_line": 63,
+          "line": 63,
+          "name": "SYMLINK_FILE_TYPE"
+        },
+        {
+          "end_line": 64,
+          "line": 64,
+          "name": "ANCHOR_DIMENSIONS"
+        },
+        {
+          "end_line": 65,
+          "line": 65,
+          "name": "MAX_TEXT_FIELD_LENGTH"
+        },
+        {
+          "end_line": 66,
+          "line": 66,
+          "name": "IDENTIFIER"
+        },
+        {
+          "end_line": 67,
+          "line": 67,
+          "name": "SEMVER"
+        },
+        {
+          "end_line": 68,
+          "line": 68,
+          "name": "APP_RANGE"
+        },
+        {
+          "end_line": 69,
+          "line": 69,
+          "name": "INTEGER_RANGE"
+        },
+        {
+          "end_line": 70,
+          "line": 70,
+          "name": "SHA256"
+        },
+        {
+          "end_line": 71,
+          "line": 71,
+          "name": "ASSET_PATH"
+        },
+        {
+          "end_line": 72,
+          "line": 72,
+          "name": "LICENSE"
+        },
+        {
+          "end_line": 76,
+          "line": 75,
+          "name": "PosePackError"
+        },
+        {
+          "end_line": 89,
+          "line": 80,
+          "name": "PoseLayer"
+        },
+        {
+          "end_line": 102,
+          "line": 93,
+          "name": "FullBodyRigContract"
+        },
+        {
+          "end_line": 111,
+          "line": 106,
+          "name": "PoseView"
+        },
+        {
+          "end_line": 132,
+          "line": 115,
+          "name": "PosePack"
+        },
+        {
+          "end_line": 138,
+          "line": 136,
+          "name": "RemovalResult"
+        },
+        {
+          "end_line": 147,
+          "line": 142,
+          "name": "_ViewContext"
+        },
+        {
+          "end_line": 154,
+          "line": 151,
+          "name": "_SourceDeclaration"
+        },
+        {
+          "end_line": 160,
+          "line": 157,
+          "name": "_identifier"
+        },
+        {
+          "end_line": 169,
+          "line": 163,
+          "name": "_localized_names"
+        },
+        {
+          "end_line": 183,
+          "line": 172,
+          "name": "_safe_member"
+        },
+        {
+          "end_line": 193,
+          "line": 186,
+          "name": "_dimensions"
+        },
+        {
+          "end_line": 217,
+          "line": 196,
+          "name": "_layer"
+        },
+        {
+          "end_line": 255,
+          "line": 220,
+          "name": "_rig_contract"
+        },
+        {
+          "end_line": 260,
+          "line": 258,
+          "name": "_range_contains"
+        },
+        {
+          "end_line": 300,
+          "line": 263,
+          "name": "_view"
+        },
+        {
+          "end_line": 322,
+          "line": 303,
+          "name": "_read_manifest"
+        },
+        {
+          "end_line": 353,
+          "line": 325,
+          "name": "_manifest_contract"
+        },
+        {
+          "end_line": 377,
+          "line": 356,
+          "name": "_declarations"
+        },
+        {
+          "end_line": 388,
+          "line": 380,
+          "name": "_compatibility"
+        },
+        {
+          "end_line": 414,
+          "line": 391,
+          "name": "_source_declaration"
+        },
+        {
+          "end_line": 441,
+          "line": 417,
+          "name": "_pose_views"
+        },
+        {
+          "end_line": 455,
+          "line": 444,
+          "name": "_versions"
+        },
+        {
+          "end_line": 487,
+          "line": 458,
+          "name": "_inspect_archive"
+        },
+        {
+          "end_line": 498,
+          "line": 490,
+          "name": "inspect_pose_pack"
+        },
+        {
+          "end_line": 515,
+          "line": 501,
+          "name": "install_pose_pack"
+        },
+        {
+          "end_line": 520,
+          "line": 518,
+          "name": "list_installed_pose_packs"
+        },
+        {
+          "end_line": 530,
+          "line": 523,
+          "name": "_references"
+        },
+        {
+          "end_line": 549,
+          "line": 533,
+          "name": "remove_pose_pack"
         }
       ]
     },
@@ -106069,7 +106486,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 119,
+    "embedded_code": 120,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
