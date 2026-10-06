@@ -221,6 +221,30 @@ def test_directory_symlink_without_os_privileges(tmp_path: Path, monkeypatch: py
     assert_rejected(source, "unsafe_path")
 
 
+def test_directory_file_identity_cannot_change_after_inventory(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = write_package(tmp_path, minimal_manifest(), "directory")
+    replacement = tmp_path / "replacement.json"
+    replacement.write_bytes(PAYLOAD)
+    original = character_archive._DirectoryReader.declared_size
+    replaced = False
+
+    def declared_size(reader, path):
+        nonlocal replaced
+        size = original(reader, path)
+        if path == "provenance/source.json" and not replaced:
+            candidate = source / path
+            candidate.unlink()
+            os.link(replacement, candidate)
+            replaced = True
+        return size
+
+    monkeypatch.setattr(character_archive._DirectoryReader, "declared_size", declared_size)
+    assert_rejected(source, "unsafe_path")
+
+
 @pytest.mark.parametrize("kind", ["directory", "zip"])
 def test_undeclared_files(tmp_path: Path, kind: str) -> None:
     assert_rejected(write_package(tmp_path, minimal_manifest(), kind, extra={"extra.bin": b"extra"}), "undeclared_file")
@@ -268,6 +292,83 @@ def test_license_options_and_dependencies_preserved(tmp_path: Path) -> None:
     assert result.manifest.licenses[1].status == "all_rights_reserved"
     manifest["dependencies"][0]["kind"] = []
     assert_rejected(write_package(tmp_path, manifest, "directory"), "invalid_manifest")
+
+
+@pytest.mark.parametrize(("kind", "schema", "body_profile"), [
+    ("outfit_pack", "mohan-outfit-pack.v2", {"id": "mohan-body-v2", "version": 2}),
+    ("expression_manifest", "mohan.complete-expression-manifest.v1", {"id": "mohan-body-v2", "version": 2}),
+    ("persona", "flameblade.persona.v1", None),
+])
+def test_typed_components_preserve_existing_child_contracts(
+    tmp_path: Path,
+    kind: str,
+    schema: str,
+    body_profile: dict | None,
+) -> None:
+    manifest = minimal_manifest()
+    manifest["components"] = [{
+        "id": "example.component",
+        "kind": kind,
+        "schema": schema,
+        "path": "provenance/source.json",
+        "sha256": hashlib.sha256(PAYLOAD).hexdigest(),
+        "required": True,
+        "body_profile": body_profile,
+    }]
+    result = validate_character_pack(
+        write_package(tmp_path, manifest, "directory"),
+        engine_version=ENGINE_VERSION,
+    )
+    assert result.valid
+    component = result.manifest.components[0]
+    assert component.schema == schema
+    assert component.body_profile_id == (body_profile or {}).get("id")
+
+
+@pytest.mark.parametrize(("case", "code"), [
+    ("unsupported_kind", "invalid_manifest"),
+    ("missing_body_profile", "invalid_manifest"),
+    ("invalid_body_profile_version", "invalid_manifest"),
+    ("conflicting_body_profile", "incompatible_body_profile"),
+    ("duplicate_id", "invalid_manifest"),
+    ("duplicate_path", "duplicate_path"),
+    ("missing_file", "missing_file"),
+    ("hash_mismatch", "reference_hash_mismatch"),
+])
+def test_invalid_component_references_fail_closed(tmp_path: Path, case: str, code: str) -> None:
+    manifest = minimal_manifest()
+    component = {
+        "id": "example.component",
+        "kind": "outfit_pack",
+        "schema": "mohan-outfit-pack.v2",
+        "path": "provenance/source.json",
+        "sha256": hashlib.sha256(PAYLOAD).hexdigest(),
+        "required": True,
+        "body_profile": {"id": "mohan-body-v2", "version": 2},
+    }
+    manifest["components"] = [component]
+    if case == "unsupported_kind":
+        component["kind"] = "unknown"
+    elif case == "missing_body_profile":
+        component["body_profile"] = None
+    elif case == "invalid_body_profile_version":
+        component["body_profile"]["version"] = False
+    elif case == "conflicting_body_profile":
+        manifest["components"].append({
+            **component,
+            "id": "example.other",
+            "path": "other.json",
+            "body_profile": {"id": "other-body-v1", "version": 1},
+        })
+    elif case == "duplicate_id":
+        manifest["components"].append({**component, "path": "other.json"})
+    elif case == "duplicate_path":
+        manifest["components"].append({**component, "id": "example.other"})
+    elif case == "missing_file":
+        component["path"] = "missing.json"
+    else:
+        component["sha256"] = "0" * 64
+    assert_rejected(write_package(tmp_path, manifest, "directory"), code)
 
 
 def test_signature_requires_trusted_verification(tmp_path: Path) -> None:

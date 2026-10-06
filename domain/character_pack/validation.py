@@ -13,6 +13,7 @@ lazy from pathlib import Path
 lazy from domain.character_pack.archive import _ValidationFailure, _PackageReader, _open_reader, _validate_safe_path, _fold_path
 
 lazy from domain.character_pack.models import (
+    CharacterPackComponent,
     CharacterPackDependency,
     CharacterPackFile,
     CharacterPackManifest,
@@ -43,6 +44,27 @@ LICENSE_STATUSES = frozenset({
     "owner_decision_pending",
 })
 DEPENDENCY_KINDS = frozenset({"outfit_pack", "dlc"})
+COMPONENT_KINDS = frozenset({
+    "body_profile",
+    "dialogue",
+    "expression_manifest",
+    "fullbody_rig",
+    "halfbody_rig",
+    "outfit_pack",
+    "persona",
+    "pose_pack",
+    "regression_manifest",
+    "ui_assets",
+    "voice_profile",
+})
+BODY_PROFILE_COMPONENT_KINDS = frozenset({
+    "body_profile",
+    "expression_manifest",
+    "fullbody_rig",
+    "halfbody_rig",
+    "outfit_pack",
+    "pose_pack",
+})
 ACCESS_STATUSES = frozenset({"public", "private", "owner_decision_pending"})
 REDISTRIBUTION_STATUSES = frozenset({"allowed", "prohibited", "owner_decision_pending"})
 FORBIDDEN_SUFFIXES = frozenset({
@@ -63,7 +85,7 @@ TOP_LEVEL_REQUIRED = frozenset({
     "files",
     "package_hash",
 })
-TOP_LEVEL_OPTIONAL = frozenset({"dependencies", "signature"})
+TOP_LEVEL_OPTIONAL = frozenset({"components", "dependencies", "signature"})
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?\Z")
 SEMVER = re.compile(r"(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
@@ -226,10 +248,11 @@ def _parse_manifest(value: dict[str, object]) -> CharacterPackManifest:
     source_refs = _references(value["source_refs"], "source_refs", require_entries=True)
     approval_refs = _references(value["approval_refs"], "approval_refs", require_entries=False)
     files = _files(value["files"])
+    components = _components(value.get("components", []))
     dependencies = _dependencies(value.get("dependencies", []))
     package_hash = _sha256(value["package_hash"], "package_hash")
     signature = _signature(value.get("signature"))
-    _validate_manifest_references(licenses, source_refs, approval_refs, files)
+    _validate_manifest_references(licenses, source_refs, approval_refs, components, files)
     return CharacterPackManifest(
         SCHEMA,
         pack_id,
@@ -246,6 +269,7 @@ def _parse_manifest(value: dict[str, object]) -> CharacterPackManifest:
         source_refs,
         approval_refs,
         files,
+        components,
         dependencies,
         package_hash,
         signature,
@@ -414,6 +438,67 @@ def _files(value: object) -> tuple[CharacterPackFile, ...]:
     return tuple(records)
 
 
+def _components(value: object) -> tuple[CharacterPackComponent, ...]:
+    if not isinstance(value, list):
+        raise _ValidationFailure("invalid_manifest", "components must be a list.")
+    components: list[CharacterPackComponent] = []
+    ids: set[str] = set()
+    paths: set[str] = set()
+    bound_profile: tuple[str, int] | None = None
+    for item in value:
+        entry = _exact_keys(
+            item,
+            frozenset({"id", "kind", "schema", "path", "sha256", "required", "body_profile"}),
+            frozenset(),
+            "components entry",
+        )
+        component_id = _identifier(entry["id"], "components.id")
+        kind = entry["kind"]
+        if component_id in ids or not isinstance(kind, str) or kind not in COMPONENT_KINDS:
+            raise _ValidationFailure("invalid_manifest", "Components require unique ids and a supported kind.")
+        path = _validate_safe_path(entry["path"])
+        folded_path = _fold_path(path)
+        if folded_path in paths:
+            raise _ValidationFailure("duplicate_path", "Every component path must be referenced once.", path)
+        if not isinstance(entry["required"], bool):
+            raise _ValidationFailure("invalid_manifest", "components.required must be a boolean.", path)
+        body_profile_id, body_profile_version = _component_body_profile(entry["body_profile"], kind, path)
+        if body_profile_id is not None and body_profile_version is not None:
+            profile = body_profile_id, body_profile_version
+            if bound_profile is not None and profile != bound_profile:
+                raise _ValidationFailure(
+                    "incompatible_body_profile",
+                    "All body-bound components must use one body profile and version.",
+                    path,
+                )
+            bound_profile = profile
+        ids.add(component_id)
+        paths.add(folded_path)
+        components.append(CharacterPackComponent(
+            component_id,
+            kind,
+            _identifier(entry["schema"], "components.schema"),
+            path,
+            _sha256(entry["sha256"], "components.sha256"),
+            entry["required"],
+            body_profile_id,
+            body_profile_version,
+        ))
+    return tuple(components)
+
+
+def _component_body_profile(value: object, kind: str, path: str) -> tuple[str | None, int | None]:
+    if value is None:
+        if kind in BODY_PROFILE_COMPONENT_KINDS:
+            raise _ValidationFailure("invalid_manifest", "Visual components require a body-profile binding.", path)
+        return None, None
+    entry = _exact_keys(value, frozenset({"id", "version"}), frozenset(), "components.body_profile")
+    version = entry["version"]
+    if not isinstance(version, int) or isinstance(version, bool) or version < 1:
+        raise _ValidationFailure("invalid_manifest", "Body-profile versions must be positive integers.", path)
+    return _identifier(entry["id"], "components.body_profile.id"), version
+
+
 def _dependencies(value: object) -> tuple[CharacterPackDependency, ...]:
     if not isinstance(value, list):
         raise _ValidationFailure("invalid_manifest", "dependencies must be a list.")
@@ -460,6 +545,7 @@ def _validate_manifest_references(
     licenses: tuple[LicenseDeclaration, ...],
     source_refs: tuple[CharacterPackReference, ...],
     approval_refs: tuple[CharacterPackReference, ...],
+    components: tuple[CharacterPackComponent, ...],
     files: tuple[CharacterPackFile, ...],
 ) -> None:
     by_path = {record.path: record for record in files}
@@ -472,6 +558,12 @@ def _validate_manifest_references(
             raise _ValidationFailure("missing_file", "A provenance or approval reference is not declared in files.", reference.path)
         if record.sha256 != reference.sha256:
             raise _ValidationFailure("reference_hash_mismatch", "A reference hash differs from its file record.", reference.path)
+    for component in components:
+        record = by_path.get(component.path)
+        if record is None:
+            raise _ValidationFailure("missing_file", "A component is not declared in files.", component.path)
+        if record.sha256 != component.sha256:
+            raise _ValidationFailure("reference_hash_mismatch", "A component hash differs from its file record.", component.path)
 
 
 def _validate_engine_compatibility(

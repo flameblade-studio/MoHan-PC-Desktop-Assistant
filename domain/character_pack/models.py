@@ -63,6 +63,20 @@ class CharacterPackDependency:
 
 
 @dataclass(frozen=True, slots=True)
+class CharacterPackComponent:
+    """A typed child manifest or sealed data pack referenced by the envelope."""
+
+    component_id: str
+    kind: str
+    schema: str
+    path: str
+    sha256: str
+    required: bool
+    body_profile_id: str | None
+    body_profile_version: int | None
+
+
+@dataclass(frozen=True, slots=True)
 class EngineCompatibility:
     """Engine API, version interval, and feature requirements."""
 
@@ -100,6 +114,7 @@ class CharacterPackManifest:
     source_refs: tuple[CharacterPackReference, ...]
     approval_refs: tuple[CharacterPackReference, ...]
     files: tuple[CharacterPackFile, ...]
+    components: tuple[CharacterPackComponent, ...]
     dependencies: tuple[CharacterPackDependency, ...]
     package_hash: str
     signature: CharacterPackSignature | None

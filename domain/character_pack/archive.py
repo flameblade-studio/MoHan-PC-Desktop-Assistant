@@ -62,6 +62,7 @@ class _DirectoryReader(_PackageReader):
         self._root = root.resolve(strict=True)
         root = self._root
         files: dict[str, Path] = {}
+        identities: dict[str, os.stat_result] = {}
         folded_names: set[str] = set()
         total_bytes = 0
         for entry in _directory_entries(root, limits):
@@ -73,16 +74,19 @@ class _DirectoryReader(_PackageReader):
             folded_names.add(folded)
             if entry.is_dir():
                 continue
-            if not entry.is_file():
+            metadata = entry.stat(follow_symlinks=False)
+            if not stat.S_ISREG(metadata.st_mode):
                 raise _ValidationFailure("unsafe_path", "Character packs contain regular files only.")
-            size = entry.stat().st_size
+            size = metadata.st_size
             if size > limits.max_file_bytes and name != MANIFEST_PATH:
                 raise _ValidationFailure("file_too_large", "A package file exceeds the configured size limit.", name)
             files[name] = entry
+            identities[name] = metadata
             total_bytes += size
             _validate_inventory_limits(files, total_bytes, limits)
         _validate_inventory_limits(files, total_bytes, limits)
         self._files = files
+        self._identities = identities
 
     @property
     def names(self) -> frozenset[str]:
@@ -95,12 +99,17 @@ class _DirectoryReader(_PackageReader):
             raise _ValidationFailure("missing_file", "A declared package file is missing.", path) from None
         _check_directory_path(self._root, candidate)
         with candidate.open("rb") as stream:
-            return _read_limited(stream, limit, path)
+            _check_opened_file(self._root, candidate, stream, self._identities[path], path)
+            data = _read_limited(stream, limit, path)
+            _check_opened_file(self._root, candidate, stream, self._identities[path], path)
+            return data
 
     def declared_size(self, path: str) -> int:
         candidate = self._files[path]
         _check_directory_path(self._root, candidate)
-        return candidate.stat().st_size
+        metadata = candidate.stat(follow_symlinks=False)
+        _require_same_file(self._identities[path], metadata, path)
+        return metadata.st_size
 
 
 class _ZipReader(_PackageReader):
@@ -282,6 +291,34 @@ def _check_directory_path(root: Path, candidate: Path) -> None:
             break
         if ancestor.is_symlink() or ancestor.is_junction():
             raise _ValidationFailure("unsafe_path", "Package ancestors must contain regular directories.")
+
+
+def _check_opened_file(
+    root: Path,
+    candidate: Path,
+    stream: IO[bytes],
+    expected: os.stat_result,
+    path: str,
+) -> None:
+    """Bind a directory entry to the regular file inventoried before reading."""
+    _check_directory_path(root, candidate)
+    opened = os.fstat(stream.fileno())
+    current = candidate.stat(follow_symlinks=False)
+    _require_same_file(expected, opened, path)
+    _require_same_file(opened, current, path)
+
+
+def _require_same_file(expected: os.stat_result, actual: os.stat_result, path: str) -> None:
+    if (
+        not stat.S_ISREG(actual.st_mode)
+        or expected.st_dev != actual.st_dev
+        or expected.st_ino != actual.st_ino
+    ):
+        raise _ValidationFailure(
+            "unsafe_path",
+            "A package file changed identity while it was being validated.",
+            path,
+        )
 
 
 def _validate_inventory_limits(inventory: Mapping[str, object], total_bytes: int, limits: ValidationLimits) -> None:

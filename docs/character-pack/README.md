@@ -6,7 +6,7 @@
 
 ### 入口與身分
 
-v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `manifest.json`。採 UTF-8 JSON，鍵值唯一，物件鍵順序自由；每一層拒絕未知或缺少的欄位。`dependencies` 與 `signature` 可省略；其他頂層欄位必填。陣列順序保留，字串大小寫依契約比對。
+v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `manifest.json`。採 UTF-8 JSON，鍵值唯一，物件鍵順序自由；每一層拒絕未知或缺少的欄位。`components`、`dependencies` 與 `signature` 可省略；其他頂層欄位必填。陣列順序保留，字串大小寫依契約比對。
 
 `pack_id` 與 `character.id` 是 1 至 128 字元的小寫 ASCII 識別碼，首尾限英數，中間可用句點、底線與連字號。`pack_version` 是三段版本，各段最多 9 位 ASCII 數字，零以外無前導零，首版只接受穩定版。`display_names` 恰含 `zh-TW`、`zh-CN`、`en`、`ja-JP`。`character` 恰含 `id`、`canonical_name`、`aliases`；名稱與別名為非空文字，上限 160 字元，別名大小寫折疊後唯一，允許空陣列。
 
@@ -27,6 +27,8 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 `files` 是非空完整清冊，每筆恰含 `path`、`sha256`、`bytes`、`media_type`、`license_component`。路徑為 NFC 相對 POSIX 路徑，上限 512 字元；SHA-256 為 64 位小寫十六進位；長度是非負整數；媒體類型採小寫 type/subtype，各段最長 64 字元；權利分類引用上述四類之一。入口清單不列自身，其他檔案皆須列入。重複、大小寫衝突、缺檔、額外檔案、位元組長度或雜湊不符皆拒絕。
 
 `source_refs` 必須為非空陣列，`approval_refs` 可為空；每筆恰含 `path`、`sha256`、`scope`。引用檔案必須列入清冊且雜湊一致，範圍文字上限 500 字元，各陣列內路徑唯一。核准沿原有範圍有效，不能推論成整包散布許可。可引用經核定的摘要收據；完整私人證據是否隨包由擁有者決定。
+
+可選 `components` 是既有子格式的具型別入口。每筆恰含 `id`、`kind`、`schema`、`path`、`sha256`、`required`、`body_profile`；元件 ID 與路徑各自唯一，路徑與雜湊必須對上 `files`。種類可為 body profile、全身／半身 rig、表情 manifest、服裝包、姿勢包、人格、台詞、聲音設定、UI 素材或回歸 manifest。會影響身形的元件必須以 ID 與正整數版本綁定 body profile，且同一包的非 null 綁定必須完全一致；其他元件可填 null。`schema` 點名應使用的既有子格式與版本，例如 `mohan-outfit-pack.v2` 或 `mohan.complete-expression-manifest.v1`；外層驗證器只驗證引用，真正載入時仍須交給已註冊的子格式驗證器，未知子 schema 必須拒絕。
 
 現有 `.mohan-outfit` v2、`mohan.complete-expression-manifest.v1`、`mohan.complete-halfbody-expressions.v1`、`mohan-body-v2` 與來源、建置、放置、核准紀錄可原樣保存在清冊中。本驗證器驗證外層契約與檔案位元組；子格式、圖片尺寸與模式、素體、表情能力及 352 格外觀驗收仍由既有檢查負責。檔名副檔名限制用於資料包入口，任何載入器也須保持資料模式，避免執行包內內容。
 
@@ -52,7 +54,7 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 
 ZIP 建立記憶體索引前，先串流核對中央目錄的實際項目數、宣告數與範圍，並套用 metadata 大小上限。首版接受單磁碟、一般結尾紀錄的 ZIP；ZIP64 結尾紀錄與跨磁碟封包會被拒絕，小型封包的 ZIP64 本地標頭可接受。ZIP 名稱須符合宣告的檔案或目錄類型；檔案也不得成為其他項目的父目錄，包括大小寫折疊後的衝突。Windows 保留裝置名稱檢查涵蓋 COM 與 LPT 的上標數字 ¹、²、³。
 
-ZIP 大小、預檢與內容讀取使用同一個已開啟檔案，避免預檢後因路徑置換而讀取另一個 ZIP。資料夾與 ZIP 都須在驗證期間保持不被並行改寫。
+ZIP 大小、預檢與內容讀取使用同一個已開啟檔案，避免預檢後因路徑置換而讀取另一個 ZIP。資料夾讀取器記錄盤點時的檔案身分，並在讀取前後核對實際開啟的 regular-file handle；置換檔案或祖先路徑會被拒絕。資料夾與 ZIP 都須在驗證期間保持不被並行改寫。
 
 資料夾逐項串流列舉，項目數超過上限一筆就停止，避免先把大量目錄項目收集到記憶體。
 
@@ -88,7 +90,7 @@ with TemporaryDirectory() as temporary:
 
 ### 入口与身份
 
-v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `manifest.json`。采用 UTF-8 JSON，键值唯一，对象键顺序自由；每一层拒绝未知或缺少的字段。`dependencies` 与 `signature` 可省略；其他顶层字段必填。数组顺序保留，字符串大小写依契约比较。
+v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `manifest.json`。采用 UTF-8 JSON，键值唯一，对象键顺序自由；每一层拒绝未知或缺少的字段。`components`、`dependencies` 与 `signature` 可省略；其他顶层字段必填。数组顺序保留，字符串大小写依契约比较。
 
 `pack_id` 与 `character.id` 是 1 至 128 字符的小写 ASCII 标识码，首尾限字母数字，中间可用句点、下划线与连字符。`pack_version` 是三段版本，各段最多 9 位 ASCII 数字，零以外无前导零，首版只接受稳定版。`display_names` 恰含 `zh-TW`、`zh-CN`、`en`、`ja-JP`。`character` 恰含 `id`、`canonical_name`、`aliases`；名称与别名为非空文本，上限 160 字符，别名大小写折叠后唯一，允许空数组。
 
@@ -109,6 +111,8 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 `files` 是非空完整清单，每项恰含 `path`、`sha256`、`bytes`、`media_type`、`license_component`。路径为 NFC 相对 POSIX 路径，上限 512 字符；SHA-256 为 64 位小写十六进制；长度是非负整数；媒体类型采用小写 type/subtype，各段最长 64 字符；权利分类引用上述四类之一。入口清单不列自身，其他文件均须列入。重复、大小写冲突、缺失、多余文件、字节长度或哈希不符均拒绝。
 
 `source_refs` 必须为非空数组，`approval_refs` 可为空；每项恰含 `path`、`sha256`、`scope`。引用文件必须列入清单且哈希一致，范围文本上限 500 字符，各数组内路径唯一。批准沿原有范围有效，不能推断成整包分发许可。可引用经批准的摘要记录；完整私人证据是否随包由所有者决定。
+
+可选 `components` 是现有子格式的强类型入口。每项恰含 `id`、`kind`、`schema`、`path`、`sha256`、`required`、`body_profile`；组件 ID 与路径分别唯一，路径和哈希必须与 `files` 对应。种类可为 body profile、全身／半身 rig、表情 manifest、服装包、姿势包、人格、台词、声音设置、UI 素材或回归 manifest。影响体型的组件必须用 ID 与正整数版本绑定 body profile，并且同一包内所有非 null 绑定必须完全一致；其他组件可填 null。`schema` 指明应使用的现有子格式与版本，例如 `mohan-outfit-pack.v2` 或 `mohan.complete-expression-manifest.v1`；外层验证器只验证引用，实际加载时仍须交给已注册的子格式验证器，未知子 schema 必须拒绝。
 
 现有 `.mohan-outfit` v2、`mohan.complete-expression-manifest.v1`、`mohan.complete-halfbody-expressions.v1`、`mohan-body-v2` 与来源、构建、放置、批准记录可原样保存在清单中。本验证器验证外层契约与文件字节；子格式、图片尺寸与模式、素体、表情能力及 352 格外观验收仍由既有检查负责。文件扩展名限制用于数据包入口，任何加载器也须保持数据模式，避免执行包内内容。
 
@@ -134,7 +138,7 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 
 ZIP 建立内存索引前，先流式核对中央目录的实际项目数、声明数与范围，并应用 metadata 大小上限。首版接受单磁盘、普通结尾记录的 ZIP；ZIP64 结尾记录与跨磁盘包会被拒绝，小型包的 ZIP64 本地头可接受。ZIP 名称须符合声明的文件或目录类型；文件也不得成为其他项目的父目录，包括大小写折叠后的冲突。Windows 保留设备名称检查涵盖 COM 与 LPT 的上标数字 ¹、²、³。
 
-ZIP 大小、预检与内容读取使用同一个已打开文件，避免预检后因路径替换而读取另一个 ZIP。文件夹与 ZIP 都须在验证期间保持不被并行改写。
+ZIP 大小、预检与内容读取使用同一个已打开文件，避免预检后因路径替换而读取另一个 ZIP。文件夹读取器记录盘点时的文件身份，并在读取前后核对实际打开的 regular-file handle；替换文件或祖先路径会被拒绝。文件夹与 ZIP 都须在验证期间保持不被并行改写。
 
 文件夹逐项流式枚举，项目数超过上限一项就停止，避免先把大量目录项目收集到内存。
 
@@ -170,7 +174,7 @@ A character pack is a downloadable suitcase containing a character's identity, f
 
 ### Entry point and identity
 
-v1 uses `flameblade.character-pack.v1`, with `manifest.json` at the directory or ZIP root. Use UTF-8 JSON with unique keys and arbitrary object key order; unknown or missing fields are rejected at every level. `dependencies` and `signature` may be omitted; all other top-level fields are required. Array order is preserved, and string case follows the contract.
+v1 uses `flameblade.character-pack.v1`, with `manifest.json` at the directory or ZIP root. Use UTF-8 JSON with unique keys and arbitrary object key order; unknown or missing fields are rejected at every level. `components`, `dependencies`, and `signature` may be omitted; all other top-level fields are required. Array order is preserved, and string case follows the contract.
 
 `pack_id` and `character.id` are lowercase ASCII identifiers of 1 to 128 characters, with alphanumeric endpoints and dots, underscores, or hyphens inside. `pack_version` has three numeric components of at most 9 ASCII digits each, with no leading zero except zero itself; the first version accepts stable releases only. `display_names` contains exactly `zh-TW`, `zh-CN`, `en`, and `ja-JP`. `character` contains exactly `id`, `canonical_name`, and `aliases`; names and aliases are nonempty text limited to 160 characters, aliases are unique after case folding, and an empty array is allowed.
 
@@ -191,6 +195,8 @@ Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, 
 `files` is a complete nonempty inventory; entries contain exactly `path`, `sha256`, `bytes`, `media_type`, and `license_component`. Paths are NFC relative POSIX paths limited to 512 characters; SHA-256 uses 64 lowercase hexadecimal digits; sizes are nonnegative integers; media types use lowercase type/subtype syntax with each part limited to 64 characters; rights categories name one of the four categories above. The entry manifest excludes itself; every other file is listed. Duplicates, case collisions, missing or extra files, and byte count or hash mismatches are rejected.
 
 `source_refs` is a nonempty array; `approval_refs` may be empty. Each entry contains exactly `path`, `sha256`, and `scope`. Referenced files must be inventoried with matching hashes, scopes are limited to 500 text characters, and paths are unique within each array. Approvals retain their original scope and do not imply whole-package distribution permission. Approved summary receipts may be referenced; the owner decides whether complete private evidence accompanies a pack.
+
+Optional `components` entries are typed entry points to existing child formats. Each contains exactly `id`, `kind`, `schema`, `path`, `sha256`, `required`, and `body_profile`; component IDs and paths are independently unique, and each path and hash must match `files`. Kinds cover body profiles, full-body or half-body rigs, expression manifests, outfit packs, pose packs, persona, dialogue, voice profiles, UI assets, and regression manifests. Components that affect body geometry require a body-profile ID and positive integer version, and every non-null binding in one pack must match exactly; other components may use null. `schema` identifies the registered child format and version, such as `mohan-outfit-pack.v2` or `mohan.complete-expression-manifest.v1`. The envelope validator verifies the reference only; loading must still invoke the registered child validator and reject an unsupported child schema.
 
 Existing `.mohan-outfit` v2, `mohan.complete-expression-manifest.v1`, `mohan.complete-halfbody-expressions.v1`, `mohan-body-v2`, and source, build, placement, and approval records can remain unchanged in the inventory. This validator checks the outer contract and file bytes; existing checks still own child formats, image dimensions and modes, body profiles, expression capabilities, and the 352-cell appearance gate. Extension restrictions apply to the data package entry point; any loader must also preserve data-only handling to avoid executing packaged content.
 
@@ -216,7 +222,7 @@ Optional `signature` is null or an object containing exactly `algorithm`, `key_i
 
 Before allocating the ZIP index, stream through the central directory to check actual and declared entry counts and bounds, and enforce the metadata size limit. v1 accepts single-disk ZIPs with classic end records. ZIP64 end records and multi-disk packages are rejected; local ZIP64 headers in small packages are accepted. ZIP names must agree with their declared file or directory types. A file must also remain separate from the parent directories of other entries, including case-folded collisions. Windows device-name checks cover COM and LPT with superscript digits ¹, ², and ³.
 
-ZIP size checks, preflight, and payload reads share one open file so replacing the path after preflight cannot select another ZIP. Both directories and ZIPs must remain untouched by concurrent writers during validation.
+ZIP size checks, preflight, and payload reads share one open file so replacing the path after preflight cannot select another ZIP. The directory reader records inventoried file identity and checks the opened regular-file handle before and after each read; replacing a file or ancestor path is rejected. Both directories and ZIPs must remain untouched by concurrent writers during validation.
 
 Directory enumeration streams entries and stops after one entry beyond the ceiling, avoiding allocation of a complete directory listing before enforcing the limit.
 
@@ -252,7 +258,7 @@ with TemporaryDirectory() as temporary:
 
 ### 入口と身元
 
-v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZIP のルートに `manifest.json` を置きます。UTF-8 JSON を使用し、キーは一意、オブジェクトのキー順は自由です。各階層で未知または不足するフィールドを拒否します。`dependencies` と `signature` は省略でき、他の最上位フィールドは必須です。配列の順序を保持し、文字列の大小文字は契約に従って比較します。
+v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZIP のルートに `manifest.json` を置きます。UTF-8 JSON を使用し、キーは一意、オブジェクトのキー順は自由です。各階層で未知または不足するフィールドを拒否します。`components`、`dependencies`、`signature` は省略でき、他の最上位フィールドは必須です。配列の順序を保持し、文字列の大小文字は契約に従って比較します。
 
 `pack_id` と `character.id` は 1～128 文字の小文字 ASCII 識別子で、先頭と末尾は英数字、内部はピリオド、下線、ハイフンも使えます。`pack_version` は三つの数値要素からなり、各要素は最大 9 桁の ASCII 数字、ゼロ以外に先頭のゼロを許しません。初版は安定版のみを受け入れます。`display_names` は `zh-TW`、`zh-CN`、`en`、`ja-JP` を正確に含みます。`character` は `id`、`canonical_name`、`aliases` のみを含みます。名前と別名は空でない最大 160 文字のテキストで、別名は大小文字を折り畳んだ後に一意、空の配列も許可します。
 
@@ -273,6 +279,8 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 `files` は空でない完全な一覧で、各項目は `path`、`sha256`、`bytes`、`media_type`、`license_component` のみを含みます。パスは最大 512 文字の NFC 相対 POSIX パス、SHA-256 は 64 桁の小文字十六進数、長さは非負整数です。メディア型は小文字の type/subtype 構文で各部分は最大 64 文字、権利分類は上記の四分類の一つを指定します。入口の一覧は自身を除き、他の全ファイルを記載します。重複、大小文字の衝突、不足、余分なファイル、バイト数やハッシュの不一致を拒否します。
 
 `source_refs` は空でない配列、`approval_refs` は空にできます。各項目は `path`、`sha256`、`scope` のみを含みます。参照ファイルは一覧に含まれ、ハッシュが一致し、範囲の説明は最大 500 文字、各配列内のパスは一意です。承認は元の範囲内で有効であり、パック全体の配布許可を意味しません。承認された要約記録を参照でき、完全な非公開証拠を同梱するかは所有者が決定します。
+
+省略可能な `components` は、既存の子形式を型付きで参照する入口です。各項目は `id`、`kind`、`schema`、`path`、`sha256`、`required`、`body_profile` のみを含みます。コンポーネント ID とパスはそれぞれ一意で、パスとハッシュは `files` と一致する必要があります。種類は body profile、全身／半身 rig、表情 manifest、衣装パック、ポーズパック、人格、台詞、音声設定、UI 素材、回帰 manifest です。体型に影響するコンポーネントは body profile の ID と正の整数バージョンを必須とし、同じパック内の null でない指定はすべて完全に一致する必要があります。それ以外は null を使えます。`schema` は `mohan-outfit-pack.v2` や `mohan.complete-expression-manifest.v1` のように既存の子形式と版を指定します。外側の検証器は参照だけを検証し、実際の読み込みでは登録済みの子形式検証器を呼び出し、未対応の子 schema を拒否します。
 
 既存の `.mohan-outfit` v2、`mohan.complete-expression-manifest.v1`、`mohan.complete-halfbody-expressions.v1`、`mohan-body-v2`、出典、ビルド、配置、承認記録は変更せず一覧に保存できます。この検証器は外側の契約とファイルのバイト列を検証し、子形式、画像の寸法とモード、素体、表情能力、352 セルの外観検収は既存の検査が担当します。拡張子の制限はデータパックの入口に適用し、各ローダーもデータとして扱い、内容を実行しない設計を維持します。
 
@@ -298,7 +306,7 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 
 ZIP のメモリー索引を作る前に、中央ディレクトリーをストリームで読み、実際と宣言上の項目数、範囲、metadata のサイズ上限を確認します。v1 は単一ディスクと通常の終端レコードを持つ ZIP を受け入れます。ZIP64 終端レコードと複数ディスクのパックは拒否し、小型パックの ZIP64 ローカルヘッダーは受け入れます。ZIP の名前は宣言されたファイルまたはディレクトリーの種類と一致する必要があります。大小文字の正規化後も、ファイルが他の項目の親ディレクトリーになる構成を拒否します。Windows の予約デバイス名検査は、COM と LPT の上付き数字 ¹、²、³ も対象にします。
 
-ZIP のサイズ確認、事前検査、内容の読み取りには同じ開いたファイルを使い、検査後のパス置換で別の ZIP を読むことを防ぎます。検証中は、フォルダーと ZIP の両方を他の処理が書き換えない状態に保ちます。
+ZIP のサイズ確認、事前検査、内容の読み取りには同じ開いたファイルを使い、検査後のパス置換で別の ZIP を読むことを防ぎます。フォルダー読取器は棚卸し時のファイル識別情報を記録し、各読み取りの前後に実際に開いた regular-file handle を照合します。ファイルまたは祖先パスの置換は拒否されます。検証中は、フォルダーと ZIP の両方を他の処理が書き換えない状態に保ちます。
 
 フォルダーは項目を一つずつ列挙し、上限を一項目超えた時点で停止します。大量の項目を先にメモリーへ集める処理を避けます。
 
