@@ -7201,6 +7201,7 @@
     },
     {
       "paths": [
+        "tests/impact_map.json",
         "tests/test_durations.json"
       ],
       "tests": [
