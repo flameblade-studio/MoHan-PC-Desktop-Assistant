@@ -98785,7 +98785,7 @@
       ]
     },
     {
-      "bytes": 21539,
+      "bytes": 21013,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites",
@@ -98864,7 +98864,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "28290299001de170ea1eeae207a46935e9ed3cd3d268bab85a8e8b1c16993f43",
+      "sha256": "36fcefb600b7069fd87da3116446998d38c7e602edc0defad93e7d5be2c30db5",
       "symbols": [
         {
           "end_line": 35,
