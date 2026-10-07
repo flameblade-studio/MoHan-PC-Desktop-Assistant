@@ -260,6 +260,9 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     assert manifest["pack_id"] == "flameblade.mohan"
     assert manifest["character"]["id"] == "mohan"
     assert manifest["distribution"]["access"] == "private"
+    assert builder.DEFAULT_SOURCE.as_posix() not in {
+        str(entry["path"]) for entry in manifest["files"]
+    }
 
 
 def _manifest_from_directory(path: Path) -> dict[str, object]:

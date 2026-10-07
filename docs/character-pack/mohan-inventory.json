@@ -92127,6 +92127,11 @@
           "text": "lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id"
         },
         {
+          "line": 28,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "lazy from domain.character_pose import canonical_view_id"
+        },
+        {
           "line": 15,
           "path": "infrastructure/full_body_display_placement.py",
           "text": "lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id"
@@ -94734,7 +94739,7 @@
           "text": "lazy from domain.language_support import localized_voice_instructions"
         },
         {
-          "line": 28,
+          "line": 37,
           "path": "infrastructure/character_source_pack.py",
           "text": "lazy from domain.language_support import canonical_ui_language"
         },

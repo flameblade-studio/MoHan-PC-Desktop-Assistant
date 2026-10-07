@@ -27,15 +27,20 @@ lazy from domain.constants import (
     POSE_ATLAS_RELATIVE_ROOT,
 )
 lazy from domain.outfit_pack import MAKEUP_CANVASES
+lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.app_resources import resource_path
 lazy from infrastructure.character_source_pack import (
     CharacterPackReadError,
     CharacterPackReader,
     DIALOGUE_SCHEMA,
+    EVENTS_SCHEMA,
+    EXPRESSION_STATE_SCHEMA,
     FULLBODY_RIG_SCHEMA,
-    HALFBODY_RIG_SCHEMA,
+    IDENTITY_SCHEMA,
     PERSONA_SCHEMA,
+    VOICE_SCHEMA,
 )
+lazy from tools import build_character_pack as builder
 
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 
@@ -46,64 +51,102 @@ def _json_bytes(value: object) -> bytes:
     ).encode("utf-8")
 
 
-def _write_synthetic_pack(
+def _component_specs() -> list[dict[str, object]]:
+    body_profile = {"id": "synthetic-body-v1", "version": 1}
+    specs: list[dict[str, object]] = [
+        {
+            "id": "synthetic.identity",
+            "kind": "persona",
+            "schema": IDENTITY_SCHEMA,
+            "path": "character/persona/profile.json",
+            "body_profile": None,
+        },
+        {
+            "id": "synthetic.events",
+            "kind": "dialogue",
+            "schema": EVENTS_SCHEMA,
+            "path": "character/dialogue/events.json",
+            "body_profile": None,
+        },
+        {
+            "id": "synthetic.voice",
+            "kind": "voice_profile",
+            "schema": VOICE_SCHEMA,
+            "path": "character/voice/profile.json",
+            "body_profile": None,
+        },
+        {
+            "id": "synthetic.rig",
+            "kind": "fullbody_rig",
+            "schema": FULLBODY_RIG_SCHEMA,
+            "path": "character/rig/rig-manifest.json",
+            "body_profile": body_profile,
+        },
+        {
+            "id": "synthetic.expression-states",
+            "kind": "expression_manifest",
+            "schema": EXPRESSION_STATE_SCHEMA,
+            "path": "character/expressions/state-catalog.json",
+            "body_profile": body_profile,
+        },
+    ]
+    for language in LANGUAGES:
+        slug = language.lower()
+        specs.extend(
+            (
+                {
+                    "id": f"synthetic.persona.{slug}",
+                    "kind": "persona",
+                    "schema": PERSONA_SCHEMA,
+                    "path": f"character/persona/{language}.json",
+                    "body_profile": None,
+                },
+                {
+                    "id": f"synthetic.dialogue.{slug}",
+                    "kind": "dialogue",
+                    "schema": DIALOGUE_SCHEMA,
+                    "path": f"character/dialogue/{language}.json",
+                    "body_profile": None,
+                },
+            )
+        )
+    return specs
+
+
+def _write_synthetic_contract_pack(
     root: Path,
     *,
-    persona_schema: str = PERSONA_SCHEMA,
+    missing_id: str | None = None,
+    duplicate_voice: bool = False,
+    rig_schema: str = FULLBODY_RIG_SCHEMA,
 ) -> Path:
-    payloads: dict[str, bytes] = {
+    specs = _component_specs()
+    for spec in specs:
+        if spec["id"] == "synthetic.rig":
+            spec["schema"] = rig_schema
+    if missing_id is not None:
+        specs = [spec for spec in specs if spec["id"] != missing_id]
+    if duplicate_voice:
+        specs.append(
+            {
+                "id": "synthetic.voice.duplicate",
+                "kind": "voice_profile",
+                "schema": VOICE_SCHEMA,
+                "path": "character/voice/duplicate-profile.json",
+                "body_profile": None,
+            }
+        )
+
+    payloads = {
         "provenance/source.json": _json_bytes(
             {"schema": "synthetic.character-source.v1", "created_for": "tests"}
-        ),
-        "persona/profile.json": _json_bytes(
-            {
-                "schema": persona_schema,
-                "schema_version": 1,
-                "default_user_titles": {
-                    "zh-TW": "隊長",
-                    "zh-CN": "队长",
-                    "en": "Captain",
-                    "ja-JP": "隊長",
-                },
-                "persona_prompts": {
-                    language: f"synthetic persona {language}"
-                    for language in LANGUAGES
-                },
-            }
-        ),
-        "dialogue/catalog.json": _json_bytes(
-            {
-                "schema": DIALOGUE_SCHEMA,
-                "schema_version": 1,
-                "locales": {
-                    language: {
-                        "welcome": [
-                            f"welcome {language} zero",
-                            f"welcome {language} one",
-                        ]
-                    }
-                    for language in LANGUAGES
-                },
-            }
-        ),
-        "rig/fullbody.json": _json_bytes(
-            {
-                "schema": FULLBODY_RIG_SCHEMA,
-                "schema_version": 1,
-                "canvas": {"width": 640, "height": 960, "mode": "RGBA"},
-                "views": ["front", "back"],
-                "layers": ["body", "face", "hair"],
-            }
-        ),
-        "rig/halfbody.json": _json_bytes(
-            {
-                "schema": HALFBODY_RIG_SCHEMA,
-                "schema_version": 1,
-                "canvas": {"width": 512, "height": 512, "mode": "RGBA"},
-            }
-        ),
-        "rig/fullbody/front.rgba": b"synthetic-rgba-data",
+        )
     }
+    for spec in specs:
+        path = str(spec["path"])
+        payloads[path] = _json_bytes(
+            {"schema": spec["schema"], "schema_version": 1}
+        )
     for relative, data in payloads.items():
         target = root / relative
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -112,62 +155,27 @@ def _write_synthetic_pack(
     def digest(path: str) -> str:
         return hashlib.sha256(payloads[path]).hexdigest()
 
-    components = [
-        {
-            "id": "synthetic-persona",
-            "kind": "persona",
-            "schema": persona_schema,
-            "path": "persona/profile.json",
-            "sha256": digest("persona/profile.json"),
-            "required": True,
-            "body_profile": None,
-        },
-        {
-            "id": "synthetic-dialogue",
-            "kind": "dialogue",
-            "schema": DIALOGUE_SCHEMA,
-            "path": "dialogue/catalog.json",
-            "sha256": digest("dialogue/catalog.json"),
-            "required": True,
-            "body_profile": None,
-        },
-        {
-            "id": "synthetic-fullbody",
-            "kind": "fullbody_rig",
-            "schema": FULLBODY_RIG_SCHEMA,
-            "path": "rig/fullbody.json",
-            "sha256": digest("rig/fullbody.json"),
-            "required": True,
-            "body_profile": {"id": "synthetic-body-v1", "version": 1},
-        },
-        {
-            "id": "synthetic-halfbody",
-            "kind": "halfbody_rig",
-            "schema": HALFBODY_RIG_SCHEMA,
-            "path": "rig/halfbody.json",
-            "sha256": digest("rig/halfbody.json"),
-            "required": True,
-            "body_profile": {"id": "synthetic-body-v1", "version": 1},
-        },
-    ]
-    files = [
-        {
-            "path": path,
-            "sha256": digest(path),
-            "bytes": len(data),
-            "media_type": (
-                "application/json" if path.endswith(".json") else "application/octet-stream"
-            ),
-            "license_component": (
-                "persona_dialogue"
-                if path.startswith(("persona/", "dialogue/"))
-                else "character_art"
-                if path.startswith("rig/")
-                else "program_data"
-            ),
-        }
-        for path, data in payloads.items()
-    ]
+    components: list[dict[str, object]] = []
+    for spec in specs:
+        path = str(spec["path"])
+        components.append(
+            {
+                **spec,
+                "sha256": digest(path),
+                "required": True,
+            }
+        )
+    files = []
+    for path, data in payloads.items():
+        files.append(
+            {
+                "path": path,
+                "sha256": digest(path),
+                "bytes": len(data),
+                "media_type": "application/json",
+                "license_component": "persona_dialogue",
+            }
+        )
     manifest: dict[str, object] = {
         "schema": "flameblade.character-pack.v1",
         "pack_id": "tests.synthetic-character",
@@ -181,7 +189,7 @@ def _write_synthetic_pack(
         "character": {
             "id": "tests.synthetic-character",
             "canonical_name": "Aster",
-            "aliases": ["Test Aster"],
+            "aliases": [],
         },
         "engine_compatibility": {
             "api_version": 1,
@@ -226,58 +234,38 @@ def _write_synthetic_pack(
     return root
 
 
-def test_character_pack_reader_exposes_validated_synthetic_data(tmp_path: Path) -> None:
-    pack = _write_synthetic_pack(tmp_path / "synthetic.character")
-    source = CharacterPackReader(
-        pack,
-        engine_version="1.0.0",
-        engine_features={"character-source-v1"},
+def test_character_pack_reader_rejects_missing_component(tmp_path: Path) -> None:
+    pack = _write_synthetic_contract_pack(
+        tmp_path / "missing.character",
+        missing_id="synthetic.voice",
     )
-
-    assert isinstance(source, CharacterSource)
-    assert isinstance(source.assets, CharacterAssets)
-    assert isinstance(source.persona, CharacterPersona)
-    assert isinstance(source.appearance, CharacterAppearanceContract)
-    assert source.validation_result.valid
-    assert source.canonical_name == "Aster"
-    assert source.aliases == ("Test Aster",)
-    assert source.display_name("en-US") == "Synthetic Test Character"
-    assert source.default_user_title("zh-CN") == "队长"
-    assert source.persona_prompt("ja") == "synthetic persona ja-JP"
-    assert source.dialogue_line("en", "welcome", variation_index=3) == "welcome en one"
-    assert source.dialogue_line("en", "missing") == ""
-    assert source.body_profile.profile_id == "synthetic-body-v1"
-    assert source.body_profile.version == 1
-    assert (source.fullbody_canvas.width, source.fullbody_canvas.height) == (640, 960)
-    assert (source.halfbody_canvas.width, source.halfbody_canvas.height) == (512, 512)
-    assert source.view_ids == ("front", "back")
-    assert source.layer_order == ("body", "face", "hair")
-    assert source.resolve_path("rig/fullbody/front.rgba").read_bytes() == b"synthetic-rgba-data"
-    assert source.resolve_path("rig/fullbody").is_dir()
-    with pytest.raises(CharacterPackReadError, match="unsafe_path"):
-        source.resolve_path("../outside")
-    with pytest.raises(CharacterPackReadError, match="undeclared_path"):
-        source.resolve_path("rig/unknown.rgba")
-
-
-def test_character_pack_reader_fails_closed_without_partial_data(tmp_path: Path) -> None:
-    pack = _write_synthetic_pack(tmp_path / "tampered.character")
-    (pack / "dialogue" / "catalog.json").write_text("{}", encoding="utf-8")
-
     with pytest.raises(CharacterPackReadError) as captured:
         CharacterPackReader(
             pack,
             engine_version="1.0.0",
             engine_features={"character-source-v1"},
         )
-    assert captured.value.code in {"size_mismatch", "file_hash_mismatch"}
-    assert "dialogue/catalog.json" in str(captured.value)
+    assert captured.value.code == "missing_component"
 
 
-def test_character_pack_reader_rejects_unknown_child_schema(tmp_path: Path) -> None:
-    pack = _write_synthetic_pack(
+def test_character_pack_reader_rejects_duplicate_component(tmp_path: Path) -> None:
+    pack = _write_synthetic_contract_pack(
+        tmp_path / "duplicate.character",
+        duplicate_voice=True,
+    )
+    with pytest.raises(CharacterPackReadError) as captured:
+        CharacterPackReader(
+            pack,
+            engine_version="1.0.0",
+            engine_features={"character-source-v1"},
+        )
+    assert captured.value.code == "duplicate_component"
+
+
+def test_character_pack_reader_rejects_wrong_component_schema(tmp_path: Path) -> None:
+    pack = _write_synthetic_contract_pack(
         tmp_path / "unsupported.character",
-        persona_schema="tests.unknown-persona.v1",
+        rig_schema="tests.unknown-rig.v1",
     )
     with pytest.raises(CharacterPackReadError) as captured:
         CharacterPackReader(
@@ -286,20 +274,72 @@ def test_character_pack_reader_rejects_unknown_child_schema(tmp_path: Path) -> N
             engine_features={"character-source-v1"},
         )
     assert captured.value.code == "unsupported_component_schema"
-    assert "persona/profile.json" in str(captured.value)
 
 
-def test_character_pack_reader_rechecks_assets_after_validation(tmp_path: Path) -> None:
-    pack = _write_synthetic_pack(tmp_path / "mutable.character")
+def test_character_pack_reader_rejects_invalid_real_component_content(
+    tmp_path: Path,
+) -> None:
+    pack = _write_synthetic_contract_pack(tmp_path / "invalid-content.character")
+    with pytest.raises(CharacterPackReadError) as captured:
+        CharacterPackReader(
+            pack,
+            engine_version="1.0.0",
+            engine_features={"character-source-v1"},
+        )
+    assert captured.value.code == "invalid_component"
+
+
+def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
+    pack = tmp_path / "flameblade.mohan"
+    built = builder.build_character_pack(pack, output_format="directory")
     source = CharacterPackReader(
         pack,
-        engine_version="1.0.0",
-        engine_features={"character-source-v1"},
+        engine_version=FALLBACK_VERSION,
+        limits=built.validation_limits,
     )
-    (pack / "rig" / "fullbody" / "front.rgba").write_bytes(b"changed-synthetic-data")
-    with pytest.raises(CharacterPackReadError) as captured:
-        source.resolve_path("rig/fullbody/front.rgba")
-    assert captured.value.code in {"size_mismatch", "file_hash_mismatch"}
+    legacy = service_container.create_default_character_source()
+
+    assert isinstance(source, CharacterSource)
+    assert isinstance(source.assets, CharacterAssets)
+    assert isinstance(source.persona, CharacterPersona)
+    assert isinstance(source.appearance, CharacterAppearanceContract)
+    assert source.validation_result.valid
+    assert source.canonical_name == legacy.canonical_name
+    assert source.aliases == legacy.aliases
+    assert source.body_profile == legacy.body_profile
+    assert source.view_ids == legacy.view_ids
+    assert source.fullbody_canvas == legacy.fullbody_canvas
+    assert source.halfbody_canvas == legacy.halfbody_canvas
+    assert source.layer_order == legacy.layer_order
+    for language in LANGUAGES:
+        assert source.display_name(language) == legacy.display_name(language)
+        assert source.default_user_title(language) == legacy.default_user_title(language)
+        assert source.persona_prompt(language) == legacy.persona_prompt(language)
+        for variation_index in (0, 1):
+            assert source.dialogue_line(
+                language,
+                WARDROBE_REVEAL_QUESTION,
+                variation_index=variation_index,
+            ) == legacy.dialogue_line(
+                language,
+                WARDROBE_REVEAL_QUESTION,
+                variation_index=variation_index,
+            )
+
+    profile_path = "assets/characters/mohan/persona/profile.json"
+    profile = source.resolve_path(profile_path)
+    original = profile.read_bytes()
+    try:
+        profile.write_bytes(b"changed-character-data")
+        with pytest.raises(CharacterPackReadError) as captured:
+            source.resolve_path(profile_path)
+        assert captured.value.code in {"size_mismatch", "file_hash_mismatch"}
+    finally:
+        profile.write_bytes(original)
+    with pytest.raises(CharacterPackReadError, match="unsafe_path"):
+        source.resolve_path("../outside")
+    with pytest.raises(CharacterPackReadError, match="undeclared_path"):
+        source.resolve_path("assets/characters/mohan/unknown.json")
 
 
 def test_default_source_matches_every_existing_public_contract_field() -> None:

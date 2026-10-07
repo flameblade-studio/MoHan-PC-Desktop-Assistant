@@ -4056,9 +4056,7 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/rig/rig-manifest.json",
-        "tools/build_character_pack.py"
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "tests": [
         "test_build_character_pack.py"
@@ -4090,10 +4088,22 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/persona/profile.json",
+        "tools/build_character_pack.py"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_source.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/version_info.py"
       ],
       "tests": [
         "test_build_character_pack.py",
+        "test_character_source.py",
         "test_preview_packaging.py",
         "test_release_automation.py",
         "test_sbom_validation.py",
