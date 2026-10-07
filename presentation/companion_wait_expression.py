@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+lazy from domain.character_runtime_data import default_expression_catalog
+
+_EXPRESSION_CATALOG = default_expression_catalog()
+
 
 def start_ai_wait_expression(
     runtime: object,
@@ -8,7 +12,7 @@ def start_ai_wait_expression(
     intensity: float,
 ) -> None:
     """Apply a low-priority wait pose only over a neutral visual state."""
-    if expression not in {"attentive_front", "thinking_front"}:
+    if expression not in _EXPRESSION_CATALOG.ai_wait_expressions:
         return
     if (
         runtime.speech_playing
@@ -17,12 +21,7 @@ def start_ai_wait_expression(
         or runtime.state == "speaking"
     ):
         return
-    if runtime.state not in {
-        "idle",
-        "glance",
-        "attentive_front",
-        "thinking_front",
-    }:
+    if runtime.state not in _EXPRESSION_CATALOG.ai_wait_current_states:
         return
     if runtime.set_state(
         expression,

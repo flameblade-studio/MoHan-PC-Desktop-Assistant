@@ -423,7 +423,10 @@ def test_inno_setup_and_artwork_contract() -> None:
     portrait = ROOT / "docs/media/portraits/idle_front.png"
     assert_image(portrait, PORTRAIT_SIZE)
     assert hashlib.sha256(portrait.read_bytes()).hexdigest() == MARKETING_IDLE_PORTRAIT_SHA256
-    for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
+    for consumer in (
+        "assets/characters/mohan/expressions/state-catalog.json",
+        "tools/build_installer_artwork.py",
+    ):
         content = read(consumer)
         assert "idle_front.png" in content
         assert "mohan-hero-rain-canonical.webp" not in content

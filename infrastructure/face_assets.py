@@ -4,9 +4,15 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
+lazy from domain.character_runtime_data import (
+    default_expression_catalog,
+    default_rig_manifest,
+)
 lazy from domain.face_rig import FacePose
 
 PNG_HEADER_LENGTH = 24
+_EXPRESSION_CATALOG = default_expression_catalog()
+_RIG_MANIFEST = default_rig_manifest()
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,48 +43,25 @@ class FaceAssetManifest:
         )
 
 
+def _face_asset_manifest(pose: FacePose) -> FaceAssetManifest:
+    spec = _EXPRESSION_CATALOG.face_pose_assets[pose.value]
+    return FaceAssetManifest(
+        pose,
+        spec.base,
+        spec.blink,
+        spec.open_mouth,
+        spec.viseme_i,
+        spec.viseme_u,
+        spec.viseme_o,
+        spec.face,
+        spec.eyes,
+        spec.mouth_rect,
+        spec.eye_rects,
+    )
+
+
 FACE_ASSET_MANIFESTS = frozendict(
-    {
-        FacePose.CHEEK: FaceAssetManifest(
-            FacePose.CHEEK,
-            "idle.png",
-            "blink.png",
-            "speaking.png",
-            "viseme_i.png",
-            "viseme_round.png",
-            "viseme_o.png",
-            "v120_face.png",
-            "v120_eyes.png",
-            (168, 195, 64, 40),
-            ((160, 153, 55, 34), (198, 153, 61, 34)),
-        ),
-        FacePose.LEAN: FaceAssetManifest(
-            FacePose.LEAN,
-            "idle_lean.png",
-            "blink_lean.png",
-            "speaking_lean.png",
-            "viseme_i_lean.png",
-            "viseme_round_lean.png",
-            "viseme_o_lean.png",
-            "v120_face_lean.png",
-            "v120_eyes_lean.png",
-            (158, 194, 62, 42),
-            ((153, 153, 55, 34), (191, 153, 61, 34)),
-        ),
-        FacePose.FRONT: FaceAssetManifest(
-            FacePose.FRONT,
-            "idle_front.png",
-            "blink_front.png",
-            "speaking_front.png",
-            "viseme_i_front.png",
-            "viseme_round_front.png",
-            "viseme_o_front.png",
-            "v120_face_front.png",
-            "v120_eyes_front.png",
-            (206, 199, 54, 35),
-            ((180, 153, 53, 34), (220, 153, 56, 34)),
-        ),
-    }
+    {pose: _face_asset_manifest(pose) for pose in FacePose}
 )
 
 
@@ -91,7 +74,10 @@ def validate_face_assets(root: Path) -> tuple[Path, ...]:
             path = root / filename
             if not path.is_file():
                 raise FileNotFoundError(f"missing face-rig asset: {filename}")
-            if _png_dimensions(path) != (1254, 1254):
+            if _png_dimensions(path) != (
+                _RIG_MANIFEST.half_body_asset_canvas.width,
+                _RIG_MANIFEST.half_body_asset_canvas.height,
+            ):
                 raise ValueError(f"unexpected face-rig dimensions: {filename}")
             checked.append(path)
     return tuple(dict.fromkeys(checked))

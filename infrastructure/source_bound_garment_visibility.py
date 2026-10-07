@@ -11,6 +11,7 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.outfit_pack import (
     AppearanceVariant,
     OutfitPackError,
@@ -24,7 +25,11 @@ lazy from infrastructure.outfit_core_composition import replace_restored_body
 
 SCHEMA = "mohan.source-bound-garment-visibility.v1"
 MANIFEST = Path("assets/pose-atlas/v5-garment-visibility/manifest.json")
-CANVAS = (1024, 1536)
+_RIG_MANIFEST = default_rig_manifest()
+CANVAS = (
+    _RIG_MANIFEST.full_body_canvas.width,
+    _RIG_MANIFEST.full_body_canvas.height,
+)
 _SHA = re.compile(r"[0-9a-f]{64}\Z")
 _INVERT = bytes(255 - value for value in range(256))
 _PNG = b"\x89PNG\r\n\x1a\n"

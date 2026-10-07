@@ -16,6 +16,7 @@ lazy from domain.companion_animation_contract import (
     GESTURE_SPEECH_EXPRESSIONS,
     GESTURE_SPEECH_FRAMES,
     GESTURE_SPEECH_MOUTH_RECTS,
+    PHYSICS_POSE_SUFFIXES,
 )
 
 CONTRACT_MODULE = "domain.companion_animation_contract"
@@ -199,11 +200,12 @@ def test_physics_pose_suffixes_preserve_cheek_lean_front_behavior() -> None:
         )
     )
 
-    assert ast.literal_eval(assignment.value) == (
+    assert PHYSICS_POSE_SUFFIXES == (
         ("", "cheek"),
         ("_lean", "lean"),
         ("_front", "front"),
     )
+    assert not isinstance(assignment.value, (ast.Tuple, ast.List))
 
 
 def test_module_import_does_not_load_app() -> None:

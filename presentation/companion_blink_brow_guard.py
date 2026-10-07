@@ -7,17 +7,25 @@ lazy import cv2
 lazy import numpy as np
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
+lazy from domain.character_runtime_data import (
+    default_expression_catalog,
+    default_rig_manifest,
+)
 lazy from domain.qt_image_pixels import rgba8888_image
 
-NATIVE_SIZE = 1254
-BROW_REGIONS = ((490, 370, 605, 434), (605, 370, 725, 434))
-DARK_LIMIT = 130
-EUREKA_DARK_LIMIT = 155
-EUREKA_GUARD_WIDTH = 9
+NATIVE_SIZE = default_rig_manifest().half_body_asset_canvas.width
+_BROW_GUARD = default_expression_catalog().brow_guard
+BROW_REGIONS = tuple(
+    (x, y, x + width, y + height)
+    for x, y, width, height in _BROW_GUARD.regions
+)
+DARK_LIMIT = _BROW_GUARD.dark_limit
+EUREKA_DARK_LIMIT = _BROW_GUARD.eureka_dark_limit
+EUREKA_GUARD_WIDTH = _BROW_GUARD.eureka_guard_width
 GUARD_CACHE_SIZE = 8
-NATIVE_GUARD_WIDTH = 7
-GUARD_SIGMA = 1.1
-GUARDED_EXPRESSIONS = frozenset({"eureka_front", "mock_hit_front", "mock_scold"})
+NATIVE_GUARD_WIDTH = _BROW_GUARD.native_guard_width
+GUARD_SIGMA = _BROW_GUARD.guard_sigma
+GUARDED_EXPRESSIONS = _BROW_GUARD.expressions
 
 
 def _rgba(pixmap: QPixmap) -> np.ndarray:

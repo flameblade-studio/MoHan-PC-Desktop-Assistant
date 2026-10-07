@@ -11,12 +11,17 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
 
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 
 
 SCHEMA = "mohan.v5-full-body-display-placement.v1"
 FILENAME = "DISPLAY-PLACEMENT.json"
-EXPECTED_CANVAS = (1024, 1536)
+_RIG_MANIFEST = default_rig_manifest()
+EXPECTED_CANVAS = (
+    _RIG_MANIFEST.full_body_canvas.width,
+    _RIG_MANIFEST.full_body_canvas.height,
+)
 SHA256_LENGTH = 64
 MIN_APPROVED_SCALE = 0.5
 MAX_APPROVED_SCALE = 1.5

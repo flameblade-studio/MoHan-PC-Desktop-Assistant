@@ -5,10 +5,21 @@ lazy from pathlib import Path
 lazy from types import MappingProxyType
 
 lazy from PySide6.QtGui import QImage, QRegion
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import OutfitPackError, REQUIRED_SILHOUETTES
 lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
+
+_RIG_MANIFEST = default_rig_manifest()
+_HALF_BODY_CANVAS = (
+    _RIG_MANIFEST.half_body_asset_canvas.width,
+    _RIG_MANIFEST.half_body_asset_canvas.height,
+)
+_FULL_BODY_CANVAS = (
+    _RIG_MANIFEST.full_body_canvas.width,
+    _RIG_MANIFEST.full_body_canvas.height,
+)
 
 
 class CoreHandSnapshot:
@@ -86,7 +97,7 @@ def load_core_hand_regions(asset_root: Path) -> CoreHandSnapshot | None:
             repaintable = not half_body
         if not any(path.exists() for path in paths):
             continue
-        dimensions = (1254, 1254) if half_body else (1024, 1536)
+        dimensions = _HALF_BODY_CANVAS if half_body else _FULL_BODY_CANVAS
         region = QRegion()
         decoded: list[QImage] = []
         for path in paths:

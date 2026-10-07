@@ -7,6 +7,10 @@ lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 lazy from typing import Final, Self
 
+lazy from domain.character_runtime_data import default_rig_manifest
+
+_RIG_MANIFEST = default_rig_manifest()
+
 GESTURE_CONFIGURATION_FORMAT: Final = "mohan-gesture-configuration"
 GESTURE_CONFIGURATION_VERSION: Final = 1
 MAX_CUSTOM_GESTURES: Final = 32
@@ -159,20 +163,14 @@ class GestureDefinition:
         return replace(self, binding=binding)
 
 
-DEFAULT_GESTURE_BINDINGS: Final = frozendict({
-    # A wave is answered by the companion's own greeting path
-    # (``_on_gesture_recognition`` -> ``_acknowledge_wave``), not by opening the
-    # console.  Binding it to ``NONE`` keeps the greeting as the only response
-    # so the desktop companion stays in focus instead of popping the dashboard.
-    "wave": GestureBinding(GestureAction.NONE),
-    "silence": GestureBinding(GestureAction.MUTE_AUDIO),
-    "open-palm": GestureBinding(GestureAction.STOP_SPEECH),
-    "closed-fist": GestureBinding(),
-    "thumbs-up": GestureBinding(GestureAction.POSITIVE_ACKNOWLEDGEMENT),
-    "thumbs-down": GestureBinding(),
-    "point-left": GestureBinding(),
-    "point-right": GestureBinding(),
-})
+if set(_RIG_MANIFEST.gesture_actions) != set(BUILTIN_GESTURE_LABELS):
+    raise ValueError("Bundled rig gesture actions must cover the built-in catalog.")
+DEFAULT_GESTURE_BINDINGS: Final = frozendict(
+    {
+        gesture_id: GestureBinding(GestureAction(action))
+        for gesture_id, action in _RIG_MANIFEST.gesture_actions.items()
+    }
+)
 
 
 def default_gesture_definitions() -> tuple[GestureDefinition, ...]:

@@ -18,6 +18,7 @@ lazy from PySide6.QtCore import QRect, QRectF, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
 lazy from application.appearance_ports import AppearanceRenderOptions
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import (
     FLOAT_COMPARISON_EPSILON,
     POSE_ATLAS_LAYERED_ROOT_NAME,
@@ -47,14 +48,15 @@ BLINK_VISIBLE_EPSILON = 1e-6
 AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
 # Breath lift scale: breath is normalized to [0, 1]; this maps the midpoint
 # (0.5) to zero lift and the extremes to a small vertical body rise/fall.
-BREATH_LIFT_SCALE = 6.0
+_RIG_MANIFEST = default_rig_manifest()
+BREATH_LIFT_SCALE = _RIG_MANIFEST.physics.breath_lift_scale
 # The authored body layer already contains the arms and hands, while each
 # sleeve is available as a separate transparent physical layer.  Keep sleeve
 # motion deliberately small so behavior reads while preserving the cuff connection
 # from the underlying hand.
-MAX_SLEEVE_LIFT = 4.0
-MAX_GESTURE_SWAY = 3.0
-GESTURE_ENERGY_THRESHOLD = 0.45
+MAX_SLEEVE_LIFT = _RIG_MANIFEST.physics.max_sleeve_lift
+MAX_GESTURE_SWAY = _RIG_MANIFEST.physics.max_gesture_sway
+GESTURE_ENERGY_THRESHOLD = _RIG_MANIFEST.physics.gesture_energy_threshold
 
 # The layered pack and the static authority it was cut from MUST move
 # together: the seam-heal and face-restore passes below repaint authority
@@ -69,22 +71,8 @@ MAX_CACHED_LAYER_PIXMAPS = 50
 MAX_CACHED_STATIC_COMPOSITES = 4
 MAX_CACHED_MASK_REGIONS = 256
 SEAM_HEAL_RADIUS = 7
-REGISTERED_COMPOSITE_LAYERS = (
-    # oral_cavity / teeth_tongue are clean speech overlays rebuilt by
-    # tools/rebuild_pose_atlas_mouth_layers.py; unlike the legacy skin
-    # replacement cut-outs, their authored edges remain visible.
-    "body", "hair_back", "base", "jaw", "lip_lower", "lip_upper",
-    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
-    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
-    "eyeliner_right", "brow_left", "brow_right", "hair_left", "hair_right",
-    "sleeve_left", "sleeve_right", "ornament",
-)
-FACE_AUTHORITY_REGION_LAYERS = (
-    "base", "jaw", "lip_lower", "lip_upper", "corner_left", "corner_right",
-    "blush_left", "blush_right", "iris_left", "iris_right", "eyelid_left",
-    "eyelid_right", "eyeliner_left", "eyeliner_right", "brow_left",
-    "brow_right",
-)
+REGISTERED_COMPOSITE_LAYERS = _RIG_MANIFEST.registered_composite_layers
+FACE_AUTHORITY_REGION_LAYERS = _RIG_MANIFEST.face_authority_layers
 _DEFAULT_MANIFEST: LayeredFullBodyManifest | None = None
 _DEFAULT_BOUND_PNG_BYTES: dict[str, bytes] | None = None
 
