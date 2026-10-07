@@ -38,10 +38,7 @@ lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.character_runtime_data import (
-    default_expression_catalog,
-    default_rig_manifest,
-)
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
@@ -109,11 +106,6 @@ _LOGGER = logging.getLogger(__name__)
 # legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
 _EXPRESSIONS = default_expression_catalog().emotion_to_expression
-_RIG_MANIFEST = default_rig_manifest()
-_CHARACTER_OVERLAY_ATTRIBUTES = tuple(
-    f"{layer}_overlay"
-    for layer in sorted(_RIG_MANIFEST.required_full_body_layers)
-)
 
 
 class CompanionCoreMixin:
@@ -407,10 +399,13 @@ class CompanionCoreMixin:
 
         for attribute in (
             "expression_overlay",
+            "sleeve_left_overlay",
+            "sleeve_right_overlay",
+            "hair_left_overlay",
+            "hair_right_overlay",
             "physics_overlay",
             "face_overlay",
             "eye_overlay",
-            *_CHARACTER_OVERLAY_ATTRIBUTES,
         ):
             overlay = getattr(self, attribute, None)
             if overlay is not None:
@@ -645,7 +640,7 @@ class CompanionCoreMixin:
             raise TypeError("Character wave greetings are unavailable.")
         index = getattr(self, "_wave_greeting_index", 0)
         self._wave_greeting_index = (index + 1) % len(lines)
-        self.speak(lines[index], "happy")
+        self.speak(lines[index], _EXPRESSIONS["happy"])
 
     def _open_dashboard_from_gesture(self) -> None:
         """Open the keyboard conversation surface and acknowledge a wave."""

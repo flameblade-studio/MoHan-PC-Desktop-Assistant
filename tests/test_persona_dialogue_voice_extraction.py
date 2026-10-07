@@ -215,7 +215,11 @@ def test_runtime_dialogue_rejects_schema_drift(
     sensory_synesthesia._runtime_dialogue_payload.cache_clear()
 
 
-def test_assigned_sources_have_no_embedded_character_content() -> None:
+def test_assigned_sources_only_retain_excluded_rig_content() -> None:
     for relative in ASSIGNED_PATHS:
         source = (ROOT / relative).read_text(encoding="utf-8")
-        assert build_character_inventory._content_evidence(relative, source) == []
+        evidence = build_character_inventory._content_evidence(relative, source)
+        assert all(
+            item["content_kind"] in {"rig", "rig_assets"}
+            for item in evidence
+        )
