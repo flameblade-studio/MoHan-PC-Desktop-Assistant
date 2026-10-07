@@ -12,10 +12,14 @@ lazy from typing import Protocol
 
 from domain.python315_concurrency import Future, ThreadPoolExecutor
 lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.sensory_synesthesia import runtime_dialogue_locale
 
 _BACKGROUND_APP_TEMPLATE = load_mohan_character_data().dialogues[
     "zh-TW"
 ].templates["background.app_launched"]
+_RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
+_EXPRESSIONS = default_expression_catalog().emotion_to_expression
 
 
 @dataclass(frozen=True)
@@ -23,7 +27,7 @@ class AgentObservation:
     worker_id: str
     event_key: str
     message: str
-    expression: str = "attentive_front"
+    expression: str = _EXPRESSIONS["attentive"]
     priority: int = 10
     metadata: dict[str, object] = field(default_factory=dict)
 
@@ -132,7 +136,7 @@ class ManagerWorkerScheduler:
                             message=(
                                 f"{worker_id} 無法完成檢查：{type(error).__name__}"
                             ),
-                            expression="worried_front",
+                            expression=_EXPRESSIONS["worried"],
                             priority=1,
                             metadata={
                                 "status": "failed",
@@ -203,7 +207,7 @@ class VisibleAppWorker:
                 worker_id=self.worker_id,
                 event_key=f"launched:{name.casefold()}",
                 message=_BACKGROUND_APP_TEMPLATE.format(name=name),
-                expression="attentive_front",
+                expression=_EXPRESSIONS["attentive"],
                 priority=10,
                 metadata={"application": name, "status": "launched"},
             )
@@ -248,11 +252,11 @@ class DiagnosticReportWorker:
             AgentObservation(
                 worker_id=self.worker_id,
                 event_key=f"changed:{resolved}",
-                message=(
-                    f"妾在您指定的診斷報告 {resolved.name} 中看見 "
-                    f"{issues} 行錯誤或警告；只做了唯讀檢查，尚未修改任何檔案。"
+                message=str(_RUNTIME_DIALOGUE["background_diagnostic"]).format(
+                    report_name=resolved.name,
+                    issues=issues,
                 ),
-                expression="attentive_front",
+                expression=_EXPRESSIONS["attentive"],
                 priority=20,
                 metadata={
                     "path": str(resolved),

@@ -27,6 +27,7 @@
     "protective_front": "front"
   },
   "emotion_to_expression": {
+    "attention_glance": "glance",
     "neutral": "speaking",
     "thinking": "thinking_front",
     "attentive": "attentive_front",
@@ -44,7 +45,10 @@
     "scold": "mock_scold",
     "mock_hit": "mock_hit_front",
     "eureka": "eureka_front",
-    "protective": "protective_front"
+    "protective": "protective_front",
+    "caught_gaze": "caught",
+    "shy_reserved": "shy_front",
+    "tired": "tired_front"
   },
   "new_expression_assets": [
     "shy_cute_front",

@@ -152,7 +152,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 13  # 11 persona/dialogue/voice files + rig manifest + expression catalog
+CHARACTER_DATA_FILE_COUNT = 14  # 12 persona/dialogue/voice files + rig manifest + expression catalog
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:

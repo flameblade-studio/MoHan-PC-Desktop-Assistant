@@ -22,6 +22,8 @@ lazy from application.background_agents import (
 )
 lazy from application.multisensory_interaction import MultisensoryInteractionArbiter
 lazy from domain.app_profile import profile_setting, profile_window_title
+lazy from domain.character_pack.character_data import MOHAN_CHARACTER_DATA_ROOT, load_mohan_character_data
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
     CHARACTER_CANVAS_WIDTH,
@@ -41,13 +43,22 @@ lazy from domain.lip_sync import VISEME_CHANGE_TRANSITION_SECONDS, VisemeDynamic
 lazy from domain.time_utils import local_wall_time
 lazy from presentation.companion_visual_physics import CompanionVisualPhysicsMethods
 lazy from presentation.dashboard_dialogs import ClickableLabel
-lazy from presentation.presentation_resources import application_icon, resource_path
+lazy from presentation.presentation_resources import application_icon
 lazy from presentation.ui_localization import ui_text
 
 __all__ = ("CompanionVisualDynamicsMixin",)
 MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
+_EXPRESSION_CATALOG = default_expression_catalog()
+_EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
+_EXPRESSION_ASSET_ROOT = MOHAN_CHARACTER_DATA_ROOT.parents[1] / "expressions"
+_STARTUP_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates
+
+
+def _scaled_expression_asset(filename: str) -> QPixmap:
+    source = QPixmap(str(_EXPRESSION_ASSET_ROOT / filename))
+    return source.scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
 
 class CompanionVisualDynamicsMixin:
@@ -68,9 +79,7 @@ class CompanionVisualDynamicsMixin:
     _hair_anchors = staticmethod(CompanionVisualPhysicsMethods._hair_anchors)
     _sleeve_anchors = staticmethod(CompanionVisualPhysicsMethods._sleeve_anchors)
     _load_physics_sources = CompanionVisualPhysicsMethods._load_physics_sources
-    _scaled_expression_asset = staticmethod(
-        CompanionVisualPhysicsMethods._scaled_expression_asset
-    )
+    _scaled_expression_asset = staticmethod(_scaled_expression_asset)
     _physics_expression_pose_map = (
         CompanionVisualPhysicsMethods._physics_expression_pose_map
     )
@@ -147,14 +156,16 @@ class CompanionVisualDynamicsMixin:
                 # First awakening: a quiet, fateful greeting for the very first
                 # launch, echoing the "accidental birth" of the companion.
                 self.speak(
-                    f"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。"
-                    "自赤焰劍中醒來，往後便由妾伴您左右。",
-                    "gentle_smile_front",
+                    _STARTUP_DIALOGUE["startup.first"].format(
+                        user_title=profile_setting(self.db, "user_title"),
+                    ),
+                    _EXPRESSIONS["gentle"],
                 )
             else:
                 self.speak(
-                    f"妾已就位。{profile_setting(self.db, 'user_title')}點妾，"
-                    "便可展開今日卷冊。",
+                    _STARTUP_DIALOGUE["startup.returning"].format(
+                        user_title=profile_setting(self.db, "user_title")
+                    ),
                     "idle",
                 )
 
@@ -169,9 +180,8 @@ class CompanionVisualDynamicsMixin:
         for expression in EXPRESSION_IMAGE_ASSETS:
             if expression in self.expression_pixmaps:
                 continue
-            pix = QPixmap(str(resource_path(f"assets/expressions/{expression}.png")))
-            self.expression_pixmaps[expression] = pix.scaled(
-                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            self.expression_pixmaps[expression] = self._scaled_expression_asset(
+                f"{expression}.png"
             )
 
     def _build_ui(self, defer_visual_assets: bool = False) -> None:
@@ -213,12 +223,8 @@ class CompanionVisualDynamicsMixin:
         self.expression_pixmaps: dict[str, QPixmap] = {}
         initial_assets = ("idle",) if defer_visual_assets else EXPRESSION_IMAGE_ASSETS
         for expression in initial_assets:
-            source = QPixmap(str(resource_path(f"assets/expressions/{expression}.png")))
-            self.expression_pixmaps[expression] = source.scaled(
-                465,
-                465,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
+            self.expression_pixmaps[expression] = self._scaled_expression_asset(
+                f"{expression}.png"
             )
         self.safe_layer_rendering = True
         self.conservative_idle = True
@@ -652,17 +658,9 @@ class CompanionVisualDynamicsMixin:
     def _build_attention_layers(self) -> None:
         self.face_sources = {}
         self.eye_sources = {}
-        for pose, suffix in (
-            ("cheek", ""),
-            ("lean", "_lean"),
-            ("front", "_front"),
-        ):
-            self.face_sources[pose] = QPixmap(
-                str(resource_path(f"assets/expressions/v120_face{suffix}.png"))
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.eye_sources[pose] = QPixmap(
-                str(resource_path(f"assets/expressions/v120_eyes{suffix}.png"))
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        for pose, assets in _EXPRESSION_CATALOG.face_pose_assets.items():
+            self.face_sources[pose] = self._scaled_expression_asset(assets.face)
+            self.eye_sources[pose] = self._scaled_expression_asset(assets.eyes)
 
     def _render_attention_layers(self, force: bool = False) -> None:
         if not hasattr(self, "face_overlay"):

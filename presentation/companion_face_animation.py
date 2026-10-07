@@ -9,8 +9,15 @@ lazy from PySide6.QtCore import (
 )
 lazy from PySide6.QtGui import QPainter, QPixmap
 lazy from presentation.qt_parent import require_qobject
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.companion_animation_contract import CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS, NEW_EXPRESSION_ASSETS
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_runtime_data import (
+    default_expression_catalog,
+    default_rig_manifest,
+)
+lazy from domain.companion_animation_contract import (
+    CHEEK_SPEECH_CLOSED_EXPRESSION,
+    EXPRESSION_SPEECH_MOUTH_RECTS,
+)
 lazy from domain.lip_sync import (
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
@@ -35,6 +42,26 @@ lazy from presentation.companion_face_animation_logic import (
 )
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
 POSE_SWITCH_PROBABILITY = default_rig_manifest().physics.pose_switch_probability
+_EXPRESSION_CATALOG = default_expression_catalog()
+_EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
+_CAUGHT_GLANCE_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates[
+    "caught_glance"
+]
+_EXPRESSIVE_STATES = frozenset(_EXPRESSION_CATALOG.state_to_pose) - {
+    _EXPRESSIONS["attention_glance"]
+}
+
+
+def _expression_states(*emotions: str) -> frozenset[str]:
+    return frozenset(_EXPRESSIONS[emotion] for emotion in emotions)
+
+
+_LONG_GESTURE_STATES = _expression_states("scold", "mock_hit")
+_MEDIUM_GESTURE_STATES = _expression_states("thinking", "shy_reserved", "shy", "tired", "exasperated")
+_LEFT_GESTURE_STATES = _expression_states("caught_gaze", "shy_reserved", "shy")
+_LIFT_GESTURE_STATES = _expression_states("reminder", "thinking", "surprised", "proud", "eureka")
+_RIGHT_GESTURE_STATES = _expression_states("worried", "caught_gaze") | {"worried"}
+_LOWER_GESTURE_STATES = _expression_states("thinking", "proud")
 MOUTH_CLOSED_THRESHOLD = 0.01
 MOUTH_OPEN_THRESHOLD = 0.05
 DISCRETE_SPEECH_SWITCH_PROGRESS = 0.5
@@ -325,27 +352,28 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             self._schedule_attention_glance()
             return
         if self.state == "idle" and self.idle_pose == "cheek":
-            self.set_state("glance", source="ambient")
+            self.set_state(_EXPRESSIONS["attention_glance"], source="ambient")
             QTimer.singleShot(random.randint(2_600, 4_100), self._end_attention_glance)
         self._schedule_attention_glance()
 
     def _end_attention_glance(self) -> None:
-        if self.state == "glance":
+        if self.state == _EXPRESSIONS["attention_glance"]:
             self.set_state("idle")
 
     def _character_clicked(self) -> None:
-        if self.state == "glance":
+        if self.state == _EXPRESSIONS["attention_glance"]:
             self._show_caught_reaction()
             QTimer.singleShot(1_700, lambda: None if self._closing else self.open_dashboard())
             return
         self.open_dashboard()
 
     def _show_caught_reaction(self) -> None:
-        self.set_state("caught", source="user_direct")
-        dialogue = self._t("caught_glance_dialogue", "妾只是望向窗外，才不是在偷看主上。")
+        caught_state = _EXPRESSIONS["caught_gaze"]
+        self.set_state(caught_state, source="user_direct")
+        dialogue = self._t("caught_glance_dialogue", _CAUGHT_GLANCE_DIALOGUE)
         if dialogue:
             self._show_bubble(dialogue)
-        self._schedule_return_to_idle(2_800, "caught")
+        self._schedule_return_to_idle(2_800, caught_state)
         QTimer.singleShot(3_400, self._hide_bubble_unless_speaking)
 
     def _set_expression(self, expression: str, fade: bool = True) -> None:
@@ -1063,23 +1091,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             self.current_expression = expression
         else:
             self._set_expression(expression)
-        expressive_states = {
-            "happy",
-            "reminder",
-            "worried",
-            "thinking_front",
-            "caught",
-            "gentle_smile_front",
-            "worried_front",
-            "shy_front",
-            "mock_scold",
-            "surprised_front",
-            "relieved_front",
-            "tired_front",
-            "proud_front",
-            *NEW_EXPRESSION_ASSETS,
-        }
-        if state in expressive_states and animate_gesture:
+        if state in _EXPRESSIVE_STATES and animate_gesture:
             previous_animation = getattr(self, "state_animation", None)
             if previous_animation is not None:
                 # 每次手勢動作都建立新的 QVariantAnimation（父物件為 self）；
@@ -1091,36 +1103,24 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
             animation = QVariantAnimation(require_qobject(self))
             animation.setDuration(
                 720
-                if state in {"mock_scold", "mock_hit_front"}
+                if state in _LONG_GESTURE_STATES
                 else 620
                 if state
-                in {
-                    "thinking_front",
-                    "shy_front",
-                    "shy_cute_front",
-                    "tired_front",
-                    "exasperated_front",
-                }
+                in _MEDIUM_GESTURE_STATES
                 else 500
             )
             animation.setStartValue(QPoint(0, 0))
             animation.setKeyValueAt(
                 0.35,
                 QPoint(
-                    round((-5 if state in {"caught", "shy_front", "shy_cute_front"} else 0) * motion_scale),
+                    round((-5 if state in _LEFT_GESTURE_STATES else 0) * motion_scale),
                     round((-7
                     if state == "happy"
                     else -9
-                    if state in {"mock_scold", "mock_hit_front"}
+                    if state in _LONG_GESTURE_STATES
                     else -3
                     if state
-                    in {
-                        "reminder",
-                        "thinking_front",
-                        "surprised_front",
-                        "proud_front",
-                        "eureka_front",
-                    }
+                    in _LIFT_GESTURE_STATES
                     else 0) * motion_scale),
                 ),
             )
@@ -1128,14 +1128,14 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
                 0.62,
                 QPoint(
                     round((5
-                    if state in {"worried", "worried_front", "caught"}
+                    if state in _RIGHT_GESTURE_STATES
                     else 2
-                    if state in {"mock_scold", "mock_hit_front"}
+                    if state in _LONG_GESTURE_STATES
                     else 0) * motion_scale),
                     round((-5
-                    if state == "mock_scold"
+                    if state == _EXPRESSIONS["scold"]
                     else -2
-                    if state in {"thinking_front", "proud_front"}
+                    if state in _LOWER_GESTURE_STATES
                     else 0) * motion_scale),
                 ),
             )
