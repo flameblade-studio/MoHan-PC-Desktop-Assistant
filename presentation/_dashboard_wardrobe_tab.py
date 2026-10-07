@@ -82,7 +82,7 @@ def _build_package_library(shell: _DashboardWardrobeHost) -> QFrame:
     source_policy = QLabel(
         shell._t(
             "wardrobe_source_policy",
-            "來源分流：炎劍官方・使用者匯入・墨寒自創",
+            "來源分流：炎劍官方・使用者匯入・{character_name}自創",
         )
     )
     source_policy.setWordWrap(True)

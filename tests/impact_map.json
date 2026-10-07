@@ -1208,6 +1208,7 @@
         "test_transcription_control.py",
         "test_translation_completeness.py",
         "test_ui_localization_completeness.py",
+        "test_ui_name_parameterization.py",
         "test_ui_smoke.py",
         "test_update_manifest_signature.py",
         "test_user_content_preservation.py",
@@ -1330,6 +1331,7 @@
         "test_speech_runtime_chain_audit.py",
         "test_tachyon_evidence.py",
         "test_transcription_control.py",
+        "test_ui_name_parameterization.py",
         "test_v4_performance_state_bounds.py",
         "test_v4_vision_architecture_contracts.py",
         "test_voice_prompt_integrity.py",
@@ -1619,6 +1621,8 @@
         "test_theme_retint.py",
         "test_theme_session.py",
         "test_time_sovereignty.py",
+        "test_translation_completeness.py",
+        "test_ui_name_parameterization.py",
         "test_ui_smoke.py",
         "test_v4_performance_state_bounds.py",
         "test_v4_portable_profile_completeness.py",
@@ -2420,6 +2424,7 @@
         "test_theme_retint.py",
         "test_translation_completeness.py",
         "test_ui_localization_completeness.py",
+        "test_ui_name_parameterization.py",
         "test_ui_smoke.py",
         "test_v120_empty_layers_physics.py",
         "test_v4_portable_profile_completeness.py",
@@ -3683,6 +3688,7 @@
         "test_presentation_owner_contract.py",
         "test_translation_completeness.py",
         "test_ui_localization_completeness.py",
+        "test_ui_name_parameterization.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_makeup_ui.py"
       ],
@@ -3754,6 +3760,7 @@
     {
       "paths": [
         "assets/characters/mohan/README.md",
+        "assets/characters/mohan/persona/ui-identifiers.json",
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/complete-expressions/manifest.json",
@@ -5008,6 +5015,7 @@
         "test_presentation_owner_contract.py",
         "test_translation_completeness.py",
         "test_ui_localization_completeness.py",
+        "test_ui_name_parameterization.py",
         "test_v4_vision_architecture_contracts.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -5602,7 +5610,8 @@
         "test_remote_concurrency.py",
         "test_remote_file_access.py",
         "test_remote_rate_limit.py",
-        "test_remote_tool_error_safety.py"
+        "test_remote_tool_error_safety.py",
+        "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6857,7 +6866,10 @@
         "test_openai_tts_cancellation.py",
         "test_preview_packaging.py",
         "test_safe_error_integration.py",
-        "test_service_status_localization.py"
+        "test_safe_error_localization.py",
+        "test_service_status_localization.py",
+        "test_translation_completeness.py",
+        "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7300,7 +7312,8 @@
       ],
       "tests": [
         "test_profile_transfer.py",
-        "test_safe_error_localization.py"
+        "test_safe_error_localization.py",
+        "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7805,6 +7818,16 @@
       ],
       "tests": [
         "test_traffic_report.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "integrations/realtime_contracts.py",
+        "tests/data/ui-name-parameterization-before.json"
+      ],
+      "tests": [
+        "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

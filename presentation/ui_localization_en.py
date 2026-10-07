@@ -83,8 +83,8 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     ),
     "wardrobe_builtin_applied": "Built-in default outfit applied.",
     "wardrobe_outfit_applied": "Selected complete outfit applied.",
-    "wardrobe_autonomous_enabled": "Allow MoHan to choose outfits autonomously",
-    "wardrobe_self_generation_enabled": "Allow MoHan to create cloud-generated outfits (charges may apply)",
+    "wardrobe_autonomous_enabled": "Allow {character_name} to choose outfits autonomously",
+    "wardrobe_self_generation_enabled": "Allow {character_name} to create cloud-generated outfits (charges may apply)",
     "wardrobe_trend_search_enabled": "Allow trend search using five context fields for original inspiration (may incur charges)",
     "wardrobe_generation_trend_search": "Searching trends with the five consented context fields, then generating, auditing, and packaging a new outfit (may incur charges)…",
     "wardrobe_image_quality": "Cloud outfit image quality",
@@ -107,7 +107,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_generation_cooldown": "Automatic generation is cooling down after an attention event; use Generate now to retry manually.",
     "wardrobe_generation_quarantined": "The new outfit completed its audit with corrections required; it remains quarantined until it passes.",
     "wardrobe_generation_failed": "Outfit generation requires attention; the active asset set remains unchanged.",
-    "wardrobe_generation_rate_limited": "The image service is busy right now; MoHan retried safely and can resume from the saved progress later.",
+    "wardrobe_generation_rate_limited": "The image service is busy right now; {character_name} retried safely and can resume from the saved progress later.",
     "wardrobe_generation_auth_failed": "OpenAI API key authentication requires attention; save the key again on the Settings tab.",
     "wardrobe_generation_access_denied": "The current OpenAI project needs GPT Image 2 access and organization verification before image generation.",
     "wardrobe_generation_moderation_blocked": "This image request needs revision to pass the provider's content check; the wardrobe retains its existing assets.",
@@ -116,18 +116,18 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_generation_provider_unavailable": 'The image service requires recovery before generation can continue; the installed asset set remains intact.',
     "wardrobe_automatic_selection_disabled": 'Enable autonomous outfit selection to use this feature.',
     "wardrobe_automatic_selection_failed": "Autonomous selection requires attention; the current outfit was preserved.",
-    "wardrobe_automatic_outfit_selected": "MoHan changed outfits autonomously for the current context.",
+    "wardrobe_automatic_outfit_selected": "{character_name} changed outfits autonomously for the current context.",
     "wardrobe_pavilion_subtitle": (
-        "Let MoHan choose a complete look for the weather, mood, and occasion "
+        "Let {character_name} choose a complete look for the weather, mood, and occasion "
         "while preserving your final say."
     ),
     "wardrobe_source_policy": (
-        "Separated sources: Flameblade official · User imports · MoHan creations"
+        "Separated sources: Flameblade official · User imports · {character_name} creations"
     ),
     "dashboard_brand_line": "Ink in her bones · Cold light in her heart",
     "restore_dashboard_window": "Restore window",
     "restore_dashboard_window_tooltip": "Restore the control center to a movable, resizable window",
-    "wardrobe_character_preview": "MoHan appearance preview",
+    "wardrobe_character_preview": "{character_name} appearance preview",
     "wardrobe_rotation_hint": "Drag the character to rotate through 360°. Arrow keys rotate; Home returns to the front.",
     "wardrobe_clothing_tab": "Outfits",
     "wardrobe_preferences_tab": "Autonomy",
@@ -323,7 +323,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "ui.all_platforms_saved_speech"
     ],
     "memory_intro": (
-        "MoHan stores only people, preferences, goals, workflows, and important "
+        "{character_name} stores only people, preferences, goals, workflows, and important "
         "dates that you allow. Memories stay on this computer and can be "
         "browsed by category, edited individually, or deleted."
     ),
@@ -375,7 +375,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "memory_delete_confirm": ("Permanently delete the {count} checked memories?"),
     "memory_clear_title": "Clear long-term memory",
     "memory_clear_confirm": (
-        "Delete every long-term memory stored by MoHan? This action is permanent. Continue?"
+        "Delete every long-term memory stored by {character_name}? This action is permanent. Continue?"
     ),
     "memory_optimize_title": "Memory organization complete",
     "memory_optimize_result": (
@@ -457,13 +457,13 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "platform_url_unsupported": "Only http:// or https:// URLs can be opened.",
     "permission_open_platform": "open the {platform} website",
     "echo_guard_tooltip": (
-        "Pauses microphone upload while MoHan speaks and resumes after playback; "
+        "Pauses microphone upload while {character_name} speaks and resumes after playback; "
         "this option keeps the current operation active."
     ),
     "hybrid_transcript_tooltip": (
         "Realtime keeps native audio understanding. After each utterance, the "
         "screen text uses a high-accuracy OpenAI transcription of the complete "
-        "recording, and MoHan replies only after it succeeds."
+        "recording, and {character_name} replies only after it succeeds."
     ),
     "flagship_heading": "<b>Flagship control center</b>",
     "increase": "Increase",
@@ -484,13 +484,13 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "voice_ready_short": "Ready",
     "voice_muted_short": "Muted",
     "sleep_mode_status": (
-        "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
+        "Sleep mode is active. {character_name} will remain quiet; reminders and urgent alerts still follow their rules."
     ),
-    "desktop_status_title": "MoHan is interacting with you on the desktop",
+    "desktop_status_title": "{character_name} is interacting with you on the desktop",
     "desktop_status_expand": "Expand status",
     "desktop_status_collapse": "Collapse status",
     "desktop_status_description": (
-        "The desktop MoHan is the only visible, draggable character that responds to you."
+        "The desktop {character_name} is the only visible, draggable character that responds to you."
     ),
     "desktop_status_mode": "Mode",
     "desktop_status_expression": "Pose / expression",
@@ -511,11 +511,11 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "voice_status_format": "Voice status: {phase}",
     "bubble_full_content": "…\n(See the Chat page for the complete message.)",
     "tray_open_today": "Open Today",
-    "tray_quit": "Quit MoHan",
+    "tray_quit": "Quit {character_name}",
     "chat_retention": 'Chats stay on this computer until you explicitly delete them',
     "load_older_chat": "Load older chats",
     "manage_chat": "Manage / clear chats",
-    "chat_placeholder": "Talk to MoHan…",
+    "chat_placeholder": "Talk to {character_name}…",
     "microphone": "🎙 Microphone",
     "send_text": "Send",
     "voice_ready": "Voice status: Ready",
@@ -595,7 +595,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "Check Dragon HD S0 key storage settings: {error}"
     ),
     "azure_hd_speech_note": (
-        'Optional Preview. Use a separate S0 Speech resource, key, and matching supported region. MoHan uses audio-driven lip sync with Dragon HD. Speech-start delay depends on network and region distance. A synthesis error falls back once each to standard Azure Speech and then Windows local speech.'
+        'Optional Preview. Use a separate S0 Speech resource, key, and matching supported region. {character_name} uses audio-driven lip sync with Dragon HD. Speech-start delay depends on network and region distance. A synthesis error falls back once each to standard Azure Speech and then Windows local speech.'
     ),
     "azure_speech_note": (
         'Preview feature. Bring your own Azure Speech resource key and its matching region. Only verified female voices are listed. Settings requiring completion or a service error trigger fallback to a Windows female voice. Azure usage and charges are governed by Microsoft.'
@@ -615,7 +615,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "Voices matching the selected interface language are preferred."
     ),
     "platform_local_voice_note": (
-        '{platform} local voice awaits device verification. MoHan lists only verified voices for the current platform and confirms offline speech support through device testing.'
+        '{platform} local voice awaits device verification. {character_name} lists only verified voices for the current platform and confirms offline speech support through device testing.'
     ),
     "transcription_language_placeholder": (
         "ISO language code; leave blank for automatic detection"
@@ -640,7 +640,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "noise_off": "Noise reduction off",
     "stable_vad": "Stable complete turns (about 0.85 s pause)",
     "semantic_vad": "Semantic turns (may cut speech early)",
-    "echo_guard_option": "Prevent MoHan from hearing her own voice",
+    "echo_guard_option": "Prevent {character_name} from hearing her own voice",
     "hybrid_transcript": "Use accurate final transcripts on screen",
     "mute": "Mute",
     "rate_down": "Decrease local speech rate",
@@ -658,7 +658,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "the new key in Settings."
     ),
     "echo_guard_note": (
-        "With echo guard enabled, microphone upload pauses while MoHan speaks "
+        "With echo guard enabled, microphone upload pauses while {character_name} speaks "
         "and resumes after playback. Only the final accurate transcript is "
         "shown in Chat."
     ),
@@ -679,7 +679,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     ),
     "autostart": "Automatic startup",
     "permissions_intro": (
-        "Grant each capability separately. With Ask every time, MoHan shows a "
+        "Grant each capability separately. With Ask every time, {character_name} shows a "
         "confirmation before acting. File deletion requires explicit confirmation."
     ),
     "permission_open_web": "Open a specified website",
@@ -691,15 +691,15 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "permission_ask": "Ask every time",
     "permission_allow": "Allow",
     "permissions_warning": (
-        "Safety rule: conversation keeps MoHan within her configured authority. "
+        "Safety rule: conversation keeps {character_name} within her configured authority. "
         "The AI may propose a tool request, but local permissions decide what "
         "can actually run."
     ),
     "save_permissions": "Save tool permissions",
     "permission_blocked": "Permission requires an update",
-    "permission_blocked_message": 'Enable permission for MoHan to {action} before continuing.',
-    "permission_request": "MoHan requests computer permission",
-    "permission_request_message": "Allow MoHan to {action} this time?",
+    "permission_blocked_message": 'Enable permission for {character_name} to {action} before continuing.',
+    "permission_request": "{character_name} requests computer permission",
+    "permission_request_message": "Allow {character_name} to {action} this time?",
     "permission_saved_speech": _DIALOGUE.templates["ui.permission_saved_speech"],
     "profile_heading": "<b>Identity and profile</b>",
     "system_heading": "<b>Work and system settings</b>",
@@ -724,7 +724,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     ),
     "api_status_offline": 'OpenAI API: Configure a key to connect; the offline persona is active',
     "restart_language_note": (
-        "The interface language will be fully applied after restarting MoHan."
+        "The interface language will be fully applied after restarting {character_name}."
     ),
     "about_heading": "<b>About MoHan</b>",
     "about_body": (
@@ -749,7 +749,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "continuous_work_reminder": "Continuous work reminder",
     "overwork_message": "Sitting / overwork reminder message",
     "minutes_suffix": " minutes",
-    "read_replies": "Read MoHan's replies aloud",
+    "read_replies": "Read {character_name}'s replies aloud",
     "caught_glance_dialogue": _DIALOGUE.templates["caught_glance"],
     "voice_settings_saved": "Voice settings saved.",
     "settings_saved": "Settings saved.",

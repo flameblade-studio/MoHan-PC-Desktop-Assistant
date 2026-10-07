@@ -59,10 +59,10 @@ CLOUD_HOME_TRANSLATIONS: TranslationCatalog = frozendict({
         "Enter the OAuth Client ID created in the provider console first.",
         "サービス管理画面で作成した OAuth Client ID を先に入力してください。",
     ),
-    "等待瀏覽器授權，請勿關閉墨寒……": translations(
-        "等待浏览器授权，请勿关闭墨寒……",
-        "Waiting for browser authorization. Do not close MoHan…",
-        "ブラウザーでの認可を待っています。墨寒を閉じないでください…",
+    "等待瀏覽器授權，請勿關閉{character_name}……": translations(
+        "等待浏览器授权，请勿关闭{character_name}……",
+        "Waiting for browser authorization. Do not close {character_name}…",
+        "ブラウザーでの認可を待っています。{character_name}を閉じないでください…",
     ),
     "請檢查設定後安全保存 OAuth 權杖：{error}": translations(
         "请检查设置后安全保存 OAuth 令牌：{error}",

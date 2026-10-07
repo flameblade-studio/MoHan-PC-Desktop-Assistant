@@ -6,6 +6,7 @@ lazy from domain.audio_buffer import BoundedAudioQueue
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.service_status_localization import render_character_ui_template
 lazy from integrations.realtime_speech_output import REALTIME_OUTPUT_OPENAI
 
 _VOICE_PROFILE = load_mohan_character_data().voice
@@ -95,7 +96,7 @@ _REALTIME_MESSAGES = deep_freeze({
         "missing_components": "請安裝 Realtime 語音元件",
         "connecting": "正在連線…",
         "disconnected": "目前等待連線，請重新啟動 Realtime",
-        "listening": "已連線，妾在聽",
+        "listening": "已連線，{self_reference}在聽",
         "empty_transcript": "轉錄結果為空，本輪等待新的語音",
         "transcription_failed": "轉錄結果需要重試，本輪等待新的語音：{error}",
         "realtime_api_error": "Realtime API 回報錯誤，請檢查設定後再試",
@@ -115,11 +116,11 @@ _REALTIME_MESSAGES = deep_freeze({
         "hybrid_failed": "高精度轉錄需要重試，本輪等待新的語音：{error}",
         "response_not_started": "文字已辨識；Realtime 回覆尚待啟動，請檢查連線後再試",
         "prompt_echo_skipped": "已過濾疑似轉錄提示詞回灌內容，等待實際語音輸入",
-        "replying": "已辨識，墨寒正在回覆",
+        "replying": "已辨識，{character_name}正在回覆",
         "model_access": (
             "OpenAI 回報目前儲存的 API 金鑰需要在同一 Project 啟用「{model}」使用權限。"
             "請確認 API 後台勾選模型的 Project，正是建立這支金鑰的同一個 "
-            "Project；再於該 Project 建立具適當權限的 API Key，並到墨寒的"
+            "Project；再於該 Project 建立具適當權限的 API Key，並到{character_name}的"
             "「設定」頁重新儲存。"
         ),
         "quota": (
@@ -143,7 +144,7 @@ _REALTIME_MESSAGES = deep_freeze({
         "missing_components": "请安装 Realtime 语音组件",
         "connecting": "正在连接…",
         "disconnected": "当前等待连接，请重新启动 Realtime",
-        "listening": "已连接，妾在听",
+        "listening": "已连接，{self_reference}在听",
         "empty_transcript": "转录结果为空，本轮等待新的语音",
         "transcription_failed": "转录结果需要重试，本轮等待新的语音：{error}",
         "realtime_api_error": "Realtime API 报告错误，请检查设置后再试",
@@ -163,11 +164,11 @@ _REALTIME_MESSAGES = deep_freeze({
         "hybrid_failed": "高精度转录需要重试，本轮等待新的语音：{error}",
         "response_not_started": "文字已识别；Realtime 回复尚待启动，请检查连接后再试",
         "prompt_echo_skipped": "已过滤疑似转录提示词回灌内容，等待实际语音输入",
-        "replying": "已识别，墨寒正在回复",
+        "replying": "已识别，{character_name}正在回复",
         "model_access": (
             "OpenAI 报告当前保存的 API 密钥需要在同一 Project 启用“{model}”使用权限。"
             "请确认 API 后台所选模型的 Project 与建立这支密钥的 Project 相同；"
-            "再于该 Project 建立具备适当权限的 API Key，并到墨寒的“设置”页"
+            "再于该 Project 建立具备适当权限的 API Key，并到{character_name}的“设置”页"
             "重新保存。"
         ),
         "quota": (
@@ -212,11 +213,11 @@ _REALTIME_MESSAGES = deep_freeze({
         "hybrid_failed": "High-accuracy transcription needs a retry; this turn is waiting for new audio: {error}",
         "response_not_started": "Text was recognized; the Realtime response is waiting to start. Check the connection and try again",
         "prompt_echo_skipped": "Filtered probable transcription-prompt echo content; waiting for actual voice input",
-        "replying": "Recognized; MoHan is replying",
+        "replying": "Recognized; {character_name} is replying",
         "model_access": (
             "Enable “{model}” access for the saved OpenAI API key in the same Project. Confirm that the "
             "model and API key belong to the same Project, then save a suitably "
-            "authorized key again in MoHan Settings."
+            "authorized key again in {character_name} Settings."
         ),
         "quota": (
             "The OpenAI API quota needs replenishment or the project budget limit "
@@ -261,11 +262,11 @@ _REALTIME_MESSAGES = deep_freeze({
         "hybrid_failed": "高精度文字起こしの再試行が必要です。このターンは新しい音声を待機します：{error}",
         "response_not_started": "文字を認識しました。Realtime の応答は開始待ちです。接続を確認して再試行してください",
         "prompt_echo_skipped": "文字起こしプロンプトの反響と思われる内容を除外し、実際の音声入力を待機しています",
-        "replying": "認識しました。墨寒が応答しています",
+        "replying": "認識しました。{character_name}が応答しています",
         "model_access": (
             "保存された OpenAI API キーで「{model}」を利用する権限を同じ Project に設定してください。"
             "モデルと API キーが同じ Project に属することを確認し、適切な権限を"
-            "持つキーを墨寒の設定で保存してください。"
+            "持つキーを{character_name}の設定で保存してください。"
         ),
         "quota": (
             "OpenAI API の利用枠の補充が必要か、プロジェクトの予算上限に"
@@ -293,5 +294,5 @@ def _realtime_message(
     **values: object,
 ) -> str:
     catalog = _REALTIME_MESSAGES[canonical_ui_language(locale)]
-    message = catalog[key]
+    message = render_character_ui_template(locale, catalog[key])
     return message.format(**values) if values else message
