@@ -20,6 +20,8 @@ lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 lazy from application.appearance_ports import AppearanceRenderOptions
 lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import (
+    CHARACTER_LAYER_ROLES,
+    CHARACTER_POSE_ROLES,
     FLOAT_COMPARISON_EPSILON,
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
@@ -49,6 +51,28 @@ AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
 # Breath lift scale: breath is normalized to [0, 1]; this maps the midpoint
 # (0.5) to zero lift and the extremes to a small vertical body rise/fall.
 _RIG_MANIFEST = default_rig_manifest()
+_FRONT_POSE = CHARACTER_POSE_ROLES["front_idle"]
+_BACK_HAIR_LAYER = CHARACTER_LAYER_ROLES["rear_hair"]
+_FRONT_HAIR_LAYERS = (
+    CHARACTER_LAYER_ROLES["left_side_hair"],
+    CHARACTER_LAYER_ROLES["right_side_hair"],
+)
+_SLEEVE_LAYERS = (
+    CHARACTER_LAYER_ROLES["left_sleeve"],
+    CHARACTER_LAYER_ROLES["right_sleeve"],
+)
+_BLINK_LAYERS = (
+    CHARACTER_LAYER_ROLES["left_eyelid"],
+    CHARACTER_LAYER_ROLES["right_eyelid"],
+    CHARACTER_LAYER_ROLES["left_eyeliner"],
+    CHARACTER_LAYER_ROLES["right_eyeliner"],
+)
+_LIP_LAYERS = (
+    CHARACTER_LAYER_ROLES["upper_lip"],
+    CHARACTER_LAYER_ROLES["lower_lip"],
+    CHARACTER_LAYER_ROLES["left_mouth_corner"],
+    CHARACTER_LAYER_ROLES["right_mouth_corner"],
+)
 BREATH_LIFT_SCALE = _RIG_MANIFEST.physics.breath_lift_scale
 # The authored body layer already contains the arms and hands, while each
 # sleeve is available as a separate transparent physical layer.  Keep sleeve
@@ -195,7 +219,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         view_id: str,
         motion: FaceMotionFrame,
         *,
-        pose_id: str = "front-crossed",
+        pose_id: str = _FRONT_POSE,
         left_hand: str = "relaxed",
         right_hand: str = "relaxed",
         body_energy: float = 0.0,
@@ -412,17 +436,17 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         if self._strict_authority:
             self._view_authority(view, body)
         result = QPixmap(body)
-        self._paint_opacity(result, view.path("hair_back"), 1.0)
+        self._paint_opacity(result, view.path(_BACK_HAIR_LAYER), 1.0)
         self._paint_opacity(result, view.path("base"), 1.0)
         self._paint_neutral_face_layers(result, view)
 
         # Front hair, sleeves, ornament.
-        self._paint_opacity(result, view.path("hair_left"), 1.0)
-        self._paint_opacity(result, view.path("hair_right"), 1.0)
+        self._paint_opacity(result, view.path(_FRONT_HAIR_LAYERS[0]), 1.0)
+        self._paint_opacity(result, view.path(_FRONT_HAIR_LAYERS[1]), 1.0)
         left_lift = self._sleeve_lift(left_hand, pose_id, bounded_energy)
         right_lift = self._sleeve_lift(right_hand, pose_id, bounded_energy)
-        self._paint_translated(result, view.path("sleeve_left"), dy=left_lift)
-        self._paint_translated(result, view.path("sleeve_right"), dy=right_lift)
+        self._paint_translated(result, view.path(_SLEEVE_LAYERS[0]), dy=left_lift)
+        self._paint_translated(result, view.path(_SLEEVE_LAYERS[1]), dy=right_lift)
         self._paint_opacity(result, view.path("ornament"), 1.0)
         self._heal_registered_seams(result, view)
         self._restore_authority_face(result, view)
@@ -447,12 +471,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         eye and mouth motion is re-applied after restoration instead.
         """
 
-        for layer_name in (
-            "jaw", "lip_lower", "lip_upper", "corner_left", "corner_right",
-            "blush_left", "blush_right", "iris_left", "iris_right",
-            "eyelid_left", "eyelid_right", "eyeliner_left", "eyeliner_right",
-            "brow_left", "brow_right",
-        ):
+        for layer_name in _RIG_MANIFEST.face_authority_layers[1:]:
             self._paint_opacity(result, view.path(layer_name), 1.0)
 
     def _heal_registered_seams(
@@ -628,14 +647,8 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
 
         blink = min(1.0, max(0.0, float(expression.blink)))
         if blink > BLINK_VISIBLE_EPSILON:
-            blink_layers = (
-                "eyelid_left",
-                "eyelid_right",
-                "eyeliner_left",
-                "eyeliner_right",
-            )
             blink_region = QRegion()
-            for layer_name in blink_layers:
+            for layer_name in _BLINK_LAYERS:
                 source = self._cached_pixmap(view.path(layer_name))
                 if not source.isNull():
                     blink_region = blink_region.united(self._mask_region(source))
@@ -643,7 +656,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
                 blink_dy = max(1, round(blink * 4.0))
                 painter = QPainter(target)
                 painter.setClipRegion(blink_region)
-                for layer_name in blink_layers:
+                for layer_name in _BLINK_LAYERS:
                     source = self._cached_pixmap(view.path(layer_name))
                     if not source.isNull():
                         painter.drawPixmap(0, blink_dy, source)
@@ -705,7 +718,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         mouth,
     ) -> None:
         """Fade in the accepted registered speech mouth while preserving skin motion."""
-        cavity_path = view.path("oral_cavity")
+        cavity_path = view.path(CHARACTER_LAYER_ROLES["mouth_cavity"])
         if cavity_path is None:
             return
         cavity_source = self._cached_pixmap(cavity_path)
@@ -736,7 +749,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         # The authored lip footprint owns the permitted movement; a single
         # pixel around it accommodates filtered edges without moving the chin.
         lip_region = QRegion()
-        for name in ("lip_upper", "lip_lower", "corner_left", "corner_right"):
+        for name in _LIP_LAYERS:
             path = view.path(name)
             if path is not None:
                 lip_region = lip_region.united(self._mask_region(self._cached_pixmap(path)))
@@ -760,12 +773,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
 
         if view.mouth_center_x is None or u_inward <= 0.0:
             return
-        for layer_name in (
-            "lip_upper",
-            "lip_lower",
-            "corner_left",
-            "corner_right",
-        ):
+        for layer_name in _LIP_LAYERS:
             path = view.path(layer_name)
             if path is None:
                 continue

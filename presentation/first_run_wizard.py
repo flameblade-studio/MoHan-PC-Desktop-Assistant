@@ -23,6 +23,7 @@ lazy from application.presentation_ports import (
     fallback_platform_services,
 )
 lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.language_support import (
     is_english,
@@ -114,7 +115,7 @@ class FirstRunWizard(QDialog):
         hero_panel.setObjectName("onboardingHero")
         hero_panel.setFixedWidth(360)
         hero_background = resource_path(
-            "assets/onboarding/first-run-ink-tech.png"
+            CHARACTER_ASSET_PATHS["onboarding_artwork"]
         ).as_posix()
         hero_panel.setStyleSheet(
             f"""
@@ -136,7 +137,7 @@ class FirstRunWizard(QDialog):
         self.hero_image = QLabel()
         self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
         hero_pixmap = self.appearance_pixmap or QPixmap(
-            str(resource_path("assets/expressions/idle_front.png"))
+            str(resource_path(CHARACTER_ASSET_PATHS["first_run_portrait"]))
         )
         portrait_width = round(hero_pixmap.width() * 0.62)
         hero_portrait = hero_pixmap.copy(

@@ -28,6 +28,7 @@ SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.makeup_mouth_states import parse_mouth_states
 lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
@@ -62,18 +63,18 @@ from domain.outfit_pack_archive import (
     declared_asset_paths as _archive_declared_asset_paths,
 )
 _declared_asset_paths = _archive_declared_asset_paths
-BASE_SILHOUETTES = ("cheek-rest", "left-neutral", "front-crossed")
-GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated")
+_RIG_MANIFEST = default_rig_manifest()
+BASE_SILHOUETTES = tuple(_RIG_MANIFEST.pose_silhouettes.values())
+GESTURE_SILHOUETTES = tuple(_RIG_MANIFEST.gesture_silhouettes.values())
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-# Optional, additive makeup-only silhouettes share the 1254px cheek canvas but
-# never become required garment/body views; other categories keep the requirements intact.
-GLANCE_MAKEUP_SILHOUETTES = ("cheek-glance", "cheek-glance-half", "cheek-glance-closed")
-BATCH2_MAKEUP_SILHOUETTES = tuple(f"cheek-{expression}{suffix}" for expression in ("caught", "happy", "worried", "reminder") for suffix in ("", "-half", "-closed"))
+# Optional makeup-only silhouettes share the cheek canvas but never become required garment/body views.
+GLANCE_MAKEUP_SILHOUETTES = tuple(f"cheek-{CHARACTER_EXPRESSION_ROLES['side_gaze']}{suffix}" for suffix in ("", "-half", "-closed"))
+BATCH2_MAKEUP_SILHOUETTES = tuple(f"cheek-{CHARACTER_EXPRESSION_ROLES[role]}{suffix}" for role in ("noticed", "happiness", "worry", "reminder") for suffix in ("", "-half", "-closed"))
 COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = GLANCE_MAKEUP_SILHOUETTES + BATCH2_MAKEUP_SILHOUETTES
 OPTIONAL_MAKEUP_SILHOUETTES = COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
-EXPRESSION_SILHOUETTE_ALIASES = frozendict({"cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed", "protective_front": "front-crossed"})
+EXPRESSION_SILHOUETTE_ALIASES = frozendict({**_RIG_MANIFEST.pose_silhouettes, CHARACTER_EXPRESSION_ROLES["protection"]: _RIG_MANIFEST.pose_silhouettes["front"]})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
 })
@@ -102,7 +103,6 @@ ACCESSORY_ASSET_SLOTS = frozendict({
 MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
 FOUNDATION_SLOT = "foundation"
 MAKEUP_SLOTS_V2 = frozenset((*MAKEUP_SLOTS, FOUNDATION_SLOT))
-_RIG_MANIFEST = default_rig_manifest()
 MAKEUP_CANVASES = frozendict({"full-body": (_RIG_MANIFEST.full_body_canvas.width, _RIG_MANIFEST.full_body_canvas.height), "half-body": (_RIG_MANIFEST.half_body_asset_canvas.width, _RIG_MANIFEST.half_body_asset_canvas.height)})
 # Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
 BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID

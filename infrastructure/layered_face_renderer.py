@@ -20,6 +20,12 @@ lazy from domain.companion_animation_contract import (
     gesture_portrait_expression,
     outfit_silhouette,
 )
+lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    CHARACTER_LAYER_ROLES,
+)
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from domain.qt_image_io import optional_pixmap, require_pixmap
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
@@ -43,31 +49,37 @@ MOUTH_APERTURE_THRESHOLD = 0.01
 # The authored 54-layer asset set lives under the project root, mirroring the
 # ``RESOURCE_BASE`` resolution used by the presentation layer. The renderer
 # resolves it itself so the composition boundary stays a no-arg factory.
-LAYERED_FACE_ASSET_DIR = Path("assets") / "expressions" / "layered"
-DETACHABLE_HALFBODY_ASSET_DIR = Path("assets") / "expressions" / "detachable"
+LAYERED_FACE_ASSET_DIR = Path(CHARACTER_ASSET_PATHS["halfbody_layers"])
+DETACHABLE_HALFBODY_ASSET_DIR = Path(CHARACTER_ASSET_PATHS["halfbody_detachable"])
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
 SEAM_HEAL_RADIUS = 7
+_RIG_MANIFEST = default_rig_manifest()
+_EXPRESSION_CATALOG = default_expression_catalog()
+_EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
+_CHEEK_SILHOUETTE = _RIG_MANIFEST.pose_silhouettes["cheek"]
 FACE_AUTHORITY_FILES = frozendict({
-    "cheek": "idle.png",
-    "lean": "idle_lean.png",
-    "front": "idle_front.png",
+    pose: specification.base
+    for pose, specification in _EXPRESSION_CATALOG.face_pose_assets.items()
 })
-REGISTERED_COMPOSITE_LAYERS = (
-    "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
-    "lip_lower", "lip_upper",
-    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
-    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
-    "eyeliner_right", "brow_left", "brow_right", "hair_left", "hair_right",
-    "sleeve_left", "sleeve_right", "ornament",
-)
+REGISTERED_COMPOSITE_LAYERS = _RIG_MANIFEST.layer_z_order
 FACE_AUTHORITY_REGION_LAYERS = (
-    "base", "jaw", "oral_cavity", "teeth_tongue", "lip_lower", "lip_upper",
-    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
-    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
-    "eyeliner_right", "brow_left", "brow_right",
+    *_RIG_MANIFEST.face_authority_layers[:2],
+    CHARACTER_LAYER_ROLES["mouth_cavity"],
+    CHARACTER_LAYER_ROLES["teeth_and_tongue"],
+    *_RIG_MANIFEST.face_authority_layers[2:],
 )
+_MOUTH_LAYERS = (
+    CHARACTER_LAYER_ROLES["mouth_cavity"],
+    CHARACTER_LAYER_ROLES["teeth_and_tongue"],
+    CHARACTER_LAYER_ROLES["lower_lip"],
+    CHARACTER_LAYER_ROLES["upper_lip"],
+    CHARACTER_LAYER_ROLES["left_mouth_corner"],
+    CHARACTER_LAYER_ROLES["right_mouth_corner"],
+)
+_NEUTRAL_LAYERS = _RIG_MANIFEST.layer_z_order[1:20]
+_TOP_LAYERS = _RIG_MANIFEST.layer_z_order[20:]
 
 
 lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
@@ -104,7 +116,7 @@ class LayeredParametricFaceRenderer(
         self._authority_dir = (
             Path(authority_dir).resolve()
             if authority_dir is not None
-            else PROJECT_ROOT / "assets" / "expressions"
+            else PROJECT_ROOT / CHARACTER_ASSET_PATHS["halfbody_root"]
         )
         self._detachable_dir = (
             Path(detachable_dir).resolve()
@@ -211,7 +223,7 @@ class LayeredParametricFaceRenderer(
         # the layers cut on that very portrait (its gesture silhouette).
         gesture = gesture_portrait_expression(motion.expression)
         silhouette = outfit_silhouette(motion.expression, motion.pose.value)
-        if gesture == "exasperated_front" and self._exasperated_candidate_dir is not None:
+        if gesture == _EXASPERATED_EXPRESSION and self._exasperated_candidate_dir is not None:
             return self._render_exasperated_candidate(base, motion, layers, aperture)
         complete = self._complete_halfbody.render(base, motion, layers)
         if complete is not None:
@@ -291,10 +303,10 @@ class LayeredParametricFaceRenderer(
             return True
         if expression == CHEEK_SPEECH_CLOSED_EXPRESSION:
             capability = getattr(self._outfit_overlay, "has_native_motion", None)
-            return bool(callable(capability) and capability("cheek-rest"))
+            return bool(callable(capability) and capability(_CHEEK_SILHOUETTE))
         return (
             self._exasperated_candidate_dir is not None
-            and gesture_portrait_expression(expression) == "exasperated_front"
+            and gesture_portrait_expression(expression) == _EXASPERATED_EXPRESSION
         )
 
     def _detachable_portrait(self, silhouette: str) -> QPixmap:
@@ -515,14 +527,7 @@ class LayeredParametricFaceRenderer(
         if cached is not None:
             return cached
         region = QRegion()
-        for layer_name in (
-            "oral_cavity",
-            "teeth_tongue",
-            "lip_lower",
-            "lip_upper",
-            "corner_left",
-            "corner_right",
-        ):
+        for layer_name in _MOUTH_LAYERS:
             source = self._cached_pixmap(pose.path(layer_name))
             if not source.isNull():
                 region = region.united(QRegion(source.mask()))
@@ -557,27 +562,7 @@ class LayeredParametricFaceRenderer(
         neutral = QPixmap(body)
         # Preserve the authoritative shared half/full-body Z-order.  This is a
         # layered-renderer cache, not a fallback to a legacy whole portrait.
-        for layer_name in (
-            "hair_back",
-            "base",
-            "jaw",
-            "oral_cavity",
-            "teeth_tongue",
-            "lip_lower",
-            "lip_upper",
-            "corner_left",
-            "corner_right",
-            "blush_left",
-            "blush_right",
-            "iris_left",
-            "iris_right",
-            "eyelid_left",
-            "eyelid_right",
-            "eyeliner_left",
-            "eyeliner_right",
-            "brow_left",
-            "brow_right",
-        ):
+        for layer_name in _NEUTRAL_LAYERS:
             self._paint_opacity(neutral, pose.path(layer_name), 1.0)
         self._neutral_pose_cache[key] = neutral
         self._neutral_pose_cache.move_to_end(key)
@@ -646,13 +631,7 @@ class LayeredParametricFaceRenderer(
                 return
             top = QPixmap(body.size())
             top.fill(Qt.transparent)
-            for layer_name in (
-                "hair_left",
-                "hair_right",
-                "sleeve_left",
-                "sleeve_right",
-                "ornament",
-            ):
+            for layer_name in _TOP_LAYERS:
                 self._paint_opacity(top, pose.path(layer_name), 1.0)
             self._top_pose_cache[key] = top
             self._top_pose_cache.move_to_end(key)

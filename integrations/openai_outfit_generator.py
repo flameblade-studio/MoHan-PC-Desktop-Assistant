@@ -28,7 +28,9 @@ lazy from application.self_generating_wardrobe import (
     GeneratedOutfitDraft,
     OutfitCreationRequest,
 )
-lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
 lazy from domain.outfit_generation import (
     OutfitGenerationCancelled,
@@ -37,9 +39,17 @@ lazy from domain.outfit_generation import (
 
 OPENAI_IMAGE_EDITS_URL = "https://api.openai.com/v1/images/edits"
 OPENAI_IMAGE_MODEL = "gpt-image-2"
-HALF_SIZE = (1254, 1254)
+_RIG_MANIFEST = default_rig_manifest()
+_EXPRESSION_CATALOG = default_expression_catalog()
+_CHARACTER_DATA = load_mohan_character_data()
+_ENGLISH_DISPLAY_NAME = _CHARACTER_DATA.personas["en"].identity.display_name
+_TRADITIONAL_DISPLAY_NAME = _CHARACTER_DATA.personas["zh-TW"].identity.display_name
+HALF_SIZE = (_RIG_MANIFEST.half_body_asset_canvas.width, _RIG_MANIFEST.half_body_asset_canvas.height)
 HALF_REQUEST_SIZE = (1264, 1264)
-FULL_SIZE = (1024, 1536)
+FULL_SIZE = (_RIG_MANIFEST.full_body_canvas.width, _RIG_MANIFEST.full_body_canvas.height)
+_HALF_BODY_REFERENCE_FILES = {silhouette: _EXPRESSION_CATALOG.face_pose_assets[pose].base for pose, silhouette in _RIG_MANIFEST.pose_silhouettes.items()}
+_HALF_BODY_REFERENCE_FILES.update({silhouette: f"{expression}.png" for expression, silhouette in _RIG_MANIFEST.gesture_silhouettes.items()})
+_HALF_BODY_POSES = {silhouette: pose for pose, silhouette in _RIG_MANIFEST.pose_silhouettes.items()}
 MAX_RESPONSE_BYTES = 128 * 1024 * 1024
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 BODY_REGIONS = (
@@ -268,18 +278,10 @@ def _safe_view(view_id: str) -> str:
 
 
 def _reference_path(root: Path, view_id: str) -> Path:
-    half = {
-        "cheek-rest": root / "assets" / "expressions" / "idle.png",
-        "left-neutral": root / "assets" / "expressions" / "idle_lean.png",
-        "front-crossed": root / "assets" / "expressions" / "idle_front.png",
-        "front-mock-scold": root / "assets" / "expressions" / "mock_scold.png",
-        "front-mock-hit": root / "assets" / "expressions" / "mock_hit_front.png",
-        "front-eureka": root / "assets" / "expressions" / "eureka_front.png",
-        "front-exasperated": root / "assets" / "expressions" / "exasperated_front.png",
-    }
-    if view_id in half:
-        return half[view_id]
-    return root / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME / f"{view_id}.png"
+    reference_name = _HALF_BODY_REFERENCE_FILES.get(view_id)
+    if reference_name is not None:
+        return root / CHARACTER_ASSET_PATHS["halfbody_root"] / reference_name
+    return root / CHARACTER_ASSET_PATHS["fullbody_master"] / f"{view_id}.png"
 
 
 def _decode_registered_png(
@@ -537,7 +539,8 @@ class OpenAIOutfitDraftGenerator:
     ) -> str:
         return (
             "Create a production-ready transparent PNG clothing overlay for the "
-            "exact MoHan reference image supplied. Output the new garment pixels with "
+            f"exact {_ENGLISH_DISPLAY_NAME} reference image supplied. Output the new "
+            "garment pixels with "
             "every other pixel fully transparent. Preserve the exact canvas, character "
             "pose, body proportions and pixel registration. Keep the face, skin, hands, "
             "hair, hair ornament, eyes, mouth, background and body geometry unchanged. "
@@ -555,7 +558,8 @@ class OpenAIOutfitDraftGenerator:
     ) -> str:
         return (
             "Create a production-ready transparent PNG handheld accessory overlay "
-            "for the exact MoHan reference image supplied. Output the accessory pixels "
+            f"for the exact {_ENGLISH_DISPLAY_NAME} reference image supplied. Output "
+            "the accessory pixels "
             "with every other pixel fully transparent. Keep the canvas and pixel "
             "registration exact. Place the handle at her right-hand grip and preserve "
             "the visible hand occlusion. Keep the face, skin, body, hands, clothing, "
@@ -600,11 +604,11 @@ class OpenAIOutfitDraftGenerator:
             "id": "generated-placeholder",
             "pack_version": "1.0.0",
             "app_range": ">=4.0.0,<5.0.0",
-            "display_names": _localized("墨寒自主設計服裝"),
+            "display_names": _localized(f"{_TRADITIONAL_DISPLAY_NAME}自主設計服裝"),
             "compatible_body_profile": {"id": BODY_PROFILE_ID, "version": BODY_PROFILE_VERSION},
             "source": {
                 "kind": "original",
-                "author": "MoHan autonomous wardrobe with OpenAI GPT Image 2",
+                "author": f"{_ENGLISH_DISPLAY_NAME} autonomous wardrobe with OpenAI GPT Image 2",
                 "license": "Project License",
                 "reference_included": False,
             },
@@ -622,7 +626,7 @@ class OpenAIOutfitDraftGenerator:
             }],
             "hairstyles": [{
                 "id": "canonical-hair",
-                "display_names": _localized("墨寒原髮型"),
+                "display_names": _localized(f"{_TRADITIONAL_DISPLAY_NAME}原髮型"),
                 "variants": [{
                     "id": "preserved",
                     "display_names": _localized("保持原貌"),
@@ -636,7 +640,7 @@ class OpenAIOutfitDraftGenerator:
             "accessories": accessories,
             "ensembles": [{
                 "id": "autonomous-look",
-                "display_names": _localized("墨寒自主搭配"),
+                "display_names": _localized(f"{_TRADITIONAL_DISPLAY_NAME}自主搭配"),
                 "autonomous_profile": {
                     "thermal_bands": ["hot", "warm", "mild", "cool", "cold"],
                     "weather": [request.weather] if request.weather in {
@@ -669,12 +673,9 @@ class OpenAIOutfitDraftGenerator:
 
 def _protected_face_path(root: Path, view_id: str) -> Path:
     if view_id in POSE_ATLAS_SILHOUETTES:
-        return root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
-    pose = {
-        "cheek-rest": "cheek",
-        "left-neutral": "lean",
-    }.get(view_id, "front")
-    return root / "assets" / "expressions" / "layered" / f"{pose}_base.png"
+        return root / CHARACTER_ASSET_PATHS["fullbody_layers"] / f"{view_id}_base.png"
+    pose = _HALF_BODY_POSES.get(view_id, "front")
+    return root / CHARACTER_ASSET_PATHS["halfbody_layers"] / f"{pose}_base.png"
 
 
 class GeneratedOutfitImageAuditor:

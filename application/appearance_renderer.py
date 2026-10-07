@@ -17,6 +17,7 @@ lazy from domain.appearance_dynamics import (
     MotionTransform,
     motion_group_for_slot,
 )
+lazy from domain.constants import CHARACTER_POSE_ROLES
 
 
 class AppearanceRenderError(RuntimeError):
@@ -46,7 +47,7 @@ class CoreAppearanceManifest:
     immutable_identity: PixelMask
     approved_regions: Mapping[str, PixelMask]
     occlusion_masks: Mapping[str, PixelMask]
-    silhouettes: tuple[str, ...] = ("front-crossed",)
+    silhouettes: tuple[str, ...] = (CHARACTER_POSE_ROLES["front_idle"],)
 
 
 @dataclass(frozen=True, slots=True)

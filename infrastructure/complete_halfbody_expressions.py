@@ -9,15 +9,20 @@ lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy from PySide6.QtGui import QImage
 
 lazy from domain.qt_image_io import image_from_png
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"
 FAMILIES = frozenset({"neutral", "small", "a", "o"})
 EYES = frozenset({"rest", "half", "closed"})
 MOUTH_SHAPES = frozenset({"small", "a", "o"})
-GLANCE_COMPLETE_POSE = "cheek-glance"
+GLANCE_COMPLETE_POSE = f"cheek-{CHARACTER_EXPRESSION_ROLES['side_gaze']}"
 COMPLETE_CHEEK_POSES = frozenset({
-    "cheek-glance", "cheek-caught", "cheek-happy", "cheek-worried", "cheek-reminder",
+    GLANCE_COMPLETE_POSE,
+    f"cheek-{CHARACTER_EXPRESSION_ROLES['noticed']}",
+    f"cheek-{CHARACTER_EXPRESSION_ROLES['happiness']}",
+    f"cheek-{CHARACTER_EXPRESSION_ROLES['worry']}",
+    f"cheek-{CHARACTER_EXPRESSION_ROLES['reminder']}",
 })
 COMPLETE_POSES = POSES | COMPLETE_CHEEK_POSES
 PNG_HEADER_LENGTH = 26
@@ -55,7 +60,10 @@ def _read_image_record(root: Path, record: object, label: str) -> bytes:
         raise ValueError(f"Complete half-body {label} must be 8-bit RGBA PNG: {value}")
     image = image_from_png(data)
     if image.isNull() or image.size().toTuple() != (DIMENSION, DIMENSION):
-        raise ValueError(f"Complete half-body {label} canvas must be 1254x1254: {value}")
+        raise ValueError(
+            f"Complete half-body {label} canvas must be "
+            f"{DIMENSION}x{DIMENSION}: {value}"
+        )
     rgba = image.convertToFormat(QImage.Format_RGBA8888)
     alpha = bytes(rgba.constBits())[3::4]
     if 0 not in alpha or not any(alpha):

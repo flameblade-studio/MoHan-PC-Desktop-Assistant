@@ -18,6 +18,8 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage
 
+lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import CHARACTER_LAYER_ROLES
 lazy from infrastructure.layered_face_assets import (
     LAYERED_FACE_DIMENSION,
     LayeredFaceManifest,
@@ -33,26 +35,11 @@ MAX_ANCHOR_DRIFT_PIXELS = 1
 # sleeve_left, sleeve_right, ornament) legitimately extend beyond the face, so
 # their centers are not checked against the base region.
 FACIAL_LAYERS = frozenset(
-    {
-        "base",
-        "jaw",
-        "oral_cavity",
-        "teeth_tongue",
-        "lip_lower",
-        "lip_upper",
-        "corner_left",
-        "corner_right",
-        "blush_left",
-        "blush_right",
-        "iris_left",
-        "iris_right",
-        "eyelid_left",
-        "eyelid_right",
-        "eyeliner_left",
-        "eyeliner_right",
-        "brow_left",
-        "brow_right",
-    }
+    (
+        *default_rig_manifest().face_authority_layers,
+        CHARACTER_LAYER_ROLES["mouth_cavity"],
+        CHARACTER_LAYER_ROLES["teeth_and_tongue"],
+    )
 )
 
 

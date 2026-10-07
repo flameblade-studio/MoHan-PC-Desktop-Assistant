@@ -32,6 +32,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from presentation.dashboard_artwork import CelestialFrame
 lazy from presentation.desktop_companion_status import DESKTOP_STATUS_COLLAPSED_SETTING
 lazy from presentation.lingxiao_themes import palette_for_theme
@@ -91,7 +92,7 @@ _NAVIGATION_CAPTION_PADDING = 6
 _NAVIGATION_CAPTION_BORDER_BUFFER = 4
 _NAVIGATION_WIDTH_BUFFER = 4
 _NAVIGATION_COMPACT_BUTTON_PADDING = 7
-_LOBBY_BACKDROP = resource_path("assets/ui/mohan-strategist-lobby-v1.png")
+_LOBBY_BACKDROP = resource_path(CHARACTER_ASSET_PATHS["lobby_backdrop"])
 
 
 def _navigation_scale(shell) -> float:

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+
 """Shyness level state machine (害羞程度狀態機).
 
 The shyness micro-expression chain (blush → lowered gaze → pursed lips) needs a
@@ -29,7 +31,13 @@ GAZE_CONFIDENCE_THRESHOLD = 0.35
 EASE_RESPONSE = 0.18
 
 # Expressions that signal an explicit shy context.
-SHY_EXPRESSIONS = frozenset({"shy", "shy_cute_front", "shy_front"})
+SHY_EXPRESSIONS = frozenset(
+    {
+        "shy",
+        CHARACTER_EXPRESSION_ROLES["bashful"],
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    }
+)
 
 
 class ShynessState:
