@@ -887,6 +887,7 @@
         "test_face_motion_interpolation.py",
         "test_face_renderer.py",
         "test_favor_exclusive.py",
+        "test_fetch_character_pack.py",
         "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
         "test_flagship_lifecycle.py",
@@ -1223,6 +1224,7 @@
         "test_v4_vision_architecture_contracts.py",
         "test_v4_vision_documentation.py",
         "test_validate_third_party_denylist.py",
+        "test_verify_character_pack_lock.py",
         "test_verify_multimodal_model_assets.py",
         "test_viseme_sync_contract.py",
         "test_visible_identity_audit.py",
@@ -1436,6 +1438,7 @@
         "test_face_motion_interpolation.py",
         "test_face_renderer.py",
         "test_favor_exclusive.py",
+        "test_fetch_character_pack.py",
         "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
         "test_flagship_openai_vision_ui.py",
@@ -1626,6 +1629,7 @@
         "test_v4_performance_state_bounds.py",
         "test_v4_portable_profile_completeness.py",
         "test_v4_vision_architecture_contracts.py",
+        "test_verify_character_pack_lock.py",
         "test_viseme_sync_contract.py",
         "test_visible_identity_audit.py",
         "test_visible_identity_measurements.py",
@@ -4057,8 +4061,7 @@
     {
       "paths": [
         "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/rig/rig-manifest.json",
-        "tools/build_character_pack.py"
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "tests": [
         "test_build_character_pack.py"
@@ -4073,7 +4076,9 @@
         "test_build_character_pack.py",
         "test_character_pack.py",
         "test_character_persona_data.py",
-        "test_character_source.py"
+        "test_character_source.py",
+        "test_fetch_character_pack.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4084,7 +4089,9 @@
       "tests": [
         "test_build_character_pack.py",
         "test_character_pack.py",
-        "test_character_source.py"
+        "test_character_source.py",
+        "test_fetch_character_pack.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4100,6 +4107,16 @@
         "test_swallowed_error_d04.py",
         "test_v312_release_consistency.py",
         "test_v4_development_version_consistency.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/build_character_pack.py"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4395,11 +4412,20 @@
       "paths": [
         "docs/character-pack/example-source.json",
         "docs/character-pack/minimal-manifest.json",
-        "domain/character_pack/archive.py",
-        "domain/character_pack/models.py"
+        "domain/character_pack/archive.py"
       ],
       "tests": [
         "test_character_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/models.py"
+      ],
+      "tests": [
+        "test_character_pack.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5584,6 +5610,18 @@
       "tests": [
         "test_face_renderer.py",
         "test_mouth_authority_geometry.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "character-pack.lock.json",
+        "tools/fetch_character_pack.py",
+        "tools/verify_character_pack_lock.py"
+      ],
+      "tests": [
+        "test_fetch_character_pack.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7866,6 +7904,15 @@
       ],
       "tests": [
         "test_validate_third_party_denylist.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        ".github/workflows/character-pack-lock.yml"
+      ],
+      "tests": [
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
