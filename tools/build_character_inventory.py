@@ -66,6 +66,11 @@ CATEGORY_LABELS = {
     "ui_background": "介面角色背景／界面角色背景／Character UI backgrounds／キャラクター背景",
     "ui_brand_decoration": "介面品牌裝飾／界面品牌装饰／UI brand decoration／ブランド装飾",
     "ui_character_icon": "角色圖示／角色图标／Character icon／キャラクターアイコン",
+    "character_persona_data": "角色身分與人格資料／角色身份与人格数据／Character identity and persona data／キャラクターの身元と人格データ",
+    "character_dialogue_data": "角色台詞與事件資料／角色台词与事件数据／Character dialogue and event data／キャラクターの台詞とイベントデータ",
+    "character_voice_data": "角色聲音偏好資料／角色声音偏好数据／Character voice preference data／キャラクターの音声設定データ",
+    "character_rig_data": "角色外觀骨架資料／角色外观骨架数据／Character rig data／キャラクターのリグデータ",
+    "character_expression_catalog": "角色表情狀態目錄／角色表情状态目录／Character expression state catalog／キャラクターの表情状態目録",
     "ui_onboarding": "初次設定角色圖／首次设置角色图／Onboarding character image／初回設定のキャラクター画像",
 }
 
@@ -92,6 +97,11 @@ GROUPS = (
     Group("assets/expressions/source-bound-exasperated/", "source_bound_expression", "infrastructure/exasperated_candidate_assets.py", "records = receipt.get(\"installed_files_sha256\")"),
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", 'resource_path(f"assets/expressions/{expression}.png")'),
+    Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data.py", 'root / "persona"'),
+    Group("assets/characters/mohan/dialogue/", "character_dialogue_data", "domain/character_pack/character_data.py", 'root / "dialogue"'),
+    Group("assets/characters/mohan/voice/", "character_voice_data", "domain/character_pack/character_data.py", 'root / "voice" / "profile.json"'),
+    Group("assets/characters/mohan/rig/", "character_rig_data", "domain/character_data_types.py", '"rig-manifest.json"'),
+    Group("assets/characters/mohan/expressions/", "character_expression_catalog", "domain/character_data_types.py", '"state-catalog.json"'),
     Group("assets/official-packs/", "appearance_pack", "application/service_container.py", 'official_pack_root = asset_root / "assets" / "official-packs"'),
     Group("assets/makeup-eye-apertures/", "makeup_eye_aperture", "domain/outfit_pack_makeup.py", "data = mask_path.read_bytes()"),
     Group("assets/makeup-foundation-safe-regions/", "makeup_foundation_mask", "domain/outfit_pack_makeup.py", "data = mask_path.read_bytes()"),

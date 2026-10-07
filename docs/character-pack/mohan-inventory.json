@@ -2204,145 +2204,223 @@
     },
     {
       "bytes": 12637,
-      "category": "archive_or_support",
+      "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/dialogue/en.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 182,
+          "path": "domain/character_pack/character_data.py",
+          "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "bad15f81604e2f8793c9e32245adc1962d87a48a73ac4ef2a6a6f439135e28b7"
     },
     {
       "bytes": 972,
-      "category": "archive_or_support",
+      "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/dialogue/events.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 182,
+          "path": "domain/character_pack/character_data.py",
+          "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "525b5d78588333d08e85dda8cedfe607d3a82a0e7af32ed6734fc326b84ff50a"
     },
     {
       "bytes": 15209,
-      "category": "archive_or_support",
+      "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/dialogue/ja-JP.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 182,
+          "path": "domain/character_pack/character_data.py",
+          "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "89f96109c8b34b52cf2ffd2718daaa8f1ccfed859fcfe48c4658fbc18858ed63"
     },
     {
       "bytes": 12124,
-      "category": "archive_or_support",
+      "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/dialogue/zh-CN.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 182,
+          "path": "domain/character_pack/character_data.py",
+          "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "fe9eb5d2f353b896c1e2389183710d8ce8798416df28f25377f3967ec6f1c425"
     },
     {
       "bytes": 12205,
-      "category": "archive_or_support",
+      "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/dialogue/zh-TW.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 182,
+          "path": "domain/character_pack/character_data.py",
+          "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "bc21ffab90bbe350b8ab0d11b1cf6cc6c0f6373f2bcc6630dcaebc95676dc634"
     },
     {
       "bytes": 11230,
-      "category": "archive_or_support",
+      "category": "character_expression_catalog",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/expressions/state-catalog.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 28,
+          "path": "domain/character_data_types.py",
+          "text": "_DEFAULT_CHARACTER_ROOT / \"expressions\" / \"state-catalog.json\""
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "4fb8857a3bd3f39fd330f8cae8622741034dc8e437417dda3e3f36ae3ac6de6e"
     },
     {
       "bytes": 3149,
-      "category": "archive_or_support",
+      "category": "character_persona_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/persona/en.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 172,
+          "path": "domain/character_pack/character_data.py",
+          "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "104d4f661d54ed1e15c5fdfad7fb29df6462567e3b145cb7e83e4f1d6b0acf97"
     },
     {
       "bytes": 3642,
-      "category": "archive_or_support",
+      "category": "character_persona_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/persona/ja-JP.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 172,
+          "path": "domain/character_pack/character_data.py",
+          "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "6d7df74c002fdb2452f60a767c84d268c583780944f753a89e26715ebc2510a0"
     },
     {
       "bytes": 2630,
-      "category": "archive_or_support",
+      "category": "character_persona_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/persona/profile.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 172,
+          "path": "domain/character_pack/character_data.py",
+          "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "1563e635b0acbf34bf0d3a88f9d7c7d6e1ed0a3b07291b94abe7e6fdf2b20ade"
     },
     {
       "bytes": 3640,
-      "category": "archive_or_support",
+      "category": "character_persona_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/persona/zh-CN.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 172,
+          "path": "domain/character_pack/character_data.py",
+          "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "dd83494b189e43ea0e1b72e68087b32c9610fa195bd19d0235c4d7b3ee028b21"
     },
     {
       "bytes": 3235,
-      "category": "archive_or_support",
+      "category": "character_persona_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/persona/zh-TW.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 172,
+          "path": "domain/character_pack/character_data.py",
+          "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "31a6277bd364785b60efea94bcc4fbb1f4b214fcbe948900238de2a554015aa3"
     },
     {
       "bytes": 14838,
-      "category": "archive_or_support",
+      "category": "character_rig_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/rig/rig-manifest.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 26,
+          "path": "domain/character_data_types.py",
+          "text": "DEFAULT_RIG_MANIFEST_PATH = _DEFAULT_CHARACTER_ROOT / \"rig\" / \"rig-manifest.json\""
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "c933abeaece6f077f8e4a8df9b0a5ee81cbc32381055f3d8973a0301ed3d2f4d"
     },
     {
       "bytes": 6194,
-      "category": "archive_or_support",
+      "category": "character_voice_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/mohan/voice/profile.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
+      "readers": [
+        {
+          "line": 188,
+          "path": "domain/character_pack/character_data.py",
+          "text": "voice = _parse_voice(_read_json(root / \"voice\" / \"profile.json\"))"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
       "sha256": "a00d0b35d1aa4433ab0aa8c813de1878571ad9ffdf958b5c581da12111d8e654"
     },
     {
@@ -105010,6 +105088,11 @@
     "appearance_replacement_mask": 13,
     "appearance_silhouette": 19,
     "body_overlay": 15,
+    "character_dialogue_data": 5,
+    "character_expression_catalog": 1,
+    "character_persona_data": 5,
+    "character_rig_data": 1,
+    "character_voice_data": 1,
     "fullbody_blink": 24,
     "fullbody_complete_frames": 156,
     "fullbody_complete_masks": 13,
@@ -105045,9 +105128,9 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 31,
+    "excluded_support": 18,
     "product_validation_data": 48,
-    "runtime_data": 2973
+    "runtime_data": 2986
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

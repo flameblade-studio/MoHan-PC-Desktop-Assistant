@@ -129,6 +129,14 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
+def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
+    rows = {row["path"]: row for row in inventory["files"] if row["path"].startswith("assets/characters/mohan/")}
+    data_rows = {path: row for path, row in rows.items() if path.endswith(".json")}
+    assert len(data_rows) == 13
+    assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
+    assert rows["assets/characters/mohan/README.md"]["scope"] == "excluded_support"
+
+
 def test_required_embedded_content_locations_are_indexed(inventory: dict[str, Any]) -> None:
     required = {
         "identity_persona_dialogue": {
