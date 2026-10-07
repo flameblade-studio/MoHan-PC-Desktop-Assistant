@@ -5,11 +5,11 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 109,
-    "engine_extract_files": 68,
+    "actual_embedded_code_files": 110,
+    "engine_extract_files": 69,
     "manual_review_hint_only_files": 34,
     "product_shell_allowed_files": 7,
-    "true_extraction_files": 102,
+    "true_extraction_files": 103,
     "ui_text_reference_files": 34,
     "work_packages": 4
   },
@@ -624,6 +624,19 @@
       "classification": "engine_extract",
       "content": [
         {
+          "content_kind": "appearance",
+          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 52,
+              "matched": "mohan.default.blue-silver",
+              "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "character_appearance_pack_identifier",
+          "suggested_data_target": "assets/characters/mohan/pack-source.json"
+        },
+        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -641,6 +654,7 @@
       "path": "application/wardrobe_service.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
+        "assets/characters/mohan/pack-source.json",
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
@@ -918,9 +932,9 @@
           "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
           "locations": [
             {
-              "line": 27,
+              "line": 28,
               "matched": "MOHAN_EMOTION",
-              "text": "\"在回覆正文的最後附加一個不可見控制標籤，格式必須是 \""
+              "text": "\"[[MOHAN_EMOTION:情緒:強度]]。情緒只能使用：\""
             },
             {
               "line": 34,
@@ -1409,6 +1423,41 @@
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": "rig-and-asset-parameterization"
+    },
+    {
+      "classification": "engine_extract",
+      "content": [
+        {
+          "content_kind": "appearance",
+          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 22,
+              "matched": "mohan.makeup.builtin",
+              "text": "BUILTIN_MAKEUP_PACK_ID = \"mohan.makeup.builtin\""
+            },
+            {
+              "line": 23,
+              "matched": "mohan-signature",
+              "text": "BUILTIN_MAKEUP_ITEM_ID = \"mohan-signature\""
+            },
+            {
+              "line": 32,
+              "matched": "mohan.official.blue-white-hanfu",
+              "text": "OFFICIAL_OUTFIT_PACK_ID = \"mohan.official.blue-white-hanfu\""
+            }
+          ],
+          "rule": "character_appearance_pack_identifier",
+          "suggested_data_target": "assets/characters/mohan/pack-source.json"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "domain/outfit_pack_official.py",
+      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/pack-source.json"
+      ],
+      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -2886,9 +2935,9 @@
               "text": "description: str = \"MoHan protected secret\","
             },
             {
-              "line": 149,
+              "line": 150,
               "matched": "墨寒",
-              "text": "f\"{capabilities.display_name} 的原生安全金鑰保存\""
+              "text": "\"尚未完成實機驗證；墨寒不會退回明文保存。\""
             }
           ],
           "rule": "character_name_literal",
@@ -3117,14 +3166,14 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 539,
+              "line": 540,
               "matched": "MoHan",
-              "text": "\"Create a production-ready transparent PNG clothing overlay for the \""
+              "text": "\"exact MoHan reference image supplied. Output the new garment pixels with \""
             },
             {
-              "line": 557,
+              "line": 558,
               "matched": "MoHan",
-              "text": "\"Create a production-ready transparent PNG handheld accessory overlay \""
+              "text": "\"for the exact MoHan reference image supplied. Output the accessory pixels \""
             },
             {
               "line": 603,
@@ -3227,9 +3276,9 @@
               "text": "\"replying\": \"已辨識，墨寒正在回覆\","
             },
             {
-              "line": 120,
+              "line": 122,
               "matched": "墨寒",
-              "text": "\"OpenAI 回報目前儲存的 API 金鑰需要在同一 Project 啟用「{model}」使用權限。\""
+              "text": "\"Project；再於該 Project 建立具適當權限的 API Key，並到墨寒的\""
             },
             {
               "line": 166,
@@ -3237,9 +3286,9 @@
               "text": "\"replying\": \"已识别，墨寒正在回复\","
             },
             {
-              "line": 168,
+              "line": 170,
               "matched": "墨寒",
-              "text": "\"OpenAI 报告当前保存的 API 密钥需要在同一 Project 启用“{model}”使用权限。\""
+              "text": "\"再于该 Project 建立具备适当权限的 API Key，并到墨寒的“设置”页\""
             },
             {
               "line": 215,
@@ -3247,9 +3296,9 @@
               "text": "\"replying\": \"Recognized; MoHan is replying\","
             },
             {
-              "line": 217,
+              "line": 219,
               "matched": "MoHan",
-              "text": "\"Enable “{model}” access for the saved OpenAI API key in the same Project. Confirm that the \""
+              "text": "\"authorized key again in MoHan Settings.\""
             },
             {
               "line": 264,
@@ -3257,9 +3306,9 @@
               "text": "\"replying\": \"認識しました。墨寒が応答しています\","
             },
             {
-              "line": 266,
+              "line": 268,
               "matched": "墨寒",
-              "text": "\"保存された OpenAI API キーで「{model}」を利用する権限を同じ Project に設定してください。\""
+              "text": "\"持つキーを墨寒の設定で保存してください。\""
             }
           ],
           "rule": "character_name_literal",
@@ -3311,14 +3360,14 @@
               "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
             },
             {
-              "line": 440,
+              "line": 441,
               "matched": "主上",
-              "text": "+ \"\\n\\n## 即時對話承接規則\\n\""
+              "text": "\"先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。\""
             },
             {
-              "line": 440,
+              "line": 443,
               "matched": "妾",
-              "text": "+ \"\\n\\n## 即時對話承接規則\\n\""
+              "text": "\"直接延續妾上一句的內容；前文待提供時，\""
             }
           ],
           "rule": "character_title_or_dialogue_literal",
@@ -3371,9 +3420,9 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 74,
+              "line": 77,
               "matched": "墨寒",
-              "text": "MOBILE_PAGE = \"\"\"<!doctype html>"
+              "text": "<title>墨寒遠端</title>"
             }
           ],
           "rule": "character_name_literal",
@@ -4057,9 +4106,9 @@
               "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
             },
             {
-              "line": 150,
+              "line": 151,
               "matched": "赤焰劍",
-              "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
+              "text": "\"自赤焰劍中醒來，往後便由妾伴您左右。\","
             },
             {
               "line": 156,
@@ -4533,13 +4582,13 @@
             },
             {
               "line": 881,
-              "matched": "MoHan",
+              "matched": "墨寒",
               "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
             },
             {
-              "line": 881,
-              "matched": "墨寒",
-              "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
+              "line": 882,
+              "matched": "MoHan",
+              "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
             }
           ],
           "rule": "character_name_literal",
@@ -4790,9 +4839,9 @@
               "text": "\"墨寒說話時暫停上傳麥克風，播放結束後再恢復；\""
             },
             {
-              "line": 702,
+              "line": 703,
               "matched": "墨寒",
-              "text": "\"Realtime 保留原生音訊理解；每句說完後，畫面文字改用\""
+              "text": "\"完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。\","
             },
             {
               "line": 798,
@@ -6081,13 +6130,13 @@
             },
             {
               "line": 540,
-              "matched": "MoHan",
+              "matched": "墨寒",
               "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
             },
             {
-              "line": 540,
-              "matched": "墨寒",
-              "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
+              "line": 541,
+              "matched": "MoHan",
+              "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
             },
             {
               "line": 559,
@@ -6200,9 +6249,9 @@
               "text": "\"Pauses microphone upload while MoHan speaks and resumes after playback; \""
             },
             {
-              "line": 464,
+              "line": 466,
               "matched": "MoHan",
-              "text": "\"Realtime keeps native audio understanding. After each utterance, the \""
+              "text": "\"recording, and MoHan replies only after it succeeds.\""
             },
             {
               "line": 487,
@@ -6330,9 +6379,9 @@
               "text": "'墨寒の発話中はマイク送信を一時停止し、再生後に再開します。この設定では現在の操作を継続します。'"
             },
             {
-              "line": 283,
+              "line": 284,
               "matched": "墨寒",
-              "text": "\"Realtime 本来の音声理解を保ち、発話後の画面文字には録音全体の \""
+              "text": "\"OpenAI 高精度文字起こしを使用します。成功後に墨寒が返答します。\""
             },
             {
               "line": 301,
@@ -6411,13 +6460,13 @@
             },
             {
               "line": 535,
-              "matched": "MoHan",
+              "matched": "墨寒",
               "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
             },
             {
-              "line": 535,
-              "matched": "墨寒",
-              "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
+              "line": 536,
+              "matched": "MoHan",
+              "text": "\" CHOU MING HUA および MoHan Desktop Assistant コントリビューター、\""
             },
             {
               "line": 556,
@@ -6914,9 +6963,9 @@
               "text": "\"這個安裝包用來驗證墨寒能在 macOS／Linux 啟動、顯示四語介面，\""
             },
             {
-              "line": 73,
+              "line": 74,
               "matched": "墨寒",
-              "text": "\"Preview 不提供 API 金鑰、OAuth 或 Home Assistant 權杖輸入。\""
+              "text": "\"在原生安全保存完成前，墨寒不會退回明文保存，也不會假裝功能可用。\""
             },
             {
               "line": 79,
@@ -6934,9 +6983,9 @@
               "text": "\"此安装包用于验证墨寒能在 macOS／Linux 启动、显示四语界面，\""
             },
             {
-              "line": 103,
+              "line": 104,
               "matched": "墨寒",
-              "text": "\"Preview 不提供 API 密钥、OAuth 或 Home Assistant 令牌输入。\""
+              "text": "\"原生安全保存完成前，墨寒不会退回明文保存，也不会假装功能可用。\""
             },
             {
               "line": 109,
@@ -6949,9 +6998,9 @@
               "text": "\"heading\": \"MoHan has arrived on this platform—carefully\","
             },
             {
-              "line": 135,
+              "line": 136,
               "matched": "MoHan",
-              "text": "\"This Preview does not provide API-key, OAuth, or Home Assistant token \""
+              "text": "\"fields. Until native secure storage is verified, MoHan will not \""
             },
             {
               "line": 142,
@@ -6999,6 +7048,7 @@
         "domain/contracts.py",
         "domain/expression_system.py",
         "domain/gesture_configuration.py",
+        "domain/outfit_pack_official.py",
         "infrastructure/platform_linux.py",
         "infrastructure/platform_macos.py",
         "infrastructure/platform_services.py",
@@ -7008,7 +7058,7 @@
         "presentation/autonomous_outfit_generation_controller.py",
         "presentation/theme_pack_ui.py"
       ],
-      "file_count": 17,
+      "file_count": 18,
       "id": "engine-identity-parameterization",
       "objective": "把引擎、平台與儲存邊界中的墨寒名稱改由產品或角色身分設定注入。",
       "titles": [

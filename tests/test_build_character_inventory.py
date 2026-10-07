@@ -333,3 +333,27 @@ def test_summary_fragment_and_owner_boundaries(
             assert row["migration"] == builder.EMBEDDED
             assert row["symbols"]
             assert row["content_locations"]
+
+
+def test_appearance_pack_identifiers_are_detected() -> None:
+    source = 'PACK = "mohan.official.blue-white-hanfu"\nLOOK = "mohan-signature"\nSCHEMA = "mohan.makeup-safe-regions.v2"\n'
+    evidence = builder._content_evidence("domain/example.py", source)
+    matched = {row["matched"] for row in evidence if row["rule"] == "character_appearance_pack_identifier"}
+    assert matched == {"mohan.official.blue-white-hanfu", "mohan-signature"}
+
+
+def test_multiline_literal_evidence_points_at_the_matching_line() -> None:
+    source = 'TEXT = (\n    "first line "\n    "主上 second line"\n)\n'
+    evidence = builder._content_evidence("domain/example.py", source)
+    row = next(row for row in evidence if row["matched"] == "主上")
+    assert row["line"] == source.splitlines().index('    "主上 second line"') + 1
+    assert "主上" in row["text"]
+
+
+def test_inventory_test_is_mapped_to_every_scanned_source() -> None:
+    from tools import generate_test_impact_map as impact
+
+    rules = json.loads((ROOT / "tests/impact_map.json").read_text(encoding="utf-8"))["rules"]
+    test_names = frozenset(path.name for path in (ROOT / "tests").glob("test_*.py"))
+    for path in builder._python_sources(ROOT):
+        assert "test_build_character_inventory.py" in impact.mapped_tests_for_path(path, rules, test_names), path
