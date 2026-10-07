@@ -7,11 +7,8 @@ lazy from collections.abc import Mapping
 lazy from functools import cache
 lazy from pathlib import Path
 lazy from domain.character_pack.character_data_models import (
-    canonical_character_locale as _canonical_character_locale,
-)
-
-lazy from domain.character_pack.character_data_models import (
     AzureVoicePreferences,
+    canonical_character_locale as _canonical_character_locale,
     CharacterDataError,
     DialogueLocale,
     EventsProfile,
