@@ -27,6 +27,8 @@ DIRECT = "純資料可直接搬"
 EMBEDDED = "被程式寫死需先改"
 SOURCE_ROOTS = ("domain", "application", "infrastructure", "integrations", "presentation")
 IMAGE_SUFFIXES = frozenset({".png", ".ico", ".webp", ".gif", ".jpg", ".jpeg"})
+MEDIUM_EVIDENCE_THRESHOLD = 3
+HIGH_EVIDENCE_THRESHOLD = 10
 NON_PRODUCT_ROOTS = (
     {"path": ".quality-tmp/", "classification": "temporary_or_candidate_output"},
     {"path": "artifacts/", "classification": "candidate_or_generated_output"},
@@ -83,6 +85,17 @@ class Group:
     anchor: str
 
 
+@dataclass(frozen=True)
+class ContentRule:
+    """One reproducible rule for content that still lives in Python source."""
+
+    name: str
+    content_kind: str
+    pattern: re.Pattern[str]
+    suggested_data_target: str
+    description: str
+
+
 # Most-specific prefix wins. Each anchor names the real read or composition site.
 GROUPS = (
     Group("assets/pose-atlas/v5-base/", "fullbody_master", "presentation/pose_atlas_assets.py", 'self._root / f"{view_id}.png"'),
@@ -115,7 +128,7 @@ GROUPS = (
     Group("assets/ui/mohan-cloud.svg", "ui_brand_decoration", "presentation/flagship_theme.py", "_THEME_ASSET ="),
 )
 
-CODE_CATEGORIES = {
+MANUAL_REVIEW_HINTS = {
     "identity_persona_dialogue": (
         "domain/persona_defaults.py", "domain/app_profile.py", "domain/language_support.py",
         "infrastructure/db.py", "integrations/ai_client.py", "application/companion_phrasebook.py",
@@ -158,6 +171,194 @@ CODE_CATEGORIES = {
         "presentation/companion_visual_physics.py", "integrations/openai_outfit_generator.py",
     ),
 }
+
+# These hints preserve the analysis coverage that predated data extraction. A
+# hint never creates an embedded-code record; only CONTENT_RULES or the exact
+# rig-canvas detector below can do that.
+CONTENT_RULES = (
+    ContentRule(
+        "character_name_literal",
+        "identity",
+        re.compile(r"墨寒|(?<![A-Za-z])MoHan(?![A-Za-z])|(?<![A-Za-z])Mohan(?![A-Za-z])"),
+        "assets/characters/mohan/persona/profile.json",
+        "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+    ),
+    ContentRule(
+        "character_title_or_dialogue_literal",
+        "persona_dialogue",
+        re.compile(r"主上|赤焰[劍剑]|劍魂|剑魂|汴京|妾"),
+        "assets/characters/mohan/dialogue/<locale>.json",
+        "角色稱謂、故事設定或台詞仍寫在原始碼。",
+    ),
+    ContentRule(
+        "character_voice_preference_literal",
+        "voice",
+        re.compile(r"(?<![A-Za-z])coral(?![A-Za-z])|Yating"),
+        "assets/characters/mohan/voice/profile.json",
+        "墨寒偏好的聲音識別碼仍寫在原始碼。",
+    ),
+    ContentRule(
+        "character_body_profile_literal",
+        "rig",
+        re.compile(r"mohan-body-v2|flameblade\.mohan"),
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "角色身形或角色識別碼仍寫在原始碼。",
+    ),
+    ContentRule(
+        "character_appearance_pack_identifier",
+        "appearance",
+        re.compile(
+            r"(?<![A-Za-z0-9])mohan\.(?:makeup|official|default|sponsor)\.[a-z0-9][a-z0-9.-]*"
+            r"|(?<![A-Za-z0-9-])mohan-signature(?![A-Za-z0-9-])"
+        ),
+        "assets/characters/mohan/pack-source.json",
+        "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
+    ),
+    ContentRule(
+        "character_protocol_label_literal",
+        "expression",
+        re.compile(r"MOHAN_EMOTION"),
+        "assets/characters/mohan/expressions/state-catalog.json",
+        "角色命名的情緒協定標籤仍寫在引擎原始碼。",
+    ),
+    ContentRule(
+        "character_asset_path_literal",
+        "rig_assets",
+        re.compile(
+            r"assets/(?:characters/mohan|expressions(?:/|$)|pose-atlas/v5|"
+            r"mohan-|ui/mohan|onboarding/first-run)"
+        ),
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "墨寒專屬素材路徑仍由程式直接指定。",
+    ),
+    ContentRule(
+        "character_canvas_size_literal",
+        "rig",
+        re.compile(r"1024\s*[x×]\s*1536|1254\s*[x×]\s*1254"),
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "墨寒現行畫布尺寸仍寫在程式流程。",
+    ),
+    ContentRule(
+        "character_expression_state_literal",
+        "expression",
+        re.compile(
+            r"(?<![A-Za-z0-9_])(?:(?:thinking|attentive|determined|gentle_smile|proud|relieved|"
+            r"worried|surprised|shy|shy_cute|restrained_amused|exasperated|"
+            r"mock_hit|eureka|protective)_front|mock_scold|caught|glance)"
+            r"(?![A-Za-z0-9_])"
+        ),
+        "assets/characters/mohan/expressions/state-catalog.json",
+        "角色專屬表情或狀態名稱仍寫在程式流程。",
+    ),
+    ContentRule(
+        "character_pose_name_literal",
+        "rig",
+        re.compile(
+            r"front-crossed|left-cheek-rest|left-neutral|right-neutral|"
+            r"back-two-thirds-(?:left|right)|back-full|cheek-rest|"
+            r"front-(?:mock-scold|mock-hit|eureka|exasperated)"
+        ),
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+    ),
+    ContentRule(
+        "character_layer_name_literal",
+        "rig",
+        re.compile(
+            r"hair_back|oral_cavity|teeth_tongue|lip_(?:lower|upper)|"
+            r"corner_(?:left|right)|blush_(?:left|right)|iris_(?:left|right)|"
+            r"eyelid_(?:left|right)|eyeliner_(?:left|right)|brow_(?:left|right)|"
+            r"hair_(?:left|right)|sleeve_(?:left|right)"
+        ),
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "墨寒現行圖層名稱仍寫在程式流程。",
+    ),
+)
+
+PRODUCT_SHELL_ALLOWLIST = {
+    "application/application_bootstrap.py": "墨寒最外層組裝入口保留產品程序名稱。",
+    "application/runtime_bootstrap.py": "墨寒產品執行期入口保留程序與執行緒識別字。",
+    "domain/version_info.py": "原墨寒專案的版本、儲存庫與更新網址屬產品殼。",
+    "infrastructure/app_resources.py": "產品名、Windows AppUserModelID、圖示與 studio 識別屬墨寒產品殼。",
+    "infrastructure/backup_manager.py": "墨寒使用者備份檔名與產品資料位置屬產品殼相容契約。",
+    "infrastructure/profile_transfer.py": "墨寒攜帶檔名稱與既有使用者匯入格式屬產品殼相容契約。",
+    "infrastructure/updater.py": "墨寒更新端點、User-Agent 與發行資產名稱屬產品殼。",
+    "presentation/auxiliary_ui_localization.py": "更新、備份與攜帶檔中的墨寒產品名稱屬產品殼文案。",
+    "presentation/preview_app.py": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
+}
+
+UI_TEXT_REFERENCE_PATHS = frozenset(
+    {
+        "domain/safe_error_localization.py",
+        "domain/service_status_localization.py",
+        "integrations/cloud_connectors.py",
+        "integrations/realtime_contracts.py",
+        "integrations/remote_control.py",
+        "presentation/_dashboard_wardrobe_tab.py",
+        "presentation/dashboard_conversation.py",
+        "presentation/dashboard_settings.py",
+        "presentation/dashboard_settings_persistence.py",
+        "presentation/dashboard_shell.py",
+        "presentation/dashboard_today_memory.py",
+        "presentation/dashboard_voice.py",
+        "presentation/dashboard_wardrobe_preferences.py",
+        "presentation/dashboard_wardrobe_preview.py",
+        "presentation/dashboard_wardrobe_status.py",
+        "presentation/desktop_companion_status.py",
+        "presentation/flagship/audit.py",
+        "presentation/flagship/cloud.py",
+        "presentation/flagship/companion.py",
+        "presentation/flagship/gesture_editor.py",
+        "presentation/flagship/localization_cloud_home.py",
+        "presentation/flagship/localization_interaction.py",
+        "presentation/flagship/localization_remote_vision.py",
+        "presentation/flagship/localization_security_audit.py",
+        "presentation/flagship/localization_themes.py",
+        "presentation/flagship/localization_workflows.py",
+        "presentation/flagship/overview.py",
+        "presentation/flagship/remote.py",
+        "presentation/flagship/runtime.py",
+        "presentation/flagship/settings_security.py",
+        "presentation/flagship/vision.py",
+        "presentation/flagship_ui_localization.py",
+        "presentation/ui_localization.py",
+        "presentation/ui_localization_en.py",
+        "presentation/ui_localization_ja.py",
+    }
+)
+
+CLASSIFICATION_REASONS = {
+    "engine_extract": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+    "product_shell_allowed": "此檔位於逐檔白名單；命中內容是墨寒產品殼識別，可依既有產品契約保留。",
+    "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+}
+
+WORK_PACKAGE_DEFINITIONS = (
+    {
+        "id": "engine-identity-parameterization",
+        "titles": ("引擎身分參數化", "引擎身份参数化", "Engine identity parameterization", "エンジン身元のパラメータ化"),
+        "objective": "把引擎、平台與儲存邊界中的墨寒名稱改由產品或角色身分設定注入。",
+        "exclusions": "不改產品殼白名單，不處理圖像路徑、姿勢與圖層。",
+    },
+    {
+        "id": "persona-dialogue-voice-extraction",
+        "titles": ("人格、台詞與聲音抽離", "人格、台词与声音抽离", "Persona, dialogue and voice extraction", "人格・台詞・音声の抽出"),
+        "objective": "把剩餘稱謂、故事台詞、提示詞與聲音偏好接到現有角色資料。",
+        "exclusions": "不改介面純名稱文字，不處理 rig 或正式素材 bytes。",
+    },
+    {
+        "id": "rig-and-asset-parameterization",
+        "titles": ("Rig 與素材路徑參數化", "Rig 与素材路径参数化", "Rig and asset parameterization", "Rig と素材パスのパラメータ化"),
+        "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
+        "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
+    },
+    {
+        "id": "ui-name-parameterization",
+        "titles": ("介面角色名稱參數化", "界面角色名称参数化", "UI character-name parameterization", "UI キャラクター名のパラメータ化"),
+        "objective": "把介面中的墨寒名稱與使用者稱謂改成角色資料佔位符。",
+        "exclusions": "保留 About、更新、攜帶檔等已列入產品殼白名單的產品名稱。",
+    },
+)
 
 
 def source_evidence(root: Path, path: str, anchor: str, *, after: str | None = None) -> dict[str, Any]:
@@ -335,29 +536,182 @@ def _pack_members(root: Path, path: Path) -> list[dict[str, Any]]:
     return records
 
 
-def _code_records(root: Path) -> list[dict[str, Any]]:
-    categories: dict[str, set[str]] = {}
+def _python_sources(root: Path) -> dict[str, str]:
     sources: dict[str, str] = {}
-    for category, paths in CODE_CATEGORIES.items():
-        for path in paths:
-            categories.setdefault(path, set()).add(category)
     for directory in SOURCE_ROOTS:
         for path in sorted((root / directory).rglob("*.py")):
-            text = path.read_text(encoding="utf-8")
-            sources[path.relative_to(root).as_posix()] = text
-            if re.search(r"墨寒|主上|赤焰|MOHAN_EMOTION|coral|Yating", text):
-                categories.setdefault(path.relative_to(root).as_posix(), set()).add("character_literal_sites")
+            relative = path.relative_to(root).as_posix()
+            sources[relative] = path.read_text(encoding="utf-8")
     for path in sorted(root.glob("*.py")):
-        sources[path.relative_to(root).as_posix()] = path.read_text(encoding="utf-8")
+        relative = path.relative_to(root).as_posix()
+        sources[relative] = path.read_text(encoding="utf-8")
+    return sources
+
+
+def _parsed_python(text: str) -> ast.Module:
+    return ast.parse(re.sub(r"(?m)^(\s*)lazy (import |from )", r"\1\2", text))
+
+
+def _docstring_nodes(tree: ast.Module) -> set[int]:
+    result: set[int] = set()
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Expr)
+            and isinstance(node.value, ast.Constant)
+            and isinstance(node.value.value, str)
+        ):
+            result.add(id(node.value))
+    return result
+
+
+def _match_line(lines: list[str], node: ast.Constant, matched: str) -> int:
+    """Return the first source line of a possibly multi-line literal that shows the match."""
+    last = node.end_lineno or node.lineno
+    return next(
+        (number for number in range(node.lineno, last + 1) if matched in lines[number - 1]),
+        node.lineno,
+    )
+
+
+def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
+    """Return literal evidence only; identifiers, comments and hints do not count."""
+    lines = text.splitlines()
+    tree = _parsed_python(text)
+    docstrings = _docstring_nodes(tree)
+    found: dict[tuple[int, str, str], dict[str, Any]] = {}
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Constant)
+            and isinstance(node.value, str)
+            and id(node) not in docstrings
+        ):
+            for rule in CONTENT_RULES:
+                for match in rule.pattern.finditer(node.value):
+                    line = _match_line(lines, node, match.group(0))
+                    key = (line, rule.name, match.group(0))
+                    found[key] = {
+                        "path": path,
+                        "line": line,
+                        "text": lines[line - 1].strip(),
+                        "matched": match.group(0),
+                        "rule": rule.name,
+                        "content_kind": rule.content_kind,
+                        "description": rule.description,
+                        "suggested_data_target": rule.suggested_data_target,
+                    }
+        if isinstance(node, (ast.Tuple, ast.List)):
+            values = []
+            for item in node.elts:
+                if not isinstance(item, ast.Constant) or not isinstance(item.value, int):
+                    values = []
+                    break
+                values.append(item.value)
+            if tuple(values) not in {(1024, 1536), (1254, 1254)}:
+                continue
+            matched = "x".join(str(value) for value in values)
+            key = (node.lineno, "character_canvas_size_literal", matched)
+            found[key] = {
+                "path": path,
+                "line": node.lineno,
+                "text": lines[node.lineno - 1].strip(),
+                "matched": matched,
+                "rule": "character_canvas_size_literal",
+                "content_kind": "rig",
+                "description": "墨寒現行畫布尺寸仍寫在程式流程。",
+                "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+            }
+    return [found[key] for key in sorted(found)]
+
+
+def _top_level_symbols(tree: ast.Module) -> list[dict[str, Any]]:
+    symbols = []
+    supported = (
+        ast.FunctionDef,
+        ast.AsyncFunctionDef,
+        ast.ClassDef,
+        ast.Assign,
+        ast.AnnAssign,
+    )
+    for node in tree.body:
+        if not isinstance(node, supported):
+            continue
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            name = node.name
+        elif isinstance(node, ast.Assign):
+            name = ast.unparse(node.targets[0])
+        else:
+            name = ast.unparse(node.target)
+        symbols.append({"name": name, "line": node.lineno, "end_line": node.end_lineno})
+    return symbols
+
+
+def _source_classification(path: str, evidence: list[dict[str, Any]]) -> str:
+    rules = {row["rule"] for row in evidence}
+    shell_rules = {"character_name_literal", "character_asset_path_literal"}
+    if path in PRODUCT_SHELL_ALLOWLIST and rules <= shell_rules:
+        return "product_shell_allowed"
+    ui_rules = {"character_name_literal", "character_title_or_dialogue_literal"}
+    if path in UI_TEXT_REFERENCE_PATHS and rules <= ui_rules:
+        return "ui_text_reference"
+    return "engine_extract"
+
+
+def _source_difficulty(evidence: list[dict[str, Any]]) -> str:
+    rules = {row["rule"] for row in evidence}
+    rig_rules = {
+        "character_asset_path_literal",
+        "character_body_profile_literal",
+        "character_canvas_size_literal",
+        "character_expression_state_literal",
+        "character_layer_name_literal",
+        "character_pose_name_literal",
+    }
+    if rules & rig_rules or len(evidence) >= HIGH_EVIDENCE_THRESHOLD:
+        return "high"
+    if (
+        len(evidence) >= MEDIUM_EVIDENCE_THRESHOLD
+        or "character_title_or_dialogue_literal" in rules
+    ):
+        return "medium"
+    return "low"
+
+
+def _work_package(classification: str, evidence: list[dict[str, Any]]) -> str | None:
+    if classification == "product_shell_allowed":
+        return None
+    if classification == "ui_text_reference":
+        return "ui-name-parameterization"
+    rules = {row["rule"] for row in evidence}
+    if rules & {
+        "character_title_or_dialogue_literal",
+        "character_voice_preference_literal",
+    }:
+        return "persona-dialogue-voice-extraction"
+    rig_rules = {
+        "character_asset_path_literal",
+        "character_body_profile_literal",
+        "character_canvas_size_literal",
+        "character_expression_state_literal",
+        "character_layer_name_literal",
+        "character_pose_name_literal",
+    }
+    if rules & rig_rules:
+        return "rig-and-asset-parameterization"
+    return "engine-identity-parameterization"
+
+
+def _code_records(root: Path) -> list[dict[str, Any]]:
+    sources = _python_sources(root)
+    evidence_by_path = {}
+    for path, text in sources.items():
+        evidence = _content_evidence(path, text)
+        if evidence:
+            evidence_by_path[path] = evidence
     records = []
-    for path, groups in sorted(categories.items()):
-        text = (root / path).read_text(encoding="utf-8")
-        lines = text.splitlines()
-        # Index complete definition ranges as well as literal sites: English and
-        # Japanese dialogue can span many lines and need their containing symbol.
-        tree = ast.parse(re.sub(r"(?m)^(\s*)lazy (import |from )", r"\1\2", text))
-        symbols = [{"name": node.name if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) else ast.unparse(node.targets[0] if isinstance(node, ast.Assign) else node.target), "line": node.lineno, "end_line": node.end_lineno} for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Assign, ast.AnnAssign))]
-        evidence = [{"path": path, "line": number, "text": line.strip()} for number, line in enumerate(lines, 1) if re.search(r"墨寒|主上|赤焰|MoHan|MOHAN_|coral|Yating|DEFAULT_|PROMPT|EXPRESSION_|POSE_|VOICE|CANONICAL_YAWS|BODY_PROFILE|LAYER_Z_ORDER", line)]
+    for path, evidence in sorted(evidence_by_path.items()):
+        text = sources[path]
+        tree = _parsed_python(text)
+        classification = _source_classification(path, evidence)
         module = path.removesuffix(".py").replace("/", ".")
         consumer_pattern = re.compile(rf"\b(?:from|import) {re.escape(module)}\b")
         consumers = []
@@ -369,8 +723,53 @@ def _code_records(root: Path) -> list[dict[str, Any]]:
             )
         if path == "presentation/preview_app.py":
             consumers.append(source_evidence(root, "tools/build_preview_package.py", 'command.append(str(ROOT / "presentation" / "preview_app.py"))'))
-        records.append({"path": path, "category": "embedded_character_content", "content_categories": sorted(groups), "scope": "embedded_code", "migration": EMBEDDED, "readers": consumers, "content_locations": evidence, "symbols": symbols, "note": "整個模組只作定位證據；通用邏輯留引擎，角色字串、預設值與規則需按 symbol 分流；readers 列靜態匯入者，事件內使用可查 symbol", **file_metadata(root / path)})
+        targets = sorted({row["suggested_data_target"] for row in evidence})
+        records.append(
+            {
+                "path": path,
+                "category": "embedded_character_content",
+                "content_categories": sorted({row["content_kind"] for row in evidence}),
+                "scope": "embedded_code",
+                "migration": EMBEDDED,
+                "classification": classification,
+                "classification_reason": (
+                    PRODUCT_SHELL_ALLOWLIST[path]
+                    if classification == "product_shell_allowed"
+                    else CLASSIFICATION_REASONS[classification]
+                ),
+                "suggested_data_targets": targets,
+                "estimated_difficulty": _source_difficulty(evidence),
+                "work_package": _work_package(classification, evidence),
+                "readers": consumers,
+                "content_locations": evidence,
+                "symbols": _top_level_symbols(tree),
+                "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
+                **file_metadata(root / path),
+            }
+        )
     return records
+
+
+def _manual_review_hints(code_records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    detected = {row["path"]: row for row in code_records}
+    categories: dict[str, set[str]] = {}
+    for category, paths in MANUAL_REVIEW_HINTS.items():
+        for path in paths:
+            categories.setdefault(path, set()).add(category)
+    hints = []
+    for path, suggested_categories in sorted(categories.items()):
+        record = detected.get(path)
+        hints.append(
+            {
+                "path": path,
+                "suggested_categories": sorted(suggested_categories),
+                "status": "confirmed_by_content_rules" if record else "review_hint_only",
+                "evidence_rules": sorted(
+                    {row["rule"] for row in record["content_locations"]}
+                ) if record else [],
+            }
+        )
+    return hints
 
 
 def build_inventory(root: Path = ROOT) -> dict[str, Any]:
@@ -416,17 +815,25 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
                     }
                     for item in manifest.get(component, [])
                 )
-    records.extend(_code_records(root))
+    code_records = _code_records(root)
+    records.extend(code_records)
     records.sort(key=lambda row: row["path"])
     counts = Counter(row["category"] for row in records if row["scope"] == "runtime_data" and "!" not in row["path"])
+    classification_counts = Counter(row["classification"] for row in code_records)
     return {
         "schema": "mohan.character-inventory.v1", "schema_version": 1,
         "purpose": "existing_content_index_only",
         "owner_decisions": {"standalone_download_design": True, "pack_visibility": "private_repository", "character_asset_license": "owner_decision_pending", "dlc_relationship": "owner_decision_pending", "engine_license": "MIT", "art_tool_license": "MIT"},
-        "scope_notes": ["runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤", "embedded_code 是定位清冊，不可執行碼角色包內容", "readers 的 line 與 text 指向讀取或模板；manifest_references 點名精確宣告", "封存、製作鏡像、審閱原圖與來源 sidecar 均明確排除；既有核准 scope 沿用", "scratchpad、artifacts、.quality-tmp、docs/release-evidence、tests/golden 全樹不屬產品包輸入"],
+        "scope_notes": ["runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤", "embedded_code 只由實際字串或角色專屬數值規則產生；人工提示、註解與 docstring 不計數", "content_locations 的 line、text、matched 與 rule 是可重現判定證據", "readers 的 line 與 text 指向讀取或模板；manifest_references 點名精確宣告", "封存、製作鏡像、審閱原圖與來源 sidecar 均明確排除；既有核准 scope 沿用", "scratchpad、artifacts、.quality-tmp、docs/release-evidence、tests/golden 全樹不屬產品包輸入"],
         "non_product_roots": [dict(row) for row in NON_PRODUCT_ROOTS],
         "runtime_file_counts": dict(sorted(counts.items())),
         "appearance_catalog": appearance_catalog,
+        "embedded_code_classification_counts": dict(sorted(classification_counts.items())),
+        "manual_review_hints": _manual_review_hints(code_records),
+        "product_shell_allowlist": [
+            {"path": path, "reason": reason}
+            for path, reason in sorted(PRODUCT_SHELL_ALLOWLIST.items())
+        ],
         "scope_counts": dict(sorted(Counter(row["scope"] for row in records).items())),
         "files": records,
     }
@@ -436,10 +843,198 @@ def render_inventory(inventory: dict[str, Any]) -> str:
     return json.dumps(inventory, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
 
 
+def _worklist_item(row: dict[str, Any]) -> dict[str, Any]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for evidence in row["content_locations"]:
+        rule = evidence["rule"]
+        if rule not in grouped:
+            grouped[rule] = {
+                "rule": rule,
+                "content_kind": evidence["content_kind"],
+                "description": evidence["description"],
+                "suggested_data_target": evidence["suggested_data_target"],
+                "locations": [],
+            }
+        grouped[rule]["locations"].append(
+            {
+                "line": evidence["line"],
+                "text": evidence["text"],
+                "matched": evidence["matched"],
+            }
+        )
+    return {
+        "path": row["path"],
+        "classification": row["classification"],
+        "reason": row["classification_reason"],
+        "estimated_difficulty": row["estimated_difficulty"],
+        "suggested_data_targets": row["suggested_data_targets"],
+        "work_package": row["work_package"],
+        "content": [grouped[key] for key in sorted(grouped)],
+    }
+
+
+def build_extraction_worklist(inventory: dict[str, Any]) -> dict[str, Any]:
+    """Build non-overlapping extraction packages from measured source evidence."""
+    code_rows = [row for row in inventory["files"] if row["scope"] == "embedded_code"]
+    pending_rows = [
+        row for row in code_rows
+        if row["classification"] != "product_shell_allowed"
+    ]
+    allowed_rows = [
+        row for row in code_rows
+        if row["classification"] == "product_shell_allowed"
+    ]
+    packages = []
+    assigned_paths = []
+    for definition in WORK_PACKAGE_DEFINITIONS:
+        files = sorted(
+            row["path"]
+            for row in pending_rows
+            if row["work_package"] == definition["id"]
+        )
+        if not files:
+            continue
+        assigned_paths.extend(files)
+        packages.append(
+            {
+                "id": definition["id"],
+                "titles": list(definition["titles"]),
+                "objective": definition["objective"],
+                "exclusions": definition["exclusions"],
+                "file_count": len(files),
+                "exclusive_files": files,
+            }
+        )
+    expected_paths = sorted(row["path"] for row in pending_rows)
+    if sorted(assigned_paths) != expected_paths or len(assigned_paths) != len(set(assigned_paths)):
+        raise ValueError("Extraction work packages must cover each pending file exactly once.")
+    by_path = {row["path"]: row for row in code_rows}
+    declared_allowlist = []
+    for entry in inventory["product_shell_allowlist"]:
+        row = by_path.get(entry["path"])
+        if row is None:
+            status = "no_current_content_evidence"
+        elif row["classification"] == "product_shell_allowed":
+            status = "allowed_content_present"
+        else:
+            status = "contains_extraction_content"
+        declared_allowlist.append({**entry, "status": status})
+    hint_only_count = sum(
+        row["status"] == "review_hint_only"
+        for row in inventory["manual_review_hints"]
+    )
+    classification_counts = Counter(row["classification"] for row in code_rows)
+    return {
+        "schema": "mohan.character-extraction-worklist.v1",
+        "schema_version": 1,
+        "source_inventory": "docs/character-pack/mohan-inventory.json",
+        "purpose": "measured_parallel_extraction_assignment",
+        "counts": {
+            "actual_embedded_code_files": len(code_rows),
+            "true_extraction_files": len(pending_rows),
+            "engine_extract_files": classification_counts["engine_extract"],
+            "ui_text_reference_files": classification_counts["ui_text_reference"],
+            "product_shell_allowed_files": len(allowed_rows),
+            "manual_review_hint_only_files": hint_only_count,
+            "work_packages": len(packages),
+        },
+        "classification_definitions": dict(CLASSIFICATION_REASONS),
+        "extraction_items": [_worklist_item(row) for row in pending_rows],
+        "product_shell_allowed": [_worklist_item(row) for row in allowed_rows],
+        "declared_product_shell_allowlist": declared_allowlist,
+        "work_packages": packages,
+        "owner_decisions": dict(inventory["owner_decisions"]),
+    }
+
+
+def render_extraction_worklist(worklist: dict[str, Any]) -> str:
+    return json.dumps(worklist, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
+
+
+def render_extraction_summary(worklist: dict[str, Any]) -> str:
+    counts = worklist["counts"]
+    package_rows = worklist["work_packages"]
+    allowed_paths = [row["path"] for row in worklist["product_shell_allowed"]]
+    sections = (
+        (
+            "繁體中文",
+            f"實測後，真正仍需搬離引擎或改由角色資料代入的程式檔有 {counts['true_extraction_files']} 個：引擎抽離 {counts['engine_extract_files']} 個、介面名稱參照 {counts['ui_text_reference_files']} 個。另有 {counts['product_shell_allowed_files']} 個檔案屬墨寒產品殼，可按逐檔理由保留品牌內容。",
+            f"舊名單另有 {counts['manual_review_hint_only_files']} 個檔案只剩人工複核提示，沒有實際內容規則證據，因此不計入待搬數。每個待搬檔只出現在下列一個獨占工作包。",
+            "工作包", "獨占檔案數",
+            "產品殼允許保留",
+            "角色素材授權與 DLC 關係仍待擁有者決定；本清單不改變私有倉庫與獨立下載設計裁定。",
+            "詳細證據與逐檔理由見 `extraction-worklist.json`。",
+        ),
+        (
+            "简体中文",
+            f"实测后，真正仍需从引擎移出或改为由角色数据代入的程序文件有 {counts['true_extraction_files']} 个：引擎抽离 {counts['engine_extract_files']} 个、界面名称引用 {counts['ui_text_reference_files']} 个。另有 {counts['product_shell_allowed_files']} 个文件属于墨寒产品壳，可按逐文件理由保留品牌内容。",
+            f"旧名单另有 {counts['manual_review_hint_only_files']} 个文件只剩人工复核提示，没有实际内容规则证据，因此不计入待迁移数。每个待迁移文件只出现在下列一个独占工作包。",
+            "工作包", "独占文件数",
+            "产品壳允许保留",
+            "角色素材授权与 DLC 关系仍待所有者决定；本清单不改变私有仓库和独立下载设计裁定。",
+            "详细证据与逐文件理由见 `extraction-worklist.json`。",
+        ),
+        (
+            "English",
+            f"Measurement finds {counts['true_extraction_files']} source files that still need engine extraction or character-data substitution: {counts['engine_extract_files']} engine-extraction files and {counts['ui_text_reference_files']} UI-name references. Another {counts['product_shell_allowed_files']} files belong to the MoHan product shell and may retain branded content for their recorded per-file reasons.",
+            f"The old list leaves {counts['manual_review_hint_only_files']} manual-review-only hints with no content-rule evidence; they are not counted as extraction work. Every pending file belongs to exactly one exclusive package below.",
+            "Work package", "Exclusive files",
+            "Allowed product-shell files",
+            "Character-asset licensing and the DLC relationship still require the owner's decision; this list does not change the private-repository or independent-download decisions.",
+            "See `extraction-worklist.json` for detailed evidence and per-file reasons.",
+        ),
+        (
+            "日本語",
+            f"実測の結果、エンジンからの抽出またはキャラクターデータによる差し替えが必要なソースは {counts['true_extraction_files']} ファイルです。内訳はエンジン抽出 {counts['engine_extract_files']}、UI の名前参照 {counts['ui_text_reference_files']} です。別に {counts['product_shell_allowed_files']} ファイルは墨寒製品シェルに属し、ファイルごとの理由に従ってブランド内容を保持できます。",
+            f"旧一覧には実内容の規則証拠がない人工確認専用の候補が {counts['manual_review_hint_only_files']} ファイル残りますが、抽出数には含めません。各対象ファイルは以下の独占作業パッケージ一つだけに属します。",
+            "作業パッケージ", "独占ファイル数",
+            "製品シェルで保持可能",
+            "キャラクター素材のライセンスと DLC の関係は所有者の決定待ちです。本一覧は非公開リポジトリと独立ダウンロード設計の決定を変更しません。",
+            "詳細な証拠とファイルごとの理由は `extraction-worklist.json` を参照してください。",
+        ),
+    )
+    parts = ["# 角色內容抽離待辦摘要／角色内容抽离待办摘要／Character Extraction Worklist Summary／キャラクター内容抽出一覧\n"]
+    for locale, section in enumerate(sections):
+        (
+            language,
+            result,
+            hints,
+            package_header,
+            count_header,
+            allowed_header,
+            decisions,
+            details,
+        ) = section
+        rows = [
+                f"| {package['titles'][locale]} (`{package['id']}`) | {package['file_count']} |"
+            for package in package_rows
+        ]
+        allowed = "、".join(f"`{path}`" for path in allowed_paths)
+        parts.append(
+            f"## {language}\n\n{result}\n\n{hints}\n\n"
+            f"| {package_header} | {count_header} |\n|---|---:|\n"
+            + "\n".join(rows)
+            + f"\n\n### {allowed_header}\n\n{allowed}\n\n{decisions}\n\n"
+            + details
+            + "\n"
+        )
+    return "\n".join(parts)
+
+
 def render_summary(inventory: dict[str, Any]) -> str:
     """Render parallel owner-facing summaries from the same measured counts."""
     counts = inventory["runtime_file_counts"]
     code_count = inventory["scope_counts"]["embedded_code"]
+    classifications = inventory["embedded_code_classification_counts"]
+    extraction_count = (
+        classifications.get("engine_extract", 0)
+        + classifications.get("ui_text_reference", 0)
+    )
+    allowed_count = classifications.get("product_shell_allowed", 0)
+    hint_only_count = sum(
+        row["status"] == "review_hint_only"
+        for row in inventory["manual_review_hints"]
+    )
     runtime_physical = sum(row["scope"] == "runtime_data" and "!" not in row["path"] for row in inventory["files"])
     archive_members = sum(row["scope"] == "runtime_data" and "!" in row["path"] for row in inventory["files"])
     validation_count = inventory["scope_counts"]["product_validation_data"]
@@ -459,10 +1054,10 @@ def render_summary(inventory: dict[str, Any]) -> str:
         f"正式パック内には衣装 {look}、髪型 {hair}、髪飾り {headwear}、メイク {makeup} 項目があります。差分と四言語の名称は appearance_catalog に記録します。",
     )
     sections = (
-        ("繁體中文", "這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。", "類別", "檔案數", f"有 {code_count} 個程式檔包含角色內容或規則，需先按清冊的 symbol 與行號改成讀資料：名字、稱謂、人格與系統提示、提醒與節日台詞、聲音偏好、角度、表情、姿勢、嘴型與圖層順序。清冊也搜尋額外角色字串位置；整個模組不等於全部要搬。", "圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。", "v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence 審閱證據、tests/golden 回歸證據、製作鏡像與未引用審閱原圖都不進產品包；完整機器分類見 non_product_roots。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。", "角色包自開始就支援獨立下載；墨寒角色包放在私有倉庫（擁有者 2026-10-05 裁定）；角色素材授權及 DLC 關係待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。"),
-        ("简体中文", "本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。", "类别", "文件数", f"有 {code_count} 个程序文件包含角色内容或规则，需要按清册的 symbol 和行号改为读取数据：名字、称谓、人格与系统提示、提醒与节日台词、声音偏好、角度、表情、姿势、嘴型与图层顺序。清册也搜索额外角色字符串位置；整个模块不等于全部要搬。", "图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。", "v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence 审阅证据、tests/golden 回归证据、制作镜像和未引用审阅原图均不进入产品包；完整机器分类见 non_product_roots。reviewed-garments 与 source-bound-exasperated 中正式加载或验证的数据予以保留。", "角色包从开始就支持独立下载；墨寒角色包放在私有仓库（所有者 2026-10-05 裁定）；角色素材授权及 DLC 关系待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。"),
-        ("English", "This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.", "Category", "Files", f"{code_count} source files contain character content or rules. Use indexed symbols and lines to extract names, titles, persona and system prompts, reminders and occasion dialogue, voice preferences, angles, expressions, poses, mouth geometry and layer order. Additional character literals are searched; entire modules are not extraction payloads.", "Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.", "Generation-1 v4 calibration, artifacts candidates, .quality-tmp temporaries, docs/release-evidence reviews, tests/golden regression evidence, authoring mirrors and unreferenced review originals stay outside the product pack; non_product_roots records the machine-readable boundary. Formally loaded or verified reviewed-garments and source-bound-exasperated data remains included.", "Independent download is a design requirement from inception. The MoHan character pack lives in a private repository (owner decision, 2026-10-05); character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope."),
-        ("日本語", "この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。", "分類", "ファイル数", f"{code_count} 個のソースファイルにキャラクター内容や規則があります。symbol と行番号に従い、名前、呼称、人格とシステムプロンプト、通知と行事の台詞、声の好み、角度、表情、姿勢、口の形とレイヤー順をデータ化します。追加の文字列も検索し、モジュール全体を移行対象とは扱いません。", "画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。", "v4 の第一世代校正、artifacts の候補、.quality-tmp の一時出力、docs/release-evidence の審査証拠、tests/golden の回帰証拠、制作ミラー、未参照の審査原画は製品パックに含めません。機械可読の境界は non_product_roots に記録します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。", "独立ダウンロードは当初からの設計要件です。墨寒キャラクターパックは非公開リポジトリに置きます（所有者決定、2026-10-05）。素材ライセンスと DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。"),
+        ("繁體中文", "這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。", "類別", "檔案數", f"實際內容規則找到 {code_count} 個程式檔；其中真正待搬或參數化 {extraction_count} 個，產品殼允許保留 {allowed_count} 個。舊名單另有 {hint_only_count} 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。", "圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。", "v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence 審閱證據、tests/golden 回歸證據、製作鏡像與未引用審閱原圖都不進產品包；完整機器分類見 non_product_roots。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。", "角色包自開始就支援獨立下載；墨寒角色包放在私有倉庫（擁有者 2026-10-05 裁定）；角色素材授權及 DLC 關係待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。"),
+        ("简体中文", "本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。", "类别", "文件数", f"实际内容规则找到 {code_count} 个程序文件；其中真正待迁移或参数化 {extraction_count} 个，产品壳允许保留 {allowed_count} 个。旧名单另有 {hint_only_count} 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。", "图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。", "v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence 审阅证据、tests/golden 回归证据、制作镜像和未引用审阅原图均不进入产品包；完整机器分类见 non_product_roots。reviewed-garments 与 source-bound-exasperated 中正式加载或验证的数据予以保留。", "角色包从开始就支持独立下载；墨寒角色包放在私有仓库（所有者 2026-10-05 裁定）；角色素材授权及 DLC 关系待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。"),
+        ("English", "This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.", "Category", "Files", f"Actual-content rules find {code_count} source files: {extraction_count} require extraction or parameterization and {allowed_count} are allowed product-shell files. Another {hint_only_count} files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.", "Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.", "Generation-1 v4 calibration, artifacts candidates, .quality-tmp temporaries, docs/release-evidence reviews, tests/golden regression evidence, authoring mirrors and unreferenced review originals stay outside the product pack; non_product_roots records the machine-readable boundary. Formally loaded or verified reviewed-garments and source-bound-exasperated data remains included.", "Independent download is a design requirement from inception. The MoHan character pack lives in a private repository (owner decision, 2026-10-05); character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope."),
+        ("日本語", "この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。", "分類", "ファイル数", f"実内容の規則により {code_count} ソースファイルを検出しました。抽出またはパラメータ化が必要なのは {extraction_count}、製品シェルで保持可能なのは {allowed_count} ファイルです。旧一覧のうち {hint_only_count} ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。", "画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。", "v4 の第一世代校正、artifacts の候補、.quality-tmp の一時出力、docs/release-evidence の審査証拠、tests/golden の回帰証拠、制作ミラー、未参照の審査原画は製品パックに含めません。機械可読の境界は non_product_roots に記録します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。", "独立ダウンロードは当初からの設計要件です。墨寒キャラクターパックは非公開リポジトリに置きます（所有者決定、2026-10-05）。素材ライセンスと DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。"),
     )
     parts = ["# 墨寒角色內容清冊摘要／墨寒角色内容清册摘要／MoHan Character Inventory Summary／墨寒キャラクター内容一覧\n"]
     for locale, (language, intro, category, files, code, data, exclusions, decisions) in enumerate(sections):
@@ -477,7 +1072,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output-dir", type=Path, default=ROOT / "docs/character-pack")
     args = parser.parse_args(argv)
     inventory = build_inventory()
-    outputs = {"mohan-inventory.json": render_inventory(inventory), "mohan-inventory-summary.md": render_summary(inventory)}
+    worklist = build_extraction_worklist(inventory)
+    outputs = {
+        "mohan-inventory.json": render_inventory(inventory),
+        "mohan-inventory-summary.md": render_summary(inventory),
+        "extraction-worklist.json": render_extraction_worklist(worklist),
+        "extraction-worklist.md": render_extraction_summary(worklist),
+    }
     if args.check:
         for name, expected in outputs.items():
             path = args.output_dir / name
