@@ -6,6 +6,7 @@ lazy from collections.abc import Mapping
 lazy from contextlib import suppress
 lazy from pathlib import Path
 
+lazy from domain.contracts import default_character_display_name
 lazy from infrastructure.platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
@@ -39,7 +40,9 @@ class WindowsPlatformServices:
         local_root = Path(values.get("LOCALAPPDATA") or user_home)
         # This is the exact path used by every existing public Windows build.
         # Moving it would silently create a new profile and appear to lose data.
-        application_root = local_root / "YanJianStudio" / "MoHan"
+        application_root = (
+            local_root / "YanJianStudio" / default_character_display_name("en")
+        )
         self.paths = PlatformPaths(
             data=application_root,
             config=application_root,

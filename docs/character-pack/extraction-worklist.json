@@ -5,13 +5,13 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 109,
-    "engine_extract_files": 68,
-    "manual_review_hint_only_files": 34,
+    "actual_embedded_code_files": 92,
+    "engine_extract_files": 51,
+    "manual_review_hint_only_files": 37,
     "product_shell_allowed_files": 7,
-    "true_extraction_files": 102,
+    "true_extraction_files": 85,
     "ui_text_reference_files": 34,
-    "work_packages": 4
+    "work_packages": 3
   },
   "declared_product_shell_allowlist": [
     {
@@ -264,66 +264,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 231,
-              "matched": "MoHan",
-              "text": "\"MoHan native acceleration is unavailable; using Python: %s\","
-            },
-            {
-              "line": 248,
-              "matched": "MoHan",
-              "text": "\"MoHan native operation %s requires attention; using Python fallback (attention event %d): %s\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "application/native_acceleration.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 350,
-              "matched": "MoHan",
-              "text": "\"MoHan native RGBA acceleration is unavailable; using Python: %s\","
-            },
-            {
-              "line": 379,
-              "matched": "MoHan",
-              "text": "\"MoHan native RGBA operation %s requires attention; using Python fallback \""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "application/native_rgba_acceleration.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "expression",
           "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
           "locations": [
@@ -439,76 +379,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 136,
-              "matched": "MoHan",
-              "text": "root = Path(os.environ.get(\"LOCALAPPDATA\") or home) / \"YanJianStudio\" / \"MoHan\""
-            },
-            {
-              "line": 141,
-              "matched": "MoHan",
-              "text": "root = home / \"Library\" / \"Application Support\" / \"YanJianStudio\" / \"MoHan\""
-            },
-            {
-              "line": 143,
-              "matched": "MoHan",
-              "text": "cache = home / \"Library\" / \"Caches\" / \"YanJianStudio\" / \"MoHan\""
-            },
-            {
-              "line": 146,
-              "matched": "MoHan",
-              "text": "suffix = Path(\"YanJianStudio\") / \"MoHan\""
-            },
-            {
-              "line": 897,
-              "matched": "MoHan",
-              "text": "(\"home_assistant\", \"home-assistant-token.dpapi\", \"MoHan Home Assistant token\"),"
-            },
-            {
-              "line": 898,
-              "matched": "MoHan",
-              "text": "(\"oauth_google\", \"oauth-google.dpapi\", \"MoHan google OAuth token\"),"
-            },
-            {
-              "line": 899,
-              "matched": "MoHan",
-              "text": "(\"oauth_microsoft\", \"oauth-microsoft.dpapi\", \"MoHan microsoft OAuth token\"),"
-            },
-            {
-              "line": 900,
-              "matched": "MoHan",
-              "text": "(\"oauth_github\", \"oauth-github.dpapi\", \"MoHan github OAuth token\"),"
-            },
-            {
-              "line": 901,
-              "matched": "MoHan",
-              "text": "(\"face_identities\", \"face-identities.dpapi\", \"MoHan local face identity templates\"),"
-            },
-            {
-              "line": 902,
-              "matched": "MoHan",
-              "text": "(\"gesture_templates\", \"gesture-templates.dpapi\", \"MoHan local gesture skeleton templates\"),"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/presentation_ports.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "expression",
           "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
           "locations": [
@@ -544,106 +414,6 @@
         "assets/characters/mohan/expressions/state-catalog.json"
       ],
       "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 622,
-              "matched": "MoHan",
-              "text": "\"MoHan OpenAI API key\","
-            },
-            {
-              "line": 626,
-              "matched": "MoHan",
-              "text": "\"MoHan Azure Speech key\","
-            },
-            {
-              "line": 630,
-              "matched": "MoHan",
-              "text": "\"MoHan Azure Dragon HD Speech key\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "application/service_container.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 32,
-              "matched": "墨寒",
-              "text": "\"zh-TW\": \"墨寒藍銀主題\","
-            },
-            {
-              "line": 33,
-              "matched": "墨寒",
-              "text": "\"zh-CN\": \"墨寒蓝银主题\","
-            },
-            {
-              "line": 34,
-              "matched": "MoHan",
-              "text": "\"en\": \"MoHan Blue-Silver\","
-            },
-            {
-              "line": 35,
-              "matched": "墨寒",
-              "text": "\"ja-JP\": \"墨寒ブルーシルバー\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "application/theme_pack_service.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 53,
-              "matched": "墨寒",
-              "text": "BUILTIN_OUTFIT_FALLBACK_NAME = \"墨寒藍白漢服\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "application/wardrobe_service.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -889,66 +659,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 32,
-              "matched": "MoHan",
-              "text": "description: str = \"MoHan protected secret\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "domain/contracts.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
-          "locations": [
-            {
-              "line": 27,
-              "matched": "MOHAN_EMOTION",
-              "text": "\"在回覆正文的最後附加一個不可見控制標籤，格式必須是 \""
-            },
-            {
-              "line": 34,
-              "matched": "MOHAN_EMOTION",
-              "text": "r\"\\[\\[\\s*MOHAN_EMOTION\\s*:\\s*([a-z_]+)\""
-            },
-            {
-              "line": 39,
-              "matched": "MOHAN_EMOTION",
-              "text": "r\"\\[\\[\\s*MOHAN_EMOTION\\b[^\\]]*\\]\\]\","
-            }
-          ],
-          "rule": "character_protocol_label_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "domain/expression_system.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "expression",
           "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
           "locations": [
@@ -1039,46 +749,6 @@
         "assets/characters/mohan/expressions/state-catalog.json"
       ],
       "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 92,
-              "matched": "MoHan",
-              "text": "GestureAction.POSITIVE_ACKNOWLEDGEMENT: LocalizedLabel(\"墨寒以正向表情回應\", \"墨寒以正向表情回应\", \"MoHan responds positively\", \"墨寒が肯定的に応える\"),"
-            },
-            {
-              "line": 92,
-              "matched": "墨寒",
-              "text": "GestureAction.POSITIVE_ACKNOWLEDGEMENT: LocalizedLabel(\"墨寒以正向表情回應\", \"墨寒以正向表情回应\", \"MoHan responds positively\", \"墨寒が肯定的に応える\"),"
-            },
-            {
-              "line": 93,
-              "matched": "MoHan",
-              "text": "GestureAction.CUSTOM_COMMAND: LocalizedLabel(\"自訂墨寒文字指令\", \"自定义墨寒文字指令\", \"Custom MoHan text command\", \"墨寒のカスタム文字指示\"),"
-            },
-            {
-              "line": 93,
-              "matched": "墨寒",
-              "text": "GestureAction.CUSTOM_COMMAND: LocalizedLabel(\"自訂墨寒文字指令\", \"自定义墨寒文字指令\", \"Custom MoHan text command\", \"墨寒のカスタム文字指示\"),"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "domain/gesture_configuration.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -2654,161 +2324,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 38,
-              "matched": "MoHan",
-              "text": "suffix = Path(\"YanJianStudio\") / \"MoHan\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "infrastructure/platform_linux.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 38,
-              "matched": "MoHan",
-              "text": "user_home / \"Library\" / \"Application Support\" / \"YanJianStudio\" / \"MoHan\""
-            },
-            {
-              "line": 43,
-              "matched": "MoHan",
-              "text": "cache=user_home / \"Library\" / \"Caches\" / \"YanJianStudio\" / \"MoHan\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "infrastructure/platform_macos.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 23,
-              "matched": "MoHan",
-              "text": "raise RuntimeError(f\"MoHan 尚未定義此作業系統平台：{candidate}\")"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "infrastructure/platform_services.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 42,
-              "matched": "MoHan",
-              "text": "application_root = local_root / \"YanJianStudio\" / \"MoHan\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "infrastructure/platform_windows.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 95,
-              "matched": "MoHan",
-              "text": "\"MoHan Home Assistant token\","
-            },
-            {
-              "line": 100,
-              "matched": "MoHan",
-              "text": "\"MoHan google OAuth token\","
-            },
-            {
-              "line": 105,
-              "matched": "MoHan",
-              "text": "\"MoHan microsoft OAuth token\","
-            },
-            {
-              "line": 110,
-              "matched": "MoHan",
-              "text": "\"MoHan github OAuth token\","
-            },
-            {
-              "line": 115,
-              "matched": "MoHan",
-              "text": "\"MoHan local face identity templates\","
-            },
-            {
-              "line": 120,
-              "matched": "MoHan",
-              "text": "\"MoHan local gesture skeleton templates\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "infrastructure/portable_secret_binding.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "rig",
           "description": "墨寒現行畫布尺寸仍寫在程式流程。",
           "locations": [
@@ -2867,41 +2382,6 @@
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 31,
-              "matched": "MoHan",
-              "text": "description: str = \"MoHan OpenAI API key\","
-            },
-            {
-              "line": 143,
-              "matched": "MoHan",
-              "text": "description: str = \"MoHan protected secret\","
-            },
-            {
-              "line": 149,
-              "matched": "墨寒",
-              "text": "f\"{capabilities.display_name} 的原生安全金鑰保存\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "infrastructure/secret_store.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -3412,31 +2892,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "ui-name-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 290,
-              "matched": "MoHan",
-              "text": "\"An elegant original Northern-Song-inspired outfit for MoHan, \""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "presentation/autonomous_outfit_generation_controller.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -5913,31 +5368,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 238,
-              "matched": "MoHan",
-              "text": "\"MoHan theme package (*.mohan-theme *.zip)\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "presentation/theme_pack_ui.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "classification": "ui_text_reference",
       "content": [
         {
@@ -6987,37 +6417,6 @@
   "schema_version": 1,
   "source_inventory": "docs/character-pack/mohan-inventory.json",
   "work_packages": [
-    {
-      "exclusions": "不改產品殼白名單，不處理圖像路徑、姿勢與圖層。",
-      "exclusive_files": [
-        "application/native_acceleration.py",
-        "application/native_rgba_acceleration.py",
-        "application/presentation_ports.py",
-        "application/service_container.py",
-        "application/theme_pack_service.py",
-        "application/wardrobe_service.py",
-        "domain/contracts.py",
-        "domain/expression_system.py",
-        "domain/gesture_configuration.py",
-        "infrastructure/platform_linux.py",
-        "infrastructure/platform_macos.py",
-        "infrastructure/platform_services.py",
-        "infrastructure/platform_windows.py",
-        "infrastructure/portable_secret_binding.py",
-        "infrastructure/secret_store.py",
-        "presentation/autonomous_outfit_generation_controller.py",
-        "presentation/theme_pack_ui.py"
-      ],
-      "file_count": 17,
-      "id": "engine-identity-parameterization",
-      "objective": "把引擎、平台與儲存邊界中的墨寒名稱改由產品或角色身分設定注入。",
-      "titles": [
-        "引擎身分參數化",
-        "引擎身份参数化",
-        "Engine identity parameterization",
-        "エンジン身元のパラメータ化"
-      ]
-    },
     {
       "exclusions": "不改介面純名稱文字，不處理 rig 或正式素材 bytes。",
       "exclusive_files": [

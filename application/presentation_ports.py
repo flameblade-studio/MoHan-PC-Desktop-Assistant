@@ -38,7 +38,7 @@ lazy from domain.speech_providers import (
 _CHARACTER_DATA = load_mohan_character_data()
 _VOICE_PROFILE = _CHARACTER_DATA.voice
 _VOICE_PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
-
+_CHARACTER_STORAGE_NAME = _CHARACTER_DATA.personas["en"].identity.display_name
 # Transcription-prompt heuristics.
 MAX_TERM_LENGTH = 40
 MAX_TERMS = 16
@@ -133,17 +133,17 @@ class _PresentationFallbackPlatformService:
         )
         home = Path.home()
         if platform_id == "windows":
-            root = Path(os.environ.get("LOCALAPPDATA") or home) / "YanJianStudio" / "MoHan"
+            root = Path(os.environ.get("LOCALAPPDATA") or home) / "YanJianStudio" / _CHARACTER_STORAGE_NAME
             config = root
             cache = root / "cache"
             display_name = "Windows"
         elif platform_id == "macos":
-            root = home / "Library" / "Application Support" / "YanJianStudio" / "MoHan"
+            root = home / "Library" / "Application Support" / "YanJianStudio" / _CHARACTER_STORAGE_NAME
             config = root
-            cache = home / "Library" / "Caches" / "YanJianStudio" / "MoHan"
+            cache = home / "Library" / "Caches" / "YanJianStudio" / _CHARACTER_STORAGE_NAME
             display_name = "macOS"
         else:
-            suffix = Path("YanJianStudio") / "MoHan"
+            suffix = Path("YanJianStudio") / _CHARACTER_STORAGE_NAME
             root = Path(os.environ.get("XDG_DATA_HOME") or home / ".local" / "share") / suffix
             config = Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config") / suffix
             cache = Path(os.environ.get("XDG_CACHE_HOME") or home / ".cache") / suffix
@@ -894,12 +894,12 @@ def bind_dashboard_portable_secrets(
     generated = {
         secret_id: factory(root / filename, description)
         for secret_id, filename, description in (
-            ("home_assistant", "home-assistant-token.dpapi", "MoHan Home Assistant token"),
-            ("oauth_google", "oauth-google.dpapi", "MoHan google OAuth token"),
-            ("oauth_microsoft", "oauth-microsoft.dpapi", "MoHan microsoft OAuth token"),
-            ("oauth_github", "oauth-github.dpapi", "MoHan github OAuth token"),
-            ("face_identities", "face-identities.dpapi", "MoHan local face identity templates"),
-            ("gesture_templates", "gesture-templates.dpapi", "MoHan local gesture skeleton templates"),
+            ("home_assistant", "home-assistant-token.dpapi", f"{_CHARACTER_STORAGE_NAME} Home Assistant token"),
+            ("oauth_google", "oauth-google.dpapi", f"{_CHARACTER_STORAGE_NAME} google OAuth token"),
+            ("oauth_microsoft", "oauth-microsoft.dpapi", f"{_CHARACTER_STORAGE_NAME} microsoft OAuth token"),
+            ("oauth_github", "oauth-github.dpapi", f"{_CHARACTER_STORAGE_NAME} github OAuth token"),
+            ("face_identities", "face-identities.dpapi", f"{_CHARACTER_STORAGE_NAME} local face identity templates"),
+            ("gesture_templates", "gesture-templates.dpapi", f"{_CHARACTER_STORAGE_NAME} local gesture skeleton templates"),
         )
     }
     stores = {

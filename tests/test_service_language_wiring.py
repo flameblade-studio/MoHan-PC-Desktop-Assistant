@@ -72,13 +72,14 @@ class _SecretStoreProbe:
 class _SecretStoreFactoryProbe:
     def __init__(self) -> None:
         self.created: list[_SecretStoreProbe] = []
+        self.descriptions: list[str] = []
 
     def __call__(
         self,
         path: Path,
         description: str = "MoHan protected secret",
     ) -> _SecretStoreProbe:
-        del description
+        self.descriptions.append(description)
         value = TEST_SECRETS[len(self.created)]
         store = _SecretStoreProbe(path, value)
         self.created.append(store)
@@ -146,6 +147,11 @@ def _assert_language_wiring(
     assert services.listener.language == expected
     assert services.realtime_speech_output is not None
     assert services.realtime_speech_output._local_speech.language == expected
+    assert factory.descriptions == [
+        "MoHan OpenAI API key",
+        "MoHan Azure Speech key",
+        "MoHan Azure Dragon HD Speech key",
+    ]
 
     rendered = repr(services)
     assert all(secret not in rendered for secret in TEST_SECRETS)
