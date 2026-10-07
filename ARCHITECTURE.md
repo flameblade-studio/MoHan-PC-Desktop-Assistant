@@ -61,6 +61,12 @@
 - 每一個 Windows 與預覽二進位發行包，都必須在終端使用者可閱讀的位置攜帶 MIT 授權與第三方聲明。
 - 只有當 AppImage 建置工具的官方來源 commit、資產身分與 SHA-256 均符合已審查常數時，才可接受該工具。GitHub Actions 必須固定至完整 commit SHA。
 
+### 角色來源與相容讀取邊界
+
+`domain/character_source.py` 只定義 `CharacterAssets`、`CharacterPersona`、`CharacterAppearanceContract` 與組合用 `CharacterSource` Protocol。引擎透過這些型別取得素材路徑、名字與稱謂、人格與事件台詞，以及 body profile、24 視角、雙畫布和圖層順序；domain 不依賴檔案格式或產品殼。
+
+`LegacyMohanCharacterSource` 只轉接既有公開常數與函式，並由 `application/service_container.py` 作為預設來源注入，所以現行素材位置、設定優先權及畫面結果不變。`CharacterPackReader` 先以 `domain.character_pack` 完整驗證資料夾，再驗證必要 persona、dialogue、fullbody rig 與 halfbody rig 子契約；任一步失敗即拒絕整包，絕不退回半套資料或 legacy fallback。`assets/characters/mohan/` 以相同相對路徑納入產品封裝；公開、私有、素材授權及 DLC 關係仍依擁有者決定。
+
 ### 資料所有權
 
 - `db.py`：對話、記憶、任務、靈感、工作紀錄與設定。
@@ -196,6 +202,12 @@
 - 发布证据把可观测性与供应链数据视为门槛，而非装饰。Tachyon 证据必须完成净化、JIT 验证、采样质量检查，且可由单一二进制数据流重现；原始数据流只能暂存。CycloneDX 1.7 清单必须符合锁定的运行时需求、包含完整根依赖边、PURL 与声明的 SPDX 许可证，通过官方 schema 与隐私门槛，并分别追踪仅构建使用的工具。
 - 每一个 Windows 与预览二进制发行包，都必须在最终用户可阅读的位置携带 MIT 许可证与第三方声明。
 - 只有当 AppImage 构建工具的官方源 commit、资产身份与 SHA-256 均符合已审查常量时，才可接受该工具。GitHub Actions 必须固定至完整 commit SHA。
+
+### 角色来源与兼容读取边界
+
+`domain/character_source.py` 只定义 `CharacterAssets`、`CharacterPersona`、`CharacterAppearanceContract` 与用于组合的 `CharacterSource` Protocol。引擎通过这些类型取得素材路径、名字与称谓、人格与事件台词，以及 body profile、24 视角、双画布和图层顺序；domain 不依赖文件格式或产品外壳。
+
+`LegacyMohanCharacterSource` 只适配现有公开常量与函数，并由 `application/service_container.py` 作为默认来源注入，因此现有素材位置、设置优先级和画面结果不变。`CharacterPackReader` 先通过 `domain.character_pack` 完整验证目录，再验证必要的 persona、dialogue、fullbody rig 与 halfbody rig 子契约；任一步失败即拒绝整个包，绝不回退到不完整数据或 legacy fallback。`assets/characters/mohan/` 以相同相对路径加入产品封装；公开、私有、素材授权及 DLC 关系仍由所有者决定。
 
 ### 数据所有权
 
@@ -338,6 +350,12 @@ Local-module dependencies form a directed acyclic graph and enforced by `tests/t
 - Every Windows and Preview binary distribution carries the MIT license and third-party notices in an end-user-readable location.
 - The AppImage build tool is accepted only when its official source commit, asset identity, and SHA-256 match the reviewed constants. GitHub Actions are pinned to complete commit SHAs.
 
+### Character-source and compatibility-reader boundary
+
+`domain/character_source.py` defines only the `CharacterAssets`, `CharacterPersona`, `CharacterAppearanceContract`, and composing `CharacterSource` protocols. Through these types, the engine obtains asset paths, names and titles, persona and event dialogue, plus the body profile, 24-view ring, two canvases, and layer order. The domain has no dependency on storage formats or the product shell.
+
+`LegacyMohanCharacterSource` adapts established public constants and functions only, and `application/service_container.py` injects it as the default source, preserving current asset locations, setting precedence, and rendered output. `CharacterPackReader` first validates the complete directory through `domain.character_pack`, then validates the required persona, dialogue, full-body rig, and half-body rig child contracts. Any failure rejects the whole pack without partial data or a legacy fallback. Product packaging preserves `assets/characters/mohan/` at the same relative path. Public or private access, asset licensing, and the DLC relationship remain owner decisions.
+
 ### Data ownership
 
 - `db.py`: conversations, memories, tasks, ideas, work history, and settings.
@@ -473,6 +491,12 @@ The architecture gate reports physical five-layer package modules, root compatib
 - リリース証拠では、可観測性とサプライチェーンデータを正式なゲートとして扱います。Tachyon 証拠はサニタイズ、JIT 検証、サンプル品質検査を完了し、単一のバイナリストリームから再現できなければなりません。生ストリームは一時保存に限ります。CycloneDX 1.7 インベントリは、固定された実行時要件と一致し、完全なルート依存エッジ、PURL、宣言済み SPDX ライセンスを含み、公式 schema とプライバシーゲートに合格し、ビルド専用ツールを分離して追跡しなければなりません。
 - すべての Windows および Preview バイナリ配布物には、エンドユーザーが読める場所に MIT ライセンスと第三者通知を収録します。
 - AppImage ビルドツールは、公式ソース commit、asset identity、SHA-256 が審査済み定数と一致する場合にだけ受け入れます。GitHub Actions は完全な commit SHA に固定します。
+
+### キャラクターソースと互換リーダーの境界
+
+`domain/character_source.py` は `CharacterAssets`、`CharacterPersona`、`CharacterAppearanceContract` と、それらを束ねる `CharacterSource` Protocol だけを定義します。エンジンはこの型境界から、素材パス、名前と敬称、人格とイベント台詞、body profile、24 視点、二つのキャンバス、レイヤー順を取得します。domain は保存形式や製品シェルへ依存しません。
+
+`LegacyMohanCharacterSource` は既存の公開定数と関数だけを変換し、`application/service_container.py` が既定ソースとして注入するため、現在の素材位置、設定の優先順位、表示結果を維持します。`CharacterPackReader` は最初に `domain.character_pack` でディレクトリ全体を検証し、続いて必須の persona、dialogue、fullbody rig、halfbody rig 子契約を検証します。どこか一つでも失敗すればパック全体を拒否し、不完全なデータや legacy fallback を返しません。製品パッケージは `assets/characters/mohan/` を同じ相対パスで収録します。公開または非公開、素材ライセンス、DLC との関係は引き続き所有者が決定します。
 
 ### データ所有権
 
