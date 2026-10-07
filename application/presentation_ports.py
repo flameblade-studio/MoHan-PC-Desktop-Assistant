@@ -17,6 +17,7 @@ lazy from pathlib import Path
 lazy from typing import Any, Protocol
 lazy from application.appearance_ports import OutfitOverlayFactory, no_outfit_overlay_factory
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
     ProfileDatabasePort,
@@ -33,6 +34,10 @@ lazy from domain.speech_providers import (
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
 )
+
+_CHARACTER_DATA = load_mohan_character_data()
+_VOICE_PROFILE = _CHARACTER_DATA.voice
+_VOICE_PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
 
 # Transcription-prompt heuristics.
 MAX_TERM_LENGTH = 40
@@ -241,9 +246,9 @@ class AIWorkerRequest:
     memories: str = ""
     model: str = DEFAULT_TEXT_MODEL
     persona: str = ""
-    assistant_name: str = "墨寒"
-    user_title: str = "主上"
-    response_language: str = "zh-TW"
+    assistant_name: str = _VOICE_PROFILE_DEFAULTS["assistant_name"]
+    user_title: str = _VOICE_PROFILE_DEFAULTS["user_title"]
+    response_language: str = _VOICE_PROFILE_DEFAULTS["ui_language"]
     prompt_cache_telemetry: Callable[[PromptCacheTelemetry], None] | None = field(
         default=None, repr=False, compare=False,
     )
@@ -273,7 +278,7 @@ AIWorkerFactory = Callable[[AIWorkerRequest], AIWorkerPort]
 @dataclass(frozen=True, slots=True)
 class RealtimeSessionConfig:
     model: str = "gpt-realtime-2.1-mini"
-    voice: str = "coral"
+    voice: str = _VOICE_PROFILE.default_realtime_voice
     transcription_model: str = DEFAULT_TRANSCRIPTION_MODEL
     transcription_language: str = "zh"
     transcription_prompt: str = ""
@@ -309,7 +314,7 @@ class AzureRealtimeVoice:
 class LocalRealtimeVoice:
     available: bool = False
     voice: str = ""
-    rate: int = -1
+    rate: int = _VOICE_PROFILE.default_rate
 
 
 @dataclass(frozen=True, slots=True)
@@ -521,56 +526,12 @@ def azure_region_supports_hd_flash(identifier: str) -> bool:
     )
 
 
-_AZURE_FEMALE_VOICES = frozendict(
-    {
-        "zh-TW": ("zh-TW-HsiaoChenNeural", "zh-TW-HsiaoYuNeural"),
-        "zh-CN": (
-            "zh-CN-XiaoxiaoNeural", "zh-CN-XiaoyiNeural", "zh-CN-XiaochenNeural",
-            "zh-CN-XiaohanNeural", "zh-CN-XiaomengNeural", "zh-CN-XiaomoNeural",
-            "zh-CN-XiaoqiuNeural", "zh-CN-XiaorouNeural", "zh-CN-XiaoruiNeural",
-        ),
-        "en": (
-            "en-US-AvaMultilingualNeural", "en-US-AmandaMultilingualNeural",
-            "en-US-CoraMultilingualNeural", "en-US-JennyMultilingualNeural",
-        ),
-        "ja-JP": (
-            "ja-JP-NanamiNeural", "ja-JP-AoiNeural", "ja-JP-MayuNeural",
-            "ja-JP-ShioriNeural",
-        ),
-    }
-)
-_AZURE_HD_FEMALE_VOICES = frozendict(
-    {
-        "zh-CN": (
-            "zh-CN-Xiaochen:DragonHDLatestNeural",
-            "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
-            "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
-            "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoyou:DragonHDFlashLatestNeural",
-        ),
-        "en": (
-            "en-US-Ava:DragonHDLatestNeural", "en-US-Aria:DragonHDLatestNeural",
-            "en-US-Emma:DragonHDLatestNeural", "en-US-Emma2:DragonHDLatestNeural",
-            "en-US-Jenny:DragonHDLatestNeural", "en-US-Nova:DragonHDLatestNeural",
-            "en-US-Phoebe:DragonHDLatestNeural", "en-US-Serena:DragonHDLatestNeural",
-        ),
-        "ja-JP": ("ja-JP-Nanami:DragonHDLatestNeural",),
-    }
-)
+_AZURE_FEMALE_VOICES = _VOICE_PROFILE.azure.voices
+_AZURE_HD_FEMALE_VOICES = _VOICE_PROFILE.azure.hd_voices
 
 
 def azure_female_voices(language: str) -> tuple[str, ...]:
     locale = canonical_ui_language(language)
-    if locale == "zh-CN":
-        return (*_AZURE_FEMALE_VOICES["zh-CN"], *_AZURE_FEMALE_VOICES["zh-TW"])
-    if locale == "zh-TW":
-        return (*_AZURE_FEMALE_VOICES["zh-TW"], *_AZURE_FEMALE_VOICES["zh-CN"])
     return _AZURE_FEMALE_VOICES[locale]
 
 
@@ -580,7 +541,7 @@ def azure_hd_female_voices(
     include_flash: bool = True,
 ) -> tuple[str, ...]:
     locale = canonical_ui_language(language)
-    voices = _AZURE_HD_FEMALE_VOICES[locale if locale in {"en", "ja-JP"} else "zh-CN"]
+    voices = _AZURE_HD_FEMALE_VOICES[locale]
     return voices if include_flash else tuple(
         voice for voice in voices if ":DragonHDFlash" not in voice
     )
@@ -604,7 +565,7 @@ def female_windows_voices_for_language(
         if culture.lower().split("-", 1)[0] == family
         and not any(
             marker in name.casefold()
-            for marker in ("david", "mark", "zhiwei", "yunxi", "yunyang")
+            for marker in _VOICE_PROFILE.system_local.excluded_name_markers
         )
     ]
 
@@ -619,7 +580,7 @@ def preferred_windows_voice(
         for name, culture in voices
         if not any(
             marker in name.casefold()
-            for marker in ("david", "mark", "zhiwei", "yunxi", "yunyang")
+            for marker in _VOICE_PROFILE.system_local.excluded_name_markers
         )
     ]
     installed = dict(filtered)
@@ -628,7 +589,7 @@ def preferred_windows_voice(
     target = str(target_language or "").strip().lower()
     family = target.split("-", 1)[0]
     if target in {"zh", "zh-tw"}:
-        for keyword in ("Yating", "Hanhan"):
+        for keyword in _VOICE_PROFILE.system_local.preferred_name_markers["zh-TW"]:
             for name, culture in filtered:
                 if keyword.casefold() in name.casefold() and culture.lower() == "zh-tw":
                     return name

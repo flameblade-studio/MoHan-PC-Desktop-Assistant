@@ -518,7 +518,7 @@ class DashboardTodayMemoryMixin:
         )
         self.todo_input.setFocus()
         self.speak_requested.emit(
-            self._t("todo_added_speech", "已收入今日卷冊。"), "happy"
+            self._t("todo_added_speech", ""), "happy"
         )
 
     def add_idea(self) -> None:
@@ -542,7 +542,7 @@ class DashboardTodayMemoryMixin:
         self.speak_requested.emit(
             self._t(
                 "idea_added_speech",
-                "靈光稍縱即逝，妾已替主上收好。",
+                "",
             ),
             "happy",
         )
@@ -649,7 +649,7 @@ class DashboardTodayMemoryMixin:
         self.speak_requested.emit(
             self._t(
                 "memory_added_speech",
-                "妾已記下。主上日後若要更改，也可逐項整理。",
+                "",
             ),
             "happy",
         )

@@ -5,6 +5,10 @@ lazy import os
 lazy import winreg
 lazy from dataclasses import dataclass
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
+
+_SYSTEM_LOCAL = load_mohan_character_data().voice.system_local
+
 
 @dataclass(frozen=True)
 class WindowsVoiceInfo:
@@ -15,9 +19,8 @@ class WindowsVoiceInfo:
     gender: str
 
 
-_KNOWN_FEMALE_VOICE_MARKERS = ("yating", "hanhan")
-
-_KNOWN_MALE_VOICE_MARKERS = ("zhiwei",)
+_KNOWN_FEMALE_VOICE_MARKERS = _SYSTEM_LOCAL.female_compatibility_markers
+_KNOWN_MALE_VOICE_MARKERS = _SYSTEM_LOCAL.male_markers
 
 
 def is_known_male_windows_voice(name: str) -> bool:
@@ -42,9 +45,9 @@ def _normalized_voice_gender(value: str, name: str) -> str:
 def _is_allowed_companion_voice(name: str, gender: str = "") -> bool:
     """Select voices Windows identifies as female.
 
-    Yating and Hanhan remain compatibility fallbacks for older Windows voice
-    registrations that omit Gender. Voice entries with unknown gender remain
-    outside the selection so the character contract stays consistent.
+    Configured compatibility markers remain fallbacks for older Windows voice
+    registrations that omit Gender. Voice entries with unknown gender stay
+    outside the selection so the character contract remains consistent.
     """
 
     lowered_name = name.lower()
@@ -137,7 +140,7 @@ def windows_voice_catalog() -> list[WindowsVoiceInfo]:
     locations = (
         (
             r"SOFTWARE\Microsoft\Speech_OneCore\Voices\Tokens",
-            "OneCore::",
+            _SYSTEM_LOCAL.onecore_prefix,
         ),
         (r"SOFTWARE\Microsoft\Speech\Voices\Tokens", ""),
     )
@@ -189,7 +192,7 @@ def preferred_windows_voice(
     target = str(target_language or "").strip().lower()
     family = target.split("-", 1)[0]
     if target in {"zh", "zh-tw"}:
-        for keyword in ("Yating", "Hanhan"):
+        for keyword in _SYSTEM_LOCAL.preferred_name_markers["zh-TW"]:
             for name, culture in voices:
                 if keyword.lower() in name.lower() and culture.lower() == "zh-tw":
                     return name

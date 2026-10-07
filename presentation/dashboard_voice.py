@@ -32,6 +32,7 @@ lazy from domain.app_profile import profile_setting
 lazy from domain.language_support import localized_transcription_prompt
 lazy from domain.speech_configuration import (
     DEFAULT_VOICE_VOLUME_PERCENT,
+    MOHAN_VOICE_DEFAULTS,
     REALTIME_VOICES,
     TTS_VOICES,
     VOICE_ENGINE_AZURE,
@@ -233,13 +234,13 @@ class DashboardVoiceMixin:
             str(
                 self.db.setting(
                     "tts_voice",
-                    self.db.setting("cloud_voice", "coral"),
+                    self.db.setting("cloud_voice", MOHAN_VOICE_DEFAULTS.default_cloud_voice),
                 )
             ),
         )
         self.realtime_voice = self._editable_combo(
             REALTIME_VOICES,
-            str(self.db.setting("realtime_voice", "coral")),
+            str(self.db.setting("realtime_voice", MOHAN_VOICE_DEFAULTS.default_realtime_voice)),
         )
         self._initialize_azure_voice_controls(capabilities)
         self.cloud_voice = self.tts_voice
@@ -586,9 +587,8 @@ class DashboardVoiceMixin:
         return combo
 
     def _apply_realtime_output_mode_state(self, mode: str) -> None:
-        # The selected output route decides which provider speaks; it keeps
-        # prevent the user from preselecting the native Realtime voice that
-        # will be used after switching back to OpenAI output.
+        # The output route decides which provider speaks without blocking a
+        # native Realtime voice choice for a later switch back to OpenAI.
         self.realtime_voice.setEnabled(True)
         if mode == REALTIME_OUTPUT_AZURE:
             note = self._t(
@@ -708,7 +708,7 @@ class DashboardVoiceMixin:
     def _initialize_voice_rate_control(self) -> QWidget:
         self.voice_rate = QSpinBox()
         self.voice_rate.setRange(-5, 5)
-        self.voice_rate.setValue(int(self.db.setting("voice_rate", -1)))
+        self.voice_rate.setValue(int(self.db.setting("voice_rate", MOHAN_VOICE_DEFAULTS.default_rate)))
         self.voice_rate.setSuffix(self._t("level_suffix", " 級"))
         self.voice_rate.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.voice_rate.lineEdit().setReadOnly(True)
@@ -770,7 +770,7 @@ class DashboardVoiceMixin:
             )
         )
         self.voice_preview_button = QPushButton(
-            self._t("preview_voice", "試聽：主上，妾在。")
+            self._t("preview_voice", MOHAN_VOICE_DEFAULTS.preview_text["zh-TW"])
         )
         self.voice_preview_button.clicked.connect(self._preview_voice)
         self.realtime_status = QLabel(
@@ -814,7 +814,7 @@ class DashboardVoiceMixin:
             text = self._t(
                 "female_voice_note",
                 "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
-                "台灣繁中仍優先使用 Yating（zh-TW）。",
+                f"台灣繁中仍優先使用 {MOHAN_VOICE_DEFAULTS.system_local.preferred_name_markers['zh-TW'][0]}（zh-TW）。",
             )
         else:
             text = self._t(
@@ -1021,7 +1021,7 @@ class DashboardVoiceMixin:
             rate_control,
         )
         form.addRow(
-            self._t("mohan_volume", "墨寒專屬音量"),
+            self._t("mohan_volume", ""),
             volume_control,
         )
         form.addRow(

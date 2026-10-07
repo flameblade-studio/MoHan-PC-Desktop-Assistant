@@ -531,7 +531,8 @@ def run() -> None:
             )
 
     fallbacks = first_run_fallbacks()
-    assert fallbacks["first_run_heading"] == (
+    assert fallbacks["first_run_heading"] == ""
+    assert ui_text("zh-TW", "first_run_heading", "") == (
         "<b>歡迎使用墨寒桌面陪伴工作助理</b>"
     )
     assert "欢迎" in _SIMPLIFIED_CHINESE["first_run_heading"]

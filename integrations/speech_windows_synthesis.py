@@ -7,6 +7,7 @@ lazy import tempfile
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech_audio import (
@@ -14,6 +15,10 @@ lazy from integrations.speech_audio import (
 )
 
 CREATE_NO_WINDOW = 0x08000000
+_SYSTEM_LOCAL = load_mohan_character_data().voice.system_local
+_DEFAULT_ONECORE_VOICE = _SYSTEM_LOCAL.preferred_voice_ids["zh-TW"].removeprefix(
+    _SYSTEM_LOCAL.onecore_prefix
+)
 
 __all__ = (
     "OneCoreVoiceSelection",
@@ -86,7 +91,7 @@ def synthesize_windows_speech_to_wave(
     text: str,
     output: Path,
     *,
-    voice_name: str = "Microsoft Yating",
+    voice_name: str = _DEFAULT_ONECORE_VOICE,
 ) -> OneCoreVoiceSelection:
     """Write one WAV through the same OneCore path used by ``_run_onecore``.
 

@@ -2,16 +2,19 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 from presentation.ui_localization_en import ENGLISH_UI_TEXT as _ENGLISH
 from presentation.ui_localization_ja import JAPANESE_UI
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import is_english, is_japanese, is_simplified_chinese
 
+_CHARACTER_DIALOGUES = load_mohan_character_data().dialogues
+
 _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
 {'first_run_title': '首次启动设置',
- 'first_run_brand': '墨寒',
- 'first_run_heading': '<b>欢迎使用墨寒桌面助手</b>',
- 'first_run_hero_tagline': '来自北宋的千年女剑魂，陪您说话、记忆，也陪您把工作做好。',
+ 'first_run_brand': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.first_run_brand'],
+ 'first_run_heading': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.first_run_heading'],
+ 'first_run_hero_tagline': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.first_run_hero_tagline'],
  'first_run_intro': '请先建立用户设置。以下内容以后都能在“设置”页修改，不会绑定特定公司、职业或工作平台。',
  'assistant_name': '助手名称',
  'user_title': '助手对您的称呼',
@@ -20,11 +23,11 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'work_type': '工作类型',
  'ui_language': '界面与回复语言',
  'wake_word': '语音唤醒词',
- 'assistant_name_placeholder': '例如：墨寒、Ava、Office Mate',
- 'user_title_placeholder': '例如：主上、Alex、主管',
+ 'assistant_name_placeholder': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.assistant_name_placeholder'],
+ 'user_title_placeholder': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.user_title_placeholder'],
  'organization_placeholder': '公司、工作室或团队名称；个人使用可留空',
  'window_title_placeholder': '留空时自动使用“助手名称 · 组织名称”',
- 'wake_word_placeholder': '例如：墨寒',
+ 'wake_word_placeholder': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.wake_word_placeholder'],
  'first_run_note': '工作平台页已准备好供你的公司系统使用。请添加正在使用的系统、协作工具、管理后台或网站。',
  'finish_setup': '完成设置并开始使用',
  'required_title': '完成必要信息',
@@ -39,7 +42,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'tab_voice': '语音',
  'tab_permissions': '电脑权限',
  'tab_settings': '设置',
- 'navigation_brand': '墨寒',
+ 'navigation_brand': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.navigation_brand'],
  'nav_realm_companion': '陪伴',
  'nav_realm_today': '事务',
  'nav_realm_wardrobe': '装扮',
@@ -210,10 +213,10 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'timing_inactive': '计时器已暂停',
  'todo_title_required': '请先输入待办标题。',
  'todo_added': '✓ 已添加待办：{text}',
- 'todo_added_speech': '已收入今日待办。',
+ 'todo_added_speech': _CHARACTER_DIALOGUES['zh-CN'].templates['ui.todo_added_speech'],
  'idea_capture_required': '请先输入要保存的灵感。',
  'idea_added': '✓ 已保存灵感：{text}',
- 'idea_added_speech': '灵感稍纵即逝，妾已替您收好。',
+ 'idea_added_speech': _CHARACTER_DIALOGUES['zh-CN'].templates['ui.idea_added_speech'],
  'idea_select_edit': '请先选择一则要编辑的灵感。',
  'idea_not_found': '请刷新灵感清单并选择现有项目。',
  'idea_updated': '✓ 已更新灵感：{title}',
@@ -261,7 +264,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'platform_saved': '{platform} 已保存。',
  'platform_saved_automatic': '{platform} 已自动保存。',
  'all_platforms_saved': '全部工作平台已保存；{count} 个平台仍列有待补资料或待处理事项。',
- 'all_platforms_saved_speech': '工作平台已保存。{count} 个平台仍有待补资料或待处理事项。',
+ 'all_platforms_saved_speech': _CHARACTER_DIALOGUES['zh-CN'].templates['ui.all_platforms_saved_speech'],
  'memory_intro': '墨寒只保存您允许留下的人物、偏好、目标、工作流程与重要日期。记忆保存在本机，可按分类浏览、逐项编辑或删除。',
  'memory_input_placeholder': '例如：先完成漫画，再处理行政工作',
  'remember': '让墨寒记住',
@@ -286,7 +289,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'memory_item': '【{category}】{title}\u3000重要度 {importance}／5\n'
                 '{content}\n'
                 '来源：{source}\u3000更新：{updated}',
- 'memory_added_speech': '妾已记下。您日后若要更改，也可逐项整理。',
+ 'memory_added_speech': _CHARACTER_DIALOGUES['zh-CN'].templates['ui.memory_added_speech'],
  'memory_select_edit_title': '选择记忆',
  'memory_select_edit': '请先选择一则要编辑的记忆。',
  'memory_not_found_title': '刷新记忆清单',
@@ -432,7 +435,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'realtime_screen_transcript': 'Realtime 屏幕转录',
  'echo_guard': '回声防护',
  'local_rate': '本机语速',
- 'mohan_volume': '墨寒音量',
+ 'mohan_volume': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.mohan_volume'],
  'voice_style': '语音风格',
  'realtime': 'Realtime 语音',
  'windows_engine': 'Windows 本机语音',
@@ -471,7 +474,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'openai_recognition': 'OpenAI 高准确度识别（推荐）',
  'windows_recognition': 'Windows 离线识别',
  'no_transcription_error': '转录已准备好，记录清晰',
- 'preview_voice': '试听：主上，妾在。',
+ 'preview_voice': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.preview_voice'],
  'realtime_disconnected': 'Realtime：等待连接',
  'realtime_status_format': 'Realtime：{status}',
  'realtime_disconnected_status': '等待连接',
@@ -514,7 +517,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'permission_blocked_message': '请先为墨寒启用执行 {action} 所需的权限。',
  'permission_request': '墨寒请求电脑权限',
  'permission_request_message': '是否允许墨寒本次{action}？',
- 'permission_saved_speech': '电脑权限已保存。妾会守住这些边界。',
+ 'permission_saved_speech': _CHARACTER_DIALOGUES['zh-CN'].templates['ui.permission_saved_speech'],
  'profile_heading': '<b>身份与用户设置</b>',
  'system_heading': '<b>工作与系统设置</b>',
  'api_key': 'OpenAI API 密钥',
@@ -549,12 +552,12 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
  'reminder_offwork': '下班',
  'enabled': '启用',
  'reminder_message_label': '{label}消息',
- 'reminder_message_placeholder': '此提醒触发时墨寒要说的内容',
+ 'reminder_message_placeholder': _CHARACTER_DIALOGUES['zh-CN'].labels['ui.reminder_message_placeholder'],
  'continuous_work_reminder': '连续工作提醒',
  'overwork_message': '久坐／过劳提醒消息',
  'minutes_suffix': ' 分钟',
  'read_replies': '让墨寒读出回复',
- 'caught_glance_dialogue': '妾只是望向窗外，才不是在偷看主上。',
+ 'caught_glance_dialogue': _CHARACTER_DIALOGUES['zh-CN'].templates['caught_glance'],
  'voice_settings_saved': '语音设置已保存。',
  'settings_saved': '设置已保存。',
  'work_timer_already_running': '工作计时器已经运行；当前工作阶段继续。',
@@ -564,7 +567,7 @@ _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
 _JAPANESE: Mapping[str, str] = deep_freeze({
     **JAPANESE_UI,
     'tab_wardrobe': '雲裳閣',
-    'caught_glance_dialogue': '窓の外を見ていただけです。主上を覗いていたわけではありません。',
+    'caught_glance_dialogue': _CHARACTER_DIALOGUES['ja-JP'].templates['caught_glance'],
      'cancel_without_saving': '保存済みの値を保ったまま取り消す',
      'restore_dashboard_window': 'ウィンドウを元に戻す',
      'restore_dashboard_window_tooltip': 'コントロールセンターを移動・サイズ変更可能なウィンドウに戻します',
@@ -701,11 +704,27 @@ from presentation.ui_localization_labels import (
 
 def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
     if is_english(language):
+        locale = "en"
+    elif is_simplified_chinese(language):
+        locale = "zh-CN"
+    elif is_japanese(language):
+        locale = "ja-JP"
+    else:
+        locale = "zh-TW"
+    dialogue = _CHARACTER_DIALOGUES[locale]
+    character_text = dialogue.labels.get(f"ui.{key}")
+    if character_text is None:
+        character_text = dialogue.templates.get(f"ui.{key}")
+    if character_text is not None:
+        text = character_text
+    elif is_english(language):
         text = _ENGLISH.get(key, chinese)
     elif is_simplified_chinese(language):
         text = _SIMPLIFIED_CHINESE.get(key, chinese)
     elif is_japanese(language):
         text = _JAPANESE.get(key, chinese)
+    elif key == "caught_glance_dialogue":
+        text = _CHARACTER_DIALOGUES["zh-TW"].templates["caught_glance"]
     else:
         text = chinese
     return text.format(**values) if values else text

@@ -12,6 +12,12 @@ lazy from application.visual_perception import (
     PresenceState,
     VisualObservation,
 )
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
+
+_DIALOGUES = load_mohan_character_data().dialogues
 
 LATE_NIGHT_HOUR = 23
 LATE_NIGHT_END_HOUR = 5
@@ -228,81 +234,36 @@ def _default_interaction_lines(
     user_title: str,
     style: WelcomeStyle,
 ) -> dict[InteractionKind, dict[str, str | tuple[str, ...]]]:
+    welcome_key = f"welcome.{style.value}"
     welcome = {
-        WelcomeStyle.WARM: {
-            "zh-TW": (f"歡迎回來，{user_title}。", f"{user_title}，您回來了。", f"又見到您了，{user_title}。"),
-            "zh-CN": (f"欢迎回来，{user_title}。", f"{user_title}，您回来了。", f"又见到您了，{user_title}。"),
-            "en": (f"Welcome back, {user_title}.", f"You're back, {user_title}.", f"It is good to see you again, {user_title}."),
-            "ja": (f"お帰りなさい、{user_title}。", f"{user_title}、戻られたのですね。", f"またお会いできましたね、{user_title}。"),
-        },
-        WelcomeStyle.CEREMONIAL: {
-            "zh-TW": (f"歡迎歸來，{user_title}。", f"許久不見，{user_title}。", f"您終於回來了，{user_title}。"),
-            "zh-CN": (f"欢迎归来，{user_title}。", f"许久不见，{user_title}。", f"您终于回来了，{user_title}。"),
-            "en": (f"Welcome home, {user_title}.", f"It has been a while, {user_title}.", f"You are finally back, {user_title}."),
-            "ja": (f"お帰りなさいませ、{user_title}。", f"お久しぶりです、{user_title}。", f"ようやくお戻りですね、{user_title}。"),
-        },
-        WelcomeStyle.GENERAL: {
-            "zh-TW": (f"歡迎回來，{user_title}。今天過得還好嗎？", f"{user_title}，您回來了。要不要先歇一會兒？", f"又見面了，{user_title}。方才一切還順利嗎？"),
-            "zh-CN": (f"欢迎回来，{user_title}。今天过得还好吗？", f"{user_title}，您回来了。要不要先歇一会儿？", f"又见面了，{user_title}。刚才一切还顺利吗？"),
-            "en": (f"Welcome back, {user_title}. How has your day been?", f"You're back, {user_title}. Would you like a moment to rest?", f"Good to see you again, {user_title}. Did everything go well?"),
-            "ja": (f"お帰りなさい、{user_title}。今日はどんな一日でしたか？", f"{user_title}、お帰りなさい。少し休みませんか？", f"またお会いできましたね、{user_title}。先ほどは順調でしたか？"),
-        },
-        WelcomeStyle.MORNING: {
-            "zh-TW": (f"早安，{user_title}。", f"新的一天開始了，{user_title}。", f"早晨好，{user_title}。今天也請多指教。"),
-            "zh-CN": (f"早上好，{user_title}。", f"新的一天开始了，{user_title}。", f"早晨好，{user_title}。今天也请多指教。"),
-            "en": (f"Good morning, {user_title}.", f"A new day begins, {user_title}.", f"Morning, {user_title}. I look forward to today with you."),
-            "ja": (f"おはようございます、{user_title}。", f"新しい一日が始まりましたね、{user_title}。", f"朝ですね、{user_title}。今日もよろしくお願いします。"),
-        },
-        WelcomeStyle.LATE_NIGHT: {
-            "zh-TW": (f"歡迎回來，{user_title}。夜深了，先喘口氣吧。", f"{user_title}，這麼晚才回來，辛苦了。", f"夜已深了，{user_title}。別忘了讓自己休息。"),
-            "zh-CN": (f"欢迎回来，{user_title}。夜深了，先喘口气吧。", f"{user_title}，这么晚才回来，辛苦了。", f"夜已深了，{user_title}。别忘了让自己休息。"),
-            "en": (f"Welcome back, {user_title}. It is late; take a breath.", f"You're back late, {user_title}. It has been a long day.", f"It is late, {user_title}. Please remember to rest."),
-            "ja": (f"お帰りなさい、{user_title}。夜も遅いですから、ひと息ついてください。", f"こんな時間までお疲れさまです、{user_title}。", f"夜も更けました、{user_title}。休むことも忘れないでください。"),
-        },
-        WelcomeStyle.WITH_DRINK: {
-            "zh-TW": (f"歡迎回來，{user_title}。有記得補充水分，很好。", f"{user_title}帶了飲品回來呢。", f"又見面了，{user_title}。先慢慢喝一口吧。"),
-            "zh-CN": (f"欢迎回来，{user_title}。有记得补充水分，很好。", f"{user_title}带了饮品回来呢。", f"又见面了，{user_title}。先慢慢喝一口吧。"),
-            "en": (f"Welcome back, {user_title}. I am glad you remembered a drink.", f"You brought a drink back, {user_title}.", f"Good to see you, {user_title}. Take a slow sip first."),
-            "ja": (f"お帰りなさい、{user_title}。飲み物も忘れていませんね。", f"飲み物を持って戻られたのですね、{user_title}。", f"また会えましたね、{user_title}。まずはゆっくり一口どうぞ。"),
-        },
-        WelcomeStyle.WITH_BOOK: {
-            "zh-TW": (f"歡迎回來，{user_title}。您帶了書呢。", f"{user_title}又帶著故事回來了。", f"那本書看起來很有意思，{user_title}。"),
-            "zh-CN": (f"欢迎回来，{user_title}。您带了书呢。", f"{user_title}又带着故事回来了。", f"那本书看起来很有意思，{user_title}。"),
-            "en": (f"Welcome back, {user_title}. You brought a book.", f"You have returned with another story, {user_title}.", f"That book looks interesting, {user_title}."),
-            "ja": (f"お帰りなさい、{user_title}。本をお持ちですね。", f"また物語を連れて戻られましたね、{user_title}。", f"その本は面白そうですね、{user_title}。"),
-        },
+        _runtime_locale(locale): tuple(
+            line.format(user_title=user_title)
+            for line in dialogue.line_sets[welcome_key]
+        )
+        for locale, dialogue in _DIALOGUES.items()
+    }
+    lighting = {
+        _runtime_locale(locale): dialogue.templates["interaction.lighting_care"].format(
+            user_title=user_title,
+        )
+        for locale, dialogue in _DIALOGUES.items()
+    }
+    check_in = {
+        _runtime_locale(locale): tuple(
+            line.format(user_title=user_title)
+            for line in dialogue.line_sets["interaction.gentle_check_in"]
+        )
+        for locale, dialogue in _DIALOGUES.items()
     }
     return {
-        InteractionKind.WELCOME_BACK: welcome[style],
-        InteractionKind.LIGHTING_CARE: {
-            "zh-TW": f"{user_title}，房間似乎變暗了。若還要看螢幕，記得留一盞柔光，也讓眼睛歇一歇。",
-            "zh-CN": f"{user_title}，房间似乎变暗了。若还要看屏幕，记得留一盏柔光，也让眼睛歇一歇。",
-            "en": f"{user_title}, the room seems dimmer. If you are staying at the screen, keep a soft light on and rest your eyes.",
-            "ja": f"{user_title}、部屋が少し暗くなったようです。画面を見続けるなら、柔らかい灯りをつけて、目も休ませてください。",
-        },
-        InteractionKind.GENTLE_CHECK_IN: {
-            "zh-TW": (
-                f"{user_title}，忙到現在，還順利嗎？",
-                f"{user_title}，安靜了好一會兒。想和我聊聊嗎？",
-                f"{user_title}，若累了就停一會兒，墨寒陪著您。",
-            ),
-            "zh-CN": (
-                f"{user_title}，忙到现在，还顺利吗？",
-                f"{user_title}，安静了好一会儿。想和我聊聊吗？",
-                f"{user_title}，若累了就停一会儿，墨寒陪着您。",
-            ),
-            "en": (
-                f"{user_title}, has everything been going smoothly?",
-                f"It has been quiet for a while, {user_title}. Would you like to talk?",
-                f"If you are tired, pause for a moment, {user_title}. I am here with you.",
-            ),
-            "ja": (
-                f"{user_title}、ここまで順調ですか？",
-                f"しばらく静かでしたね、{user_title}。少し話しませんか？",
-                f"疲れたならひと息ついてください、{user_title}。墨寒がおそばにいます。",
-            ),
-        },
+        InteractionKind.WELCOME_BACK: welcome,
+        InteractionKind.LIGHTING_CARE: lighting,
+        InteractionKind.GENTLE_CHECK_IN: check_in,
     }
+
+
+def _runtime_locale(locale: str) -> str:
+    return "ja" if locale == "ja-JP" else locale
 
 
 def interaction_text(
@@ -416,12 +377,7 @@ def _custom_interaction_choices(
 
 
 def _locale(language: str) -> str:
-    normalized = str(language).strip().lower()
-    if normalized.startswith(("zh-cn", "zh-hans")):
-        return "zh-CN"
-    if normalized.startswith("en"):
-        return "en"
-    return "ja" if normalized.startswith("ja") else "zh-TW"
+    return _runtime_locale(canonical_character_locale(language))
 
 
 def _phrase_choices(value: object) -> tuple[str, ...]:

@@ -4,6 +4,9 @@ lazy import sqlite3
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
+
+_VOICE_DEFAULTS = load_mohan_character_data().voice
 
 # PySide exposes class-level ``Signal`` descriptors and instance-level
 # ``SignalInstance`` objects.  Its generated stubs do not preserve that binding
@@ -55,7 +58,7 @@ class LocalSpeechEnginePort(Protocol):
         self,
         text: str,
         voice_name: str = "",
-        rate: int = -1,
+        rate: int = _VOICE_DEFAULTS.default_rate,
     ) -> None: ...
 
     def stop(self) -> None: ...
@@ -77,7 +80,7 @@ class CloudSpeechEnginePort(Protocol):
         self,
         text: str,
         api_key: str,
-        voice: str = "coral",
+        voice: str = _VOICE_DEFAULTS.default_cloud_voice,
         instructions: str = "",
     ) -> None: ...
 

@@ -9,6 +9,9 @@ lazy from domain.contracts import (
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
 )
+lazy from domain.character_pack.character_data import load_mohan_character_data
+
+_VOICE_PROFILE = load_mohan_character_data().voice
 
 SYSTEM_LOCAL_PROVIDER = "system-local"
 # Compatibility name retained for third-party imports. Its value is the new
@@ -77,7 +80,7 @@ class SpeechProviderCapabilities:
 class SpeechRequest:
     text: str
     voice: str = ""
-    rate: int = -1
+    rate: int = _VOICE_PROFILE.default_rate
     api_key: str = field(default="", repr=False)
     instructions: str = ""
     options: Mapping[str, str] = field(default_factory=dict)
@@ -292,18 +295,12 @@ class SpeechProviderRegistry:
 
     def fallback_provider_id(self, failed_provider_id: object) -> str | None:
         failed = normalize_speech_provider_id(failed_provider_id)
-        if (
-            failed == AZURE_HD_SPEECH_PROVIDER
-            and AZURE_SPEECH_PROVIDER in self._providers
-        ):
-            return AZURE_SPEECH_PROVIDER
-        local = self._providers.get(SYSTEM_LOCAL_PROVIDER)
-        if (
-            failed != SYSTEM_LOCAL_PROVIDER
-            and local is not None
-            and local.capabilities.offline
-        ):
-            return SYSTEM_LOCAL_PROVIDER
+        for candidate in _VOICE_PROFILE.fallback_provider_order[failed]:
+            provider = self._providers.get(candidate)
+            if provider is None:
+                continue
+            if candidate != SYSTEM_LOCAL_PROVIDER or provider.capabilities.offline:
+                return candidate
         return None
 
 

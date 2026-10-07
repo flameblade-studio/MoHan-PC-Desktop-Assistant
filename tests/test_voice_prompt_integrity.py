@@ -51,9 +51,12 @@ def run() -> None:
             "integrations/ai_client.py",
         )
     )
-    assert runtime_sources.count(
-        "請使用台灣繁體中文，以自然的台灣中文口音說話。"
-    ) == 1
+    voice_data_source = (
+        root / "assets" / "characters" / "mohan" / "voice" / "profile.json"
+    ).read_text(encoding="utf-8")
+    prompt_opening = "請使用台灣繁體中文，以自然的台灣中文口音說話。"
+    assert runtime_sources.count(prompt_opening) == 0
+    assert voice_data_source.count(prompt_opening) == 1
     for obsolete_fragment in (
         "成熟沉靜、清晰自然的繁體中文女聲",
         "以成熟、沉靜、清晰的繁體中文女聲朗讀",

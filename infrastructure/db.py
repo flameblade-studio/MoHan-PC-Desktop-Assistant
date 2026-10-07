@@ -7,6 +7,7 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime, timedelta
 lazy from pathlib import Path
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import (
     LEGACY_AUTHOR_ORGANIZATION, LEGACY_TRANSCRIPTION_PROMPT, canonical_ui_language, localized_transcription_prompt,
 )
@@ -98,13 +99,7 @@ MODEL_DEFAULT_MIGRATIONS = (
     ),
 )
 LEGACY_PROFILE_DEFAULTS = frozendict({
-    "assistant_name": "墨寒",
-    "user_title": "主上",
-    "organization_name": "炎劍文化工作室",
-    "window_title": "",
-    "work_type": "創作／內容工作",
-    "ui_language": "zh-TW",
-    "wake_word": "墨寒",
+    **load_mohan_character_data().identity.legacy_defaults,
     "onboarding_complete": True,
     "transcription_language": "zh",
     "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
