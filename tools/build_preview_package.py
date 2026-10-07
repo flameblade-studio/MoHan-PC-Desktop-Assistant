@@ -200,6 +200,8 @@ def _pyinstaller(
         f"{build_info}{data_separator}.",
         "--add-data",
         f"{FONT_ROOT}{data_separator}assets/fonts",
+        "--add-data",
+        f"{ROOT / 'assets' / 'characters' / 'mohan'}{data_separator}assets/characters/mohan",
         # The Dashboard resolves this scenery by its stable packaged relative path.
         "--add-data",
         f"{ROOT / DASHBOARD_ARTWORK_RELATIVE}{data_separator}{DASHBOARD_ARTWORK_RELATIVE.parent.as_posix()}",

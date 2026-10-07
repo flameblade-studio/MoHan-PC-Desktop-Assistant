@@ -372,6 +372,11 @@
           "text": "lazy from application.companion_phrasebook import ("
         },
         {
+          "line": 31,
+          "path": "application/service_container.py",
+          "text": "lazy from application.companion_phrasebook import public_companion_line"
+        },
+        {
           "line": 9,
           "path": "application/wellbeing_app_bridge.py",
           "text": "lazy from application.companion_phrasebook import ("
@@ -921,7 +926,7 @@
       "path": "application/presentation_ports.py",
       "readers": [
         {
-          "line": 32,
+          "line": 33,
           "path": "application/service_container.py",
           "text": "lazy from application.presentation_ports import ("
         },
@@ -1641,7 +1646,7 @@
       ]
     },
     {
-      "bytes": 21147,
+      "bytes": 25647,
       "category": "embedded_character_content",
       "content_categories": [
         "rig_angle_expression_pose_rules"
@@ -1650,30 +1655,75 @@
         {
           "line": 49,
           "path": "application/service_container.py",
+          "text": "lazy from domain.app_profile import DEFAULT_PROFILE, default_persona_for_language"
+        },
+        {
+          "line": 62,
+          "path": "application/service_container.py",
           "text": "DEFAULT_UI_LANGUAGE,"
         },
         {
-          "line": 253,
+          "line": 66,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT"
+        },
+        {
+          "line": 127,
+          "path": "application/service_container.py",
+          "text": "\"\"\"Expose current MoHan values without duplicating character data.\"\"\""
+        },
+        {
+          "line": 158,
+          "path": "application/service_container.py",
+          "text": "return str(DEFAULT_PROFILE[\"assistant_name\"])"
+        },
+        {
+          "line": 162,
+          "path": "application/service_container.py",
+          "text": "wake_word = str(DEFAULT_PROFILE[\"wake_word\"])"
+        },
+        {
+          "line": 171,
+          "path": "application/service_container.py",
+          "text": "return str(DEFAULT_PROFILE[\"user_title\"])"
+        },
+        {
+          "line": 221,
+          "path": "application/service_container.py",
+          "text": "return FULL_BODY_LAYER_Z_ORDER"
+        },
+        {
+          "line": 234,
+          "path": "application/service_container.py",
+          "text": "\"\"\"Compose the compatibility source used by the unchanged MoHan runtime.\"\"\""
+        },
+        {
+          "line": 386,
           "path": "application/service_container.py",
           "text": "configured = os.environ.get(\"MOHAN_EXASPERATED_CANDIDATE_DIR\")"
         },
         {
-          "line": 478,
+          "line": 424,
+          "path": "application/service_container.py",
+          "text": "character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)"
+        },
+        {
+          "line": 611,
           "path": "application/service_container.py",
           "text": "else db.setting(\"ui_language\", DEFAULT_UI_LANGUAGE)"
         },
         {
-          "line": 489,
+          "line": 622,
           "path": "application/service_container.py",
           "text": "\"MoHan OpenAI API key\","
         },
         {
-          "line": 493,
+          "line": 626,
           "path": "application/service_container.py",
           "text": "\"MoHan Azure Speech key\","
         },
         {
-          "line": 497,
+          "line": 630,
           "path": "application/service_container.py",
           "text": "\"MoHan Azure Dragon HD Speech key\","
         }
@@ -1694,76 +1744,91 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "a1b989f6fe17ca84dce6ee1b12f0be7c5bd8ea141cde19ca53c8578be4dacbba",
+      "sha256": "208f591f10ad8d9b547a06d63729477f9ad412bd7f365ba72c23336ac71c856a",
       "symbols": [
         {
-          "end_line": 143,
-          "line": 108,
+          "end_line": 221,
+          "line": 122,
+          "name": "LegacyMohanCharacterSource"
+        },
+        {
+          "end_line": 230,
+          "line": 224,
+          "name": "_character_relative_path"
+        },
+        {
+          "end_line": 236,
+          "line": 233,
+          "name": "create_default_character_source"
+        },
+        {
+          "end_line": 275,
+          "line": 240,
           "name": "CompanionServices"
         },
         {
-          "end_line": 202,
-          "line": 146,
+          "end_line": 334,
+          "line": 278,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 225,
-          "line": 205,
+          "end_line": 357,
+          "line": 337,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 294,
-          "line": 228,
+          "end_line": 427,
+          "line": 360,
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 300,
-          "line": 297,
+          "end_line": 433,
+          "line": 430,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 306,
-          "line": 303,
+          "end_line": 439,
+          "line": 436,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 348,
-          "line": 309,
+          "end_line": 481,
+          "line": 442,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 361,
-          "line": 351,
+          "end_line": 494,
+          "line": 484,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 381,
-          "line": 364,
+          "end_line": 514,
+          "line": 497,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 402,
-          "line": 384,
+          "end_line": 535,
+          "line": 517,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 421,
-          "line": 405,
+          "end_line": 554,
+          "line": 538,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 441,
-          "line": 424,
+          "end_line": 574,
+          "line": 557,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 461,
-          "line": 444,
+          "end_line": 594,
+          "line": 577,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 609,
-          "line": 464,
+          "end_line": 742,
+          "line": 597,
           "name": "create_default_services"
         }
       ]
@@ -2395,6 +2460,17 @@
           "name": "_delivery_token"
         }
       ]
+    },
+    {
+      "bytes": 2561,
+      "category": "archive_or_support",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/README.md",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "4544c76d0e94021a456ecb9c87b05e275e511f395aa1f6dac22911af1bebffdd"
     },
     {
       "bytes": 11230,
@@ -21636,7 +21712,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 232,
+          "line": 365,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -49407,7 +49483,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 232,
+          "line": 365,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -91250,6 +91326,11 @@
           "text": "lazy from domain.app_profile import profile_window_title"
         },
         {
+          "line": 49,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.app_profile import DEFAULT_PROFILE, default_persona_for_language"
+        },
+        {
           "line": 15,
           "path": "presentation/companion_platform.py",
           "text": "lazy from domain.app_profile import profile_setting, profile_window_title"
@@ -91396,6 +91477,11 @@
           "line": 18,
           "path": "application/full_body_render_adapter.py",
           "text": "lazy from domain.character_body_profile import MOHAN_BODY_PROFILE"
+        },
+        {
+          "line": 50,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.character_body_profile import body_profile_reference"
         },
         {
           "line": 9,
@@ -91764,6 +91850,11 @@
           "text": "lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION"
         },
         {
+          "line": 51,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.character_full_body_rig import compatible_yaws"
+        },
+        {
           "line": 15,
           "path": "domain/pose_pack.py",
           "text": "lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION"
@@ -92070,6 +92161,11 @@
           "line": 26,
           "path": "application/performance_runtime.py",
           "text": "lazy from domain.character_pose import ("
+        },
+        {
+          "line": 52,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.character_pose import canonical_view_id"
         },
         {
           "line": 11,
@@ -93279,6 +93375,11 @@
           "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
         },
         {
+          "line": 66,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT"
+        },
+        {
           "line": 8,
           "path": "application/speech_performance.py",
           "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
@@ -93752,7 +93853,7 @@
           "text": "lazy from domain.contracts import ("
         },
         {
-          "line": 38,
+          "line": 39,
           "path": "application/service_container.py",
           "text": "lazy from domain.contracts import ("
         },
@@ -95069,7 +95170,7 @@
           "text": "lazy from domain.language_support import canonical_ui_language"
         },
         {
-          "line": 48,
+          "line": 61,
           "path": "application/service_container.py",
           "text": "lazy from domain.language_support import ("
         },
@@ -95107,6 +95208,11 @@
           "line": 8,
           "path": "domain/speech_configuration.py",
           "text": "lazy from domain.language_support import localized_voice_instructions"
+        },
+        {
+          "line": 28,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "lazy from domain.language_support import canonical_ui_language"
         },
         {
           "line": 10,
@@ -98055,7 +98161,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 65,
+          "line": 80,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -98230,7 +98336,7 @@
       "path": "infrastructure/core_hand_regions.py",
       "readers": [
         {
-          "line": 69,
+          "line": 84,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.core_hand_regions import load_core_hand_regions"
         },
@@ -98339,7 +98445,7 @@
           "text": "lazy from infrastructure.db import StudioDB, StudioDBSettingsPort"
         },
         {
-          "line": 67,
+          "line": 82,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.db import StudioDB"
         },
@@ -98472,7 +98578,7 @@
       "path": "infrastructure/exasperated_candidate_assets.py",
       "readers": [
         {
-          "line": 75,
+          "line": 90,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.exasperated_candidate_assets import ("
         },
@@ -98610,7 +98716,7 @@
       "path": "infrastructure/face_assets.py",
       "readers": [
         {
-          "line": 68,
+          "line": 83,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.face_assets import validate_face_assets"
         }
@@ -98771,7 +98877,7 @@
       "path": "infrastructure/layered_face_renderer.py",
       "readers": [
         {
-          "line": 70,
+          "line": 85,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer"
         }
@@ -99267,7 +99373,7 @@
       "path": "infrastructure/layered_full_body_renderer.py",
       "readers": [
         {
-          "line": 71,
+          "line": 86,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer"
         },
@@ -99395,7 +99501,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 85,
+          "line": 100,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -99740,7 +99846,7 @@
       "path": "infrastructure/secret_store.py",
       "readers": [
         {
-          "line": 86,
+          "line": 101,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.secret_store import platform_secret_store_factory"
         },
@@ -99924,7 +100030,7 @@
       "path": "integrations/ai_client.py",
       "readers": [
         {
-          "line": 90,
+          "line": 105,
           "path": "application/service_container.py",
           "text": "lazy from integrations.ai_client import ("
         },
@@ -100779,7 +100885,7 @@
           "text": "lazy from integrations.realtime_voice import ("
         },
         {
-          "line": 104,
+          "line": 119,
           "path": "application/service_container.py",
           "text": "lazy from integrations.realtime_voice import RealtimeVoiceClient"
         }
@@ -105966,7 +106072,7 @@
       "path": "presentation/preview_app.py",
       "readers": [
         {
-          "line": 252,
+          "line": 254,
           "path": "tools/build_preview_package.py",
           "text": "command.append(str(ROOT / \"presentation\" / \"preview_app.py\"))"
         }
@@ -106910,7 +107016,7 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 19,
+    "excluded_support": 20,
     "product_validation_data": 48,
     "runtime_data": 2973
   },
