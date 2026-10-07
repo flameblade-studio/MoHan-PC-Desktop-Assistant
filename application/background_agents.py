@@ -11,6 +11,11 @@ lazy from pathlib import Path
 lazy from typing import Protocol
 
 from domain.python315_concurrency import Future, ThreadPoolExecutor
+lazy from domain.character_pack.character_data import load_mohan_character_data
+
+_BACKGROUND_APP_TEMPLATE = load_mohan_character_data().dialogues[
+    "zh-TW"
+].templates["background.app_launched"]
 
 
 @dataclass(frozen=True)
@@ -197,7 +202,7 @@ class VisibleAppWorker:
             AgentObservation(
                 worker_id=self.worker_id,
                 event_key=f"launched:{name.casefold()}",
-                message=f"主上已開啟 {name}。妾會在旁留意，不打擾您工作。",
+                message=_BACKGROUND_APP_TEMPLATE.format(name=name),
                 expression="attentive_front",
                 priority=10,
                 metadata={"application": name, "status": "launched"},

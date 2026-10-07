@@ -47,16 +47,16 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # the gate's own counting rule
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
-    "application.presentation_ports": 1_034,
+    "application.presentation_ports": 995,
     "domain.outfit_pack": 845,
-    "infrastructure.db": 1_193,
+    "infrastructure.db": 1_188,
     "infrastructure.profile_transfer": 1_070,
-    "integrations.azure_speech": 864,
+    "integrations.azure_speech": 833,
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,
     "presentation.companion_core": 1_104,
     "presentation.companion_face_animation": 1_148,
-    "presentation.companion_speech_runtime": 1_179,
+    "presentation.companion_speech_runtime": 1_168,
     "presentation.companion_visual_dynamics": 969,
     "presentation.dashboard_conversation": 882,
     "presentation.dashboard_settings": 911,

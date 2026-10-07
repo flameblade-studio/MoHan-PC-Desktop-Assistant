@@ -22,6 +22,7 @@ lazy from application.presentation_ports import (
     PresentationDatabasePort,
     fallback_platform_services,
 )
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.language_support import (
     is_english,
@@ -51,6 +52,8 @@ lazy from presentation.ui_localization import (
 lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
 
 __all__ = ("FirstRunWizard",)
+
+_CHARACTER_DATA = load_mohan_character_data()
 
 
 class FirstRunWizard(QDialog):
@@ -125,7 +128,7 @@ class FirstRunWizard(QDialog):
         hero_layout = QVBoxLayout(hero_panel)
         hero_layout.setContentsMargins(16, 24, 16, 14)
         hero_layout.setSpacing(10)
-        self.hero_brand = QLabel("墨寒")
+        self.hero_brand = QLabel(self._t("first_run_brand", ""))
         self.hero_brand.setObjectName("onboardingBrand")
         self.hero_tagline = QLabel()
         self.hero_tagline.setObjectName("onboardingTagline")
@@ -162,11 +165,11 @@ class FirstRunWizard(QDialog):
             profile_setting(db, "assistant_name")
         )
         self.assistant_name.setPlaceholderText(
-            "例如：墨寒、Ava、Office Mate"
+            self._t("assistant_name_placeholder", "")
         )
         self.user_title = QLineEdit(profile_setting(db, "user_title"))
         self.user_title.setPlaceholderText(
-            "助理如何稱呼你，例如：主上、Alex、主管"
+            self._t("user_title_placeholder", "")
         )
         self.organization_name = QLineEdit(
             profile_setting(db, "organization_name")
@@ -184,7 +187,7 @@ class FirstRunWizard(QDialog):
         self._initialize_language()
         self.wake_word = QLineEdit(profile_setting(db, "wake_word"))
         self.wake_word.setPlaceholderText(
-            "語音喚醒詞，例如：墨寒"
+            self._t("wake_word_placeholder", "")
         )
         for key, editor in self._localized_default_editors().items():
             editor.textChanged.connect(
@@ -303,26 +306,19 @@ class FirstRunWizard(QDialog):
 
     def _apply_localized_identity_defaults(self) -> None:
         if is_english(self.language):
-            replacements = (
-                ("assistant_name", {"墨寒"}, "MoHan"),
-                ("user_title", {"主上", "主様"}, "Commander"),
-                ("window_title", {"墨寒"}, "MoHan"),
-                ("wake_word", {"墨寒"}, "MoHan"),
-            )
+            locale = "en"
         elif is_japanese(self.language):
-            replacements = (
-                ("assistant_name", {"MoHan"}, "墨寒"),
-                ("user_title", {"主上", "Commander"}, "主様"),
-                ("window_title", {"MoHan"}, "墨寒"),
-                ("wake_word", {"MoHan"}, "墨寒"),
-            )
+            locale = "ja-JP"
         else:
-            replacements = (
-                ("assistant_name", {"MoHan"}, "墨寒"),
-                ("user_title", {"Commander", "主様"}, "主上"),
-                ("window_title", {"MoHan"}, "墨寒"),
-                ("wake_word", {"MoHan"}, "墨寒"),
-            )
+            locale = "zh-CN" if self.language in {"zh-CN", "zh-SG", "zh-Hans"} else "zh-TW"
+        identities = tuple(persona.identity for persona in _CHARACTER_DATA.personas.values())
+        target = _CHARACTER_DATA.personas[locale].identity
+        replacements = (
+            ("assistant_name", {value.display_name for value in identities}, target.display_name),
+            ("user_title", {value.default_user_title for value in identities}, target.default_user_title),
+            ("window_title", {value.display_name for value in identities}, target.display_name),
+            ("wake_word", {value.default_wake_word for value in identities}, target.default_wake_word),
+        )
         editors = self._localized_default_editors()
         self._applying_localized_defaults = True
         try:
@@ -354,17 +350,17 @@ class FirstRunWizard(QDialog):
 
     def _update_wizard_headings(self) -> None:
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
-        self.hero_brand.setText(self._t("first_run_brand", "墨寒"))
+        self.hero_brand.setText(self._t("first_run_brand", ""))
         self.hero_tagline.setText(
             self._t(
                 "first_run_hero_tagline",
-                "北宋千年女劍魂，陪你說話、記憶，也陪你把工作做好。",
+                "",
             )
         )
         self.title_label.setText(
             self._t(
                 "first_run_heading",
-                "<b>歡迎使用墨寒桌面陪伴工作助理</b>",
+                "",
             )
         )
         self.intro_label.setText(
@@ -387,12 +383,12 @@ class FirstRunWizard(QDialog):
         for key, chinese in labels.items():
             self.form_labels[key].setText(self._t(key, chinese))
         self.assistant_name.setPlaceholderText(
-            self._t("assistant_name_placeholder", "例如：墨寒、Ava、Office Mate")
+            self._t("assistant_name_placeholder", "")
         )
         self.user_title.setPlaceholderText(
             self._t(
                 "user_title_placeholder",
-                "助理如何稱呼你，例如：主上、Alex、主管",
+                "",
             )
         )
         self.organization_name.setPlaceholderText(
@@ -408,7 +404,7 @@ class FirstRunWizard(QDialog):
             )
         )
         self.wake_word.setPlaceholderText(
-            self._t("wake_word_placeholder", "語音喚醒詞，例如：墨寒")
+            self._t("wake_word_placeholder", "")
         )
 
     def _update_work_type_labels(self) -> None:

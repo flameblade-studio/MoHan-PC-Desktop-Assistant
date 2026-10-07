@@ -501,7 +501,7 @@ def build_navigation(shell, features) -> tuple[QFrame, list[QPushButton]]:
         )
     )
 
-    title = QLabel(shell._t("navigation_brand", "墨寒"))
+    title = QLabel(shell._t("navigation_brand", ""))
     title.setAlignment(Qt.AlignCenter)
     title.setProperty("mohanRole", "navigationTitle")
     layout.addWidget(title)

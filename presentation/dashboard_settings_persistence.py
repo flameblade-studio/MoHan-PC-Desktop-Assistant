@@ -45,7 +45,7 @@ class DashboardSettingsPersistenceMixin:
             self.speak_requested.emit(
                 self._t(
                     "permission_saved_speech",
-                    "電腦工具權限已保存。妾會照此邊界行事。",
+                    "",
                 ),
                 "happy",
             )

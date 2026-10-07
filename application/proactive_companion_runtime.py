@@ -28,6 +28,12 @@ lazy from application.special_occasion import OccasionCue, OccasionKind, Occasio
 lazy from application.wellbeing_app_bridge import ReminderTrigger, SpeakRequest
 lazy from application.wellbeing_reminder import WellbeingCue, WellbeingKind
 lazy from application.wellbeing_runtime import RuntimeAttention, RuntimeCue
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
+
+_DIALOGUES = load_mohan_character_data().dialogues
 
 MIN_ABSENCE_SECONDS = 60.0
 lazy from domain.companion_proactivity_preferences import (
@@ -671,14 +677,11 @@ def _memory_check_in_text(language: str, user_title: str, topic: str) -> str:
     topic = str(topic).strip()
     if not topic:
         return ""
-    locale = str(language).strip().lower()
-    if locale.startswith(("zh-cn", "zh-hans")):
-        return f"{user_title}，之前您提到「{topic}」，后来如何了？"
-    if locale.startswith("en"):
-        return f"{user_title}, you mentioned \"{topic}\" earlier — how did that go?"
-    if locale.startswith("ja"):
-        return f"{user_title}、以前「{topic}」とおっしゃっていましたが、その後いかがですか？"
-    return f"{user_title}，之前你提到「{topic}」，後來如何了？"
+    locale = canonical_character_locale(language)
+    return _DIALOGUES[locale].templates["proactive.memory_check_in"].format(
+        user_title=user_title,
+        topic=topic,
+    )
 
 
 def _visual_activity_variation(now: datetime) -> int:
@@ -696,31 +699,10 @@ def _visual_activity_token(now: datetime, variation: int) -> str:
 
 
 def _visual_activity_text(language: str, user_title: str, variation: int) -> str:
-    locale = str(language).strip().lower()
-    lines = (
-        (
-            f"看見您在這裡，墨寒很安心，{user_title}。",
-            f"{user_title}，墨寒有留意到您。今天還順利嗎？",
-            f"您一動，墨寒就注意到了。想和我說說話嗎，{user_title}？",
-        )
-        if not locale.startswith(("zh-cn", "zh-hans", "en", "ja"))
-        else (
-            f"看见您在这里，墨寒很安心，{user_title}。",
-            f"{user_title}，墨寒有留意到您。今天还顺利吗？",
-            f"您一动，墨寒就注意到了。想和我说说话吗，{user_title}？",
-        )
-        if locale.startswith(("zh-cn", "zh-hans"))
-        else (
-            f"I am glad to see you here, {user_title}.",
-            f"I noticed you, {user_title}. Is everything going well today?",
-            f"You caught my attention, {user_title}. Would you like to talk?",
-        )
-        if locale.startswith("en")
-        else (
-            f"ここにいらっしゃるのが見えて、安心しました、{user_title}。",
-            f"{user_title}、ちゃんと気づいていますよ。今日は順調ですか？",
-            f"動かれたので気づきました、{user_title}。少しお話ししませんか？",
-        )
+    locale = canonical_character_locale(language)
+    lines = tuple(
+        line.format(user_title=user_title)
+        for line in _DIALOGUES[locale].line_sets["proactive.visual_activity"]
     )
     return lines[variation % len(lines)]
 

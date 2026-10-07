@@ -5,6 +5,7 @@ lazy from dataclasses import dataclass
 lazy from dataclasses import field as dataclass_field
 lazy from typing import Protocol
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import localized_voice_instructions
 lazy from domain.speech_providers import (
     AZURE_HD_SPEECH_PROVIDER,
@@ -94,18 +95,19 @@ AZURE_HD_SECRET_POLICY = SecretInputPolicy(
 )
 
 
-VOICE_GENERATION_PROMPT = (
-    "請使用台灣繁體中文，以自然的台灣中文口音說話。"
-    "聲線如二十多歲的女性動漫配音，清澈、沉靜、帶有古典氣質；"
-    "咬字清楚但不要字正腔圓得像播報員。"
-    "語氣專業、機敏、略帶傲嬌，對主上含有不明說的溫柔與愛慕。"
-    "避免中國普通話腔、兒童聲、過度甜膩、誇張撒嬌或舞台式朗誦。"
-)
+_VOICE_PROFILE = load_mohan_character_data().voice
+MOHAN_VOICE_DEFAULTS = _VOICE_PROFILE
+VOICE_GENERATION_PROMPT = _VOICE_PROFILE.instructions["zh-TW"]
+DEFAULT_TTS_VOICE = _VOICE_PROFILE.default_tts_voice
+DEFAULT_CLOUD_VOICE = _VOICE_PROFILE.default_cloud_voice
+DEFAULT_REALTIME_VOICE = _VOICE_PROFILE.default_realtime_voice
+ONECORE_VOICE_PREFIX = _VOICE_PROFILE.system_local.onecore_prefix
 
 # Single source of truth for the voice-volume default.  The dashboard slider,
 # the startup volume application, and the gesture-mute path must all agree, or
 # a user who never touched the slider gets different loudness per code path.
-DEFAULT_VOICE_VOLUME_PERCENT = 125
+DEFAULT_VOICE_RATE = _VOICE_PROFILE.default_rate
+DEFAULT_VOICE_VOLUME_PERCENT = _VOICE_PROFILE.default_volume_percent
 
 VOICE_ENGINE_SYSTEM = SYSTEM_LOCAL_PROVIDER
 # Compatibility export for extensions written before the provider ID became
@@ -116,22 +118,8 @@ VOICE_ENGINE_REALTIME = OPENAI_REALTIME_PROVIDER
 VOICE_ENGINE_AZURE = AZURE_SPEECH_PROVIDER
 VOICE_ENGINE_AZURE_HD = AZURE_HD_SPEECH_PROVIDER
 
-OPENAI_VOICE_ORDER = (
-    "coral",
-    "marin",
-    "cedar",
-    "shimmer",
-    "sage",
-    "verse",
-    "alloy",
-    "ash",
-    "ballad",
-    "echo",
-    "nova",
-    "fable",
-    "onyx",
-)
-REALTIME_UNSUPPORTED_TTS_VOICES = frozenset({"nova", "fable", "onyx"})
+OPENAI_VOICE_ORDER = _VOICE_PROFILE.openai.voice_order
+REALTIME_UNSUPPORTED_TTS_VOICES = _VOICE_PROFILE.openai.realtime_unsupported
 REALTIME_VOICES = tuple(
     voice
     for voice in OPENAI_VOICE_ORDER
@@ -161,7 +149,7 @@ def migrate_voice_defaults(db: VoiceSettingsPort) -> None:
         "voice_instructions",
         localized_voice_instructions(language, VOICE_GENERATION_PROMPT),
     )
-    db.set_setting("tts_voice", "coral")
-    db.set_setting("cloud_voice", "coral")
-    db.set_setting("realtime_voice", "coral")
+    db.set_setting("tts_voice", _VOICE_PROFILE.default_tts_voice)
+    db.set_setting("cloud_voice", _VOICE_PROFILE.default_cloud_voice)
+    db.set_setting("realtime_voice", _VOICE_PROFILE.default_realtime_voice)
     db.set_setting("voice_prompt_v1204_migrated", True)

@@ -32,7 +32,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 APP_PATH = PROJECT_ROOT / "app.py"
-APP_PROFILE_PATH = PROJECT_ROOT / "domain" / "app_profile.py"
 DASHBOARD_DIALOGS_PATH = PROJECT_ROOT / "presentation" / "dashboard_dialogs.py"
 FIRST_RUN_WIZARD_PATH = PROJECT_ROOT / "presentation" / "first_run_wizard.py"
 
@@ -267,9 +266,9 @@ def test_owner_modules_resolve_exact_extracted_classes() -> None:
 
 def test_first_run_wizard_pure_defaults_and_four_language_values() -> None:
     wizard_tree = _module_tree(FIRST_RUN_WIZARD_PATH)
-    profile_tree = _module_tree(APP_PROFILE_PATH)
+    profile_module = importlib.import_module("domain.app_profile")
     assert _assignment_value(wizard_tree, "__all__") == ("FirstRunWizard",)
-    assert _assignment_value(profile_tree, "DEFAULT_PROFILE") == DEFAULT_PROFILE
+    assert dict(profile_module.DEFAULT_PROFILE) == DEFAULT_PROFILE
     wizard_class = _class_node(wizard_tree, "FirstRunWizard")
     assert _assignment_value(wizard_class, "WORK_TYPES") == WORK_TYPES
     assert _language_choices(wizard_class) == LANGUAGE_CHOICES

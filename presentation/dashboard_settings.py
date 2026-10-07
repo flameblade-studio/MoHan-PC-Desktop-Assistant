@@ -437,7 +437,7 @@ class DashboardSettingsMixin:  # ruff: ignore[blank-lines-top-level]
         message.setPlaceholderText(
             self._t(
                 "reminder_message_placeholder",
-                "此提醒觸發時要說的內容",
+                "",
             )
         )
         form.addRow(

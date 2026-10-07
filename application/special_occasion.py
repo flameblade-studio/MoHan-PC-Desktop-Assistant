@@ -4,11 +4,18 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime
 lazy from enum import StrEnum
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.lunar_calendar import qixi_gregorian
 
-MOHAN_BIRTHDAY_MONTH = 1
-MOHAN_BIRTHDAY_DAY = 8
-MOHAN_ZODIAC = "capricorn"
+_EVENTS = load_mohan_character_data().events
+_BIRTHDAY = next(
+    occasion
+    for occasion in _EVENTS.fixed_occasions
+    if occasion.kind == "mohan_birthday"
+)
+MOHAN_BIRTHDAY_MONTH = _BIRTHDAY.month
+MOHAN_BIRTHDAY_DAY = _BIRTHDAY.day
+MOHAN_ZODIAC = _EVENTS.zodiac
 MAX_MONTH = 12
 MAX_DAY = 31
 MAX_HOUR = 23
@@ -78,39 +85,16 @@ class OccasionDefinition:
             raise ValueError("A restrained grumble follows the configured interval.")
 
 
-OCCASIONS = (
+OCCASIONS = tuple(
     OccasionDefinition(
-        OccasionKind.MOHAN_BIRTHDAY,
-        MOHAN_BIRTHDAY_MONTH,
-        MOHAN_BIRTHDAY_DAY,
-        8,
-        18,
-        4.0 * 60.0 * 60.0,
-    ),
-    OccasionDefinition(
-        OccasionKind.VALENTINES_DAY,
-        2,
-        14,
-        10,
-        19,
-        4.0 * 60.0 * 60.0,
-    ),
-    OccasionDefinition(
-        OccasionKind.WHITE_DAY,
-        3,
-        14,
-        10,
-        19,
-        4.0 * 60.0 * 60.0,
-    ),
-    OccasionDefinition(
-        OccasionKind.CHRISTMAS_DAY,
-        12,
-        24,
-        10,
-        20,
-        4.0 * 60.0 * 60.0,
-    ),
+        OccasionKind(occasion.kind),
+        occasion.month,
+        occasion.day,
+        occasion.hint_hour,
+        occasion.grumble_hour,
+        occasion.minimum_grumble_delay_seconds,
+    )
+    for occasion in _EVENTS.fixed_occasions
 )
 
 
@@ -240,8 +224,8 @@ def active_occasion(moment: datetime) -> OccasionDefinition | None:
             OccasionKind.QIXI,
             qixi[0],
             qixi[1],
-            10,
-            19,
-            4.0 * 60.0 * 60.0,
+            _EVENTS.qixi_hint_hour,
+            _EVENTS.qixi_grumble_hour,
+            _EVENTS.qixi_minimum_grumble_delay_seconds,
         )
     return None

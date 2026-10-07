@@ -9,12 +9,13 @@ lazy from urllib.request import Request, urlopen
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
 
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import INTERNAL_EMOTION_INSTRUCTION
 lazy from domain.language_support import (
-    is_english,
-    is_japanese,
-    is_simplified_chinese,
     response_language_instruction,
 )
 lazy from domain.persona_defaults import (
@@ -31,6 +32,9 @@ lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from types import MappingProxyType
 
+_CHARACTER_DATA = load_mohan_character_data()
+_PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
+
 DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 STABLE_PROMPT_CACHE_BREAKPOINT = (
     "以上角色、安全、語言與表情規則是本次對話的穩定前綴。"
@@ -42,117 +46,106 @@ TEXT_MODELS = (
 )
 
 
+def _matches(text: str, phrases: tuple[str, ...], *, lower: bool = False) -> bool:
+    candidate = text.lower() if lower else text
+    return any(phrase in candidate for phrase in phrases)
+
+
 def _english_offline_reply(text: str, mode: str) -> str:
+    offline = _CHARACTER_DATA.dialogues["en"].offline
     lowered = text.lower()
-    if is_start_work_command(text) or "start work" in lowered:
-        reply = "The timer is running. Focus on the task; I will watch the time."
-    elif is_stop_work_command(text) or any(
-        phrase in lowered
-        for phrase in ("stop work", "finish work", "clock out")
+    if is_start_work_command(text) or _matches(
+        lowered,
+        offline.triggers["start_work_extra"],
     ):
-        reply = "That is enough for today. Rest is part of sound strategy."
-    elif any(
-        word in lowered for word in ("tired", "exhausted", "frustrated")
+        return offline.replies["start_work"]
+    if is_stop_work_command(text) or _matches(
+        lowered,
+        offline.triggers["stop_work_extra"],
     ):
-        reply = (
-            "Pause for ten minutes, Commander. This is efficiency advice, "
-            "so use it as practical guidance."
-        )
-    elif mode == "工作":
-        reply = (
-            "Set the objective, deadline, and next action first. Give me "
-            "the available facts, and I will put them in order."
-        )
-    else:
-        reply = "I am listening. Share each thought in any order, and I will help organize it."
-    return reply
+        return offline.replies["stop_work"]
+    if _matches(lowered, offline.triggers["tired"]):
+        return offline.replies["tired"]
+    if mode == offline.work_mode_value:
+        return offline.replies["work"]
+    return offline.replies["companion"]
 
 
 def _simplified_chinese_offline_reply(text: str, mode: str) -> str:
-    if any(word in text for word in ("怎么办", "帮我分析", "给我建议", "如何处理")):
-        reply = (
-            "先说结论：主上先把目标、期限与现有资料交给妾；"
-            "妾会替你分出优先顺序、风险与下一步。"
-        )
-    elif any(word in text for word in ("我累了", "好累", "不想休息", "继续加班")):
-        reply = (
-            "妾依工作效率判断，也愿主上照顾自己。先休息十分钟，再回来"
-            "处理最重要的一件事——充分休息能保留明日的判断力。"
-        )
-    elif is_start_work_command(text):
-        reply = "计时已开始。主上只管专注，妾替你守住时辰。"
-    elif any(word in text for word in ("累", "疲倦", "好烦")):
-        reply = "先休息十分钟，主上。充分休息能帮助你保持判断力。"
-    elif is_stop_work_command(text):
-        reply = "今日到此为止。把时间留给休息，明日再接续。"
-    elif mode == "工作":
-        reply = "请给妾目标、期限与下一步；妾会逐项整理现有资料并补问。"
-    else:
-        reply = "妾在听。主上想到哪里便说到哪里，妾会陪你整理。"
-    return reply
+    offline = _CHARACTER_DATA.dialogues["zh-CN"].offline
+    if _matches(text, offline.triggers["analysis"]):
+        return offline.replies["analysis"]
+    if _matches(text, offline.triggers["exhausted"]):
+        return offline.replies["exhausted"]
+    if is_start_work_command(text):
+        return offline.replies["start_work"]
+    if _matches(text, offline.triggers["tired"]):
+        return offline.replies["tired"]
+    if is_stop_work_command(text):
+        return offline.replies["stop_work"]
+    if mode == offline.work_mode_value:
+        return offline.replies["work"]
+    return offline.replies["companion"]
 
 
 def _japanese_offline_reply(text: str, mode: str) -> str:
-    if is_start_work_command(text) or "仕事を始め" in text:
-        reply = "計時を始めました。主様は務めに集中を。時は妾が見守ります。"
-    elif is_stop_work_command(text) or any(
-        phrase in text for phrase in ("仕事を終え", "退勤", "今日はここまで")
+    offline = _CHARACTER_DATA.dialogues["ja-JP"].offline
+    if is_start_work_command(text) or _matches(
+        text,
+        offline.triggers["start_work_extra"],
     ):
-        reply = "本日はここまでにしましょう。休むことも、よい策のうちです。"
-    elif any(word in text for word in ("疲れた", "つらい", "しんどい", "焦る")):
-        reply = "主様、まず十分だけ休みましょう。心身を整え、効率よく進めるための時間です。"
-    elif mode == "工作":
-        reply = "目的、期限、次の一手をお聞かせください。必要な情報は妾が順に確かめます。"
-    elif "どうすれば" in text or "相談" in text or "提案" in text:
-        reply = "まず結論から整えましょう。目的と期限、現在わかっていることをお聞かせください。"
-    else:
-        reply = "妾はここにおります。考えがまとまる前でも、どうぞゆっくりお話しください。"
-    return reply
+        return offline.replies["start_work"]
+    if is_stop_work_command(text) or _matches(
+        text,
+        offline.triggers["stop_work_extra"],
+    ):
+        return offline.replies["stop_work"]
+    if _matches(text, offline.triggers["tired"]):
+        return offline.replies["tired"]
+    if mode == offline.work_mode_value:
+        return offline.replies["work"]
+    if _matches(text, offline.triggers["analysis"]):
+        return offline.replies["analysis"]
+    return offline.replies["companion"]
 
 
 def _traditional_chinese_offline_reply(text: str, mode: str) -> str:
-    if any(word in text for word in ("怎麼辦", "幫我分析", "給我建議", "如何處理")):
-        reply = (
-            "先說結論：主上先把目標、期限與現有資料交給妾；"
-            "妾會替你分出優先順序、風險與下一步。"
-        )
-    elif any(word in text for word in ("我累了", "好累", "不想休息", "繼續加班")):
-        reply = (
-            "妾依工作效率判斷，也願主上照顧自己。先休息十分鐘，再回來處理"
-            "最重要的一件事——充分休息能保留明日的判斷力。"
-        )
-    elif is_start_work_command(text):
-        reply = "計時已啟。主上只管專注，妾替你守住時辰。"
-    elif any(word in text for word in ("累", "疲倦", "好煩")):
-        reply = "先休息十分鐘，主上。疲憊是身體提醒你照顧自己。"
-    elif is_stop_work_command(text):
-        reply = "今日到此為止。把時間留給休息，明日再接續。"
-    elif "想你" in text:
-        reply = "妾一直都在。只是聽主上親口說想妾，終究與平日不同。"
-    elif mode == "工作":
-        reply = "此事先定目標、期限與下一步。主上把現有與待補資料交給妾，妾替你排清順序。"
-    else:
-        reply = "妾在聽。主上想到哪裡便說到哪裡，妾會陪你整理。"
-    return reply
+    offline = _CHARACTER_DATA.dialogues["zh-TW"].offline
+    if _matches(text, offline.triggers["analysis"]):
+        return offline.replies["analysis"]
+    if _matches(text, offline.triggers["exhausted"]):
+        return offline.replies["exhausted"]
+    if is_start_work_command(text):
+        return offline.replies["start_work"]
+    if _matches(text, offline.triggers["tired"]):
+        return offline.replies["tired"]
+    if is_stop_work_command(text):
+        return offline.replies["stop_work"]
+    if _matches(text, offline.triggers["romantic"]):
+        return offline.replies["romantic"]
+    if mode == offline.work_mode_value:
+        return offline.replies["work"]
+    return offline.replies["companion"]
 
 
 # 離線回覆的前綴，讓畫面清楚標示目前使用內建回覆的模式。
 OFFLINE_NOTICE = MappingProxyType(
     {
-        "zh-TW": "〔離線模式：目前使用內建回覆；設定 OpenAI 金鑰即可連接模型〕\n",
-        "zh-CN": "〔离线模式：当前使用内建回复；设置 OpenAI 密钥即可连接模型〕\n",
-        "en": "[Offline mode: a built-in reply is active; configure an OpenAI key to connect the model]\n",
-        "ja": "〔オフラインモード：組み込み応答を使用中です。OpenAI キーを設定するとモデルに接続できます〕\n",
+        "zh-TW": _CHARACTER_DATA.dialogues["zh-TW"].offline.notice,
+        "zh-CN": _CHARACTER_DATA.dialogues["zh-CN"].offline.notice,
+        "en": _CHARACTER_DATA.dialogues["en"].offline.notice,
+        "ja": _CHARACTER_DATA.dialogues["ja-JP"].offline.notice,
     }
 )
 
 
 def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str:
-    if is_english(response_language):
+    locale = canonical_character_locale(response_language)
+    if locale == "en":
         reply = _english_offline_reply(text, mode)
-    elif is_simplified_chinese(response_language):
+    elif locale == "zh-CN":
         reply = _simplified_chinese_offline_reply(text, mode)
-    elif is_japanese(response_language):
+    elif locale == "ja-JP":
         reply = _japanese_offline_reply(text, mode)
     else:
         reply = _traditional_chinese_offline_reply(text, mode)
@@ -378,8 +371,8 @@ class AIWorkerRequest:
     memories: str = ""
     model: str = DEFAULT_TEXT_MODEL
     persona: str = PERSONA
-    assistant_name: str = "墨寒"
-    user_title: str = "主上"
+    assistant_name: str = _PROFILE_DEFAULTS["assistant_name"]
+    user_title: str = _PROFILE_DEFAULTS["user_title"]
     response_language: str = "zh-TW"
     prompt_cache_telemetry: Callable[[PromptCacheTelemetry], None] | None = field(
         default=None,
