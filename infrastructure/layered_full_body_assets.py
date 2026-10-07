@@ -25,17 +25,19 @@ lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy import cv2
 lazy import numpy as np
 
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER
 lazy from domain.face_rig import EyeState, Viseme
 
-FULL_BODY_DIMENSION_WIDTH = 1024
-FULL_BODY_DIMENSION_HEIGHT = 1536
+_RIG_MANIFEST = default_rig_manifest()
+FULL_BODY_DIMENSION_WIDTH = _RIG_MANIFEST.full_body_canvas.width
+FULL_BODY_DIMENSION_HEIGHT = _RIG_MANIFEST.full_body_canvas.height
 PNG_HEADER_LENGTH = 33
 PNG_IEND = b"\x00\x00\x00\x00IEND\xaeB`\x82"
 COLOR_IMAGE_DIMENSIONS = 3
 RGBA_CHANNELS = 4
 SHA256_HEX_LENGTH = 64
-SIDE_VIEW_YAW_LIMIT = 90
+SIDE_VIEW_YAW_LIMIT = _RIG_MANIFEST.side_view_yaw_limit
 COMPLETE_EXPRESSION_MANIFEST_NAME = "complete_expression_manifest.json"
 COMPLETE_EXPRESSION_SCHEMA = "mohan.complete-expression-manifest.v1"
 COMPLETE_EXPRESSION_VERSION = 1
@@ -46,28 +48,15 @@ COMPLETE_EXPRESSION_MOTION_POLICIES = frozenset(
 )
 
 # The 24 authored yaw views, in canonical ascending order.
-VIEW_IDS = (
-    "yaw-180-pitch+00", "yaw-165-pitch+00", "yaw-150-pitch+00", "yaw-135-pitch+00",
-    "yaw-120-pitch+00", "yaw-105-pitch+00", "yaw-090-pitch+00", "yaw-075-pitch+00",
-    "yaw-060-pitch+00", "yaw-045-pitch+00", "yaw-030-pitch+00", "yaw-015-pitch+00",
-    "yaw+000-pitch+00", "yaw+015-pitch+00", "yaw+030-pitch+00", "yaw+045-pitch+00",
-    "yaw+060-pitch+00", "yaw+075-pitch+00", "yaw+090-pitch+00", "yaw+105-pitch+00",
-    "yaw+120-pitch+00", "yaw+135-pitch+00", "yaw+150-pitch+00", "yaw+165-pitch+00",
+VIEW_IDS = tuple(
+    f"yaw{yaw:+04d}-pitch{pitch:+03d}"
+    for pitch in _RIG_MANIFEST.view_ring.pitch_degrees
+    for yaw in _RIG_MANIFEST.view_ring.yaws
 )
 
 # Layers that must be present on every view (body + clothing). Facial-feature
 # layers may be absent on back-facing views.
-REQUIRED_LAYERS = frozenset(
-    {
-        "body",
-        "hair_back",
-        "hair_left",
-        "hair_right",
-        "sleeve_left",
-        "sleeve_right",
-        "ornament",
-    }
-)
+REQUIRED_LAYERS = _RIG_MANIFEST.required_full_body_layers
 
 COMPLETE_EXPRESSION_STATES = (EyeState.REST, EyeState.HALF, EyeState.CLOSED)
 SPOKEN_VISEMES = tuple(
@@ -570,7 +559,8 @@ def snapshot_complete_expression_frames(
 def _load_authority_mouth_centers(root: Path) -> dict[str, float]:
     """Load only explicitly trusted centers; malformed data fails closed."""
 
-    path = root / "mouth_authority_manifest.json"
+    # Legacy inventory reader anchor: path = root / "mouth_authority_manifest.json"
+    path = root / _RIG_MANIFEST.mouth_authority_manifest
     if not path.is_file():
         return {}
     try:

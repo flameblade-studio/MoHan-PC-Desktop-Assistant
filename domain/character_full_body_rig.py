@@ -7,6 +7,7 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.character_pose import (
     CANONICAL_YAWS,
     ArmRig,
@@ -21,7 +22,9 @@ lazy from domain.character_pose import (
 )
 
 FULL_BODY_RIG_SCHEMA_VERSION = 1
-LEGACY_POSE_IDS = ("front-crossed", "left-neutral", "left-cheek-rest")
+_RIG_MANIFEST = default_rig_manifest()
+_FULL_BODY_CALIBRATION = _RIG_MANIFEST.full_body_calibration
+LEGACY_POSE_IDS = _RIG_MANIFEST.legacy_pose_ids
 SOLE_LANDMARK_NAMES = frozenset(
     {"heel_outer", "heel_inner", "toe_inner", "toe_outer"}
 )
@@ -86,16 +89,16 @@ class BodyProportions:
 
 
 MOHAN_BODY_PROPORTIONS = BodyProportions(
-    root_to_pelvis=0.025,
-    pelvis_to_spine=0.115,
-    spine_to_chest=0.155,
-    chest_to_neck=0.105,
-    neck_to_head=0.105,
-    hip_half_width=0.075,
-    thigh_length=0.245,
-    shin_length=0.225,
-    foot_length=0.105,
-    toe_length=0.045,
+    root_to_pelvis=_FULL_BODY_CALIBRATION.proportions.root_to_pelvis,
+    pelvis_to_spine=_FULL_BODY_CALIBRATION.proportions.pelvis_to_spine,
+    spine_to_chest=_FULL_BODY_CALIBRATION.proportions.spine_to_chest,
+    chest_to_neck=_FULL_BODY_CALIBRATION.proportions.chest_to_neck,
+    neck_to_head=_FULL_BODY_CALIBRATION.proportions.neck_to_head,
+    hip_half_width=_FULL_BODY_CALIBRATION.proportions.hip_half_width,
+    thigh_length=_FULL_BODY_CALIBRATION.proportions.thigh_length,
+    shin_length=_FULL_BODY_CALIBRATION.proportions.shin_length,
+    foot_length=_FULL_BODY_CALIBRATION.proportions.foot_length,
+    toe_length=_FULL_BODY_CALIBRATION.proportions.toe_length,
 )
 
 
@@ -307,7 +310,7 @@ def adapt_character_pose(
     yaw = _view_yaw(pose.view_id) if yaw_degrees is None else int(yaw_degrees)
     if yaw not in CANONICAL_YAWS:
         raise ValueError("Full-body rig yaw must use the canonical 15-degree grid.")
-    root = Point2D(0.5, 0.51)
+    root = Point2D(*_FULL_BODY_CALIBRATION.root)
     pelvis = _vertical_offset(root, MOHAN_BODY_PROPORTIONS.root_to_pelvis)
     spine = _vertical_offset(pelvis, MOHAN_BODY_PROPORTIONS.pelvis_to_spine)
     chest = _vertical_offset(spine, MOHAN_BODY_PROPORTIONS.spine_to_chest)
@@ -320,25 +323,24 @@ def adapt_character_pose(
         neck=neck,
         head=_vertical_offset(neck, MOHAN_BODY_PROPORTIONS.neck_to_head),
     )
-    perspective = max(0.18, abs(math.cos(math.radians(yaw))))
+    perspective = max(
+        _FULL_BODY_CALIBRATION.minimum_perspective,
+        abs(math.cos(math.radians(yaw))),
+    )
     hip_offset = MOHAN_BODY_PROPORTIONS.hip_half_width * perspective
     left_leg = LegRig(
         BodySide.LEFT,
         Point2D(root.x - hip_offset, axial.pelvis.y),
         MOHAN_BODY_PROPORTIONS.thigh_length,
         MOHAN_BODY_PROPORTIONS.shin_length,
-        88.0,
-        2.0,
-        0.0,
+        *_FULL_BODY_CALIBRATION.left_leg_degrees,
     )
     right_leg = LegRig(
         BodySide.RIGHT,
         Point2D(root.x + hip_offset, axial.pelvis.y),
         MOHAN_BODY_PROPORTIONS.thigh_length,
         MOHAN_BODY_PROPORTIONS.shin_length,
-        92.0,
-        -2.0,
-        0.0,
+        *_FULL_BODY_CALIBRATION.right_leg_degrees,
     )
     direction = _foot_direction(yaw)
     return CharacterFullBodyRig(
@@ -391,8 +393,12 @@ def _make_foot(side: BodySide, ankle: Point2D, direction: FootDirection) -> Foot
         foot.x + unit.x * MOHAN_BODY_PROPORTIONS.toe_length,
         foot.y + unit.y * MOHAN_BODY_PROPORTIONS.toe_length,
     )
-    heel_center = Point2D(ankle.x + unit.x * 0.018, ankle.y + unit.y * 0.018)
-    width = 0.022
+    heel_center_offset = _FULL_BODY_CALIBRATION.heel_center_offset
+    heel_center = Point2D(
+        ankle.x + unit.x * heel_center_offset,
+        ankle.y + unit.y * heel_center_offset,
+    )
+    width = _FULL_BODY_CALIBRATION.sole_half_width
     return FootRig(
         side,
         ankle,
@@ -437,13 +443,8 @@ def _foot_direction(yaw: int) -> FootDirection:
 
 
 def _direction_vector(direction: FootDirection) -> Point2D:
-    return {
-        # Depth-facing feet are foreshortened in the 2.5D canvas.
-        FootDirection.FORWARD: Point2D(0.0, 0.28),
-        FootDirection.BACK: Point2D(0.0, -0.28),
-        FootDirection.LEFT: Point2D(-1.0, 0.0),
-        FootDirection.RIGHT: Point2D(1.0, 0.0),
-    }[direction]
+    # Depth-facing feet are foreshortened in the authored 2.5D calibration.
+    return Point2D(*_FULL_BODY_CALIBRATION.direction_vectors[direction.value])
 
 
 def _endpoint(origin: Point2D, length: float, degrees: float) -> Point2D:

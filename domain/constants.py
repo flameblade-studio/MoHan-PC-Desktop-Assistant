@@ -1,4 +1,10 @@
-"""Centralized, cross-module constants for MoHan. This single module is the project's "constant island": every shared, domain-agnostic value lives here with a single source of truth. It contains only pure literals (numbers, strings, booleans) and imports project modules through the established one-way boundary, which keeps circular imports out of the dependency graph. Every constant is declared with :data:`typing.Final` so the type checker accepts assignments that follow the contract.
+"""Centralized, cross-module constants for MoHan.
+
+Domain-agnostic values remain literals. Character-owned asset geometry is
+adapted from the strict bundled rig manifest while the long-standing public
+constant names stay compatible. Every constant is declared with
+:data:`typing.Final` so the type checker accepts assignments that follow the
+contract.
 
 Import style::
 
@@ -8,6 +14,10 @@ Import style::
 """
 
 lazy from typing import Final
+
+lazy from domain.character_runtime_data import default_rig_manifest
+
+_RIG_MANIFEST = default_rig_manifest()
 
 # ---------------------------------------------------------------------------
 # HTTP status codes and classification boundaries (RFC 9110).
@@ -72,28 +82,34 @@ SECONDS_PER_DAY: Final = 86_400
 # :class:`~domain.face_rig.FaceMotionFrame` control onto one authored layer.
 # ---------------------------------------------------------------------------
 # Layer opacity ceilings for independent facial features.
-LAYER_OPACITY_EYE_LID: Final = 1.0
-LAYER_OPACITY_EYELINER: Final = 1.0
-LAYER_OPACITY_BLUSH: Final = 1.0
-LAYER_OPACITY_IRIS: Final = 1.0
+LAYER_OPACITY_EYE_LID: Final = _RIG_MANIFEST.face_calibration.layer_opacity_eye_lid
+LAYER_OPACITY_EYELINER: Final = (
+    _RIG_MANIFEST.face_calibration.layer_opacity_eyeliner
+)
+LAYER_OPACITY_BLUSH: Final = _RIG_MANIFEST.face_calibration.layer_opacity_blush
+LAYER_OPACITY_IRIS: Final = _RIG_MANIFEST.face_calibration.layer_opacity_iris
 
 # Mouth articulation stretch/scale ratios.
-MOUTH_STRETCH_RATIO: Final = 0.08
-MOUTH_ROUNDING_RATIO: Final = 0.02
-MOUTH_HEIGHT_RATIO: Final = 0.04
-MOUTH_APERTURE_NORMALIZER: Final = 0.18
+MOUTH_STRETCH_RATIO: Final = _RIG_MANIFEST.face_calibration.mouth_stretch_ratio
+MOUTH_ROUNDING_RATIO: Final = _RIG_MANIFEST.face_calibration.mouth_rounding_ratio
+MOUTH_HEIGHT_RATIO: Final = _RIG_MANIFEST.face_calibration.mouth_height_ratio
+MOUTH_APERTURE_NORMALIZER: Final = (
+    _RIG_MANIFEST.face_calibration.mouth_aperture_normalizer
+)
 
 # Jaw / brow / corner translation factors (pixels per unit control).
-JAW_TRANSLATION_FACTOR: Final = 3.0
-BROW_LIFT_FACTOR: Final = 3.0
-BROW_TENSION_FACTOR: Final = 1.5
-CORNER_SMILE_FACTOR: Final = 2.0
-CORNER_SMILE_LIFT_FACTOR: Final = 1.0
+JAW_TRANSLATION_FACTOR: Final = _RIG_MANIFEST.face_calibration.jaw_translation_factor
+BROW_LIFT_FACTOR: Final = _RIG_MANIFEST.face_calibration.brow_lift_factor
+BROW_TENSION_FACTOR: Final = _RIG_MANIFEST.face_calibration.brow_tension_factor
+CORNER_SMILE_FACTOR: Final = _RIG_MANIFEST.face_calibration.corner_smile_factor
+CORNER_SMILE_LIFT_FACTOR: Final = (
+    _RIG_MANIFEST.face_calibration.corner_smile_lift_factor
+)
 
 # Micro-expression chain weights (shyness cascade: blush → gaze → lips).
-SHYNESS_BLUSH_WEIGHT: Final = 0.15
-SHYNESS_GAZE_WEIGHT: Final = 0.10
-SHYNESS_LIP_WEIGHT: Final = 0.05
+SHYNESS_BLUSH_WEIGHT: Final = _RIG_MANIFEST.face_calibration.shyness_blush_weight
+SHYNESS_GAZE_WEIGHT: Final = _RIG_MANIFEST.face_calibration.shyness_gaze_weight
+SHYNESS_LIP_WEIGHT: Final = _RIG_MANIFEST.face_calibration.shyness_lip_weight
 
 # Sub-frame interpolation timing (50 Hz speech clock).
 VISEME_FRAME_INTERVAL_MS: Final = 20
@@ -114,34 +130,8 @@ FLOAT_COMPARISON_EPSILON: Final = 1e-9
 # character turns, back hair stays behind the body, front hair stays in front of
 # the face, and sleeves stay in front of the torso — clothing clipping stays outside the visible result.
 # ---------------------------------------------------------------------------
-FULL_BODY_LAYER_COUNT: Final = 25
-FULL_BODY_LAYER_Z_ORDER: Final = (
-    "body",            # torso + clothing base (face region left transparent)
-    "hair_back",       # back hair, behind the face
-    "base",            # face base
-    "jaw",             # jaw influence region
-    "oral_cavity",     # dark oral cavity (open mouth)
-    "teeth_tongue",    # teeth / tongue (open mouth)
-    "lip_lower",       # lower lip
-    "lip_upper",       # upper lip
-    "corner_left",     # left mouth corner
-    "corner_right",    # right mouth corner
-    "blush_left",      # left cheek blush
-    "blush_right",     # right cheek blush
-    "iris_left",       # left iris
-    "iris_right",      # right iris
-    "eyelid_left",     # left eyelid
-    "eyelid_right",    # right eyelid
-    "eyeliner_left",   # left eyeliner
-    "eyeliner_right",  # right eyeliner
-    "brow_left",       # left brow
-    "brow_right",      # right brow
-    "hair_left",       # front hair, left side (in front of face)
-    "hair_right",      # front hair, right side (in front of face)
-    "sleeve_left",     # left sleeve (in front of torso)
-    "sleeve_right",    # right sleeve (in front of torso)
-    "ornament",        # hair ornament / accessory (topmost)
-)
+FULL_BODY_LAYER_Z_ORDER: Final = _RIG_MANIFEST.layer_z_order
+FULL_BODY_LAYER_COUNT: Final = len(FULL_BODY_LAYER_Z_ORDER)
 
 # ---------------------------------------------------------------------------
 # Full-body PoseAtlas generation (runtime switch ratified 2026-09-02).

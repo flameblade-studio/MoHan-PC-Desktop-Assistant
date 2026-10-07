@@ -11,15 +11,26 @@ lazy from typing import Protocol
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
+lazy from domain.character_runtime_data import (
+    default_expression_catalog,
+    default_rig_manifest,
+)
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.exasperated-runtime-candidate.v1"
 FORMAL_INSTALL_SCHEMA = "mohan.source-bound-exasperated-default-install.v1"
 FORMAL_ASSET_RELATIVE_DIR = "assets/expressions/source-bound-exasperated"
 APPROVED_SOURCE_SHA256 = "0bb3d74affef4d2df831cf45d7f6d756b69cb58aee3693aea14f38f5d47996df"
-DIMENSION = 1254
+DIMENSION = default_rig_manifest().half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
-MOUTH_BOUNDS = (480, 505, 627, 612)
+_SOURCE_BOUND = default_expression_catalog().source_bound_exasperated
+_MOUTH_RECT = _SOURCE_BOUND.mouth_bounds
+MOUTH_BOUNDS = (
+    _MOUTH_RECT[0],
+    _MOUTH_RECT[1],
+    _MOUTH_RECT[0] + _MOUTH_RECT[2],
+    _MOUTH_RECT[1] + _MOUTH_RECT[3],
+)
 PART_ORDER = (
     "visible_core_hair",
     "visible_head_neck_chest_skin",
@@ -30,13 +41,7 @@ PART_ORDER = (
     "visible_left_hand",
 )
 MOUTH_VARIANTS = ("mid", "open", "round")
-EXPRESSION_VARIANTS = frozendict({
-    "exasperated_front_speech_mid": "mid",
-    "exasperated_front_speech_i": "mid",
-    "exasperated_front_speech_open": "open",
-    "exasperated_front_speech_round": "round",
-    "exasperated_front_speech_u": "round",
-})
+EXPRESSION_VARIANTS = _SOURCE_BOUND.mouth_variants
 
 
 class ExasperatedAppearanceOverlay(Protocol):

@@ -6,6 +6,10 @@ lazy from collections import deque
 lazy from collections.abc import Callable, Collection
 lazy from dataclasses import dataclass
 
+lazy from domain.character_runtime_data import default_expression_catalog
+
+_EXPRESSION_CATALOG = default_expression_catalog()
+
 # Complex-prompt length thresholds (characters) for wait-expression scoring.
 COMPLEX_PROMPT_LENGTH = 56
 VERY_COMPLEX_PROMPT_LENGTH = 110
@@ -14,26 +18,7 @@ MIN_QUESTION_MARKS = 2
 MIN_SENTENCE_BREAKS = 2
 MIN_COMPLEX_SCORE = 2
 
-EMOTION_TO_EXPRESSION = frozendict({
-    "neutral": "speaking",
-    "thinking": "thinking_front",
-    "attentive": "attentive_front",
-    "determined": "determined_front",
-    "gentle": "gentle_smile_front",
-    "happy": "happy",
-    "proud": "proud_front",
-    "relieved": "relieved_front",
-    "worried": "worried_front",
-    "reminder": "reminder",
-    "surprised": "surprised_front",
-    "shy": "shy_cute_front",
-    "amused": "restrained_amused_front",
-    "exasperated": "exasperated_front",
-    "scold": "mock_scold",
-    "mock_hit": "mock_hit_front",
-    "eureka": "eureka_front",
-    "protective": "protective_front",
-})
+EMOTION_TO_EXPRESSION = _EXPRESSION_CATALOG.emotion_to_expression
 EXPRESSION_TO_EMOTION = frozendict({
     expression: emotion
     for emotion, expression in EMOTION_TO_EXPRESSION.items()
@@ -144,7 +129,7 @@ def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
     if score >= MIN_COMPLEX_SCORE:
         cues.append(
             WaitExpressionCue(
-                "thinking_front",
+                EMOTION_TO_EXPRESSION["thinking"],
                 _COMPLEX_WAIT_DELAY_MS,
                 0.58,
                 "complex_prompt_still_pending",
@@ -153,7 +138,7 @@ def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
     elif len(compact) >= ATTENTIVE_PROMPT_LENGTH:
         cues.append(
             WaitExpressionCue(
-                "attentive_front",
+                EMOTION_TO_EXPRESSION["attentive"],
                 _ATTENTIVE_WAIT_DELAY_MS,
                 0.38,
                 "long_narrative_still_pending",
@@ -162,7 +147,7 @@ def plan_wait_expressions(prompt: str) -> tuple[WaitExpressionCue, ...]:
 
     cues.append(
         WaitExpressionCue(
-            "thinking_front",
+            EMOTION_TO_EXPRESSION["thinking"],
             AI_WAIT_TIMEOUT_MS,
             0.5,
             "response_timeout",
@@ -196,29 +181,23 @@ class ExpressionRule:
     cooldown_ms: int
 
 
-DEFAULT_EXPRESSION_RULE = ExpressionRule(40, 1_600, 3_200, 4_500)
-EXPRESSION_RULES = frozendict({
-    "thinking_front": ExpressionRule(42, 1_500, 3_600, 9_000),
-    "attentive_front": ExpressionRule(38, 1_500, 3_400, 3_000),
-    "determined_front": ExpressionRule(66, 1_700, 3_800, 5_000),
-    "gentle_smile_front": ExpressionRule(40, 1_700, 3_800, 4_000),
-    "happy": ExpressionRule(44, 1_600, 3_600, 4_000),
-    "proud_front": ExpressionRule(48, 1_700, 3_800, 5_000),
-    "relieved_front": ExpressionRule(52, 1_800, 4_000, 5_000),
-    "worried": ExpressionRule(74, 2_000, 4_600, 5_000),
-    "worried_front": ExpressionRule(76, 2_000, 4_800, 5_000),
-    "reminder": ExpressionRule(92, 2_200, 5_000, 7_000),
-    "surprised_front": ExpressionRule(58, 1_400, 3_000, 5_000),
-    "shy_front": ExpressionRule(50, 1_800, 4_000, 7_000),
-    "shy_cute_front": ExpressionRule(52, 1_800, 4_200, 7_000),
-    "caught": ExpressionRule(62, 2_200, 4_200, 9_000),
-    "restrained_amused_front": ExpressionRule(44, 1_600, 3_600, 5_000),
-    "exasperated_front": ExpressionRule(54, 1_800, 4_000, 6_000),
-    "mock_scold": ExpressionRule(82, 2_000, 4_400, 9_000),
-    "mock_hit_front": ExpressionRule(86, 2_200, 4_600, 12_000),
-    "eureka_front": ExpressionRule(64, 1_700, 3_800, 5_000),
-    "protective_front": ExpressionRule(94, 2_300, 5_200, 8_000),
-})
+DEFAULT_EXPRESSION_RULE = ExpressionRule(
+    _EXPRESSION_CATALOG.default_rule.priority,
+    _EXPRESSION_CATALOG.default_rule.minimum_ms,
+    _EXPRESSION_CATALOG.default_rule.maximum_ms,
+    _EXPRESSION_CATALOG.default_rule.cooldown_ms,
+)
+EXPRESSION_RULES = frozendict(
+    {
+        expression: ExpressionRule(
+            rule.priority,
+            rule.minimum_ms,
+            rule.maximum_ms,
+            rule.cooldown_ms,
+        )
+        for expression, rule in _EXPRESSION_CATALOG.expression_rules.items()
+    }
+)
 SOURCE_PRIORITY_BONUS = frozendict({
     "ambient": -20,
     "ai_wait": -12,
@@ -229,7 +208,7 @@ SOURCE_PRIORITY_BONUS = frozendict({
     "reminder": 18,
     "safety": 25,
 })
-BASE_EXPRESSIONS = frozenset({"idle", "speaking"})
+BASE_EXPRESSIONS = _EXPRESSION_CATALOG.base_expressions
 
 # The exclusive-favor (主上專屬寵溺) devotion bonus.  When the companion is
 # "devoted" (favor >= FAVOR_DEVOTED_THRESHOLD), every user-facing expression

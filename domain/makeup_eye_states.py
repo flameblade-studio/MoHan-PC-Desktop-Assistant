@@ -3,7 +3,18 @@ from __future__ import annotations
 
 lazy from collections.abc import Callable
 lazy from typing import Protocol
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.outfit_pack_assets import OutfitPackError
+
+_RIG_MANIFEST = default_rig_manifest()
+_FULL_BODY_CANVAS = (
+    _RIG_MANIFEST.full_body_canvas.width,
+    _RIG_MANIFEST.full_body_canvas.height,
+)
+_HALF_BODY_CANVAS = (
+    _RIG_MANIFEST.half_body_asset_canvas.width,
+    _RIG_MANIFEST.half_body_asset_canvas.height,
+)
 
 
 class EyeAsset(Protocol):
@@ -29,7 +40,7 @@ def parse_makeup_eye_states[T: EyeAsset](
         elif current_silhouettes != silhouettes:
             raise OutfitPackError("Makeup eye states must cover the same silhouettes.")
         for silhouette, assets in poses.items():
-            canvas = (1024, 1536) if silhouette.startswith("yaw") else (1254, 1254)
+            canvas = _FULL_BODY_CANVAS if silhouette.startswith("yaw") else _HALF_BODY_CANVAS
             if any((asset.width, asset.height, asset.anchor_x, asset.anchor_y) != (*canvas, 0, 0) for asset in assets):
                 raise OutfitPackError("Eye-state makeup must cover its canvas at anchor 0,0.")
         parsed[state] = poses

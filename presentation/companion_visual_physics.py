@@ -6,6 +6,7 @@ lazy from PySide6.QtCore import QPoint, QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QLinearGradient, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QLabel, QWidget
 
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
     EXPRESSION_DERIVED_VISEME_FRAMES,
@@ -18,6 +19,8 @@ lazy from domain.companion_animation_contract import (
 lazy from presentation.presentation_resources import resource_path
 
 __all__ = ("CompanionVisualPhysicsMethods",)
+
+_RIG_MANIFEST = default_rig_manifest()
 
 # Physics-layer redraw thresholds (radians) for stable repaint cadence.
 SLEEVE_ANGLE_EPSILON = 0.012
@@ -122,52 +125,37 @@ class CompanionVisualPhysicsMethods:
 
     @staticmethod
     def _ornament_anchors() -> frozendict:
-        return frozendict({
-            "cheek": QPoint(315, 96),
-            "lean": QPoint(306, 96),
-            "front": QPoint(293, 72),
-        })
+        return frozendict(
+            {
+                pose: QPoint(*anchor)
+                for pose, anchor in _RIG_MANIFEST.physics.ornament_anchors.items()
+            }
+        )
 
     @staticmethod
     def _hair_anchors() -> frozendict:
-        return frozendict({
-            "cheek": frozendict({
-                "left": QPoint(187, 178),
-                "right": QPoint(268, 168),
-            }),
-            "lean": frozendict({
-                "left": QPoint(177, 174),
-                "right": QPoint(254, 162),
-            }),
-            "front": frozendict({
-                "left": QPoint(183, 171),
-                "right": QPoint(278, 168),
-            }),
-        })
+        return frozendict(
+            {
+                pose: frozendict(
+                    {side: QPoint(*anchor) for side, anchor in sides.items()}
+                )
+                for pose, sides in _RIG_MANIFEST.physics.hair_anchors.items()
+            }
+        )
 
     @staticmethod
     def _sleeve_anchors() -> frozendict:
-        return frozendict({
-            "cheek": frozendict({
-                "left": QPoint(132, 253),
-                "right": QPoint(330, 239),
-            }),
-            "lean": frozendict({
-                "left": QPoint(130, 252),
-                "right": QPoint(326, 239),
-            }),
-            "front": frozendict({
-                "left": QPoint(131, 253),
-                "right": QPoint(333, 253),
-            }),
-        })
+        return frozendict(
+            {
+                pose: frozendict(
+                    {side: QPoint(*anchor) for side, anchor in sides.items()}
+                )
+                for pose, sides in _RIG_MANIFEST.physics.sleeve_anchors.items()
+            }
+        )
 
     def _load_physics_sources(self) -> None:
-        for pose, suffix in (
-            ("cheek", ""),
-            ("lean", "_lean"),
-            ("front", "_front"),
-        ):
+        for suffix, pose in PHYSICS_POSE_SUFFIXES:
             self.physics_sources[pose] = self._scaled_expression_asset(
                 f"v120_ornament{suffix}.png"
             )
@@ -187,8 +175,8 @@ class CompanionVisualPhysicsMethods:
     def _scaled_expression_asset(filename: str) -> QPixmap:
         source = QPixmap(str(resource_path(f"assets/expressions/{filename}")))
         return source.scaled(
-            465,
-            465,
+            _RIG_MANIFEST.viewport.image_size,
+            _RIG_MANIFEST.viewport.image_size,
             Qt.KeepAspectRatio,
             Qt.SmoothTransformation,
         )

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 lazy from dataclasses import dataclass
 
+lazy from domain.character_runtime_data import default_rig_manifest
+
 
 @dataclass(frozen=True, slots=True)
 class BodyMeasurements:
@@ -25,22 +27,20 @@ class CharacterBodyProfile:
     art_direction: str
 
 
+_RIG_MANIFEST = default_rig_manifest()
+_MEASUREMENTS = _RIG_MANIFEST.body_measurements
 MOHAN_BODY_PROFILE = CharacterBodyProfile(
-    profile_id="mohan-body-v2",
-    version=2,
+    profile_id=_RIG_MANIFEST.body_profile_id,
+    version=_RIG_MANIFEST.body_profile_version,
     measurements=BodyMeasurements(
-        height_cm=168,
-        weight_kg=54,
-        bust_cm=86,
-        underbust_cm=71,
-        waist_cm=62,
-        hips_cm=90,
+        height_cm=_MEASUREMENTS.height_cm,
+        weight_kg=_MEASUREMENTS.weight_kg,
+        bust_cm=_MEASUREMENTS.bust_cm,
+        underbust_cm=_MEASUREMENTS.underbust_cm,
+        waist_cm=_MEASUREMENTS.waist_cm,
+        hips_cm=_MEASUREMENTS.hips_cm,
     ),
-    art_direction=(
-        "Adult East Asian woman with a tall, slender frame and a natural, "
-        "centered, supported C70-equivalent bust contour. Garments may alter "
-        "drape and support while the core skeleton and body geometry stay authoritative."
-    ),
+    art_direction=_RIG_MANIFEST.body_art_direction,
 )
 
 

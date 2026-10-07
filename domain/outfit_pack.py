@@ -27,6 +27,7 @@ RemovalResult = _outfit_pack_models.RemovalResult
 SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.makeup_mouth_states import parse_mouth_states
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
@@ -66,10 +67,8 @@ GESTURE_SILHOUETTES = ("front-mock-scold", "front-mock-hit", "front-eureka", "fr
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-# Optional, additive makeup-only silhouettes. Complete-expression state keys
-# share the 1254px cheek canvas but never become required garment/body views.
-# Makeup variants may declare any subset; every other appearance category keeps
-# REQUIRED_SILHOUETTES intact.
+# Optional, additive makeup-only silhouettes share the 1254px cheek canvas but
+# never become required garment/body views; other categories keep the requirements intact.
 GLANCE_MAKEUP_SILHOUETTES = ("cheek-glance", "cheek-glance-half", "cheek-glance-closed")
 BATCH2_MAKEUP_SILHOUETTES = tuple(f"cheek-{expression}{suffix}" for expression in ("caught", "happy", "worried", "reminder") for suffix in ("", "-half", "-closed"))
 COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = GLANCE_MAKEUP_SILHOUETTES + BATCH2_MAKEUP_SILHOUETTES
@@ -103,7 +102,8 @@ ACCESSORY_ASSET_SLOTS = frozendict({
 MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
 FOUNDATION_SLOT = "foundation"
 MAKEUP_SLOTS_V2 = frozenset((*MAKEUP_SLOTS, FOUNDATION_SLOT))
-MAKEUP_CANVASES = frozendict({"full-body": (1024, 1536), "half-body": (1254, 1254)})
+_RIG_MANIFEST = default_rig_manifest()
+MAKEUP_CANVASES = frozendict({"full-body": (_RIG_MANIFEST.full_body_canvas.width, _RIG_MANIFEST.full_body_canvas.height), "half-body": (_RIG_MANIFEST.half_body_asset_canvas.width, _RIG_MANIFEST.half_body_asset_canvas.height)})
 # Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
 BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
 BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID

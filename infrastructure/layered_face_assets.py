@@ -10,10 +10,17 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER
 lazy from domain.face_rig import FacePose
 
-LAYERED_FACE_DIMENSION = 1254
+_RIG_MANIFEST = default_rig_manifest()
+if (
+    _RIG_MANIFEST.half_body_asset_canvas.width
+    != _RIG_MANIFEST.half_body_asset_canvas.height
+):
+    raise ValueError("Layered face assets require a square character canvas.")
+LAYERED_FACE_DIMENSION = _RIG_MANIFEST.half_body_asset_canvas.width
 PNG_HEADER_LENGTH = 24
 
 # The 25 authored layers, in paint order (bottom to top). This is the same

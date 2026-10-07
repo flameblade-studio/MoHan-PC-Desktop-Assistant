@@ -811,6 +811,7 @@
         "test_character_pack.py",
         "test_character_persona_data.py",
         "test_character_pose.py",
+        "test_character_runtime_data.py",
         "test_character_scale.py",
         "test_character_source.py",
         "test_chat_timer_isolation.py",
@@ -1394,6 +1395,7 @@
         "test_character_pack.py",
         "test_character_persona_data.py",
         "test_character_pose.py",
+        "test_character_runtime_data.py",
         "test_character_scale.py",
         "test_character_source.py",
         "test_check_pose_atlas_release.py",
@@ -3754,6 +3756,7 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/README.md",
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/complete-expressions/manifest.json",
@@ -4422,6 +4425,15 @@
         "test_character_persona_data.py",
         "test_wardrobe_current_weight_wiring.py",
         "test_wardrobe_intuition.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_runtime_data.py"
+      ],
+      "tests": [
+        "test_character_runtime_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5459,8 +5471,7 @@
         "infrastructure/face_assets.py"
       ],
       "tests": [
-        "test_face_assets.py",
-        "test_release_automation.py"
+        "test_face_assets.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7439,6 +7450,7 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/expressions/state-catalog.json",
         "assets/ui/checkmark.svg",
         "docs/PYTHON-3.15-MIGRATION.md",
         "docs/media/portraits/gentle_smile_front.png",

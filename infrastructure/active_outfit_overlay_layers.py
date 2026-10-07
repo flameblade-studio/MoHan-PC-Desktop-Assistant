@@ -8,6 +8,7 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QBitmap, QColor, QImage, QPainter, QPixmap, QRegion
 
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
     FOUNDATION_SLOT,
@@ -32,8 +33,15 @@ lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID
 lazy from domain.makeup_mouth_states import VISEME_TO_MOUTH_SHAPE
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
-HALF_BODY_CANVAS = (1254, 1254)
-FULL_BODY_CANVAS = (1024, 1536)
+_RIG_MANIFEST = default_rig_manifest()
+HALF_BODY_CANVAS = (
+    _RIG_MANIFEST.half_body_asset_canvas.width,
+    _RIG_MANIFEST.half_body_asset_canvas.height,
+)
+FULL_BODY_CANVAS = (
+    _RIG_MANIFEST.full_body_canvas.width,
+    _RIG_MANIFEST.full_body_canvas.height,
+)
 _DILATION_OFFSETS = tuple(
     (dx, dy)
     for dx in (-1, 0, 1)

@@ -9,10 +9,8 @@ lazy from PySide6.QtCore import (
 )
 lazy from PySide6.QtGui import QPainter, QPixmap
 lazy from presentation.qt_parent import require_qobject
-lazy from domain.companion_animation_contract import (
-    CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS,
-    NEW_EXPRESSION_ASSETS,
-)
+lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.companion_animation_contract import CHEEK_SPEECH_CLOSED_EXPRESSION, EXPRESSION_SPEECH_MOUTH_RECTS, NEW_EXPRESSION_ASSETS
 lazy from domain.lip_sync import (
     VISEME_CHANGE_TRANSITION_SECONDS,
     VISEME_CLOSE_TRANSITION_SECONDS,
@@ -36,7 +34,7 @@ lazy from presentation.companion_face_animation_logic import (
     needs_pose_transition,
 )
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
-POSE_SWITCH_PROBABILITY = 0.55
+POSE_SWITCH_PROBABILITY = default_rig_manifest().physics.pose_switch_probability
 MOUTH_CLOSED_THRESHOLD = 0.01
 MOUTH_OPEN_THRESHOLD = 0.05
 DISCRETE_SPEECH_SWITCH_PROGRESS = 0.5

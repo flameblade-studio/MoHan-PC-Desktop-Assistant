@@ -2,16 +2,24 @@ from __future__ import annotations
 
 lazy import math
 lazy from collections.abc import Iterable, Mapping
-lazy from dataclasses import dataclass, replace
+lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 lazy from itertools import pairwise
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
+lazy from domain.character_runtime_data import ArmSpec, default_rig_manifest
 lazy from domain.constants import FLOAT_COMPARISON_EPSILON
 
+_RIG_MANIFEST = default_rig_manifest()
+if (
+    _RIG_MANIFEST.body_profile_id != MOHAN_BODY_PROFILE.profile_id
+    or _RIG_MANIFEST.body_profile_version != MOHAN_BODY_PROFILE.version
+):
+    raise ValueError("Bundled rig targets a different body profile.")
+
 POSE_SCHEMA_VERSION = 1
-CANONICAL_YAW_STEP_DEGREES = 15
-CANONICAL_YAWS = tuple(range(-180, 180, CANONICAL_YAW_STEP_DEGREES))
+CANONICAL_YAW_STEP_DEGREES = _RIG_MANIFEST.view_ring.yaw_step_degrees
+CANONICAL_YAWS = _RIG_MANIFEST.view_ring.yaws
 
 # 2.5D view and arm-rig angle/length bounds.
 MIN_PITCH_DEGREES = -45
@@ -33,18 +41,7 @@ MIN_FINGER_ROOT_GAP = 0.01
 MIN_THUMB_PINKY_SPAN = 0.20
 MIN_THUMB_RATIO = 0.45
 MAX_THUMB_RATIO = 0.90
-LEGACY_VIEW_ALIASES = frozendict(
-    {
-        "front-000": 0,
-        "left-030": -30,
-        "right-030": 30,
-        "left-045": -45,
-        "right-045": 45,
-        "back-left-120": -120,
-        "back-right-120": 120,
-        "back-180": -180,
-    }
-)
+LEGACY_VIEW_ALIASES = _RIG_MANIFEST.view_ring.legacy_aliases
 HAND_LANDMARK_NAMES = (
     "wrist",
     "thumb_cmc",
@@ -113,7 +110,7 @@ class ViewAnchor:
     pitch_degrees: int
     silhouette: str
     required_layers: frozenset[str]
-    body_profile_id: str = MOHAN_BODY_PROFILE.profile_id
+    body_profile_id: str = _RIG_MANIFEST.body_profile_id
 
     def __post_init__(self) -> None:
         if not self.view_id.strip() or not self.silhouette.strip():
@@ -124,7 +121,7 @@ class ViewAnchor:
             raise ValueError("2.5D view pitch must remain within -45..45 degrees.")
         if not self.required_layers:
             raise ValueError("Every view requires an authored correction layer set.")
-        if self.body_profile_id != MOHAN_BODY_PROFILE.profile_id:
+        if self.body_profile_id != _RIG_MANIFEST.body_profile_id:
             raise ValueError("View targets a different body identity.")
         if self.view_id != canonical_view_id(
             self.yaw_degrees,
@@ -472,119 +469,22 @@ def default_pose_registry() -> PoseRegistry:
 
     relaxed_left = relaxed_hand_pose("relaxed-left")
     relaxed_right = relaxed_left.mirrored("relaxed-right")
-    common_left = ArmRig(
-        BodySide.LEFT,
-        Point2D(0.39, 0.39),
-        0.145,
-        0.135,
-        0.075,
-        105.0,
-        -62.0,
-        -10.0,
-    )
-    common_right = ArmRig(
-        BodySide.RIGHT,
-        Point2D(0.61, 0.39),
-        0.145,
-        0.135,
-        0.075,
-        75.0,
-        62.0,
-        10.0,
-    )
     return PoseRegistry(
-        (
+        tuple(
             CharacterPose(
-                "front-crossed",
-                canonical_view_id(0),
-                "front",
-                "front-crossed",
-                common_left,
-                common_right,
+                pose.pose_id,
+                canonical_view_id(pose.yaw_degrees),
+                pose.legacy_face_pose,
+                pose.silhouette,
+                _arm_from_spec(BodySide.LEFT, pose.left_arm),
+                _arm_from_spec(BodySide.RIGHT, pose.right_arm),
                 relaxed_left,
                 relaxed_right,
-                frozenset({"idle_front.png"}),
-                True,
-                frozenset({"legacy", "idle", "front"}),
-            ),
-            CharacterPose(
-                "left-neutral",
-                canonical_view_id(-30),
-                "lean",
-                "left-neutral",
-                replace(common_left, shoulder_degrees=118.0, elbow_degrees=-28.0),
-                replace(common_right, shoulder_degrees=62.0, elbow_degrees=35.0),
-                relaxed_left,
-                relaxed_right,
-                frozenset({"idle_lean.png"}),
-                True,
-                frozenset({"legacy", "idle", "left-view"}),
-            ),
-            CharacterPose(
-                "left-cheek-rest",
-                canonical_view_id(-30),
-                "cheek",
-                "cheek-rest",
-                replace(common_left, shoulder_degrees=-112.0, elbow_degrees=118.0),
-                replace(common_right, shoulder_degrees=78.0, elbow_degrees=54.0),
-                relaxed_left,
-                relaxed_right,
-                frozenset({"idle.png"}),
-                True,
-                frozenset({"legacy", "idle", "left-view", "cheek-rest"}),
-            ),
-            CharacterPose(
-                "right-neutral",
-                canonical_view_id(30),
-                "front",
-                "right-neutral",
-                replace(common_left, shoulder_degrees=112.0, elbow_degrees=-32.0),
-                replace(common_right, shoulder_degrees=68.0, elbow_degrees=31.0),
-                relaxed_left,
-                relaxed_right,
-                frozenset({"pose-atlas-v4"}),
-                True,
-                frozenset({"v4", "idle", "right-view"}),
-            ),
-            CharacterPose(
-                "back-two-thirds-left",
-                canonical_view_id(-120),
-                "front",
-                "back-two-thirds-left",
-                common_left,
-                common_right,
-                relaxed_left,
-                relaxed_right,
-                frozenset({"pose-atlas-v4"}),
-                False,
-                frozenset({"v4", "back-view", "left-view"}),
-            ),
-            CharacterPose(
-                "back-two-thirds-right",
-                canonical_view_id(120),
-                "front",
-                "back-two-thirds-right",
-                common_left,
-                common_right,
-                relaxed_left,
-                relaxed_right,
-                frozenset({"pose-atlas-v4"}),
-                False,
-                frozenset({"v4", "back-view", "right-view"}),
-            ),
-            CharacterPose(
-                "back-full",
-                canonical_view_id(-180),
-                "front",
-                "back-full",
-                common_left,
-                common_right,
-                relaxed_left,
-                relaxed_right,
-                frozenset({"pose-atlas-v4"}),
-                False,
-                frozenset({"v4", "back-view", "full-back"}),
-            ),
+                pose.required_corrections,
+                pose.speech_safe,
+                pose.tags,
+            )
+            for pose in _RIG_MANIFEST.poses
         )
     )
 
@@ -592,38 +492,32 @@ def default_pose_registry() -> PoseRegistry:
 def relaxed_hand_pose(pose_id: str = "relaxed") -> HandPose:
     """Return a neutral hand authored in a small wrist-local coordinate space."""
 
-    points = (
-        (0.00, 0.00),
-        (-0.15, -0.05),
-        (-0.28, -0.15),
-        (-0.38, -0.27),
-        (-0.46, -0.38),
-        (-0.18, -0.28),
-        (-0.21, -0.50),
-        (-0.22, -0.66),
-        (-0.22, -0.80),
-        (-0.02, -0.31),
-        (-0.02, -0.56),
-        (-0.02, -0.74),
-        (-0.02, -0.89),
-        (0.13, -0.29),
-        (0.16, -0.52),
-        (0.18, -0.68),
-        (0.20, -0.81),
-        (0.25, -0.24),
-        (0.31, -0.42),
-        (0.35, -0.55),
-        (0.38, -0.66),
-    )
     return HandPose(
         pose_id,
         frozendict(
             {
                 name: Point2D(*point)
-                for name, point in zip(HAND_LANDMARK_NAMES, points, strict=True)
+                for name, point in zip(
+                    HAND_LANDMARK_NAMES,
+                    _RIG_MANIFEST.relaxed_hand_points,
+                    strict=True,
+                )
             }
         ),
-        PalmFacing.CAMERA,
+        PalmFacing(_RIG_MANIFEST.relaxed_hand_facing),
+    )
+
+
+def _arm_from_spec(side: BodySide, spec: ArmSpec) -> ArmRig:
+    return ArmRig(
+        side,
+        Point2D(*spec.shoulder),
+        spec.upper_arm_length,
+        spec.forearm_length,
+        spec.hand_length,
+        spec.shoulder_degrees,
+        spec.elbow_degrees,
+        spec.wrist_degrees,
     )
 
 

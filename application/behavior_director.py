@@ -7,6 +7,10 @@ lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
+lazy from domain.character_runtime_data import default_rig_manifest
+
+_RIG_MANIFEST = default_rig_manifest()
+
 BACK_DEPTH_TWO_THIRDS = 2
 
 
@@ -143,27 +147,11 @@ class _Candidate:
 
 
 _SPEECH_ACTIVE = frozenset({SpeechLifecycle.STARTING, SpeechLifecycle.SPEAKING})
-_BACK_DEPTH = frozendict({
-    "front-crossed": 0,
-    "left-cheek-rest": 0,
-    "left-neutral": 1,
-    "right-neutral": 1,
-    "back-two-thirds-left": 2,
-    "back-two-thirds-right": 2,
-    "back-full": 3,
-})
+_BACK_DEPTH = _RIG_MANIFEST.back_depth
 # The canonical view for each pose, mirroring the candidate constructors.
 # _disabled_plan previously hard-coded "left-030" for every non-front pose,
 # rendering e.g. right-neutral from the opposite side's camera.
-_POSE_VIEWS = frozendict({
-    "front-crossed": "front-000",
-    "left-cheek-rest": "left-030",
-    "left-neutral": "left-045",
-    "right-neutral": "right-045",
-    "back-two-thirds-left": "back-left-120",
-    "back-two-thirds-right": "back-right-120",
-    "back-full": "back-180",
-})
+_POSE_VIEWS = _RIG_MANIFEST.behavior_pose_views
 
 
 class BehaviorDirector:
