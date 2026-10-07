@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy import ast
 lazy import hashlib
 lazy import io
 lazy import json
@@ -21,6 +22,8 @@ MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
 DERIVATIVE_COUNT = 234
+MIN_WORK_PACKAGE_COUNT = 3
+MAX_WORK_PACKAGE_COUNT = 5
 DERIVATIVE_COUNTS = {
     "fullbody_blink": 24,
     "fullbody_visible_hand": 8,
@@ -35,6 +38,11 @@ def inventory() -> dict[str, Any]:
     return builder.build_inventory(ROOT)
 
 
+@pytest.fixture(scope="module")
+def worklist(inventory: dict[str, Any]) -> dict[str, Any]:
+    return builder.build_extraction_worklist(inventory)
+
+
 def test_inventory_rebuild_matches_committed_bytes(inventory: dict[str, Any]) -> None:
     expected = builder.render_inventory(inventory)
     assert builder.render_inventory(builder.build_inventory(ROOT)) == expected
@@ -44,6 +52,21 @@ def test_inventory_rebuild_matches_committed_bytes(inventory: dict[str, Any]) ->
     assert paths == sorted(set(paths))
     assert str(ROOT) not in expected
     assert "timestamp" not in inventory
+
+
+def test_worklist_rebuild_matches_committed_bytes(
+    worklist: dict[str, Any],
+) -> None:
+    expected = builder.render_extraction_worklist(worklist)
+    assert builder.render_extraction_worklist(worklist) == expected
+    assert (
+        ROOT / "docs/character-pack/extraction-worklist.json"
+    ).read_text(encoding="utf-8") == expected
+    assert (
+        ROOT / "docs/character-pack/extraction-worklist.md"
+    ).read_text(encoding="utf-8") == builder.render_extraction_summary(worklist)
+    assert str(ROOT) not in expected
+    assert "timestamp" not in worklist
 
 
 def test_every_file_hash_image_and_reader_is_measured(inventory: dict[str, Any]) -> None:
@@ -140,39 +163,80 @@ def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> Non
     assert rows["assets/characters/mohan/README.md"]["scope"] == "excluded_support"
 
 
-def test_required_embedded_content_locations_are_indexed(inventory: dict[str, Any]) -> None:
-    required = {
-        "identity_persona_dialogue": {
-            "domain/persona_defaults.py", "domain/app_profile.py", "domain/language_support.py",
-            "infrastructure/db.py", "integrations/ai_client.py",
-            "application/companion_phrasebook.py", "application/special_occasion.py",
-            "application/wellbeing_reminder.py", "application/wellbeing_runtime.py",
-            "presentation/ui_localization.py", "presentation/ui_localization_en.py",
-            "presentation/ui_localization_ja.py", "presentation/auxiliary_ui_localization.py",
-            "presentation/flagship/localization_remote_vision.py",
-        },
-        "voice_preferences": {
-            "domain/speech_configuration.py", "application/presentation_ports.py",
-            "presentation/dashboard_voice.py", "integrations/speech_voice_catalog.py",
-            "integrations/azure_voice_catalog.py",
-        },
-        "rig_angle_expression_pose_rules": {
-            "domain/character_body_profile.py", "domain/constants.py", "domain/character_pose.py",
-            "domain/companion_animation_contract.py", "domain/expression_system.py",
-            "presentation/companion_wait_expression.py", "presentation/companion_face_assets.py",
-            "presentation/companion_visual_physics.py",
-        },
+def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> None:
+    rows = [row for row in inventory["files"] if row["scope"] == "embedded_code"]
+    by_path = {row["path"]: row for row in rows}
+    assert inventory["scope_counts"]["embedded_code"] == len(rows)
+    assert set(inventory["embedded_code_classification_counts"]) == {
+        "engine_extract", "product_shell_allowed", "ui_text_reference",
     }
-    by_path = {row["path"]: row for row in inventory["files"]}
-    for category, paths in required.items():
-        for path in paths:
-            row = by_path[path]
-            assert row["scope"] == "embedded_code"
-            assert row["migration"] == builder.EMBEDDED
-            assert category in row["content_categories"]
-            assert row["symbols"]
-            line_count = len((ROOT / path).read_text(encoding="utf-8").splitlines())
-            assert all(1 <= symbol["line"] <= symbol["end_line"] <= line_count for symbol in row["symbols"])
+    assert {
+        "domain/constants.py",
+        "domain/expression_system.py",
+        "infrastructure/app_resources.py",
+        "presentation/ui_localization.py",
+    } <= set(by_path)
+    for row in rows:
+        assert row["migration"] == builder.EMBEDDED
+        assert row["classification"] in builder.CLASSIFICATION_REASONS
+        assert row["classification_reason"].strip()
+        assert row["content_locations"]
+        assert row["suggested_data_targets"]
+        line_count = len((ROOT / row["path"]).read_text(encoding="utf-8").splitlines())
+        for evidence in row["content_locations"]:
+            assert evidence["rule"].strip()
+            assert evidence["matched"]
+            assert evidence["description"].strip()
+            assert evidence["suggested_data_target"] in row["suggested_data_targets"]
+            assert 1 <= evidence["line"] <= line_count
+        assert all(
+            1 <= symbol["line"] <= symbol["end_line"] <= line_count
+            for symbol in row["symbols"]
+        )
+
+
+def test_moved_content_and_hint_only_files_are_not_counted(
+    inventory: dict[str, Any],
+) -> None:
+    embedded = {
+        row["path"] for row in inventory["files"]
+        if row["scope"] == "embedded_code"
+    }
+    moved = {
+        "application/companion_phrasebook.py",
+        "application/special_occasion.py",
+        "application/wellbeing_reminder.py",
+        "application/wellbeing_runtime.py",
+        "domain/app_profile.py",
+        "domain/character_body_profile.py",
+        "domain/character_pose.py",
+        "domain/companion_animation_contract.py",
+        "domain/persona_defaults.py",
+        "domain/speech_configuration.py",
+        "infrastructure/db.py",
+        "integrations/azure_voice_catalog.py",
+        "integrations/speech_voice_catalog.py",
+    }
+    assert not moved & embedded
+    hints = {row["path"]: row for row in inventory["manual_review_hints"]}
+    assert moved <= set(hints)
+    assert {hints[path]["status"] for path in moved} == {"review_hint_only"}
+    assert all(not hints[path]["evidence_rules"] for path in moved)
+
+
+def test_literal_rules_ignore_comments_docstrings_and_manual_hints() -> None:
+    source = '''"""墨寒、主上、coral and 1024x1536 are documentation only."""
+# 墨寒的 v5-base 備忘
+VALUE = "generic"
+'''
+    assert builder._content_evidence("domain/example.py", source) == []
+    evidence = builder._content_evidence(
+        "domain/example.py",
+        'VALUE = "主上，墨寒自赤焰劍歸來。"\n',
+    )
+    assert {row["rule"] for row in evidence} == {
+        "character_name_literal", "character_title_or_dialogue_literal",
+    }
 
 
 def test_lineage_is_excluded_but_actual_manifest_paths_are_retained(tmp_path: Path) -> None:
@@ -197,11 +261,15 @@ def test_reader_evidence_names_the_actual_format_and_function(inventory: dict[st
         assert "read_text" in by_path[name]["readers"][0]["text"], name
     row = by_path["assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-closed.rgba.png"]
     evidence = row["readers"][0]
-    source = by_path[evidence["path"]]
-    resolver = next(symbol for symbol in source["symbols"] if symbol["name"] == "_resolve_complete_expression_asset")
-    assert resolver["line"] < evidence["line"] <= resolver["end_line"]
+    source = (ROOT / evidence["path"]).read_text(encoding="utf-8")
+    tree = builder._parsed_python(source)
+    resolver = next(
+        node for node in tree.body
+        if isinstance(node, ast.FunctionDef)
+        and node.name == "_resolve_complete_expression_asset"
+    )
+    assert resolver.lineno < evidence["line"] <= resolver.end_lineno
     assert "read_bytes" in evidence["text"]
-    assert any(location["text"].startswith("CANONICAL_YAWS =") for location in by_path["domain/pose_pack.py"]["content_locations"])
 
 
 def test_cli_checks_both_outputs_and_detects_stale_summary(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, inventory: dict[str, Any]) -> None:
@@ -209,13 +277,51 @@ def test_cli_checks_both_outputs_and_detects_stale_summary(tmp_path: Path, monke
     args = ["--output-dir", str(tmp_path)]
     assert builder.main(args) == 0
     assert builder.main([*args, "--check"]) == 0
-    (tmp_path / "mohan-inventory-summary.md").write_text("過期摘要", encoding="utf-8")
+    assert (tmp_path / "extraction-worklist.json").is_file()
+    assert (tmp_path / "extraction-worklist.md").is_file()
+    (tmp_path / "extraction-worklist.md").write_text("過期摘要", encoding="utf-8")
     assert builder.main([*args, "--check"]) == 1
 
 
-def test_summary_fragment_and_owner_boundaries(inventory: dict[str, Any]) -> None:
+def test_work_packages_are_exclusive_and_product_shell_is_reasoned(
+    inventory: dict[str, Any],
+    worklist: dict[str, Any],
+) -> None:
+    counts = worklist["counts"]
+    assert MIN_WORK_PACKAGE_COUNT <= counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    assert counts["true_extraction_files"] == (
+        counts["engine_extract_files"] + counts["ui_text_reference_files"]
+    )
+    package_paths = []
+    for package in worklist["work_packages"]:
+        assert package["file_count"] == len(package["exclusive_files"])
+        assert package["objective"].strip()
+        assert package["exclusions"].strip()
+        package_paths.extend(package["exclusive_files"])
+    pending_paths = [row["path"] for row in worklist["extraction_items"]]
+    assert sorted(package_paths) == sorted(pending_paths)
+    assert len(package_paths) == len(set(package_paths))
+    assert all(row["work_package"] for row in worklist["extraction_items"])
+    allowlist = inventory["product_shell_allowlist"]
+    assert len({row["path"] for row in allowlist}) == len(allowlist)
+    assert all(row["reason"].strip() for row in allowlist)
+    allowed_paths = {row["path"] for row in worklist["product_shell_allowed"]}
+    classified_allowed = {
+        row["path"] for row in inventory["files"]
+        if row.get("classification") == "product_shell_allowed"
+    }
+    assert allowed_paths == classified_allowed
+
+
+def test_summary_fragment_and_owner_boundaries(
+    inventory: dict[str, Any],
+    worklist: dict[str, Any],
+) -> None:
     assert not audit_text(builder.render_summary(inventory), require_h1=True)
-    fragment = (ROOT / "changelog.d/mohan-character-inventory.md").read_text(encoding="utf-8")
+    assert not audit_text(builder.render_extraction_summary(worklist), require_h1=True)
+    fragment = (
+        ROOT / "changelog.d/honest-character-extraction-measure.md"
+    ).read_text(encoding="utf-8")
     assert not audit_fragment(fragment)
     decisions = inventory["owner_decisions"]
     assert decisions["standalone_download_design"] is True
@@ -226,3 +332,4 @@ def test_summary_fragment_and_owner_boundaries(inventory: dict[str, Any]) -> Non
         if row["scope"] == "embedded_code":
             assert row["migration"] == builder.EMBEDDED
             assert row["symbols"]
+            assert row["content_locations"]
