@@ -6,7 +6,9 @@ lazy import json
 lazy from collections.abc import Mapping
 lazy from functools import cache
 lazy from pathlib import Path
-lazy import domain.character_pack.character_data_models as _character_data_models
+lazy from domain.character_pack.character_data_models import (
+    canonical_character_locale as _canonical_character_locale,
+)
 
 lazy from domain.character_pack.character_data_models import (
     AzureVoicePreferences,
@@ -30,7 +32,7 @@ MOHAN_CHARACTER_DATA_ROOT = Path(__file__).resolve().parents[2] / "assets/charac
 
 
 def canonical_character_locale(language: str) -> str:
-    return _character_data_models.canonical_character_locale(language)
+    return _canonical_character_locale(language)
 
 
 _PROFILE_DEFAULT_KEYS = frozenset(
