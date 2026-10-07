@@ -1223,7 +1223,7 @@
       ]
     },
     {
-      "bytes": 25897,
+      "bytes": 25169,
       "category": "embedded_character_content",
       "content_categories": [
         "identity_persona_dialogue"
@@ -1256,7 +1256,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "1f66d4868cb93bf65268ac598cded2003bce6f88ab1249cfad99b63b48b7c168",
+      "sha256": "eff0e0c4d910992e8dbe0f50fa19332873db92f19156f421111bdb07aee13a25",
       "symbols": [
         {
           "end_line": 36,
@@ -96422,7 +96422,7 @@
       ]
     },
     {
-      "bytes": 3944,
+      "bytes": 3839,
       "category": "embedded_character_content",
       "content_categories": [
         "character_literal_sites",
@@ -96451,7 +96451,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "f1b0bf429011541719aba8b31c76d0ee2a7c87ab5496e4a3440a32700c4f9745",
+      "sha256": "6219b3ababba8bb921d447265a7e298c27deb1534be9778ecec00bc5eacb35d1",
       "symbols": [
         {
           "end_line": 19,
