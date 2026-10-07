@@ -3,15 +3,18 @@ from __future__ import annotations
 lazy from dataclasses import dataclass, field
 
 lazy from domain.audio_buffer import BoundedAudioQueue
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
 lazy from integrations.realtime_speech_output import REALTIME_OUTPUT_OPENAI
+
+_VOICE_PROFILE = load_mohan_character_data().voice
 
 
 @dataclass(frozen=True, slots=True)
 class RealtimeSessionConfig:
     model: str = "gpt-realtime-2.1-mini"
-    voice: str = "coral"
+    voice: str = _VOICE_PROFILE.default_realtime_voice
     transcription_model: str = "gpt-4o-mini-transcribe"
     transcription_language: str = "zh"
     transcription_prompt: str = ""

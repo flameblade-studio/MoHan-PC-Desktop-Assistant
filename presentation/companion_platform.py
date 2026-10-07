@@ -13,6 +13,7 @@ lazy from application.proactive_companion_app_bridge import ProactiveAppDisposit
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import profile_setting, profile_window_title
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import localized_reminder_line
 lazy from domain.time_utils import local_wall_time
 lazy from presentation.presentation_resources import LIGHT_MENU_STYLE, application_icon
@@ -26,13 +27,7 @@ __all__ = (
 
 MIN_OVERLAP_AREA = 256
 
-REMINDER_LINES = frozendict({
-    "work": "主上，今日之局已開。若要開始，妾替你計時。",
-    "lunch": "到吃飯時間了。工作可以稍候，主上的身體不能。",
-    "dinner": "主上，先去用晚膳。空著腹談什麼長策。",
-    "offwork": "你已經不需要向任何老闆證明自己肯加班了。",
-    "overwork": "主上已連續工作太久。離席、飲水、伸展，十分鐘後再戰。",
-})
+REMINDER_LINES = load_mohan_character_data().dialogues["zh-TW"].reminder_lines
 
 
 def reminder_line(language: str, kind: str) -> str:

@@ -2,16 +2,16 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.immutable_config import deep_freeze
+
+_DIALOGUE = load_mohan_character_data().dialogues["en"]
 
 ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "first_run_title": "First-run setup",
-    "first_run_brand": "MoHan",
-    "first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
-    "first_run_hero_tagline": (
-        "A thousand-year-old Northern Song sword spirit who listens, "
-        "remembers, and helps you get things done."
-    ),
+    "first_run_brand": _DIALOGUE.labels["ui.first_run_brand"],
+    "first_run_heading": _DIALOGUE.labels["ui.first_run_heading"],
+    "first_run_hero_tagline": _DIALOGUE.labels["ui.first_run_hero_tagline"],
     "first_run_intro": (
         "Create your profile first. You can change these choices later in "
         "Settings; they are not tied to a specific company or profession."
@@ -23,11 +23,11 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "work_type": "Work type",
     "ui_language": "Interface and reply language",
     "wake_word": "Voice wake word",
-    "assistant_name_placeholder": "For example: MoHan, Ava, Office Mate",
-    "user_title_placeholder": "For example: Commander, Alex, Manager",
+    "assistant_name_placeholder": _DIALOGUE.labels["ui.assistant_name_placeholder"],
+    "user_title_placeholder": _DIALOGUE.labels["ui.user_title_placeholder"],
     "organization_placeholder": "Optional company, studio, or team name",
     "window_title_placeholder": ("Leave blank to use Assistant name · Organization"),
-    "wake_word_placeholder": "For example: MoHan",
+    "wake_word_placeholder": _DIALOGUE.labels["ui.wake_word_placeholder"],
     "first_run_note": (
         "The Work Platforms page is ready for your company systems. Add the systems, "
         "collaboration tools, admin panels, or websites you use."
@@ -47,7 +47,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "tab_voice": "Voice",
     "tab_permissions": "Computer permissions",
     "tab_settings": "Settings",
-    "navigation_brand": "MoHan",
+    "navigation_brand": _DIALOGUE.labels["ui.navigation_brand"],
     "nav_realm_companion": "Companion",
     "nav_realm_today": "Tasks",
     "nav_realm_wardrobe": "Styling",
@@ -242,10 +242,10 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "timing_inactive": 'Timer paused',
     "todo_title_required": "Enter a task title first.",
     "todo_added": "✓ Task added: {text}",
-    "todo_added_speech": "Added to today's tasks.",
+    "todo_added_speech": _DIALOGUE.templates["ui.todo_added_speech"],
     "idea_capture_required": "Enter an idea to save first.",
     "idea_added": "✓ Idea saved: {text}",
-    "idea_added_speech": "I saved that idea before it slipped away.",
+    "idea_added_speech": _DIALOGUE.templates["ui.idea_added_speech"],
     "idea_select_edit": "Select an idea to edit first.",
     "idea_not_found": ('Refresh the idea list and select an available item.'),
     "idea_updated": "✓ Idea updated: {title}",
@@ -319,9 +319,9 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "all_platforms_saved": (
         "All work platforms saved; {count} still list follow-up information or action items."
     ),
-    "all_platforms_saved_speech": (
-        "Work platforms saved. {count} still have follow-up information or action items."
-    ),
+    "all_platforms_saved_speech": _DIALOGUE.templates[
+        "ui.all_platforms_saved_speech"
+    ],
     "memory_intro": (
         "MoHan stores only people, preferences, goals, workflows, and important "
         "dates that you allow. Memories stay on this computer and can be "
@@ -360,9 +360,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "[{category}] {title}  Importance {importance}/5\n{content}\n"
         "Source: {source}  Updated: {updated}"
     ),
-    "memory_added_speech": (
-        "I saved that. You can review or change it individually later."
-    ),
+    "memory_added_speech": _DIALOGUE.templates["ui.memory_added_speech"],
     "memory_select_edit_title": "Select a memory",
     "memory_select_edit": "Select a memory to edit first.",
     "memory_not_found_title": 'Refresh the memory list',
@@ -566,7 +564,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "realtime_screen_transcript": "Realtime screen transcript",
     "echo_guard": "Echo guard",
     "local_rate": "Local speech rate",
-    "mohan_volume": "MoHan volume",
+    "mohan_volume": _DIALOGUE.labels["ui.mohan_volume"],
     "voice_style": "Voice style",
     "realtime": "Realtime voice",
     "windows_engine": "Windows local voice",
@@ -626,7 +624,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "openai_recognition": "OpenAI accurate recognition (recommended)",
     "windows_recognition": "Windows offline recognition",
     "no_transcription_error": "Transcription is ready with a clean record",
-    "preview_voice": "Preview: Commander, I am here.",
+    "preview_voice": _DIALOGUE.labels["ui.preview_voice"],
     "realtime_disconnected": 'Realtime: Awaiting connection',
     "realtime_status_format": "Realtime: {status}",
     "realtime_disconnected_status": 'Awaiting connection',
@@ -702,9 +700,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "permission_blocked_message": 'Enable permission for MoHan to {action} before continuing.',
     "permission_request": "MoHan requests computer permission",
     "permission_request_message": "Allow MoHan to {action} this time?",
-    "permission_saved_speech": (
-        "Computer permissions saved. I will remain within these boundaries."
-    ),
+    "permission_saved_speech": _DIALOGUE.templates["ui.permission_saved_speech"],
     "profile_heading": "<b>Identity and profile</b>",
     "system_heading": "<b>Work and system settings</b>",
     "api_key": "OpenAI API key",
@@ -749,12 +745,12 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "reminder_offwork": "Finish work",
     "enabled": "Enabled",
     "reminder_message_label": "{label} message",
-    "reminder_message_placeholder": "What MoHan says when this reminder fires",
+    "reminder_message_placeholder": _DIALOGUE.labels["ui.reminder_message_placeholder"],
     "continuous_work_reminder": "Continuous work reminder",
     "overwork_message": "Sitting / overwork reminder message",
     "minutes_suffix": " minutes",
     "read_replies": "Read MoHan's replies aloud",
-    "caught_glance_dialogue": "I was only looking out the window, not sneaking a glance at you.",
+    "caught_glance_dialogue": _DIALOGUE.templates["caught_glance"],
     "voice_settings_saved": "Voice settings saved.",
     "settings_saved": "Settings saved.",
     "work_timer_already_running": (

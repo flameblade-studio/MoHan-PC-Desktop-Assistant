@@ -15,9 +15,11 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.speech_boundary import SpeechTimingCollector, SpeechTimingEvent
+lazy from domain.speech_configuration import DEFAULT_VOICE_VOLUME_PERCENT
 lazy from integrations.azure_regions import azure_region_supports_hd_flash
 lazy from integrations.azure_voice_catalog import (
     AzureVoiceCatalog,
@@ -29,61 +31,28 @@ VOICE_LOCALE_PREFIX_LENGTH = 5
 RATE_LIMIT_STATUS = 429
 SERVER_ERROR_BOUNDARY = 500
 
-AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
-    "zh-TW": (
-        "zh-TW-HsiaoChenNeural",
-        "zh-TW-HsiaoYuNeural",
-    ),
-    "zh-CN": (
-        "zh-CN-XiaoxiaoNeural",
-        "zh-CN-XiaoyiNeural",
-        "zh-CN-XiaochenNeural",
-        "zh-CN-XiaohanNeural",
-        "zh-CN-XiaomengNeural",
-        "zh-CN-XiaomoNeural",
-        "zh-CN-XiaoqiuNeural",
-        "zh-CN-XiaorouNeural",
-        "zh-CN-XiaoruiNeural",
-    ),
-    "en-US": (
-        "en-US-AvaMultilingualNeural",
-        "en-US-AmandaMultilingualNeural",
-        "en-US-CoraMultilingualNeural",
-        "en-US-JennyMultilingualNeural",
-    ),
-    "ja-JP": (
-        "ja-JP-NanamiNeural",
-        "ja-JP-AoiNeural",
-        "ja-JP-MayuNeural",
-        "ja-JP-ShioriNeural",
-    ),
-})
-AZURE_HD_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
-    "zh-CN": (
-        "zh-CN-Xiaochen:DragonHDLatestNeural",
-        "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
-        "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
-        "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoyou:DragonHDFlashLatestNeural",
-    ),
-    "en-US": (
-        "en-US-Ava:DragonHDLatestNeural",
-        "en-US-Aria:DragonHDLatestNeural",
-        "en-US-Emma:DragonHDLatestNeural",
-        "en-US-Emma2:DragonHDLatestNeural",
-        "en-US-Jenny:DragonHDLatestNeural",
-        "en-US-Nova:DragonHDLatestNeural",
-        "en-US-Phoebe:DragonHDLatestNeural",
-        "en-US-Serena:DragonHDLatestNeural",
-    ),
-    "ja-JP": ("ja-JP-Nanami:DragonHDLatestNeural",),
-})
+_AZURE_VOICES = load_mohan_character_data().voice.azure
+AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict(
+    {
+        "zh-TW": tuple(
+            voice for voice in _AZURE_VOICES.voices["zh-TW"]
+            if voice.startswith("zh-TW-")
+        ),
+        "zh-CN": tuple(
+            voice for voice in _AZURE_VOICES.voices["zh-CN"]
+            if voice.startswith("zh-CN-")
+        ),
+        "en-US": _AZURE_VOICES.voices["en"],
+        "ja-JP": _AZURE_VOICES.voices["ja-JP"],
+    }
+)
+AZURE_HD_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict(
+    {
+        "zh-CN": _AZURE_VOICES.hd_voices["zh-CN"],
+        "en-US": _AZURE_VOICES.hd_voices["en"],
+        "ja-JP": _AZURE_VOICES.hd_voices["ja-JP"],
+    }
+)
 
 
 def _build_voice_locale_index() -> frozendict[str, str]:
@@ -419,7 +388,7 @@ class AzureSpeechTTS(QObject):
     ):
         super().__init__(parent)
         self._pcm = pcm_acceleration
-        self.volume_percent = 125
+        self.volume_percent = DEFAULT_VOICE_VOLUME_PERCENT
         self.muted = False
         self.last_synthesis_latency_ms: float | None = None
         self._catalog_service = catalog_service or AzureVoiceCatalogService()

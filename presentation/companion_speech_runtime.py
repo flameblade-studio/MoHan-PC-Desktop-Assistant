@@ -23,6 +23,10 @@ lazy from domain.app_profile import (
     profile_setting,
 )
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     EXPRESSION_POSES,
@@ -33,14 +37,14 @@ lazy from domain.companion_animation_contract import (
 )
 lazy from domain.expression_system import parse_internal_emotion
 lazy from domain.language_support import (
-    is_english,
-    is_japanese,
-    is_simplified_chinese,
     response_language_instruction,
 )
 lazy from domain.performance_preferences import PerformancePreferences
 lazy from domain.safe_error_localization import safe_error_message
 lazy from domain.speech_configuration import (
+    DEFAULT_CLOUD_VOICE,
+    DEFAULT_REALTIME_VOICE,
+    DEFAULT_VOICE_RATE,
     VOICE_ENGINE_AZURE,
     VOICE_ENGINE_AZURE_HD,
     VOICE_ENGINE_OPENAI,
@@ -68,6 +72,9 @@ lazy from presentation.companion_speech_queue import enqueue_bounded_speech
 lazy from presentation.ui_localization import ui_text
 lazy import contextlib
 __all__ = ("CompanionSpeechRuntimeMixin",)
+_CHARACTER_DATA = load_mohan_character_data()
+_DIALOGUES = _CHARACTER_DATA.dialogues
+_VOICE_FALLBACKS = _CHARACTER_DATA.voice.fallback_provider_order
 # Compatibility boundary for integrations and tests that imported the mapping
 # from this former owner before the speech runtime was split into focused
 # modules. Keep one implementation in companion_speech_emotion.
@@ -369,7 +376,7 @@ class CompanionSpeechRuntimeMixin:
         # Emotional prosody: a shy or gentle line is spoken a touch slower,
         # while an excited or proud line is spoken a touch faster.  The user's
         # configured rate remains the baseline; the emotion only nudges it.
-        base_rate = int(self.db.setting("voice_rate", -1))
+        base_rate = int(self.db.setting("voice_rate", DEFAULT_VOICE_RATE))
         rate = base_rate + speech_emotion._emotion_rate_adjustment(state)
         request = SpeechRequest(
             text=text,
@@ -446,7 +453,7 @@ class CompanionSpeechRuntimeMixin:
             voice = str(
                 self.db.setting(
                     "tts_voice",
-                    self.db.setting("cloud_voice", "coral"),
+                    self.db.setting("cloud_voice", DEFAULT_CLOUD_VOICE),
                 )
             )
             api_key = credentials.openai_api_key
@@ -454,30 +461,11 @@ class CompanionSpeechRuntimeMixin:
 
     def preview_voice(self) -> None:
         language = profile_setting(self.db, "ui_language")
-        if is_english(language):
-            self.speak(
-                f"{profile_setting(self.db, 'user_title')}, I am here. "
-                "You may keep your calm; surprise can wait.",
-                "happy",
-            )
-            return
-        if is_simplified_chinese(language):
-            self.speak(
-                f"{profile_setting(self.db, 'user_title')}，妾在。"
-                "今日的安排，交给妾与你一同理清。",
-                "happy",
-            )
-            return
-        if is_japanese(language):
-            self.speak(
-                f"{profile_setting(self.db, 'user_title')}、妾はここにおります。"
-                "今日の予定も、ともに整えてまいりましょう。",
-                "happy",
-            )
-            return
+        locale = canonical_character_locale(language)
         self.speak(
-            f"{profile_setting(self.db, 'user_title')}，妾在。"
-            "今日的安排，交給妾與你一同理清。",
+            _DIALOGUES[locale].templates["voice.preview"].format(
+                user_title=profile_setting(self.db, "user_title"),
+            ),
             "happy",
         )
 
@@ -551,7 +539,9 @@ class CompanionSpeechRuntimeMixin:
                             and self.db.setting("windows_voice", "")
                         ),
                         voice=str(self.db.setting("windows_voice", "")),
-                        rate=int(self.db.setting("voice_rate", -1)),
+                        rate=int(
+                            self.db.setting("voice_rate", DEFAULT_VOICE_RATE)
+                        ),
                     ),
                 ),
             )
@@ -647,7 +637,10 @@ class CompanionSpeechRuntimeMixin:
                         )
                     ),
                     voice=str(
-                        self.db.setting("realtime_voice", "coral")
+                        self.db.setting(
+                            "realtime_voice",
+                            DEFAULT_REALTIME_VOICE,
+                        )
                     ),
                     transcription_model=str(
                         self.db.setting(
@@ -977,11 +970,7 @@ class CompanionSpeechRuntimeMixin:
         safe_message = safe_error_message(language, message)
         credentials = self._speech_credentials()
         configured = set(self._configured_speech_providers(credentials))
-        candidates = (
-            (VOICE_ENGINE_AZURE, VOICE_ENGINE_SYSTEM)
-            if failed_provider_id == VOICE_ENGINE_AZURE_HD
-            else (VOICE_ENGINE_SYSTEM,)
-        )
+        candidates = _VOICE_FALLBACKS[failed_provider_id]
         fallback_provider_id = next(
             (
                 provider_id
@@ -1025,7 +1014,7 @@ class CompanionSpeechRuntimeMixin:
                 SpeechRequest(
                     text=self.active_speech_text,
                     voice=voice,
-                    rate=int(self.db.setting("voice_rate", -1)),
+                    rate=int(self.db.setting("voice_rate", DEFAULT_VOICE_RATE)),
                     api_key=api_key,
                     instructions=str(
                         self.db.setting(

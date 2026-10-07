@@ -5,6 +5,9 @@ lazy from application.presentation_ports import (
     female_windows_voices_for_language,
     preferred_windows_voice,
 )
+lazy from domain.character_pack.character_data import load_mohan_character_data
+
+_SYSTEM_LOCAL = load_mohan_character_data().voice.system_local
 
 __all__ = ("DashboardVoiceCatalogMethods",)
 
@@ -29,7 +32,11 @@ class DashboardVoiceCatalogMethods:
         saved_voice: str,
     ) -> tuple[str, bool]:
         yating_available = any(
-            "yating" in name.lower() and culture.lower() == "zh-tw"
+            any(
+                marker.casefold() in name.casefold()
+                for marker in _SYSTEM_LOCAL.preferred_name_markers["zh-TW"][:1]
+            )
+            and culture.lower() == "zh-tw"
             for name, culture in available
         )
         force_default = (
@@ -51,11 +58,15 @@ class DashboardVoiceCatalogMethods:
 
     @staticmethod
     def _windows_voice_label(name: str, culture: str) -> str:
-        source = "OneCore" if name.startswith("OneCore::") else "Desktop SAPI"
+        source = (
+            "OneCore"
+            if name.startswith(_SYSTEM_LOCAL.onecore_prefix)
+            else "Desktop SAPI"
+        )
         short_name = next(
             (
                 keyword
-                for keyword in ("Yating", "Hanhan")
+                for keyword in _SYSTEM_LOCAL.preferred_name_markers["zh-TW"]
                 if keyword.lower() in name.lower()
             ),
             name,

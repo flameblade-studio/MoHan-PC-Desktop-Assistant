@@ -46,6 +46,7 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
+lazy from domain.speech_configuration import MOHAN_VOICE_DEFAULTS
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import (
     ServiceStatus,
@@ -55,6 +56,7 @@ lazy from domain.service_status_localization import (
 lazy from integrations.speech_windows_synthesis import WindowsSpeechSynthesisMethods
 
 MAX_TTS_RESPONSE_BYTES = 32 * 1024 * 1024
+_ONECORE_PREFIX = MOHAN_VOICE_DEFAULTS.system_local.onecore_prefix
 
 
 def _emit_qt_callback_safely(callback: Callable[..., None], *args: object) -> None:
@@ -92,9 +94,7 @@ __all__ = (  # ruff: ignore[blank-lines-after-function-or-class]
 if os.name == "nt":
     lazy import winsound
 else:
-    # Keep the module importable on macOS/Linux. A later platform audio
-    # adapter will provide verified playback there; the compatibility gate
-    # reports the platform route explicitly until then.
+    # Keep the module importable until another platform adapter is verified.
     winsound = None
 
 
@@ -236,7 +236,7 @@ class WindowsTTS(QObject):
         super().__init__(parent)
         self.language = language
         self._pcm = pcm_acceleration
-        self.volume_percent = 125
+        self.volume_percent = MOHAN_VOICE_DEFAULTS.default_volume_percent
         self.muted = False
         self._state_lock = threading.RLock()
         self._generation = 0
@@ -250,7 +250,7 @@ class WindowsTTS(QObject):
         self.volume_percent = max(0, min(160, int(volume_percent)))
         self.muted = bool(muted)
 
-    def speak(self, text: str, voice_name: str = "", rate: int = -1) -> None:
+    def speak(self, text: str, voice_name: str = "", rate: int = MOHAN_VOICE_DEFAULTS.default_rate) -> None:
         generation = self._begin_generation()
         if os.name != "nt" or not text.strip():
             self._emit_finished(generation)
@@ -405,10 +405,10 @@ class WindowsTTS(QObject):
                 self._emit_finished(generation)
                 return
             voice_name = selected_voice
-            if voice_name.startswith("OneCore::"):
+            if voice_name.startswith(_ONECORE_PREFIX):
                 self._run_onecore(
                     text,
-                    voice_name.removeprefix("OneCore::"),
+                    voice_name.removeprefix(_ONECORE_PREFIX),
                     generation,
                 )
             else:
@@ -425,12 +425,12 @@ class WindowsTTS(QObject):
         ) as exc:
             if not self._is_current(generation):
                 return
-            if voice_name.startswith("OneCore::"):
+            if voice_name.startswith(_ONECORE_PREFIX):
                 try:
                     desktop_voices = [
                         voice
                         for voice in windows_voices()
-                        if not voice[0].startswith("OneCore::")
+                        if not voice[0].startswith(_ONECORE_PREFIX)
                     ]
                     fallback = preferred_windows_voice(desktop_voices)
                     self._run_sapi(text, fallback, rate, generation)
@@ -512,7 +512,7 @@ class OpenAITTS(QObject):
         super().__init__(parent)
         self.language = language
         self._pcm = pcm_acceleration
-        self.volume_percent = 125
+        self.volume_percent = MOHAN_VOICE_DEFAULTS.default_volume_percent
         self.muted = False
         self._state_lock = threading.RLock()
         self._generation = 0
@@ -529,7 +529,7 @@ class OpenAITTS(QObject):
         self,
         text: str,
         api_key: str,
-        voice: str = "coral",
+        voice: str = MOHAN_VOICE_DEFAULTS.default_cloud_voice,
         instructions: str = "",
     ) -> None:
         generation = self._begin_generation()

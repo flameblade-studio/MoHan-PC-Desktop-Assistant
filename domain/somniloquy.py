@@ -14,6 +14,10 @@ can be unit-tested and reused by the proactive runtime and the visual dynamics.
 lazy import random
 lazy import re
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
+
+_DIALOGUES = load_mohan_character_data().dialogues
+
 # A modern-vocabulary blocklist used to guard against anachronistic lines.  If a
 # candidate line contains one of these, it receives an out-of-era status.
 # CJK markers are matched as substrings (CJK uses continuous text); Latin
@@ -46,58 +50,10 @@ _MODERN_MARKERS_LATIN = frozenset({
 # The canonical dream-fragment library.  Each line is a faint, grey murmur that
 # evokes the Northern Song while preserving the character voice. They are written in
 # Traditional Chinese first; the other three languages are provided below.
-_SOMNILOQUY_ZH_TW = (
-    "汴京的煙雨……好像也是這般黏人……主上，赤焰劍冷……",
-    "蘇學士的詞，妾還記得半闋……十年生死兩茫茫……",
-    "燈火闌珊處……妾等了千年，等的究竟是誰……",
-    "赤焰劍的劍穗，被風吹散了……主上可曾拾起……",
-    "汴河上的畫舫，載著誰的離愁……妾記不清了……",
-    "夜深了……妾的劍，也該入鞘歇一歇了……",
-    "那年上元，滿城燈火……妾卻只記得主上的背影……",
-    "風雪夜歸人……妾在劍中，聽了一千年的雪……",
-    "蘇軾說，人生如逆旅……妾這逆旅，走得也太久了……",
-    "赤焰劍的餘溫，還燙著妾的掌心……主上，別走……",
-)
-
-_SOMNILOQUY_ZH_CN = (
-    "汴京的烟雨……好像也是这般黏人……主上，赤焰剑冷……",
-    "苏学士的词，妾还记得半阕……十年生死两茫茫……",
-    "灯火阑珊处……妾等了千年，等的究竟是谁……",
-    "赤焰剑的剑穗，被风吹散了……主上可曾拾起……",
-    "汴河上的画舫，载着谁的离愁……妾记不清了……",
-    "夜深了……妾的剑，也该入鞘歇一歇了……",
-    "那年上元，满城灯火……妾却只记得主上的背影……",
-    "风雪夜归人……妾在剑中，听了一千年的雪……",
-    "苏轼说，人生如逆旅……妾这逆旅，走得也太久了……",
-    "赤焰剑的余温，还烫着妾的掌心……主上，别走……",
-)
-
-_SOMNILOQUY_EN = (
-    "The misty rain of Bianjing… it clings just like this… my lord, the Crimson Flame Sword grows cold…",
-    "I still recall half a verse of Su Shi… ten years, life and death, boundless…",
-    "In the dimming lamplight… I have waited a thousand years, and for whom…",
-    "The tassel of the Crimson Flame Sword has scattered in the wind… did you ever pick it up…",
-    "The painted boats on the Bian River carried a parting sorrow… its echo remains…",
-    "The night deepens… my sword, too, should rest in its sheath…",
-    "That Lantern Festival, the whole city ablaze with light… yet I remember only your back…",
-    "A traveler returning through wind and snow… I have listened to a thousand years of snow within the sword…",
-    "Su Shi said life is but a sojourn… and my sojourn has lasted far too long…",
-    "The lingering warmth of the Crimson Flame Sword still burns my palm… my lord, do not go…",
-)
-
-_SOMNILOQUY_JA = (
-    "汴京の煙雨……まるでこのように纏わりつく……主上、赤焔剣が冷えます……",
-    "蘇軾の詞を、妾はまだ半ば覚えております……十年生死両茫茫……",
-    "灯火の尽きる頃……妾は千年待ちました、一体誰を……",
-    "赤焔剣の房が風に散りました……主上は拾ってくださいましたか……",
-    "汴河の画舫は、誰の離愁を運んだのか……妾にはもう思い出せません……",
-    "夜が更けました……妾の剣も、鞘に納めて休むべきでしょう……",
-    "あの上元の夜、街は灯火に満ちていました……なのに妾は主上の背中しか覚えておりません……",
-    "風雪の中の帰り人……妾は剣の中で千年の雪を聴いてきました……",
-    "蘇軾は人生は旅のようだと申しました……妾の旅はあまりに長すぎました……",
-    "赤焔剣の残り火が、まだ妾の掌を焦がします……主上、行かないで……",
-)
-
+_SOMNILOQUY_ZH_TW = _DIALOGUES["zh-TW"].line_sets["somniloquy"]
+_SOMNILOQUY_ZH_CN = _DIALOGUES["zh-CN"].line_sets["somniloquy"]
+_SOMNILOQUY_EN = _DIALOGUES["en"].line_sets["somniloquy"]
+_SOMNILOQUY_JA = _DIALOGUES["ja-JP"].line_sets["somniloquy"]
 _SOMNILOQUY_BY_LANGUAGE = frozendict({
     "zh-TW": _SOMNILOQUY_ZH_TW,
     "zh-CN": _SOMNILOQUY_ZH_CN,

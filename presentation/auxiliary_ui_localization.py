@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy from collections.abc import Mapping
 lazy from enum import StrEnum
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.safe_error import SafeError
 lazy from domain.safe_error_localization import safe_error_message
@@ -93,6 +94,9 @@ class AuxiliaryOperation(StrEnum):
     UPDATE = "update"
 
 
+_PERSONAS = load_mohan_character_data().personas
+
+
 _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.UPDATE_TITLE: "<b>軟體更新</b>",
     AuxiliaryText.CURRENT_VERSION: "目前版本：{version}",
@@ -169,7 +173,7 @@ _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.SENSITIVE_DATA_RESTORED: "敏感資料已成功安全恢復。",
     AuxiliaryText.EXPORT_BUTTON: "匯出墨寒攜帶檔",
     AuxiliaryText.IMPORT_BUTTON: "匯入並接續進度",
-    AuxiliaryText.DEFAULT_ASSISTANT_NAME: "墨寒",
+    AuxiliaryText.DEFAULT_ASSISTANT_NAME: _PERSONAS["zh-TW"].identity.display_name,
     AuxiliaryText.EXPORT_FILENAME: "{assistant}-攜帶進度-{timestamp}{extension}",
     AuxiliaryText.EXPORT_DIALOG_TITLE: "匯出墨寒攜帶檔",
     AuxiliaryText.PROFILE_FILTER: "墨寒攜帶檔 (*{extension})",
@@ -291,7 +295,7 @@ _ZH_CN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.SENSITIVE_DATA_RESTORED: "敏感数据已成功安全恢复。",
     AuxiliaryText.EXPORT_BUTTON: "导出墨寒携带文件",
     AuxiliaryText.IMPORT_BUTTON: "导入并接续进度",
-    AuxiliaryText.DEFAULT_ASSISTANT_NAME: "墨寒",
+    AuxiliaryText.DEFAULT_ASSISTANT_NAME: _PERSONAS["zh-CN"].identity.display_name,
     AuxiliaryText.EXPORT_FILENAME: "{assistant}-携带进度-{timestamp}{extension}",
     AuxiliaryText.EXPORT_DIALOG_TITLE: "导出墨寒携带文件",
     AuxiliaryText.PROFILE_FILTER: "墨寒携带文件 (*{extension})",
@@ -428,7 +432,7 @@ _EN: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.SENSITIVE_DATA_RESTORED: "Sensitive data was restored securely.",
     AuxiliaryText.EXPORT_BUTTON: "Export portable MoHan profile",
     AuxiliaryText.IMPORT_BUTTON: "Import and continue",
-    AuxiliaryText.DEFAULT_ASSISTANT_NAME: "MoHan",
+    AuxiliaryText.DEFAULT_ASSISTANT_NAME: _PERSONAS["en"].identity.display_name,
     AuxiliaryText.EXPORT_FILENAME: "{assistant}-portable-progress-{timestamp}{extension}",
     AuxiliaryText.EXPORT_DIALOG_TITLE: "Export portable MoHan profile",
     AuxiliaryText.PROFILE_FILTER: "MoHan portable profile (*{extension})",
@@ -570,7 +574,7 @@ _JA: Mapping[AuxiliaryText, str] = frozendict({
     AuxiliaryText.SENSITIVE_DATA_RESTORED: "機密データを安全に復元しました。",
     AuxiliaryText.EXPORT_BUTTON: "墨寒ポータブルプロファイルを書き出す",
     AuxiliaryText.IMPORT_BUTTON: "読み込んで進捗を継続",
-    AuxiliaryText.DEFAULT_ASSISTANT_NAME: "墨寒",
+    AuxiliaryText.DEFAULT_ASSISTANT_NAME: _PERSONAS["ja-JP"].identity.display_name,
     AuxiliaryText.EXPORT_FILENAME: "{assistant}-ポータブル進捗-{timestamp}{extension}",
     AuxiliaryText.EXPORT_DIALOG_TITLE: "墨寒ポータブルプロファイルを書き出す",
     AuxiliaryText.PROFILE_FILTER: "墨寒ポータブルプロファイル (*{extension})",

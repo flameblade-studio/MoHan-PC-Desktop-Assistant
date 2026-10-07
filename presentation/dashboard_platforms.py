@@ -705,7 +705,7 @@ class DashboardPlatformMixin:
             self.speak_requested.emit(
                 self._t(
                     "all_platforms_saved_speech",
-                    "工作平台已保存。仍有 {count} 個平台標有待補資料或阻礙。",
+                    "",
                     count=missing_count,
                 ),
                 "happy",

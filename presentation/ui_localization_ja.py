@@ -2,15 +2,16 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.immutable_config import deep_freeze
+
+_DIALOGUE = load_mohan_character_data().dialogues["ja-JP"]
 
 JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "first_run_title": "初回セットアップ",
-    "first_run_brand": "墨寒",
-    "first_run_heading": "<b>墨寒デスクトップアシスタントへようこそ</b>",
-    "first_run_hero_tagline": (
-        "北宋から来た千年の女剣魂。話を聴き、記憶し、仕事を整えるあなたの伴侶です。"
-    ),
+    "first_run_brand": _DIALOGUE.labels["ui.first_run_brand"],
+    "first_run_heading": _DIALOGUE.labels["ui.first_run_heading"],
+    "first_run_hero_tagline": _DIALOGUE.labels["ui.first_run_hero_tagline"],
     "first_run_intro": (
         "最初にプロフィールを設定してください。ここで選んだ内容は後から"
         "「設定」で変更でき、特定の会社や職業には固定されません。"
@@ -22,11 +23,11 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "work_type": "仕事の種類",
     "ui_language": "画面と返答の言語",
     "wake_word": "音声ウェイクワード",
-    "assistant_name_placeholder": "例：墨寒、Ava、Office Mate",
-    "user_title_placeholder": "例：主様、Alex、マネージャー",
+    "assistant_name_placeholder": _DIALOGUE.labels["ui.assistant_name_placeholder"],
+    "user_title_placeholder": _DIALOGUE.labels["ui.user_title_placeholder"],
     "organization_placeholder": "会社、スタジオ、チーム名（任意）",
     "window_title_placeholder": "空欄なら「アシスタント名・組織名」を使用",
-    "wake_word_placeholder": "例：墨寒",
+    "wake_word_placeholder": _DIALOGUE.labels["ui.wake_word_placeholder"],
     "first_run_note": (
         '仕事プラットフォームのページを会社のシステム用に準備しました。使用するシステム、共同作業ツール、管理画面、ウェブサイトを追加してください。'
     ),
@@ -43,7 +44,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "tab_voice": "音声",
     "tab_permissions": "パソコンの権限",
     "tab_settings": "設定",
-    "navigation_brand": "墨寒",
+    "navigation_brand": _DIALOGUE.labels["ui.navigation_brand"],
     "nav_realm_companion": "寄り添い",
     "nav_realm_today": "業務",
     "nav_realm_wardrobe": "装い",
@@ -104,10 +105,10 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "timing_inactive": 'タイマーは一時停止中',
     "todo_title_required": "先に予定のタイトルを入力してください。",
     "todo_added": "✓ 予定を追加：{text}",
-    "todo_added_speech": "今日の予定に追加しました。",
+    "todo_added_speech": _DIALOGUE.templates["ui.todo_added_speech"],
     "idea_capture_required": "先に保存するアイデアを入力してください。",
     "idea_added": "✓ アイデアを保存：{text}",
-    "idea_added_speech": "消えてしまう前に、そのアイデアを保存しました。",
+    "idea_added_speech": _DIALOGUE.templates["ui.idea_added_speech"],
     "idea_select_edit": "先に編集するアイデアを選択してください。",
     "idea_not_found": (
         'アイデア一覧を更新し、利用できる項目を選択してください。'
@@ -165,7 +166,9 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "platform_saved": "{platform} を保存しました。",
     "platform_saved_automatic": "{platform} を自動保存しました。",
     "all_platforms_saved": 'すべて保存しました。{count} 件に追加情報または対応項目があります。',
-    "all_platforms_saved_speech": '仕事プラットフォームを保存しました。{count} 件に追加情報または対応項目があります。',
+    "all_platforms_saved_speech": _DIALOGUE.templates[
+        "ui.all_platforms_saved_speech"
+    ],
     "memory_intro": (
         "墨寒は許可された人物、好み、目標、ワークフロー、重要な日付だけを"
         "保存します。記憶はこのパソコンに保存され、分類別の閲覧、個別編集、"
@@ -195,7 +198,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "【{category}】{title}　重要度 {importance}／5\n{content}\n"
         "出典：{source}　更新：{updated}"
     ),
-    "memory_added_speech": "記憶しました。後から一件ずつ確認や変更ができます。",
+    "memory_added_speech": _DIALOGUE.templates["ui.memory_added_speech"],
     "memory_select_edit_title": '記憶を選択',
     "memory_select_edit": "先に編集する記憶を選択してください。",
     "memory_not_found_title": '記憶一覧を更新',
@@ -377,7 +380,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "realtime_screen_transcript": "Realtime 画面文字起こし",
     "echo_guard": "エコー防止",
     "local_rate": "本機音声の速度",
-    "mohan_volume": "墨寒の音量",
+    "mohan_volume": _DIALOGUE.labels["ui.mohan_volume"],
     "voice_style": "話し方",
     "realtime": "Realtime 音声",
     "windows_engine": "Windows 本機音声",
@@ -435,7 +438,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "openai_recognition": "OpenAI 高精度認識（推奨）",
     "windows_recognition": "Windows オフライン認識",
     "no_transcription_error": '文字起こしは準備完了です。エラー記録はありません',
-    "preview_voice": "試聴：主様、妾はここにおります。",
+    "preview_voice": _DIALOGUE.labels["ui.preview_voice"],
     "realtime_disconnected": 'Realtime：接続待ち',
     "realtime_status_format": "Realtime：{status}",
     "realtime_disconnected_status": '接続待ち',
@@ -503,7 +506,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "permission_blocked_message": '続行するには、墨寒の {action} 権限を有効にしてください。',
     "permission_request": "墨寒がパソコンの権限を求めています",
     "permission_request_message": "今回だけ墨寒に{action}ことを許可しますか？",
-    "permission_saved_speech": "パソコンの権限を保存しました。妾はこの境界を守ります。",
+    "permission_saved_speech": _DIALOGUE.templates["ui.permission_saved_speech"],
     "profile_heading": "<b>名前とプロフィール</b>",
     "system_heading": "<b>仕事とシステム設定</b>",
     "api_key": "OpenAI API キー",
@@ -546,7 +549,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "reminder_offwork": "仕事終了",
     "enabled": "有効",
     "reminder_message_label": "{label}メッセージ",
-    "reminder_message_placeholder": "このリマインダーで墨寒が話す内容",
+    "reminder_message_placeholder": _DIALOGUE.labels["ui.reminder_message_placeholder"],
     "continuous_work_reminder": "連続作業リマインダー",
     "overwork_message": "長時間作業／働き過ぎの警告メッセージ",
     "minutes_suffix": " 分",

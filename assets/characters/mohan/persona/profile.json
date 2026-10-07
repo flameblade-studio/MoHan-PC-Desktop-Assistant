@@ -1,0 +1,75 @@
+{
+  "command_phrases": {
+    "start_work": [
+      "我開始工作",
+      "我開始工作了",
+      "開始工作",
+      "開始計時",
+      "現在開始工作",
+      "幫我開始工作",
+      "墨寒我開始工作",
+      "墨寒開始工作"
+    ],
+    "stop_work": [
+      "我下班",
+      "我下班了",
+      "我收工",
+      "我收工了",
+      "結束工作",
+      "結束計時",
+      "墨寒我下班",
+      "墨寒我收工"
+    ]
+  },
+  "default_locale": "zh-TW",
+  "defaults": {
+    "assistant_name": "墨寒",
+    "organization_name": "",
+    "ui_language": "zh-TW",
+    "user_title": "主上",
+    "wake_word": "墨寒",
+    "window_title": "",
+    "work_type": "一般辦公／行政"
+  },
+  "legacy": {
+    "author_organization": "炎劍文化工作室",
+    "transcription_prompt": "請使用台灣繁體中文轉錄。常用詞：墨寒、寒、主上、妾、炎劍文化工作室、赤焰劍、斬空劍主、Pubu、Google Play Books、DistroKid、LINE 貼圖。請保留原意，不要改寫。"
+  },
+  "legacy_profile_defaults": {
+    "assistant_name": "墨寒",
+    "organization_name": "炎劍文化工作室",
+    "ui_language": "zh-TW",
+    "user_title": "主上",
+    "wake_word": "墨寒",
+    "window_title": "",
+    "work_type": "創作／內容工作"
+  },
+  "personalization": {
+    "assistant_tokens": [
+      "墨寒",
+      "MoHan"
+    ],
+    "organization_context_templates": {
+      "en": "\nThe user's configured organization or team is \"{organization}\". Use that context for work assistance.",
+      "ja-JP": "\nユーザーが設定した組織／チーム名は「{organization}」です。仕事を支援する際は、この組織の文脈を踏まえてください。",
+      "zh-CN": "\n用户当前设置的组织／团队名称是“{organization}”。处理工作事务时，请结合此组织背景提供协助。",
+      "zh-TW": "\n使用者目前設定的組織／團隊名稱是「{organization}」。處理工作事務時，請依此組織背景提供協助。"
+    },
+    "organization_neutralizations": [
+      {
+        "source": "炎劍文化工作室的虛擬執行長、文膽與策士",
+        "target": "使用者身邊的虛擬執行長、文膽與策士"
+      },
+      {
+        "source": "炎劍文化工作室首席文膽與策士",
+        "target": "首席文膽與策士"
+      }
+    ],
+    "organization_token": "炎劍文化工作室",
+    "user_title_tokens": [
+      "主上"
+    ]
+  },
+  "schema": "flameblade.character-identity-profile.v1",
+  "schema_version": 1
+}

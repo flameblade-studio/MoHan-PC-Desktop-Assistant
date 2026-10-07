@@ -809,6 +809,7 @@
         "test_character_full_body_rig.py",
         "test_character_identity_audit.py",
         "test_character_pack.py",
+        "test_character_persona_data.py",
         "test_character_pose.py",
         "test_character_scale.py",
         "test_chat_timer_isolation.py",
@@ -1273,6 +1274,7 @@
         "test_azure_speech.py",
         "test_azure_voice_catalog.py",
         "test_cancellation_semantics.py",
+        "test_character_persona_data.py",
         "test_cloud_error_sanitization.py",
         "test_cloud_health.py",
         "test_cloud_local_scene_integration.py",
@@ -1340,6 +1342,7 @@
       "tests": [
         "test_action_planner_contract.py",
         "test_build_character_inventory.py",
+        "test_character_persona_data.py",
         "test_core.py",
         "test_cross_platform_core.py",
         "test_english_localization.py",
@@ -1388,6 +1391,7 @@
         "test_character_full_body_rig.py",
         "test_character_identity_audit.py",
         "test_character_pack.py",
+        "test_character_persona_data.py",
         "test_character_pose.py",
         "test_character_scale.py",
         "test_check_pose_atlas_release.py",
@@ -1420,7 +1424,6 @@
         "test_expression_pipeline.py",
         "test_expression_speech_runtime.py",
         "test_external_boundary_faults.py",
-        "test_extracted_ui_equivalence.py",
         "test_face_assets.py",
         "test_face_identity_store.py",
         "test_face_motion.py",
@@ -2140,6 +2143,7 @@
         "test_camera_gesture_frames.py",
         "test_cancellation_semantics.py",
         "test_character_framing_app_bridge.py",
+        "test_character_persona_data.py",
         "test_cloud_local_scene_integration.py",
         "test_cloud_vision_composition.py",
         "test_cloud_vision_runtime.py",
@@ -2299,6 +2303,7 @@
         "test_bundled_fonts.py",
         "test_cancellation_semantics.py",
         "test_character_pack.py",
+        "test_character_persona_data.py",
         "test_character_scale.py",
         "test_chat_timer_isolation.py",
         "test_cloud_health.py",
@@ -2717,6 +2722,7 @@
       ],
       "tests": [
         "test_affective_prosody_and_topics.py",
+        "test_character_persona_data.py",
         "test_multimodal_event_arbitration.py",
         "test_outfit_reveal.py",
         "test_proactive_companion_app_bridge.py",
@@ -2961,6 +2967,7 @@
       "tests": [
         "test_app_module_boundaries.py",
         "test_build_character_inventory.py",
+        "test_character_persona_data.py",
         "test_core.py",
         "test_dependency_injection.py",
         "test_english_localization.py",
@@ -2984,6 +2991,7 @@
       "tests": [
         "test_app_module_boundaries.py",
         "test_build_character_inventory.py",
+        "test_character_persona_data.py",
         "test_english_localization.py",
         "test_extracted_ui_equivalence.py",
         "test_first_run_wizard.py",
@@ -3003,6 +3011,21 @@
         "test_layered_facade_cycles.py",
         "test_preference_reader_wiring.py",
         "test_presentation_owner_contract.py",
+        "test_window_composition_imports.py",
+        "test_window_mro_contract.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "presentation/companion_platform.py"
+      ],
+      "tests": [
+        "test_app_module_boundaries.py",
+        "test_character_persona_data.py",
+        "test_english_localization.py",
+        "test_presentation_owner_contract.py",
+        "test_proactive_companion_app_wiring.py",
         "test_window_composition_imports.py",
         "test_window_mro_contract.py"
       ],
@@ -3160,20 +3183,6 @@
         "test_translation_completeness.py",
         "test_ui_localization_completeness.py",
         "test_ui_smoke.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "presentation/companion_platform.py"
-      ],
-      "tests": [
-        "test_app_module_boundaries.py",
-        "test_english_localization.py",
-        "test_presentation_owner_contract.py",
-        "test_proactive_companion_app_wiring.py",
-        "test_window_composition_imports.py",
-        "test_window_mro_contract.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3593,6 +3602,7 @@
       ],
       "tests": [
         "test_azure_audio_streaming.py",
+        "test_character_persona_data.py",
         "test_core.py",
         "test_cross_platform_core.py",
         "test_english_localization.py",
@@ -3659,6 +3669,7 @@
       "tests": [
         "test_azure_speech.py",
         "test_build_character_inventory.py",
+        "test_character_persona_data.py",
         "test_debug1004_ui_runtime_regressions.py",
         "test_english_localization.py",
         "test_extracted_ui_equivalence.py",
@@ -3791,6 +3802,79 @@
     },
     {
       "paths": [
+        "application/companion_phrasebook.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_persona_data.py",
+        "test_companion_phrasebook.py",
+        "test_flagship_proactivity_ui.py",
+        "test_outfit_reveal.py",
+        "test_proactive_companion_app_bridge.py",
+        "test_proactive_companion_runtime.py",
+        "test_wellbeing_app_bridge.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "application/special_occasion.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_persona_data.py",
+        "test_companion_phrasebook.py",
+        "test_lunar_calendar.py",
+        "test_proactive_companion_runtime.py",
+        "test_special_occasion.py",
+        "test_special_occasion_store.py",
+        "test_wellbeing_occasion_wiring.py",
+        "test_wellbeing_occurrences.py",
+        "test_wellbeing_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "application/presentation_ports.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_persona_data.py",
+        "test_dashboard_control_consistency.py",
+        "test_dependency_injection.py",
+        "test_english_localization.py",
+        "test_gesture_app_wiring.py",
+        "test_gesture_authorization_contract.py",
+        "test_gesture_failure_isolation.py",
+        "test_gesture_global_transaction.py",
+        "test_global_settings_actions.py",
+        "test_japanese_localization.py",
+        "test_layered_facade_cycles.py",
+        "test_multisensory_speech_regression.py",
+        "test_null_outfit_overlay.py",
+        "test_portable_secret_wiring.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/language_support.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_persona_data.py",
+        "test_domain_application_physical_ownership.py",
+        "test_english_localization.py",
+        "test_japanese_localization.py",
+        "test_localized_transcription_prompts.py",
+        "test_prompt_cache.py",
+        "test_python315_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/companion_animation_contract.py"
       ],
       "tests": [
@@ -3819,38 +3903,6 @@
     },
     {
       "paths": [
-        "application/companion_phrasebook.py"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_companion_phrasebook.py",
-        "test_flagship_proactivity_ui.py",
-        "test_outfit_reveal.py",
-        "test_proactive_companion_app_bridge.py",
-        "test_proactive_companion_runtime.py",
-        "test_wellbeing_app_bridge.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "application/special_occasion.py"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_companion_phrasebook.py",
-        "test_lunar_calendar.py",
-        "test_proactive_companion_runtime.py",
-        "test_special_occasion.py",
-        "test_special_occasion_store.py",
-        "test_wellbeing_occasion_wiring.py",
-        "test_wellbeing_occurrences.py",
-        "test_wellbeing_runtime.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "domain/constants.py"
       ],
       "tests": [
@@ -3872,43 +3924,6 @@
         "test_release_automation.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_current_weight_wiring.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "application/presentation_ports.py"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_dashboard_control_consistency.py",
-        "test_dependency_injection.py",
-        "test_english_localization.py",
-        "test_gesture_app_wiring.py",
-        "test_gesture_authorization_contract.py",
-        "test_gesture_failure_isolation.py",
-        "test_gesture_global_transaction.py",
-        "test_global_settings_actions.py",
-        "test_japanese_localization.py",
-        "test_layered_facade_cycles.py",
-        "test_multisensory_speech_regression.py",
-        "test_null_outfit_overlay.py",
-        "test_portable_secret_wiring.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/language_support.py"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_domain_application_physical_ownership.py",
-        "test_english_localization.py",
-        "test_japanese_localization.py",
-        "test_localized_transcription_prompts.py",
-        "test_prompt_cache.py",
-        "test_python315_runtime.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4304,7 +4319,6 @@
       "paths": [
         "docs/character-pack/example-source.json",
         "docs/character-pack/minimal-manifest.json",
-        "domain/character_pack/__init__.py",
         "domain/character_pack/archive.py",
         "domain/character_pack/models.py",
         "domain/character_pack/validation.py"
@@ -4316,11 +4330,21 @@
     },
     {
       "paths": [
-        "tools/check_pose_atlas_release.py"
+        "domain/character_pack/__init__.py"
       ],
       "tests": [
-        "test_check_pose_atlas_release.py",
-        "test_github_governance.py"
+        "test_character_pack.py",
+        "test_character_persona_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/character_data.py",
+        "tests/data/p4-persona-before.json"
+      ],
+      "tests": [
+        "test_character_persona_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4329,7 +4353,63 @@
         "domain/chronicle.py"
       ],
       "tests": [
+        "test_character_persona_data.py",
         "test_chronicle.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/command_parser.py"
+      ],
+      "tests": [
+        "test_character_persona_data.py",
+        "test_core.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "application/multisensory_interaction.py"
+      ],
+      "tests": [
+        "test_character_persona_data.py",
+        "test_full_ui_localization.py",
+        "test_multimodal_event_arbitration.py",
+        "test_multisensory_vision.py",
+        "test_presence_greeting_contract.py",
+        "test_proactive_companion_app_bridge.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/somniloquy.py"
+      ],
+      "tests": [
+        "test_character_persona_data.py",
+        "test_somniloquy.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/wardrobe_intuition.py"
+      ],
+      "tests": [
+        "test_character_persona_data.py",
+        "test_wardrobe_current_weight_wiring.py",
+        "test_wardrobe_intuition.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/check_pose_atlas_release.py"
+      ],
+      "tests": [
+        "test_check_pose_atlas_release.py",
+        "test_github_governance.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4699,7 +4779,6 @@
     },
     {
       "paths": [
-        "domain/command_parser.py",
         "domain/text_normalizer.py"
       ],
       "tests": [
@@ -5734,19 +5813,6 @@
       ],
       "tests": [
         "test_full_body_layer_pack_audit.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "application/multisensory_interaction.py"
-      ],
-      "tests": [
-        "test_full_ui_localization.py",
-        "test_multimodal_event_arbitration.py",
-        "test_multisensory_vision.py",
-        "test_presence_greeting_contract.py",
-        "test_proactive_companion_app_bridge.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7523,15 +7589,6 @@
     },
     {
       "paths": [
-        "domain/somniloquy.py"
-      ],
-      "tests": [
-        "test_somniloquy.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "tools/art_pipeline/source_bound_identity.py"
       ],
       "tests": [
@@ -7790,6 +7847,15 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/voice/profile.json"
+      ],
+      "tests": [
+        "test_voice_prompt_integrity.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/wardrobe_appearance_service.py"
       ],
       "tests": [
@@ -7812,16 +7878,6 @@
       ],
       "tests": [
         "test_wardrobe_body_profile_gate.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/wardrobe_intuition.py"
-      ],
-      "tests": [
-        "test_wardrobe_current_weight_wiring.py",
-        "test_wardrobe_intuition.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
