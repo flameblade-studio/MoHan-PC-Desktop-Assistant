@@ -748,6 +748,20 @@
     },
     {
       "paths": [
+        "domain/*.py",
+        "application/*.py",
+        "infrastructure/*.py",
+        "integrations/*.py",
+        "presentation/*.py",
+        "app.py",
+        "version_info.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py"
+      ]
+    },
+    {
+      "paths": [
         "tests/conftest.py"
       ],
       "tests": [
@@ -3931,6 +3945,16 @@
     },
     {
       "paths": [
+        "tools/generate_test_impact_map.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_generate_test_impact_map.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "integrations/speech_voice_catalog.py"
       ],
       "tests": [
@@ -3949,6 +3973,16 @@
         "test_wellbeing_app_bridge.py",
         "test_wellbeing_occurrences.py",
         "test_wellbeing_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tests/impact_map.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_pytest_collection_contract.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5984,15 +6018,6 @@
     },
     {
       "paths": [
-        "tools/generate_test_impact_map.py"
-      ],
-      "tests": [
-        "test_generate_test_impact_map.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "domain/pose_runtime_loader.py"
       ],
       "tests": [
@@ -7350,7 +7375,6 @@
     },
     {
       "paths": [
-        "tests/impact_map.json",
         "tests/test_durations.json"
       ],
       "tests": [

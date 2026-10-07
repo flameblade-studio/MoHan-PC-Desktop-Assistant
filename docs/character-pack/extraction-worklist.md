@@ -2,12 +2,13 @@
 
 ## 繁體中文
 
-實測後，真正仍需搬離引擎或改由角色資料代入的程式檔有 85 個：引擎抽離 51 個、介面名稱參照 34 個。另有 7 個檔案屬墨寒產品殼，可按逐檔理由保留品牌內容。
+實測後，真正仍需搬離引擎或改由角色資料代入的程式檔有 87 個：引擎抽離 53 個、介面名稱參照 34 個。另有 7 個檔案屬墨寒產品殼，可按逐檔理由保留品牌內容。
 
 舊名單另有 37 個檔案只剩人工複核提示，沒有實際內容規則證據，因此不計入待搬數。每個待搬檔只出現在下列一個獨占工作包。
 
 | 工作包 | 獨占檔案數 |
 |---|---:|
+| 引擎身分參數化 (`engine-identity-parameterization`) | 2 |
 | 人格、台詞與聲音抽離 (`persona-dialogue-voice-extraction`) | 9 |
 | Rig 與素材路徑參數化 (`rig-and-asset-parameterization`) | 42 |
 | 介面角色名稱參數化 (`ui-name-parameterization`) | 34 |
@@ -22,12 +23,13 @@
 
 ## 简体中文
 
-实测后，真正仍需从引擎移出或改为由角色数据代入的程序文件有 85 个：引擎抽离 51 个、界面名称引用 34 个。另有 7 个文件属于墨寒产品壳，可按逐文件理由保留品牌内容。
+实测后，真正仍需从引擎移出或改为由角色数据代入的程序文件有 87 个：引擎抽离 53 个、界面名称引用 34 个。另有 7 个文件属于墨寒产品壳，可按逐文件理由保留品牌内容。
 
 旧名单另有 37 个文件只剩人工复核提示，没有实际内容规则证据，因此不计入待迁移数。每个待迁移文件只出现在下列一个独占工作包。
 
 | 工作包 | 独占文件数 |
 |---|---:|
+| 引擎身份参数化 (`engine-identity-parameterization`) | 2 |
 | 人格、台词与声音抽离 (`persona-dialogue-voice-extraction`) | 9 |
 | Rig 与素材路径参数化 (`rig-and-asset-parameterization`) | 42 |
 | 界面角色名称参数化 (`ui-name-parameterization`) | 34 |
@@ -42,12 +44,13 @@
 
 ## English
 
-Measurement finds 85 source files that still need engine extraction or character-data substitution: 51 engine-extraction files and 34 UI-name references. Another 7 files belong to the MoHan product shell and may retain branded content for their recorded per-file reasons.
+Measurement finds 87 source files that still need engine extraction or character-data substitution: 53 engine-extraction files and 34 UI-name references. Another 7 files belong to the MoHan product shell and may retain branded content for their recorded per-file reasons.
 
 The old list leaves 37 manual-review-only hints with no content-rule evidence; they are not counted as extraction work. Every pending file belongs to exactly one exclusive package below.
 
 | Work package | Exclusive files |
 |---|---:|
+| Engine identity parameterization (`engine-identity-parameterization`) | 2 |
 | Persona, dialogue and voice extraction (`persona-dialogue-voice-extraction`) | 9 |
 | Rig and asset parameterization (`rig-and-asset-parameterization`) | 42 |
 | UI character-name parameterization (`ui-name-parameterization`) | 34 |
@@ -62,12 +65,13 @@ See `extraction-worklist.json` for detailed evidence and per-file reasons.
 
 ## 日本語
 
-実測の結果、エンジンからの抽出またはキャラクターデータによる差し替えが必要なソースは 85 ファイルです。内訳はエンジン抽出 51、UI の名前参照 34 です。別に 7 ファイルは墨寒製品シェルに属し、ファイルごとの理由に従ってブランド内容を保持できます。
+実測の結果、エンジンからの抽出またはキャラクターデータによる差し替えが必要なソースは 87 ファイルです。内訳はエンジン抽出 53、UI の名前参照 34 です。別に 7 ファイルは墨寒製品シェルに属し、ファイルごとの理由に従ってブランド内容を保持できます。
 
 旧一覧には実内容の規則証拠がない人工確認専用の候補が 37 ファイル残りますが、抽出数には含めません。各対象ファイルは以下の独占作業パッケージ一つだけに属します。
 
 | 作業パッケージ | 独占ファイル数 |
 |---|---:|
+| エンジン身元のパラメータ化 (`engine-identity-parameterization`) | 2 |
 | 人格・台詞・音声の抽出 (`persona-dialogue-voice-extraction`) | 9 |
 | Rig と素材パスのパラメータ化 (`rig-and-asset-parameterization`) | 42 |
 | UI キャラクター名のパラメータ化 (`ui-name-parameterization`) | 34 |
