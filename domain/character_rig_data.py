@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 lazy from functools import lru_cache
+lazy from itertools import product
 lazy from pathlib import Path
 
 lazy from domain.character_data_types import (
@@ -125,21 +126,16 @@ def _side_anchors(
         raise ValueError(f"{name} must be a non-empty object.")
     return frozendict(
         {
-            _text(pose, name=f"{name} pose"): frozendict(
-                {
-                    side: _int_pair(side_payload[side], name=f"{name}.{pose}.{side}")
-                    for side in ("left", "right")
-                }
-            )
-            for pose, raw_side_payload in value.items()
-            for side_payload in (
-                _object(
-                    raw_side_payload,
-                    name=f"{name}.{pose}",
-                    keys=frozenset({"left", "right"}),
-                ),
-            )
+            _text(pose, name=f"{name} pose"): _side_anchor_pair(raw, name=f"{name}.{pose}")
+            for pose, raw in value.items()
         }
+    )
+
+
+def _side_anchor_pair(value: object, *, name: str) -> frozendict[str, tuple[int, int]]:
+    payload = _object(value, name=name, keys=frozenset({"left", "right"}))
+    return frozendict(
+        {side: _int_pair(payload[side], name=f"{name}.{side}") for side in ("left", "right")}
     )
 
 
@@ -571,9 +567,7 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
     if len(yaws) != FULL_VIEW_COUNT or pitch_degrees != (0,):
         raise ValueError("Bundled full-body rig requires one 24-yaw zero-pitch ring.")
     declared_views = {
-        f"yaw{yaw:+04d}-pitch{pitch:+03d}"
-        for pitch in pitch_degrees
-        for yaw in yaws
+        f"yaw{yaw:+04d}-pitch{pitch:+03d}" for pitch, yaw in product(pitch_degrees, yaws)
     }
     if set(mirror_views) != declared_views or set(mirror_views.values()) != declared_views:
         raise ValueError("mirror_views must cover every declared view exactly once.")
