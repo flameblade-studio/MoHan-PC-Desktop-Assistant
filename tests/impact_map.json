@@ -3784,6 +3784,16 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/pack-source.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_build_character_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/character_body_profile.py"
       ],
       "tests": [
@@ -4046,7 +4056,6 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/pack-source.json",
         "assets/characters/mohan/persona/profile.json",
         "assets/characters/mohan/rig/rig-manifest.json",
         "tools/build_character_pack.py"
