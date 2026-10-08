@@ -286,6 +286,35 @@ def test_stale_inventory_fails_before_creating_output(tmp_path: Path) -> None:
     assert not output.exists()
 
 
+def test_invalid_appearance_component_fails_before_creating_output(
+    tmp_path: Path,
+) -> None:
+    inventory, source, _payloads = _synthetic_inputs(tmp_path / "repo")
+    appearance_file = tmp_path / "repo" / APPEARANCE_DEFAULTS_PATH
+    appearance = json.loads(appearance_file.read_text(encoding="utf-8"))
+    appearance["outfit"]["native_headwear"] = {}
+    data = _write_json(appearance_file, appearance)
+    document = json.loads(inventory.read_text(encoding="utf-8"))
+    record = next(
+        row for row in document["files"]
+        if row["path"] == APPEARANCE_DEFAULTS_PATH
+    )
+    record["bytes"] = len(data)
+    record["sha256"] = hashlib.sha256(data).hexdigest()
+    _write_json(inventory, document)
+
+    output = tmp_path / "rejected"
+    with pytest.raises(builder.CharacterPackBuildError, match="appearance defaults"):
+        builder.build_character_pack(
+            output,
+            output_format="directory",
+            repo_root=tmp_path / "repo",
+            inventory_path=inventory,
+            source_path=source,
+        )
+    assert not output.exists()
+
+
 def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     output = tmp_path / "flameblade.mohan"
     expected_files, expected_bytes = _repository_payload_totals()

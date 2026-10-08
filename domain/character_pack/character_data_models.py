@@ -45,7 +45,7 @@ class CharacterAppearanceDefaults:
     outfit_pack_id: str
     outfit_ensemble_id: str
     native_hair: AppearanceItemSelection
-    native_headwear: AppearanceItemSelection
+    native_headwear: AppearanceItemSelection | None
 
 
 @dataclass(frozen=True, slots=True)

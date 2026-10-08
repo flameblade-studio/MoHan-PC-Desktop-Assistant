@@ -58,6 +58,7 @@ lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_PACK_ID,
     OFFICIAL_PACK_IDS,
     _load_official_appearance,
+    is_official_native_alias,
     official_outfit_ensemble,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
@@ -185,11 +186,14 @@ def _assert_makeup_variant_contract(variant) -> None:
 
 
 def test_official_appearance_identifiers_come_from_character_data() -> None:
-    source = json.loads(
-        (ROOT / "assets/characters/mohan/appearance/defaults.json").read_text(
-            encoding="utf-8"
-        )
-    )
+    path = ROOT / "assets/characters/mohan/appearance/defaults.json"
+    source = json.loads(path.read_text(encoding="utf-8"))
+    defaults = load_character_appearance_defaults(path)
+    assert defaults.native_headwear is not None
+    assert (
+        defaults.native_headwear.item_id,
+        defaults.native_headwear.variant_id,
+    ) == ("silver-hairpiece", "silver")
     makeup = source["makeup"]
     outfit = source["outfit"]
 
@@ -228,6 +232,9 @@ def test_official_appearance_identifiers_come_from_character_data() -> None:
         lambda data: data["makeup"].update(menu_variants=["light"]),
         lambda data: data["makeup"].update(always_visible_variants=["neon"]),
         lambda data: data["outfit"].update(ensemble_id=""),
+        lambda data: data["outfit"].pop("native_headwear"),
+        lambda data: data["outfit"].update(native_headwear={}),
+        lambda data: data["outfit"].update(native_headwear="none"),
     ],
 )
 def test_official_appearance_data_fails_closed(tmp_path: Path, mutate) -> None:
@@ -246,6 +253,28 @@ def test_official_appearance_reads_through_character_source() -> None:
     assert _load_official_appearance(character_source) == (
         character_source.appearance.appearance_defaults
     )
+
+
+def test_character_without_headwear_has_no_native_headwear_alias() -> None:
+    legacy = service_container.create_default_character_source()
+    changed = replace(legacy.appearance_defaults, native_headwear=None)
+    changed_source = SimpleNamespace(
+        assets=legacy.assets,
+        persona=legacy.persona,
+        appearance=SimpleNamespace(appearance_defaults=changed),
+    )
+    activate_character_source(changed_source)
+    try:
+        assert is_official_native_alias(
+            "hairstyle",
+            OFFICIAL_NATIVE_HAIR_ALIAS,
+        )
+        assert not is_official_native_alias(
+            "headwear",
+            OFFICIAL_NATIVE_HEADWEAR_ALIAS,
+        )
+    finally:
+        activate_character_source(legacy)
 
 
 def test_changed_default_ensemble_keeps_the_persisted_builtin_sentinel(

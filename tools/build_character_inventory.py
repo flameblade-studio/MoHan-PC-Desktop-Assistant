@@ -148,7 +148,13 @@ def _character_data_group(path: str) -> Group | None:
         return None
     relative = "/".join(parts[3:])
     character_reader = "infrastructure/character_source_pack.py"
-    if relative == "persona/ui-identifiers.json":
+    if relative == "appearance/defaults.json":
+        category, reader, anchor = (
+            "character_appearance_defaults",
+            "domain/character_pack/appearance_data.py",
+            'Path(path).read_text(encoding="utf-8")',
+        )
+    elif relative == "persona/ui-identifiers.json":
         category, reader, anchor = (
             "character_ui_identifier_data",
             "tools/build_character_pack.py",

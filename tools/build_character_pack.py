@@ -18,6 +18,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from domain.character_pack.appearance_data import (
+    APPEARANCE_DEFAULTS_SCHEMA,
+    load_character_appearance_defaults,
+)
+lazy from domain.character_pack.character_data_models import CharacterDataError
 lazy from domain.character_pack.models import ValidationLimits
 lazy from domain.character_pack.validation import SCHEMA, compute_package_hash, validate_character_pack
 lazy from domain.outfit_pack import inspect_outfit_pack
@@ -487,6 +492,13 @@ def _validate_component_source(payload: _Payload, schema: str, body_profile: obj
     document = _load_json_object(payload.source)
     if document.get("schema") != schema:
         raise CharacterPackBuildError(f"component schema does not match its payload: {payload.path}")
+    if schema == APPEARANCE_DEFAULTS_SCHEMA:
+        try:
+            load_character_appearance_defaults(payload.source)
+        except CharacterDataError as error:
+            raise CharacterPackBuildError(
+                f"appearance defaults component is invalid: {payload.path}"
+            ) from error
     if (
         schema == "flameblade.character-rig.v1"
         and _body_profile_identity(document.get("body_profile"))

@@ -6,6 +6,7 @@ lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path
 lazy from typing import Any
 
+lazy from domain.character_pack.appearance_data import load_character_appearance_defaults
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.character_source_pack import CharacterPackReader
 lazy from tools import build_character_pack as builder
@@ -15,6 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 MOHAN_ROOT = ROOT / "assets" / "characters" / "mohan"
 LIN_KEYUN_ROOT = ROOT / "assets" / "characters" / "lin-keyun"
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
+APPEARANCE_DEFAULTS_PATH = "appearance/defaults.json"
+APPEARANCE_DEFAULTS_REPOSITORY_PATH = (
+    "assets/characters/lin-keyun/appearance/defaults.json"
+)
 RUNTIME_JSON_FILES = (
     "dialogue/en.json",
     "dialogue/events.json",
@@ -36,6 +41,7 @@ RUNTIME_JSON_FILES = (
 EXPECTED_FILES = frozenset(
     {
         *RUNTIME_JSON_FILES,
+        APPEARANCE_DEFAULTS_PATH,
         "pack-source.json",
         "README.md",
     }
@@ -221,6 +227,26 @@ def test_linkeyun_voice_and_shared_v5_body_match_the_approved_contract() -> None
     }
 
 
+def test_linkeyun_appearance_defaults_load_with_explicitly_no_headwear() -> None:
+    source = _load(LIN_KEYUN_ROOT, APPEARANCE_DEFAULTS_PATH)
+    defaults = load_character_appearance_defaults(
+        LIN_KEYUN_ROOT / APPEARANCE_DEFAULTS_PATH
+    )
+    mohan = _load(MOHAN_ROOT, APPEARANCE_DEFAULTS_PATH)
+
+    assert source["makeup"] == mohan["makeup"]
+    assert defaults.makeup_pack_id == "mohan.makeup.builtin"
+    assert defaults.makeup_item_id == "mohan-signature"
+    assert defaults.outfit_pack_id == "linkeyun.official.modern-office"
+    assert defaults.outfit_ensemble_id == "modern-office"
+    assert (defaults.native_hair.item_id, defaults.native_hair.variant_id) == (
+        "long-hair",
+        "dark-brown",
+    )
+    assert source["outfit"]["native_headwear"] is None
+    assert defaults.native_headwear is None
+
+
 def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> None:
     source = _load(LIN_KEYUN_ROOT, "pack-source.json")
     mohan_source = _load(MOHAN_ROOT, "pack-source.json")
@@ -239,6 +265,7 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
         }
     ]
     component_ids = {component["id"] for component in source["components"]}
+    assert "linkeyun.appearance-defaults" in component_ids
     assert "mohan.makeup.builtin" in component_ids
     assert "mohan.official.blue-white-hanfu" not in component_ids
 
@@ -275,8 +302,15 @@ def test_linkeyun_pack_builds_validates_and_reads_without_mohan_data(
     declared = {record.path for record in reader.manifest.files}
     assert any(path.startswith("assets/characters/lin-keyun/") for path in declared)
     assert not any(path.startswith("assets/characters/mohan/") for path in declared)
+    assert APPEARANCE_DEFAULTS_REPOSITORY_PATH in declared
+    appearance_record = next(
+        record for record in reader.manifest.files
+        if record.path == APPEARANCE_DEFAULTS_REPOSITORY_PATH
+    )
+    assert appearance_record.license_component == "program_data"
     for relative in RUNTIME_JSON_FILES:
         assert f"assets/characters/lin-keyun/{relative}" in declared
+    assert reader.appearance_defaults.native_headwear is None
     for language in LANGUAGES:
         assert reader.persona_prompt(language).strip()
         assert reader.dialogue_line(language, "wardrobe.reveal.question").strip()

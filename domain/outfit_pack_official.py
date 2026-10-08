@@ -58,10 +58,13 @@ OFFICIAL_NATIVE_HAIR_ALIAS = (
     _APPEARANCE.native_hair.item_id,
     _APPEARANCE.native_hair.variant_id,
 )
+_NATIVE_HEADWEAR = _APPEARANCE.native_headwear
+if _NATIVE_HEADWEAR is None:
+    raise RuntimeError("Bundled appearance defaults require native headwear")
 OFFICIAL_NATIVE_HEADWEAR_ALIAS = (
     OFFICIAL_OUTFIT_PACK_ID,
-    _APPEARANCE.native_headwear.item_id,
-    _APPEARANCE.native_headwear.variant_id,
+    _NATIVE_HEADWEAR.item_id,
+    _NATIVE_HEADWEAR.variant_id,
 )
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
@@ -81,14 +84,15 @@ def is_official_native_alias(category: str, identity: Identity) -> bool:
         appearance.native_hair.item_id,
         appearance.native_hair.variant_id,
     )
-    headwear = (
+    native_headwear = appearance.native_headwear
+    headwear = None if native_headwear is None else (
         appearance.outfit_pack_id,
-        appearance.native_headwear.item_id,
-        appearance.native_headwear.variant_id,
+        native_headwear.item_id,
+        native_headwear.variant_id,
     )
     return (
         (category == "hairstyle" and identity == hair)
-        or (category == "headwear" and identity == headwear)
+        or (category == "headwear" and headwear is not None and identity == headwear)
     )
 
 

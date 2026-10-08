@@ -90,6 +90,13 @@ def _selection(value: object, path: str) -> AppearanceItemSelection:
     )
 
 
+def _optional_selection(
+    value: object,
+    path: str,
+) -> AppearanceItemSelection | None:
+    return None if value is None else _selection(value, path)
+
+
 def _parse_appearance_defaults(value: object) -> CharacterAppearanceDefaults:
     path = "appearance/defaults.json"
     source = _object(
@@ -163,7 +170,7 @@ def _parse_appearance_defaults(value: object) -> CharacterAppearanceDefaults:
             outfit["native_hair"],
             f"{path}.outfit.native_hair",
         ),
-        native_headwear=_selection(
+        native_headwear=_optional_selection(
             outfit["native_headwear"],
             f"{path}.outfit.native_headwear",
         ),

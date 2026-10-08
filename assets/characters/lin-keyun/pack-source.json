@@ -12,6 +12,14 @@
   "character_id": "lin-keyun",
   "components": [
     {
+      "body_profile": null,
+      "id": "linkeyun.appearance-defaults",
+      "kind": "appearance_defaults",
+      "path": "assets/characters/lin-keyun/appearance/defaults.json",
+      "required": true,
+      "schema": "flameblade.character-appearance-defaults.v1"
+    },
+    {
       "body_profile": {
         "id": "mohan-body-v2",
         "version": 2
