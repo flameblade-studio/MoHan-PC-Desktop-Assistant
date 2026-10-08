@@ -2,7 +2,7 @@
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.0",
+  "pack_version": "1.0.1",
   "character_id": "mohan",
   "identity": {
     "profile": "assets/characters/mohan/persona/profile.json",
@@ -71,6 +71,14 @@
     }
   ],
   "components": [
+    {
+      "id": "mohan.appearance-defaults",
+      "kind": "appearance_defaults",
+      "schema": "flameblade.character-appearance-defaults.v1",
+      "path": "assets/characters/mohan/appearance/defaults.json",
+      "required": true,
+      "body_profile": null
+    },
     {
       "id": "mohan.rig",
       "kind": "fullbody_rig",

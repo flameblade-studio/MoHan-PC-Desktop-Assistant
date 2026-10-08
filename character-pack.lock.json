@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.mohan-1.0.0.zip",
-    "bytes": 620752735,
-    "sha256": "edc021a7f802f19cfcfd5e848b2a4192ac587fcf3e271da1abc7317554c19395"
+    "asset_name": "flameblade.mohan-1.0.1.zip",
+    "bytes": 620754225,
+    "sha256": "30a64c48b4605745190f682aeb44d2d0a3ecc3b8ca0becf4a9b4eb03364f1b94"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -11,6 +11,11 @@
     "required_features": []
   },
   "files": [
+    {
+      "bytes": 698,
+      "path": "assets/characters/mohan/appearance/defaults.json",
+      "sha256": "493c65419a7ff56900dc1ce0841b61582ec316877722ba9dc5791597fa55752e"
+    },
     {
       "bytes": 12637,
       "path": "assets/characters/mohan/dialogue/en.json",
@@ -8538,12 +8543,12 @@
     }
   ],
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.0",
-  "package_hash": "615303248f683b0a0e513f28d09b84979be62bdf6bbedc846a6ee6b5cc968522",
+  "pack_version": "1.0.1",
+  "package_hash": "1c118b5720dd56fe64457523ee03ef18519731932a5dd0ea54e63857eb30ef36",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "mohan-pack-v1.0.0",
+    "release_tag": "mohan-pack-v1.0.1",
     "repository": "flameblade-studio/mohan-character-pack"
   },
   "validation_limits": {
