@@ -28,7 +28,6 @@ lazy from domain.character_pack.character_data_models import (
 SUPPORTED_LOCALES = ("zh-TW", "zh-CN", "en", "ja-JP")
 MOHAN_CHARACTER_DATA_ROOT = Path(__file__).resolve().parents[2].joinpath("assets", "characters", "mohan")
 
-
 canonical_character_locale = _canonical_character_locale
 
 
