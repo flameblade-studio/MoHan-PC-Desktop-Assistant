@@ -429,9 +429,9 @@
       "path": "assets/characters/mohan/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 9,
+          "line": 422,
           "path": "domain/character_expression_data.py",
-          "text": "DEFAULT_EXPRESSION_CATALOG_PATH,"
+          "text": "return load_expression_catalog(DEFAULT_EXPRESSION_CATALOG_PATH)"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -559,9 +559,9 @@
       "path": "assets/characters/mohan/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 10,
+          "line": 683,
           "path": "domain/character_rig_data.py",
-          "text": "DEFAULT_RIG_MANIFEST_PATH,"
+          "text": "return load_rig_manifest(DEFAULT_RIG_MANIFEST_PATH)"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
