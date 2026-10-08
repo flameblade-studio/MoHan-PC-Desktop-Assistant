@@ -22,7 +22,10 @@ lazy from application.presentation_ports import (
 lazy from domain.app_profile import (
     persona_for_profile, personalize_text, profile_setting,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
 lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions
@@ -694,7 +697,8 @@ class DashboardConversationMixin:
 
     def _ai_failed(self, error: str) -> None:
         self._finish_ai_wait_expression()
-        message = str(runtime_dialogue_locale(self.ui_language)["dashboard_ai_failure"])
+        locale = canonical_character_locale(self.ui_language)
+        message = str(runtime_dialogue_locale(locale)["dashboard_ai_failure"])
         # 與 _ai_done 相同的 finally 鐵閘。
         try:
             self._reply(message, "worried")

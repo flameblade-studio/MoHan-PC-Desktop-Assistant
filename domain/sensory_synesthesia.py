@@ -15,11 +15,12 @@ lazy import json
 lazy from collections.abc import Mapping
 lazy from enum import StrEnum
 lazy from functools import cache
+lazy from string import Formatter
 
 lazy from domain.character_pack.character_data import (
     MOHAN_CHARACTER_DATA_ROOT,
-    canonical_character_locale,
 )
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.immutable_config import deep_freeze
 
 _RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"
@@ -43,6 +44,13 @@ _RUNTIME_TEXT_KEYS = frozenset(
 )
 _RUNTIME_LOCALE_KEYS = _RUNTIME_TEXT_KEYS | {"wave_greetings"}
 _SUPPORTED_LOCALES = frozenset({"zh-TW", "zh-CN", "en", "ja-JP"})
+_RUNTIME_FORMAT_FIELDS = {
+    "background_diagnostic": frozenset({"report_name", "issues"}),
+    "dashboard_work_duration": frozenset({"duration"}),
+    "realtime_context": frozenset(
+        {"instructions", "memory_context", "recent_context"}
+    ),
+}
 
 
 def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -88,6 +96,18 @@ def _runtime_dialogue_payload() -> Mapping[str, object]:
             for key in _RUNTIME_TEXT_KEYS
         ):
             raise ValueError(f"Character runtime dialogue text is invalid for {locale}.")
+        for key in _RUNTIME_TEXT_KEYS:
+            fields = {
+                field_name
+                for _literal, field_name, _format_spec, _conversion in Formatter().parse(
+                    values[key]
+                )
+                if field_name is not None
+            }
+            if fields != _RUNTIME_FORMAT_FIELDS.get(key, frozenset()):
+                raise ValueError(
+                    f"Character runtime dialogue placeholders differ for {locale}.{key}."
+                )
         greetings = values["wave_greetings"]
         if (
             not isinstance(greetings, list)
@@ -98,18 +118,26 @@ def _runtime_dialogue_payload() -> Mapping[str, object]:
     rules = payload["reply_expression_rules"]
     if not isinstance(rules, list) or not rules:
         raise ValueError("Character reply-expression rules are required.")
+    known_emotions = default_expression_catalog().emotion_to_expression
+    seen_emotions: set[str] = set()
+    seen_phrases: set[str] = set()
     for rule in rules:
         if not isinstance(rule, dict) or set(rule) != {"emotion", "phrases"}:
             raise ValueError("Character reply-expression rule fields differ.")
+        emotion = rule["emotion"]
         phrases = rule["phrases"]
         if (
-            not isinstance(rule["emotion"], str)
-            or not rule["emotion"]
+            not isinstance(emotion, str)
+            or emotion not in known_emotions
             or not isinstance(phrases, list)
             or not phrases
             or any(not isinstance(phrase, str) or not phrase for phrase in phrases)
         ):
             raise ValueError("Character reply-expression rule values are invalid.")
+        if emotion in seen_emotions or any(phrase in seen_phrases for phrase in phrases):
+            raise ValueError("Character reply-expression rules must be unique.")
+        seen_emotions.add(emotion)
+        seen_phrases.update(phrases)
     return deep_freeze(payload)
 
 
@@ -119,7 +147,8 @@ def runtime_dialogue_locale(language: str) -> Mapping[str, object]:
     locales = _runtime_dialogue_payload()["locales"]
     if not isinstance(locales, Mapping):
         raise TypeError("Character runtime dialogue locales are unavailable.")
-    values = locales[canonical_character_locale(language)]
+    locale = language if language in _SUPPORTED_LOCALES else "zh-TW"
+    values = locales[locale]
     if not isinstance(values, Mapping):
         raise TypeError("Character runtime dialogue locale is unavailable.")
     return values

@@ -11,6 +11,7 @@ lazy from domain.sensory_synesthesia import WeatherMood, complaint_line
 lazy from integrations.ai_client import AIWorker, AIWorkerRequest, offline_reply
 lazy from integrations.realtime_session import RealtimeSessionMethods
 lazy from integrations.realtime_speech_output import _message
+lazy from presentation.companion_core import CompanionCoreMixin
 lazy from presentation.companion_face_animation import CompanionFaceAnimationMixin
 lazy from presentation.companion_visual_dynamics import CompanionVisualDynamicsMixin
 lazy from presentation.dashboard_conversation import (
@@ -107,6 +108,15 @@ class _FaceProbe(CompanionFaceAnimationMixin):
 
     def _hide_bubble_unless_speaking(self) -> None:
         pass
+
+
+class _WaveProbe(CompanionCoreMixin):
+    def __init__(self, language: str) -> None:
+        self.db = _Settings({"ui_language": language})
+        self.spoken: list[list[str]] = []
+
+    def speak(self, text: str, state: str) -> None:
+        self.spoken.append([text, state])
 
 
 def _runtime_snapshot(tmp_path: Path) -> dict[str, object]:
@@ -213,6 +223,42 @@ def test_runtime_dialogue_rejects_schema_drift(
     with pytest.raises(ValueError, match="top-level shape"):
         sensory_synesthesia._runtime_dialogue_payload()
     sensory_synesthesia._runtime_dialogue_payload.cache_clear()
+
+
+def test_runtime_dialogue_rejects_placeholder_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = json.loads(
+        (ROOT / "assets/characters/mohan/dialogue/runtime.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    payload["locales"]["en"]["background_diagnostic"] = "Diagnostic unavailable."
+    invalid = tmp_path / "runtime.json"
+    invalid.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    sensory_synesthesia._runtime_dialogue_payload.cache_clear()
+    monkeypatch.setattr(sensory_synesthesia, "_RUNTIME_DIALOGUE_PATH", invalid)
+    with pytest.raises(ValueError, match="placeholders differ"):
+        sensory_synesthesia._runtime_dialogue_payload()
+    sensory_synesthesia._runtime_dialogue_payload.cache_clear()
+
+
+@pytest.mark.parametrize(
+    "language",
+    ("en-US", "en-GB", "zh-SG", "zh-Hans", "ja", "fallback"),
+)
+def test_legacy_exact_language_fallback_is_unchanged(language: str) -> None:
+    assert complaint_line(language, WeatherMood.HOT) == (
+        "高雄的暑氣，連妾的赤焰劍都快融了……"
+    )
+    probe = _WaveProbe(language)
+    probe._acknowledge_wave()
+    assert probe.spoken == [["嗨，我在這裡！", "happy"]]
 
 
 def test_assigned_sources_only_retain_excluded_rig_content() -> None:

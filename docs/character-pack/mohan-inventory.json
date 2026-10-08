@@ -91778,7 +91778,7 @@
           "text": "lazy from domain.character_pack.character_data import load_mohan_character_data"
         },
         {
-          "line": 19,
+          "line": 20,
           "path": "domain/sensory_synesthesia.py",
           "text": "lazy from domain.character_pack.character_data import ("
         },
@@ -91860,7 +91860,7 @@
         {
           "line": 25,
           "path": "presentation/dashboard_conversation.py",
-          "text": "lazy from domain.character_pack.character_data import load_mohan_character_data"
+          "text": "lazy from domain.character_pack.character_data import ("
         },
         {
           "line": 8,
@@ -92848,7 +92848,7 @@
           "text": "lazy from domain.expression_system import parse_internal_emotion"
         },
         {
-          "line": 28,
+          "line": 31,
           "path": "presentation/dashboard_conversation.py",
           "text": "lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions"
         }
