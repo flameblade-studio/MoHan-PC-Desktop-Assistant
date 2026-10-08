@@ -122,8 +122,6 @@ def test_bundled_runtime_bindings_preserve_existing_assets_and_role_values() -> 
         "body_overlays": "assets/pose-atlas/v5-body-overlays",
         "dashboard_artwork": "assets/ui/mohan-celestial-palace-v1.png",
         "first_run_portrait": "assets/expressions/idle_front.png",
-        "fullbody_layers": "assets/pose-atlas/v5-base-layered",
-        "fullbody_master": "assets/pose-atlas/v5-base",
         "garment_visibility": "assets/pose-atlas/v5-garment-visibility",
         "halfbody_detachable": "assets/expressions/detachable",
         "halfbody_layers": "assets/expressions/layered",

@@ -38,8 +38,6 @@ _RUNTIME_BINDING_SECTION_KEYS = frozendict({
         "body_overlays",
         "dashboard_artwork",
         "first_run_portrait",
-        "fullbody_layers",
-        "fullbody_master",
         "garment_visibility",
         "halfbody_detachable",
         "halfbody_layers",
@@ -252,10 +250,10 @@ FULL_BODY_LAYER_COUNT: Final = len(FULL_BODY_LAYER_Z_ORDER)
 # and as the calibration reference of the v4-specific golden/rebuild tools.
 # ---------------------------------------------------------------------------
 POSE_ATLAS_GENERATION: Final = 2
-POSE_ATLAS_RELATIVE_ROOT: Final = CHARACTER_ASSET_PATHS["fullbody_master"]
-POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = CHARACTER_ASSET_PATHS["fullbody_layers"]
-POSE_ATLAS_ROOT_NAME: Final = PurePosixPath(POSE_ATLAS_RELATIVE_ROOT).name
-POSE_ATLAS_LAYERED_ROOT_NAME: Final = PurePosixPath(POSE_ATLAS_LAYERED_RELATIVE_ROOT).name
+POSE_ATLAS_ROOT_NAME: Final = "v5-base"
+POSE_ATLAS_LAYERED_ROOT_NAME: Final = "v5-base-layered"
+POSE_ATLAS_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base"
+POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base-layered"
 
 # ---------------------------------------------------------------------------
 # Weather defaults (裁決 2026-08-28): before the wardrobe runtime has written

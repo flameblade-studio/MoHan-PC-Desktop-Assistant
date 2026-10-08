@@ -12,7 +12,12 @@ lazy from pathlib import Path
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 
 lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_LAYER_ROLES,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_RELATIVE_ROOT,
+)
 lazy from domain.outfit_pack import (
     AppearanceVariant,
     OutfitPackError,
@@ -157,7 +162,7 @@ def load_garment_binding(
     _source_bytes(
         root,
         entry["native_source"],
-        f"{CHARACTER_ASSET_PATHS['fullbody_master']}/{view_id}.png",
+        f"{POSE_ATLAS_RELATIVE_ROOT}/{view_id}.png",
     )
     member, digest = _record(entry["garment_member"])
     declarations = resolve_variant_for_view(variant, view_id).assets
@@ -216,7 +221,7 @@ def validate_garment_removal(
 ) -> None:
     """Never erase native face, hair, ornament, or visible hand ownership."""
     protected = QRegion(protected_face)
-    layered = root / CHARACTER_ASSET_PATHS["fullbody_layers"]
+    layered = root / POSE_ATLAS_LAYERED_RELATIVE_ROOT
     for layer in (
         CHARACTER_LAYER_ROLES["rear_hair"],
         CHARACTER_LAYER_ROLES["left_side_hair"],

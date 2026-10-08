@@ -30,7 +30,11 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
-lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_RELATIVE_ROOT,
+)
 lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
 lazy from domain.outfit_generation import (
     OutfitGenerationCancelled,
@@ -281,7 +285,7 @@ def _reference_path(root: Path, view_id: str) -> Path:
     reference_name = _HALF_BODY_REFERENCE_FILES.get(view_id)
     if reference_name is not None:
         return root / CHARACTER_ASSET_PATHS["halfbody_root"] / reference_name
-    return root / CHARACTER_ASSET_PATHS["fullbody_master"] / f"{view_id}.png"
+    return root / POSE_ATLAS_RELATIVE_ROOT / f"{view_id}.png"
 
 
 def _decode_registered_png(
@@ -673,7 +677,7 @@ class OpenAIOutfitDraftGenerator:
 
 def _protected_face_path(root: Path, view_id: str) -> Path:
     if view_id in POSE_ATLAS_SILHOUETTES:
-        return root / CHARACTER_ASSET_PATHS["fullbody_layers"] / f"{view_id}_base.png"
+        return root / POSE_ATLAS_LAYERED_RELATIVE_ROOT / f"{view_id}_base.png"
     pose = _HALF_BODY_POSES.get(view_id, "front")
     return root / CHARACTER_ASSET_PATHS["halfbody_layers"] / f"{pose}_base.png"
 
