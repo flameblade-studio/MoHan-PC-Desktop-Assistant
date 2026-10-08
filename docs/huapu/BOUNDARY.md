@@ -1,80 +1,8 @@
 # 炎劍畫譜邊界／炎剑画谱边界／Flameblade Huapu Boundary／炎剣画譜の境界
 
-狀態／状态／Status／状態：H1 repository-internal extraction boundary, 2026-10-08.
-
-## 路徑清冊／路径清册／Path inventory／パス一覧
-
-分類代碼／分类代码／Class codes／分類コード：
-
-- `C`：畫譜核心候選或已完成的中立核心／画谱核心候选或已完成的中立核心／product-neutral Huapu core or core candidate／製品中立な画譜コアまたは候補。
-- `A`：墨寒設定、契約或 adapter／墨寒设置、契约或 adapter／MoHan configuration, contract, or adapter／墨寒の設定、契約、adapter。
-- `S`：留在墨寒的產品殼／留在墨寒的产品壳／MoHan product shell／墨寒に残す製品シェル。
-
-`C` candidate means that extraction still requires injected paths, schemas, dimensions, and output policy. It does not claim that every candidate module is already portable.
-
-| Path | Class | Boundary note |
-|---|:---:|---|
-| `tools/art_pipeline/__init__.py` | C | Package marker; future exports stay product-neutral. |
-| `tools/art_pipeline/align_ref_to_base.py` | C | Image alignment algorithm; dimensions and naming become settings. |
-| `tools/art_pipeline/align_to_template.py` | C | Template alignment algorithm; reference policy is injected. |
-| `tools/art_pipeline/approved_asset_install.py` | A | Thin MoHan-compatible facade over `huapu.approved_install`. |
-| `tools/art_pipeline/approved_cosmetics.py` | A | MoHan cosmetic approval schemas and paths. |
-| `tools/art_pipeline/assemble_set.py` | C | Set assembly algorithm; asset roles become settings. |
-| `tools/art_pipeline/consolidate_partitions.py` | A | Current reviewed-partition names and output contract are MoHan-owned. |
-| `tools/art_pipeline/constants.py` | A | Current MoHan canvases, colors, partitions, and path constants. |
-| `tools/art_pipeline/cosmetic_residual.py` | C | Generic pixel residual calculation. |
-| `tools/art_pipeline/derive_variants.py` | C | Generic image derivation with injected variant policy. |
-| `tools/art_pipeline/extract_layers.py` | C | Generic layer extraction with injected partition contract. |
-| `tools/art_pipeline/flatten_magenta.py` | C | Generic image cleanup operation. |
-| `tools/art_pipeline/four_look_makeup_pack.py` | A | Four approved MoHan makeup looks and outfit-pack policy. |
-| `tools/art_pipeline/image_ops.py` | C | Shared image operations. |
-| `tools/art_pipeline/integrate_detachable_halfbody.py` | A | MoHan detachable half-body layout and runtime contract. |
-| `tools/art_pipeline/make_ref_crops.py` | C | Generic crop generation with injected regions. |
-| `tools/art_pipeline/MATERIAL_REGISTRATION.md` | A | MoHan material-registration operating record. |
-| `tools/art_pipeline/material_registration.py` | A | Current registration schema and repository paths. |
-| `tools/art_pipeline/native_cosmetic_palette.py` | A | MoHan native palette authority. |
-| `tools/art_pipeline/native_identity_guard.py` | A | MoHan identity geometry and owner-approved thresholds. |
-| `tools/art_pipeline/output_guard.py` | A | Current output roots and MoHan evidence contract. |
-| `tools/art_pipeline/partition_coverage.py` | A | Current MoHan reviewed-partition coverage. |
-| `tools/art_pipeline/partition_layers.py` | C | Generic partitioning algorithm with injected labels and order. |
-| `tools/art_pipeline/PARTITION_REVIEW.md` | A | MoHan review procedure and accepted regions. |
-| `tools/art_pipeline/qc_drift.py` | C | Generic before/after drift measurement. |
-| `tools/art_pipeline/README.md` | A | Current MoHan pipeline guide; future Huapu guide is separate. |
-| `tools/art_pipeline/references.py` | C | Generic reference-image data types. |
-| `tools/art_pipeline/render_detachable_runtime_audit.py` | A | MoHan detachable runtime composition adapter. |
-| `tools/art_pipeline/REVIEWED_PARTITIONS.md` | A | Canonical MoHan asset contract; it is data/configuration, not neutral code. |
-| `tools/art_pipeline/reviewed_partitions.py` | A | Parser for the current MoHan reviewed-partition authority. |
-| `tools/art_pipeline/source_bound_identity.py` | A | MoHan source-bound identity policy. |
-| `tools/art_pipeline/source_bound_integrate.py` | A | MoHan source-bound integration workflow. |
-| `tools/art_pipeline/source_bound_makeup.py` | A | MoHan makeup authority and slots. |
-| `tools/art_pipeline/source_bound_makeup_pack.py` | A | MoHan outfit-pack assembly policy. |
-| `tools/art_pipeline/source_bound_manifest.py` | A | Current source-bound schema. |
-| `tools/art_pipeline/source_bound_material_guard.py` | A | MoHan material constraints. |
-| `tools/art_pipeline/source_bound_pack_scope.py` | A | MoHan pack and approval scope. |
-| `tools/art_pipeline/SOURCE_BOUND_PREVIEW.md` | A | MoHan preview operating record. |
-| `tools/art_pipeline/source_bound_preview.py` | A | MoHan preview configuration. |
-| `tools/art_pipeline/source_bound_reference.py` | A | MoHan source authority adapter. |
-| `tools/art_pipeline/source_bound_stage.py` | A | MoHan staging layout and evidence paths. |
-| `tools/art_pipeline/test_output_guard.py` | A | Co-located tests for the current MoHan output contract. |
-| `tools/art_pipeline/vision.py` | C | Generic computer-vision helpers. |
-| `huapu/**` | C | Implemented product-neutral APIs; imports are architecture-gated. |
-| `tools/build_character_inventory.py` | A | Thin CLI; MoHan scan rules live in `tools/mohan_character_inventory.py`. |
-| `tools/build_character_pack.py` | A | Thin CLI and MoHan build settings over `huapu.character_pack_builder`. |
-| `tools/verify_character_pack_lock.py` | A | Thin CLI and private MoHan release settings over `huapu.character_pack_lock`. |
-| `tools/fetch_character_pack.py` | S | Private repository transport, token handling, and installation policy. |
-| `tools/audit_pose_atlas_working.py` | A | Thin hand-evidence adapter over `huapu.pose_audit`. |
-| `tools/check_pose_atlas_release.py` | A | Thin CLI over `huapu.pose_release`; runtime composition is isolated in `tools/huapu_mohan_pose_release.py`. |
-| `tools/golden_render.py` | A | MoHan headless-render adapter; settings are injectable, but renderer extraction remains. |
-| `tools/capture_blink_layer_audit.py`, `capture_control_center_reference.py`, `capture_eye_alignment_preview.py`, `capture_first_run_wizard.py`, `capture_media_contract.py`, `capture_motion_transition_audit.py`, `capture_mouth_continuity_preview.py`, `capture_mouth_layer_audit.py`, `capture_readme_media.py`, `capture_startup_opacity_preview.py`, `capture_v120_flagship_preview.py`, `tachyon_capture.py` | S | Complete product UI, README, onboarding, dashboard, and marketing capture family. |
-| `tools/audit_face_layer_asymmetry.py`, `audit_full_body_layer_pack.py`, `audit_layered_full_body_semantics.py`, `audit_pose_atlas_identity.py`, `audit_pose_atlas_working.py`, `audit_profile_nose_lip_contract.py`, `audit_profile_source_candidate.py`, `audit_yaw000_golden_template.py`, `audit_yaw000_layer_runtime.py` | A | Complete MoHan visual-asset audit family; neutral measurements move behind injected settings. |
-| `tools/build_full_body_golden_batch.py`, `build_makeup_safe_regions.py`, `build_pose_atlas_identity_candidate.py`, `build_pose_atlas_identity_measurements.py`, `build_pose_atlas_release_assets.py`, `build_pose_contact_sheet.py`, `build_yaw000_golden_template.py`, `generate_expression_speech_assets.py`, `rebuild_pose_atlas_mouth_layers.py`, `recalibrate_mouth_authority.py`, `render_gesture_speech_assets.py`, `scaffold_makeup_pack_manifest.py` | A | Complete MoHan asset-generation and regression adapter family. |
-| `tools/assemble_official_default_pack.py` | S | MoHan official product-pack assembly and release contents. |
-| `tools/audit_public_release.py`, `audit_python315_compatibility.py`, `audit_python315_idioms.py`, `audit_speech_runtime_chain.py` | S | Product and code release gates, not character-asset management. |
-| `tools/check_python_licenses.py`, `tools/quality_licenses.json` | S | Python dependency release policy, distinct from character-asset licensing. |
-| `tests/golden/golden-manifest.json` | A | MoHan's approved 352-cell regression configuration. |
-| `docs/release-evidence/**` | A | Scope-bound MoHan evidence; never treated as blanket distribution permission. |
-
 ## 繁體中文
+
+路徑逐項分類（`C` 畫譜核心、`A` 墨寒設定或 adapter、`S` 墨寒產品殼）見 `docs/huapu/path-inventory.json`。
 
 ### 已建立的核心
 
@@ -90,6 +18,8 @@
 
 ## 简体中文
 
+路径逐项分类（`C` 画谱核心、`A` 墨寒设置或 adapter、`S` 墨寒产品壳）见 `docs/huapu/path-inventory.json`。
+
 ### 已建立的核心
 
 采用 `huapu/` 作为包名，因为“炎剑画谱”已经由所有者核定，短名称可在下一工作包原样移到独立 repository。该包只依赖标准库与公开的 `domain.character_pack` 契约；不得导入 presentation、application、infrastructure、integrations、其他 domain 私有模块或 `tools`。
@@ -104,6 +34,8 @@
 
 ## English
 
+The per-path classification (`C` Huapu core, `A` MoHan configuration or adapter, `S` MoHan product shell) is in `docs/huapu/path-inventory.json`.
+
 ### Established core
 
 The package is named `huapu/` because the owner approved Flameblade Huapu as the product name, and the short import can move unchanged in the next repository-extraction package. It depends only on the standard library and the public `domain.character_pack` contract. It must not import presentation, application, infrastructure, integrations, other private domain modules, or `tools`.
@@ -117,6 +49,8 @@ Six existing commands or modules retain their names, function signatures, CLI ar
 Character-asset licensing and the DLC relationship remain owner decisions. `huapu.licenses` enforces only a caller-supplied allowlist; `owner_decision_pending` never becomes permission to publish or redistribute. The existing decision that the independently downloadable MoHan pack lives in a private repository remains unchanged.
 
 ## 日本語
+
+パスごとの分類（`C` 画譜コア、`A` 墨寒の設定または adapter、`S` 墨寒の製品シェル）は `docs/huapu/path-inventory.json` にある。
 
 ### 構築済みのコア
 
