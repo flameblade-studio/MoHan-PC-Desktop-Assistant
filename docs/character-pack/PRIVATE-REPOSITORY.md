@@ -13,7 +13,7 @@
 1. 在 GitHub 的 `flameblade-studio` 組織選擇 **New repository**。
 2. 倉庫名稱填入 `mohan-character-pack`，可見性選擇 **Private**。
 3. 建立全新倉庫，不匯入或改寫公開墨寒專案的 Git 歷史。
-4. 每一版角色包用私有倉庫的 Release 保存；tag 使用 `mohan-pack-v<角色包版本>`，附件名稱使用 `flameblade.mohan-<角色包版本>.zip`。
+4. 每一版角色包用私有倉庫的 Release 保存；tag 與附件名稱都以版本號命名，例如第 1.0.0 版的 tag 是 `mohan-pack-v1.0.0`、附件是 `flameblade.mohan-1.0.0.zip`（換成實際版本號）。
 5. 公開專案目前仍保留角色圖。移除公開素材屬最後階段，執行前必須再次取得擁有者明確核准。
 
 ### 由擁有者建立只讀鑰匙
@@ -73,7 +73,7 @@ Remove-Item Env:MOHAN_CHARACTER_PACK_TOKEN
 1. 在 GitHub 的 `flameblade-studio` 组织选择 **New repository**。
 2. 仓库名称填写 `mohan-character-pack`，可见性选择 **Private**。
 3. 建立全新仓库，不导入或改写公开墨寒项目的 Git 历史。
-4. 每一版角色包用私有仓库的 Release 保存；tag 使用 `mohan-pack-v<角色包版本>`，附件名称使用 `flameblade.mohan-<角色包版本>.zip`。
+4. 每一版角色包用私有仓库的 Release 保存；tag 与附件名称都以版本号命名，例如第 1.0.0 版的 tag 是 `mohan-pack-v1.0.0`、附件是 `flameblade.mohan-1.0.0.zip`（替换为实际版本号）。
 5. 公开项目目前仍保留角色图。移除公开素材属于最后阶段，执行前必须再次取得所有者明确批准。
 
 ### 由所有者建立只读密钥
@@ -133,7 +133,7 @@ The default blue-and-white Hanfu and built-in makeup belong to the MoHan charact
 1. Choose **New repository** in the GitHub `flameblade-studio` organization.
 2. Enter `mohan-character-pack` and select **Private** visibility.
 3. Create a new repository without importing or rewriting the public MoHan Git history.
-4. Store each character-pack version as a Release in the private repository. Use `mohan-pack-v<pack version>` for the tag and `flameblade.mohan-<pack version>.zip` for the asset name.
+4. Store each character-pack version as a Release in the private repository, naming the tag and asset by version; for version 1.0.0 the tag is `mohan-pack-v1.0.0` and the asset is `flameblade.mohan-1.0.0.zip` (substitute the actual version).
 5. Character images remain in the public repository during this phase. Removing them is the final phase and requires renewed, explicit owner approval before execution.
 
 ### Owner setup of the read-only credential
@@ -193,7 +193,7 @@ The tool reads the credential only from `MOHAN_CHARACTER_PACK_TOKEN`. It accepts
 1. GitHub の `flameblade-studio` Organization で **New repository** を選択します。
 2. リポジトリ名を `mohan-character-pack` とし、可視性に **Private** を選択します。
 3. 公開の墨寒プロジェクトの Git 履歴をインポートまたは書き換えず、新しいリポジトリを作成します。
-4. 各バージョンのキャラクターパックを非公開リポジトリの Release に保存します。tag は `mohan-pack-v<パックバージョン>`、添付ファイル名は `flameblade.mohan-<パックバージョン>.zip` とします。
+4. 各バージョンのキャラクターパックを非公開リポジトリの Release に保存し、tag と添付ファイル名はバージョン番号で付けます。たとえば 1.0.0 版の tag は `mohan-pack-v1.0.0`、添付ファイルは `flameblade.mohan-1.0.0.zip` です（実際のバージョン番号に置き換えてください）。
 5. この段階ではキャラクター画像を公開リポジトリに残します。公開素材の削除は最終段階に属し、実行前に所有者の明示的な再承認が必要です。
 
 ### 所有者による読み取り専用資格情報の作成
