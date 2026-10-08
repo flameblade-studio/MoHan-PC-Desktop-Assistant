@@ -6,7 +6,10 @@ lazy from types import MappingProxyType
 
 lazy from PySide6.QtGui import QImage, QRegion
 lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    POSE_ATLAS_LAYERED_ROOT_NAME,
+)
 lazy from domain.outfit_pack import OutfitPackError, REQUIRED_SILHOUETTES
 lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
@@ -69,7 +72,7 @@ def load_core_hand_regions(asset_root: Path) -> CoreHandSnapshot | None:
     for view_id in REQUIRED_SILHOUETTES:
         half_body = view_id in HALF_BODY_RIGS
         directory = (
-            Path(asset_root) / "assets/expressions/layered"
+            Path(asset_root) / CHARACTER_ASSET_PATHS["halfbody_layers"]
             if half_body else
             Path(asset_root) / "assets/pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
         )
@@ -85,7 +88,9 @@ def load_core_hand_regions(asset_root: Path) -> CoreHandSnapshot | None:
                 for side in ("left", "right")
             )
         else:
-            overlay_directory = Path(asset_root) / "assets/pose-atlas/v5-hand-overlays"
+            overlay_directory = Path(asset_root) / CHARACTER_ASSET_PATHS[
+                "hand_overlays"
+            ]
             preferred = tuple(
                 overlay_directory / f"{view_id}_{side}.png"
                 for side in ("left", "right")

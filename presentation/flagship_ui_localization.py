@@ -7,6 +7,10 @@ lazy from dataclasses import dataclass
 lazy from typing import Any
 
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.service_status_localization import (
+    character_ui_values,
+    render_character_ui_template,
+)
 lazy from presentation.flagship.localization_catalog import (
     merge_translation_catalogs,
 )
@@ -63,12 +67,12 @@ _VISION_AUTHORIZATION_DETAILS = (
 
 
 _SOURCE_COPY_ALIASES = frozendict({
-    '{platform} 的原生安全金鑰保存尚未完成實機驗證，因此 OAuth 連線暫停；墨寒不會改用明文保存。': '{platform} 的原生安全金鑰保存等待實機驗證；OAuth 連線保持暫停，權杖僅採已驗證的加密保存。',
+    '{platform} 的原生安全金鑰保存尚未完成實機驗證，因此 OAuth 連線暫停；{character_name}不會改用明文保存。': '{platform} 的原生安全金鑰保存等待實機驗證；OAuth 連線保持暫停，權杖僅採已驗證的加密保存。',
     '測試失敗：{error}': '測試需要處理：{error}',
     '尚未測試': '等待測試',
     '尚未完成 OAuth 連線': '請完成 OAuth 連線',
     '尚未連線 Google 或 Microsoft，或工具計畫未指定供應商': '請連線 Google 或 Microsoft，並在工具計畫指定供應商',
-    '門鎖、警報與加熱設備永遠套用高風險政策。墨寒不能因對話內容自行降低安全等級。': '門鎖、警報與加熱設備永遠套用高風險政策，安全等級持續以明確授權為準。',
+    '門鎖、警報與加熱設備永遠套用高風險政策。{character_name}不能因對話內容自行降低安全等級。': '門鎖、警報與加熱設備永遠套用高風險政策，安全等級持續以明確授權為準。',
     '{platform} 的安全金鑰保存尚未完成實機驗證；Home Assistant 連線暫停，且不會儲存明文權杖。': '{platform} 的安全金鑰保存等待實機驗證；Home Assistant 連線保持暫停，權杖僅採已驗證的加密保存。',
     'Home Assistant 尚未啟用': '請啟用 Home Assistant',
     '尚未保存 Home Assistant 權杖': '請儲存 Home Assistant 權杖',
@@ -92,7 +96,7 @@ _SOURCE_COPY_ALIASES = frozendict({
     '攝影機預設關閉；啟用時必須顯示狀態。畫面不會默默上傳，也不會辨識未登錄的陌生人。': '攝影機預設關閉，啟用時持續顯示狀態；影像上傳須明確授權，身分辨識僅適用已登錄人物。',
     '本機臉部、虹膜與手勢模型尚未啟動': '本機臉部、虹膜與手勢模型等待啟動',
     '本機細緻臉部與虹膜模型無法使用；其餘功能維持運作': '本機細緻臉部與虹膜模型需要處理；其餘功能維持運作',
-    '墨寒會在本機分析在場狀態、臉部與眼神特徵、手勢及場景線索；不保存原始影像、不傳送雲端，未登錄的人物不會建立身分。是否啟用？': '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？',
+    '{character_name}會在本機分析在場狀態、臉部與眼神特徵、手勢及場景線索；不保存原始影像、不傳送雲端，未登錄的人物不會建立身分。是否啟用？': '{character_name}會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？',
     '攝影機啟動失敗：{error}': '攝影機啟動需要處理：{error}',
     '這會刪除本機加密的臉部特徵，且無法復原。是否繼續？': '這會永久刪除本機加密的臉部特徵。是否繼續？',
     '啟動失敗：{error}': '啟動需要處理：{error}',
@@ -127,6 +131,14 @@ _SOURCE_COPY_ALIASES = frozendict({
 def _current_source(source: str) -> str:
     """Map retired UI copy to the current catalog while preserving behavior."""
 
+    # Only fixed catalog copy is templated; runtime data that merely contains
+    # the character's name (a folder called 墨寒, say) must pass through verbatim.
+    normalized = source
+    values = character_ui_values("zh-TW")
+    for key in sorted(values, key=lambda item: len(values[item]), reverse=True):
+        normalized = normalized.replace(values[key], "{" + key + "}")
+    if normalized in _SOURCE_COPY_ALIASES or normalized in FLAGSHIP_TRANSLATIONS:
+        source = normalized
     if source.startswith("公開版預設關閉。") and source.endswith(
         "本機 OpenCV 不受此設定影響。"
     ):
@@ -161,6 +173,7 @@ class FlagshipTranslator:
                 raise KeyError(
                     f"Missing flagship translation for {current_source!r} in {self.language}"
                 ) from exc
+        template = render_character_ui_template(self.language, template)
         return template.format_map(values) if values else template
 
     def system_message(self, message: str) -> str:
@@ -168,7 +181,7 @@ class FlagshipTranslator:
 
         value = _current_source(str(message))
         if self.language == "zh-TW":
-            return value
+            return render_character_ui_template(self.language, value)
         if value in FLAGSHIP_TRANSLATIONS:
             return self.text(value)
         for pattern, source in _SYSTEM_PATTERNS:

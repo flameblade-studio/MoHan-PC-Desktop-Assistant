@@ -7,6 +7,7 @@ lazy from PySide6.QtGui import QColor, QLinearGradient, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QLabel, QWidget
 
 lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
     EXPRESSION_DERIVED_VISEME_FRAMES,
@@ -173,7 +174,9 @@ class CompanionVisualPhysicsMethods:
 
     @staticmethod
     def _scaled_expression_asset(filename: str) -> QPixmap:
-        source = QPixmap(str(resource_path(f"assets/expressions/{filename}")))
+        source = QPixmap(
+            str(resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/{filename}"))
+        )
         return source.scaled(
             _RIG_MANIFEST.viewport.image_size,
             _RIG_MANIFEST.viewport.image_size,

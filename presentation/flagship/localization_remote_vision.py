@@ -34,10 +34,10 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     "允許傳送文字指令": translations(
         "允许发送文本指令", "Allow text commands", "テキスト指示を許可"
     ),
-    "允許查看墨寒程式視窗（不擷取整個桌面）": translations(
-        "允许查看墨寒程序窗口（不截取整个桌面）",
-        "Allow viewing the MoHan app window (not the whole desktop)",
-        "墨寒のアプリ画面の表示を許可（デスクトップ全体は取得しません）",
+    "允許查看{character_name}程式視窗（不擷取整個桌面）": translations(
+        "允许查看{character_name}程序窗口（不截取整个桌面）",
+        "Allow viewing the {character_name} app window (not the whole desktop)",
+        "{character_name}のアプリ画面の表示を許可（デスクトップ全体は取得しません）",
     ),
     "允許下載白名單內的非敏感檔案": translations(
         "允许下载白名单内的非敏感文件",
@@ -54,20 +54,20 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Local face identification (requires a separately installed, auditable recognition plugin)",
         "ローカル顔識別（監査可能な認識プラグインの追加導入が必要）",
     ),
-    "啟用墨寒本機視覺感知": translations(
-        "启用墨寒本机视觉感知",
-        "Enable MoHan's local visual perception",
-        "墨寒のローカル視覚認識を有効化",
+    "啟用{character_name}本機視覺感知": translations(
+        "启用{character_name}本机视觉感知",
+        "Enable {character_name}'s local visual perception",
+        "{character_name}のローカル視覚認識を有効化",
     ),
     "辨識我已明確登錄的臉部身分": translations(
         "识别我已明确登记的人脸身份",
         "Identify faces I have explicitly enrolled",
         "明示的に登録した顔を本人として識別",
     ),
-    "允許墨寒主動寒暄與關心": translations(
-        "允许墨寒主动寒暄与关心",
-        "Allow MoHan to greet me and check in proactively",
-        "墨寒から自発的に挨拶や気遣いをすることを許可",
+    "允許{character_name}主動寒暄與關心": translations(
+        "允许{character_name}主动寒暄与关心",
+        "Allow {character_name} to greet me and check in proactively",
+        "{character_name}から自発的に挨拶や気遣いをすることを許可",
     ),
     "桌面角色構圖風格": translations(
         "桌面角色构图风格",
@@ -223,10 +223,10 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "セキュリティ方針によりブロックされました：{reason}",
     ),
     "啟用攝影機": translations("启用摄像头", "Enable Camera", "カメラを有効化"),
-    '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？': translations(
-        '墨寒会仅在本机实时分析在场状态、脸部与眼神特征、手势及场景线索；原始图像限于实时处理，身份建立仅适用已登记人物。是否启用？',
-        'MoHan will analyze presence, face and gaze features, gestures, and scene cues only on this device in real time. Raw images are limited to live processing; identity records apply only to enrolled people. Enable?',
-        '墨寒は在席、顔と視線の特徴、ジェスチャー、場面の手掛かりをこの端末内だけでリアルタイム解析します。元画像はリアルタイム処理に限定し、身元記録は登録済み人物に限定します。有効にしますか？',
+    '{character_name}會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？': translations(
+        '{character_name}会仅在本机实时分析在场状态、脸部与眼神特征、手势及场景线索；原始图像限于实时处理，身份建立仅适用已登记人物。是否启用？',
+        '{character_name} will analyze presence, face and gaze features, gestures, and scene cues only on this device in real time. Raw images are limited to live processing; identity records apply only to enrolled people. Enable?',
+        '{character_name}は在席、顔と視線の特徴、ジェスチャー、場面の手掛かりをこの端末内だけでリアルタイム解析します。元画像はリアルタイム処理に限定し、身元記録は登録済み人物に限定します。有効にしますか？',
     ),
     '攝影機啟動需要處理：{error}': translations(
         '摄像头启动需要处理：{error}',
@@ -243,10 +243,10 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "Enable Vision and face identification first.",
         "先に視覚認識と顔による本人識別を有効にしてください。",
     ),
-    "墨寒辨識到你時使用的稱呼": translations(
-        "墨寒识别到你时使用的称呼",
-        "Name MoHan should use when she recognizes you",
-        "墨寒があなたを認識したときに使う呼び名",
+    "{character_name}辨識到你時使用的稱呼": translations(
+        "{character_name}识别到你时使用的称呼",
+        "Name {character_name} should use when she recognizes you",
+        "{character_name}があなたを認識したときに使う呼び名",
     ),
     "臉部登錄需要注意：{error}，請檢查設定後重試": translations(
         "人脸登记需要注意：{error}，请检查设置后重试",
@@ -366,11 +366,11 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     "久坐提醒・克制加強": translations(
         "久坐提醒・克制加强", "Sitting・Restrained follow-up", "長時間の着席・控えめな再通知"
     ),
-    "墨寒生日・含蓄暗示": translations(
-        "墨寒生日・含蓄提示", "MoHan's birthday・Subtle hint", "墨寒の誕生日・控えめな合図"
+    "{character_name}生日・含蓄暗示": translations(
+        "{character_name}生日・含蓄提示", "{character_name}'s birthday・Subtle hint", "{character_name}の誕生日・控えめな合図"
     ),
-    "墨寒生日・小聲埋怨": translations(
-        "墨寒生日・小声埋怨", "MoHan's birthday・Quiet grumble", "墨寒の誕生日・小さな不満"
+    "{character_name}生日・小聲埋怨": translations(
+        "{character_name}生日・小声埋怨", "{character_name}'s birthday・Quiet grumble", "{character_name}の誕生日・小さな不満"
     ),
     "情人節・含蓄暗示": translations(
         "情人节・含蓄暗示", "Valentine's Day・Subtle hint", "バレンタイン・控えめな合図"
@@ -435,10 +435,10 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "{status} | {device} | Last connection: {last_seen}",
         "{status}｜{device}｜最終接続：{last_seen}",
     ),
-    "已送交墨寒並等待本機權限判斷": translations(
-        "已提交给墨寒并等待本机权限判断",
-        "Sent to MoHan and awaiting local permission checks",
-        "墨寒へ送信し、ローカル権限の判定を待っています",
+    "已送交{character_name}並等待本機權限判斷": translations(
+        "已提交给{character_name}并等待本机权限判断",
+        "Sent to {character_name} and awaiting local permission checks",
+        "{character_name}へ送信し、ローカル権限の判定を待っています",
     ),
     "待處理的遠端指令已達安全上限，請稍後重試": translations(
         "待处理的远程指令已达安全上限，请稍后重试",

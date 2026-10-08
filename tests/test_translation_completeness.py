@@ -15,6 +15,7 @@ lazy from presentation.flagship_ui_localization import (
     FlagshipTranslator,
     validate_flagship_translations,
 )
+lazy from domain.service_status_localization import render_character_ui_template
 lazy from presentation.ui_localization import (
     _ENGLISH,
     _JAPANESE,
@@ -525,7 +526,8 @@ def run() -> None:
         for source in flagship_sources:
             translated = translator.text(source)
             assert translated.strip(), (language, source)
-            assert format_fields(translated) == format_fields(source), (
+            resolved_source = render_character_ui_template("zh-TW", source)
+            assert format_fields(translated) == format_fields(resolved_source), (
                 language,
                 source,
             )

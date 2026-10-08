@@ -28,6 +28,7 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from presentation.lingxiao_tokens import (
     TYPE_SCALE,
     LingxiaoPalette,
@@ -71,7 +72,7 @@ _MINIMUM_SCALE = 0.85
 _MAXIMUM_SCALE = 2.0
 _LONG_LABEL_THRESHOLD = 34
 _LONG_LABEL_PIXEL_WIDTH = 320
-_THEME_ASSET = resource_path("assets/ui/mohan-cloud.svg")
+_THEME_ASSET = resource_path(CHARACTER_ASSET_PATHS["theme_artwork"])
 # 面板角落要掛金線飾角的角色。gameLobby 與 featurePage 是容器，不掛。
 _ORNAMENTED_ROLES = frozenset(
     {

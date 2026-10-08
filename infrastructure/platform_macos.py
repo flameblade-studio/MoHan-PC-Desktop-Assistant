@@ -4,6 +4,7 @@ lazy import subprocess
 lazy from collections.abc import Mapping
 lazy from pathlib import Path
 
+lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from infrastructure.platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
@@ -35,12 +36,22 @@ class MacOSPlatformServices:
         del environ
         user_home = Path.home() if home is None else Path(home)
         application_support = (
-            user_home / "Library" / "Application Support" / "YanJianStudio" / "MoHan"
+            user_home
+            / "Library"
+            / "Application Support"
+            / PROFILE_VENDOR_DIRECTORY
+            / PROFILE_APP_DIRECTORY
         )
         self.paths = PlatformPaths(
             data=application_support,
             config=application_support,
-            cache=user_home / "Library" / "Caches" / "YanJianStudio" / "MoHan",
+            cache=(
+                user_home
+                / "Library"
+                / "Caches"
+                / PROFILE_VENDOR_DIRECTORY
+                / PROFILE_APP_DIRECTORY
+            ),
         )
 
     def set_autostart(

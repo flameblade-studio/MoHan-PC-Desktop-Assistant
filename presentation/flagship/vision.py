@@ -329,7 +329,7 @@ class FlagshipVisionMixin:
                 require_qwidget(self),
                 self._t("啟用攝影機"),
                 self._t(
-                    '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？'
+                    '{character_name}會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？'
                 ),
             )
             != QMessageBox.Yes
@@ -492,7 +492,7 @@ class FlagshipVisionMixin:
             return
         display_name, accepted = self._simple_text_dialog(
             self._t("臉部身分登錄"),
-            self._t("墨寒辨識到你時使用的稱呼"),
+            self._t("{character_name}辨識到你時使用的稱呼"),
         )
         if not accepted:
             return

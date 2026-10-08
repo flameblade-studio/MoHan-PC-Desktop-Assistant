@@ -17,6 +17,7 @@ lazy import sounddevice as sd
 lazy import websocket
 
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.sensory_synesthesia import runtime_dialogue_locale
 lazy from integrations.realtime_speech_output import (
     REALTIME_OUTPUT_MODES,
     REALTIME_OUTPUT_OPENAI,
@@ -431,19 +432,17 @@ class RealtimeSessionMethods:
         memory_context: str,
         recent_context: str,
     ) -> str:
-        return (
-            instructions
-            + "\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\n"
-            + (memory_context or "（長期記憶目前為空）")
-            + "\n以下是最近的對話，用來承接語境，請以自然方式轉述：\n"
-            + (recent_context or "（目前等待可承接的最近對話）")
-            + "\n\n## 即時對話承接規則\n"
-            "先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。"
-            "當主上說「好呀你說」、「你說吧」、「嗯，你說」或「繼續說」時，"
-            "直接延續妾上一句的內容；前文待提供時，"
-            "便自然開啟一個符合兩人關係的陪伴話題。主上明確要求規劃工作時，"
-            "才整理需求、安排或優先順序；其他情況維持自然對話。"
-            "\n電腦操作依照程式的本機權限設定，執行前請主上確認授權。"
+        dialogue = runtime_dialogue_locale("zh-TW")
+        return str(dialogue["realtime_context"]).format(
+            instructions=instructions,
+            memory_context=(
+                memory_context
+                or dialogue["realtime_empty_long_term_memory"]
+            ),
+            recent_context=(
+                recent_context
+                or dialogue["realtime_empty_recent_context"]
+            ),
         )
 
     @staticmethod

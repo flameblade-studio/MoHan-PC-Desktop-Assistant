@@ -24,10 +24,10 @@ THEME_TRANSLATIONS: TranslationCatalog = frozendict(
             "Misty Celadon",
             "霧靄青磁",
         ),
-        "赤焰劍光": translations(
-            "赤焰剑光",
-            "Crimson Swordlight",
-            "赤焔剣光",
+        "{signature_weapon_theme_label}": translations(
+            "{signature_weapon_theme_label}",
+            "{signature_weapon_theme_label}",
+            "{signature_weapon_theme_label}",
         ),
     }
 )

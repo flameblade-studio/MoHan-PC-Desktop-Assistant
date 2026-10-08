@@ -9,6 +9,7 @@ lazy from PySide6.QtCore import QObject, Signal
 lazy from domain.contracts import AzureSpeechEnginePort, LocalSpeechEnginePort
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.sensory_synesthesia import runtime_dialogue_locale
 
 REALTIME_OUTPUT_OPENAI = "openai-realtime"
 REALTIME_OUTPUT_AZURE = "azure-speech"
@@ -31,7 +32,7 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Windows 本機女性聲線發聲中",
         "failed": "Realtime 語音輸出需要重試：{error}",
         "queue_full": "Realtime 回應達到長度上限，本輪語音已安全停止。",
-        "ready": "已連線，妾在聽",
+        "ready": runtime_dialogue_locale("zh-TW")["realtime_ready"],
     },
     "zh-CN": {
         "preparing": "Realtime 已理解，Azure 正在准备发声",
@@ -42,7 +43,7 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Windows 本机女性声线发声中",
         "failed": "Realtime 语音输出需要重试：{error}",
         "queue_full": "Realtime 回复达到长度上限，本轮语音已安全停止。",
-        "ready": "已连接，妾在听",
+        "ready": runtime_dialogue_locale("zh-CN")["realtime_ready"],
     },
     "en-US": {
         "preparing": "Realtime understood; Azure is preparing speech",
@@ -53,7 +54,7 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Local Windows female voice is speaking",
         "failed": "Realtime speech output needs a retry: {error}",
         "queue_full": "The Realtime response reached its length limit, so this speech response is stopped safely.",
-        "ready": "Connected and listening",
+        "ready": runtime_dialogue_locale("en")["realtime_ready"],
     },
     "ja-JP": {
         "preparing": "Realtime が理解し、Azure が音声を準備しています",
@@ -64,7 +65,7 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Windows 本機女性音声を再生中",
         "failed": "Realtime 音声出力の再試行が必要です：{error}",
         "queue_full": "Realtime の応答が長さの上限に達したため、この音声応答を安全に停止します。",
-        "ready": "接続済み、聞いています",
+        "ready": runtime_dialogue_locale("ja-JP")["realtime_ready"],
     },
 })
 

@@ -16,6 +16,7 @@ lazy from PySide6.QtWidgets import QFrame, QGraphicsColorizeEffect, QWidget
 lazy from presentation.qt_parent import clear_graphics_effect
 
 lazy from domain.theme_pack import ThemePack
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from presentation.dashboard_theme_materials import MaterialPalette, resolve_material_palette
 lazy from presentation.lingxiao_tokens import PALETTE, LingxiaoPalette
 lazy from presentation.presentation_resources import resource_path
@@ -24,7 +25,7 @@ __all__ = ("SCENE_GROUND_RATIO", "CelestialFrame", "apply_dashboard_artwork")
 SCENE_GROUND_RATIO = 0.835
 
 ArtworkKind = Literal["panel", "ribbon", "navigation", "scene"]
-ARTWORK_PATH = "assets/ui/mohan-celestial-palace-v1.png"
+ARTWORK_PATH = CHARACTER_ASSET_PATHS["dashboard_artwork"]
 _REGIONS = {
     "panel": (0.533, 0.128, 0.452, 0.720),
     "ribbon": (0.014, 0.019, 0.971, 0.077),

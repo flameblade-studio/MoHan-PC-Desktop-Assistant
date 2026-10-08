@@ -12,6 +12,12 @@ lazy from pathlib import Path
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 
 lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_LAYER_ROLES,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_RELATIVE_ROOT,
+)
 lazy from domain.outfit_pack import (
     AppearanceVariant,
     OutfitPackError,
@@ -24,7 +30,8 @@ lazy from infrastructure.image_alpha_regions import visible_alpha_region
 lazy from infrastructure.outfit_core_composition import replace_restored_body
 
 SCHEMA = "mohan.source-bound-garment-visibility.v1"
-MANIFEST = Path("assets/pose-atlas/v5-garment-visibility/manifest.json")
+_VISIBILITY_ROOT = Path(CHARACTER_ASSET_PATHS["garment_visibility"])
+MANIFEST = _VISIBILITY_ROOT / "manifest.json"
 _RIG_MANIFEST = default_rig_manifest()
 CANVAS = (
     _RIG_MANIFEST.full_body_canvas.width,
@@ -75,7 +82,9 @@ def _removal_region(payload: bytes) -> QRegion:
         raise OutfitPackError("Garment visibility must be an 8-bit L or RGBA PNG.")
     image = image_from_png(payload)
     if image.isNull() or image.size().toTuple() != CANVAS:
-        raise OutfitPackError("Garment visibility needs a 1024x1536 canvas.")
+        raise OutfitPackError(
+            f"Garment visibility needs a {CANVAS[0]}x{CANVAS[1]} canvas."
+        )
     channel = image.convertToFormat(
         QImage.Format_Grayscale8 if payload[25] == 0 else QImage.Format_Alpha8
     )
@@ -100,14 +109,16 @@ def _native_hand_support(
     for side in ("left", "right"):
         payload = _source_bytes(
             root, value[side],
-            f"assets/pose-atlas/v5-garment-visibility/{view_id}-{side}-native-hand.png",
+            f"{_VISIBILITY_ROOT.as_posix()}/{view_id}-{side}-native-hand.png",
         )
         if (len(payload) < _PNG_HEADER_BYTES or payload[:8] != _PNG
                 or payload[24:26] != b"\x08\x06"):
             raise OutfitPackError("Native hand support must be an 8-bit RGBA PNG.")
         image = image_from_png(payload)
         if image.isNull() or image.size().toTuple() != CANVAS:
-            raise OutfitPackError("Native hand support needs a 1024x1536 canvas.")
+            raise OutfitPackError(
+                f"Native hand support needs a {CANVAS[0]}x{CANVAS[1]} canvas."
+            )
         region = visible_alpha_region(image)
         overlays.append((QPixmap.fromImage(image), 0, 0, region, 1.0))
         combined = combined.united(region)
@@ -148,7 +159,11 @@ def load_garment_binding(
     }
     if exact != effective:
         return None
-    _source_bytes(root, entry["native_source"], f"assets/pose-atlas/v5-base/{view_id}.png")
+    _source_bytes(
+        root,
+        entry["native_source"],
+        f"{POSE_ATLAS_RELATIVE_ROOT}/{view_id}.png",
+    )
     member, digest = _record(entry["garment_member"])
     declarations = resolve_variant_for_view(variant, view_id).assets
     if not any(asset.path == member and asset.sha256 == digest for asset in declarations):
@@ -161,7 +176,9 @@ def load_garment_binding(
     if hashlib.sha256(payload).hexdigest() != digest:
         raise OutfitPackError("Source-bound garment member SHA-256 drifted.")
     visibility = _source_bytes(
-        root, entry["visibility"], f"assets/pose-atlas/v5-garment-visibility/{view_id}.png"
+        root,
+        entry["visibility"],
+        f"{_VISIBILITY_ROOT.as_posix()}/{view_id}.png",
     )
     removal = _removal_region(visibility)
     hands = entry.get("native_hand_support")
@@ -204,8 +221,13 @@ def validate_garment_removal(
 ) -> None:
     """Never erase native face, hair, ornament, or visible hand ownership."""
     protected = QRegion(protected_face)
-    layered = root / "assets/pose-atlas/v5-base-layered"
-    for layer in ("hair_back", "hair_left", "hair_right", "ornament"):
+    layered = root / POSE_ATLAS_LAYERED_RELATIVE_ROOT
+    for layer in (
+        CHARACTER_LAYER_ROLES["rear_hair"],
+        CHARACTER_LAYER_ROLES["left_side_hair"],
+        CHARACTER_LAYER_ROLES["right_side_hair"],
+        "ornament",
+    ):
         pixmap = QPixmap(str(layered / f"{view_id}_{layer}.png"))
         if pixmap.isNull() or pixmap.size().toTuple() != canvas_size:
             raise OutfitPackError("Native hair ownership is unavailable.")

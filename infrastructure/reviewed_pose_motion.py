@@ -19,6 +19,7 @@ lazy from collections.abc import Mapping
 lazy from PySide6.QtGui import QImage, QPixmap
 
 lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import CHARACTER_LAYER_ROLES
 lazy from domain.qt_image_io import image_from_png
 
 SCHEMA = "mohan.reviewed-pose-motion.v1"
@@ -207,7 +208,9 @@ def _png_header(payload: bytes, *, context: str) -> tuple[int, int, int]:
     if depth != EIGHT_BIT_DEPTH:
         raise ValueError(f"Reviewed pose motion asset must be 8-bit: {context}")
     if (width, height) != (DIMENSION, DIMENSION):
-        raise ValueError(f"Reviewed pose motion asset must be 1254x1254: {context}")
+        raise ValueError(
+            f"Reviewed pose motion asset must be {DIMENSION}x{DIMENSION}: {context}"
+        )
     return width, height, color_type
 
 
@@ -382,7 +385,7 @@ def _read_half_inputs(
     if not isinstance(raw_half, dict):
         raise ValueError("Invalid reviewed pose motion HALF contract.")
     required_rgba = ("native_endpoint", "patch", "eye_support", "eye_aperture")
-    required_gray = ("coverage", "oral_cavity")
+    required_gray = ("coverage", CHARACTER_LAYER_ROLES["mouth_cavity"])
     inputs: dict[str, ReviewedPoseMotionPng] = {}
     for name in required_rgba:
         inputs[name] = _read_png(

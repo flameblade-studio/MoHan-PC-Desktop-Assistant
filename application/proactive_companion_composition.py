@@ -20,6 +20,7 @@ lazy from application.special_occasion import OccasionCue, OccasionExpression
 lazy from application.wellbeing_app_bridge import SpeakRequest, WellbeingAppBridge
 lazy from application.wellbeing_reminder import ReminderExpression, WellbeingCue
 lazy from application.wellbeing_runtime import WellbeingRuntime
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.time_utils import local_aware_time
 lazy from infrastructure.companion_proactivity_preferences_store import (
     CompanionProactivityPreferencesStore,
@@ -118,12 +119,14 @@ def _speech_state(performance: ApprovedPerformanceCue) -> str:
         return {
             ReminderExpression.GENTLE: "reminder",
             ReminderExpression.CONCERNED: "worried",
-            ReminderExpression.RESTRAINED_TSUNDERE: "mock_scold",
-            ReminderExpression.QUIETLY_FIRM: "determined_front",
+            ReminderExpression.RESTRAINED_TSUNDERE: CHARACTER_EXPRESSION_ROLES[
+                "gentle_scold"
+            ],
+            ReminderExpression.QUIETLY_FIRM: CHARACTER_EXPRESSION_ROLES["resolve"],
         }[performance.expression]
     if isinstance(performance, OccasionCue):
         return {
-            OccasionExpression.QUIETLY_HOPEFUL: "shy_front",
-            OccasionExpression.RESTRAINED_SULK: "worried_front",
+            OccasionExpression.QUIETLY_HOPEFUL: CHARACTER_EXPRESSION_ROLES["bashful"],
+            OccasionExpression.RESTRAINED_SULK: CHARACTER_EXPRESSION_ROLES["concern"],
         }[performance.expression]
     raise TypeError("Provide a supported proactive performance cue.")

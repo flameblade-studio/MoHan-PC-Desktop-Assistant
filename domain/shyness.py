@@ -17,6 +17,8 @@ The level eases toward its target with a bounded lerp so it eases smoothly, and 
 decays back to zero when the drivers relax. This is pure domain logic with Qt outside the domain boundary.
 """
 
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+
 # How strongly each driver contributes to the shyness target.
 GAZE_WEIGHT = 0.5
 FAVOR_WEIGHT = 0.3
@@ -29,7 +31,13 @@ GAZE_CONFIDENCE_THRESHOLD = 0.35
 EASE_RESPONSE = 0.18
 
 # Expressions that signal an explicit shy context.
-SHY_EXPRESSIONS = frozenset({"shy", "shy_cute_front", "shy_front"})
+SHY_EXPRESSIONS = frozenset(
+    {
+        "shy",
+        CHARACTER_EXPRESSION_ROLES["bashful"],
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    }
+)
 
 
 class ShynessState:

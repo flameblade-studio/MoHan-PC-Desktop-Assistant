@@ -177,7 +177,7 @@ class DashboardSettingsMixin:  # ruff: ignore[blank-lines-top-level]
         intro = QLabel(
             self._t(
                 "permissions_intro",
-                "每項能力分開授權。選擇「每次詢問」時，墨寒執行前會顯示確認視窗；"
+                "每項能力分開授權。選擇「每次詢問」時，{character_name}執行前會顯示確認視窗；"
                 "刪除檔案預設禁止。",
             )
         )
@@ -824,7 +824,7 @@ class DashboardSettingsMixin:  # ruff: ignore[blank-lines-top-level]
         note = QLabel(
             self._t(
                 "restart_language_note",
-                "變更介面語言後，重新啟動墨寒即可完整套用。",
+                "變更介面語言後，重新啟動{character_name}即可完整套用。",
             )
         )
         note.setWordWrap(True)

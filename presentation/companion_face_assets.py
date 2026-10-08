@@ -18,6 +18,7 @@ lazy from domain.companion_animation_contract import (
     SPEAKING_BLINK_PREFIXES,
 )
 lazy from domain.expression_system import FaceAnchorProfile
+lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
 lazy from presentation.companion_speech_mask import recover_speech_mask_edges
 # Eager on purpose: a base class must be the real class, not a lazy proxy.
 lazy from presentation.companion_blink_composite import CompanionBlinkCompositeMethods
@@ -58,7 +59,7 @@ class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
 
     def _build_mouth_frames(self) -> None:
         self.presentation_ports.validate_face_assets(
-            resource_path("assets/expressions")
+            resource_path(CHARACTER_ASSET_PATHS["halfbody_root"])
         )
         mouth_clips = self._mouth_clip_regions()
         self.mouth_clips = mouth_clips
@@ -634,19 +635,19 @@ class CompanionFaceAssetMethods(CompanionBlinkCompositeMethods):
                     expression_source,
                     self.physics_sources[pose],
                 ),
-                "hair_left": self._masked_region(
+                CHARACTER_LAYER_ROLES["left_side_hair"]: self._masked_region(
                     expression_source,
                     self.hair_sources[pose]["left"],
                 ),
-                "hair_right": self._masked_region(
+                CHARACTER_LAYER_ROLES["right_side_hair"]: self._masked_region(
                     expression_source,
                     self.hair_sources[pose]["right"],
                 ),
-                "sleeve_left": self._masked_region(
+                CHARACTER_LAYER_ROLES["left_sleeve"]: self._masked_region(
                     expression_source,
                     self.sleeve_sources[pose]["left"],
                 ),
-                "sleeve_right": self._masked_region(
+                CHARACTER_LAYER_ROLES["right_sleeve"]: self._masked_region(
                     expression_source,
                     self.sleeve_sources[pose]["right"],
                 ),

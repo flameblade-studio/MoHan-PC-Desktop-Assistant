@@ -10,6 +10,8 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QPainter, QPixmap
 
+lazy from domain.companion_animation_contract import outfit_silhouette
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, FOUNDATION_SLOT, resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
 lazy from domain import outfit_pack_official
@@ -37,6 +39,8 @@ LOOK_VARIANTS = BUILTIN_MAKEUP_VARIANTS
 REQUIRED_LOOK_VARIANTS = ("classic", "light")
 SUPPORTED_LOOK_VARIANTS = frozenset(BUILTIN_MAKEUP_VARIANTS)
 LIGHT_VARIANT_OPACITY = 0.55
+_EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
+_EXASPERATED_SILHOUETTE = outfit_silhouette(_EXASPERATED_EXPRESSION, "front")
 
 
 @dataclass(slots=True)
@@ -202,12 +206,15 @@ class ExasperatedCandidateAppearance:
     def apply(
         self, frame: QPixmap, silhouette: str, *, mouth_expression: str | None = None,
     ) -> QPixmap:
-        if silhouette != "front-exasperated":
+        if silhouette != _EXASPERATED_SILHOUETTE:
             return frame
         self._refresh_selection()
         if (frame.width(), frame.height()) != (DIMENSION, DIMENSION):
             raise ValueError("Candidate appearance requires its native canvas.")
-        if mouth_expression not in {None, "exasperated_front"} and mouth_expression not in EXPRESSION_VARIANTS:
+        if (
+            mouth_expression not in {None, _EXASPERATED_EXPRESSION}
+            and mouth_expression not in EXPRESSION_VARIANTS
+        ):
             raise ValueError("Unrecognized candidate cosmetic mouth state.")
         state = (
             "rest"

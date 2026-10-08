@@ -22,7 +22,6 @@ MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
 DERIVATIVE_COUNT = 234
-MIN_WORK_PACKAGE_COUNT = 3
 MAX_WORK_PACKAGE_COUNT = 5
 DERIVATIVE_COUNTS = {
     "fullbody_blink": 24,
@@ -152,7 +151,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 13  # 11 persona/dialogue/voice files + rig manifest + expression catalog
+CHARACTER_DATA_FILE_COUNT = 16  # 13 persona/dialogue/voice/UI files + rig manifest + runtime bindings + expression catalog
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
@@ -161,6 +160,9 @@ def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> Non
     data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
+    assert rows["assets/characters/mohan/rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
+    assert rows["assets/characters/mohan/dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
+    assert rows["assets/characters/mohan/persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
@@ -168,15 +170,17 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     rows = [row for row in inventory["files"] if row["scope"] == "embedded_code"]
     by_path = {row["path"]: row for row in rows}
     assert inventory["scope_counts"]["embedded_code"] == len(rows)
-    assert set(inventory["embedded_code_classification_counts"]) == {
+    assert set(inventory["embedded_code_classification_counts"]) <= {
         "engine_extract", "product_shell_allowed", "ui_text_reference",
     }
+    assert {"engine_extract", "product_shell_allowed"} <= set(inventory["embedded_code_classification_counts"])
     assert {
-        "domain/constants.py",
-        "domain/expression_system.py",
+        "domain/outfit_pack_official.py",
         "infrastructure/app_resources.py",
         "presentation/ui_localization.py",
     } <= set(by_path)
+    assert "domain/expression_system.py" not in by_path
+    assert by_path["domain/constants.py"]["classification"] == "product_shell_allowed"
     for row in rows:
         assert row["migration"] == builder.EMBEDDED
         assert row["classification"] in builder.CLASSIFICATION_REASONS
@@ -289,7 +293,9 @@ def test_work_packages_are_exclusive_and_product_shell_is_reasoned(
     worklist: dict[str, Any],
 ) -> None:
     counts = worklist["counts"]
-    assert MIN_WORK_PACKAGE_COUNT <= counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    # Packages shrink as extraction lands; any remaining work must still be packaged.
+    assert counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    assert (counts["work_packages"] > 0) == bool(worklist["extraction_items"])
     assert counts["true_extraction_files"] == (
         counts["engine_extract_files"] + counts["ui_text_reference_files"]
     )
@@ -358,3 +364,26 @@ def test_inventory_test_is_mapped_to_every_scanned_source() -> None:
     test_names = frozenset(path.name for path in (ROOT / "tests").glob("test_*.py"))
     for path in builder._python_sources(ROOT):
         assert "test_build_character_inventory.py" in impact.mapped_tests_for_path(path, rules, test_names), path
+
+
+def test_product_identity_literals_are_product_shell_not_extraction() -> None:
+    source = (
+        'NAME = "墨寒桌面助理 v{version}"\n'
+        'AGENT = "MoHan-Desktop-Assistant/2.0"\n'
+        'LABEL = f"MoHan {provider_id} OAuth token"\n'
+    )
+    evidence = builder._content_evidence("presentation/example.py", source)
+    assert evidence
+    assert {row["rule"] for row in evidence} == {"product_identity_literal"}
+    assert builder._source_classification("presentation/example.py", evidence) == "product_shell_allowed"
+    mixed = builder._content_evidence("presentation/example.py", source + 'GREETING = "主上，墨寒在此。"\n')
+    assert builder._source_classification("presentation/example.py", mixed) != "product_shell_allowed"
+
+
+def test_product_identity_exempts_only_its_own_span() -> None:
+    source = 'LABEL = f"MoHan {provider_id} OAuth token — 墨寒會回覆主上"\n'
+    evidence = builder._content_evidence("presentation/example.py", source)
+    rules = {(row["matched"], row["rule"]) for row in evidence}
+    assert ("MoHan", "product_identity_literal") in rules
+    assert ("墨寒", "character_name_literal") in rules
+    assert builder._source_classification("presentation/example.py", evidence) != "product_shell_allowed"

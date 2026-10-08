@@ -38,10 +38,10 @@ def wardrobe_generation_message(status: str, translate: Translate) -> str:
         "quarantined": translate("wardrobe_generation_quarantined", '新衣的稽核結果需要修正，目前保持隔離；通過稽核後才可套用。'),
         "automatic-selection-disabled": translate("wardrobe_automatic_selection_disabled", '請啟用自主選裝後使用此功能。'),
         "automatic-selection-failed": translate("wardrobe_automatic_selection_failed", '自主選裝評估需要處理；目前衣裝持續使用。'),
-        "outfit-selected": translate("wardrobe_automatic_outfit_selected", "墨寒已依情境自主換裝。"),
+        "outfit-selected": translate("wardrobe_automatic_outfit_selected", "{character_name}已依情境自主換裝。"),
         "failed:rate-limited": translate(
             "wardrobe_generation_rate_limited",
-            "圖片服務目前流量繁忙；墨寒已安全重試，稍後可從既有進度續作。",
+            "圖片服務目前流量繁忙；{character_name}已安全重試，稍後可從既有進度續作。",
         ),
         "failed:authentication-failed": translate(
             "wardrobe_generation_auth_failed",

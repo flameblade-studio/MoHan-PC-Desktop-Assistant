@@ -25,6 +25,8 @@ lazy from threading import RLock
 lazy from PySide6.QtGui import QImage
 
 lazy from domain import outfit_pack
+lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
@@ -59,15 +61,16 @@ SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 NATIVE_VISIBILITY_FIELDS = frozenset({"foundation_coverage", "eye_aperture"})
 NATIVE_VISIBILITY_RECORD_FIELDS = frozenset({"nonvisible", "evidence"})
 VISIBILITY_EVIDENCE_MARKERS = ("manifest.json", "receipt.json", "stage.json")
+_RIG_MANIFEST = default_rig_manifest()
 # Rig cut-outs whose alpha bounding boxes define each slot, grouped per side so a
 # profile view with one visible eye keeps one tight rectangle instead of a band.
 SLOT_RIG_LAYERS = frozendict({
     "eyes": (
-        ("eyelid_left", "eyeliner_left", "brow_left"),
-        ("eyelid_right", "eyeliner_right", "brow_right"),
+        tuple(CHARACTER_LAYER_ROLES[key] for key in ("left_eyelid", "left_eyeliner", "left_brow")),
+        tuple(CHARACTER_LAYER_ROLES[key] for key in ("right_eyelid", "right_eyeliner", "right_brow")),
     ),
-    "cheeks": (("blush_left",), ("blush_right",)),
-    "lips": (("lip_upper", "lip_lower", "corner_left", "corner_right"),),
+    "cheeks": ((CHARACTER_LAYER_ROLES["left_blush"],), (CHARACTER_LAYER_ROLES["right_blush"],)),
+    "lips": (tuple(CHARACTER_LAYER_ROLES[key] for key in ("upper_lip", "lower_lip", "left_mouth_corner", "right_mouth_corner")),),
 })
 # Dilation applied to each slot's rig bounding boxes (pixels on the authored canvas).
 SLOT_MARGINS_PX = frozendict({"eyes": 24, "cheeks": 48, "lips": 20})
@@ -75,29 +78,33 @@ SLOT_MARGINS_PX = frozendict({"eyes": 24, "cheeks": 48, "lips": 20})
 # minus the covering mask, so a liner authored over the lid survives while the
 # visible iris and the open oral cavity never receive makeup.
 EXCLUSION_RIG_LAYERS = (
-    (("iris_left", "iris_right"), ("eyelid_left", "eyelid_right")),
-    (("oral_cavity", "teeth_tongue"), ("lip_upper", "lip_lower")),
+    (
+        tuple(CHARACTER_LAYER_ROLES[key] for key in ("left_iris", "right_iris")),
+        tuple(CHARACTER_LAYER_ROLES[key] for key in ("left_eyelid", "right_eyelid")),
+    ),
+    (
+        tuple(CHARACTER_LAYER_ROLES[key] for key in ("mouth_cavity", "teeth_and_tongue")),
+        tuple(CHARACTER_LAYER_ROLES[key] for key in ("upper_lip", "lower_lip")),
+    ),
 )
 # Half-body silhouettes share the three authored expression rigs; the four
 # gesture silhouettes are front-pose performances of the same head.
-HALF_BODY_RIGS = frozendict({
-    "cheek-rest": "cheek",
-    "left-neutral": "lean",
-    "front-crossed": "front",
-    "front-mock-scold": "front",
-    "front-mock-hit": "front",
-    "front-eureka": "front",
-    "front-exasperated": "front",
-})
-HALF_BODY_RIG_ROOT = "assets/expressions/layered"
+HALF_BODY_RIGS = frozendict(
+    {
+        **{value: key for key, value in _RIG_MANIFEST.pose_silhouettes.items()},
+        **dict.fromkeys(outfit_pack.GESTURE_SILHOUETTES, "front"),
+    }
+)
+HALF_BODY_RIG_ROOT = CHARACTER_ASSET_PATHS["halfbody_layers"]
 # Rig cut-outs that form the feature core: the only face pixels hair may never
 # cover.  Hair naturally falls over the brow, temples and cheeks, so hairstyle
 # layers are clipped out of this core (dilated by HAIRSTYLE_FEATURE_CORE_DILATION_PX,
 # faded over HAIRSTYLE_FEATURE_CORE_FEATHER_PX) instead of the whole protected
 # face; garments, headwear and accessories keep the full protected-face rule.
 FEATURE_CORE_LAYERS = (
-    "iris_left", "iris_right", "eyelid_left", "eyelid_right",
-    "oral_cavity", "lip_upper", "lip_lower",
+    *(CHARACTER_LAYER_ROLES[key] for key in ("left_iris", "right_iris")),
+    *(CHARACTER_LAYER_ROLES[key] for key in ("left_eyelid", "right_eyelid")),
+    *(CHARACTER_LAYER_ROLES[key] for key in ("mouth_cavity", "upper_lip", "lower_lip")),
 )
 HAIRSTYLE_FEATURE_CORE_DILATION_PX = 8
 HAIRSTYLE_FEATURE_CORE_FEATHER_PX = 6

@@ -34,6 +34,8 @@ lazy from types import MappingProxyType
 
 _CHARACTER_DATA = load_mohan_character_data()
 _PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
+_ASSISTANT_TOKEN = _CHARACTER_DATA.identity.assistant_tokens[0]
+_USER_TITLE_TOKEN = _CHARACTER_DATA.identity.user_title_tokens[0]
 
 DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 STABLE_PROMPT_CACHE_BREAKPOINT = (
@@ -394,8 +396,8 @@ class AIWorker(QRunnable):
 
     def _personalize(self, value: str) -> str:
         return (
-            value.replace("墨寒", self.request.assistant_name)
-            .replace("主上", self.request.user_title)
+            value.replace(_ASSISTANT_TOKEN, self.request.assistant_name)
+            .replace(_USER_TITLE_TOKEN, self.request.user_title)
         )
 
     def run(self) -> None:

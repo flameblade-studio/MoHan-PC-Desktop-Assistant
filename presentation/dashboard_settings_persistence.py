@@ -64,7 +64,7 @@ class DashboardSettingsPersistenceMixin:
                 self._t("permission_blocked", "權限已阻擋"),
                 self._t(
                     "permission_blocked_message",
-                    '繼續前請確認墨寒執行「{action}」所需的權限。',
+                    '繼續前請確認{character_name}執行「{action}」所需的權限。',
                     action=action,
                 ),
             )
@@ -73,11 +73,11 @@ class DashboardSettingsPersistenceMixin:
             optional_qwidget(self),
             self._t(
                 "permission_request",
-                "墨寒請求電腦權限",
+                "{character_name}請求電腦權限",
             ),
             self._t(
                 "permission_request_message",
-                "是否允許墨寒這一次{action}？",
+                "是否允許{character_name}這一次{action}？",
                 action=action,
             ),
         )

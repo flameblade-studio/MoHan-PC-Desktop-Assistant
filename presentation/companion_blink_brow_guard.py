@@ -11,10 +11,12 @@ lazy from domain.character_runtime_data import (
     default_expression_catalog,
     default_rig_manifest,
 )
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.qt_image_pixels import rgba8888_image
 
 NATIVE_SIZE = default_rig_manifest().half_body_asset_canvas.width
 _BROW_GUARD = default_expression_catalog().brow_guard
+_EUREKA_EXPRESSION = CHARACTER_EXPRESSION_ROLES["insight"]
 BROW_REGIONS = tuple(
     (x, y, x + width, y + height)
     for x, y, width, height in _BROW_GUARD.regions
@@ -46,7 +48,10 @@ def _cached_guard(
     guard = np.zeros((height, width), dtype=np.uint8)
     for raw in (base_brows, donor_brows):
         pixels = np.frombuffer(raw, dtype=np.uint8).reshape(crop_height, crop_width, 4)
-        dark = (pixels[:, :, :3].mean(axis=2) < (EUREKA_DARK_LIMIT if expression == "eureka_front" else DARK_LIMIT)) & (pixels[:, :, 3] > 0)
+        dark = (
+            pixels[:, :, :3].mean(axis=2)
+            < (EUREKA_DARK_LIMIT if expression == _EUREKA_EXPRESSION else DARK_LIMIT)
+        ) & (pixels[:, :, 3] > 0)
         for left, top, right, bottom in BROW_REGIONS:
             x0, x1 = round(left * width / NATIVE_SIZE), round(right * width / NATIVE_SIZE)
             y0, y1 = round(top * height / NATIVE_SIZE), round(bottom * height / NATIVE_SIZE)
@@ -55,7 +60,18 @@ def _cached_guard(
             if count > 1:
                 largest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
                 guard[y0:y1, x0:x1][labels == largest] = 255
-    kernel_size = max(1, round((EUREKA_GUARD_WIDTH if expression == "eureka_front" else NATIVE_GUARD_WIDTH) * width / NATIVE_SIZE)) | 1
+    kernel_size = max(
+        1,
+        round(
+            (
+                EUREKA_GUARD_WIDTH
+                if expression == _EUREKA_EXPRESSION
+                else NATIVE_GUARD_WIDTH
+            )
+            * width
+            / NATIVE_SIZE
+        ),
+    ) | 1
     kernel = np.ones((kernel_size, kernel_size), dtype=np.uint8)
     guard = cv2.dilate(guard, kernel)
     guard = cv2.GaussianBlur(guard, (kernel_size, kernel_size), GUARD_SIGMA)

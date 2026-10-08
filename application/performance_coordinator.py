@@ -22,7 +22,8 @@ lazy from domain.character_pose import (
     canonical_view_id,
     normalize_view_id,
 )
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.constants import CHARACTER_POSE_ROLES, FLOAT_COMPARISON_EPSILON
 lazy from domain.performance_preferences import PerformancePreferences
 
 BACK_DEPTH_TWO_THIRDS = 2
@@ -93,14 +94,9 @@ _AUDIO_EVENTS = frozenset({
     SpeechEventKind.PAUSE,
     SpeechEventKind.FINAL_AUDIO,
 })
-_BACK_DEPTH = frozendict({
-    "front-crossed": 0,
-    "left-neutral": 1,
-    "right-neutral": 1,
-    "back-two-thirds-left": 2,
-    "back-two-thirds-right": 2,
-    "back-full": 3,
-})
+_BACK_DEPTH = default_rig_manifest().back_depth
+_FRONT_POSE = CHARACTER_POSE_ROLES["front_idle"]
+_RIGHT_POSE = CHARACTER_POSE_ROLES["right_idle"]
 
 
 class PerformanceCoordinator:
@@ -134,14 +130,14 @@ class PerformanceCoordinator:
         ):
             candidate = replace(
                 candidate,
-                pose="front-crossed",
+                pose=_FRONT_POSE,
                 view=canonical_view_id(0),
                 face="neutral",
             )
-        elif candidate.pose == "right-neutral" and not preferences.view_360_enabled:
+        elif candidate.pose == _RIGHT_POSE and not preferences.view_360_enabled:
             candidate = replace(
                 candidate,
-                pose="front-crossed",
+                pose=_FRONT_POSE,
                 view=canonical_view_id(0),
             )
         return replace(
