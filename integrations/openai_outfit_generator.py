@@ -30,11 +30,7 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
-lazy from domain.constants import (
-    CHARACTER_ASSET_PATHS,
-    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
-    POSE_ATLAS_RELATIVE_ROOT,
-)
+lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_RELATIVE_ROOT, POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
 lazy from domain.outfit_generation import (
     OutfitGenerationCancelled,

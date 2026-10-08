@@ -89555,7 +89555,7 @@
         {
           "line": 33,
           "path": "integrations/openai_outfit_generator.py",
-          "text": "lazy from domain.constants import ("
+          "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_RELATIVE_ROOT, POSE_ATLAS_RELATIVE_ROOT"
         },
         {
           "line": 31,
