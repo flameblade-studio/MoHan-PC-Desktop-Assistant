@@ -29,6 +29,7 @@ SOURCE_ROOTS = ("domain", "application", "infrastructure", "integrations", "pres
 IMAGE_SUFFIXES = frozenset({".png", ".ico", ".webp", ".gif", ".jpg", ".jpeg"})
 MEDIUM_EVIDENCE_THRESHOLD = 3
 HIGH_EVIDENCE_THRESHOLD = 10
+CHARACTER_PATH_MIN_PARTS = 5
 NON_PRODUCT_ROOTS = (
     {"path": ".quality-tmp/", "classification": "temporary_or_candidate_output"},
     {"path": "artifacts/", "classification": "candidate_or_generated_output"},
@@ -133,6 +134,70 @@ GROUPS = (
     Group("assets/ui/mohan-strategist-lobby-v1.png", "ui_background", "presentation/lingxiao_shell.py", "_LOBBY_BACKDROP ="),
     Group("assets/ui/mohan-cloud.svg", "ui_brand_decoration", "presentation/flagship_theme.py", "_THEME_ASSET ="),
 )
+
+
+def _character_data_group(path: str) -> Group | None:
+    """Classify any character directory while preserving legacy exact groups."""
+    parts = Path(path).parts
+    if len(parts) < CHARACTER_PATH_MIN_PARTS or parts[:2] != (
+        "assets",
+        "characters",
+    ):
+        return None
+    relative = "/".join(parts[3:])
+    character_reader = "infrastructure/character_source_pack.py"
+    if relative == "persona/ui-identifiers.json":
+        category, reader, anchor = (
+            "character_ui_identifier_data",
+            "tools/build_character_pack.py",
+            "source = _repository_payload(root, relative)",
+        )
+    elif relative.startswith("persona/"):
+        category, reader, anchor = (
+            "character_persona_data",
+            character_reader,
+            "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        )
+    elif relative == "dialogue/runtime.json":
+        category, reader, anchor = (
+            "character_runtime_dialogue_data",
+            "tools/build_character_pack.py",
+            "source = _repository_payload(root, relative)",
+        )
+    elif relative.startswith("dialogue/"):
+        category, reader, anchor = (
+            "character_dialogue_data",
+            character_reader,
+            "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        )
+    elif relative.startswith("voice/"):
+        category, reader, anchor = (
+            "character_voice_data",
+            character_reader,
+            "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        )
+    elif relative == "rig/runtime-bindings.json":
+        category, reader, anchor = (
+            "character_runtime_binding_data",
+            "tools/build_character_pack.py",
+            "source = _repository_payload(root, relative)",
+        )
+    elif relative.startswith("rig/"):
+        category, reader, anchor = (
+            "character_rig_data",
+            character_reader,
+            "rig = _load_rig(root, rig_component)",
+        )
+    elif relative.startswith("expressions/"):
+        category, reader, anchor = (
+            "character_expression_catalog",
+            character_reader,
+            "expression_catalog = _load_expression_catalog(root, expression_component)",
+        )
+    else:
+        return None
+    return Group(path, category, reader, anchor)
+
 
 MANUAL_REVIEW_HINTS = {
     "identity_persona_dialogue": (
@@ -847,7 +912,10 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
     paths.sort(key=lambda path: path.relative_to(root).as_posix())
     for path in paths:
         relative = path.relative_to(root).as_posix()
-        group = next((g for g in GROUPS if relative.startswith(g.prefix)), None)
+        group = next(
+            (g for g in GROUPS if relative.startswith(g.prefix)),
+            None,
+        ) or _character_data_group(relative)
         category = group.category if group else "archive_or_support"
         if relative == "assets/mohan-taskbar-icon.png":
             category = "ui_character_icon_build_output"

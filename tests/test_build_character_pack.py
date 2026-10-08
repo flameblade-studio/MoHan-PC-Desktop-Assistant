@@ -209,6 +209,7 @@ def test_manifest_projects_identity_rights_components_and_original_paths(tmp_pat
     assert {entry["status"] for entry in manifest["licenses"].values()} == {"owner_decision_pending"}
     assert {entry["rights_holder"] for entry in manifest["licenses"].values()} == {"CHOU MING HUA"}
     assert manifest["components"][0]["body_profile"] == {"id": "mohan-body-v2", "version": 2}
+    assert "dependencies" not in manifest
     assert [entry["path"] for entry in manifest["files"]] == sorted(payloads)
     assert all((output / path).read_bytes() == data for path, data in payloads.items())
     manifest_text = (output / "manifest.json").read_text(encoding="utf-8")
@@ -269,7 +270,7 @@ def _manifest_from_directory(path: Path) -> dict[str, object]:
     return json.loads((path / "manifest.json").read_text(encoding="utf-8"))
 
 
-def _repository_payload_totals() -> tuple[int, int]:
+def _repository_payload_totals(character_id: str = "mohan") -> tuple[int, int]:
     inventory = json.loads(
         (ROOT / builder.DEFAULT_INVENTORY).read_text(encoding="utf-8")
     )
@@ -277,6 +278,10 @@ def _repository_payload_totals() -> tuple[int, int]:
         row
         for row in inventory["files"]
         if row["scope"] in PACK_SCOPES and "!" not in row["path"]
+        and (
+            not row["path"].startswith("assets/characters/")
+            or row["path"].startswith(f"assets/characters/{character_id}/")
+        )
     ]
     return len(selected), sum(row["bytes"] for row in selected)
 

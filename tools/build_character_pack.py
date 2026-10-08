@@ -1,4 +1,4 @@
-"""Build a byte-preserving, reproducible MoHan character pack."""
+"""Build a byte-preserving, reproducible character pack."""
 
 from __future__ import annotations
 
@@ -96,9 +96,10 @@ def build_character_pack(
     source_file = _input_path(root, source_path)
     source = _load_json_object(source_file)
     _require_source_header(source)
+    character_id = _text(source.get("character_id"), "character_id")
     limits = _validation_limits(source.get("validation_limits"))
     inventory = _load_json_object(inventory_file)
-    payloads = _inventory_payloads(root, inventory)
+    payloads = _inventory_payloads(root, inventory, character_id=character_id)
     manifest = _manifest(source, payloads, root)
     manifest["package_hash"] = compute_package_hash(manifest)
     manifest_bytes = _json_bytes(manifest)
@@ -106,7 +107,7 @@ def build_character_pack(
         raise CharacterPackBuildError("manifest.json exceeds the recorded validation limit")
     destination.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(
-        prefix="mohan-character-pack-",
+        prefix="character-pack-",
         dir=destination.parent,
     ) as temporary:
         staged = Path(temporary) / ("pack.zip" if output_format == "zip" else "pack")
@@ -175,16 +176,26 @@ def _validation_limits(value: object) -> ValidationLimits:
     return ValidationLimits(**measured)
 
 
-def _inventory_payloads(root: Path, inventory: Mapping[str, object]) -> tuple[_Payload, ...]:
+def _inventory_payloads(
+    root: Path,
+    inventory: Mapping[str, object],
+    *,
+    character_id: str,
+) -> tuple[_Payload, ...]:
     rows = _array(inventory.get("files"), "inventory.files")
     payloads: list[_Payload] = []
     seen: set[str] = set()
+    character_root = f"assets/characters/{character_id}/"
     for raw in rows:
         row = _object(raw, "inventory.files[]")
         if row.get("scope") not in PACK_SCOPES:
             continue
         relative = _text(row.get("path"), "inventory.files[].path")
         if "!" in relative:
+            continue
+        if relative.startswith("assets/characters/") and not relative.startswith(
+            character_root
+        ):
             continue
         if relative in seen:
             raise CharacterPackBuildError(f"duplicate inventory payload: {relative}")
@@ -281,7 +292,7 @@ def _manifest(
         }
         for item in payloads
     ]
-    return {
+    manifest: dict[str, object] = {
         "schema": SCHEMA,
         "pack_id": _text(source.get("pack_id"), "pack_id"),
         "pack_version": _text(source.get("pack_version"), "pack_version"),
@@ -300,6 +311,10 @@ def _manifest(
         "components": _components(source.get("components"), payload_by_path),
         "package_hash": "0" * 64,
     }
+    dependencies = _dependencies(source.get("dependencies", []))
+    if dependencies:
+        manifest["dependencies"] = dependencies
+    return manifest
 
 
 def _identity(
@@ -435,6 +450,31 @@ def _components(
         })
     components.sort(key=lambda item: _text(item["id"], "component id"))
     return components
+
+
+def _dependencies(value: object) -> list[dict[str, object]]:
+    dependencies: list[dict[str, object]] = []
+    fields = ("id", "kind", "min_version", "max_version_exclusive", "required")
+    for raw in _array(value, "dependencies"):
+        entry = _object(raw, "dependencies[]")
+        _exact_keys(entry, fields, "dependencies[]")
+        dependencies.append(
+            {
+                "id": _text(entry["id"], "dependencies[].id"),
+                "kind": _text(entry["kind"], "dependencies[].kind"),
+                "min_version": _text(
+                    entry["min_version"],
+                    "dependencies[].min_version",
+                ),
+                "max_version_exclusive": _text(
+                    entry["max_version_exclusive"],
+                    "dependencies[].max_version_exclusive",
+                ),
+                "required": entry["required"],
+            }
+        )
+    dependencies.sort(key=lambda item: _text(item["id"], "dependency id"))
+    return dependencies
 
 
 def _validate_component_source(payload: _Payload, schema: str, body_profile: object) -> None:

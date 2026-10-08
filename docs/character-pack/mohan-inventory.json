@@ -292,6 +292,300 @@
       "work_package": "engine-identity-parameterization"
     },
     {
+      "bytes": 2808,
+      "category": "archive_or_support",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/README.md",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "d229d9eb56c3031706fedd4080872c5309708a76909f1d8c0836dad36e860923"
+    },
+    {
+      "bytes": 12082,
+      "category": "character_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/dialogue/en.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "14d6961fc1e5fb79f61401b09f3db276ada3c68823fd4f7d2884577c41b40f62"
+    },
+    {
+      "bytes": 928,
+      "category": "character_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/dialogue/events.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "fa158b12bd0aedd4660538abdb2bdada5a3d72e89e52955c80d1828599a865ef"
+    },
+    {
+      "bytes": 14899,
+      "category": "character_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6c4356b66561f9c73bf276599593e17cc689ce267159661003421454c899342c"
+    },
+    {
+      "bytes": 13031,
+      "category": "character_runtime_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/dialogue/runtime.json",
+      "readers": [
+        {
+          "line": 203,
+          "path": "tools/build_character_pack.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "0b58f924804991466ab8de724f90629903209b14ec939cb7b467ab8ea534cf86"
+    },
+    {
+      "bytes": 11678,
+      "category": "character_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "ead11cdb9eaf934f9f6e67f17891f84e2ae7766e67b9954ba0d57e7ed71d05df"
+    },
+    {
+      "bytes": 11682,
+      "category": "character_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "559894e6c1731e7bdf950ead0238a8cb611b2fa308450035b5de464d4b12cf09"
+    },
+    {
+      "bytes": 13892,
+      "category": "character_expression_catalog",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
+      "readers": [
+        {
+          "line": 121,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
+    },
+    {
+      "bytes": 7160,
+      "category": "archive_or_support",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/pack-source.json",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "5a10ae3912198c917b05036e7f571b4abf7e0cf91cee9a608340938e6b0a07db"
+    },
+    {
+      "bytes": 2163,
+      "category": "character_persona_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/persona/en.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "4106ee1c9f0977e6e9722ce0e26e4f1b71be390b72af0648bbac475233bbde3d"
+    },
+    {
+      "bytes": 2563,
+      "category": "character_persona_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/persona/ja-JP.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "680d28143908311b2c7b0d4ae52b64ebafad7da8c4e805d99e57b0b63344d158"
+    },
+    {
+      "bytes": 2587,
+      "category": "character_persona_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/persona/profile.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7e987396a7a6aeff3901d8e29a2f0a2f28dd50aa5de8c200400aa6566c165a84"
+    },
+    {
+      "bytes": 526,
+      "category": "character_ui_identifier_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/persona/ui-identifiers.json",
+      "readers": [
+        {
+          "line": 203,
+          "path": "tools/build_character_pack.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "d8be05a3610a8a40e4db3e531a5e9a5d3ebb3d0ceda0fd2af2a258dac5e5dc7f"
+    },
+    {
+      "bytes": 1996,
+      "category": "character_persona_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/persona/zh-CN.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "d1a61f2829c3aa7e293f874bd36e6f13714882fc74f18f1456ac9a34aaa57b8b"
+    },
+    {
+      "bytes": 1993,
+      "category": "character_persona_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/persona/zh-TW.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "9a27565e0e74986536f42cba9d9ee3cf8de184b6946aabc23bc6d3a244245ea0"
+    },
+    {
+      "bytes": 17106,
+      "category": "character_rig_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
+      "readers": [
+        {
+          "line": 120,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "rig = _load_rig(root, rig_component)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "eedd60bd7bfec1bddccf6c84cd003fe713a5f85a83e8bd12ada78c0d594dd3eb"
+    },
+    {
+      "bytes": 2791,
+      "category": "character_runtime_binding_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/rig/runtime-bindings.json",
+      "readers": [
+        {
+          "line": 203,
+          "path": "tools/build_character_pack.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "def026492f3afcf4f11b2dc90bf51eaa281a216dac96bc04a54f833a334e012d"
+    },
+    {
+      "bytes": 5655,
+      "category": "character_voice_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/voice/profile.json",
+      "readers": [
+        {
+          "line": 119,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f6d8ac9d84834852a4481fca73f7a0ffbed7c1c912e2667be77314d7e9fec3ff"
+    },
+    {
       "bytes": 2561,
       "category": "archive_or_support",
       "manifest_references": [],
@@ -93148,14 +93442,14 @@
     "appearance_replacement_mask": 13,
     "appearance_silhouette": 19,
     "body_overlay": 15,
-    "character_dialogue_data": 5,
-    "character_expression_catalog": 1,
-    "character_persona_data": 5,
-    "character_rig_data": 1,
-    "character_runtime_binding_data": 1,
-    "character_runtime_dialogue_data": 1,
-    "character_ui_identifier_data": 1,
-    "character_voice_data": 1,
+    "character_dialogue_data": 10,
+    "character_expression_catalog": 2,
+    "character_persona_data": 10,
+    "character_rig_data": 2,
+    "character_runtime_binding_data": 2,
+    "character_runtime_dialogue_data": 2,
+    "character_ui_identifier_data": 2,
+    "character_voice_data": 2,
     "fullbody_blink": 24,
     "fullbody_complete_frames": 156,
     "fullbody_complete_masks": 13,
@@ -93191,9 +93485,9 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 19,
+    "excluded_support": 21,
     "product_validation_data": 48,
-    "runtime_data": 2989
+    "runtime_data": 3005
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",
