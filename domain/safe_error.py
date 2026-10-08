@@ -19,7 +19,7 @@ type _Classification = tuple["SafeErrorType", "SafeDiagnostic"]
 # HTTP status-code bounds for sanitization and classification.
 # Re-exported from the centralized constants module so every module shares
 # one source of truth; the local names are kept for backward compatibility.
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     HTTP_CLIENT_ERROR_BOUNDARY as CLIENT_ERROR_BOUNDARY,
     HTTP_MAX_STATUS as MAX_HTTP_STATUS,
     HTTP_MIN_STATUS as MIN_HTTP_STATUS,

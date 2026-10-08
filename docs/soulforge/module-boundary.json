@@ -1,0 +1,890 @@
+{
+  "schema": "flameblade.soulforge-module-boundary.v1",
+  "schema_version": 1,
+  "source_roots": [
+    "domain",
+    "application",
+    "infrastructure",
+    "integrations",
+    "presentation"
+  ],
+  "classifications": {
+    "engine": [
+      "application",
+      "application.adaptive_character_composition",
+      "application.adaptive_character_runtime",
+      "application.appearance_ports",
+      "application.appearance_renderer",
+      "application.appearance_session",
+      "application.autonomous_wardrobe_runtime",
+      "application.behavior_director",
+      "application.body_pose_renderer",
+      "application.camera_presence",
+      "application.character_framing_app_bridge",
+      "application.cloud_vision_runtime",
+      "application.flagship_action_runtime",
+      "application.flagship_workflows",
+      "application.framing_orchestrator",
+      "application.full_body_performance_bridge",
+      "application.gesture_action_dispatcher",
+      "application.gesture_action_router",
+      "application.gesture_application_adapter",
+      "application.gesture_controller",
+      "application.gesture_recognizer",
+      "application.gesture_runtime",
+      "application.local_visual_intelligence",
+      "application.multimodal_controller",
+      "application.multimodal_fusion_hub",
+      "application.native_acceleration",
+      "application.native_rgba_acceleration",
+      "application.object_interaction",
+      "application.outfit_pack_builder",
+      "application.outfit_reveal",
+      "application.performance_app_bridge",
+      "application.performance_coordinator",
+      "application.performance_runtime",
+      "application.proactive_companion_app_bridge",
+      "application.proactive_companion_composition",
+      "application.rgba_compositing",
+      "application.self_generating_wardrobe",
+      "application.service_contracts",
+      "application.speech_performance",
+      "application.vision_controller",
+      "application.vision_runtime",
+      "application.visual_context_fusion",
+      "application.visual_perception",
+      "application.visual_social_cues",
+      "application.wardrobe_appearance_service",
+      "application.wardrobe_storage",
+      "application.wellbeing_app_bridge",
+      "application.wellbeing_reminder",
+      "application.wellbeing_runtime",
+      "application.workflow_engine",
+      "domain",
+      "domain._outfit_pack_models",
+      "domain.affective_state",
+      "domain.affinity_state",
+      "domain.air_interaction",
+      "domain.appearance_dynamics",
+      "domain.audio_acceleration",
+      "domain.audio_buffer",
+      "domain.autonomous_wardrobe",
+      "domain.character_framing",
+      "domain.character_pack",
+      "domain.character_pack.archive",
+      "domain.character_pack.models",
+      "domain.character_pack.validation",
+      "domain.character_source",
+      "domain.cloud_scene_interpreter",
+      "domain.companion_animation_contract",
+      "domain.companion_proactivity_preferences",
+      "domain.core_constants",
+      "domain.emotional_resonance",
+      "domain.engine_capabilities",
+      "domain.expression_system",
+      "domain.face_microtiming",
+      "domain.face_motion",
+      "domain.face_rig",
+      "domain.favor_exclusive",
+      "domain.flagship_action_models",
+      "domain.flagship_action_policy",
+      "domain.flagship_safe_intent",
+      "domain.framing_context_policy",
+      "domain.framing_preferences",
+      "domain.gesture_configuration",
+      "domain.gesture_intent",
+      "domain.immutable_config",
+      "domain.language_normalization",
+      "domain.lip_sync",
+      "domain.lunar_calendar",
+      "domain.makeup_eye_states",
+      "domain.makeup_mouth_states",
+      "domain.openai_vision_authorization",
+      "domain.openai_vision_preferences",
+      "domain.outfit_generation",
+      "domain.outfit_pack",
+      "domain.outfit_pack_archive",
+      "domain.outfit_pack_assets",
+      "domain.outfit_pack_makeup",
+      "domain.outfit_pack_store",
+      "domain.pcm_audio",
+      "domain.performance_preferences",
+      "domain.personality_state",
+      "domain.prompt_cache",
+      "domain.python315_concurrency",
+      "domain.qt_image_io",
+      "domain.qt_image_pixels",
+      "domain.safe_error",
+      "domain.safe_error_localization",
+      "domain.satiety",
+      "domain.scalar_conversion",
+      "domain.scene_semantics",
+      "domain.shy_gaze",
+      "domain.shyness",
+      "domain.speech_boundary",
+      "domain.sword_soul_resonance",
+      "domain.text_normalizer",
+      "domain.time_sovereignty",
+      "domain.time_utils",
+      "domain.vision_domain",
+      "domain.vision_provider_contracts",
+      "infrastructure",
+      "infrastructure.active_outfit_base_clear",
+      "infrastructure.active_outfit_overlay",
+      "infrastructure.active_outfit_overlay_layers",
+      "infrastructure.animated_appearance",
+      "infrastructure.appearance_layer_stack",
+      "infrastructure.blink_makeup_composition",
+      "infrastructure.companion_proactivity_preferences_store",
+      "infrastructure.complete_halfbody_expressions",
+      "infrastructure.complete_halfbody_renderer",
+      "infrastructure.concurrency_tools",
+      "infrastructure.core_hand_regions",
+      "infrastructure.corrupt_data",
+      "infrastructure.db_affection",
+      "infrastructure.db_corrupt_data",
+      "infrastructure.db_memory",
+      "infrastructure.detachable_halfbody_assets",
+      "infrastructure.exasperated_candidate_appearance",
+      "infrastructure.exasperated_candidate_assets",
+      "infrastructure.exasperated_face_rendering",
+      "infrastructure.face_assets",
+      "infrastructure.face_identity_store",
+      "infrastructure.face_renderer",
+      "infrastructure.flagship_windows_toolbox",
+      "infrastructure.framing_preferences_store",
+      "infrastructure.full_body_blink_binding",
+      "infrastructure.full_body_display_placement",
+      "infrastructure.gesture_configuration_store",
+      "infrastructure.gesture_template_store",
+      "infrastructure.hand_landmark_provider",
+      "infrastructure.image_alpha_regions",
+      "infrastructure.layered_face_assets",
+      "infrastructure.layered_face_calibration",
+      "infrastructure.layered_face_painting",
+      "infrastructure.layered_face_renderer",
+      "infrastructure.layered_full_body_assets",
+      "infrastructure.layered_full_body_complete_expression",
+      "infrastructure.layered_full_body_renderer",
+      "infrastructure.memory_index",
+      "infrastructure.mouth_geometry",
+      "infrastructure.multimodal_model_provider",
+      "infrastructure.openai_vision_preferences_store",
+      "infrastructure.opencv_vision",
+      "infrastructure.outfit_core_composition",
+      "infrastructure.outfit_layer_cache",
+      "infrastructure.outfit_layer_cache_key",
+      "infrastructure.outfit_overlay_diagnostics",
+      "infrastructure.performance_preferences_store",
+      "infrastructure.platform_contracts",
+      "infrastructure.platform_linux",
+      "infrastructure.platform_macos",
+      "infrastructure.platform_windows",
+      "infrastructure.portable_import_checks",
+      "infrastructure.portable_secret_binding",
+      "infrastructure.portable_secrets",
+      "infrastructure.portable_sensitive",
+      "infrastructure.reviewed_garment_assets",
+      "infrastructure.reviewed_garment_overlay",
+      "infrastructure.reviewed_pose_motion",
+      "infrastructure.reviewed_pose_overlay",
+      "infrastructure.secret_store",
+      "infrastructure.source_bound_garment_visibility",
+      "infrastructure.special_occasion_store",
+      "infrastructure.sqlite_safety",
+      "infrastructure.wellbeing_reminder_store",
+      "infrastructure.windows_tools",
+      "integrations",
+      "integrations.azure_regions",
+      "integrations.azure_voice_catalog",
+      "integrations.cloud_connectors",
+      "integrations.home_assistant",
+      "integrations.openai_fashion_trend_scout",
+      "integrations.openai_vision_provider",
+      "integrations.realtime_events",
+      "integrations.realtime_session",
+      "integrations.realtime_speech_output",
+      "integrations.realtime_voice",
+      "integrations.remote_control",
+      "integrations.speech",
+      "integrations.speech_audio",
+      "integrations.speech_recognition",
+      "integrations.speech_unavailable",
+      "presentation",
+      "presentation._dashboard_wardrobe_tab",
+      "presentation.autonomous_outfit_generation_controller",
+      "presentation.companion_blink_composite",
+      "presentation.companion_blink_runtime",
+      "presentation.companion_core",
+      "presentation.companion_face_animation_logic",
+      "presentation.companion_legacy_frame",
+      "presentation.companion_proactive",
+      "presentation.companion_speech_emotion",
+      "presentation.companion_speech_mask",
+      "presentation.companion_speech_queue",
+      "presentation.companion_vad_status",
+      "presentation.companion_viseme_cue",
+      "presentation.companion_voice_phase",
+      "presentation.companion_wait_expression",
+      "presentation.corrupt_data_ui",
+      "presentation.dashboard_dialogs",
+      "presentation.dashboard_platforms",
+      "presentation.dashboard_settings_persistence",
+      "presentation.dashboard_shared",
+      "presentation.dashboard_today_memory",
+      "presentation.dashboard_voice",
+      "presentation.dashboard_voice_runtime",
+      "presentation.dashboard_wardrobe_categories",
+      "presentation.dashboard_wardrobe_makeup",
+      "presentation.dashboard_wardrobe_packages",
+      "presentation.dashboard_wardrobe_preferences",
+      "presentation.dashboard_wardrobe_preview",
+      "presentation.dashboard_wardrobe_status",
+      "presentation.desktop_companion_status",
+      "presentation.flagship.audit",
+      "presentation.flagship.cloud",
+      "presentation.flagship.cloud_health",
+      "presentation.flagship.companion",
+      "presentation.flagship.gesture_editor",
+      "presentation.flagship.localization_catalog",
+      "presentation.flagship.localization_cloud_home",
+      "presentation.flagship.localization_interaction",
+      "presentation.flagship.localization_remote_vision",
+      "presentation.flagship.localization_security_audit",
+      "presentation.flagship.localization_themes",
+      "presentation.flagship.localization_workflows",
+      "presentation.flagship.oauth",
+      "presentation.flagship.planner",
+      "presentation.flagship.remote",
+      "presentation.flagship.settings_security",
+      "presentation.flagship.shared",
+      "presentation.flagship.ui_helpers",
+      "presentation.flagship.vision",
+      "presentation.flagship.workflow_editor",
+      "presentation.flagship.workflows",
+      "presentation.performance_composition",
+      "presentation.profile_transfer_ui",
+      "presentation.qt_parent",
+      "presentation.service_status_localization",
+      "presentation.settings_ui_localization",
+      "presentation.theme_pack_ui",
+      "presentation.ui_localization_labels",
+      "presentation.wardrobe_layout",
+      "presentation.wardrobe_turntable"
+    ],
+    "mohan_product_shell": [
+      "application.app",
+      "application.application_bootstrap",
+      "application.cloud_vision_ui_bridge",
+      "application.desktop_presence",
+      "application.packaged_self_test",
+      "application.presentation_ports",
+      "application.preview_app",
+      "application.runtime_bootstrap",
+      "application.theme_pack_service",
+      "domain.app_profile",
+      "domain.character_pack.character_data",
+      "domain.constants",
+      "domain.feature_registry",
+      "domain.persona_defaults",
+      "domain.theme_pack",
+      "domain.theme_retint",
+      "domain.theme_session",
+      "domain.version_info",
+      "infrastructure.app_resources",
+      "infrastructure.backup_manager",
+      "infrastructure.profile_transfer",
+      "infrastructure.update_manifest_signature",
+      "infrastructure.updater",
+      "presentation.auxiliary_ui_localization",
+      "presentation.companion_window",
+      "presentation.dashboard_artwork",
+      "presentation.dashboard_composition",
+      "presentation.dashboard_control_style",
+      "presentation.dashboard_settings",
+      "presentation.dashboard_shell",
+      "presentation.dashboard_theme_materials",
+      "presentation.dashboard_window",
+      "presentation.first_run_wizard",
+      "presentation.flagship",
+      "presentation.flagship.control_center",
+      "presentation.flagship.home",
+      "presentation.flagship.lifecycle",
+      "presentation.flagship.overview",
+      "presentation.flagship.runtime",
+      "presentation.flagship_core",
+      "presentation.flagship_theme",
+      "presentation.flagship_ui",
+      "presentation.flagship_ui_localization",
+      "presentation.lingxiao_fonts",
+      "presentation.lingxiao_shell",
+      "presentation.lingxiao_themes",
+      "presentation.lingxiao_tokens",
+      "presentation.lingxiao_widgets",
+      "presentation.presentation_resources",
+      "presentation.preview_app",
+      "presentation.updater_ui"
+    ],
+    "huapu": [
+      "domain.character_identity_audit",
+      "domain.full_body_asset_audit",
+      "domain.full_body_asset_evidence",
+      "domain.hand_asset_audit",
+      "domain.hand_asset_evidence",
+      "domain.pose_atlas_audit",
+      "domain.pose_atlas_manifest_builder",
+      "domain.pose_atlas_release_gate",
+      "domain.visible_identity_audit"
+    ],
+    "pending_split": [
+      "application.background_agents",
+      "application.companion_phrasebook",
+      "application.full_body_render_adapter",
+      "application.multisensory_interaction",
+      "application.proactive_companion_runtime",
+      "application.service_container",
+      "application.special_occasion",
+      "application.wardrobe_service",
+      "domain.character_body_profile",
+      "domain.character_data_types",
+      "domain.character_expression_data",
+      "domain.character_full_body_rig",
+      "domain.character_pack.character_data_models",
+      "domain.character_pose",
+      "domain.character_rig_data",
+      "domain.character_runtime_data",
+      "domain.chronicle",
+      "domain.command_parser",
+      "domain.contracts",
+      "domain.language_support",
+      "domain.outfit_pack_official",
+      "domain.pose_pack",
+      "domain.pose_runtime_loader",
+      "domain.sensory_synesthesia",
+      "domain.service_status_localization",
+      "domain.somniloquy",
+      "domain.speech_configuration",
+      "domain.speech_providers",
+      "domain.wardrobe_intuition",
+      "infrastructure.character_source_pack",
+      "infrastructure.db",
+      "infrastructure.platform_services",
+      "integrations.ai_client",
+      "integrations.azure_speech",
+      "integrations.openai_outfit_generator",
+      "integrations.realtime_contracts",
+      "integrations.speech_voice_catalog",
+      "integrations.speech_windows_synthesis",
+      "presentation.companion_blink_brow_guard",
+      "presentation.companion_face_animation",
+      "presentation.companion_face_assets",
+      "presentation.companion_platform",
+      "presentation.companion_speech_runtime",
+      "presentation.companion_visual_dynamics",
+      "presentation.companion_visual_physics",
+      "presentation.dashboard_conversation",
+      "presentation.dashboard_voice_catalog",
+      "presentation.pose_atlas_assets",
+      "presentation.ui_localization",
+      "presentation.ui_localization_en",
+      "presentation.ui_localization_ja"
+    ]
+  },
+  "forbidden_dependency_directions": [
+    {
+      "from": "engine",
+      "to": "mohan_product_shell"
+    },
+    {
+      "from": "engine",
+      "to": "huapu"
+    }
+  ],
+  "remediated_violations": [
+    {
+      "importer": "application.gesture_recognizer",
+      "imported": "domain.constants",
+      "line_before": 11,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "application.multimodal_fusion_hub",
+      "imported": "domain.constants",
+      "line_before": 8,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "application.native_acceleration",
+      "imported": "domain.constants",
+      "line_before": 19,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "application.speech_performance",
+      "imported": "domain.constants",
+      "line_before": 8,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "domain.pcm_audio",
+      "imported": "domain.constants",
+      "line_before": 9,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "domain.safe_error",
+      "imported": "domain.constants",
+      "line_before": 22,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "domain.vision_domain",
+      "imported": "domain.constants",
+      "line_before": 7,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "integrations.realtime_voice",
+      "imported": "domain.constants",
+      "line_before": 31,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    },
+    {
+      "importer": "integrations.speech_audio",
+      "imported": "domain.constants",
+      "line_before": 19,
+      "replacement": "domain.core_constants",
+      "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
+    }
+  ],
+  "violation_baseline": [
+    {
+      "importer": "application.appearance_renderer",
+      "imported": "domain.constants",
+      "line": 20,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "application.behavior_director",
+      "imported": "domain.constants",
+      "line": 11,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "application.outfit_reveal",
+      "imported": "domain.constants",
+      "line": 13,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "application.performance_coordinator",
+      "imported": "domain.constants",
+      "line": 26,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "application.proactive_companion_composition",
+      "imported": "domain.constants",
+      "line": 23,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "domain.affective_state",
+      "imported": "domain.constants",
+      "line": 17,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "domain.engine_capabilities",
+      "imported": "domain.version_info",
+      "line": 7,
+      "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
+    },
+    {
+      "importer": "domain.face_motion",
+      "imported": "domain.constants",
+      "line": 5,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "domain.outfit_pack",
+      "imported": "domain.constants",
+      "line": 31,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "domain.outfit_pack_makeup",
+      "imported": "domain.constants",
+      "line": 29,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "domain.shyness",
+      "imported": "domain.constants",
+      "line": 20,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.active_outfit_overlay",
+      "imported": "domain.version_info",
+      "line": 34,
+      "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
+    },
+    {
+      "importer": "infrastructure.active_outfit_overlay_layers",
+      "imported": "domain.constants",
+      "line": 12,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.complete_halfbody_expressions",
+      "imported": "domain.constants",
+      "line": 12,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.core_hand_regions",
+      "imported": "domain.constants",
+      "line": 9,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.exasperated_candidate_appearance",
+      "imported": "domain.constants",
+      "line": 14,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.exasperated_candidate_assets",
+      "imported": "domain.constants",
+      "line": 18,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.exasperated_face_rendering",
+      "imported": "domain.constants",
+      "line": 7,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_face_assets",
+      "imported": "domain.constants",
+      "line": 14,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_face_calibration",
+      "imported": "domain.constants",
+      "line": 22,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_face_painting",
+      "imported": "domain.constants",
+      "line": 8,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_face_renderer",
+      "imported": "domain.constants",
+      "line": 24,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_full_body_assets",
+      "imported": "domain.constants",
+      "line": 29,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_full_body_complete_expression",
+      "imported": "domain.constants",
+      "line": 16,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.layered_full_body_renderer",
+      "imported": "domain.constants",
+      "line": 22,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.platform_linux",
+      "imported": "domain.version_info",
+      "line": 8,
+      "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
+    },
+    {
+      "importer": "infrastructure.platform_macos",
+      "imported": "domain.version_info",
+      "line": 7,
+      "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
+    },
+    {
+      "importer": "infrastructure.platform_windows",
+      "imported": "domain.version_info",
+      "line": 9,
+      "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
+    },
+    {
+      "importer": "infrastructure.reviewed_pose_motion",
+      "imported": "domain.constants",
+      "line": 22,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "infrastructure.source_bound_garment_visibility",
+      "imported": "domain.constants",
+      "line": 15,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "presentation._dashboard_wardrobe_tab",
+      "imported": "presentation.dashboard_artwork",
+      "line": 13,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation._dashboard_wardrobe_tab",
+      "imported": "presentation.flagship_theme",
+      "line": 17,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.autonomous_outfit_generation_controller",
+      "imported": "application.presentation_ports",
+      "line": 46,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.autonomous_outfit_generation_controller",
+      "imported": "domain.constants",
+      "line": 27,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "application.presentation_ports",
+      "line": 30,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "domain.constants",
+      "line": 40,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.dashboard_composition",
+      "line": 93,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.dashboard_window",
+      "line": 94,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.first_run_wizard",
+      "line": 96,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.presentation_resources",
+      "line": 100,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.companion_proactive",
+      "imported": "application.desktop_presence",
+      "line": 7,
+      "reason": "引擎 presentation 仍直接依賴墨寒產品 UI 組合橋接。"
+    },
+    {
+      "importer": "presentation.companion_proactive",
+      "imported": "application.presentation_ports",
+      "line": 12,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.companion_proactive",
+      "imported": "domain.app_profile",
+      "line": 28,
+      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
+    },
+    {
+      "importer": "presentation.companion_proactive",
+      "imported": "domain.constants",
+      "line": 29,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "presentation.companion_speech_emotion",
+      "imported": "domain.constants",
+      "line": 15,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "presentation.companion_voice_phase",
+      "imported": "domain.app_profile",
+      "line": 5,
+      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
+    },
+    {
+      "importer": "presentation.dashboard_dialogs",
+      "imported": "application.presentation_ports",
+      "line": 25,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_dialogs",
+      "imported": "domain.app_profile",
+      "line": 26,
+      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
+    },
+    {
+      "importer": "presentation.dashboard_dialogs",
+      "imported": "presentation.presentation_resources",
+      "line": 33,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.dashboard_platforms",
+      "imported": "application.presentation_ports",
+      "line": 24,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_settings_persistence",
+      "imported": "domain.app_profile",
+      "line": 8,
+      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
+    },
+    {
+      "importer": "presentation.dashboard_voice",
+      "imported": "application.presentation_ports",
+      "line": 19,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_voice",
+      "imported": "domain.app_profile",
+      "line": 31,
+      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
+    },
+    {
+      "importer": "presentation.dashboard_voice_runtime",
+      "imported": "application.presentation_ports",
+      "line": 6,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_categories",
+      "imported": "application.presentation_ports",
+      "line": 9,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_categories",
+      "imported": "presentation.flagship_theme",
+      "line": 15,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_makeup",
+      "imported": "presentation.flagship_theme",
+      "line": 25,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_packages",
+      "imported": "application.presentation_ports",
+      "line": 8,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_preferences",
+      "imported": "presentation.flagship_theme",
+      "line": 18,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_preview",
+      "imported": "domain.constants",
+      "line": 29,
+      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_preview",
+      "imported": "presentation.dashboard_artwork",
+      "line": 38,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_preview",
+      "imported": "presentation.presentation_resources",
+      "line": 37,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.desktop_companion_status",
+      "imported": "presentation.dashboard_artwork",
+      "line": 28,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.flagship.cloud_health",
+      "imported": "presentation.flagship_ui_localization",
+      "line": 19,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.flagship.settings_security",
+      "imported": "presentation.flagship_theme",
+      "line": 62,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.flagship.settings_security",
+      "imported": "presentation.lingxiao_themes",
+      "line": 63,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.flagship.vision",
+      "imported": "application.cloud_vision_ui_bridge",
+      "line": 20,
+      "reason": "引擎 presentation 仍直接依賴墨寒產品 UI 組合橋接。"
+    },
+    {
+      "importer": "presentation.flagship.workflow_editor",
+      "imported": "presentation.flagship_ui_localization",
+      "line": 21,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    },
+    {
+      "importer": "presentation.profile_transfer_ui",
+      "imported": "application.presentation_ports",
+      "line": 27,
+      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
+    },
+    {
+      "importer": "presentation.profile_transfer_ui",
+      "imported": "presentation.auxiliary_ui_localization",
+      "line": 42,
+      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
+    }
+  ]
+}

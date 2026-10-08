@@ -23,7 +23,7 @@ lazy from domain.hand_asset_audit import (
 )
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     PNG_MIN_HEADER_LENGTH as MIN_PNG_HEADER_LENGTH,
     PNG_SIGNATURE,
     RGB_CHANNELS,

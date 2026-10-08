@@ -10,7 +10,7 @@ lazy from itertools import pairwise
 lazy from pathlib import Path
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     BYTES_PER_PIXEL,
     BYTE_MAX,
     PNG_BIT_DEPTH,

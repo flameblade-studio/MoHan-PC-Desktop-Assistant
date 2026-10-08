@@ -16,7 +16,10 @@ lazy from domain import pcm_audio as python_pcm_audio
 lazy from domain.contracts import default_character_display_name
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE
+lazy from domain.core_constants import (
+    PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE,
+    PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE,
+)
 
 LOGGER = logging.getLogger(__name__)
 NATIVE_MODULE_NAME = "_mohan_accel"

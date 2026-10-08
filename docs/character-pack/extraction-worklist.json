@@ -249,12 +249,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 255,
+              "line": 298,
               "matched": "assets/pose-atlas/v5",
               "text": "POSE_ATLAS_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base\""
             },
             {
-              "line": 256,
+              "line": 299,
               "matched": "assets/pose-atlas/v5",
               "text": "POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base-layered\""
             }
