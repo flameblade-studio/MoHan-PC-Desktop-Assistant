@@ -24,6 +24,7 @@ if str(ROOT) not in sys.path:
 
 lazy from domain.character_pack.models import CharacterPackManifest, CharacterPackValidationResult
 lazy from domain.character_pack.validation import validate_character_pack
+lazy from domain.engine_capabilities import EngineCapabilities, current_engine_capabilities
 lazy from tools.verify_character_pack_lock import (
     DEFAULT_LOCK,
     SOURCE_REPOSITORY,
@@ -90,8 +91,10 @@ def fetch_character_pack(
     lock_path: str | Path = DEFAULT_LOCK,
     environment: Mapping[str, str] | None = None,
     download: ArchiveDownloader | None = None,
+    engine: EngineCapabilities | None = None,
 ) -> CharacterPackFetchResult:
     """Install only a checksum-locked, validator-approved release ZIP."""
+    capabilities = current_engine_capabilities() if engine is None else engine
     resolved_lock = _resolve_lock_path(lock_path)
     lock = load_character_pack_lock(resolved_lock)
     token = _token_from_environment(os.environ if environment is None else environment)
@@ -114,7 +117,7 @@ def fetch_character_pack(
         except Exception as error:
             raise CharacterPackFetchError("character-pack download failed without installing files") from error
         _measure_locked_archive(archive_path, lock)
-        validation = _validate_downloaded_archive(archive_path, lock)
+        validation = _validate_downloaded_archive(archive_path, lock, capabilities)
         manifest = validation.manifest
         if manifest is None:
             raise CharacterPackFetchError("character-pack validator returned no manifest")
@@ -287,12 +290,15 @@ def _measure_locked_archive(path: Path, lock: CharacterPackLock) -> tuple[int, s
 def _validate_downloaded_archive(
     archive_path: Path,
     lock: CharacterPackLock,
+    engine: EngineCapabilities,
 ) -> CharacterPackValidationResult:
+    # Judge compatibility against the engine actually running, never against the
+    # requirements the pack itself declares, or every pack would trivially pass.
     result = validate_character_pack(
         archive_path,
-        engine_version=lock.engine_compatibility.min_engine_version,
-        engine_api_version=lock.engine_compatibility.api_version,
-        engine_features=lock.engine_compatibility.required_features,
+        engine_version=engine.version,
+        engine_api_version=engine.api_version,
+        engine_features=engine.features,
         limits=lock.validation_limits,
     )
     if not result.valid:

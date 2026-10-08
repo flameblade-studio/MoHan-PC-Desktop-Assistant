@@ -13,6 +13,7 @@ lazy from urllib.request import Request
 lazy import pytest
 
 lazy from domain.character_pack.validation import SCHEMA, compute_package_hash
+lazy from domain.engine_capabilities import EngineCapabilities
 lazy from tools import fetch_character_pack as fetcher
 lazy from tools import verify_character_pack_lock as verifier
 
@@ -283,3 +284,26 @@ def test_github_downloader_uses_locked_asset_api_with_fake_responses(tmp_path: P
     assert len(requests) == GITHUB_REQUEST_COUNT
     assert all(request.get_header("Authorization") == "Bearer test-secret" for request in requests)
     assert requests[1].get_header("Accept") == "application/octet-stream"
+
+
+@pytest.mark.parametrize(
+    "engine",
+    [
+        EngineCapabilities("5.0.0", 1, frozenset()),
+        EngineCapabilities("4.6.0", 2, frozenset()),
+        EngineCapabilities("4.5.9", 1, frozenset()),
+    ],
+)
+def test_fetch_checks_the_running_engine_not_the_packs_own_claims(tmp_path: Path, engine: EngineCapabilities) -> None:
+    archive = _pack_bytes()
+    lock_path = _write_lock(tmp_path / "character-pack.lock.json", archive)
+    output = tmp_path / "installed"
+    with pytest.raises(fetcher.CharacterPackFetchError, match="validation"):
+        fetcher.fetch_character_pack(
+            output,
+            lock_path=lock_path,
+            environment={fetcher.TOKEN_ENVIRONMENT: "test-secret"},
+            download=_fake_download(archive),
+            engine=engine,
+        )
+    assert not output.exists()
