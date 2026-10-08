@@ -3831,8 +3831,7 @@
         "docs/character-pack/extraction-worklist.md",
         "docs/character-pack/mohan-inventory-summary.md",
         "docs/character-pack/mohan-inventory.json",
-        "domain/persona_defaults.py",
-        "tests/impact_map.json"
+        "domain/persona_defaults.py"
       ],
       "tests": [
         "test_build_character_inventory.py"
@@ -4099,6 +4098,16 @@
         "test_wellbeing_app_bridge.py",
         "test_wellbeing_occurrences.py",
         "test_wellbeing_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tests/impact_map.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_pytest_collection_contract.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
