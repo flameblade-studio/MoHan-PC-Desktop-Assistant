@@ -22,6 +22,7 @@ MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
 DERIVATIVE_COUNT = 234
+PERSISTED_IDENTIFIER_FILE_COUNT = 2
 DERIVATIVE_COUNTS = {
     "fullbody_blink": 24,
     "fullbody_visible_hand": 8,
@@ -30,8 +31,6 @@ DERIVATIVE_COUNTS = {
     "fullbody_complete_oral": 33,
 }
 EXTRACTED_ENGINE_SOURCES = (
-    "application/wardrobe_service.py",
-    "domain/outfit_pack_official.py",
     "presentation/companion_core.py",
     "presentation/companion_visual_dynamics.py",
 )
@@ -156,7 +155,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 16  # 13 persona/dialogue/voice/UI files + rig manifest + runtime bindings + expression catalog
+CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 files plus validated appearance defaults.
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
@@ -168,6 +167,7 @@ def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> Non
     assert rows["assets/characters/mohan/rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
     assert rows["assets/characters/mohan/dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
     assert rows["assets/characters/mohan/persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
+    assert rows["assets/characters/mohan/appearance/defaults.json"]["category"] == "character_appearance_defaults"
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
@@ -176,10 +176,14 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     by_path = {row["path"]: row for row in rows}
     assert inventory["scope_counts"]["embedded_code"] == len(rows)
     assert set(inventory["embedded_code_classification_counts"]) <= {
-        "engine_extract", "product_shell_allowed", "ui_text_reference",
+        "engine_extract", "persisted_identifier", "product_shell_allowed", "ui_text_reference",
     }
     assert "engine_extract" not in inventory["embedded_code_classification_counts"]
     assert "product_shell_allowed" in inventory["embedded_code_classification_counts"]
+    assert (
+        inventory["embedded_code_classification_counts"]["persisted_identifier"]
+        == PERSISTED_IDENTIFIER_FILE_COUNT
+    )
     assert {
         "infrastructure/app_resources.py",
         "presentation/ui_localization.py",
@@ -326,7 +330,7 @@ def test_work_packages_are_exclusive_and_product_shell_is_reasoned(
     allowed_paths = {row["path"] for row in worklist["product_shell_allowed"]}
     classified_allowed = {
         row["path"] for row in inventory["files"]
-        if row.get("classification") == "product_shell_allowed"
+        if row.get("classification") in {"persisted_identifier", "product_shell_allowed"}
     }
     assert allowed_paths == classified_allowed
 
@@ -358,6 +362,20 @@ def test_appearance_pack_identifiers_are_detected() -> None:
     evidence = builder._content_evidence("domain/example.py", source)
     matched = {row["matched"] for row in evidence if row["rule"] == "character_appearance_pack_identifier"}
     assert matched == {"mohan.official.blue-white-hanfu", "mohan-signature"}
+
+
+def test_builtin_outfit_sentinel_is_only_a_persisted_identifier() -> None:
+    source = 'BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"\n'
+    evidence = builder._content_evidence("application/wardrobe_service.py", source)
+    assert {row["rule"] for row in evidence} == {"persisted_identifier"}
+    assert builder._source_classification(
+        "application/wardrobe_service.py",
+        evidence,
+    ) == "persisted_identifier"
+    ordinary = builder._content_evidence("domain/example.py", source)
+    assert {row["rule"] for row in ordinary} == {
+        "character_appearance_pack_identifier"
+    }
 
 
 def test_multiline_literal_evidence_points_at_the_matching_line() -> None:

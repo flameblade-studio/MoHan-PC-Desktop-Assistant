@@ -15,138 +15,29 @@ without an import cycle.
 
 from __future__ import annotations
 
-lazy import json
 lazy from collections.abc import Callable, Iterable
-lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from typing import Protocol
 
-
-_APPEARANCE_SOURCE_PATH = Path(__file__).resolve().parents[1].joinpath(
-    "assets", "characters", "mohan", "pack-source.json"
+lazy from domain.character_source import (
+    CharacterAppearanceDefaults,
+    CharacterSource,
+    character_appearance_defaults,
 )
 
 
-@dataclass(frozen=True, slots=True)
-class _OfficialAppearance:
-    default_outfit_id: str
-    makeup_pack_id: str
-    makeup_item_id: str
-    makeup_variants: tuple[str, ...]
-    makeup_menu_variants: tuple[str, ...]
-    makeup_always_visible_variants: tuple[str, ...]
-    outfit_pack_id: str
-    outfit_ensemble_id: str
-    native_hair: tuple[str, str]
-    native_headwear: tuple[str, str]
+def _load_official_appearance(
+    source: CharacterSource | None = None,
+) -> CharacterAppearanceDefaults:
+    """Read already validated appearance data through the character-source boundary."""
 
-
-def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
-    result: dict[str, object] = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError(f"Duplicate character appearance field: {key}")
-        result[key] = value
-    return result
-
-
-def _appearance_text(value: object, name: str) -> str:
-    if not isinstance(value, str) or not value:
-        raise ValueError(f"Character appearance {name} must be non-empty text.")
-    return value
-
-
-def _appearance_texts(value: object, name: str) -> tuple[str, ...]:
-    if not isinstance(value, list):
-        raise ValueError(f"Character appearance {name} must be a list.")
-    result = tuple(_appearance_text(item, name) for item in value)
-    if not result or len(result) != len(set(result)):
-        raise ValueError(f"Character appearance {name} must contain unique values.")
-    return result
-
-
-def _appearance_object(
-    value: object,
-    keys: frozenset[str],
-    name: str,
-) -> dict[str, object]:
-    if not isinstance(value, dict) or set(value) != keys:
-        raise ValueError(f"Character appearance {name} must contain exactly {sorted(keys)}.")
-    return value
-
-
-def _load_official_appearance(path: Path = _APPEARANCE_SOURCE_PATH) -> _OfficialAppearance:
-    try:
-        payload = json.loads(
-            path.read_text(encoding="utf-8"),
-            object_pairs_hook=_unique_json_object,
-        )
-        if not isinstance(payload, dict):
-            raise ValueError("Character appearance source must be an object.")
-        source = payload
-        if (
-            source.get("schema") != "flameblade.character-pack-build-source.v1"
-            or source.get("schema_version") != 1
-        ):
-            raise ValueError("Character appearance source uses an unsupported schema.")
-        appearance = _appearance_object(
-            source.get("appearance_defaults"),
-            frozenset({"default_outfit_id", "makeup", "outfit"}),
-            "defaults",
-        )
-        makeup = _appearance_object(
-            appearance["makeup"],
-            frozenset({"pack_id", "item_id", "variants", "menu_variants", "always_visible_variants"}),
-            "makeup",
-        )
-        outfit = _appearance_object(
-            appearance["outfit"],
-            frozenset({"pack_id", "ensemble_id", "native_hair", "native_headwear"}),
-            "outfit",
-        )
-        hair = _appearance_object(
-            outfit["native_hair"], frozenset({"item_id", "variant_id"}), "native_hair"
-        )
-        headwear = _appearance_object(
-            outfit["native_headwear"],
-            frozenset({"item_id", "variant_id"}),
-            "native_headwear",
-        )
-        variants = _appearance_texts(makeup["variants"], "makeup.variants")
-        menu_variants = _appearance_texts(makeup["menu_variants"], "makeup.menu_variants")
-        always_visible = _appearance_texts(
-            makeup["always_visible_variants"], "makeup.always_visible_variants"
-        )
-        if set(menu_variants) != set(variants) or not set(always_visible) <= set(variants):
-            raise ValueError("Character appearance makeup variant groups must stay consistent.")
-        return _OfficialAppearance(
-            default_outfit_id=_appearance_text(
-                appearance["default_outfit_id"], "default_outfit_id"
-            ),
-            makeup_pack_id=_appearance_text(makeup["pack_id"], "makeup.pack_id"),
-            makeup_item_id=_appearance_text(makeup["item_id"], "makeup.item_id"),
-            makeup_variants=variants,
-            makeup_menu_variants=menu_variants,
-            makeup_always_visible_variants=always_visible,
-            outfit_pack_id=_appearance_text(outfit["pack_id"], "outfit.pack_id"),
-            outfit_ensemble_id=_appearance_text(
-                outfit["ensemble_id"], "outfit.ensemble_id"
-            ),
-            native_hair=(
-                _appearance_text(hair["item_id"], "native_hair.item_id"),
-                _appearance_text(hair["variant_id"], "native_hair.variant_id"),
-            ),
-            native_headwear=(
-                _appearance_text(headwear["item_id"], "native_headwear.item_id"),
-                _appearance_text(headwear["variant_id"], "native_headwear.variant_id"),
-            ),
-        )
-    except (OSError, UnicodeError, ValueError) as error:
-        raise RuntimeError("Bundled character appearance defaults must be valid UTF-8 JSON.") from error
+    return character_appearance_defaults(source)
 
 
 _APPEARANCE = _load_official_appearance()
-DEFAULT_OUTFIT_SELECTION_ID = _APPEARANCE.default_outfit_id
+# Compatibility alias for callers introduced with character-pack 1.0.1.  This
+# value is a persisted product-shell sentinel, not character appearance data.
+DEFAULT_OUTFIT_SELECTION_ID = "mohan.default.blue-silver"
 BUILTIN_MAKEUP_PACK_ID = _APPEARANCE.makeup_pack_id
 BUILTIN_MAKEUP_ITEM_ID = _APPEARANCE.makeup_item_id
 BUILTIN_MAKEUP_VARIANTS = _APPEARANCE.makeup_variants
@@ -162,8 +53,16 @@ OFFICIAL_OUTFIT_ENSEMBLE_ID = _APPEARANCE.outfit_ensemble_id
 # These persisted ids predate the reviewed V5 sources.  On the V5 full-body
 # atlas, the named hair is already in the native layers; repainting the old
 # loose-hair asset would add a second hairstyle over the accepted bun.
-OFFICIAL_NATIVE_HAIR_ALIAS = (OFFICIAL_OUTFIT_PACK_ID, *_APPEARANCE.native_hair)
-OFFICIAL_NATIVE_HEADWEAR_ALIAS = (OFFICIAL_OUTFIT_PACK_ID, *_APPEARANCE.native_headwear)
+OFFICIAL_NATIVE_HAIR_ALIAS = (
+    OFFICIAL_OUTFIT_PACK_ID,
+    _APPEARANCE.native_hair.item_id,
+    _APPEARANCE.native_hair.variant_id,
+)
+OFFICIAL_NATIVE_HEADWEAR_ALIAS = (
+    OFFICIAL_OUTFIT_PACK_ID,
+    _APPEARANCE.native_headwear.item_id,
+    _APPEARANCE.native_headwear.variant_id,
+)
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
 # Ids reserved for archives under the official pack root; user imports remain separate from them.
@@ -176,9 +75,20 @@ Resolution = tuple[str, Identity]
 
 def is_official_native_alias(category: str, identity: Identity) -> bool:
     """Recognize a legacy official id without changing saved selections."""
+    appearance = _load_official_appearance()
+    hair = (
+        appearance.outfit_pack_id,
+        appearance.native_hair.item_id,
+        appearance.native_hair.variant_id,
+    )
+    headwear = (
+        appearance.outfit_pack_id,
+        appearance.native_headwear.item_id,
+        appearance.native_headwear.variant_id,
+    )
     return (
-        (category == "hairstyle" and identity == OFFICIAL_NATIVE_HAIR_ALIAS)
-        or (category == "headwear" and identity == OFFICIAL_NATIVE_HEADWEAR_ALIAS)
+        (category == "hairstyle" and identity == hair)
+        or (category == "headwear" and identity == headwear)
     )
 
 
@@ -229,11 +139,13 @@ class EnsembleLike(Protocol):
 
 def official_outfit_ensemble(ensembles: Iterable[EnsembleLike]) -> EnsembleLike | None:
     """The official default ensemble among the installed ones; the sentinel identifies a stripped build."""
+    appearance = _load_official_appearance()
     return next(
         (
             ensemble
             for ensemble in ensembles
-            if (ensemble.pack_id, ensemble.ensemble_id) == (OFFICIAL_OUTFIT_PACK_ID, OFFICIAL_OUTFIT_ENSEMBLE_ID)
+            if (ensemble.pack_id, ensemble.ensemble_id)
+            == (appearance.outfit_pack_id, appearance.outfit_ensemble_id)
         ),
         None,
     )
@@ -241,8 +153,10 @@ def official_outfit_ensemble(ensembles: Iterable[EnsembleLike]) -> EnsembleLike 
 
 def builtin_makeup_resolution(requested: Identity, installed_makeup: Iterable[SelectionLike]) -> Resolution:
     """``builtin`` makeup means the official built-in variant while its pack ships; a bare face until then."""
-    variant = requested[2] if requested[2] in BUILTIN_MAKEUP_VARIANTS else BUILTIN_MAKEUP_VARIANTS[0]
-    official = (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, variant)
+    appearance = _load_official_appearance()
+    variants = appearance.makeup_variants
+    variant = requested[2] if requested[2] in variants else variants[0]
+    official = (appearance.makeup_pack_id, appearance.makeup_item_id, variant)
     installed = {(item.pack_id, item.item_id, item.variant_id) for item in installed_makeup}
     return ("installed", official) if official in installed else ("builtin", BARE_SELECTION)
 
@@ -255,7 +169,14 @@ def builtin_outfit_resolution(category: str, requested: Identity, ensembles: Ite
     )
     if selection is None or selection.item_id is None or selection.variant_id is None:
         return ("builtin", requested)
-    return ("installed", (OFFICIAL_OUTFIT_PACK_ID, selection.item_id, selection.variant_id))
+    return (
+        "installed",
+        (
+            _load_official_appearance().outfit_pack_id,
+            selection.item_id,
+            selection.variant_id,
+        ),
+    )
 
 
 def resolve_builtin_sentinel(

@@ -6,7 +6,9 @@ lazy import json
 lazy import os
 lazy import sys
 lazy import zipfile
+lazy from dataclasses import replace
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,7 +20,15 @@ lazy import pytest
 lazy from PySide6.QtGui import QColor, QImage, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
+lazy from application import service_container, wardrobe_service as wardrobe_module
+lazy from application.wardrobe_service import (
+    BUILTIN_OUTFIT_ID,
+    InstalledOutfit,
+    WardrobeService,
+)
+lazy from domain.character_pack.appearance_data import load_character_appearance_defaults
+lazy from domain.character_pack.character_data_models import CharacterDataError
+lazy from domain.character_source import activate_character_source
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
     FOUNDATION_SLOT,
@@ -48,6 +58,7 @@ lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_PACK_ID,
     OFFICIAL_PACK_IDS,
     _load_official_appearance,
+    official_outfit_ensemble,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from test_outfit_pack import _manifest, _pack, _png
@@ -175,14 +186,15 @@ def _assert_makeup_variant_contract(variant) -> None:
 
 def test_official_appearance_identifiers_come_from_character_data() -> None:
     source = json.loads(
-        (ROOT / "assets/characters/mohan/pack-source.json").read_text(
+        (ROOT / "assets/characters/mohan/appearance/defaults.json").read_text(
             encoding="utf-8"
         )
-    )["appearance_defaults"]
+    )
     makeup = source["makeup"]
     outfit = source["outfit"]
 
-    assert DEFAULT_OUTFIT_SELECTION_ID == BUILTIN_OUTFIT_ID == source["default_outfit_id"]
+    assert "default_outfit_id" not in source
+    assert DEFAULT_OUTFIT_SELECTION_ID == BUILTIN_OUTFIT_ID == "mohan.default.blue-silver"
     assert (
         makeup["pack_id"],
         makeup["item_id"],
@@ -208,12 +220,79 @@ def test_official_appearance_identifiers_come_from_character_data() -> None:
     ) == OFFICIAL_NATIVE_HEADWEAR_ALIAS
 
 
-def test_official_appearance_data_fails_closed(tmp_path: Path) -> None:
-    invalid = tmp_path / "pack-source.json"
-    invalid.write_text("{}\n", encoding="utf-8", newline="\n")
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda data: data.pop("outfit"),
+        lambda data: data.update(schema_version=2),
+        lambda data: data["makeup"].update(menu_variants=["light"]),
+        lambda data: data["makeup"].update(always_visible_variants=["neon"]),
+        lambda data: data["outfit"].update(ensemble_id=""),
+    ],
+)
+def test_official_appearance_data_fails_closed(tmp_path: Path, mutate) -> None:
+    source = ROOT / "assets/characters/mohan/appearance/defaults.json"
+    data = json.loads(source.read_text(encoding="utf-8"))
+    mutate(data)
+    invalid = tmp_path / "defaults.json"
+    invalid.write_text(json.dumps(data), encoding="utf-8", newline="\n")
 
-    with pytest.raises(RuntimeError, match="valid UTF-8 JSON"):
-        _load_official_appearance(invalid)
+    with pytest.raises(CharacterDataError):
+        load_character_appearance_defaults(invalid)
+
+
+def test_official_appearance_reads_through_character_source() -> None:
+    character_source = service_container.create_default_character_source()
+    assert _load_official_appearance(character_source) == (
+        character_source.appearance.appearance_defaults
+    )
+
+
+def test_changed_default_ensemble_keeps_the_persisted_builtin_sentinel(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    legacy = service_container.create_default_character_source()
+    changed = replace(
+        legacy.appearance_defaults,
+        outfit_ensemble_id="alternate-default-ensemble",
+    )
+    selected = SimpleNamespace(
+        pack_id=changed.outfit_pack_id,
+        ensemble_id=changed.outfit_ensemble_id,
+    )
+    previous = SimpleNamespace(
+        pack_id=changed.outfit_pack_id,
+        ensemble_id=legacy.appearance_defaults.outfit_ensemble_id,
+    )
+    changed_source = SimpleNamespace(
+        assets=legacy.assets,
+        persona=legacy.persona,
+        appearance=SimpleNamespace(appearance_defaults=changed),
+    )
+    activate_character_source(changed_source)
+    restores: list[Path] = []
+    monkeypatch.setattr(
+        wardrobe_module,
+        "restore_builtin_outfit",
+        lambda path: restores.append(path),
+    )
+    restored = InstalledOutfit(
+        BUILTIN_OUTFIT_ID,
+        "changed default",
+        True,
+        True,
+        ensemble=selected,
+    )
+    service = WardrobeService(tmp_path / "store")
+    monkeypatch.setattr(service, "outfits", lambda language="zh-TW": (restored,))
+    try:
+        assert official_outfit_ensemble((previous, selected)) is selected
+        assert service.apply("mohan.default.blue-silver") is restored
+        assert restores == [tmp_path / "store"]
+        assert BUILTIN_OUTFIT_ID == "mohan.default.blue-silver"
+    finally:
+        activate_character_source(legacy)
 
 
 def test_official_packs_ship_sealed_and_valid() -> None:

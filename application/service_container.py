@@ -53,12 +53,15 @@ lazy from domain.character_full_body_rig import compatible_yaws
 lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_source import (
     CharacterAppearanceContract,
+    CharacterAppearanceDefaults,
     CharacterAssets,
     CharacterBodyProfileReference,
     CharacterCanvas,
     CharacterPersona,
     CharacterSource,
+    activate_character_source,
 )
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import (
     DEFAULT_UI_LANGUAGE,
     canonical_ui_language,
@@ -141,6 +144,10 @@ class LegacyMohanCharacterSource(
     @property
     def appearance(self) -> CharacterAppearanceContract:
         return self
+
+    @property
+    def appearance_defaults(self) -> CharacterAppearanceDefaults:
+        return load_mohan_character_data().appearance_defaults
 
     @property
     def asset_root(self) -> Path:
@@ -234,7 +241,9 @@ def _character_relative_path(value: str) -> PurePosixPath:
 def create_default_character_source() -> CharacterSource:
     """Compose the compatibility source used by the unchanged MoHan runtime."""
 
-    return LegacyMohanCharacterSource(resource_path("."))
+    source = LegacyMohanCharacterSource(resource_path("."))
+    activate_character_source(source)
+    return source
 
 
 @dataclass

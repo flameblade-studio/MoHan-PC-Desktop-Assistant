@@ -72,6 +72,7 @@
     }
   ],
   "embedded_code_classification_counts": {
+    "persisted_identifier": 2,
     "product_shell_allowed": 15
   },
   "files": [
@@ -146,6 +147,151 @@
       "work_package": null
     },
     {
+      "bytes": 20690,
+      "category": "embedded_character_content",
+      "classification": "persisted_identifier",
+      "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+      "content_categories": [
+        "product_shell"
+      ],
+      "content_locations": [
+        {
+          "content_kind": "product_shell",
+          "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+          "line": 56,
+          "matched": "mohan.default.blue-silver",
+          "path": "application/wardrobe_service.py",
+          "rule": "persisted_identifier",
+          "suggested_data_target": "application/wardrobe_service.py",
+          "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
+        }
+      ],
+      "estimated_difficulty": "low",
+      "migration": "被程式寫死需先改",
+      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
+      "path": "application/wardrobe_service.py",
+      "readers": [
+        {
+          "line": 9,
+          "path": "application/autonomous_wardrobe_runtime.py",
+          "text": "lazy from application.wardrobe_service import WardrobeService"
+        },
+        {
+          "line": 11,
+          "path": "presentation/_dashboard_wardrobe_tab.py",
+          "text": "lazy from application.wardrobe_service import WardrobeService"
+        },
+        {
+          "line": 25,
+          "path": "presentation/autonomous_outfit_generation_controller.py",
+          "text": "lazy from application.wardrobe_service import WardrobeService"
+        },
+        {
+          "line": 16,
+          "path": "presentation/dashboard_shell.py",
+          "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID"
+        },
+        {
+          "line": 11,
+          "path": "presentation/dashboard_wardrobe_categories.py",
+          "text": "lazy from application.wardrobe_service import WardrobeService"
+        },
+        {
+          "line": 12,
+          "path": "presentation/dashboard_wardrobe_categories.py",
+          "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID"
+        },
+        {
+          "line": 9,
+          "path": "presentation/dashboard_wardrobe_packages.py",
+          "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService"
+        }
+      ],
+      "scope": "embedded_code",
+      "sha256": "ba604d6ae72f9fe55994a176db2c48693ac738e775b9941a302afe596ed7b9da",
+      "suggested_data_targets": [
+        "application/wardrobe_service.py"
+      ],
+      "symbols": [
+        {
+          "end_line": 56,
+          "line": 56,
+          "name": "BUILTIN_OUTFIT_ID"
+        },
+        {
+          "end_line": 59,
+          "line": 57,
+          "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
+        },
+        {
+          "end_line": 60,
+          "line": 60,
+          "name": "BARE_MAKEUP_ID"
+        },
+        {
+          "end_line": 61,
+          "line": 61,
+          "name": "BUILTIN_MAKEUP_PREFIX"
+        },
+        {
+          "end_line": 62,
+          "line": 62,
+          "name": "SELECTION_ID_PARTS"
+        },
+        {
+          "end_line": 72,
+          "line": 66,
+          "name": "InstalledOutfit"
+        },
+        {
+          "end_line": 90,
+          "line": 76,
+          "name": "MakeupOption"
+        },
+        {
+          "end_line": 97,
+          "line": 94,
+          "name": "MakeupState"
+        },
+        {
+          "end_line": 103,
+          "line": 100,
+          "name": "_selection_id"
+        },
+        {
+          "end_line": 114,
+          "line": 106,
+          "name": "_localized_name"
+        },
+        {
+          "end_line": 120,
+          "line": 117,
+          "name": "_ensemble_id"
+        },
+        {
+          "end_line": 125,
+          "line": 123,
+          "name": "_localized_pack_name"
+        },
+        {
+          "end_line": 140,
+          "line": 128,
+          "name": "_localized_ensemble_name"
+        },
+        {
+          "end_line": 150,
+          "line": 143,
+          "name": "_makeup_option_id"
+        },
+        {
+          "end_line": 558,
+          "line": 153,
+          "name": "WardrobeService"
+        }
+      ],
+      "work_package": null
+    },
+    {
       "bytes": 2561,
       "category": "archive_or_support",
       "manifest_references": [],
@@ -155,6 +301,23 @@
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
       "sha256": "4544c76d0e94021a456ecb9c87b05e275e511f395aa1f6dac22911af1bebffdd"
+    },
+    {
+      "bytes": 698,
+      "category": "character_appearance_defaults",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/appearance/defaults.json",
+      "readers": [
+        {
+          "line": 21,
+          "path": "domain/character_pack/appearance_data.py",
+          "text": "text = Path(path).read_text(encoding=\"utf-8\")"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "493c65419a7ff56900dc1ce0841b61582ec316877722ba9dc5791597fa55752e"
     },
     {
       "bytes": 12637,
@@ -276,7 +439,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 7909,
+      "bytes": 7422,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -284,7 +447,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "404ae24e11d7cd60fd2838486d125c109781c5e0e9f3524de06d3265b372b7bb"
+      "sha256": "17276688a4fc1bd025018d0b911ab91db299079c84a644ed896e51407e7454ae"
     },
     {
       "bytes": 3149,
@@ -19657,7 +19820,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 366,
+          "line": 375,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47428,7 +47591,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 366,
+          "line": 375,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -89142,7 +89305,7 @@
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
         },
         {
-          "line": 67,
+          "line": 70,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT"
         },
@@ -89762,6 +89925,206 @@
       "work_package": null
     },
     {
+      "bytes": 8080,
+      "category": "embedded_character_content",
+      "classification": "persisted_identifier",
+      "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+      "content_categories": [
+        "product_shell"
+      ],
+      "content_locations": [
+        {
+          "content_kind": "product_shell",
+          "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+          "line": 40,
+          "matched": "mohan.default.blue-silver",
+          "path": "domain/outfit_pack_official.py",
+          "rule": "persisted_identifier",
+          "suggested_data_target": "application/wardrobe_service.py",
+          "text": "DEFAULT_OUTFIT_SELECTION_ID = \"mohan.default.blue-silver\""
+        }
+      ],
+      "estimated_difficulty": "low",
+      "migration": "被程式寫死需先改",
+      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
+      "path": "domain/outfit_pack_official.py",
+      "readers": [
+        {
+          "line": 48,
+          "path": "application/wardrobe_service.py",
+          "text": "lazy from domain.outfit_pack_official import ("
+        },
+        {
+          "line": 34,
+          "path": "domain/outfit_pack.py",
+          "text": "lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel"
+        },
+        {
+          "line": 12,
+          "path": "infrastructure/active_outfit_base_clear.py",
+          "text": "lazy from domain.outfit_pack_official import ("
+        },
+        {
+          "line": 33,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "lazy from domain.outfit_pack_official import native_overlay_is_redundant"
+        },
+        {
+          "line": 32,
+          "path": "infrastructure/active_outfit_overlay_layers.py",
+          "text": "lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID"
+        },
+        {
+          "line": 14,
+          "path": "presentation/dashboard_wardrobe_categories.py",
+          "text": "lazy from domain.outfit_pack_official import OFFICIAL_NATIVE_HAIR_ALIAS"
+        }
+      ],
+      "scope": "embedded_code",
+      "sha256": "c3d9f8b0aa64563e7e78124e12e4cfa38ff422cf114d18f8270024ced6972342",
+      "suggested_data_targets": [
+        "application/wardrobe_service.py"
+      ],
+      "symbols": [
+        {
+          "end_line": 34,
+          "line": 29,
+          "name": "_load_official_appearance"
+        },
+        {
+          "end_line": 37,
+          "line": 37,
+          "name": "_APPEARANCE"
+        },
+        {
+          "end_line": 40,
+          "line": 40,
+          "name": "DEFAULT_OUTFIT_SELECTION_ID"
+        },
+        {
+          "end_line": 41,
+          "line": 41,
+          "name": "BUILTIN_MAKEUP_PACK_ID"
+        },
+        {
+          "end_line": 42,
+          "line": 42,
+          "name": "BUILTIN_MAKEUP_ITEM_ID"
+        },
+        {
+          "end_line": 43,
+          "line": 43,
+          "name": "BUILTIN_MAKEUP_VARIANTS"
+        },
+        {
+          "end_line": 46,
+          "line": 46,
+          "name": "BUILTIN_MAKEUP_MENU_VARIANTS"
+        },
+        {
+          "end_line": 50,
+          "line": 50,
+          "name": "BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS"
+        },
+        {
+          "end_line": 51,
+          "line": 51,
+          "name": "OFFICIAL_OUTFIT_PACK_ID"
+        },
+        {
+          "end_line": 52,
+          "line": 52,
+          "name": "OFFICIAL_OUTFIT_ENSEMBLE_ID"
+        },
+        {
+          "end_line": 60,
+          "line": 56,
+          "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
+        },
+        {
+          "end_line": 65,
+          "line": 61,
+          "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
+        },
+        {
+          "end_line": 67,
+          "line": 67,
+          "name": "OFFICIAL_OUTFIT_CATEGORIES"
+        },
+        {
+          "end_line": 69,
+          "line": 69,
+          "name": "OFFICIAL_PACK_IDS"
+        },
+        {
+          "end_line": 70,
+          "line": 70,
+          "name": "BARE_SELECTION"
+        },
+        {
+          "end_line": 72,
+          "line": 72,
+          "name": "Identity"
+        },
+        {
+          "end_line": 73,
+          "line": 73,
+          "name": "Resolution"
+        },
+        {
+          "end_line": 92,
+          "line": 76,
+          "name": "is_official_native_alias"
+        },
+        {
+          "end_line": 103,
+          "line": 95,
+          "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
+        },
+        {
+          "end_line": 119,
+          "line": 106,
+          "name": "native_overlay_is_redundant"
+        },
+        {
+          "end_line": 125,
+          "line": 122,
+          "name": "SelectionLike"
+        },
+        {
+          "end_line": 131,
+          "line": 128,
+          "name": "EnsembleSelectionLike"
+        },
+        {
+          "end_line": 137,
+          "line": 134,
+          "name": "EnsembleLike"
+        },
+        {
+          "end_line": 151,
+          "line": 140,
+          "name": "official_outfit_ensemble"
+        },
+        {
+          "end_line": 161,
+          "line": 154,
+          "name": "builtin_makeup_resolution"
+        },
+        {
+          "end_line": 179,
+          "line": 164,
+          "name": "builtin_outfit_resolution"
+        },
+        {
+          "end_line": 197,
+          "line": 182,
+          "name": "resolve_builtin_sentinel"
+        }
+      ],
+      "work_package": null
+    },
+    {
       "bytes": 2191,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -89954,7 +90317,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 81,
+          "line": 84,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -90051,7 +90414,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 101,
+          "line": 104,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -90221,7 +90584,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 103,
+          "line": 106,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -92560,6 +92923,7 @@
     "appearance_replacement_mask": 13,
     "appearance_silhouette": 19,
     "body_overlay": 15,
+    "character_appearance_defaults": 1,
     "character_dialogue_data": 5,
     "character_expression_catalog": 1,
     "character_persona_data": 5,
@@ -92596,7 +92960,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 15,
+    "embedded_code": 17,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
@@ -92605,7 +92969,7 @@
     "excluded_review_source": 39,
     "excluded_support": 19,
     "product_validation_data": 48,
-    "runtime_data": 2989
+    "runtime_data": 2990
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

@@ -1,0 +1,34 @@
+{
+  "schema": "flameblade.character-appearance-defaults.v1",
+  "schema_version": 1,
+  "makeup": {
+    "pack_id": "mohan.makeup.builtin",
+    "item_id": "mohan-signature",
+    "variants": [
+      "classic",
+      "light",
+      "glamorous"
+    ],
+    "menu_variants": [
+      "light",
+      "classic",
+      "glamorous"
+    ],
+    "always_visible_variants": [
+      "light",
+      "classic"
+    ]
+  },
+  "outfit": {
+    "pack_id": "mohan.official.blue-white-hanfu",
+    "ensemble_id": "blue-white-hanfu",
+    "native_hair": {
+      "item_id": "loose-hair",
+      "variant_id": "ink-black"
+    },
+    "native_headwear": {
+      "item_id": "silver-hairpiece",
+      "variant_id": "silver"
+    }
+  }
+}

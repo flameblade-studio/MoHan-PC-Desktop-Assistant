@@ -2027,24 +2027,6 @@
     },
     {
       "paths": [
-        "domain/outfit_pack_official.py"
-      ],
-      "tests": [
-        "test_active_outfit_overlay.py",
-        "test_build_character_inventory.py",
-        "test_hairstyle_face_clip.py",
-        "test_official_default_pack.py",
-        "test_official_native_headwear.py",
-        "test_outfit_hand_occlusion.py",
-        "test_rear_hair_composition.py",
-        "test_reviewed_pose_foundation.py",
-        "test_reviewed_pose_overlay.py",
-        "test_reviewed_pose_variants.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "infrastructure/layered_full_body_renderer.py"
       ],
       "tests": [
@@ -2081,6 +2063,23 @@
         "test_mouth_authority_geometry.py",
         "test_pose_atlas_declared_digest.py",
         "test_pose_atlas_runtime_inventory.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/outfit_pack_official.py"
+      ],
+      "tests": [
+        "test_active_outfit_overlay.py",
+        "test_hairstyle_face_clip.py",
+        "test_official_default_pack.py",
+        "test_official_native_headwear.py",
+        "test_outfit_hand_occlusion.py",
+        "test_rear_hair_composition.py",
+        "test_reviewed_pose_foundation.py",
+        "test_reviewed_pose_overlay.py",
+        "test_reviewed_pose_variants.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3833,6 +3832,7 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/pack-source.json",
         "assets/characters/mohan/persona/ui-identifiers.json"
       ],
       "tests": [
@@ -3843,11 +3843,12 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/pack-source.json"
+        "assets/characters/mohan/appearance/defaults.json"
       ],
       "tests": [
         "test_build_character_inventory.py",
         "test_build_character_pack.py",
+        "test_character_source.py",
         "test_official_default_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -4516,6 +4517,17 @@
     },
     {
       "paths": [
+        "domain/character_pack/character_data.py"
+      ],
+      "tests": [
+        "test_character_persona_data.py",
+        "test_character_source.py",
+        "test_engine_identity_parameterization.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/chronicle.py"
       ],
       "tests": [
@@ -4568,16 +4580,6 @@
         "test_localized_transcription_prompts.py",
         "test_prompt_cache.py",
         "test_python315_runtime.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_pack/character_data.py"
-      ],
-      "tests": [
-        "test_character_persona_data.py",
-        "test_engine_identity_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4662,7 +4664,6 @@
     },
     {
       "paths": [
-        "domain/character_source.py",
         "infrastructure/character_source_pack.py"
       ],
       "tests": [
@@ -4687,9 +4688,20 @@
         "test_japanese_localization.py",
         "test_multisensory_speech_regression.py",
         "test_native_product_wiring.py",
+        "test_official_default_pack.py",
         "test_service_language_wiring.py",
         "test_shared_hand_region_provider.py",
         "test_swallowed_error_d05.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_source.py"
+      ],
+      "tests": [
+        "test_character_source.py",
+        "test_official_default_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
