@@ -3402,6 +3402,7 @@
         "test_build_character_pack.py",
         "test_character_pack.py",
         "test_character_persona_data.py",
+        "test_character_runtime_data.py",
         "test_character_source.py",
         "test_check_pose_atlas_release.py",
         "test_engine_identity_parameterization.py",
@@ -4601,6 +4602,7 @@
       ],
       "tests": [
         "test_character_persona_data.py",
+        "test_character_runtime_data.py",
         "test_character_source.py",
         "test_engine_identity_parameterization.py"
       ],
@@ -4702,6 +4704,7 @@
       "paths": [
         "assets/onboarding/first-run-ink-tech.png",
         "assets/ui/mohan-cloud.svg",
+        "domain/character_data_types.py",
         "domain/character_runtime_data.py"
       ],
       "tests": [
@@ -4726,6 +4729,16 @@
       "tests": [
         "test_character_runtime_data.py",
         "test_dashboard_visual_consistency.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/character_data_models.py"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_official_default_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7225,8 +7238,7 @@
       "paths": [
         "ASSETS-LICENSE.md",
         "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
-        "domain/character_pack/appearance_data.py",
-        "domain/character_pack/character_data_models.py"
+        "domain/character_pack/appearance_data.py"
       ],
       "tests": [
         "test_official_default_pack.py"
