@@ -748,6 +748,20 @@
     },
     {
       "paths": [
+        "domain/*.py",
+        "application/*.py",
+        "infrastructure/*.py",
+        "integrations/*.py",
+        "presentation/*.py",
+        "app.py",
+        "version_info.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py"
+      ]
+    },
+    {
+      "paths": [
         "tests/conftest.py"
       ],
       "tests": [
@@ -3777,6 +3791,7 @@
         "docs/character-pack/mohan-inventory-summary.md",
         "docs/character-pack/mohan-inventory.json",
         "domain/persona_defaults.py",
+        "tests/impact_map.json",
         "tools/build_character_inventory.py"
       ],
       "tests": [
@@ -3927,6 +3942,16 @@
         "test_four_language_documentation.py",
         "test_github_governance.py",
         "test_release_notes_generation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/generate_test_impact_map.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_generate_test_impact_map.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5870,15 +5895,6 @@
     },
     {
       "paths": [
-        "tools/generate_test_impact_map.py"
-      ],
-      "tests": [
-        "test_generate_test_impact_map.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "domain/pose_runtime_loader.py"
       ],
       "tests": [
@@ -7328,7 +7344,6 @@
     },
     {
       "paths": [
-        "tests/impact_map.json",
         "tests/test_durations.json"
       ],
       "tests": [

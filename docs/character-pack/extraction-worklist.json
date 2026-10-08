@@ -5,13 +5,13 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 82,
-    "engine_extract_files": 68,
+    "actual_embedded_code_files": 83,
+    "engine_extract_files": 69,
     "manual_review_hint_only_files": 42,
-    "product_shell_allowed_files": 7,
-    "true_extraction_files": 75,
-    "ui_text_reference_files": 7,
-    "work_packages": 4
+    "product_shell_allowed_files": 14,
+    "true_extraction_files": 69,
+    "ui_text_reference_files": 0,
+    "work_packages": 3
   },
   "declared_product_shell_allowlist": [
     {
@@ -463,11 +463,6 @@
               "text": "suffix = Path(\"YanJianStudio\") / \"MoHan\""
             },
             {
-              "line": 897,
-              "matched": "MoHan",
-              "text": "(\"home_assistant\", \"home-assistant-token.dpapi\", \"MoHan Home Assistant token\"),"
-            },
-            {
               "line": 898,
               "matched": "MoHan",
               "text": "(\"oauth_google\", \"oauth-google.dpapi\", \"MoHan google OAuth token\"),"
@@ -481,6 +476,19 @@
               "line": 900,
               "matched": "MoHan",
               "text": "(\"oauth_github\", \"oauth-github.dpapi\", \"MoHan github OAuth token\"),"
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 897,
+              "matched": "MoHan",
+              "text": "(\"home_assistant\", \"home-assistant-token.dpapi\", \"MoHan Home Assistant token\"),"
             },
             {
               "line": 901,
@@ -493,15 +501,16 @@
               "text": "(\"gesture_templates\", \"gesture-templates.dpapi\", \"MoHan local gesture skeleton templates\"),"
             }
           ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
         }
       ],
       "estimated_difficulty": "high",
       "path": "application/presentation_ports.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
       ],
       "work_package": "engine-identity-parameterization"
     },
@@ -553,11 +562,6 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 622,
-              "matched": "MoHan",
-              "text": "\"MoHan OpenAI API key\","
-            },
-            {
               "line": 626,
               "matched": "MoHan",
               "text": "\"MoHan Azure Speech key\","
@@ -570,13 +574,27 @@
           ],
           "rule": "character_name_literal",
           "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 622,
+              "matched": "MoHan",
+              "text": "\"MoHan OpenAI API key\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
         }
       ],
       "estimated_difficulty": "medium",
       "path": "application/service_container.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
       ],
       "work_package": "engine-identity-parameterization"
     },
@@ -624,6 +642,19 @@
       "classification": "engine_extract",
       "content": [
         {
+          "content_kind": "appearance",
+          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 52,
+              "matched": "mohan.default.blue-silver",
+              "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "character_appearance_pack_identifier",
+          "suggested_data_target": "assets/characters/mohan/pack-source.json"
+        },
+        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -641,6 +672,7 @@
       "path": "application/wardrobe_service.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
+        "assets/characters/mohan/pack-source.json",
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
@@ -918,9 +950,9 @@
           "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
           "locations": [
             {
-              "line": 27,
+              "line": 28,
               "matched": "MOHAN_EMOTION",
-              "text": "\"在回覆正文的最後附加一個不可見控制標籤，格式必須是 \""
+              "text": "\"[[MOHAN_EMOTION:情緒:強度]]。情緒只能使用：\""
             },
             {
               "line": 34,
@@ -1409,6 +1441,41 @@
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": "rig-and-asset-parameterization"
+    },
+    {
+      "classification": "engine_extract",
+      "content": [
+        {
+          "content_kind": "appearance",
+          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 22,
+              "matched": "mohan.makeup.builtin",
+              "text": "BUILTIN_MAKEUP_PACK_ID = \"mohan.makeup.builtin\""
+            },
+            {
+              "line": 23,
+              "matched": "mohan-signature",
+              "text": "BUILTIN_MAKEUP_ITEM_ID = \"mohan-signature\""
+            },
+            {
+              "line": 32,
+              "matched": "mohan.official.blue-white-hanfu",
+              "text": "OFFICIAL_OUTFIT_PACK_ID = \"mohan.official.blue-white-hanfu\""
+            }
+          ],
+          "rule": "character_appearance_pack_identifier",
+          "suggested_data_target": "assets/characters/mohan/pack-source.json"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "domain/outfit_pack_official.py",
+      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/pack-source.json"
+      ],
+      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -2683,11 +2750,6 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 95,
-              "matched": "MoHan",
-              "text": "\"MoHan Home Assistant token\","
-            },
-            {
               "line": 100,
               "matched": "MoHan",
               "text": "\"MoHan google OAuth token\","
@@ -2701,6 +2763,19 @@
               "line": 110,
               "matched": "MoHan",
               "text": "\"MoHan github OAuth token\","
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 95,
+              "matched": "MoHan",
+              "text": "\"MoHan Home Assistant token\","
             },
             {
               "line": 115,
@@ -2713,15 +2788,16 @@
               "text": "\"MoHan local gesture skeleton templates\","
             }
           ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
         }
       ],
       "estimated_difficulty": "medium",
       "path": "infrastructure/portable_secret_binding.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
       ],
       "work_package": "engine-identity-parameterization"
     },
@@ -2796,30 +2872,39 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 31,
-              "matched": "MoHan",
-              "text": "description: str = \"MoHan OpenAI API key\","
-            },
-            {
               "line": 143,
               "matched": "MoHan",
               "text": "description: str = \"MoHan protected secret\","
             },
             {
-              "line": 149,
+              "line": 150,
               "matched": "墨寒",
-              "text": "f\"{capabilities.display_name} 的原生安全金鑰保存\""
+              "text": "\"尚未完成實機驗證；墨寒不會退回明文保存。\""
             }
           ],
           "rule": "character_name_literal",
           "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 31,
+              "matched": "MoHan",
+              "text": "description: str = \"MoHan OpenAI API key\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
         }
       ],
       "estimated_difficulty": "medium",
       "path": "infrastructure/secret_store.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
       ],
       "work_package": "engine-identity-parameterization"
     },
@@ -2949,36 +3034,6 @@
       "work_package": "persona-dialogue-voice-extraction"
     },
     {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 499,
-              "matched": "MoHan",
-              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
-            },
-            {
-              "line": 532,
-              "matched": "MoHan",
-              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "integrations/cloud_connectors.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
       "classification": "engine_extract",
       "content": [
         {
@@ -3032,14 +3087,14 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 539,
+              "line": 540,
               "matched": "MoHan",
-              "text": "\"Create a production-ready transparent PNG clothing overlay for the \""
+              "text": "\"exact MoHan reference image supplied. Output the new garment pixels with \""
             },
             {
-              "line": 557,
+              "line": 558,
               "matched": "MoHan",
-              "text": "\"Create a production-ready transparent PNG handheld accessory overlay \""
+              "text": "\"for the exact MoHan reference image supplied. Output the accessory pixels \""
             },
             {
               "line": 603,
@@ -3147,14 +3202,14 @@
               "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
             },
             {
-              "line": 440,
+              "line": 441,
               "matched": "主上",
-              "text": "+ \"\\n\\n## 即時對話承接規則\\n\""
+              "text": "\"先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。\""
             },
             {
-              "line": 440,
+              "line": 443,
               "matched": "妾",
-              "text": "+ \"\\n\\n## 即時對話承接規則\\n\""
+              "text": "\"直接延續妾上一句的內容；前文待提供時，\""
             }
           ],
           "rule": "character_title_or_dialogue_literal",
@@ -3843,9 +3898,9 @@
               "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
             },
             {
-              "line": 150,
+              "line": 151,
               "matched": "赤焰劍",
-              "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
+              "text": "\"自赤焰劍中醒來，往後便由妾伴您左右。\","
             },
             {
               "line": 156,
@@ -4296,41 +4351,6 @@
       "work_package": "persona-dialogue-voice-extraction"
     },
     {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 877,
-              "matched": "墨寒",
-              "text": "form.addRow(QLabel(self._t(\"about_heading\", \"<b>關於墨寒</b>\")))"
-            },
-            {
-              "line": 881,
-              "matched": "MoHan",
-              "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
-            },
-            {
-              "line": 881,
-              "matched": "墨寒",
-              "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "presentation/dashboard_settings.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
       "classification": "engine_extract",
       "content": [
         {
@@ -4359,71 +4379,6 @@
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 172,
-              "matched": "MoHan",
-              "text": "f\"MoHan {provider_id} OAuth token\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "presentation/flagship/cloud.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 60,
-              "matched": "MoHan",
-              "text": "\"MoHan Home Assistant token\","
-            },
-            {
-              "line": 64,
-              "matched": "MoHan",
-              "text": "\"MoHan OpenAI API key\","
-            },
-            {
-              "line": 68,
-              "matched": "MoHan",
-              "text": "\"MoHan local face identity templates\","
-            },
-            {
-              "line": 72,
-              "matched": "MoHan",
-              "text": "\"MoHan local gesture skeleton templates\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "presentation/flagship/runtime.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -4538,106 +4493,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 539,
-              "matched": "墨寒",
-              "text": "'about_heading': '<b>关于墨寒</b>',"
-            },
-            {
-              "line": 541,
-              "matched": "MoHan",
-              "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
-            },
-            {
-              "line": 541,
-              "matched": "墨寒",
-              "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "presentation/ui_localization.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 729,
-              "matched": "MoHan",
-              "text": "\"about_heading\": \"<b>About MoHan</b>\","
-            },
-            {
-              "line": 731,
-              "matched": "MoHan",
-              "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "presentation/ui_localization_en.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "classification": "ui_text_reference",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 533,
-              "matched": "墨寒",
-              "text": "\"about_heading\": \"<b>墨寒について</b>\","
-            },
-            {
-              "line": 535,
-              "matched": "MoHan",
-              "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
-            },
-            {
-              "line": 535,
-              "matched": "墨寒",
-              "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "presentation/ui_localization_ja.py",
-      "reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "ui-name-parameterization"
     }
   ],
   "owner_decisions": {
@@ -4720,11 +4575,6 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 16,
-              "matched": "墨寒",
-              "text": "APP_NAME = \"墨寒桌面助理\""
-            },
-            {
               "line": 223,
               "matched": "MoHan",
               "text": "raise RuntimeError(f\"MoHan application icon could not be loaded: {icon_path}\")"
@@ -4732,6 +4582,19 @@
           ],
           "rule": "character_name_literal",
           "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 16,
+              "matched": "墨寒",
+              "text": "APP_NAME = \"墨寒桌面助理\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
         }
       ],
       "estimated_difficulty": "high",
@@ -4739,7 +4602,8 @@
       "reason": "產品名、Windows AppUserModelID、圖示與 studio 識別屬墨寒產品殼。",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "infrastructure/app_resources.py"
       ],
       "work_package": null
     },
@@ -4800,6 +4664,36 @@
       "reason": "墨寒更新端點、User-Agent 與發行資產名稱屬產品殼。",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 499,
+              "matched": "MoHan",
+              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
+            },
+            {
+              "line": 532,
+              "matched": "MoHan",
+              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "integrations/cloud_connectors.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
       ],
       "work_package": null
     },
@@ -5097,6 +4991,106 @@
       "classification": "product_shell_allowed",
       "content": [
         {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 877,
+              "matched": "墨寒",
+              "text": "form.addRow(QLabel(self._t(\"about_heading\", \"<b>關於墨寒</b>\")))"
+            },
+            {
+              "line": 881,
+              "matched": "墨寒",
+              "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
+            },
+            {
+              "line": 882,
+              "matched": "MoHan",
+              "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/dashboard_settings.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 172,
+              "matched": "MoHan",
+              "text": "f\"MoHan {provider_id} OAuth token\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "presentation/flagship/cloud.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 60,
+              "matched": "MoHan",
+              "text": "\"MoHan Home Assistant token\","
+            },
+            {
+              "line": 64,
+              "matched": "MoHan",
+              "text": "\"MoHan OpenAI API key\","
+            },
+            {
+              "line": 68,
+              "matched": "MoHan",
+              "text": "\"MoHan local face identity templates\","
+            },
+            {
+              "line": 72,
+              "matched": "MoHan",
+              "text": "\"MoHan local gesture skeleton templates\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/flagship/runtime.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -5116,9 +5110,9 @@
               "text": "\"這個安裝包用來驗證墨寒能在 macOS／Linux 啟動、顯示四語介面，\""
             },
             {
-              "line": 73,
+              "line": 74,
               "matched": "墨寒",
-              "text": "\"Preview 不提供 API 金鑰、OAuth 或 Home Assistant 權杖輸入。\""
+              "text": "\"在原生安全保存完成前，墨寒不會退回明文保存，也不會假裝功能可用。\""
             },
             {
               "line": 79,
@@ -5136,14 +5130,9 @@
               "text": "\"此安装包用于验证墨寒能在 macOS／Linux 启动、显示四语界面，\""
             },
             {
-              "line": 103,
+              "line": 104,
               "matched": "墨寒",
-              "text": "\"Preview 不提供 API 密钥、OAuth 或 Home Assistant 令牌输入。\""
-            },
-            {
-              "line": 109,
-              "matched": "MoHan",
-              "text": "\"window_title\": \"MoHan Desktop Assistant — macOS/Linux Preview\","
+              "text": "\"原生安全保存完成前，墨寒不会退回明文保存，也不会假装功能可用。\""
             },
             {
               "line": 111,
@@ -5151,9 +5140,27 @@
               "text": "\"heading\": \"MoHan has arrived on this platform—carefully\","
             },
             {
-              "line": 135,
+              "line": 136,
               "matched": "MoHan",
-              "text": "\"This Preview does not provide API-key, OAuth, or Home Assistant token \""
+              "text": "\"fields. Until native secure storage is verified, MoHan will not \""
+            },
+            {
+              "line": 144,
+              "matched": "墨寒",
+              "text": "\"heading\": \"墨寒はこの環境へ到着しました。現在は慎重に整備中です\","
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 109,
+              "matched": "MoHan",
+              "text": "\"window_title\": \"MoHan Desktop Assistant — macOS/Linux Preview\","
             },
             {
               "line": 142,
@@ -5161,25 +5168,121 @@
               "text": "\"window_title\": \"墨寒デスクトップアシスタント — macOS／Linux Preview\","
             },
             {
-              "line": 144,
-              "matched": "墨寒",
-              "text": "\"heading\": \"墨寒はこの環境へ到着しました。現在は慎重に整備中です\","
-            },
-            {
               "line": 397,
               "matched": "MoHan",
               "text": "app.setApplicationName(\"MoHan Desktop Assistant Preview\")"
             }
           ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
         }
       ],
       "estimated_difficulty": "high",
       "path": "presentation/preview_app.py",
       "reason": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 539,
+              "matched": "墨寒",
+              "text": "'about_heading': '<b>关于墨寒</b>',"
+            },
+            {
+              "line": 541,
+              "matched": "墨寒",
+              "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
+            },
+            {
+              "line": 542,
+              "matched": "MoHan",
+              "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/ui_localization.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 729,
+              "matched": "MoHan",
+              "text": "\"about_heading\": \"<b>About MoHan</b>\","
+            },
+            {
+              "line": 731,
+              "matched": "MoHan",
+              "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "presentation/ui_localization_en.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 533,
+              "matched": "墨寒",
+              "text": "\"about_heading\": \"<b>墨寒について</b>\","
+            },
+            {
+              "line": 535,
+              "matched": "墨寒",
+              "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
+            },
+            {
+              "line": 536,
+              "matched": "MoHan",
+              "text": "\" CHOU MING HUA および MoHan Desktop Assistant コントリビューター、\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/ui_localization_ja.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
       ],
       "work_package": null
     }
@@ -5201,6 +5304,7 @@
         "domain/contracts.py",
         "domain/expression_system.py",
         "domain/gesture_configuration.py",
+        "domain/outfit_pack_official.py",
         "infrastructure/platform_linux.py",
         "infrastructure/platform_macos.py",
         "infrastructure/platform_services.py",
@@ -5210,7 +5314,7 @@
         "presentation/autonomous_outfit_generation_controller.py",
         "presentation/theme_pack_ui.py"
       ],
-      "file_count": 17,
+      "file_count": 18,
       "id": "engine-identity-parameterization",
       "objective": "把引擎、平台與儲存邊界中的墨寒名稱改由產品或角色身分設定注入。",
       "titles": [
@@ -5297,27 +5401,6 @@
         "Rig 与素材路径参数化",
         "Rig and asset parameterization",
         "Rig と素材パスのパラメータ化"
-      ]
-    },
-    {
-      "exclusions": "保留 About、更新、攜帶檔等已列入產品殼白名單的產品名稱。",
-      "exclusive_files": [
-        "integrations/cloud_connectors.py",
-        "presentation/dashboard_settings.py",
-        "presentation/flagship/cloud.py",
-        "presentation/flagship/runtime.py",
-        "presentation/ui_localization.py",
-        "presentation/ui_localization_en.py",
-        "presentation/ui_localization_ja.py"
-      ],
-      "file_count": 7,
-      "id": "ui-name-parameterization",
-      "objective": "把介面中的墨寒名稱與使用者稱謂改成角色資料佔位符。",
-      "titles": [
-        "介面角色名稱參數化",
-        "界面角色名称参数化",
-        "UI character-name parameterization",
-        "UI キャラクター名のパラメータ化"
       ]
     }
   ]
