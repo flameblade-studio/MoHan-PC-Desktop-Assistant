@@ -4,7 +4,7 @@ lazy import subprocess
 lazy from collections.abc import Mapping
 lazy from pathlib import Path
 
-lazy from domain.contracts import default_character_display_name
+lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from infrastructure.platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
@@ -35,13 +35,12 @@ class MacOSPlatformServices:
     ):
         del environ
         user_home = Path.home() if home is None else Path(home)
-        character_directory = default_character_display_name("en")
         application_support = (
             user_home
             / "Library"
             / "Application Support"
-            / "YanJianStudio"
-            / character_directory
+            / PROFILE_VENDOR_DIRECTORY
+            / PROFILE_APP_DIRECTORY
         )
         self.paths = PlatformPaths(
             data=application_support,
@@ -50,8 +49,8 @@ class MacOSPlatformServices:
                 user_home
                 / "Library"
                 / "Caches"
-                / "YanJianStudio"
-                / character_directory
+                / PROFILE_VENDOR_DIRECTORY
+                / PROFILE_APP_DIRECTORY
             ),
         )
 

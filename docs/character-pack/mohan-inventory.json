@@ -94680,7 +94680,7 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 1787,
+      "bytes": 2028,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "原墨寒專案的版本、儲存庫與更新網址屬產品殼。",
@@ -94697,6 +94697,16 @@
           "rule": "character_name_literal",
           "suggested_data_target": "assets/characters/mohan/persona/profile.json",
           "text": "PROJECT_REPOSITORY = \"flameblade-studio/MoHan-PC-Desktop-Assistant\""
+        },
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "line": 11,
+          "matched": "MoHan",
+          "path": "domain/version_info.py",
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "text": "PROFILE_APP_DIRECTORY = \"MoHan\""
         }
       ],
       "estimated_difficulty": "low",
@@ -94704,6 +94714,11 @@
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "domain/version_info.py",
       "readers": [
+        {
+          "line": 30,
+          "path": "application/presentation_ports.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
         {
           "line": 11,
           "path": "application/preview_app.py",
@@ -94720,6 +94735,21 @@
           "text": "lazy from domain.version_info import APP_VERSION as _APP_VERSION"
         },
         {
+          "line": 8,
+          "path": "infrastructure/platform_linux.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
+        {
+          "line": 7,
+          "path": "infrastructure/platform_macos.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
+        {
+          "line": 9,
+          "path": "infrastructure/platform_windows.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
+        {
           "line": 41,
           "path": "presentation/dashboard_settings.py",
           "text": "lazy from domain.version_info import APP_VERSION"
@@ -94731,7 +94761,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "c84cd4abda2ac9537d7a669bfd187f52afd7450e09e4479ed19dfe8ba3648639",
+      "sha256": "5ecf113def1c3d0ec5f14bda780ebfbd5e30a4d8c149654270bc346fead57695",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
       ],
@@ -94742,28 +94772,38 @@
           "name": "PROJECT_REPOSITORY"
         },
         {
-          "end_line": 9,
-          "line": 9,
-          "name": "FALLBACK_VERSION"
+          "end_line": 10,
+          "line": 10,
+          "name": "PROFILE_VENDOR_DIRECTORY"
         },
         {
           "end_line": 11,
           "line": 11,
+          "name": "PROFILE_APP_DIRECTORY"
+        },
+        {
+          "end_line": 13,
+          "line": 13,
+          "name": "FALLBACK_VERSION"
+        },
+        {
+          "end_line": 15,
+          "line": 15,
           "name": "UNKNOWN_VERSION"
         },
         {
-          "end_line": 22,
-          "line": 14,
+          "end_line": 26,
+          "line": 18,
           "name": "_build_info_path"
         },
         {
-          "end_line": 58,
-          "line": 25,
+          "end_line": 62,
+          "line": 29,
           "name": "build_info"
         },
         {
-          "end_line": 61,
-          "line": 61,
+          "end_line": 65,
+          "line": 65,
           "name": "APP_VERSION"
         }
       ],

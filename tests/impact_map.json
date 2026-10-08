@@ -5482,6 +5482,21 @@
     },
     {
       "paths": [
+        "domain/version_info.py"
+      ],
+      "tests": [
+        "test_engine_identity_parameterization.py",
+        "test_preview_packaging.py",
+        "test_release_automation.py",
+        "test_sbom_validation.py",
+        "test_swallowed_error_d04.py",
+        "test_v312_release_consistency.py",
+        "test_v4_development_version_consistency.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/theme_pack_service.py"
       ],
       "tests": [
@@ -7319,20 +7334,6 @@
       "tests": [
         "test_preview_packaging.py",
         "test_release_automation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/version_info.py"
-      ],
-      "tests": [
-        "test_preview_packaging.py",
-        "test_release_automation.py",
-        "test_sbom_validation.py",
-        "test_swallowed_error_d04.py",
-        "test_v312_release_consistency.py",
-        "test_v4_development_version_consistency.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

@@ -5,7 +5,7 @@ lazy import subprocess
 lazy from collections.abc import Mapping
 lazy from pathlib import Path, PurePosixPath
 
-lazy from domain.contracts import default_character_display_name
+lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from infrastructure.platform_contracts import (
     PlatformCapabilities,
     PlatformPaths,
@@ -36,7 +36,7 @@ class LinuxPlatformServices:
     ):
         values = os.environ if environ is None else environ
         user_home = Path.home() if home is None else Path(home)
-        suffix = Path("YanJianStudio") / default_character_display_name("en")
+        suffix = Path(PROFILE_VENDOR_DIRECTORY) / PROFILE_APP_DIRECTORY
         data_root = self._xdg_root(
             values,
             "XDG_DATA_HOME",

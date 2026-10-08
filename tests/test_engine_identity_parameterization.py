@@ -211,3 +211,18 @@ def test_native_diagnostic_text_stays_compatible(
         "MoHan native RGBA operation alpha_over requires attention; using Python "
         "fallback (attention event 1): RuntimeError",
     ]
+
+
+def test_profile_directories_never_follow_the_display_name(tmp_path: Path) -> None:
+    from domain import version_info
+
+    vendor, app = version_info.PROFILE_VENDOR_DIRECTORY, version_info.PROFILE_APP_DIRECTORY
+    windows = WindowsPlatformServices(environ={"LOCALAPPDATA": str(tmp_path / "local")}, home=tmp_path)
+    linux = LinuxPlatformServices(environ={}, home=tmp_path)
+    macos = MacOSPlatformServices(environ={}, home=tmp_path)
+    assert windows.paths.data == tmp_path / "local" / vendor / app
+    assert linux.paths.data == tmp_path / ".local" / "share" / vendor / app
+    assert macos.paths.data == tmp_path / "Library" / "Application Support" / vendor / app
+    assert (vendor, app) == ("YanJianStudio", "MoHan")
+    for module in (WindowsPlatformServices, LinuxPlatformServices, MacOSPlatformServices):
+        assert "default_character_display_name" not in inspect.getsource(inspect.getmodule(module))

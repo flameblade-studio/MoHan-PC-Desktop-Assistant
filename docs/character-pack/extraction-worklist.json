@@ -5973,6 +5973,11 @@
               "line": 7,
               "matched": "MoHan",
               "text": "PROJECT_REPOSITORY = \"flameblade-studio/MoHan-PC-Desktop-Assistant\""
+            },
+            {
+              "line": 11,
+              "matched": "MoHan",
+              "text": "PROFILE_APP_DIRECTORY = \"MoHan\""
             }
           ],
           "rule": "character_name_literal",

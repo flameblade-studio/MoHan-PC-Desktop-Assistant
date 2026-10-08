@@ -5,6 +5,10 @@ lazy import sys
 lazy from pathlib import Path
 
 PROJECT_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
+# On-disk profile location shared by every released build. It is a compatibility
+# contract with existing installs, so it must never follow a localized display name.
+PROFILE_VENDOR_DIRECTORY = "YanJianStudio"
+PROFILE_APP_DIRECTORY = "MoHan"
 # x-release-please-start-version
 FALLBACK_VERSION = "4.6.0"
 # x-release-please-end
