@@ -73,6 +73,7 @@
       "domain.character_pack",
       "domain.character_pack.appearance_data",
       "domain.character_pack.archive",
+      "domain.character_pack.character_data_validation",
       "domain.character_pack.models",
       "domain.character_pack.validation",
       "domain.character_source",
