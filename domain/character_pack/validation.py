@@ -45,6 +45,7 @@ LICENSE_STATUSES = frozenset({
 })
 DEPENDENCY_KINDS = frozenset({"outfit_pack", "dlc"})
 COMPONENT_KINDS = frozenset({
+    "appearance_defaults",
     "body_profile",
     "dialogue",
     "expression_manifest",

@@ -6,6 +6,7 @@ lazy import json
 lazy from collections.abc import Mapping
 lazy from functools import cache
 lazy from pathlib import Path
+lazy from domain.character_pack.appearance_data import load_character_appearance_defaults
 lazy from domain.character_pack.character_data_models import (
     AzureVoicePreferences,
     canonical_character_locale as _canonical_character_locale,
@@ -28,8 +29,7 @@ SUPPORTED_LOCALES = ("zh-TW", "zh-CN", "en", "ja-JP")
 MOHAN_CHARACTER_DATA_ROOT = Path(__file__).resolve().parents[2].joinpath("assets", "characters", "mohan")
 
 
-def canonical_character_locale(language: str) -> str:
-    return _canonical_character_locale(language)
+canonical_character_locale = _canonical_character_locale
 
 
 _PROFILE_DEFAULT_KEYS = frozenset(
@@ -187,6 +187,7 @@ def _load_character_data(root: Path) -> MohanCharacterData:
     events = _parse_events(_read_json(root / "dialogue" / "events.json"))
     voice = _parse_voice(_read_json(root / "voice" / "profile.json"))
     return MohanCharacterData(
+        appearance_defaults=load_character_appearance_defaults(root / "appearance" / "defaults.json"),
         identity=identity,
         personas=frozendict(personas),
         dialogues=frozendict(dialogues),

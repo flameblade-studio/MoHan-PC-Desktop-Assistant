@@ -37,7 +37,7 @@ lazy from domain.affective_state import AffectiveState
 lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
-lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.constants import CHARACTER_LAYER_ROLES, POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
@@ -399,10 +399,9 @@ class CompanionCoreMixin:
 
         for attribute in (
             "expression_overlay",
-            "sleeve_left_overlay",
-            "sleeve_right_overlay",
-            "hair_left_overlay",
-            "hair_right_overlay",
+            *(f"{CHARACTER_LAYER_ROLES[role]}_overlay" for role in (
+                "left_sleeve", "right_sleeve", "left_side_hair", "right_side_hair",
+            )),
             "physics_overlay",
             "face_overlay",
             "eye_overlay",

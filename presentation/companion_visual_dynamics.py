@@ -24,6 +24,7 @@ lazy from application.multisensory_interaction import MultisensoryInteractionArb
 lazy from domain.app_profile import profile_setting, profile_window_title
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
     CHARACTER_CANVAS_WIDTH,
@@ -45,7 +46,6 @@ lazy from presentation.companion_visual_physics import CompanionVisualPhysicsMet
 lazy from presentation.dashboard_dialogs import ClickableLabel
 lazy from presentation.presentation_resources import application_icon, resource_path
 lazy from presentation.ui_localization import ui_text
-
 __all__ = ("CompanionVisualDynamicsMixin",)
 MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
@@ -167,7 +167,7 @@ class CompanionVisualDynamicsMixin:
         for expression in EXPRESSION_IMAGE_ASSETS:
             if expression in self.expression_pixmaps:
                 continue
-            pix = QPixmap(str(resource_path(f"assets/expressions/{expression}.png")))
+            pix = QPixmap(str(resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png")))
             self.expression_pixmaps[expression] = pix.scaled(
                 465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
@@ -211,7 +211,7 @@ class CompanionVisualDynamicsMixin:
         self.expression_pixmaps: dict[str, QPixmap] = {}
         initial_assets = ("idle",) if defer_visual_assets else EXPRESSION_IMAGE_ASSETS
         for expression in initial_assets:
-            source = QPixmap(str(resource_path(f"assets/expressions/{expression}.png")))
+            source = QPixmap(str(resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png")))
             self.expression_pixmaps[expression] = source.scaled(
                 465,
                 465,
@@ -651,8 +651,8 @@ class CompanionVisualDynamicsMixin:
         self.face_sources = {}
         self.eye_sources = {}
         for pose, suffix in (("cheek", ""), ("lean", "_lean"), ("front", "_front")):
-            face_path = resource_path(f"assets/expressions/v120_face{suffix}.png")
-            eye_path = resource_path(f"assets/expressions/v120_eyes{suffix}.png")
+            face_path = resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/v120_face{suffix}.png")
+            eye_path = resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/v120_eyes{suffix}.png")
             self.face_sources[pose] = QPixmap(str(face_path)).scaled(
                 465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
