@@ -163,10 +163,10 @@ WORKFLOW_TRANSLATIONS: TranslationCatalog = frozendict({
     "可寫": translations("可写", "Read and write", "読み書き可能"),
     "控制": translations("控制", "Control", "操作"),
     # Overview and planner.
-    "<b>墨寒旗艦任務中心</b>": translations(
-        "<b>墨寒旗舰任务中心</b>",
-        "<b>MoHan Flagship Task Center</b>",
-        "<b>墨寒フラッグシップ・タスクセンター</b>",
+    "<b>{character_name}旗艦任務中心</b>": translations(
+        "<b>{character_name}旗舰任务中心</b>",
+        "<b>{character_name} Flagship Task Center</b>",
+        "<b>{character_name}フラッグシップ・タスクセンター</b>",
     ),
     "所有電腦、雲端、遠端與智慧家庭操作都必須經過："
     "計畫 → 權限判斷 → 確認 → 執行 → 結果驗證 → 稽核。": translations(

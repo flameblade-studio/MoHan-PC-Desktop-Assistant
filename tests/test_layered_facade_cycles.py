@@ -59,7 +59,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "presentation.companion_speech_runtime": 1_168,
     "presentation.companion_visual_dynamics": 965,
     "presentation.dashboard_settings": 911,
-    "presentation.dashboard_shell": 892,
+    "presentation.dashboard_shell": 886,
     "presentation.dashboard_voice": 1_067,
 }
 MAX_ROOT_APP_LINES = 50

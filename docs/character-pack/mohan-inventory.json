@@ -73,8 +73,7 @@
   ],
   "embedded_code_classification_counts": {
     "engine_extract": 46,
-    "product_shell_allowed": 7,
-    "ui_text_reference": 34
+    "product_shell_allowed": 14
   },
   "files": [
     {
@@ -1417,6 +1416,23 @@
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
       "sha256": "1563e635b0acbf34bf0d3a88f9d7c7d6e1ed0a3b07291b94abe7e6fdf2b20ade"
+    },
+    {
+      "bytes": 524,
+      "category": "character_ui_identifier_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/persona/ui-identifiers.json",
+      "readers": [
+        {
+          "line": 75,
+          "path": "domain/service_status_localization.py",
+          "text": "_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / \"persona/ui-identifiers.json\""
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "dfa4caa5d41be9b6b12fe7997cc5e805384a8d6ac587c1b417d4c4122872c343"
     },
     {
       "bytes": 3640,
@@ -90584,6 +90600,11 @@
           "text": "lazy from domain.character_pack.character_data import ("
         },
         {
+          "line": 9,
+          "path": "domain/service_status_localization.py",
+          "text": "lazy from domain.character_pack.character_data import ("
+        },
+        {
           "line": 17,
           "path": "domain/somniloquy.py",
           "text": "lazy from domain.character_pack.character_data import load_mohan_character_data"
@@ -93966,341 +93987,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 8070,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 113,
-          "matched": "墨寒",
-          "path": "domain/safe_error_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒執行此操作時發生內部錯誤，請重試。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 114,
-          "matched": "墨寒",
-          "path": "domain/safe_error_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒执行此操作时发生内部错误，请重试。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 115,
-          "matched": "MoHan",
-          "path": "domain/safe_error_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan needs attention while performing this operation. Try again.\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 116,
-          "matched": "墨寒",
-          "path": "domain/safe_error_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒がこの操作を実行中に内部エラーが発生しました。再試行してください。\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/safe_error_localization.py",
-      "readers": [
-        {
-          "line": 9,
-          "path": "presentation/auxiliary_ui_localization.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 43,
-          "path": "presentation/companion_speech_runtime.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 6,
-          "path": "presentation/companion_voice_phase.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 25,
-          "path": "presentation/dashboard_settings_persistence.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 12,
-          "path": "presentation/dashboard_voice_runtime.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 29,
-          "path": "presentation/flagship/cloud.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 8,
-          "path": "presentation/flagship/cloud_health.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 19,
-          "path": "presentation/flagship/home.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 16,
-          "path": "presentation/flagship/overview.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 12,
-          "path": "presentation/flagship/planner.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 23,
-          "path": "presentation/flagship/remote.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 35,
-          "path": "presentation/flagship/vision.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        },
-        {
-          "line": 19,
-          "path": "presentation/flagship/workflows.py",
-          "text": "lazy from domain.safe_error_localization import safe_error_message"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "4d083291f2a4d147fd00faecfb0f0616919c6d79a49c64b8312cd47948861037",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 13,
-          "line": 13,
-          "name": "__all__"
-        },
-        {
-          "end_line": 15,
-          "line": 15,
-          "name": "MIN_HTTP_STATUS"
-        },
-        {
-          "end_line": 16,
-          "line": 16,
-          "name": "MAX_HTTP_STATUS"
-        },
-        {
-          "end_line": 30,
-          "line": 19,
-          "name": "_text"
-        },
-        {
-          "end_line": 124,
-          "line": 33,
-          "name": "_MESSAGES"
-        },
-        {
-          "end_line": 144,
-          "line": 127,
-          "name": "safe_error_message"
-        },
-        {
-          "end_line": 152,
-          "line": 147,
-          "name": "_safe_error"
-        },
-        {
-          "end_line": 179,
-          "line": 155,
-          "name": "_decode_safe_error"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 22679,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 354,
-          "matched": "墨寒",
-          "path": "domain/service_status_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Windows 拒絕墨寒使用麥克風。請到「設定 → 隱私權與安全性 → 麥克風」，開啟麥克風存取權、讓應用程式存取麥克風，以及讓桌面應用程式存取麥克風。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 355,
-          "matched": "墨寒",
-          "path": "domain/service_status_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Windows 拒绝墨寒使用麦克风。请前往“设置 → 隐私和安全性 → 麦克风”，开启麦克风访问权限、允许应用访问麦克风，以及允许桌面应用访问麦克风。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 356,
-          "matched": "MoHan",
-          "path": "domain/service_status_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Windows requires microphone permission for MoHan. In Settings → Privacy & security → Microphone, enable Microphone access, Let apps access your microphone, and Let desktop apps access your microphone.\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 357,
-          "matched": "墨寒",
-          "path": "domain/service_status_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Windows が墨寒のマイク使用を拒否しました。「設定 → プライバシーとセキュリティ → マイク」で、マイクへのアクセス、アプリのマイクアクセス、デスクトップアプリのマイクアクセスを有効にしてください。\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/service_status_localization.py",
-      "readers": [
-        {
-          "line": 14,
-          "path": "application/camera_presence.py",
-          "text": "lazy from domain.service_status_localization import ServiceStatus, service_status"
-        },
-        {
-          "line": 32,
-          "path": "integrations/ai_client.py",
-          "text": "lazy from domain.service_status_localization import ServiceStatus, service_status"
-        },
-        {
-          "line": 51,
-          "path": "integrations/speech.py",
-          "text": "lazy from domain.service_status_localization import ("
-        },
-        {
-          "line": 24,
-          "path": "integrations/speech_audio.py",
-          "text": "lazy from domain.service_status_localization import ServiceStatus, service_status"
-        },
-        {
-          "line": 14,
-          "path": "integrations/speech_recognition.py",
-          "text": "lazy from domain.service_status_localization import ServiceStatus, service_status"
-        },
-        {
-          "line": 12,
-          "path": "integrations/speech_windows_synthesis.py",
-          "text": "lazy from domain.service_status_localization import ServiceStatus, service_status"
-        },
-        {
-          "line": 5,
-          "path": "presentation/service_status_localization.py",
-          "text": "lazy from domain.service_status_localization import ("
-        },
-        {
-          "line": 9,
-          "path": "presentation/service_status_localization.py",
-          "text": "lazy from domain.service_status_localization import ("
-        },
-        {
-          "line": 12,
-          "path": "presentation/service_status_localization.py",
-          "text": "lazy from domain.service_status_localization import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "f58da539249c8af12bfd19ee39fbff66c12813d0d0da4f4d4cddf1123830f9d6",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 62,
-          "line": 11,
-          "name": "ServiceStatus"
-        },
-        {
-          "end_line": 65,
-          "line": 65,
-          "name": "SUPPORTED_SERVICE_LANGUAGES"
-        },
-        {
-          "end_line": 79,
-          "line": 68,
-          "name": "_text"
-        },
-        {
-          "end_line": 377,
-          "line": 82,
-          "name": "_TEXT"
-        },
-        {
-          "end_line": 387,
-          "line": 380,
-          "name": "_format_fields"
-        },
-        {
-          "end_line": 402,
-          "line": 390,
-          "name": "_validate_catalog"
-        },
-        {
-          "end_line": 414,
-          "line": 407,
-          "name": "_UNTRUSTED_DYNAMIC_FIELDS"
-        },
-        {
-          "end_line": 441,
-          "line": 417,
-          "name": "_sanitized_values"
-        },
-        {
-          "end_line": 453,
-          "line": 444,
-          "name": "service_status"
-        },
-        {
-          "end_line": 466,
-          "line": 456,
-          "name": "append_service_status"
-        },
-        {
-          "end_line": 474,
-          "line": 469,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
       "bytes": 2663,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -94637,17 +94323,18 @@
       "classification_reason": "產品名、Windows AppUserModelID、圖示與 studio 識別屬墨寒產品殼。",
       "content_categories": [
         "identity",
+        "product_identity",
         "rig_assets"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 16,
           "matched": "墨寒",
           "path": "infrastructure/app_resources.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "APP_NAME = \"墨寒桌面助理\""
         },
         {
@@ -94696,7 +94383,8 @@
       "sha256": "8b3f8828c760e7b8b364953bdbfb77b07c6ecd0064fcc1bf79ec6c26d3303b1a",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -97876,46 +97564,36 @@
       "work_package": null
     },
     {
-      "bytes": 27303,
+      "bytes": 27492,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 214,
-          "matched": "墨寒",
-          "path": "integrations/cloud_connectors.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒已收到授權結果，可以關閉此頁。\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 495,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 499,
           "matched": "MoHan",
           "path": "integrations/cloud_connectors.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 528,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 532,
           "matched": "MoHan",
           "path": "integrations/cloud_connectors.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
         }
       ],
-      "estimated_difficulty": "medium",
+      "estimated_difficulty": "low",
       "migration": "被程式寫死需先改",
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "integrations/cloud_connectors.py",
@@ -97937,118 +97615,118 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "d170537f7a9f86578981e600288517fa5cb9ff2621e24469c7508f3806650ece",
+      "sha256": "3faea55894c930d99b36d736bcab861a93938f4531cf6f7dc8cd9b4ab1f2bfd2",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
-          "end_line": 28,
-          "line": 23,
+          "end_line": 29,
+          "line": 24,
           "name": "OAuthProvider"
         },
         {
-          "end_line": 68,
-          "line": 31,
+          "end_line": 69,
+          "line": 32,
           "name": "PROVIDERS"
         },
         {
-          "end_line": 70,
-          "line": 70,
+          "end_line": 71,
+          "line": 71,
           "name": "_CLOUD_PROVIDER_ALIASES"
         },
         {
-          "end_line": 81,
-          "line": 73,
+          "end_line": 82,
+          "line": 74,
           "name": "register_cloud_provider_alias"
         },
         {
-          "end_line": 134,
-          "line": 111,
+          "end_line": 135,
+          "line": 112,
           "name": "normalize_cloud_provider"
         },
         {
-          "end_line": 138,
-          "line": 137,
+          "end_line": 139,
+          "line": 138,
           "name": "OAuthError"
         },
         {
-          "end_line": 154,
-          "line": 141,
+          "end_line": 155,
+          "line": 142,
           "name": "_require_identified"
         },
         {
-          "end_line": 163,
-          "line": 157,
+          "end_line": 164,
+          "line": 158,
           "name": "_is_identifier"
         },
         {
-          "end_line": 187,
-          "line": 166,
+          "end_line": 188,
+          "line": 167,
           "name": "_require_collection"
         },
         {
-          "end_line": 197,
-          "line": 190,
+          "end_line": 198,
+          "line": 191,
           "name": "_sanitized_external_error"
         },
         {
-          "end_line": 225,
-          "line": 200,
+          "end_line": 229,
+          "line": 201,
           "name": "_callback_handler"
         },
         {
-          "end_line": 251,
-          "line": 228,
+          "end_line": 255,
+          "line": 232,
           "name": "_wait_for_callback"
         },
         {
-          "end_line": 263,
-          "line": 254,
+          "end_line": 267,
+          "line": 258,
           "name": "_authorization_code"
         },
         {
-          "end_line": 419,
-          "line": 266,
+          "end_line": 423,
+          "line": 270,
           "name": "OAuthPKCEFlow"
         },
         {
-          "end_line": 461,
-          "line": 422,
+          "end_line": 465,
+          "line": 426,
           "name": "refresh_oauth_token"
         },
         {
-          "end_line": 542,
-          "line": 464,
+          "end_line": 546,
+          "line": 468,
           "name": "JsonApiClient"
         },
         {
-          "end_line": 585,
-          "line": 545,
+          "end_line": 589,
+          "line": 549,
           "name": "GmailConnector"
         },
         {
-          "end_line": 623,
-          "line": 588,
+          "end_line": 627,
+          "line": 592,
           "name": "GoogleCalendarConnector"
         },
         {
-          "end_line": 700,
-          "line": 626,
+          "end_line": 704,
+          "line": 630,
           "name": "GoogleDriveConnector"
         },
         {
-          "end_line": 767,
-          "line": 703,
+          "end_line": 771,
+          "line": 707,
           "name": "MicrosoftGraphConnector"
         },
         {
-          "end_line": 789,
-          "line": 770,
+          "end_line": 793,
+          "line": 774,
           "name": "GitHubConnector"
         }
       ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     },
     {
       "bytes": 32365,
@@ -98453,458 +98131,6 @@
         }
       ],
       "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "bytes": 15844,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 98,
-          "matched": "妾",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"listening\": \"已連線，妾在聽\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 118,
-          "matched": "墨寒",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"replying\": \"已辨識，墨寒正在回覆\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 122,
-          "matched": "墨寒",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Project；再於該 Project 建立具適當權限的 API Key，並到墨寒的\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 146,
-          "matched": "妾",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"listening\": \"已连接，妾在听\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 166,
-          "matched": "墨寒",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"replying\": \"已识别，墨寒正在回复\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 170,
-          "matched": "墨寒",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"再于该 Project 建立具备适当权限的 API Key，并到墨寒的“设置”页\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 215,
-          "matched": "MoHan",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"replying\": \"Recognized; MoHan is replying\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 219,
-          "matched": "MoHan",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"authorized key again in MoHan Settings.\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 264,
-          "matched": "墨寒",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"replying\": \"認識しました。墨寒が応答しています\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 268,
-          "matched": "墨寒",
-          "path": "integrations/realtime_contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"持つキーを墨寒の設定で保存してください。\""
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "integrations/realtime_contracts.py",
-      "readers": [
-        {
-          "line": 9,
-          "path": "integrations/realtime_events.py",
-          "text": "lazy from integrations.realtime_contracts import ("
-        },
-        {
-          "line": 44,
-          "path": "integrations/realtime_session.py",
-          "text": "lazy from integrations.realtime_contracts import ("
-        },
-        {
-          "line": 18,
-          "path": "integrations/realtime_voice.py",
-          "text": "from integrations.realtime_contracts import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "388decb54dad67824291a52b9c1a0756bbe8a7813ff06c1d8955416ea0311419",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 11,
-          "line": 11,
-          "name": "_VOICE_PROFILE"
-        },
-        {
-          "end_line": 25,
-          "line": 15,
-          "name": "RealtimeSessionConfig"
-        },
-        {
-          "end_line": 35,
-          "line": 29,
-          "name": "RealtimeVoiceRequest"
-        },
-        {
-          "end_line": 45,
-          "line": 39,
-          "name": "_AudioSession"
-        },
-        {
-          "end_line": 53,
-          "line": 48,
-          "name": "AUDIO_DELTA_EVENTS"
-        },
-        {
-          "end_line": 62,
-          "line": 54,
-          "name": "AUDIO_DONE_EVENTS"
-        },
-        {
-          "end_line": 65,
-          "line": 63,
-          "name": "AUDIO_CANCELLED_EVENTS"
-        },
-        {
-          "end_line": 71,
-          "line": 66,
-          "name": "ASSISTANT_TRANSCRIPT_DELTA_EVENTS"
-        },
-        {
-          "end_line": 77,
-          "line": 72,
-          "name": "ASSISTANT_TRANSCRIPT_DONE_EVENTS"
-        },
-        {
-          "end_line": 80,
-          "line": 78,
-          "name": "ASSISTANT_TEXT_DELTA_EVENTS"
-        },
-        {
-          "end_line": 83,
-          "line": 81,
-          "name": "ASSISTANT_TEXT_DONE_EVENTS"
-        },
-        {
-          "end_line": 84,
-          "line": 84,
-          "name": "MAX_ASSISTANT_RESPONSE_CHARACTERS"
-        },
-        {
-          "end_line": 87,
-          "line": 85,
-          "name": "USER_TRANSCRIPT_COMPLETED_EVENT"
-        },
-        {
-          "end_line": 90,
-          "line": 88,
-          "name": "USER_TRANSCRIPT_FAILED_EVENT"
-        },
-        {
-          "end_line": 287,
-          "line": 92,
-          "name": "_REALTIME_MESSAGES"
-        },
-        {
-          "end_line": 297,
-          "line": 290,
-          "name": "_realtime_message"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 22486,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 77,
-          "matched": "墨寒",
-          "path": "integrations/remote_control.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "<title>墨寒遠端</title>"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "integrations/remote_control.py",
-      "readers": [
-        {
-          "line": 26,
-          "path": "presentation/flagship/remote.py",
-          "text": "lazy from integrations.remote_control import ("
-        },
-        {
-          "line": 36,
-          "path": "presentation/flagship/runtime.py",
-          "text": "lazy from integrations.remote_control import RemoteControlServer"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "cd124649a719f25424bb587bab2135a95c9a127786714662bc190d639231f7cf",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 23,
-          "line": 23,
-          "name": "StatusProvider"
-        },
-        {
-          "end_line": 24,
-          "line": 24,
-          "name": "CommandHandler"
-        },
-        {
-          "end_line": 25,
-          "line": 25,
-          "name": "ScreenProvider"
-        },
-        {
-          "end_line": 27,
-          "line": 27,
-          "name": "MAX_PORT"
-        },
-        {
-          "end_line": 28,
-          "line": 28,
-          "name": "RATE_LIMIT_WINDOW_SECONDS"
-        },
-        {
-          "end_line": 29,
-          "line": 29,
-          "name": "MAX_REQUEST_BYTES"
-        },
-        {
-          "end_line": 30,
-          "line": 30,
-          "name": "MAX_COMMAND_TEXT_LENGTH"
-        },
-        {
-          "end_line": 50,
-          "line": 32,
-          "name": "SAFE_DOWNLOAD_TYPES"
-        },
-        {
-          "end_line": 57,
-          "line": 51,
-          "name": "PROTECTED_REMOTE_PARTS"
-        },
-        {
-          "end_line": 58,
-          "line": 58,
-          "name": "PROTECTED_REMOTE_SUFFIXES"
-        },
-        {
-          "end_line": 64,
-          "line": 59,
-          "name": "REMOTE_FILE_UNAVAILABLE_MESSAGES"
-        },
-        {
-          "end_line": 65,
-          "line": 65,
-          "name": "REMOTE_FILE_UNAVAILABLE"
-        },
-        {
-          "end_line": 71,
-          "line": 68,
-          "name": "remote_file_unavailable"
-        },
-        {
-          "end_line": 106,
-          "line": 74,
-          "name": "MOBILE_PAGE"
-        },
-        {
-          "end_line": 119,
-          "line": 110,
-          "name": "RemoteServerConfig"
-        },
-        {
-          "end_line": 127,
-          "line": 123,
-          "name": "RemoteServerServices"
-        },
-        {
-          "end_line": 134,
-          "line": 131,
-          "name": "RemoteDevice"
-        },
-        {
-          "end_line": 189,
-          "line": 137,
-          "name": "TokenRegistry"
-        },
-        {
-          "end_line": 351,
-          "line": 192,
-          "name": "RemoteControlServer"
-        },
-        {
-          "end_line": 361,
-          "line": 354,
-          "name": "RemoteThreadingHTTPServer"
-        },
-        {
-          "end_line": 632,
-          "line": 364,
-          "name": "RemoteRequestHandler"
-        },
-        {
-          "end_line": 639,
-          "line": 635,
-          "name": "constant_time_token_equal"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 7265,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 85,
-          "matched": "墨寒",
-          "path": "presentation/_dashboard_wardrobe_tab.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"來源分流：炎劍官方・使用者匯入・墨寒自創\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/_dashboard_wardrobe_tab.py",
-      "readers": [
-        {
-          "line": 33,
-          "path": "presentation/dashboard_shell.py",
-          "text": "lazy from presentation._dashboard_wardrobe_tab import build_wardrobe_tab"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "f7df39694a47b6c5e40df732be1fb3d931187baf7971d36982efcd44ee4c201f",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 22,
-          "line": 21,
-          "name": "_WardrobeDatabase"
-        },
-        {
-          "end_line": 52,
-          "line": 25,
-          "name": "_DashboardWardrobeHost"
-        },
-        {
-          "end_line": 94,
-          "line": 55,
-          "name": "_build_package_library"
-        },
-        {
-          "end_line": 117,
-          "line": 97,
-          "name": "_build_package_actions"
-        },
-        {
-          "end_line": 152,
-          "line": 120,
-          "name": "_build_category_panel"
-        },
-        {
-          "end_line": 162,
-          "line": 155,
-          "name": "_connect_wardrobe_actions"
-        },
-        {
-          "end_line": 185,
-          "line": 165,
-          "name": "build_wardrobe_tab"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
     },
     {
       "bytes": 42141,
@@ -100473,7 +99699,7 @@
           "text": "lazy from presentation.dashboard_artwork import CelestialFrame"
         },
         {
-          "line": 31,
+          "line": 32,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.dashboard_artwork import CelestialFrame"
         },
@@ -100568,62 +99794,42 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 35330,
+      "bytes": 35350,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 180,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_settings.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"每項能力分開授權。選擇「每次詢問」時，墨寒執行前會顯示確認視窗；\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 827,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_settings.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"變更介面語言後，重新啟動墨寒即可完整套用。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 877,
           "matched": "墨寒",
           "path": "presentation/dashboard_settings.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "form.addRow(QLabel(self._t(\"about_heading\", \"<b>關於墨寒</b>\")))"
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 881,
           "matched": "墨寒",
           "path": "presentation/dashboard_settings.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 882,
           "matched": "MoHan",
           "path": "presentation/dashboard_settings.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
         }
       ],
@@ -100639,9 +99845,9 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "36b13a3108d36b3e4e034119e8a14d73e6deef97b1ba8d4ed42e93be6d96c726",
+      "sha256": "bb9430dc2ae40c7ea771ef9bcca952439c908db05e975f53bde7fd0071befc0e",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -100660,883 +99866,7 @@
           "name": "DashboardSettingsMixin"
         }
       ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 14957,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 67,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_settings_persistence.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'繼續前請確認墨寒執行「{action}」所需的權限。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 76,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_settings_persistence.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒請求電腦權限\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 80,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_settings_persistence.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"是否允許墨寒這一次{action}？\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_settings_persistence.py",
-      "readers": [
-        {
-          "line": 47,
-          "path": "presentation/dashboard_settings.py",
-          "text": "lazy from presentation.dashboard_settings_persistence import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "6b3c9f83e2f12ff8b5cdd4444cd1cbf0943be2f69c189d263063f1b184966bd4",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 34,
-          "line": 34,
-          "name": "__all__"
-        },
-        {
-          "end_line": 402,
-          "line": 37,
-          "name": "DashboardSettingsPersistenceMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 37819,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 455,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"讓墨寒依天候、心情與場合挑選完整造型，也保留您的決定。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 470,
-          "matched": "MoHan",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan outfit package (*.mohan-outfit *.zip)\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 788,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"計時仍在進行，主上不必重複開局。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 826,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"休眠模式已啟；墨寒會保持安靜，提醒與緊急警報仍照規則處理。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 850,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"工作\": \"工作模式已启动。妾只在必要时打断主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 850,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"工作\": \"工作模式已启动。妾只在必要时打断主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 852,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"勿擾\": \"勿扰模式已启动。除紧急事项外，妾不会打断主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 852,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"勿擾\": \"勿扰模式已启动。除紧急事项外，妾不会打断主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 853,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"會議\": \"会议模式已启动。妾会保持安静，只记录必要事项。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 854,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"離席\": \"离席模式已启动。主上回来时，妾再呈上期间摘要。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 854,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"離席\": \"离席模式已启动。主上回来时，妾再呈上期间摘要。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 870,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"勿擾\": \"集中モードを開始しました。緊急時以外、妾は静かにしております。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 884,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"工作\": \"工作模式已啟。妾只在必要時打斷主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 884,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"工作\": \"工作模式已啟。妾只在必要時打斷主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 886,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"勿擾\": \"勿擾模式已啟。除緊急事項外，妾不打斷主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 886,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"勿擾\": \"勿擾模式已啟。除緊急事項外，妾不打斷主上。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 887,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"會議\": \"會議模式已啟。妾會保持安靜，只記錄必要事項。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 888,
-          "matched": "主上",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"離席\": \"離席模式已啟。主上回來時，妾再呈上期間摘要。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 888,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"離席\": \"離席模式已啟。主上回來時，妾再呈上期間摘要。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 889,
-          "matched": "妾",
-          "path": "presentation/dashboard_shell.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"休眠\": \"休眠模式已啟。妾暫歸劍中，提醒與緊急警報仍照規則處理。\","
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_shell.py",
-      "readers": [
-        {
-          "line": 19,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from presentation.dashboard_shell import DashboardShellMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "7a5df38c0aee2d2d47960c71f62d1b62ed3070fe1c5b2732352d75cdc0f5c336",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 62,
-          "line": 62,
-          "name": "__all__"
-        },
-        {
-          "end_line": 64,
-          "line": 64,
-          "name": "MIN_SPLITTER_HEIGHT"
-        },
-        {
-          "end_line": 892,
-          "line": 66,
-          "name": "DashboardShellMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 28428,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 221,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_today_memory.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒只保存主上允許留下的人物、偏好、目標、工作流程與\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 221,
-          "matched": "主上",
-          "path": "presentation/dashboard_today_memory.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"墨寒只保存主上允許留下的人物、偏好、目標、工作流程與\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 234,
-          "matched": "主上",
-          "path": "presentation/dashboard_today_memory.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"例如：主上偏好先完成漫畫，再處理行政工作\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 450,
-          "matched": "主上",
-          "path": "presentation/dashboard_today_memory.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"今日卷冊尚空。\\n主上先寫下一件真正重要的事。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 765,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_today_memory.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'確定永久刪除墨寒保存的全部長期記憶嗎？',"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_today_memory.py",
-      "readers": [
-        {
-          "line": 21,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from presentation.dashboard_today_memory import DashboardTodayMemoryMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "f282e0f2675904e614708653246a91ce50000836f7b235c3840b8bfe4d63e2c7",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 37,
-          "line": 37,
-          "name": "__all__"
-        },
-        {
-          "end_line": 39,
-          "line": 39,
-          "name": "MEMORY_PREVIEW_LENGTH"
-        },
-        {
-          "end_line": 40,
-          "line": 40,
-          "name": "IDEA_PREVIEW_LENGTH"
-        },
-        {
-          "end_line": 50,
-          "line": 44,
-          "name": "MemoryTabActions"
-        },
-        {
-          "end_line": 796,
-          "line": 53,
-          "name": "DashboardTodayMemoryMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 39905,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 671,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"防止墨寒把自己的聲音誤認成主上（推薦）\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 671,
-          "matched": "主上",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"防止墨寒把自己的聲音誤認成主上（推薦）\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 678,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒說話時暫停上傳麥克風，播放結束後再恢復；\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 703,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 798,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 848,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。墨寒以音訊分析維持 Dragon HD 嘴型同步，發話等待時間取決於網路與區域距離。合成出現錯誤時，依序回退至一般 Azure 與 Windows 本機語音，每層各嘗試一次。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 866,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_voice.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'防回音開啟時，墨寒說話期間會暫停上傳麥克風，並清除本機與伺服器端殘留音訊，結束約一秒後恢復。對話頁僅顯示高精度整句轉錄的最終結果。',"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_voice.py",
-      "readers": [
-        {
-          "line": 22,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from presentation.dashboard_voice import DashboardVoiceMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "cd2149b26183fda21e023c8ecaf2b927742eab1e1913666fd5230043ddae13d9",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 50,
-          "line": 50,
-          "name": "__all__"
-        },
-        {
-          "end_line": 1067,
-          "line": 53,
-          "name": "DashboardVoiceMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 8057,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 31,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_preferences.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"wardrobe_autonomous_enabled\", \"允許墨寒自主選裝\")"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 36,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_preferences.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"wardrobe_autonomous_enabled\", \"允許墨寒自主選裝\")"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 44,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_preferences.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"允許墨寒雲端自創新衣（可能產生費用）\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_wardrobe_preferences.py",
-      "readers": [
-        {
-          "line": 24,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from presentation.dashboard_wardrobe_preferences import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "0f4d3117f9e3439aa5b11357a96be78f62791938bc1c91abb4b731461da77aa5",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 20,
-          "line": 20,
-          "name": "__all__"
-        },
-        {
-          "end_line": 202,
-          "line": 23,
-          "name": "DashboardWardrobePreferencesMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 11926,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 81,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_preview.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "preview_title = QLabel(self._t(\"wardrobe_character_preview\", \"墨寒造型預覽\"))"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 91,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_preview.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"wardrobe_character_preview\", \"墨寒造型預覽\")"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_wardrobe_preview.py",
-      "readers": [
-        {
-          "line": 27,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from presentation.dashboard_wardrobe_preview import DashboardWardrobePreviewMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "887eacc21079203099976299dcbcba34228b22a6c529db2a095875ba9aacbdba",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 45,
-          "line": 41,
-          "name": "__all__"
-        },
-        {
-          "end_line": 54,
-          "line": 49,
-          "name": "WARDROBE_PREVIEW_VIEWS"
-        },
-        {
-          "end_line": 55,
-          "line": 55,
-          "name": "PREVIEW_WIDTH"
-        },
-        {
-          "end_line": 56,
-          "line": 56,
-          "name": "PREVIEW_MIN_HEIGHT"
-        },
-        {
-          "end_line": 58,
-          "line": 58,
-          "name": "PREVIEW_COMPOSE_DELAY_MS"
-        },
-        {
-          "end_line": 59,
-          "line": 59,
-          "name": "STATE_IDLE"
-        },
-        {
-          "end_line": 60,
-          "line": 60,
-          "name": "STATE_COMPOSING"
-        },
-        {
-          "end_line": 61,
-          "line": 61,
-          "name": "STATE_COMPOSITED"
-        },
-        {
-          "end_line": 62,
-          "line": 62,
-          "name": "STATE_FALLBACK"
-        },
-        {
-          "end_line": 66,
-          "line": 64,
-          "name": "PREVIEW_MOTION"
-        },
-        {
-          "end_line": 251,
-          "line": 69,
-          "name": "DashboardWardrobePreviewMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 4316,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 41,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_status.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"outfit-selected\": translate(\"wardrobe_automatic_outfit_selected\", \"墨寒已依情境自主換裝。\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 44,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_wardrobe_status.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"圖片服務目前流量繁忙；墨寒已安全重試，稍後可從既有進度續作。\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_wardrobe_status.py",
-      "readers": [
-        {
-          "line": 32,
-          "path": "presentation/dashboard_shell.py",
-          "text": "lazy from presentation.dashboard_wardrobe_status import wardrobe_generation_message"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "ea8f7e39614cff8da9e6282b0696c9ca91af6df0d022de4bc2b8dd2673d69216",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 7,
-          "line": 7,
-          "name": "Translate"
-        },
-        {
-          "end_line": 77,
-          "line": 10,
-          "name": "wardrobe_generation_message"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 8884,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 138,
-          "matched": "墨寒",
-          "path": "presentation/desktop_companion_status.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "shell._t(\"desktop_status_title\", \"墨寒正在桌面上與您互動\")"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 146,
-          "matched": "墨寒",
-          "path": "presentation/desktop_companion_status.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"桌面上的墨寒是唯一可見、可拖移並會回應您的角色。\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/desktop_companion_status.py",
-      "readers": [
-        {
-          "line": 34,
-          "path": "presentation/dashboard_shell.py",
-          "text": "lazy from presentation.desktop_companion_status import ("
-        },
-        {
-          "line": 36,
-          "path": "presentation/lingxiao_shell.py",
-          "text": "lazy from presentation.desktop_companion_status import DESKTOP_STATUS_COLLAPSED_SETTING"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "4a25b06cafd18d5a71976d1e7cec044713b215f8917da899f4bb421e0569ca71",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 39,
-          "line": 30,
-          "name": "__all__"
-        },
-        {
-          "end_line": 41,
-          "line": 41,
-          "name": "DESKTOP_STATUS_COLLAPSED_SETTING"
-        },
-        {
-          "end_line": 53,
-          "line": 44,
-          "name": "desktop_companion_initial_status"
-        },
-        {
-          "end_line": 65,
-          "line": 56,
-          "name": "mode_status_label"
-        },
-        {
-          "end_line": 92,
-          "line": 68,
-          "name": "_apply_collapsed_stage"
-        },
-        {
-          "end_line": 106,
-          "line": 95,
-          "name": "set_desktop_companion_collapsed"
-        },
-        {
-          "end_line": 200,
-          "line": 109,
-          "name": "build_desktop_companion_stage"
-        },
-        {
-          "end_line": 227,
-          "line": 203,
-          "name": "update_desktop_companion_status"
-        },
-        {
-          "end_line": 242,
-          "line": 230,
-          "name": "visual_status_message"
-        },
-        {
-          "end_line": 250,
-          "line": 245,
-          "name": "gesture_status_message"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     },
     {
       "bytes": 17524,
@@ -101609,83 +99939,23 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 3812,
+      "bytes": 32054,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 73,
-          "matched": "墨寒",
-          "path": "presentation/flagship/audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "else self._t(\"墨寒請求執行工具\")"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/audit.py",
-      "readers": [
-        {
-          "line": 41,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.audit import FlagshipAuditMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "ce7656b47b2d75519e4db7b8234554dd9faeb8ec4613719a9e78d90808ef2944",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 23,
-          "line": 23,
-          "name": "__all__"
-        },
-        {
-          "end_line": 114,
-          "line": 26,
-          "name": "FlagshipAuditMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 32044,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 172,
           "matched": "MoHan",
           "path": "presentation/flagship/cloud.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "f\"MoHan {provider_id} OAuth token\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 201,
-          "matched": "墨寒",
-          "path": "presentation/flagship/cloud.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self.cloud_status.setText(self._t(\"等待瀏覽器授權，請勿關閉墨寒……\"))"
         }
       ],
       "estimated_difficulty": "low",
@@ -101700,9 +99970,9 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "783bf79786a036a8dd4520d84ff242ae322a182ad7de3af3d2f5a2b3cff8b0ae",
+      "sha256": "bc80999b2fa6638beca3fbbf2de3a6b601dddfd6e0a12d3d71d3ef4c12fa5eb0",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -101726,1260 +99996,56 @@
           "name": "FlagshipCloudMixin"
         }
       ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     },
     {
-      "bytes": 20180,
+      "bytes": 14587,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 96,
-          "matched": "墨寒",
-          "path": "presentation/flagship/companion.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"墨寒生日提醒\"), preferences.birthday_enabled"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/companion.py",
-      "readers": [
-        {
-          "line": 43,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.companion import FlagshipCompanionMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "bb235b0e4d8c06a5152fe92e132193a69e0dd3afc4af999a8c301bd250977942",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 34,
-          "line": 34,
-          "name": "__all__"
-        },
-        {
-          "end_line": 499,
-          "line": 37,
-          "name": "FlagshipCompanionMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 12206,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 86,
-          "matched": "墨寒",
-          "path": "presentation/flagship/gesture_editor.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"輸入一行交給墨寒安全命令流程的文字指令\")"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/gesture_editor.py",
-      "readers": [
-        {
-          "line": 44,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.gesture_editor import FlagshipGestureEditorMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "1f61b378d84b436be0578204e030602db7141f18e1a93a38c59f43c829c27c88",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 30,
-          "line": 30,
-          "name": "__all__"
-        },
-        {
-          "end_line": 282,
-          "line": 33,
-          "name": "FlagshipGestureEditorMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 16941,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 62,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_cloud_home.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"等待瀏覽器授權，請勿關閉墨寒……\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 63,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_cloud_home.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"等待浏览器授权，请勿关闭墨寒……\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 64,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_cloud_home.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Waiting for browser authorization. Do not close MoHan…\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 65,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_cloud_home.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"ブラウザーでの認可を待っています。墨寒を閉じないでください…\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/localization_cloud_home.py",
-      "readers": [
-        {
-          "line": 13,
-          "path": "presentation/flagship_ui_localization.py",
-          "text": "lazy from presentation.flagship.localization_cloud_home import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "caa4fe6ef0afb2dc0d0c1e442e538ccea00adfa2e20519f7c2ff633cca1c4447",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 281,
-          "line": 10,
-          "name": "CLOUD_HOME_TRANSLATIONS"
-        },
-        {
-          "end_line": 283,
-          "line": 283,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 25117,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 53,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日提醒\": translations(\"墨寒生日提醒\", \"MoHan birthday reminders\", \"墨寒の誕生日リマインダー\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 53,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日提醒\": translations(\"墨寒生日提醒\", \"MoHan birthday reminders\", \"墨寒の誕生日リマインダー\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 148,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"輸入一行交給墨寒安全命令流程的文字指令\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 149,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"输入一行交给墨寒安全命令流程的文字指令\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 150,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Enter one text command for MoHan's safe-command flow\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 151,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒の安全なコマンド処理へ渡す一行の文字指示を入力\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 260,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日\": translations(\"墨寒生日\", \"MoHan's birthday\", \"墨寒の誕生日\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 260,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_interaction.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日\": translations(\"墨寒生日\", \"MoHan's birthday\", \"墨寒の誕生日\"),"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/localization_interaction.py",
-      "readers": [
-        {
-          "line": 16,
-          "path": "presentation/flagship_ui_localization.py",
-          "text": "lazy from presentation.flagship.localization_interaction import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "8c0a94f82695e8c0b2e7e3b8392153386f8fc88dcb16bf2cd8101061d3c26407",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 370,
-          "line": 10,
-          "name": "INTERACTION_TRANSLATIONS"
-        },
-        {
-          "end_line": 372,
-          "line": 372,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 24114,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 37,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"允許查看墨寒程式視窗（不擷取整個桌面）\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 38,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"允许查看墨寒程序窗口（不截取整个桌面）\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 39,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Allow viewing the MoHan app window (not the whole desktop)\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 40,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒のアプリ画面の表示を許可（デスクトップ全体は取得しません）\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 57,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"啟用墨寒本機視覺感知\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 58,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"启用墨寒本机视觉感知\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 59,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Enable MoHan's local visual perception\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 60,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒のローカル視覚認識を有効化\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 67,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"允許墨寒主動寒暄與關心\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 68,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"允许墨寒主动寒暄与关心\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 69,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Allow MoHan to greet me and check in proactively\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 70,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒から自発的に挨拶や気遣いをすることを許可\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 226,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？': translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 227,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'墨寒会仅在本机实时分析在场状态、脸部与眼神特征、手势及场景线索；原始图像限于实时处理，身份建立仅适用已登记人物。是否启用？',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 228,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'MoHan will analyze presence, face and gaze features, gestures, and scene cues only on this device in real time. Raw images are limited to live processing; identity records apply only to enrolled people. Enable?',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 229,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'墨寒は在席、顔と視線の特徴、ジェスチャー、場面の手掛かりをこの端末内だけでリアルタイム解析します。元画像はリアルタイム処理に限定し、身元記録は登録済み人物に限定します。有効にしますか？',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 246,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒辨識到你時使用的稱呼\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 247,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒识别到你时使用的称呼\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 248,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Name MoHan should use when she recognizes you\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 249,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒があなたを認識したときに使う呼び名\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 369,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日・含蓄暗示\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 370,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日・含蓄提示\", \"MoHan's birthday・Subtle hint\", \"墨寒の誕生日・控えめな合図\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 370,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日・含蓄提示\", \"MoHan's birthday・Subtle hint\", \"墨寒の誕生日・控えめな合図\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 372,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日・小聲埋怨\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 373,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日・小声埋怨\", \"MoHan's birthday・Quiet grumble\", \"墨寒の誕生日・小さな不満\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 373,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒生日・小声埋怨\", \"MoHan's birthday・Quiet grumble\", \"墨寒の誕生日・小さな不満\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 438,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"已送交墨寒並等待本機權限判斷\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 439,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"已提交给墨寒并等待本机权限判断\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 440,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Sent to MoHan and awaiting local permission checks\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 441,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_remote_vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒へ送信し、ローカル権限の判定を待っています\","
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/localization_remote_vision.py",
-      "readers": [
-        {
-          "line": 19,
-          "path": "presentation/flagship_ui_localization.py",
-          "text": "lazy from presentation.flagship.localization_remote_vision import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "a9c2aab6e5dbaa28b949e785ccc854ae8c0161b19d6fefdd9081d4206744a52d",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 458,
-          "line": 10,
-          "name": "REMOTE_VISION_TRANSLATIONS"
-        },
-        {
-          "end_line": 460,
-          "line": 460,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 15409,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 51,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"選擇允許墨寒操作的資料夾\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 52,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"选择允许墨寒操作的文件夹\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 53,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Choose a folder MoHan may access\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 54,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒に操作を許可するフォルダーを選択\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 62,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"選擇允許墨寒啟動的程式\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 63,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"选择允许墨寒启动的程序\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 64,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Choose an app MoHan may launch\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 65,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒に起動を許可するアプリを選択\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 78,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"日後對墨寒說的程式名稱\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 79,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"日后对墨寒说的程序名称\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 80,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"The app name you will use when speaking to MoHan\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 81,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"今後、墨寒に伝えるアプリ名\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 102,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"確定撤銷墨寒對此項目的存取權？\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 103,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"确定撤销墨寒对此项目的访问权？\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 104,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Revoke MoHan's access to this item?\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 105,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"この項目に対する墨寒のアクセス権を取り消しますか？\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 107,
-          "matched": "妾",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"安全權限已保存。妾會守住這條界線。\": translations("
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 108,
-          "matched": "妾",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"安全权限已保存。妾会守住这条界线。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 110,
-          "matched": "妾",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"セキュリティ権限を保存しました。妾がこの境界を守ります。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 123,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒請求執行工具\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 124,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒请求执行工具\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 125,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan Requests Tool Execution\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 126,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_security_audit.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒がツール実行を要求しています\","
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/localization_security_audit.py",
-      "readers": [
-        {
-          "line": 22,
-          "path": "presentation/flagship_ui_localization.py",
-          "text": "lazy from presentation.flagship.localization_security_audit import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "7c9ef2af7519ca7f26d94eb7c4544ea30d7b1a1fe1a66cf4778ae4375a09290e",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 311,
-          "line": 10,
-          "name": "SECURITY_AUDIT_TRANSLATIONS"
-        },
-        {
-          "end_line": 313,
-          "line": 313,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 847,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 27,
-          "matched": "赤焰劍",
-          "path": "presentation/flagship/localization_themes.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"赤焰劍光\": translations("
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 28,
-          "matched": "赤焰剑",
-          "path": "presentation/flagship/localization_themes.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"赤焰剑光\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/localization_themes.py",
-      "readers": [
-        {
-          "line": 25,
-          "path": "presentation/flagship_ui_localization.py",
-          "text": "lazy from presentation.flagship.localization_themes import THEME_TRANSLATIONS"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "3a4a7d714bc32e24ad66de497d0012e34f51ecd4373f4a953ce5b483d39a7124",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 33,
-          "line": 10,
-          "name": "THEME_TRANSLATIONS"
-        },
-        {
-          "end_line": 35,
-          "line": 35,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 19123,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 166,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_workflows.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"<b>墨寒旗艦任務中心</b>\": translations("
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 167,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_workflows.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"<b>墨寒旗舰任务中心</b>\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 168,
-          "matched": "MoHan",
-          "path": "presentation/flagship/localization_workflows.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"<b>MoHan Flagship Task Center</b>\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 169,
-          "matched": "墨寒",
-          "path": "presentation/flagship/localization_workflows.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"<b>墨寒フラッグシップ・タスクセンター</b>\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/localization_workflows.py",
-      "readers": [
-        {
-          "line": 26,
-          "path": "presentation/flagship_ui_localization.py",
-          "text": "lazy from presentation.flagship.localization_workflows import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "7f53a0496415f90f4a2acc9d56564b0fc1805f6d2f8d9feb99a4aa31f73cde30",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 327,
-          "line": 10,
-          "name": "WORKFLOW_TRANSLATIONS"
-        },
-        {
-          "end_line": 329,
-          "line": 329,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 6999,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 32,
-          "matched": "墨寒",
-          "path": "presentation/flagship/overview.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "title = QLabel(self._t(\"<b>墨寒旗艦任務中心</b>\"))"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 103,
-          "matched": "赤焰劍",
-          "path": "presentation/flagship/overview.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(THEME_IDS[2], self._t(\"赤焰劍光\")),"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/overview.py",
-      "readers": [
-        {
-          "line": 47,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.overview import FlagshipOverviewMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "052a6ec61e353ca721054f1defa54cfdb4306c54edc023d43b8b0d05cbd6e2c3",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 25,
-          "line": 25,
-          "name": "__all__"
-        },
-        {
-          "end_line": 181,
-          "line": 28,
-          "name": "FlagshipOverviewMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 15020,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 81,
-          "matched": "墨寒",
-          "path": "presentation/flagship/remote.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"允許查看墨寒程式視窗（不擷取整個桌面）\")"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 84,
-          "matched": "墨寒",
-          "path": "presentation/flagship/remote.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self.camera_enabled = QCheckBox(self._t(\"啟用墨寒本機視覺感知\"))"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 312,
-          "matched": "墨寒",
-          "path": "presentation/flagship/remote.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"assistant\": str(self.db.setting(\"assistant_name\", \"墨寒\")),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 332,
-          "matched": "墨寒",
-          "path": "presentation/flagship/remote.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"message\": self._t(\"已送交墨寒並等待本機權限判斷\"),"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/remote.py",
-      "readers": [
-        {
-          "line": 49,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.remote import FlagshipRemoteMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "b81c88863426b385beefbb69f17860ff7da646be431f8369fa21b21d6b173b8a",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 33,
-          "line": 33,
-          "name": "__all__"
-        },
-        {
-          "end_line": 376,
-          "line": 36,
-          "name": "FlagshipRemoteMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 14382,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 59,
           "matched": "MoHan",
           "path": "presentation/flagship/runtime.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"MoHan Home Assistant token\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 63,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 64,
           "matched": "MoHan",
           "path": "presentation/flagship/runtime.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"MoHan OpenAI API key\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 67,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 68,
           "matched": "MoHan",
           "path": "presentation/flagship/runtime.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"MoHan local face identity templates\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 71,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 72,
           "matched": "MoHan",
           "path": "presentation/flagship/runtime.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"MoHan local gesture skeleton templates\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 171,
-          "matched": "墨寒",
-          "path": "presentation/flagship/runtime.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"assistant\": str(self.db.setting(\"assistant_name\", \"墨寒\")),"
         }
       ],
       "estimated_difficulty": "medium",
@@ -102994,195 +100060,33 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "f828531bba024093b1cd4e73537fe3efb87c9850ff98c1a8698962585acc3a05",
+      "sha256": "90369f07e6305d4d369d90b097ba2672b9586729c4a5e17d86a496385795d53b",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
-          "end_line": 33,
-          "line": 33,
+          "end_line": 34,
+          "line": 34,
           "name": "MULTIMODAL_TIME_TOLERANCE"
         },
         {
-          "end_line": 34,
-          "line": 34,
+          "end_line": 35,
+          "line": 35,
           "name": "MAX_CLIPBOARD_CHARS"
         },
         {
-          "end_line": 39,
-          "line": 39,
+          "end_line": 40,
+          "line": 40,
           "name": "__all__"
         },
         {
-          "end_line": 335,
-          "line": 42,
+          "end_line": 341,
+          "line": 43,
           "name": "FlagshipRuntimeMixin"
         }
       ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 23638,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 435,
-          "matched": "墨寒",
-          "path": "presentation/flagship/settings_security.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"選擇允許墨寒操作的資料夾\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 459,
-          "matched": "墨寒",
-          "path": "presentation/flagship/settings_security.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"選擇允許墨寒啟動的程式\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 471,
-          "matched": "墨寒",
-          "path": "presentation/flagship/settings_security.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"日後對墨寒說的程式名稱\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 516,
-          "matched": "墨寒",
-          "path": "presentation/flagship/settings_security.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"確定撤銷墨寒對此項目的存取權？\"),"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 550,
-          "matched": "妾",
-          "path": "presentation/flagship/settings_security.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "self._t(\"安全權限已保存。妾會守住這條界線。\"),"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/settings_security.py",
-      "readers": [
-        {
-          "line": 51,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.settings_security import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "b32c1291bdd293ea70bc27b132a7bf87da56d62655069753466829596496e642",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 33,
-          "line": 33,
-          "name": "HIGH_RISK_THRESHOLD"
-        },
-        {
-          "end_line": 34,
-          "line": 34,
-          "name": "MEDIUM_RISK_THRESHOLD"
-        },
-        {
-          "end_line": 65,
-          "line": 65,
-          "name": "__all__"
-        },
-        {
-          "end_line": 552,
-          "line": 68,
-          "name": "FlagshipSettingsSecurityMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
-      "bytes": 24960,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 332,
-          "matched": "墨寒",
-          "path": "presentation/flagship/vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 495,
-          "matched": "墨寒",
-          "path": "presentation/flagship/vision.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "self._t(\"墨寒辨識到你時使用的稱呼\"),"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship/vision.py",
-      "readers": [
-        {
-          "line": 59,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship.vision import FlagshipVisionMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "7dd0d9f4f446e58be6d26188198baca2d202aab1c14b147b121c5ccd2acd6d69",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 43,
-          "line": 43,
-          "name": "__all__"
-        },
-        {
-          "end_line": 621,
-          "line": 46,
-          "name": "FlagshipVisionMixin"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     },
     {
       "bytes": 26191,
@@ -103215,7 +100119,7 @@
           "text": "lazy from presentation.flagship_theme import mark_flagship_card"
         },
         {
-          "line": 51,
+          "line": 52,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.flagship_theme import create_flagship_ornament"
         },
@@ -103335,131 +100239,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 14104,
-      "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 66,
-          "matched": "墨寒",
-          "path": "presentation/flagship_ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'{platform} 的原生安全金鑰保存尚未完成實機驗證，因此 OAuth 連線暫停；墨寒不會改用明文保存。': '{platform} 的原生安全金鑰保存等待實機驗證；OAuth 連線保持暫停，權杖僅採已驗證的加密保存。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 71,
-          "matched": "墨寒",
-          "path": "presentation/flagship_ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'門鎖、警報與加熱設備永遠套用高風險政策。墨寒不能因對話內容自行降低安全等級。': '門鎖、警報與加熱設備永遠套用高風險政策，安全等級持續以明確授權為準。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 95,
-          "matched": "墨寒",
-          "path": "presentation/flagship_ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'墨寒會在本機分析在場狀態、臉部與眼神特徵、手勢及場景線索；不保存原始影像、不傳送雲端，未登錄的人物不會建立身分。是否啟用？': '墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？',"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/flagship_ui_localization.py",
-      "readers": [
-        {
-          "line": 19,
-          "path": "presentation/flagship/cloud_health.py",
-          "text": "lazy from presentation.flagship_ui_localization import FlagshipTranslator"
-        },
-        {
-          "line": 70,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from presentation.flagship_ui_localization import FlagshipTranslator"
-        },
-        {
-          "line": 21,
-          "path": "presentation/flagship/workflow_editor.py",
-          "text": "lazy from presentation.flagship_ui_localization import FlagshipTranslator"
-        },
-        {
-          "line": 41,
-          "path": "presentation/flagship_ui.py",
-          "text": "lazy from presentation.flagship_ui_localization import FlagshipTranslator"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "fe280adee4f02c52511882a6b36280975fd4ed8588f3509205211bc7f369f1d8",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 30,
-          "line": 30,
-          "name": "_TRANSLATION_INDEX"
-        },
-        {
-          "end_line": 42,
-          "line": 35,
-          "name": "FLAGSHIP_TRANSLATIONS"
-        },
-        {
-          "end_line": 55,
-          "line": 44,
-          "name": "_SYSTEM_PATTERNS"
-        },
-        {
-          "end_line": 59,
-          "line": 57,
-          "name": "_VISION_AUTHORIZATION_SUMMARY"
-        },
-        {
-          "end_line": 62,
-          "line": 60,
-          "name": "_VISION_AUTHORIZATION_DETAILS"
-        },
-        {
-          "end_line": 124,
-          "line": 65,
-          "name": "_SOURCE_COPY_ALIASES"
-        },
-        {
-          "end_line": 136,
-          "line": 127,
-          "name": "_current_source"
-        },
-        {
-          "end_line": 200,
-          "line": 140,
-          "name": "FlagshipTranslator"
-        },
-        {
-          "end_line": 210,
-          "line": 203,
-          "name": "validate_flagship_translations"
-        },
-        {
-          "end_line": 219,
-          "line": 215,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "ui-name-parameterization"
-    },
-    {
       "bytes": 26171,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -103485,7 +100264,7 @@
       "path": "presentation/lingxiao_shell.py",
       "readers": [
         {
-          "line": 42,
+          "line": 43,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.lingxiao_shell import ("
         },
@@ -103761,7 +100540,7 @@
           "text": "lazy from presentation.presentation_resources import STYLE"
         },
         {
-          "line": 52,
+          "line": 53,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.presentation_resources import STYLE, application_icon"
         },
@@ -103852,7 +100631,8 @@
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
       "content_categories": [
-        "identity"
+        "identity",
+        "product_identity"
       ],
       "content_locations": [
         {
@@ -103936,13 +100716,13 @@
           "text": "\"原生安全保存完成前，墨寒不会退回明文保存，也不会假装功能可用。\""
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 109,
           "matched": "MoHan",
           "path": "presentation/preview_app.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"window_title\": \"MoHan Desktop Assistant — macOS/Linux Preview\","
         },
         {
@@ -103966,13 +100746,13 @@
           "text": "\"fields. Until native secure storage is verified, MoHan will not \""
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 142,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"window_title\": \"墨寒デスクトップアシスタント — macOS／Linux Preview\","
         },
         {
@@ -103986,13 +100766,13 @@
           "text": "\"heading\": \"墨寒はこの環境へ到着しました。現在は慎重に整備中です\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 397,
           "matched": "MoHan",
           "path": "presentation/preview_app.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "app.setApplicationName(\"MoHan Desktop Assistant Preview\")"
         }
       ],
@@ -104010,7 +100790,8 @@
       "scope": "embedded_code",
       "sha256": "fcd1e2c702c452429ca72e674481c85a2bbdf55dc1208486ab7de625be613e49",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -104072,386 +100853,46 @@
       "work_package": null
     },
     {
-      "bytes": 50716,
+      "bytes": 51191,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 77,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 539,
           "matched": "墨寒",
           "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_autonomous_enabled': '允许墨寒自主选装',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 78,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_self_generation_enabled': '允许墨寒云端自创新衣（可能产生费用）',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 101,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_generation_rate_limited': '图片服务当前流量繁忙；墨寒已安全重试，稍后可从既有进度继续。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 110,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_automatic_outfit_selected': '墨寒已根据情境自主换装。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 111,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_pavilion_subtitle': '让墨寒依天气、心情与场合挑选完整造型，也保留您的决定。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 112,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_source_policy': '来源分流：炎剑官方・用户导入・墨寒自创',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 114,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_character_preview': '墨寒造型预览',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 268,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'memory_intro': '墨寒只保存您允许留下的人物、偏好、目标、工作流程与重要日期。记忆保存在本机，可按分类浏览、逐项编辑或删除。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 270,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'remember': '让墨寒记住',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 304,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'memory_clear_confirm': '要删除墨寒保存的全部长期记忆吗？此操作永久有效。继续吗？',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 360,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'echo_guard_tooltip': '墨寒说话时暂停麦克风上传，并在播放后恢复；此选项会让当前操作继续进行。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 361,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'hybrid_transcript_tooltip': 'Realtime 保留原生音频理解；每句说完后，界面文字改用完整录音的 OpenAI 高精度转录。成功后才允许墨寒回答。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 376,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'sleep_mode_status': '休眠模式已启动；墨寒会保持安静，提醒与紧急警报仍会按规则处理。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 377,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'desktop_status_title': '墨寒正在桌面上与你互动',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 380,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'desktop_status_description': '桌面上的墨寒是唯一可见、可拖动并会回应你的角色。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 400,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'tray_quit': '退出墨寒',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 404,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'chat_placeholder': '对墨寒说话……',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 464,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'azure_hd_speech_note': '可选预览功能。请使用独立的 S0 Speech 资源、密钥与相符的支持区域。墨寒使用 Dragon HD 的音频驱动嘴型同步。语音开始延迟取决于网络与区域距离。合成需要检查时，会各尝试一次回退到标准 Azure Speech 与 Windows 本机语音。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 471,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'platform_local_voice_note': '{platform} 本机语音等待设备验证。墨寒只会列出当前平台已验证的语音，并通过设备测试确认离线语音支持。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 491,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'echo_guard_option': '防止墨寒听见自己的声音',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 499,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'echo_guard_note': '启用回声防护后，墨寒说话时会暂停上传麦克风音频，播放结束后再恢复。对话页只显示最终准确转录。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 514,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'permissions_warning': '安全规则：对话会让墨寒停留在已配置的权限范围内。AI 可以提出工具请求，但实际能运行的内容由本机权限决定。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 517,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'permission_blocked_message': '请先为墨寒启用执行 {action} 所需的权限。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 518,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'permission_request': '墨寒请求电脑权限',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 519,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'permission_request_message': '是否允许墨寒本次{action}？',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 537,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'restart_language_note': '保存界面语言后，重新启动墨寒即可完整应用。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 538,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "'about_heading': '<b>关于墨寒</b>',"
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 540,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 541,
           "matched": "墨寒",
           "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 541,
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "line": 542,
           "matched": "MoHan",
           "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 559,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'read_replies': '让墨寒读出回复',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 590,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_autonomous_enabled': '墨寒による自律的な衣装選択を許可',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 591,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_self_generation_enabled': '墨寒によるクラウドでの新衣装生成を許可（料金が発生する場合があります）',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 614,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_generation_rate_limited': '画像サービスが混み合っています。墨寒は安全に再試行済みで、保存された進捗から後ほど再開できます。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 623,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_automatic_outfit_selected': '墨寒が状況に合わせて自律的に着替えました。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 624,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_pavilion_subtitle': '天候・気分・場面に合わせて墨寒が一式を選び、あなたの決定も尊重します。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 625,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_source_policy': '提供元を分離：炎剣公式・ユーザー導入・墨寒の自作',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 627,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'wardrobe_character_preview': '墨寒スタイルプレビュー',"
         }
       ],
-      "estimated_difficulty": "high",
+      "estimated_difficulty": "medium",
       "migration": "被程式寫死需先改",
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "presentation/ui_localization.py",
@@ -104497,7 +100938,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 54,
+          "line": 55,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -104518,359 +100959,89 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "26e2ebf40ed61a38f88e3302980e694c8d8552e6ff920fce38b9f5ca24b690ec",
+      "sha256": "f47d5c3967d72a162d652f547a805dc8e38d8920d020e385b3cbfda393f57c54",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
-          "end_line": 11,
-          "line": 11,
+          "end_line": 12,
+          "line": 12,
           "name": "_CHARACTER_DIALOGUES"
         },
         {
-          "end_line": 565,
-          "line": 13,
+          "end_line": 566,
+          "line": 14,
           "name": "_SIMPLIFIED_CHINESE"
         },
         {
-          "end_line": 690,
-          "line": 567,
+          "end_line": 691,
+          "line": 568,
           "name": "_JAPANESE"
         },
         {
-          "end_line": 730,
-          "line": 705,
+          "end_line": 732,
+          "line": 706,
           "name": "ui_text"
         },
         {
-          "end_line": 746,
-          "line": 733,
+          "end_line": 748,
+          "line": 735,
           "name": "display_label"
         },
         {
-          "end_line": 763,
-          "line": 749,
+          "end_line": 765,
+          "line": 751,
           "name": "__all__"
         }
       ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     },
     {
-      "bytes": 41422,
+      "bytes": 41719,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 86,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"wardrobe_autonomous_enabled\": \"Allow MoHan to choose outfits autonomously\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 87,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"wardrobe_self_generation_enabled\": \"Allow MoHan to create cloud-generated outfits (charges may apply)\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 110,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"wardrobe_generation_rate_limited\": \"The image service is busy right now; MoHan retried safely and can resume from the saved progress later.\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 119,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"wardrobe_automatic_outfit_selected\": \"MoHan changed outfits autonomously for the current context.\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 121,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Let MoHan choose a complete look for the weather, mood, and occasion \""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 125,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Separated sources: Flameblade official · User imports · MoHan creations\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 130,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"wardrobe_character_preview\": \"MoHan appearance preview\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 326,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan stores only people, preferences, goals, workflows, and important \""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 378,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Delete every long-term memory stored by MoHan? This action is permanent. Continue?\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 460,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Pauses microphone upload while MoHan speaks and resumes after playback; \""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 466,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"recording, and MoHan replies only after it succeeds.\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 487,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules.\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 489,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"desktop_status_title\": \"MoHan is interacting with you on the desktop\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 493,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"The desktop MoHan is the only visible, draggable character that responds to you.\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 514,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"tray_quit\": \"Quit MoHan\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 518,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"chat_placeholder\": \"Talk to MoHan…\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 598,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'Optional Preview. Use a separate S0 Speech resource, key, and matching supported region. MoHan uses audio-driven lip sync with Dragon HD. Speech-start delay depends on network and region distance. A synthesis error falls back once each to standard Azure Speech and then Windows local speech.'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 618,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'{platform} local voice awaits device verification. MoHan lists only verified voices for the current platform and confirms offline speech support through device testing.'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 643,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"echo_guard_option\": \"Prevent MoHan from hearing her own voice\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 661,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"With echo guard enabled, microphone upload pauses while MoHan speaks \""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 682,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Grant each capability separately. With Ask every time, MoHan shows a \""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 694,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"Safety rule: conversation keeps MoHan within her configured authority. \""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 700,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"permission_blocked_message\": 'Enable permission for MoHan to {action} before continuing.',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 701,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"permission_request\": \"MoHan requests computer permission\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 702,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"permission_request_message\": \"Allow MoHan to {action} this time?\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 727,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"The interface language will be fully applied after restarting MoHan.\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 729,
           "matched": "MoHan",
           "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"about_heading\": \"<b>About MoHan</b>\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 731,
           "matched": "MoHan",
           "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 752,
-          "matched": "MoHan",
-          "path": "presentation/ui_localization_en.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"read_replies\": \"Read MoHan's replies aloud\","
         }
       ],
-      "estimated_difficulty": "high",
+      "estimated_difficulty": "low",
       "migration": "被程式寫死需先改",
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "presentation/ui_localization_en.py",
       "readers": [
         {
-          "line": 6,
+          "line": 7,
           "path": "presentation/ui_localization.py",
           "text": "from presentation.ui_localization_en import ENGLISH_UI_TEXT as _ENGLISH"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "27d3bd9575964f287e58e0c80a8a7418823b5adbc7f1361d148ae614db44cfab",
+      "sha256": "61cda47078322cf204f3e8028944531ab30f5ccfcde5b366bc03d245e3f0c5ea",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -104889,239 +101060,49 @@
           "name": "__all__"
         }
       ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     },
     {
-      "bytes": 36948,
+      "bytes": 37138,
       "category": "embedded_character_content",
-      "classification": "ui_text_reference",
-      "classification_reason": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 173,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒は許可された人物、好み、目標、ワークフロー、重要な日付だけを\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 213,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"memory_clear_confirm\": '墨寒が保存した長期記憶をすべて削除しますか？この操作は恒久的です。続行しますか？',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 280,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'墨寒の発話中はマイク送信を一時停止し、再生後に再開します。この設定では現在の操作を継続します。'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 284,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"OpenAI 高精度文字起こしを使用します。成功後に墨寒が返答します。\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 301,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 303,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"desktop_status_title\": \"墨寒はデスクトップであなたと対話しています\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 307,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"デスクトップ上の墨寒だけが表示・ドラッグ・応答するキャラクターです。\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 328,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"tray_quit\": \"墨寒を終了\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 332,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"chat_placeholder\": \"墨寒に話しかける……\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 414,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。墨寒は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 434,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'{platform} の本機音声は端末確認を待っています。墨寒は現在のプラットフォームで確認済みの音声だけを表示し、端末テストでオフライン音声対応を確認します。'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 457,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"echo_guard_option\": \"墨寒が自分の声を聞かないようにする\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 472,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"エコー防止を有効にすると、墨寒の発話中はマイク送信を止め、再生終了後に\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 502,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "'安全規則：会話は墨寒の設定済み権限の範囲内で動作します。AI はツール要求を提案できますが、実行できる内容は本機の権限設定で決まります。'"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 506,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"permission_blocked_message\": '続行するには、墨寒の {action} 権限を有効にしてください。',"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 507,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"permission_request\": \"墨寒がパソコンの権限を求めています\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 508,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"permission_request_message\": \"今回だけ墨寒に{action}ことを許可しますか？\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 532,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"restart_language_note\": \"画面言語は墨寒の再起動後に完全適用されます。\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 533,
           "matched": "墨寒",
           "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"about_heading\": \"<b>墨寒について</b>\","
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 535,
           "matched": "墨寒",
           "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
         },
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 536,
           "matched": "MoHan",
           "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "\" CHOU MING HUA および MoHan Desktop Assistant コントリビューター、\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 556,
-          "matched": "墨寒",
-          "path": "presentation/ui_localization_ja.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"read_replies\": \"墨寒の返答を読み上げる\","
         }
       ],
-      "estimated_difficulty": "high",
+      "estimated_difficulty": "medium",
       "migration": "被程式寫死需先改",
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "presentation/ui_localization_ja.py",
@@ -105142,7 +101123,7 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MEMORY_CATEGORY_LABELS"
         },
         {
-          "line": 60,
+          "line": 61,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS"
         },
@@ -105157,15 +101138,15 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS"
         },
         {
-          "line": 7,
+          "line": 8,
           "path": "presentation/ui_localization.py",
           "text": "from presentation.ui_localization_ja import JAPANESE_UI"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "4f7175dbc98a4d78c29300424c6aa4784e7987d3799e443bb9667a42869bea3b",
+      "sha256": "6c2825cdcb6a5cf3a7814c372434f679d1dfdaef902b5be59f08a56e1a0d5fbe",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -105204,7 +101185,7 @@
           "name": "__all__"
         }
       ],
-      "work_package": "ui-name-parameterization"
+      "work_package": null
     }
   ],
   "manual_review_hints": [
@@ -105734,90 +101715,72 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal",
-        "character_title_or_dialogue_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/dashboard_voice.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "voice_preferences"
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship/localization_cloud_home.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship/localization_interaction.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship/localization_remote_vision.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal",
-        "character_title_or_dialogue_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship/localization_security_audit.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
-      "evidence_rules": [
-        "character_title_or_dialogue_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship/localization_themes.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship/localization_workflows.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/flagship_ui_localization.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
     },
     {
       "evidence_rules": [
-        "character_name_literal"
+        "product_identity_literal"
       ],
       "path": "presentation/ui_localization.py",
       "status": "confirmed_by_content_rules",
@@ -105827,7 +101790,7 @@
     },
     {
       "evidence_rules": [
-        "character_name_literal"
+        "product_identity_literal"
       ],
       "path": "presentation/ui_localization_en.py",
       "status": "confirmed_by_content_rules",
@@ -105837,7 +101800,7 @@
     },
     {
       "evidence_rules": [
-        "character_name_literal"
+        "product_identity_literal"
       ],
       "path": "presentation/ui_localization_ja.py",
       "status": "confirmed_by_content_rules",
@@ -105941,6 +101904,7 @@
     "character_persona_data": 5,
     "character_rig_data": 1,
     "character_runtime_dialogue_data": 1,
+    "character_ui_identifier_data": 1,
     "character_voice_data": 1,
     "fullbody_blink": 24,
     "fullbody_complete_frames": 156,
@@ -105970,7 +101934,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 87,
+    "embedded_code": 60,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
@@ -105979,7 +101943,7 @@
     "excluded_review_source": 39,
     "excluded_support": 19,
     "product_validation_data": 48,
-    "runtime_data": 2987
+    "runtime_data": 2988
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

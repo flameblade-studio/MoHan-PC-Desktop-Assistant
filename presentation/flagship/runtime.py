@@ -22,6 +22,7 @@ lazy from domain.cloud_scene_interpreter import CloudSceneInterpreter
 lazy from domain.contracts import SecretStoreFactoryPort
 lazy from domain.flagship_action_models import ActionRequest, ActionResult
 lazy from domain.flagship_action_policy import PolicyEngine
+lazy from domain.service_status_localization import character_ui_values
 lazy from domain.vision_domain import SceneUnderstanding
 lazy from infrastructure.face_identity_store import FaceIdentityStore
 lazy from infrastructure.flagship_windows_toolbox import WindowsToolbox
@@ -168,7 +169,12 @@ class FlagshipRuntimeMixin:
         self._screen_cache = b""
         self._closed = False
         self._remote_status_cache: dict[str, Any] = {
-            "assistant": str(self.db.setting("assistant_name", "墨寒")),
+            "assistant": str(
+                self.db.setting(
+                    "assistant_name",
+                    character_ui_values(self.language)["character_name"],
+                )
+            ),
             "status": "starting",
         }
         self._remote_commands: queue.Queue[tuple[str, str]] = queue.Queue(maxsize=128)

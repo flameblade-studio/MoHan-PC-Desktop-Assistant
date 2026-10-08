@@ -28,12 +28,12 @@ class DashboardWardrobePreferencesMixin:
         mark_flagship_card(preferences_card)
         preferences = QVBoxLayout(preferences_card)
         preferences_title = QLabel(
-            self._t("wardrobe_autonomous_enabled", "允許墨寒自主選裝")
+            self._t("wardrobe_autonomous_enabled", "允許{character_name}自主選裝")
         )
         preferences_title.setProperty("mohanRole", "cardTitle")
         preferences.addWidget(preferences_title)
         self.autonomous_wardrobe_enabled = QCheckBox(
-            self._t("wardrobe_autonomous_enabled", "允許墨寒自主選裝")
+            self._t("wardrobe_autonomous_enabled", "允許{character_name}自主選裝")
         )
         self.autonomous_wardrobe_enabled.setChecked(
             bool(self.db.setting("autonomous_wardrobe_enabled", True))
@@ -41,7 +41,7 @@ class DashboardWardrobePreferencesMixin:
         self.self_outfit_generation_enabled = QCheckBox(
             self._t(
                 "wardrobe_self_generation_enabled",
-                "允許墨寒雲端自創新衣（可能產生費用）",
+                "允許{character_name}雲端自創新衣（可能產生費用）",
             )
         )
         self.self_outfit_generation_enabled.setChecked(

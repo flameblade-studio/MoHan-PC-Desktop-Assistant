@@ -69,6 +69,7 @@ CATEGORY_LABELS = {
     "ui_brand_decoration": "介面品牌裝飾／界面品牌装饰／UI brand decoration／ブランド装飾",
     "ui_character_icon": "角色圖示／角色图标／Character icon／キャラクターアイコン",
     "character_runtime_dialogue_data": "角色執行期台詞資料／角色运行期台词数据／Character runtime dialogue data／キャラクターの実行時台詞データ",
+    "character_ui_identifier_data": "角色介面識別資料／角色界面标识数据／Character UI identifier data／キャラクターの UI 識別データ",
     "character_persona_data": "角色身分與人格資料／角色身份与人格数据／Character identity and persona data／キャラクターの身元と人格データ",
     "character_dialogue_data": "角色台詞與事件資料／角色台词与事件数据／Character dialogue and event data／キャラクターの台詞とイベントデータ",
     "character_voice_data": "角色聲音偏好資料／角色声音偏好数据／Character voice preference data／キャラクターの音声設定データ",
@@ -111,6 +112,7 @@ GROUPS = (
     Group("assets/expressions/source-bound-exasperated/", "source_bound_expression", "infrastructure/exasperated_candidate_assets.py", "records = receipt.get(\"installed_files_sha256\")"),
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", 'resource_path(f"assets/expressions/{expression}.png")'),
+    Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / "persona/ui-identifiers.json"'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data.py", 'root / "persona"'),
     Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"'),
     Group("assets/characters/mohan/dialogue/", "character_dialogue_data", "domain/character_pack/character_data.py", 'root / "dialogue"'),
@@ -288,6 +290,26 @@ PRODUCT_SHELL_ALLOWLIST = {
     "presentation/auxiliary_ui_localization.py": "更新、備份與攜帶檔中的墨寒產品名稱屬產品殼文案。",
     "presentation/preview_app.py": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
 }
+
+# Exact product-identity literals: the MoHan product name, About heading, the
+# network User-Agent, and secure-storage labels. They identify the MoHan product
+# shell, not the character, so they never count as extraction work. Any other
+# character literal in the same file is still reported.
+PRODUCT_IDENTITY_LITERAL = re.compile(
+    r"墨寒桌面助理|墨寒桌面助手|MoHan Desktop Assistant|墨寒デスクトップアシスタント"
+    r"|關於墨寒|关于墨寒|About MoHan|墨寒について"
+    r"|MoHan-Desktop-Assistant/"
+    r"|MoHan (?:\{provider_id\} OAuth token|Home Assistant token|OpenAI API key"
+    r"|local face identity templates|local gesture skeleton templates)"
+)
+PRODUCT_IDENTITY_RULE = ContentRule(
+    "product_identity_literal",
+    "product_identity",
+    PRODUCT_IDENTITY_LITERAL,
+    "infrastructure/app_resources.py",
+    "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+)
+PRODUCT_IDENTITY_REASON = "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。"
 
 UI_TEXT_REFERENCE_PATHS = frozenset(
     {
@@ -575,11 +597,36 @@ def _match_line(lines: list[str], node: ast.Constant, matched: str) -> int:
     )
 
 
+def _fstring_templates(tree: ast.Module) -> dict[int, tuple[str, int]]:
+    """Map each f-string constant piece to its template text and offset within it."""
+    templates: dict[int, tuple[str, int]] = {}
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.JoinedStr):
+            continue
+        pieces = [
+            (part, part.value if isinstance(part, ast.Constant) else "{" + ast.unparse(part.value) + "}")
+            for part in node.values
+        ]
+        template = "".join(text for _, text in pieces)
+        offset = 0
+        for part, text in pieces:
+            if isinstance(part, ast.Constant):
+                templates[id(part)] = (template, offset)
+            offset += len(text)
+    return templates
+
+
+def _product_identity_spans(text: str) -> list[tuple[int, int]]:
+    return [match.span() for match in PRODUCT_IDENTITY_LITERAL.finditer(text)]
+
+
 def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
     """Return literal evidence only; identifiers, comments and hints do not count."""
     lines = text.splitlines()
     tree = _parsed_python(text)
     docstrings = _docstring_nodes(tree)
+    # f-string pieces are separate constants; judge product identity on the whole template.
+    templates = _fstring_templates(tree)
     found: dict[tuple[int, str, str], dict[str, Any]] = {}
     for node in ast.walk(tree):
         if (
@@ -587,8 +634,17 @@ def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
             and isinstance(node.value, str)
             and id(node) not in docstrings
         ):
-            for rule in CONTENT_RULES:
-                for match in rule.pattern.finditer(node.value):
+            template, offset = templates.get(id(node), (node.value, 0))
+            identity_spans = _product_identity_spans(template)
+            for content_rule in CONTENT_RULES:
+                for match in content_rule.pattern.finditer(node.value):
+                    start, end = match.start() + offset, match.end() + offset
+                    rule = (
+                        PRODUCT_IDENTITY_RULE
+                        if content_rule.name == "character_name_literal"
+                        and any(left <= start and end <= right for left, right in identity_spans)
+                        else content_rule
+                    )
                     line = _match_line(lines, node, match.group(0))
                     key = (line, rule.name, match.group(0))
                     found[key] = {
@@ -648,7 +704,9 @@ def _top_level_symbols(tree: ast.Module) -> list[dict[str, Any]]:
 
 
 def _source_classification(path: str, evidence: list[dict[str, Any]]) -> str:
-    rules = {row["rule"] for row in evidence}
+    rules = {row["rule"] for row in evidence} - {PRODUCT_IDENTITY_RULE.name}
+    if not rules:
+        return "product_shell_allowed"
     shell_rules = {"character_name_literal", "character_asset_path_literal"}
     if path in PRODUCT_SHELL_ALLOWLIST and rules <= shell_rules:
         return "product_shell_allowed"
@@ -735,7 +793,7 @@ def _code_records(root: Path) -> list[dict[str, Any]]:
                 "migration": EMBEDDED,
                 "classification": classification,
                 "classification_reason": (
-                    PRODUCT_SHELL_ALLOWLIST[path]
+                    PRODUCT_SHELL_ALLOWLIST.get(path, PRODUCT_IDENTITY_REASON)
                     if classification == "product_shell_allowed"
                     else CLASSIFICATION_REASONS[classification]
                 ),

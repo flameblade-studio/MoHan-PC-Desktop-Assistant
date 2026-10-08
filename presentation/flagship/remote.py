@@ -21,6 +21,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.safe_error_localization import safe_error_message
+lazy from domain.service_status_localization import character_ui_values
 lazy from domain.time_utils import local_wall_time
 lazy from domain.qt_image_io import save_image_png
 lazy from integrations.remote_control import (
@@ -78,10 +79,10 @@ class FlagshipRemoteMixin:
         self.remote_commands = QCheckBox(self._t("允許傳送文字指令"))
         self.remote_commands.setChecked(True)
         self.remote_screen = QCheckBox(
-            self._t("允許查看墨寒程式視窗（不擷取整個桌面）")
+            self._t("允許查看{character_name}程式視窗（不擷取整個桌面）")
         )
         self.remote_files = QCheckBox(self._t("允許下載白名單內的非敏感檔案"))
-        self.camera_enabled = QCheckBox(self._t("啟用墨寒本機視覺感知"))
+        self.camera_enabled = QCheckBox(self._t("啟用{character_name}本機視覺感知"))
         self.face_identity = QCheckBox(
             self._t("辨識我已明確登錄的臉部身分")
         )
@@ -309,7 +310,12 @@ class FlagshipRemoteMixin:
 
     def _update_remote_status_cache(self) -> None:
         self._remote_status_cache = {
-            "assistant": str(self.db.setting("assistant_name", "墨寒")),
+            "assistant": str(
+                self.db.setting(
+                    "assistant_name",
+                    character_ui_values(self.language)["character_name"],
+                )
+            ),
             "mode": str(self.db.setting("mode", "工作")),
             "work_seconds": self.db.today_work_seconds(),
             "todos": [
@@ -329,7 +335,7 @@ class FlagshipRemoteMixin:
             }
         return {
             "accepted": True,
-            "message": self._t("已送交墨寒並等待本機權限判斷"),
+            "message": self._t("已送交{character_name}並等待本機權限判斷"),
         }
 
     def _drain_remote_commands(self) -> None:

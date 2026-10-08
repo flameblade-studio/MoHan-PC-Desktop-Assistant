@@ -170,7 +170,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "ui.all_platforms_saved_speech"
     ],
     "memory_intro": (
-        "墨寒は許可された人物、好み、目標、ワークフロー、重要な日付だけを"
+        "{character_name}は許可された人物、好み、目標、ワークフロー、重要な日付だけを"
         "保存します。記憶はこのパソコンに保存され、分類別の閲覧、個別編集、"
         "削除ができます。"
     ),
@@ -210,7 +210,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "memory_delete_title": "長期記憶を削除",
     "memory_delete_confirm": "チェックした {count} 件の記憶を完全に削除しますか？",
     "memory_clear_title": "長期記憶を消去",
-    "memory_clear_confirm": '墨寒が保存した長期記憶をすべて削除しますか？この操作は恒久的です。続行しますか？',
+    "memory_clear_confirm": '{character_name}が保存した長期記憶をすべて削除しますか？この操作は恒久的です。続行しますか？',
     "memory_optimize_title": "記憶の整理が完了しました",
     "memory_optimize_result": (
         "類似した記憶を {deduplicated} 件統合し、古く重要度の低い記憶を "
@@ -277,11 +277,11 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "platform_url_unsupported": "http:// または https:// の URL だけを開けます。",
     "permission_open_platform": "{platform} のウェブサイトを開く",
     "echo_guard_tooltip": (
-        '墨寒の発話中はマイク送信を一時停止し、再生後に再開します。この設定では現在の操作を継続します。'
+        '{character_name}の発話中はマイク送信を一時停止し、再生後に再開します。この設定では現在の操作を継続します。'
     ),
     "hybrid_transcript_tooltip": (
         "Realtime 本来の音声理解を保ち、発話後の画面文字には録音全体の "
-        "OpenAI 高精度文字起こしを使用します。成功後に墨寒が返答します。"
+        "OpenAI 高精度文字起こしを使用します。成功後に{character_name}が返答します。"
     ),
     "flagship_heading": "<b>フラッグシップ操作センター</b>",
     "increase": "増やす",
@@ -298,13 +298,13 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "voice_ready_short": "準備完了",
     "voice_muted_short": "ミュート中",
     "sleep_mode_status": (
-        "休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。"
+        "休眠モードを開始しました。{character_name}は静かに待機し、リマインダーと緊急通知は規則どおり処理します。"
     ),
-    "desktop_status_title": "墨寒はデスクトップであなたと対話しています",
+    "desktop_status_title": "{character_name}はデスクトップであなたと対話しています",
     "desktop_status_expand": "状態を展開",
     "desktop_status_collapse": "状態を閉じる",
     "desktop_status_description": (
-        "デスクトップ上の墨寒だけが表示・ドラッグ・応答するキャラクターです。"
+        "デスクトップ上の{character_name}だけが表示・ドラッグ・応答するキャラクターです。"
     ),
     "desktop_status_mode": "モード",
     "desktop_status_expression": "姿勢／表情",
@@ -325,11 +325,11 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "voice_status_format": "音声状態：{phase}",
     "bubble_full_content": "…\n（全文は会話ページで確認できます）",
     "tray_open_today": "今日を開く",
-    "tray_quit": "墨寒を終了",
+    "tray_quit": "{character_name}を終了",
     "chat_retention": '会話はこのパソコンに保存され、明示的に削除するまで保持されます',
     "load_older_chat": "過去の会話を読み込む",
     "manage_chat": "会話の管理／消去",
-    "chat_placeholder": "墨寒に話しかける……",
+    "chat_placeholder": "{character_name}に話しかける……",
     "microphone": "🎙 マイク",
     "send_text": "送信",
     "voice_ready": "音声状態：準備完了",
@@ -411,7 +411,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     ),
     "azure_hd_key_save_failed": 'Dragon HD S0 キーの保存設定を確認してください：{error}',
     "azure_hd_speech_note": (
-        '任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。墨寒は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'
+        '任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。{character_name}は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。'
     ),
     "azure_speech_note": (
         'プレビュー機能です。Azure Speech リソースキーと対応リージョンを用意してください。確認済みの女性音声だけを表示します。設定の補完またはサービスの確認が必要な場合は Windows 女性音声へ戻ります。Azure の利用量と料金は Microsoft の規定に従います。'
@@ -431,7 +431,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "画面言語と一致する音声を優先します。"
     ),
     "platform_local_voice_note": (
-        '{platform} の本機音声は端末確認を待っています。墨寒は現在のプラットフォームで確認済みの音声だけを表示し、端末テストでオフライン音声対応を確認します。'
+        '{platform} の本機音声は端末確認を待っています。{character_name}は現在のプラットフォームで確認済みの音声だけを表示し、端末テストでオフライン音声対応を確認します。'
     ),
     "transcription_language_placeholder": "ISO 言語コード（空欄なら自動判定）",
     "openai_fallback": 'OpenAI の回復経路として Windows オフライン認識を使用',
@@ -454,7 +454,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "noise_off": "ノイズ低減なし",
     "stable_vad": "安定した発話区切り（約 0.85 秒の間）",
     "semantic_vad": "意味による発話区切り（早く切れる場合あり）",
-    "echo_guard_option": "墨寒が自分の声を聞かないようにする",
+    "echo_guard_option": "{character_name}が自分の声を聞かないようにする",
     "hybrid_transcript": "画面には高精度の最終文字起こしを表示",
     "mute": "ミュート",
     "rate_down": "本機音声を遅くする",
@@ -469,7 +469,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         "API キーが同じ Project に属することを確認し、設定で新しいキーを保存してください。"
     ),
     "echo_guard_note": (
-        "エコー防止を有効にすると、墨寒の発話中はマイク送信を止め、再生終了後に"
+        "エコー防止を有効にすると、{character_name}の発話中はマイク送信を止め、再生終了後に"
         "再開します。会話画面には高精度の最終文字起こしだけを表示します。"
     ),
     "recognition_note": (
@@ -499,13 +499,13 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "permission_ask": "毎回確認",
     "permission_allow": "許可",
     "permissions_warning": (
-        '安全規則：会話は墨寒の設定済み権限の範囲内で動作します。AI はツール要求を提案できますが、実行できる内容は本機の権限設定で決まります。'
+        '安全規則：会話は{character_name}の設定済み権限の範囲内で動作します。AI はツール要求を提案できますが、実行できる内容は本機の権限設定で決まります。'
     ),
     "save_permissions": "ツール権限を保存",
     "permission_blocked": '権限の更新が必要',
-    "permission_blocked_message": '続行するには、墨寒の {action} 権限を有効にしてください。',
-    "permission_request": "墨寒がパソコンの権限を求めています",
-    "permission_request_message": "今回だけ墨寒に{action}ことを許可しますか？",
+    "permission_blocked_message": '続行するには、{character_name}の {action} 権限を有効にしてください。',
+    "permission_request": "{character_name}がパソコンの権限を求めています",
+    "permission_request_message": "今回だけ{character_name}に{action}ことを許可しますか？",
     "permission_saved_speech": _DIALOGUE.templates["ui.permission_saved_speech"],
     "profile_heading": "<b>名前とプロフィール</b>",
     "system_heading": "<b>仕事とシステム設定</b>",
@@ -529,7 +529,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
         'OpenAI API：{platform} の安全なキー保存は端末確認を待っています'
     ),
     "api_status_offline": 'OpenAI API：接続用キーを設定してください。現在はオフライン人格を使用しています',
-    "restart_language_note": "画面言語は墨寒の再起動後に完全適用されます。",
+    "restart_language_note": "画面言語は{character_name}の再起動後に完全適用されます。",
     "about_heading": "<b>墨寒について</b>",
     "about_body": (
         "墨寒デスクトップアシスタント v{version}、Copyright © 2026"
@@ -553,7 +553,7 @@ JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "continuous_work_reminder": "連続作業リマインダー",
     "overwork_message": "長時間作業／働き過ぎの警告メッセージ",
     "minutes_suffix": " 分",
-    "read_replies": "墨寒の返答を読み上げる",
+    "read_replies": "{character_name}の返答を読み上げる",
     "voice_settings_saved": "音声設定を保存しました。",
     "settings_saved": "設定を保存しました。",
     "work_timer_already_running": '作業タイマーはすでに動作中です。現在のセッションを続けます。',
