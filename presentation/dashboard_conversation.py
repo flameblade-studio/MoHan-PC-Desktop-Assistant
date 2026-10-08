@@ -22,9 +22,17 @@ lazy from application.presentation_ports import (
 lazy from domain.app_profile import (
     persona_for_profile, personalize_text, profile_setting,
 )
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions
-lazy from domain.language_support import is_english, is_japanese, is_simplified_chinese
+lazy from domain.sensory_synesthesia import (
+    runtime_dialogue_locale,
+    runtime_reply_expression_rules,
+)
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from presentation.dashboard_dialogs import ChatHistoryDialog, ZoomTextBrowser
 
@@ -32,21 +40,28 @@ __all__ = ("DashboardConversationMixin", "classify_memory_text")
 
 MIN_CHAT_ZOOM_PERCENT = 60
 MAX_CHAT_ZOOM_PERCENT = 200
+_CHARACTER_DATA = load_mohan_character_data()
+_EXPRESSIONS = default_expression_catalog().emotion_to_expression
+_RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
+_REPLY_EXPRESSION_RULES = runtime_reply_expression_rules()
+_ZH_TW_IDENTITY = _CHARACTER_DATA.personas["zh-TW"].identity
+_EN_IDENTITY = _CHARACTER_DATA.personas["en"].identity
+_JA_IDENTITY = _CHARACTER_DATA.personas["ja-JP"].identity
 
 # Entries are stored pre-normalized: comma-free (`，`/`,`/`、` are stripped
 # from the incoming text), whitespace-collapsed, and casefolded, so every
 # phrase below must stay lowercase and comma-free to remain reachable.
 EMERGENCY_COMMANDS = frozenset(
     {
-        "墨寒停手",
-        "寒停手",
+        f"{_ZH_TW_IDENTITY.display_name}停手",
+        f"{_ZH_TW_IDENTITY.assistant_alias}停手",
         "停手",
         "停止所有操作",
         "取消所有任務",
-        "mohan stop",
+        f"{_EN_IDENTITY.display_name} stop".casefold(),
         "stop everything",
         "stop all tasks",
-        "墨寒止まって",
+        f"{_JA_IDENTITY.display_name}止まって",
         "止まって",
         "ぜんぶ止めて",
         "全部止めて",
@@ -534,7 +549,7 @@ class DashboardConversationMixin:
         )
         if not reply:
             return False
-        self._reply(reply, "shy_cute_front", source="wardrobe-origin")
+        self._reply(reply, _EXPRESSIONS["shy"], source="wardrobe-origin")
         return True
 
     def _handle_emergency_command(self, text: str) -> bool:
@@ -549,9 +564,8 @@ class DashboardConversationMixin:
         if not any(marker in text for marker in TEASING_COMMAND_MARKERS):
             return False
         self._reply(
-            "主上莫要自作多情。妾不過是在觀察你的神色，"
-            "好替你籌謀下一步。至於旁的……並無此事。",
-            "caught",
+            str(_RUNTIME_DIALOGUE["dashboard_teasing"]),
+            _EXPRESSIONS["caught_gaze"],
         )
         return True
 
@@ -567,7 +581,12 @@ class DashboardConversationMixin:
                 self.db.today_work_seconds(),
                 self.ui_language,
             )
-            self._reply(f"主上今日已工作 {duration}。", "speaking")
+            self._reply(
+                str(_RUNTIME_DIALOGUE["dashboard_work_duration"]).format(
+                    duration=duration,
+                ),
+                "speaking",
+            )
         else:
             return False
         return True
@@ -578,7 +597,10 @@ class DashboardConversationMixin:
             return False
         content = text.split(marker, 1)[1].lstrip("：:，, ").strip()
         if not content:
-            self._reply("主上想讓妾記下什麼？", "worried")
+            self._reply(
+                str(_RUNTIME_DIALOGUE["dashboard_quick_capture_prompt"]),
+                "worried",
+            )
         elif any(marker in content for marker in IDEA_CAPTURE_MARKERS):
             self.db.add_idea(content)
             self.refresh_ideas()
@@ -601,8 +623,8 @@ class DashboardConversationMixin:
             return False
         flagship_center.plan_instruction(text, source=source)
         self._reply(
-            "妾先整理成安全計畫，確認權限與目標後再請主上過目。",
-            "thinking_front",
+            str(_RUNTIME_DIALOGUE["dashboard_tool_plan"]),
+            _EXPRESSIONS["thinking"],
         )
         return True
 
@@ -645,7 +667,7 @@ class DashboardConversationMixin:
         try:
             self._finish_ai_wait_expression()
             tagged = parse_internal_emotion(text)
-            clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
+            clean = tagged.text or str(_RUNTIME_DIALOGUE["dashboard_ai_empty"])
             expression = (
                 tagged.expression
                 if tagged.valid_tag and tagged.expression is not None
@@ -664,142 +686,19 @@ class DashboardConversationMixin:
     @staticmethod
     def _reply_expression(text: str) -> str:
         compact = "".join(str(text).split())
-        rules = (
-            (
-                "mock_hit_front",
-                (
-                    "再胡說妾便敲你",
-                    "再胡說妾可要敲你",
-                    "當心妾敲你",
-                    "放肆，妾可要",
-                ),
-            ),
-            (
-                "mock_scold",
-                ("休得胡言", "莫要踰矩", "休要亂說"),
-            ),
-            (
-                "shy_cute_front",
-                (
-                    "莫要自作多情",
-                    "才沒有偷看",
-                    "妾並未偷看",
-                    "誰在注視你",
-                    "並無此事，主上",
-                ),
-            ),
-            (
-                "eureka_front",
-                ("妾想到了", "妾有辦法了", "關鍵原來在於"),
-            ),
-            (
-                "protective_front",
-                (
-                    "妾會護著主上",
-                    "不許任何人傷你",
-                    "誰也不得傷主上",
-                    "有妾護著主上",
-                ),
-            ),
-            (
-                "exasperated_front",
-                (
-                    "真拿主上沒辦法",
-                    "主上又來了",
-                    "讓妾省點心",
-                ),
-            ),
-            (
-                "restrained_amused_front",
-                (
-                    "妾忍俊不禁",
-                    "主上是在逗妾",
-                    "倒是有趣得很",
-                ),
-            ),
-            (
-                "attentive_front",
-                ("妾在聽", "主上慢慢說", "請繼續說", "妾願聞其詳"),
-            ),
-            (
-                "determined_front",
-                ("計策已定", "便照此執行", "就這麼辦", "此事交給妾"),
-            ),
-            (
-                "surprised_front",
-                ("真沒想到", "出乎妾意料", "竟會如此"),
-            ),
-            (
-                "worried_front",
-                (
-                    "妾很擔心",
-                    "主上別逞強",
-                    "主上莫要逞強",
-                    "先處理傷勢",
-                    "你已經很疲憊",
-                    "妾放心不下",
-                ),
-            ),
-            (
-                "reminder",
-                (
-                    "該吃飯了",
-                    "先去吃飯",
-                    "該休息了",
-                    "先休息片刻",
-                    "喝些水",
-                    "到了下班時辰",
-                    "妾提醒主上",
-                ),
-            ),
-            (
-                "relieved_front",
-                ("主上平安便好", "沒事就好", "妾總算放心"),
-            ),
-            (
-                "proud_front",
-                ("不出妾所料", "正如妾所料", "依妾之計"),
-            ),
-            (
-                "gentle_smile_front",
-                (
-                    "主上做得很好",
-                    "妾替主上高興",
-                    "此事值得恭喜",
-                ),
-            ),
-            (
-                "thinking_front",
-                (
-                    "妾先分析",
-                    "先分析風險",
-                    "妾的建議是",
-                    "先排優先順序",
-                    "此事需從長計議",
-                ),
-            ),
-        )
-        for expression, phrases in rules:
+        for rule in _REPLY_EXPRESSION_RULES:
+            emotion = str(rule["emotion"])
+            phrases = rule["phrases"]
+            if not isinstance(phrases, tuple):
+                raise TypeError("Character reply-expression phrases are unavailable.")
             if any(phrase in compact for phrase in phrases):
-                return expression
+                return _EXPRESSIONS[emotion]
         return "speaking"
 
     def _ai_failed(self, error: str) -> None:
         self._finish_ai_wait_expression()
-        if is_english(self.ui_language):
-            message = (
-                "The cloud connection requires attention. I remain "
-                "here, and external knowledge will return when the connection is ready."
-            )
-        elif is_simplified_chinese(self.ui_language):
-            message = "云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。"
-        elif is_japanese(self.ui_language):
-            message = (
-                "クラウドとの接続が一時的に途切れました。妾はここにおりますが、"
-                "今は外部の知識を借りられません。"
-            )
-        else:
-            message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
+        locale = canonical_character_locale(self.ui_language)
+        message = str(runtime_dialogue_locale(locale)["dashboard_ai_failure"])
         # 與 _ai_done 相同的 finally 鐵閘。
         try:
             self._reply(message, "worried")

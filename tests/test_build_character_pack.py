@@ -279,3 +279,12 @@ def _repository_payload_totals() -> tuple[int, int]:
         if row["scope"] in PACK_SCOPES and "!" not in row["path"]
     ]
     return len(selected), sum(row["bytes"] for row in selected)
+
+
+def test_character_data_categories_map_to_explicit_license_components() -> None:
+    assert builder._license_component("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data") == "persona_dialogue"
+    assert builder._license_component("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data") == "persona_dialogue"
+    assert builder._license_component("assets/characters/mohan/voice/profile.json", "character_voice_data") == "voice"
+    assert builder._license_component("assets/characters/mohan/rig/rig-manifest.json", "character_rig_data") == "program_data"
+    with pytest.raises(builder.CharacterPackBuildError, match="no license component"):
+        builder._license_component("assets/characters/mohan/new/unknown.json", "character_unregistered_data")

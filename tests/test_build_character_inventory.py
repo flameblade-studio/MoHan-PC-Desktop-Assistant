@@ -151,7 +151,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 15  # 12 persona/dialogue/voice/UI files + rig manifest + runtime bindings + expression catalog
+CHARACTER_DATA_FILE_COUNT = 16  # 13 persona/dialogue/voice/UI files + rig manifest + runtime bindings + expression catalog
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
@@ -161,6 +161,7 @@ def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> Non
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
     assert rows["assets/characters/mohan/rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
+    assert rows["assets/characters/mohan/dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
     assert rows["assets/characters/mohan/persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 

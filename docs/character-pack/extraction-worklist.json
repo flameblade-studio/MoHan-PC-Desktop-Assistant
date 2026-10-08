@@ -5,11 +5,11 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 26,
-    "engine_extract_files": 11,
-    "manual_review_hint_only_files": 62,
+    "actual_embedded_code_files": 19,
+    "engine_extract_files": 4,
+    "manual_review_hint_only_files": 64,
     "product_shell_allowed_files": 15,
-    "true_extraction_files": 11,
+    "true_extraction_files": 4,
     "ui_text_reference_files": 0,
     "work_packages": 2
   },
@@ -66,60 +66,6 @@
     }
   ],
   "extraction_items": [
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 26,
-              "matched": "attentive_front",
-              "text": "expression: str = \"attentive_front\""
-            },
-            {
-              "line": 135,
-              "matched": "worried_front",
-              "text": "expression=\"worried_front\","
-            },
-            {
-              "line": 206,
-              "matched": "attentive_front",
-              "text": "expression=\"attentive_front\","
-            },
-            {
-              "line": 255,
-              "matched": "attentive_front",
-              "text": "expression=\"attentive_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 252,
-              "matched": "妾",
-              "text": "f\"妾在您指定的診斷報告 {resolved.name} 中看見 \""
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/background_agents.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
     {
       "classification": "engine_extract",
       "content": [
@@ -184,562 +130,41 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 57,
-              "matched": "妾",
-              "text": "\"zh-TW\": \"高雄的暑氣，連妾的赤焰劍都快融了……\","
-            },
-            {
-              "line": 57,
-              "matched": "赤焰劍",
-              "text": "\"zh-TW\": \"高雄的暑氣，連妾的赤焰劍都快融了……\","
-            },
-            {
-              "line": 58,
-              "matched": "妾",
-              "text": "\"zh-CN\": \"高雄的暑气，连妾的赤焰剑都快融了……\","
-            },
-            {
-              "line": 58,
-              "matched": "赤焰剑",
-              "text": "\"zh-CN\": \"高雄的暑气，连妾的赤焰剑都快融了……\","
-            },
-            {
-              "line": 60,
-              "matched": "妾",
-              "text": "\"ja-JP\": \"この暑さ……妾の赤焔剣まで溶けてしまいそうです……\","
-            },
-            {
-              "line": 61,
-              "matched": "妾",
-              "text": "}.get(language, \"高雄的暑氣，連妾的赤焰劍都快融了……\")"
-            },
-            {
-              "line": 61,
-              "matched": "赤焰劍",
-              "text": "}.get(language, \"高雄的暑氣，連妾的赤焰劍都快融了……\")"
-            },
-            {
-              "line": 64,
-              "matched": "妾",
-              "text": "\"zh-TW\": \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\","
-            },
-            {
-              "line": 64,
-              "matched": "汴京",
-              "text": "\"zh-TW\": \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\","
-            },
-            {
-              "line": 65,
-              "matched": "妾",
-              "text": "\"zh-CN\": \"下雨了……妾的衣袖，都沾上了汴京的烟雨。\","
-            },
-            {
-              "line": 65,
-              "matched": "汴京",
-              "text": "\"zh-CN\": \"下雨了……妾的衣袖，都沾上了汴京的烟雨。\","
-            },
-            {
-              "line": 67,
-              "matched": "妾",
-              "text": "\"ja-JP\": \"雨ですね……妾の袖に、汴京の煙雨がかかります。\","
-            },
-            {
-              "line": 67,
-              "matched": "汴京",
-              "text": "\"ja-JP\": \"雨ですね……妾の袖に、汴京の煙雨がかかります。\","
-            },
-            {
-              "line": 68,
-              "matched": "妾",
-              "text": "}.get(language, \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\")"
-            },
-            {
-              "line": 68,
-              "matched": "汴京",
-              "text": "}.get(language, \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\")"
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/sensory_synesthesia.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 397,
-              "matched": "墨寒",
-              "text": "value.replace(\"墨寒\", self.request.assistant_name)"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 398,
-              "matched": "主上",
-              "text": ".replace(\"主上\", self.request.user_title)"
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "integrations/ai_client.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 436,
-              "matched": "主上",
-              "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
-            },
-            {
-              "line": 436,
-              "matched": "妾",
-              "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
-            },
-            {
-              "line": 441,
-              "matched": "主上",
-              "text": "\"先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。\""
-            },
-            {
-              "line": 443,
-              "matched": "妾",
-              "text": "\"直接延續妾上一句的內容；前文待提供時，\""
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "integrations/realtime_session.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 34,
-              "matched": "妾",
-              "text": "\"ready\": \"已連線，妾在聽\","
-            },
-            {
-              "line": 45,
-              "matched": "妾",
-              "text": "\"ready\": \"已连接，妾在听\","
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "integrations/realtime_speech_output.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 878,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            },
-            {
-              "line": 892,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\","
-            },
-            {
-              "line": 906,
-              "matched": "worried_front",
-              "text": "\"worried_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
           "content_kind": "rig",
           "description": "墨寒現行圖層名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 400,
+              "line": 402,
               "matched": "sleeve_left",
               "text": "\"sleeve_left_overlay\","
             },
             {
-              "line": 401,
+              "line": 403,
               "matched": "sleeve_right",
               "text": "\"sleeve_right_overlay\","
             },
             {
-              "line": 402,
+              "line": 404,
               "matched": "hair_left",
               "text": "\"hair_left_overlay\","
             },
             {
-              "line": 403,
+              "line": 405,
               "matched": "hair_right",
               "text": "\"hair_right_overlay\","
             }
           ],
           "rule": "character_layer_name_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 635,
-              "matched": "主上",
-              "text": "\"主上喚我麼？妾一直都在。\","
-            },
-            {
-              "line": 635,
-              "matched": "妾",
-              "text": "\"主上喚我麼？妾一直都在。\","
-            },
-            {
-              "line": 636,
-              "matched": "妾",
-              "text": "\"你揮手，妾便來了。\","
-            },
-            {
-              "line": 641,
-              "matched": "主上",
-              "text": "\"主上唤我么？妾一直都在。\","
-            },
-            {
-              "line": 641,
-              "matched": "妾",
-              "text": "\"主上唤我么？妾一直都在。\","
-            },
-            {
-              "line": 642,
-              "matched": "妾",
-              "text": "\"你挥手，妾便来了。\","
-            },
-            {
-              "line": 653,
-              "matched": "妾",
-              "text": "\"お呼びですか？妾はずっとここに。\","
-            },
-            {
-              "line": 975,
-              "matched": "主上",
-              "text": "\"zh-TW\": \"主上餵妾的……妾、妾便收下了。\","
-            },
-            {
-              "line": 975,
-              "matched": "妾",
-              "text": "\"zh-TW\": \"主上餵妾的……妾、妾便收下了。\","
-            },
-            {
-              "line": 976,
-              "matched": "主上",
-              "text": "\"zh-CN\": \"主上喂妾的……妾、妾便收下了。\","
-            },
-            {
-              "line": 976,
-              "matched": "妾",
-              "text": "\"zh-CN\": \"主上喂妾的……妾、妾便收下了。\","
-            },
-            {
-              "line": 978,
-              "matched": "主上",
-              "text": "\"ja-JP\": \"主上から頂いたもの……妾、頂戴いたします。\","
-            },
-            {
-              "line": 978,
-              "matched": "妾",
-              "text": "\"ja-JP\": \"主上から頂いたもの……妾、頂戴いたします。\","
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
         }
       ],
       "estimated_difficulty": "high",
       "path": "presentation/companion_core.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json",
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 328,
-              "matched": "glance",
-              "text": "self.set_state(\"glance\", source=\"ambient\")"
-            },
-            {
-              "line": 333,
-              "matched": "glance",
-              "text": "if self.state == \"glance\":"
-            },
-            {
-              "line": 337,
-              "matched": "glance",
-              "text": "if self.state == \"glance\":"
-            },
-            {
-              "line": 344,
-              "matched": "caught",
-              "text": "self.set_state(\"caught\", source=\"user_direct\")"
-            },
-            {
-              "line": 348,
-              "matched": "caught",
-              "text": "self._schedule_return_to_idle(2_800, \"caught\")"
-            },
-            {
-              "line": 1070,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\","
-            },
-            {
-              "line": 1071,
-              "matched": "caught",
-              "text": "\"caught\","
-            },
-            {
-              "line": 1072,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            },
-            {
-              "line": 1073,
-              "matched": "worried_front",
-              "text": "\"worried_front\","
-            },
-            {
-              "line": 1074,
-              "matched": "shy_front",
-              "text": "\"shy_front\","
-            },
-            {
-              "line": 1075,
-              "matched": "mock_scold",
-              "text": "\"mock_scold\","
-            },
-            {
-              "line": 1076,
-              "matched": "surprised_front",
-              "text": "\"surprised_front\","
-            },
-            {
-              "line": 1077,
-              "matched": "relieved_front",
-              "text": "\"relieved_front\","
-            },
-            {
-              "line": 1079,
-              "matched": "proud_front",
-              "text": "\"proud_front\","
-            },
-            {
-              "line": 1094,
-              "matched": "mock_hit_front",
-              "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-            },
-            {
-              "line": 1094,
-              "matched": "mock_scold",
-              "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-            },
-            {
-              "line": 1098,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\","
-            },
-            {
-              "line": 1099,
-              "matched": "shy_front",
-              "text": "\"shy_front\","
-            },
-            {
-              "line": 1100,
-              "matched": "shy_cute_front",
-              "text": "\"shy_cute_front\","
-            },
-            {
-              "line": 1102,
-              "matched": "exasperated_front",
-              "text": "\"exasperated_front\","
-            },
-            {
-              "line": 1110,
-              "matched": "caught",
-              "text": "round((-5 if state in {\"caught\", \"shy_front\", \"shy_cute_front\"} else 0) * motion_scale),"
-            },
-            {
-              "line": 1110,
-              "matched": "shy_cute_front",
-              "text": "round((-5 if state in {\"caught\", \"shy_front\", \"shy_cute_front\"} else 0) * motion_scale),"
-            },
-            {
-              "line": 1110,
-              "matched": "shy_front",
-              "text": "round((-5 if state in {\"caught\", \"shy_front\", \"shy_cute_front\"} else 0) * motion_scale),"
-            },
-            {
-              "line": 1114,
-              "matched": "mock_hit_front",
-              "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-            },
-            {
-              "line": 1114,
-              "matched": "mock_scold",
-              "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-            },
-            {
-              "line": 1119,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\","
-            },
-            {
-              "line": 1120,
-              "matched": "surprised_front",
-              "text": "\"surprised_front\","
-            },
-            {
-              "line": 1121,
-              "matched": "proud_front",
-              "text": "\"proud_front\","
-            },
-            {
-              "line": 1122,
-              "matched": "eureka_front",
-              "text": "\"eureka_front\","
-            },
-            {
-              "line": 1131,
-              "matched": "caught",
-              "text": "if state in {\"worried\", \"worried_front\", \"caught\"}"
-            },
-            {
-              "line": 1131,
-              "matched": "worried_front",
-              "text": "if state in {\"worried\", \"worried_front\", \"caught\"}"
-            },
-            {
-              "line": 1133,
-              "matched": "mock_hit_front",
-              "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-            },
-            {
-              "line": 1133,
-              "matched": "mock_scold",
-              "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-            },
-            {
-              "line": 1136,
-              "matched": "mock_scold",
-              "text": "if state == \"mock_scold\""
-            },
-            {
-              "line": 1138,
-              "matched": "proud_front",
-              "text": "if state in {\"thinking_front\", \"proud_front\"}"
-            },
-            {
-              "line": 1138,
-              "matched": "thinking_front",
-              "text": "if state in {\"thinking_front\", \"proud_front\"}"
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 345,
-              "matched": "主上",
-              "text": "dialogue = self._t(\"caught_glance_dialogue\", \"妾只是望向窗外，才不是在偷看主上。\")"
-            },
-            {
-              "line": 345,
-              "matched": "妾",
-              "text": "dialogue = self._t(\"caught_glance_dialogue\", \"妾只是望向窗外，才不是在偷看主上。\")"
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_face_animation.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
+      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -749,453 +174,37 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 172,
+              "line": 170,
               "matched": "assets/expressions/",
               "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
             },
             {
-              "line": 216,
+              "line": 214,
               "matched": "assets/expressions/",
               "text": "source = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
             },
             {
-              "line": 661,
+              "line": 654,
               "matched": "assets/expressions/",
-              "text": "str(resource_path(f\"assets/expressions/v120_face{suffix}.png\"))"
+              "text": "face_path = resource_path(f\"assets/expressions/v120_face{suffix}.png\")"
             },
             {
-              "line": 664,
+              "line": 655,
               "matched": "assets/expressions/",
-              "text": "str(resource_path(f\"assets/expressions/v120_eyes{suffix}.png\"))"
+              "text": "eye_path = resource_path(f\"assets/expressions/v120_eyes{suffix}.png\")"
             }
           ],
           "rule": "character_asset_path_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 152,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 150,
-              "matched": "妾",
-              "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
-            },
-            {
-              "line": 151,
-              "matched": "赤焰劍",
-              "text": "\"自赤焰劍中醒來，往後便由妾伴您左右。\","
-            },
-            {
-              "line": 156,
-              "matched": "妾",
-              "text": "f\"妾已就位。{profile_setting(self.db, 'user_title')}點妾，\""
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
         }
       ],
       "estimated_difficulty": "high",
       "path": "presentation/companion_visual_dynamics.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json",
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 537,
-              "matched": "shy_cute_front",
-              "text": "self._reply(reply, \"shy_cute_front\", source=\"wardrobe-origin\")"
-            },
-            {
-              "line": 554,
-              "matched": "caught",
-              "text": "\"caught\","
-            },
-            {
-              "line": 605,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\","
-            },
-            {
-              "line": 669,
-              "matched": "mock_hit_front",
-              "text": "\"mock_hit_front\","
-            },
-            {
-              "line": 678,
-              "matched": "mock_scold",
-              "text": "\"mock_scold\","
-            },
-            {
-              "line": 682,
-              "matched": "shy_cute_front",
-              "text": "\"shy_cute_front\","
-            },
-            {
-              "line": 692,
-              "matched": "eureka_front",
-              "text": "\"eureka_front\","
-            },
-            {
-              "line": 696,
-              "matched": "protective_front",
-              "text": "\"protective_front\","
-            },
-            {
-              "line": 705,
-              "matched": "exasperated_front",
-              "text": "\"exasperated_front\","
-            },
-            {
-              "line": 713,
-              "matched": "restrained_amused_front",
-              "text": "\"restrained_amused_front\","
-            },
-            {
-              "line": 721,
-              "matched": "attentive_front",
-              "text": "\"attentive_front\","
-            },
-            {
-              "line": 725,
-              "matched": "determined_front",
-              "text": "\"determined_front\","
-            },
-            {
-              "line": 729,
-              "matched": "surprised_front",
-              "text": "\"surprised_front\","
-            },
-            {
-              "line": 733,
-              "matched": "worried_front",
-              "text": "\"worried_front\","
-            },
-            {
-              "line": 756,
-              "matched": "relieved_front",
-              "text": "\"relieved_front\","
-            },
-            {
-              "line": 760,
-              "matched": "proud_front",
-              "text": "\"proud_front\","
-            },
-            {
-              "line": 764,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            },
-            {
-              "line": 772,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 41,
-              "matched": "墨寒",
-              "text": "\"墨寒停手\","
-            },
-            {
-              "line": 49,
-              "matched": "墨寒",
-              "text": "\"墨寒止まって\","
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 552,
-              "matched": "主上",
-              "text": "\"主上莫要自作多情。妾不過是在觀察你的神色，\""
-            },
-            {
-              "line": 552,
-              "matched": "妾",
-              "text": "\"主上莫要自作多情。妾不過是在觀察你的神色，\""
-            },
-            {
-              "line": 570,
-              "matched": "主上",
-              "text": "self._reply(f\"主上今日已工作 {duration}。\", \"speaking\")"
-            },
-            {
-              "line": 581,
-              "matched": "主上",
-              "text": "self._reply(\"主上想讓妾記下什麼？\", \"worried\")"
-            },
-            {
-              "line": 581,
-              "matched": "妾",
-              "text": "self._reply(\"主上想讓妾記下什麼？\", \"worried\")"
-            },
-            {
-              "line": 604,
-              "matched": "主上",
-              "text": "\"妾先整理成安全計畫，確認權限與目標後再請主上過目。\","
-            },
-            {
-              "line": 604,
-              "matched": "妾",
-              "text": "\"妾先整理成安全計畫，確認權限與目標後再請主上過目。\","
-            },
-            {
-              "line": 648,
-              "matched": "主上",
-              "text": "clean = tagged.text or \"妾在。主上方才所言，容妾再細想一遍。\""
-            },
-            {
-              "line": 648,
-              "matched": "妾",
-              "text": "clean = tagged.text or \"妾在。主上方才所言，容妾再細想一遍。\""
-            },
-            {
-              "line": 671,
-              "matched": "妾",
-              "text": "\"再胡說妾便敲你\","
-            },
-            {
-              "line": 672,
-              "matched": "妾",
-              "text": "\"再胡說妾可要敲你\","
-            },
-            {
-              "line": 673,
-              "matched": "妾",
-              "text": "\"當心妾敲你\","
-            },
-            {
-              "line": 674,
-              "matched": "妾",
-              "text": "\"放肆，妾可要\","
-            },
-            {
-              "line": 686,
-              "matched": "妾",
-              "text": "\"妾並未偷看\","
-            },
-            {
-              "line": 688,
-              "matched": "主上",
-              "text": "\"並無此事，主上\","
-            },
-            {
-              "line": 693,
-              "matched": "妾",
-              "text": "(\"妾想到了\", \"妾有辦法了\", \"關鍵原來在於\"),"
-            },
-            {
-              "line": 698,
-              "matched": "主上",
-              "text": "\"妾會護著主上\","
-            },
-            {
-              "line": 698,
-              "matched": "妾",
-              "text": "\"妾會護著主上\","
-            },
-            {
-              "line": 700,
-              "matched": "主上",
-              "text": "\"誰也不得傷主上\","
-            },
-            {
-              "line": 701,
-              "matched": "主上",
-              "text": "\"有妾護著主上\","
-            },
-            {
-              "line": 701,
-              "matched": "妾",
-              "text": "\"有妾護著主上\","
-            },
-            {
-              "line": 707,
-              "matched": "主上",
-              "text": "\"真拿主上沒辦法\","
-            },
-            {
-              "line": 708,
-              "matched": "主上",
-              "text": "\"主上又來了\","
-            },
-            {
-              "line": 709,
-              "matched": "妾",
-              "text": "\"讓妾省點心\","
-            },
-            {
-              "line": 715,
-              "matched": "妾",
-              "text": "\"妾忍俊不禁\","
-            },
-            {
-              "line": 716,
-              "matched": "主上",
-              "text": "\"主上是在逗妾\","
-            },
-            {
-              "line": 716,
-              "matched": "妾",
-              "text": "\"主上是在逗妾\","
-            },
-            {
-              "line": 722,
-              "matched": "主上",
-              "text": "(\"妾在聽\", \"主上慢慢說\", \"請繼續說\", \"妾願聞其詳\"),"
-            },
-            {
-              "line": 722,
-              "matched": "妾",
-              "text": "(\"妾在聽\", \"主上慢慢說\", \"請繼續說\", \"妾願聞其詳\"),"
-            },
-            {
-              "line": 726,
-              "matched": "妾",
-              "text": "(\"計策已定\", \"便照此執行\", \"就這麼辦\", \"此事交給妾\"),"
-            },
-            {
-              "line": 730,
-              "matched": "妾",
-              "text": "(\"真沒想到\", \"出乎妾意料\", \"竟會如此\"),"
-            },
-            {
-              "line": 735,
-              "matched": "妾",
-              "text": "\"妾很擔心\","
-            },
-            {
-              "line": 736,
-              "matched": "主上",
-              "text": "\"主上別逞強\","
-            },
-            {
-              "line": 737,
-              "matched": "主上",
-              "text": "\"主上莫要逞強\","
-            },
-            {
-              "line": 740,
-              "matched": "妾",
-              "text": "\"妾放心不下\","
-            },
-            {
-              "line": 752,
-              "matched": "主上",
-              "text": "\"妾提醒主上\","
-            },
-            {
-              "line": 752,
-              "matched": "妾",
-              "text": "\"妾提醒主上\","
-            },
-            {
-              "line": 757,
-              "matched": "主上",
-              "text": "(\"主上平安便好\", \"沒事就好\", \"妾總算放心\"),"
-            },
-            {
-              "line": 757,
-              "matched": "妾",
-              "text": "(\"主上平安便好\", \"沒事就好\", \"妾總算放心\"),"
-            },
-            {
-              "line": 761,
-              "matched": "妾",
-              "text": "(\"不出妾所料\", \"正如妾所料\", \"依妾之計\"),"
-            },
-            {
-              "line": 766,
-              "matched": "主上",
-              "text": "\"主上做得很好\","
-            },
-            {
-              "line": 767,
-              "matched": "主上",
-              "text": "\"妾替主上高興\","
-            },
-            {
-              "line": 767,
-              "matched": "妾",
-              "text": "\"妾替主上高興\","
-            },
-            {
-              "line": 774,
-              "matched": "妾",
-              "text": "\"妾先分析\","
-            },
-            {
-              "line": 776,
-              "matched": "妾",
-              "text": "\"妾的建議是\","
-            },
-            {
-              "line": 795,
-              "matched": "妾",
-              "text": "message = \"云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。\""
-            },
-            {
-              "line": 798,
-              "matched": "妾",
-              "text": "\"クラウドとの接続が一時的に途切れました。妾はここにおりますが、\""
-            },
-            {
-              "line": 802,
-              "matched": "妾",
-              "text": "message = \"雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。\""
-            }
-          ],
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/dashboard_conversation.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
+      "work_package": "rig-and-asset-parameterization"
     }
   ],
   "owner_decisions": {
@@ -2047,26 +1056,19 @@
       ]
     },
     {
-      "exclusions": "不改介面純名稱文字，不處理 rig 或正式素材 bytes。",
+      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
       "exclusive_files": [
-        "application/background_agents.py",
-        "domain/sensory_synesthesia.py",
-        "integrations/ai_client.py",
-        "integrations/realtime_session.py",
-        "integrations/realtime_speech_output.py",
         "presentation/companion_core.py",
-        "presentation/companion_face_animation.py",
-        "presentation/companion_visual_dynamics.py",
-        "presentation/dashboard_conversation.py"
+        "presentation/companion_visual_dynamics.py"
       ],
-      "file_count": 9,
-      "id": "persona-dialogue-voice-extraction",
-      "objective": "把剩餘稱謂、故事台詞、提示詞與聲音偏好接到現有角色資料。",
+      "file_count": 2,
+      "id": "rig-and-asset-parameterization",
+      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
       "titles": [
-        "人格、台詞與聲音抽離",
-        "人格、台词与声音抽离",
-        "Persona, dialogue and voice extraction",
-        "人格・台詞・音声の抽出"
+        "Rig 與素材路徑參數化",
+        "Rig 与素材路径参数化",
+        "Rig and asset parameterization",
+        "Rig と素材パスのパラメータ化"
       ]
     }
   ]

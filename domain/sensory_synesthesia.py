@@ -11,7 +11,157 @@ This is pure domain logic with Qt outside the domain boundary.  It maps a temper
 weather string to a physiological-response profile.
 """
 
+lazy import json
+lazy from collections.abc import Mapping
 lazy from enum import StrEnum
+lazy from functools import cache
+lazy from string import Formatter
+
+lazy from domain.character_pack.character_data import (
+    MOHAN_CHARACTER_DATA_ROOT,
+)
+lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.immutable_config import deep_freeze
+
+_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"
+_RUNTIME_TEXT_KEYS = frozenset(
+    {
+        "background_diagnostic",
+        "dashboard_ai_empty",
+        "dashboard_ai_failure",
+        "dashboard_quick_capture_prompt",
+        "dashboard_teasing",
+        "dashboard_tool_plan",
+        "dashboard_work_duration",
+        "pinch_reply",
+        "realtime_context",
+        "realtime_empty_long_term_memory",
+        "realtime_empty_recent_context",
+        "realtime_ready",
+        "weather_hot",
+        "weather_rainy",
+    }
+)
+_RUNTIME_LOCALE_KEYS = _RUNTIME_TEXT_KEYS | {"wave_greetings"}
+_SUPPORTED_LOCALES = frozenset({"zh-TW", "zh-CN", "en", "ja-JP"})
+_RUNTIME_FORMAT_FIELDS = {
+    "background_diagnostic": frozenset({"report_name", "issues"}),
+    "dashboard_work_duration": frozenset({"duration"}),
+    "realtime_context": frozenset(
+        {"instructions", "memory_context", "recent_context"}
+    ),
+}
+
+
+def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"Duplicate runtime-dialogue key: {key}")
+        result[key] = value
+    return result
+
+
+@cache
+def _runtime_dialogue_payload() -> Mapping[str, object]:
+    """Load immutable character-owned runtime lines from the bundled data file."""
+
+    try:
+        payload = json.loads(
+            _RUNTIME_DIALOGUE_PATH.read_text(encoding="utf-8"),
+            object_pairs_hook=_unique_json_object,
+        )
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError("Character runtime dialogue must be valid UTF-8 JSON.") from exc
+    if not isinstance(payload, dict) or set(payload) != {
+        "schema",
+        "schema_version",
+        "locales",
+        "reply_expression_rules",
+    }:
+        raise ValueError("Character runtime dialogue has an invalid top-level shape.")
+    if (
+        payload["schema"] != "flameblade.character-runtime-dialogue.v1"
+        or payload["schema_version"] != 1
+    ):
+        raise ValueError("Character runtime dialogue schema is unsupported.")
+    locales = payload["locales"]
+    if not isinstance(locales, dict) or set(locales) != _SUPPORTED_LOCALES:
+        raise ValueError("Character runtime dialogue requires all four locales.")
+    for locale, values in locales.items():
+        if not isinstance(values, dict) or set(values) != _RUNTIME_LOCALE_KEYS:
+            raise ValueError(f"Character runtime dialogue fields differ for {locale}.")
+        if any(
+            not isinstance(values[key], str) or not values[key]
+            for key in _RUNTIME_TEXT_KEYS
+        ):
+            raise ValueError(f"Character runtime dialogue text is invalid for {locale}.")
+        for key in _RUNTIME_TEXT_KEYS:
+            fields = {
+                field_name
+                for _literal, field_name, _format_spec, _conversion in Formatter().parse(
+                    values[key]
+                )
+                if field_name is not None
+            }
+            if fields != _RUNTIME_FORMAT_FIELDS.get(key, frozenset()):
+                raise ValueError(
+                    f"Character runtime dialogue placeholders differ for {locale}.{key}."
+                )
+        greetings = values["wave_greetings"]
+        if (
+            not isinstance(greetings, list)
+            or not greetings
+            or any(not isinstance(line, str) or not line for line in greetings)
+        ):
+            raise ValueError(f"Character wave greetings are invalid for {locale}.")
+    rules = payload["reply_expression_rules"]
+    if not isinstance(rules, list) or not rules:
+        raise ValueError("Character reply-expression rules are required.")
+    known_emotions = default_expression_catalog().emotion_to_expression
+    seen_emotions: set[str] = set()
+    seen_phrases: set[str] = set()
+    for rule in rules:
+        if not isinstance(rule, dict) or set(rule) != {"emotion", "phrases"}:
+            raise ValueError("Character reply-expression rule fields differ.")
+        emotion = rule["emotion"]
+        phrases = rule["phrases"]
+        if (
+            not isinstance(emotion, str)
+            or emotion not in known_emotions
+            or not isinstance(phrases, list)
+            or not phrases
+            or any(not isinstance(phrase, str) or not phrase for phrase in phrases)
+        ):
+            raise ValueError("Character reply-expression rule values are invalid.")
+        if emotion in seen_emotions or any(phrase in seen_phrases for phrase in phrases):
+            raise ValueError("Character reply-expression rules must be unique.")
+        seen_emotions.add(emotion)
+        seen_phrases.update(phrases)
+    return deep_freeze(payload)
+
+
+def runtime_dialogue_locale(language: str) -> Mapping[str, object]:
+    """Return one validated locale from the bundled runtime dialogue."""
+
+    locales = _runtime_dialogue_payload()["locales"]
+    if not isinstance(locales, Mapping):
+        raise TypeError("Character runtime dialogue locales are unavailable.")
+    locale = language if language in _SUPPORTED_LOCALES else "zh-TW"
+    values = locales[locale]
+    if not isinstance(values, Mapping):
+        raise TypeError("Character runtime dialogue locale is unavailable.")
+    return values
+
+
+def runtime_reply_expression_rules() -> tuple[Mapping[str, object], ...]:
+    """Return ordered character-owned phrase-to-emotion rules."""
+
+    rules = _runtime_dialogue_payload()["reply_expression_rules"]
+    if not isinstance(rules, tuple):
+        raise TypeError("Character reply-expression rules are unavailable.")
+    return rules
+
 
 # Temperature thresholds (Celsius) for physiological responses.
 HOT_THRESHOLD_C = 32.0
@@ -52,18 +202,9 @@ def rain_alpha(mood: WeatherMood) -> float:
 
 def complaint_line(language: str, mood: WeatherMood) -> str:
     """Return a four-language complaint for an uncomfortable weather."""
+    dialogue = runtime_dialogue_locale(language)
     if mood is WeatherMood.HOT:
-        return {
-            "zh-TW": "高雄的暑氣，連妾的赤焰劍都快融了……",
-            "zh-CN": "高雄的暑气，连妾的赤焰剑都快融了……",
-            "en": "This heat… even my Crimson Flame Sword is about to melt…",
-            "ja-JP": "この暑さ……妾の赤焔剣まで溶けてしまいそうです……",
-        }.get(language, "高雄的暑氣，連妾的赤焰劍都快融了……")
+        return str(dialogue["weather_hot"])
     if mood is WeatherMood.RAINY:
-        return {
-            "zh-TW": "下雨了……妾的衣袖，都沾上了汴京的煙雨。",
-            "zh-CN": "下雨了……妾的衣袖，都沾上了汴京的烟雨。",
-            "en": "It is raining… my sleeves are touched by the mist of Bianjing.",
-            "ja-JP": "雨ですね……妾の袖に、汴京の煙雨がかかります。",
-        }.get(language, "下雨了……妾的衣袖，都沾上了汴京的煙雨。")
+        return str(dialogue["weather_rainy"])
     return ""

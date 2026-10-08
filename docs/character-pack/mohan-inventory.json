@@ -72,137 +72,10 @@
     }
   ],
   "embedded_code_classification_counts": {
-    "engine_extract": 11,
+    "engine_extract": 4,
     "product_shell_allowed": 15
   },
   "files": [
-    {
-      "bytes": 9566,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "expression",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 26,
-          "matched": "attentive_front",
-          "path": "application/background_agents.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "expression: str = \"attentive_front\""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 135,
-          "matched": "worried_front",
-          "path": "application/background_agents.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "expression=\"worried_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 206,
-          "matched": "attentive_front",
-          "path": "application/background_agents.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "expression=\"attentive_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 252,
-          "matched": "妾",
-          "path": "application/background_agents.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "f\"妾在您指定的診斷報告 {resolved.name} 中看見 \""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 255,
-          "matched": "attentive_front",
-          "path": "application/background_agents.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "expression=\"attentive_front\","
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/background_agents.py",
-      "readers": [
-        {
-          "line": 9,
-          "path": "application/multisensory_interaction.py",
-          "text": "lazy from application.background_agents import is_quiet_time"
-        },
-        {
-          "line": 21,
-          "path": "presentation/companion_core.py",
-          "text": "lazy from application.background_agents import ManagerWorkerScheduler"
-        },
-        {
-          "line": 18,
-          "path": "presentation/companion_visual_dynamics.py",
-          "text": "lazy from application.background_agents import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "aefb36401ffafcf04b20498fa5f7b337773a4092ed01a622299cb78d6e4ec6bb",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 18,
-          "line": 16,
-          "name": "_BACKGROUND_APP_TEMPLATE"
-        },
-        {
-          "end_line": 28,
-          "line": 22,
-          "name": "AgentObservation"
-        },
-        {
-          "end_line": 35,
-          "line": 31,
-          "name": "BackgroundWorker"
-        },
-        {
-          "end_line": 48,
-          "line": 38,
-          "name": "is_quiet_time"
-        },
-        {
-          "end_line": 168,
-          "line": 51,
-          "name": "ManagerWorkerScheduler"
-        },
-        {
-          "end_line": 211,
-          "line": 171,
-          "name": "VisibleAppWorker"
-        },
-        {
-          "end_line": 263,
-          "line": 214,
-          "name": "DiagnosticReportWorker"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
     {
       "bytes": 2550,
       "category": "embedded_character_content",
@@ -481,6 +354,23 @@
       "sha256": "89f96109c8b34b52cf2ffd2718daaa8f1ccfed859fcfe48c4658fbc18858ed63"
     },
     {
+      "bytes": 13138,
+      "category": "character_runtime_dialogue_data",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/dialogue/runtime.json",
+      "readers": [
+        {
+          "line": 26,
+          "path": "domain/sensory_synesthesia.py",
+          "text": "_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / \"dialogue\" / \"runtime.json\""
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "841f091862ab40fb39aff6983b09a83de0cb35859b5bc14a40b6012bc5ff859f"
+    },
+    {
       "bytes": 12124,
       "category": "character_dialogue_data",
       "manifest_references": [],
@@ -515,7 +405,7 @@
       "sha256": "bc21ffab90bbe350b8ab0d11b1cf6cc6c0f6373f2bcc6630dcaebc95676dc634"
     },
     {
-      "bytes": 11230,
+      "bytes": 11386,
       "category": "character_expression_catalog",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -529,7 +419,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "4fb8857a3bd3f39fd330f8cae8622741034dc8e437417dda3e3f36ae3ac6de6e"
+      "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
       "bytes": 7151,
@@ -708,7 +598,7 @@
       "path": "assets/expressions/attentive_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -730,7 +620,7 @@
       "path": "assets/expressions/attentive_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -752,7 +642,7 @@
       "path": "assets/expressions/attentive_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -774,7 +664,7 @@
       "path": "assets/expressions/attentive_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -796,7 +686,7 @@
       "path": "assets/expressions/blink.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -818,7 +708,7 @@
       "path": "assets/expressions/blink_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -840,7 +730,7 @@
       "path": "assets/expressions/blink_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -862,7 +752,7 @@
       "path": "assets/expressions/caught.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -884,7 +774,7 @@
       "path": "assets/expressions/caught_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -906,7 +796,7 @@
       "path": "assets/expressions/caught_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -928,7 +818,7 @@
       "path": "assets/expressions/caught_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5187,7 +5077,7 @@
       "path": "assets/expressions/determined_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5209,7 +5099,7 @@
       "path": "assets/expressions/determined_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5231,7 +5121,7 @@
       "path": "assets/expressions/determined_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5253,7 +5143,7 @@
       "path": "assets/expressions/determined_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5302,7 +5192,7 @@
       "path": "assets/expressions/eureka_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5324,7 +5214,7 @@
       "path": "assets/expressions/eureka_front_closed.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5346,7 +5236,7 @@
       "path": "assets/expressions/eureka_front_half.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5368,7 +5258,7 @@
       "path": "assets/expressions/eureka_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5390,7 +5280,7 @@
       "path": "assets/expressions/eureka_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5412,7 +5302,7 @@
       "path": "assets/expressions/eureka_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5434,7 +5324,7 @@
       "path": "assets/expressions/exasperated_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5456,7 +5346,7 @@
       "path": "assets/expressions/exasperated_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5478,7 +5368,7 @@
       "path": "assets/expressions/exasperated_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5500,7 +5390,7 @@
       "path": "assets/expressions/exasperated_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5522,7 +5412,7 @@
       "path": "assets/expressions/gentle_smile_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5544,7 +5434,7 @@
       "path": "assets/expressions/gentle_smile_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5566,7 +5456,7 @@
       "path": "assets/expressions/gentle_smile_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5588,7 +5478,7 @@
       "path": "assets/expressions/gentle_smile_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5610,7 +5500,7 @@
       "path": "assets/expressions/glance.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5632,7 +5522,7 @@
       "path": "assets/expressions/glance_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5654,7 +5544,7 @@
       "path": "assets/expressions/glance_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5676,7 +5566,7 @@
       "path": "assets/expressions/glance_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5698,7 +5588,7 @@
       "path": "assets/expressions/happy.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5720,7 +5610,7 @@
       "path": "assets/expressions/happy_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5742,7 +5632,7 @@
       "path": "assets/expressions/happy_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5764,7 +5654,7 @@
       "path": "assets/expressions/happy_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5786,7 +5676,7 @@
       "path": "assets/expressions/idle.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5808,7 +5698,7 @@
       "path": "assets/expressions/idle_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5830,7 +5720,7 @@
       "path": "assets/expressions/idle_front_closed.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5852,7 +5742,7 @@
       "path": "assets/expressions/idle_front_half.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5874,7 +5764,7 @@
       "path": "assets/expressions/idle_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5896,7 +5786,7 @@
       "path": "assets/expressions/idle_lean_closed.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -5918,7 +5808,7 @@
       "path": "assets/expressions/idle_lean_half.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7634,7 +7524,7 @@
       "path": "assets/expressions/mock_hit_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7656,7 +7546,7 @@
       "path": "assets/expressions/mock_hit_front_closed.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7678,7 +7568,7 @@
       "path": "assets/expressions/mock_hit_front_half.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7700,7 +7590,7 @@
       "path": "assets/expressions/mock_hit_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7722,7 +7612,7 @@
       "path": "assets/expressions/mock_hit_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7744,7 +7634,7 @@
       "path": "assets/expressions/mock_hit_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7766,7 +7656,7 @@
       "path": "assets/expressions/mock_scold.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7788,7 +7678,7 @@
       "path": "assets/expressions/mock_scold_closed.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7810,7 +7700,7 @@
       "path": "assets/expressions/mock_scold_half.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7832,7 +7722,7 @@
       "path": "assets/expressions/mock_scold_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7854,7 +7744,7 @@
       "path": "assets/expressions/mock_scold_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7876,7 +7766,7 @@
       "path": "assets/expressions/mock_scold_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7898,7 +7788,7 @@
       "path": "assets/expressions/protective_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7920,7 +7810,7 @@
       "path": "assets/expressions/protective_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7942,7 +7832,7 @@
       "path": "assets/expressions/protective_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7964,7 +7854,7 @@
       "path": "assets/expressions/protective_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -7986,7 +7876,7 @@
       "path": "assets/expressions/proud_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8008,7 +7898,7 @@
       "path": "assets/expressions/proud_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8030,7 +7920,7 @@
       "path": "assets/expressions/proud_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8052,7 +7942,7 @@
       "path": "assets/expressions/proud_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8074,7 +7964,7 @@
       "path": "assets/expressions/relieved_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8096,7 +7986,7 @@
       "path": "assets/expressions/relieved_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8118,7 +8008,7 @@
       "path": "assets/expressions/relieved_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8140,7 +8030,7 @@
       "path": "assets/expressions/relieved_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8162,7 +8052,7 @@
       "path": "assets/expressions/reminder.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8184,7 +8074,7 @@
       "path": "assets/expressions/reminder_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8206,7 +8096,7 @@
       "path": "assets/expressions/reminder_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8228,7 +8118,7 @@
       "path": "assets/expressions/reminder_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8250,7 +8140,7 @@
       "path": "assets/expressions/restrained_amused_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8272,7 +8162,7 @@
       "path": "assets/expressions/restrained_amused_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8294,7 +8184,7 @@
       "path": "assets/expressions/restrained_amused_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -8316,7 +8206,7 @@
       "path": "assets/expressions/restrained_amused_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10188,7 +10078,7 @@
       "path": "assets/expressions/shy_cute_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10210,7 +10100,7 @@
       "path": "assets/expressions/shy_cute_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10232,7 +10122,7 @@
       "path": "assets/expressions/shy_cute_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10254,7 +10144,7 @@
       "path": "assets/expressions/shy_cute_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10276,7 +10166,7 @@
       "path": "assets/expressions/shy_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10298,7 +10188,7 @@
       "path": "assets/expressions/shy_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10320,7 +10210,7 @@
       "path": "assets/expressions/shy_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -10342,7 +10232,7 @@
       "path": "assets/expressions/shy_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12033,7 +11923,7 @@
       "path": "assets/expressions/speaking.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12055,7 +11945,7 @@
       "path": "assets/expressions/speaking_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12077,7 +11967,7 @@
       "path": "assets/expressions/speaking_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12099,7 +11989,7 @@
       "path": "assets/expressions/surprised_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12121,7 +12011,7 @@
       "path": "assets/expressions/surprised_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12143,7 +12033,7 @@
       "path": "assets/expressions/surprised_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12165,7 +12055,7 @@
       "path": "assets/expressions/surprised_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12187,7 +12077,7 @@
       "path": "assets/expressions/thinking_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12209,7 +12099,7 @@
       "path": "assets/expressions/thinking_front_speech_blink.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12231,7 +12121,7 @@
       "path": "assets/expressions/thinking_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12253,7 +12143,7 @@
       "path": "assets/expressions/thinking_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12275,7 +12165,7 @@
       "path": "assets/expressions/thinking_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12297,7 +12187,7 @@
       "path": "assets/expressions/tired_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12319,7 +12209,7 @@
       "path": "assets/expressions/tired_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12341,7 +12231,7 @@
       "path": "assets/expressions/tired_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12363,7 +12253,7 @@
       "path": "assets/expressions/tired_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12385,7 +12275,7 @@
       "path": "assets/expressions/v120_eyes.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12407,7 +12297,7 @@
       "path": "assets/expressions/v120_eyes_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12429,7 +12319,7 @@
       "path": "assets/expressions/v120_eyes_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12451,7 +12341,7 @@
       "path": "assets/expressions/v120_face.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12473,7 +12363,7 @@
       "path": "assets/expressions/v120_face_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12495,7 +12385,7 @@
       "path": "assets/expressions/v120_face_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12517,7 +12407,7 @@
       "path": "assets/expressions/v120_hair_left.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12539,7 +12429,7 @@
       "path": "assets/expressions/v120_hair_left_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12561,7 +12451,7 @@
       "path": "assets/expressions/v120_hair_left_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12583,7 +12473,7 @@
       "path": "assets/expressions/v120_hair_right.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12605,7 +12495,7 @@
       "path": "assets/expressions/v120_hair_right_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12627,7 +12517,7 @@
       "path": "assets/expressions/v120_hair_right_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12649,7 +12539,7 @@
       "path": "assets/expressions/v120_ornament.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12671,7 +12561,7 @@
       "path": "assets/expressions/v120_ornament_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12693,7 +12583,7 @@
       "path": "assets/expressions/v120_ornament_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12715,7 +12605,7 @@
       "path": "assets/expressions/v120_sleeve_left.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12737,7 +12627,7 @@
       "path": "assets/expressions/v120_sleeve_left_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12759,7 +12649,7 @@
       "path": "assets/expressions/v120_sleeve_left_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12781,7 +12671,7 @@
       "path": "assets/expressions/v120_sleeve_right.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12803,7 +12693,7 @@
       "path": "assets/expressions/v120_sleeve_right_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12825,7 +12715,7 @@
       "path": "assets/expressions/v120_sleeve_right_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -12982,7 +12872,7 @@
       "path": "assets/expressions/viseme_i.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13004,7 +12894,7 @@
       "path": "assets/expressions/viseme_i_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13026,7 +12916,7 @@
       "path": "assets/expressions/viseme_i_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13048,7 +12938,7 @@
       "path": "assets/expressions/viseme_mid_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13070,7 +12960,7 @@
       "path": "assets/expressions/viseme_o.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13092,7 +12982,7 @@
       "path": "assets/expressions/viseme_o_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13114,7 +13004,7 @@
       "path": "assets/expressions/viseme_o_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13136,7 +13026,7 @@
       "path": "assets/expressions/viseme_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13158,7 +13048,7 @@
       "path": "assets/expressions/viseme_round_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13180,7 +13070,7 @@
       "path": "assets/expressions/viseme_round_lean.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13202,7 +13092,7 @@
       "path": "assets/expressions/viseme_wide_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13224,7 +13114,7 @@
       "path": "assets/expressions/worried.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13246,7 +13136,7 @@
       "path": "assets/expressions/worried_front.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13268,7 +13158,7 @@
       "path": "assets/expressions/worried_front_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13290,7 +13180,7 @@
       "path": "assets/expressions/worried_front_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13312,7 +13202,7 @@
       "path": "assets/expressions/worried_front_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13334,7 +13224,7 @@
       "path": "assets/expressions/worried_speech_mid.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13356,7 +13246,7 @@
       "path": "assets/expressions/worried_speech_open.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -13378,7 +13268,7 @@
       "path": "assets/expressions/worried_speech_round.png",
       "readers": [
         {
-          "line": 172,
+          "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
         }
@@ -89583,7 +89473,7 @@
           "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
         },
         {
-          "line": 79,
+          "line": 80,
           "path": "presentation/companion_core.py",
           "text": "lazy from domain.constants import DEFAULT_WEATHER_TEMPERATURE_C"
         },
@@ -90218,226 +90108,6 @@
       "work_package": "engine-identity-parameterization"
     },
     {
-      "bytes": 2718,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 57,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-TW\": \"高雄的暑氣，連妾的赤焰劍都快融了……\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 57,
-          "matched": "赤焰劍",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-TW\": \"高雄的暑氣，連妾的赤焰劍都快融了……\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 58,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-CN\": \"高雄的暑气，连妾的赤焰剑都快融了……\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 58,
-          "matched": "赤焰剑",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-CN\": \"高雄的暑气，连妾的赤焰剑都快融了……\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 60,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ja-JP\": \"この暑さ……妾の赤焔剣まで溶けてしまいそうです……\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 61,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "}.get(language, \"高雄的暑氣，連妾的赤焰劍都快融了……\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 61,
-          "matched": "赤焰劍",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "}.get(language, \"高雄的暑氣，連妾的赤焰劍都快融了……\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 64,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-TW\": \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 64,
-          "matched": "汴京",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-TW\": \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 65,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-CN\": \"下雨了……妾的衣袖，都沾上了汴京的烟雨。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 65,
-          "matched": "汴京",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-CN\": \"下雨了……妾的衣袖，都沾上了汴京的烟雨。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 67,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ja-JP\": \"雨ですね……妾の袖に、汴京の煙雨がかかります。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 67,
-          "matched": "汴京",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ja-JP\": \"雨ですね……妾の袖に、汴京の煙雨がかかります。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 68,
-          "matched": "妾",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "}.get(language, \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 68,
-          "matched": "汴京",
-          "path": "domain/sensory_synesthesia.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "}.get(language, \"下雨了……妾的衣袖，都沾上了汴京的煙雨。\")"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/sensory_synesthesia.py",
-      "readers": [
-        {
-          "line": 47,
-          "path": "presentation/companion_core.py",
-          "text": "lazy from domain.sensory_synesthesia import WeatherMood"
-        },
-        {
-          "line": 34,
-          "path": "presentation/companion_proactive.py",
-          "text": "lazy from domain.sensory_synesthesia import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "5ac81d364ade200a746a97d13b8d7a9d4c06945d3a3164ec9f12e5c8f09700e6",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 17,
-          "line": 17,
-          "name": "HOT_THRESHOLD_C"
-        },
-        {
-          "end_line": 20,
-          "line": 20,
-          "name": "RAIN_WEATHER"
-        },
-        {
-          "end_line": 26,
-          "line": 23,
-          "name": "WeatherMood"
-        },
-        {
-          "end_line": 36,
-          "line": 29,
-          "name": "weather_mood"
-        },
-        {
-          "end_line": 43,
-          "line": 39,
-          "name": "sweat_frequency"
-        },
-        {
-          "end_line": 50,
-          "line": 46,
-          "name": "rain_alpha"
-        },
-        {
-          "end_line": 69,
-          "line": 53,
-          "name": "complaint_line"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
       "bytes": 2191,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -90967,163 +90637,6 @@
       "work_package": null
     },
     {
-      "bytes": 21013,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 397,
-          "matched": "墨寒",
-          "path": "integrations/ai_client.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "value.replace(\"墨寒\", self.request.assistant_name)"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 398,
-          "matched": "主上",
-          "path": "integrations/ai_client.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": ".replace(\"主上\", self.request.user_title)"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "integrations/ai_client.py",
-      "readers": [
-        {
-          "line": 106,
-          "path": "application/service_container.py",
-          "text": "lazy from integrations.ai_client import ("
-        },
-        {
-          "line": 13,
-          "path": "presentation/flagship/planner.py",
-          "text": "lazy from integrations.ai_client import DEFAULT_TEXT_MODEL, ActionPlannerWorker"
-        },
-        {
-          "line": 36,
-          "path": "presentation/flagship/runtime.py",
-          "text": "lazy from integrations.ai_client import ActionPlannerWorker"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "36fcefb600b7069fd87da3116446998d38c7e602edc0defad93e7d5be2c30db5",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 35,
-          "line": 35,
-          "name": "_CHARACTER_DATA"
-        },
-        {
-          "end_line": 36,
-          "line": 36,
-          "name": "_PROFILE_DEFAULTS"
-        },
-        {
-          "end_line": 38,
-          "line": 38,
-          "name": "DEFAULT_TEXT_MODEL"
-        },
-        {
-          "end_line": 41,
-          "line": 39,
-          "name": "STABLE_PROMPT_CACHE_BREAKPOINT"
-        },
-        {
-          "end_line": 46,
-          "line": 42,
-          "name": "TEXT_MODELS"
-        },
-        {
-          "end_line": 51,
-          "line": 49,
-          "name": "_matches"
-        },
-        {
-          "end_line": 71,
-          "line": 54,
-          "name": "_english_offline_reply"
-        },
-        {
-          "end_line": 88,
-          "line": 74,
-          "name": "_simplified_chinese_offline_reply"
-        },
-        {
-          "end_line": 109,
-          "line": 91,
-          "name": "_japanese_offline_reply"
-        },
-        {
-          "end_line": 128,
-          "line": 112,
-          "name": "_traditional_chinese_offline_reply"
-        },
-        {
-          "end_line": 139,
-          "line": 132,
-          "name": "OFFLINE_NOTICE"
-        },
-        {
-          "end_line": 152,
-          "line": 142,
-          "name": "offline_reply"
-        },
-        {
-          "end_line": 157,
-          "line": 157,
-          "name": "REQUEST_TIMEOUT_SECONDS"
-        },
-        {
-          "end_line": 162,
-          "line": 160,
-          "name": "AIWorkerSignals"
-        },
-        {
-          "end_line": 167,
-          "line": 165,
-          "name": "ActionPlannerSignals"
-        },
-        {
-          "end_line": 174,
-          "line": 170,
-          "name": "_ActionPlannerOptions"
-        },
-        {
-          "end_line": 362,
-          "line": 177,
-          "name": "ActionPlannerWorker"
-        },
-        {
-          "end_line": 386,
-          "line": 366,
-          "name": "AIWorkerRequest"
-        },
-        {
-          "end_line": 544,
-          "line": 389,
-          "name": "AIWorker"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
       "bytes": 27492,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -91287,251 +90800,6 @@
         }
       ],
       "work_package": null
-    },
-    {
-      "bytes": 18548,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 436,
-          "matched": "主上",
-          "path": "integrations/realtime_session.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 436,
-          "matched": "妾",
-          "path": "integrations/realtime_session.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 441,
-          "matched": "主上",
-          "path": "integrations/realtime_session.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 443,
-          "matched": "妾",
-          "path": "integrations/realtime_session.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"直接延續妾上一句的內容；前文待提供時，\""
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "integrations/realtime_session.py",
-      "readers": [
-        {
-          "line": 35,
-          "path": "integrations/realtime_voice.py",
-          "text": "lazy from integrations.realtime_session import RealtimeSessionMethods"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "d52959277c0d4a682304b7a0ab941b7d06709798a9109e7e45dabb1716bacd22",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 26,
-          "line": 26,
-          "name": "MAX_TERM_LENGTH"
-        },
-        {
-          "end_line": 27,
-          "line": 27,
-          "name": "MAX_TERMS"
-        },
-        {
-          "end_line": 28,
-          "line": 28,
-          "name": "MIN_COMPARISON_LENGTH"
-        },
-        {
-          "end_line": 29,
-          "line": 29,
-          "name": "MIN_SUBSTRING_LENGTH"
-        },
-        {
-          "end_line": 30,
-          "line": 30,
-          "name": "SIMILARITY_THRESHOLD"
-        },
-        {
-          "end_line": 40,
-          "line": 33,
-          "name": "_realtime_message"
-        },
-        {
-          "end_line": 50,
-          "line": 50,
-          "name": "__all__"
-        },
-        {
-          "end_line": 523,
-          "line": 53,
-          "name": "RealtimeSessionMethods"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "bytes": 23988,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 34,
-          "matched": "妾",
-          "path": "integrations/realtime_speech_output.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ready\": \"已連線，妾在聽\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 45,
-          "matched": "妾",
-          "path": "integrations/realtime_speech_output.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ready\": \"已连接，妾在听\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "integrations/realtime_speech_output.py",
-      "readers": [
-        {
-          "line": 119,
-          "path": "application/service_container.py",
-          "text": "lazy from integrations.realtime_speech_output import RealtimeSpeechOutput"
-        },
-        {
-          "line": 10,
-          "path": "integrations/realtime_contracts.py",
-          "text": "lazy from integrations.realtime_speech_output import REALTIME_OUTPUT_OPENAI"
-        },
-        {
-          "line": 20,
-          "path": "integrations/realtime_session.py",
-          "text": "lazy from integrations.realtime_speech_output import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "1408c1532b7723f954fd8bbad06605a6a045f92c8516a0de63a5aa20b22f0f99",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 13,
-          "line": 13,
-          "name": "REALTIME_OUTPUT_OPENAI"
-        },
-        {
-          "end_line": 14,
-          "line": 14,
-          "name": "REALTIME_OUTPUT_AZURE"
-        },
-        {
-          "end_line": 15,
-          "line": 15,
-          "name": "REALTIME_OUTPUT_AZURE_HD"
-        },
-        {
-          "end_line": 16,
-          "line": 16,
-          "name": "_REALTIME_OUTPUT_LOCAL"
-        },
-        {
-          "end_line": 17,
-          "line": 17,
-          "name": "_MAX_RESPONSE_TEXT_CHARACTERS"
-        },
-        {
-          "end_line": 18,
-          "line": 18,
-          "name": "_MAX_PLAYBACK_SEGMENTS"
-        },
-        {
-          "end_line": 23,
-          "line": 19,
-          "name": "REALTIME_OUTPUT_MODES"
-        },
-        {
-          "end_line": 69,
-          "line": 24,
-          "name": "_MESSAGES"
-        },
-        {
-          "end_line": 76,
-          "line": 72,
-          "name": "_message"
-        },
-        {
-          "end_line": 87,
-          "line": 80,
-          "name": "AzureRealtimeVoice"
-        },
-        {
-          "end_line": 94,
-          "line": 91,
-          "name": "LocalRealtimeVoice"
-        },
-        {
-          "end_line": 103,
-          "line": 98,
-          "name": "RealtimeSpeechOutputConfig"
-        },
-        {
-          "end_line": 113,
-          "line": 107,
-          "name": "RealtimeSpeechTiming"
-        },
-        {
-          "end_line": 172,
-          "line": 116,
-          "name": "RealtimeTextSegmenter"
-        },
-        {
-          "end_line": 641,
-          "line": 175,
-          "name": "RealtimeSpeechOutput"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
     },
     {
       "bytes": 42141,
@@ -92179,20 +91447,18 @@
       "work_package": null
     },
     {
-      "bytes": 51010,
+      "bytes": 50166,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "content_categories": [
-        "expression",
-        "persona_dialogue",
         "rig"
       ],
       "content_locations": [
         {
           "content_kind": "rig",
           "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 400,
+          "line": 402,
           "matched": "sleeve_left",
           "path": "presentation/companion_core.py",
           "rule": "character_layer_name_literal",
@@ -92202,7 +91468,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 401,
+          "line": 403,
           "matched": "sleeve_right",
           "path": "presentation/companion_core.py",
           "rule": "character_layer_name_literal",
@@ -92212,7 +91478,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 402,
+          "line": 404,
           "matched": "hair_left",
           "path": "presentation/companion_core.py",
           "rule": "character_layer_name_literal",
@@ -92222,172 +91488,12 @@
         {
           "content_kind": "rig",
           "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 403,
+          "line": 405,
           "matched": "hair_right",
           "path": "presentation/companion_core.py",
           "rule": "character_layer_name_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
           "text": "\"hair_right_overlay\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 635,
-          "matched": "主上",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上喚我麼？妾一直都在。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 635,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上喚我麼？妾一直都在。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 636,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"你揮手，妾便來了。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 641,
-          "matched": "主上",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上唤我么？妾一直都在。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 641,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上唤我么？妾一直都在。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 642,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"你挥手，妾便来了。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 653,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"お呼びですか？妾はずっとここに。\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 878,
-          "matched": "gentle_smile_front",
-          "path": "presentation/companion_core.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"gentle_smile_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 892,
-          "matched": "thinking_front",
-          "path": "presentation/companion_core.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"thinking_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 906,
-          "matched": "worried_front",
-          "path": "presentation/companion_core.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"worried_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 975,
-          "matched": "主上",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-TW\": \"主上餵妾的……妾、妾便收下了。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 975,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-TW\": \"主上餵妾的……妾、妾便收下了。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 976,
-          "matched": "主上",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-CN\": \"主上喂妾的……妾、妾便收下了。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 976,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"zh-CN\": \"主上喂妾的……妾、妾便收下了。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 978,
-          "matched": "主上",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ja-JP\": \"主上から頂いたもの……妾、頂戴いたします。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 978,
-          "matched": "妾",
-          "path": "presentation/companion_core.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"ja-JP\": \"主上から頂いたもの……妾、頂戴いたします。\","
         }
       ],
       "estimated_difficulty": "high",
@@ -92402,568 +91508,87 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "7a818005f2632a330c8519f6bd13a0345f1ed8151c7b6448f83935ac4d42dc3a",
+      "sha256": "1c3d5ef0f0236ad8709c19a8e681587e3376f7227c2913bcdb93f2c51227f541",
       "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json",
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 50,
-          "line": 50,
-          "name": "WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS"
-        },
-        {
           "end_line": 51,
           "line": 51,
-          "name": "GAZE_CONFIDENCE_THRESHOLD"
+          "name": "WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS"
         },
         {
           "end_line": 52,
           "line": 52,
-          "name": "SMILE_COOLDOWN_SECONDS"
+          "name": "GAZE_CONFIDENCE_THRESHOLD"
         },
         {
           "end_line": 53,
           "line": 53,
-          "name": "CHIN_COOLDOWN_SECONDS"
+          "name": "SMILE_COOLDOWN_SECONDS"
         },
         {
           "end_line": 54,
           "line": 54,
-          "name": "BROW_COOLDOWN_SECONDS"
+          "name": "CHIN_COOLDOWN_SECONDS"
         },
         {
           "end_line": 55,
           "line": 55,
-          "name": "HIGH_FIVE_COOLDOWN_SECONDS"
+          "name": "BROW_COOLDOWN_SECONDS"
         },
         {
           "end_line": 56,
           "line": 56,
-          "name": "PINCH_COOLDOWN_SECONDS"
+          "name": "HIGH_FIVE_COOLDOWN_SECONDS"
         },
         {
-          "end_line": 101,
-          "line": 101,
-          "name": "__all__"
+          "end_line": 57,
+          "line": 57,
+          "name": "PINCH_COOLDOWN_SECONDS"
         },
         {
           "end_line": 102,
           "line": 102,
-          "name": "_LOGGER"
-        },
-        {
-          "end_line": 106,
-          "line": 106,
-          "name": "_FULL_BODY_MODES"
-        },
-        {
-          "end_line": 1104,
-          "line": 109,
-          "name": "CompanionCoreMixin"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "bytes": 48639,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "expression",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 328,
-          "matched": "glance",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "self.set_state(\"glance\", source=\"ambient\")"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 333,
-          "matched": "glance",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if self.state == \"glance\":"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 337,
-          "matched": "glance",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if self.state == \"glance\":"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 344,
-          "matched": "caught",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "self.set_state(\"caught\", source=\"user_direct\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 345,
-          "matched": "主上",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "dialogue = self._t(\"caught_glance_dialogue\", \"妾只是望向窗外，才不是在偷看主上。\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 345,
-          "matched": "妾",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "dialogue = self._t(\"caught_glance_dialogue\", \"妾只是望向窗外，才不是在偷看主上。\")"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 348,
-          "matched": "caught",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "self._schedule_return_to_idle(2_800, \"caught\")"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1070,
-          "matched": "thinking_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"thinking_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1071,
-          "matched": "caught",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"caught\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1072,
-          "matched": "gentle_smile_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"gentle_smile_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1073,
-          "matched": "worried_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"worried_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1074,
-          "matched": "shy_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"shy_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1075,
-          "matched": "mock_scold",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"mock_scold\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1076,
-          "matched": "surprised_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"surprised_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1077,
-          "matched": "relieved_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"relieved_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1079,
-          "matched": "proud_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"proud_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1094,
-          "matched": "mock_hit_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1094,
-          "matched": "mock_scold",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1098,
-          "matched": "thinking_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"thinking_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1099,
-          "matched": "shy_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"shy_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1100,
-          "matched": "shy_cute_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"shy_cute_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1102,
-          "matched": "exasperated_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"exasperated_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1110,
-          "matched": "caught",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "round((-5 if state in {\"caught\", \"shy_front\", \"shy_cute_front\"} else 0) * motion_scale),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1110,
-          "matched": "shy_cute_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "round((-5 if state in {\"caught\", \"shy_front\", \"shy_cute_front\"} else 0) * motion_scale),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1110,
-          "matched": "shy_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "round((-5 if state in {\"caught\", \"shy_front\", \"shy_cute_front\"} else 0) * motion_scale),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1114,
-          "matched": "mock_hit_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1114,
-          "matched": "mock_scold",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1119,
-          "matched": "thinking_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"thinking_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1120,
-          "matched": "surprised_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"surprised_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1121,
-          "matched": "proud_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"proud_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1122,
-          "matched": "eureka_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"eureka_front\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1131,
-          "matched": "caught",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"worried\", \"worried_front\", \"caught\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1131,
-          "matched": "worried_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"worried\", \"worried_front\", \"caught\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1133,
-          "matched": "mock_hit_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1133,
-          "matched": "mock_scold",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"mock_scold\", \"mock_hit_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1136,
-          "matched": "mock_scold",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state == \"mock_scold\""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1138,
-          "matched": "proud_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"thinking_front\", \"proud_front\"}"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 1138,
-          "matched": "thinking_front",
-          "path": "presentation/companion_face_animation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "if state in {\"thinking_front\", \"proud_front\"}"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/companion_face_animation.py",
-      "readers": [
-        {
-          "line": 20,
-          "path": "presentation/companion_window.py",
-          "text": "lazy from presentation.companion_face_animation import CompanionFaceAnimationMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "034909bcac382c7f69567f455e552e378bdd33845f3786a36605277fbf301dfa",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 37,
-          "line": 37,
-          "name": "POSE_SWITCH_PROBABILITY"
-        },
-        {
-          "end_line": 38,
-          "line": 38,
-          "name": "MOUTH_CLOSED_THRESHOLD"
-        },
-        {
-          "end_line": 39,
-          "line": 39,
-          "name": "MOUTH_OPEN_THRESHOLD"
-        },
-        {
-          "end_line": 40,
-          "line": 40,
-          "name": "DISCRETE_SPEECH_SWITCH_PROGRESS"
-        },
-        {
-          "end_line": 43,
-          "line": 43,
           "name": "__all__"
         },
         {
-          "end_line": 1148,
-          "line": 46,
-          "name": "CompanionFaceAnimationMixin"
+          "end_line": 103,
+          "line": 103,
+          "name": "_LOGGER"
+        },
+        {
+          "end_line": 107,
+          "line": 107,
+          "name": "_FULL_BODY_MODES"
+        },
+        {
+          "end_line": 108,
+          "line": 108,
+          "name": "_EXPRESSIONS"
+        },
+        {
+          "end_line": 1085,
+          "line": 111,
+          "name": "CompanionCoreMixin"
         }
       ],
-      "work_package": "persona-dialogue-voice-extraction"
+      "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 40838,
+      "bytes": 40871,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "content_categories": [
-        "expression",
-        "persona_dialogue",
         "rig_assets"
       ],
       "content_locations": [
         {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 150,
-          "matched": "妾",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 151,
-          "matched": "赤焰劍",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"自赤焰劍中醒來，往後便由妾伴您左右。\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 152,
-          "matched": "gentle_smile_front",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"gentle_smile_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 156,
-          "matched": "妾",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "f\"妾已就位。{profile_setting(self.db, 'user_title')}點妾，\""
-        },
-        {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 172,
+          "line": 170,
           "matched": "assets/expressions/",
           "path": "presentation/companion_visual_dynamics.py",
           "rule": "character_asset_path_literal",
@@ -92973,7 +91598,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 216,
+          "line": 214,
           "matched": "assets/expressions/",
           "path": "presentation/companion_visual_dynamics.py",
           "rule": "character_asset_path_literal",
@@ -92983,22 +91608,22 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 661,
+          "line": 654,
           "matched": "assets/expressions/",
           "path": "presentation/companion_visual_dynamics.py",
           "rule": "character_asset_path_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "str(resource_path(f\"assets/expressions/v120_face{suffix}.png\"))"
+          "text": "face_path = resource_path(f\"assets/expressions/v120_face{suffix}.png\")"
         },
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 664,
+          "line": 655,
           "matched": "assets/expressions/",
           "path": "presentation/companion_visual_dynamics.py",
           "rule": "character_asset_path_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "str(resource_path(f\"assets/expressions/v120_eyes{suffix}.png\"))"
+          "text": "eye_path = resource_path(f\"assets/expressions/v120_eyes{suffix}.png\")"
         }
       ],
       "estimated_difficulty": "high",
@@ -93013,804 +91638,53 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "2ffbbd1611bc5b87f80b3548098fd9c2b17b9e0b9179a399ca40dfcca5ff7487",
+      "sha256": "651e9e599dec039a1a93c8793feeeee5b01a6103e28b8de50465324bb5fe0d2c",
       "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json",
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 47,
-          "line": 47,
-          "name": "__all__"
-        },
-        {
-          "end_line": 48,
-          "line": 48,
-          "name": "MAX_BUBBLE_LENGTH"
-        },
-        {
           "end_line": 49,
           "line": 49,
-          "name": "GAZE_DISTANCE_THRESHOLD"
+          "name": "__all__"
         },
         {
           "end_line": 50,
           "line": 50,
+          "name": "MAX_BUBBLE_LENGTH"
+        },
+        {
+          "end_line": 51,
+          "line": 51,
+          "name": "GAZE_DISTANCE_THRESHOLD"
+        },
+        {
+          "end_line": 52,
+          "line": 52,
           "name": "MOTION_ZERO_THRESHOLD"
         },
         {
-          "end_line": 969,
+          "end_line": 53,
           "line": 53,
-          "name": "CompanionVisualDynamicsMixin"
-        }
-      ],
-      "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "bytes": 31295,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "expression",
-        "identity",
-        "persona_dialogue"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 41,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒停手\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 49,
-          "matched": "墨寒",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"墨寒止まって\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 537,
-          "matched": "shy_cute_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "self._reply(reply, \"shy_cute_front\", source=\"wardrobe-origin\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 552,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上莫要自作多情。妾不過是在觀察你的神色，\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 552,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上莫要自作多情。妾不過是在觀察你的神色，\""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 554,
-          "matched": "caught",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"caught\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 570,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "self._reply(f\"主上今日已工作 {duration}。\", \"speaking\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 581,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "self._reply(\"主上想讓妾記下什麼？\", \"worried\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 581,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "self._reply(\"主上想讓妾記下什麼？\", \"worried\")"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 604,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾先整理成安全計畫，確認權限與目標後再請主上過目。\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 604,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾先整理成安全計畫，確認權限與目標後再請主上過目。\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 605,
-          "matched": "thinking_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"thinking_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 648,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "clean = tagged.text or \"妾在。主上方才所言，容妾再細想一遍。\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 648,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "clean = tagged.text or \"妾在。主上方才所言，容妾再細想一遍。\""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 669,
-          "matched": "mock_hit_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"mock_hit_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 671,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"再胡說妾便敲你\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 672,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"再胡說妾可要敲你\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 673,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"當心妾敲你\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 674,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"放肆，妾可要\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 678,
-          "matched": "mock_scold",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"mock_scold\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 682,
-          "matched": "shy_cute_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"shy_cute_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 686,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾並未偷看\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 688,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"並無此事，主上\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 692,
-          "matched": "eureka_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"eureka_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 693,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"妾想到了\", \"妾有辦法了\", \"關鍵原來在於\"),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 696,
-          "matched": "protective_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"protective_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 698,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾會護著主上\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 698,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾會護著主上\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 700,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"誰也不得傷主上\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 701,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"有妾護著主上\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 701,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"有妾護著主上\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 705,
-          "matched": "exasperated_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"exasperated_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 707,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"真拿主上沒辦法\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 708,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上又來了\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 709,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"讓妾省點心\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 713,
-          "matched": "restrained_amused_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"restrained_amused_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 715,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾忍俊不禁\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 716,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上是在逗妾\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 716,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上是在逗妾\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 721,
-          "matched": "attentive_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"attentive_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 722,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"妾在聽\", \"主上慢慢說\", \"請繼續說\", \"妾願聞其詳\"),"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 722,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"妾在聽\", \"主上慢慢說\", \"請繼續說\", \"妾願聞其詳\"),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 725,
-          "matched": "determined_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"determined_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 726,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"計策已定\", \"便照此執行\", \"就這麼辦\", \"此事交給妾\"),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 729,
-          "matched": "surprised_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"surprised_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 730,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"真沒想到\", \"出乎妾意料\", \"竟會如此\"),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 733,
-          "matched": "worried_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"worried_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 735,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾很擔心\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 736,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上別逞強\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 737,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上莫要逞強\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 740,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾放心不下\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 752,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾提醒主上\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 752,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾提醒主上\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 756,
-          "matched": "relieved_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"relieved_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 757,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"主上平安便好\", \"沒事就好\", \"妾總算放心\"),"
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 757,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"主上平安便好\", \"沒事就好\", \"妾總算放心\"),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 760,
-          "matched": "proud_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"proud_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 761,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "(\"不出妾所料\", \"正如妾所料\", \"依妾之計\"),"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 764,
-          "matched": "gentle_smile_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"gentle_smile_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 766,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"主上做得很好\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 767,
-          "matched": "主上",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾替主上高興\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 767,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾替主上高興\","
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "line": 772,
-          "matched": "thinking_front",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"thinking_front\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 774,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾先分析\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 776,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"妾的建議是\","
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 795,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "message = \"云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 798,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "\"クラウドとの接続が一時的に途切れました。妾はここにおりますが、\""
-        },
-        {
-          "content_kind": "persona_dialogue",
-          "description": "角色稱謂、故事設定或台詞仍寫在原始碼。",
-          "line": 802,
-          "matched": "妾",
-          "path": "presentation/dashboard_conversation.py",
-          "rule": "character_title_or_dialogue_literal",
-          "suggested_data_target": "assets/characters/mohan/dialogue/<locale>.json",
-          "text": "message = \"雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。\""
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/dashboard_conversation.py",
-      "readers": [
-        {
-          "line": 16,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from presentation.dashboard_conversation import DashboardConversationMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "5e637125465cd252ee05bcd649730a79d78cb18e9067361ab5375d3d37a7ed5a",
-      "suggested_data_targets": [
-        "assets/characters/mohan/dialogue/<locale>.json",
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 31,
-          "line": 31,
-          "name": "__all__"
-        },
-        {
-          "end_line": 33,
-          "line": 33,
-          "name": "MIN_CHAT_ZOOM_PERCENT"
+          "name": "_EXPRESSION_CATALOG"
         },
         {
-          "end_line": 34,
-          "line": 34,
-          "name": "MAX_CHAT_ZOOM_PERCENT"
+          "end_line": 54,
+          "line": 54,
+          "name": "_EXPRESSIONS"
         },
         {
           "end_line": 55,
-          "line": 39,
-          "name": "EMERGENCY_COMMANDS"
+          "line": 55,
+          "name": "_STARTUP_DIALOGUE"
         },
         {
-          "end_line": 67,
-          "line": 57,
-          "name": "TEASING_COMMAND_MARKERS"
-        },
-        {
-          "end_line": 69,
-          "line": 69,
-          "name": "TODAY_WORK_DURATION_MARKERS"
-        },
-        {
-          "end_line": 71,
-          "line": 71,
-          "name": "IDEA_CAPTURE_MARKERS"
-        },
-        {
-          "end_line": 81,
-          "line": 73,
-          "name": "EXPLICIT_TOOL_COMMAND_MARKERS"
-        },
-        {
-          "end_line": 137,
-          "line": 84,
-          "name": "classify_memory_text"
-        },
-        {
-          "end_line": 882,
-          "line": 140,
-          "name": "DashboardConversationMixin"
+          "end_line": 965,
+          "line": 58,
+          "name": "CompanionVisualDynamicsMixin"
         }
       ],
-      "work_package": "persona-dialogue-voice-extraction"
+      "work_package": "rig-and-asset-parameterization"
     },
     {
       "bytes": 35350,
@@ -94320,7 +92194,7 @@
           "text": "lazy from presentation.ui_localization import ui_text"
         },
         {
-          "line": 45,
+          "line": 47,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "lazy from presentation.ui_localization import ui_text"
         },
@@ -94980,12 +92854,9 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal",
-        "character_title_or_dialogue_literal"
-      ],
+      "evidence_rules": [],
       "path": "integrations/ai_client.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
@@ -95033,12 +92904,9 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_expression_state_literal",
-        "character_title_or_dialogue_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/companion_face_animation.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue",
         "rig_angle_expression_pose_rules"
@@ -95062,9 +92930,7 @@
     },
     {
       "evidence_rules": [
-        "character_asset_path_literal",
-        "character_expression_state_literal",
-        "character_title_or_dialogue_literal"
+        "character_asset_path_literal"
       ],
       "path": "presentation/companion_visual_dynamics.py",
       "status": "confirmed_by_content_rules",
@@ -95282,6 +93148,7 @@
     "character_persona_data": 5,
     "character_rig_data": 1,
     "character_runtime_binding_data": 1,
+    "character_runtime_dialogue_data": 1,
     "character_ui_identifier_data": 1,
     "character_voice_data": 1,
     "fullbody_blink": 24,
@@ -95312,7 +93179,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 26,
+    "embedded_code": 19,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
@@ -95321,7 +93188,7 @@
     "excluded_review_source": 39,
     "excluded_support": 19,
     "product_validation_data": 48,
-    "runtime_data": 2988
+    "runtime_data": 2989
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",
