@@ -995,6 +995,7 @@
         "test_hand_model_packaging.py",
         "test_hand_model_provenance.py",
         "test_home_routine_risk_grading.py",
+        "test_huapu.py",
         "test_infrastructure_audit3.py",
         "test_infrastructure_data_safety.py",
         "test_input_validation_boundaries.py",
@@ -1322,6 +1323,7 @@
         "test_flagship_workflows.py",
         "test_gesture_stop_speech_integration.py",
         "test_home_routine_risk_grading.py",
+        "test_huapu.py",
         "test_integrations_audit2_gaps.py",
         "test_integrations_silent_failures.py",
         "test_japanese_localization.py",
@@ -1520,6 +1522,7 @@
         "test_hand_asset_audit.py",
         "test_hand_asset_evidence.py",
         "test_home_routine_risk_grading.py",
+        "test_huapu.py",
         "test_input_validation_boundaries.py",
         "test_installed_outfit_blink_roundtrip.py",
         "test_installed_outfit_cache.py",
@@ -1806,6 +1809,7 @@
         "test_half_body_authority_directory.py",
         "test_half_body_blink_makeup_order.py",
         "test_hand_landmark_provider.py",
+        "test_huapu.py",
         "test_infrastructure_audit3.py",
         "test_infrastructure_data_safety.py",
         "test_input_validation_boundaries.py",
@@ -2234,6 +2238,7 @@
         "test_gesture_runtime.py",
         "test_gesture_silence_fusion.py",
         "test_global_settings_actions.py",
+        "test_huapu.py",
         "test_input_validation_boundaries.py",
         "test_installed_outfit_blink_roundtrip.py",
         "test_integrations_audit2_gaps.py",
@@ -2412,6 +2417,7 @@
         "test_gesture_stop_speech_integration.py",
         "test_global_settings_actions.py",
         "test_home_routine_risk_grading.py",
+        "test_huapu.py",
         "test_japanese_localization.py",
         "test_layered_architecture.py",
         "test_layered_facade_cycles.py",
@@ -3354,15 +3360,6 @@
     },
     {
       "paths": [
-        "tools/art_pipeline/approved_asset_install.py"
-      ],
-      "tests": [
-        "test_approved_asset_install.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "tools/art_pipeline/__init__.py"
       ],
       "tests": [
@@ -3388,6 +3385,16 @@
         "test_source_bound_pack_scope.py",
         "test_source_bound_reference.py",
         "test_source_bound_stage.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/art_pipeline/approved_asset_install.py"
+      ],
+      "tests": [
+        "test_approved_asset_install.py",
+        "test_huapu.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3499,15 +3506,6 @@
     },
     {
       "paths": [
-        "tools/audit_pose_atlas_working.py"
-      ],
-      "tests": [
-        "test_audit_pose_atlas_working.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "domain/character_pose.py"
       ],
       "tests": [
@@ -3546,6 +3544,16 @@
         "test_hand_asset_audit.py",
         "test_hand_asset_evidence.py",
         "test_pose_atlas_manifest_builder.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/audit_pose_atlas_working.py"
+      ],
+      "tests": [
+        "test_audit_pose_atlas_working.py",
+        "test_huapu.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3831,12 +3839,22 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/pack-source.json",
         "assets/characters/mohan/persona/ui-identifiers.json"
       ],
       "tests": [
         "test_build_character_inventory.py",
         "test_build_character_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/pack-source.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_build_character_pack.py",
+        "test_huapu.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4022,21 +4040,22 @@
     },
     {
       "paths": [
-        "integrations/speech_voice_catalog.py"
+        "tools/build_character_inventory.py"
       ],
       "tests": [
         "test_build_character_inventory.py",
-        "test_integrations_audit2_gaps.py"
+        "test_huapu.py",
+        "test_persona_dialogue_voice_extraction.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
     {
       "paths": [
-        "tools/build_character_inventory.py"
+        "integrations/speech_voice_catalog.py"
       ],
       "tests": [
         "test_build_character_inventory.py",
-        "test_persona_dialogue_voice_extraction.py"
+        "test_integrations_audit2_gaps.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4103,6 +4122,7 @@
         "test_character_source.py",
         "test_engine_identity_parameterization.py",
         "test_fetch_character_pack.py",
+        "test_huapu.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -4116,6 +4136,7 @@
         "test_character_pack.py",
         "test_character_source.py",
         "test_fetch_character_pack.py",
+        "test_huapu.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -4154,6 +4175,7 @@
       "tests": [
         "test_build_character_pack.py",
         "test_character_source.py",
+        "test_huapu.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -4473,6 +4495,7 @@
       ],
       "tests": [
         "test_character_pack.py",
+        "test_huapu.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -4671,7 +4694,8 @@
       ],
       "tests": [
         "test_check_pose_atlas_release.py",
-        "test_github_governance.py"
+        "test_github_governance.py",
+        "test_huapu.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5854,9 +5878,19 @@
     },
     {
       "paths": [
-        "character-pack.lock.json",
-        "tools/fetch_character_pack.py",
         "tools/verify_character_pack_lock.py"
+      ],
+      "tests": [
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "character-pack.lock.json",
+        "tools/fetch_character_pack.py"
       ],
       "tests": [
         "test_fetch_character_pack.py",
@@ -6639,6 +6673,35 @@
       ],
       "tests": [
         "test_home_routine_risk_grading.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/approved_install.py",
+        "huapu/character_pack_builder.py",
+        "huapu/character_pack_lock.py",
+        "huapu/hashing.py",
+        "huapu/inventory.py",
+        "huapu/licenses.py",
+        "huapu/pose_audit.py",
+        "huapu/pose_release.py",
+        "huapu/receipts.py",
+        "huapu/rendering.py",
+        "huapu/schema.py"
+      ],
+      "tests": [
+        "test_huapu.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/__init__.py"
+      ],
+      "tests": [
+        "test_huapu.py",
+        "test_layered_facade_cycles.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

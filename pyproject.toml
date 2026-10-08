@@ -51,6 +51,7 @@ requirements_files_dev = ["requirements-dev.txt"]
 known_first_party = [
   "application",
   "domain",
+  "huapu",
   "infrastructure",
   "integrations",
   "presentation",
