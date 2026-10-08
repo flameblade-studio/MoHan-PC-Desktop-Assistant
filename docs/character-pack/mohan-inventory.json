@@ -88555,7 +88555,7 @@
       "sha256": "4c11e99d39be22705db4017796fb8b31350f68d608f16cb9abd2f6d5307bffb4"
     },
     {
-      "bytes": 226,
+      "bytes": 223,
       "category": "archive_or_support",
       "image": {
         "height": 16,
@@ -88569,7 +88569,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "994a8143e8dcf9a81adb41748526cff9fc570032451a59001f8ef057f2150974"
+      "sha256": "4915a105c38a9d011261eb99406eb7c3487eac05099904ef59cfe48142371abf"
     },
     {
       "bytes": 2133779,
@@ -88605,7 +88605,7 @@
       "sha256": "f9cde9cc37da22fb26325ac7326e85ca48514f413efa6a01abfefde22148a605"
     },
     {
-      "bytes": 1351,
+      "bytes": 1332,
       "category": "ui_brand_decoration",
       "image": {
         "height": 96,
@@ -88625,7 +88625,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "9fb4122e9a83dc85cb82fce0e257a1a195e33dd557d31517875efcf3c0f06b1e"
+      "sha256": "5364c7ed73a44239007f65bb658ad18cb1fa642bd0318fe30799ec30e79b16ca"
     },
     {
       "bytes": 2286765,
@@ -90150,6 +90150,11 @@
         {
           "line": 11,
           "path": "application/preview_app.py",
+          "text": "lazy from domain.version_info import APP_VERSION"
+        },
+        {
+          "line": 7,
+          "path": "domain/engine_capabilities.py",
           "text": "lazy from domain.version_info import APP_VERSION"
         },
         {
