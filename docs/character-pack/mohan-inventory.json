@@ -94680,7 +94680,7 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 2028,
+      "bytes": 2191,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "原墨寒專案的版本、儲存庫與更新網址屬產品殼。",
@@ -94701,7 +94701,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 11,
+          "line": 13,
           "matched": "MoHan",
           "path": "domain/version_info.py",
           "rule": "character_name_literal",
@@ -94761,7 +94761,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "5ecf113def1c3d0ec5f14bda780ebfbd5e30a4d8c149654270bc346fead57695",
+      "sha256": "18c623a4e4dda05521778f69b2c98206cbf240069a83cd0f4cda81202164a1ec",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
       ],
@@ -94772,38 +94772,38 @@
           "name": "PROJECT_REPOSITORY"
         },
         {
-          "end_line": 10,
-          "line": 10,
+          "end_line": 12,
+          "line": 12,
           "name": "PROFILE_VENDOR_DIRECTORY"
-        },
-        {
-          "end_line": 11,
-          "line": 11,
-          "name": "PROFILE_APP_DIRECTORY"
         },
         {
           "end_line": 13,
           "line": 13,
-          "name": "FALLBACK_VERSION"
+          "name": "PROFILE_APP_DIRECTORY"
         },
         {
           "end_line": 15,
           "line": 15,
+          "name": "FALLBACK_VERSION"
+        },
+        {
+          "end_line": 17,
+          "line": 17,
           "name": "UNKNOWN_VERSION"
         },
         {
-          "end_line": 26,
-          "line": 18,
+          "end_line": 28,
+          "line": 20,
           "name": "_build_info_path"
         },
         {
-          "end_line": 62,
-          "line": 29,
+          "end_line": 64,
+          "line": 31,
           "name": "build_info"
         },
         {
-          "end_line": 65,
-          "line": 65,
+          "end_line": 67,
+          "line": 67,
           "name": "APP_VERSION"
         }
       ],

@@ -5975,7 +5975,7 @@
               "text": "PROJECT_REPOSITORY = \"flameblade-studio/MoHan-PC-Desktop-Assistant\""
             },
             {
-              "line": 11,
+              "line": 13,
               "matched": "MoHan",
               "text": "PROFILE_APP_DIRECTORY = \"MoHan\""
             }
