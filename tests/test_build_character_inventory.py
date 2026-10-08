@@ -22,7 +22,6 @@ MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
 DERIVATIVE_COUNT = 234
-MIN_WORK_PACKAGE_COUNT = 3
 MAX_WORK_PACKAGE_COUNT = 5
 DERIVATIVE_COUNTS = {
     "fullbody_blink": 24,
@@ -152,7 +151,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 14  # 12 persona/dialogue/voice/UI files + rig manifest + expression catalog
+CHARACTER_DATA_FILE_COUNT = 15  # 13 persona/dialogue/voice/UI files + rig manifest + expression catalog
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
@@ -161,6 +160,7 @@ def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> Non
     data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
+    assert rows["assets/characters/mohan/dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
     assert rows["assets/characters/mohan/persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
@@ -292,7 +292,9 @@ def test_work_packages_are_exclusive_and_product_shell_is_reasoned(
     worklist: dict[str, Any],
 ) -> None:
     counts = worklist["counts"]
-    assert MIN_WORK_PACKAGE_COUNT <= counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    # Packages shrink as extraction lands; any remaining work must still be packaged.
+    assert counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    assert (counts["work_packages"] > 0) == bool(worklist["extraction_items"])
     assert counts["true_extraction_files"] == (
         counts["engine_extract_files"] + counts["ui_text_reference_files"]
     )

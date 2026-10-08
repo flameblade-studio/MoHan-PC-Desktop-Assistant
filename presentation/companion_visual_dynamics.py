@@ -22,6 +22,8 @@ lazy from application.background_agents import (
 )
 lazy from application.multisensory_interaction import MultisensoryInteractionArbiter
 lazy from domain.app_profile import profile_setting, profile_window_title
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
     CHARACTER_CANVAS_WIDTH,
@@ -48,6 +50,9 @@ __all__ = ("CompanionVisualDynamicsMixin",)
 MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
+_EXPRESSION_CATALOG = default_expression_catalog()
+_EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
+_STARTUP_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates
 
 
 class CompanionVisualDynamicsMixin:
@@ -143,20 +148,13 @@ class CompanionVisualDynamicsMixin:
         self._setup_tray()
         self._visual_startup_complete = True
         if self._startup_speech_requested:
-            if not bool(self.db.setting("onboarding_complete", False)):
-                # First awakening: a quiet, fateful greeting for the very first
-                # launch, echoing the "accidental birth" of the companion.
-                self.speak(
-                    f"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。"
-                    "自赤焰劍中醒來，往後便由妾伴您左右。",
-                    "gentle_smile_front",
-                )
-            else:
-                self.speak(
-                    f"妾已就位。{profile_setting(self.db, 'user_title')}點妾，"
-                    "便可展開今日卷冊。",
-                    "idle",
-                )
+            returning = bool(self.db.setting("onboarding_complete", False))
+            event = "startup.returning" if returning else "startup.first"
+            expression = "idle" if returning else _EXPRESSIONS["gentle"]
+            line = _STARTUP_DIALOGUE[event].format(
+                user_title=profile_setting(self.db, "user_title")
+            )
+            self.speak(line, expression)
 
     def complete_deferred_startup(self) -> None:
         """Finish heavy visual preparation after the first window paint."""
@@ -652,17 +650,15 @@ class CompanionVisualDynamicsMixin:
     def _build_attention_layers(self) -> None:
         self.face_sources = {}
         self.eye_sources = {}
-        for pose, suffix in (
-            ("cheek", ""),
-            ("lean", "_lean"),
-            ("front", "_front"),
-        ):
-            self.face_sources[pose] = QPixmap(
-                str(resource_path(f"assets/expressions/v120_face{suffix}.png"))
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.eye_sources[pose] = QPixmap(
-                str(resource_path(f"assets/expressions/v120_eyes{suffix}.png"))
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        for pose, suffix in (("cheek", ""), ("lean", "_lean"), ("front", "_front")):
+            face_path = resource_path(f"assets/expressions/v120_face{suffix}.png")
+            eye_path = resource_path(f"assets/expressions/v120_eyes{suffix}.png")
+            self.face_sources[pose] = QPixmap(str(face_path)).scaled(
+                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+            self.eye_sources[pose] = QPixmap(str(eye_path)).scaled(
+                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
 
     def _render_attention_layers(self, force: bool = False) -> None:
         if not hasattr(self, "face_overlay"):

@@ -38,13 +38,14 @@ lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
 lazy from domain.scalar_conversion import scalar_float as _float_value, scalar_int as _integer_value
 lazy from domain.safe_error import SafeError, sanitize_error
-lazy from domain.sensory_synesthesia import WeatherMood
+lazy from domain.sensory_synesthesia import WeatherMood, runtime_dialogue_locale
 lazy from domain.sword_soul_resonance import SwordSoulResonanceState
 
 WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS = 6.0
@@ -104,6 +105,7 @@ _LOGGER = logging.getLogger(__name__)
 # Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
 # legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
+_EXPRESSIONS = default_expression_catalog().emotion_to_expression
 
 
 class CompanionCoreMixin:
@@ -622,43 +624,23 @@ class CompanionCoreMixin:
         self._last_wave_acknowledged_at = now
         if hasattr(self, "expression_arbiter"):
             try:
-                self.set_state("happy", source="visual", intensity=0.6)
+                self.set_state(
+                    _EXPRESSIONS["happy"],
+                    source="visual",
+                    intensity=0.6,
+                )
             except AttributeError as exc:
                 # A deferred visual startup can still acknowledge a wave
                 # through the voice path while pose assets are unavailable.
                 if "physics_expression_poses" not in str(exc):
                     raise
         language = str(self.db.setting("ui_language", "zh-TW"))
-        responses = {
-            "zh-TW": (
-                "嗨，我在這裡！",
-                "主上喚我麼？妾一直都在。",
-                "你揮手，妾便來了。",
-                "許久不見，近來可好？",
-            ),
-            "zh-CN": (
-                "嗨，我在这里！",
-                "主上唤我么？妾一直都在。",
-                "你挥手，妾便来了。",
-                "许久不见，近来可好？",
-            ),
-            "en": (
-                "Hi there, I'm here!",
-                "You called? I have been here all along.",
-                "You waved, so here I am.",
-                "It has been a while. How have you been?",
-            ),
-            "ja-JP": (
-                "こんにちは、ここにいますよ。",
-                "お呼びですか？妾はずっとここに。",
-                "手を振ってくれたので、参りました。",
-                "お久しぶりです。お元気でしたか？",
-            ),
-        }
-        lines = responses.get(language, responses["zh-TW"])
+        lines = runtime_dialogue_locale(language)["wave_greetings"]
+        if not isinstance(lines, tuple):
+            raise TypeError("Character wave greetings are unavailable.")
         index = getattr(self, "_wave_greeting_index", 0)
         self._wave_greeting_index = (index + 1) % len(lines)
-        self.speak(lines[index], "happy")
+        self.speak(lines[index], _EXPRESSIONS["happy"])
 
     def _open_dashboard_from_gesture(self) -> None:
         """Open the keyboard conversation surface and acknowledge a wave."""
@@ -875,7 +857,7 @@ class CompanionCoreMixin:
         ):
             self._last_multimodal_smile_at = now
             self.set_state(
-                "gentle_smile_front",
+                _EXPRESSIONS["gentle"],
                 source="visual",
                 intensity=0.35,
             )
@@ -889,7 +871,7 @@ class CompanionCoreMixin:
         ):
             self._last_multimodal_chin_at = now
             self.set_state(
-                "thinking_front",
+                _EXPRESSIONS["thinking"],
                 source="visual",
                 intensity=0.30,
             )
@@ -903,7 +885,7 @@ class CompanionCoreMixin:
         ):
             self._last_multimodal_brow_at = now
             self.set_state(
-                "worried_front",
+                _EXPRESSIONS["worried"],
                 source="visual",
                 intensity=0.30,
             )
@@ -957,7 +939,11 @@ class CompanionCoreMixin:
             and now - getattr(self, "_last_multimodal_pinch_at", 0.0) >= PINCH_COOLDOWN_SECONDS
         ):
             self._last_multimodal_pinch_at = now
-            self.set_state("happy", source="visual", intensity=0.65)
+            self.set_state(
+                _EXPRESSIONS["happy"],
+                source="visual",
+                intensity=0.65,
+            )
             affinity = getattr(self, "affinity_state", None)
             if affinity is not None:
                 snapshot = affinity.note_affection_boost()
@@ -971,13 +957,8 @@ class CompanionCoreMixin:
                 self.db.set_setting("favor_value", favor.note_gesture())
             self._persist_affection()
             language = str(self.db.setting("ui_language", "zh-TW"))
-            responses = {
-                "zh-TW": "主上餵妾的……妾、妾便收下了。",
-                "zh-CN": "主上喂妾的……妾、妾便收下了。",
-                "en": "A treat from you… I shall accept it.",
-                "ja-JP": "主上から頂いたもの……妾、頂戴いたします。",
-            }
-            self.speak(responses.get(language, responses["zh-TW"]), "happy")
+            reply = str(runtime_dialogue_locale(language)["pinch_reply"])
+            self.speak(reply, _EXPRESSIONS["happy"])
 
     def _connect_speech_service_signals(self) -> None:
         self.tts.finished.connect(self._speech_audio_finished)

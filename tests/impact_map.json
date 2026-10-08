@@ -1084,6 +1084,7 @@
         "test_performance_preferences_store.py",
         "test_performance_preferences_wiring.py",
         "test_performance_runtime.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_personality_state.py",
         "test_portable_secret_binding.py",
         "test_portable_secret_wiring.py",
@@ -1325,6 +1326,7 @@
         "test_openai_tts_cancellation.py",
         "test_openai_vision_provider.py",
         "test_openai_vision_release_gate.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_prompt_cache.py",
         "test_public_profile_persona.py",
         "test_python315_runtime.py",
@@ -1366,6 +1368,7 @@
         "test_cross_platform_core.py",
         "test_english_localization.py",
         "test_japanese_localization.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_preview_packaging.py",
         "test_prompt_cache.py",
         "test_public_profile_persona.py",
@@ -1568,6 +1571,7 @@
         "test_performance_preferences_store.py",
         "test_performance_preferences_wiring.py",
         "test_performance_runtime.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_personality_state.py",
         "test_pose_atlas_assets.py",
         "test_pose_atlas_audit.py",
@@ -2253,6 +2257,7 @@
         "test_performance_app_bridge.py",
         "test_performance_coordinator.py",
         "test_performance_runtime.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_portable_secret_wiring.py",
         "test_pose_atlas_assets.py",
         "test_pose_atlas_startup_diagnostics.py",
@@ -2410,6 +2415,7 @@
         "test_no_personal_paths.py",
         "test_outfit_generation_ui_bridge.py",
         "test_parametric_face_runtime.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_portable_secret_wiring.py",
         "test_pose_atlas_assets.py",
         "test_pose_atlas_declared_digest.py",
@@ -3081,6 +3087,7 @@
         "test_discrete_blink_runtime.py",
         "test_exasperated_candidate_runtime.py",
         "test_layered_facade_cycles.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_presentation_owner_contract.py",
         "test_window_composition_imports.py",
         "test_window_mro_contract.py"
@@ -3114,6 +3121,7 @@
         "test_app_module_boundaries.py",
         "test_companion_animation_contract.py",
         "test_layered_facade_cycles.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_presentation_owner_contract.py",
         "test_release_automation.py",
         "test_window_composition_imports.py",
@@ -3131,6 +3139,7 @@
         "test_layered_facade_cycles.py",
         "test_lazy_import_owner_contract.py",
         "test_multimodal_model_provider.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_pose_atlas_startup_diagnostics.py",
         "test_pose_atlas_startup_io.py",
         "test_preference_reader_wiring.py",
@@ -3164,8 +3173,8 @@
       "tests": [
         "test_app_module_boundaries.py",
         "test_dashboard_conversation_security.py",
-        "test_layered_facade_cycles.py",
         "test_memory_management.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_presentation_owner_contract.py",
         "test_window_composition_imports.py",
         "test_window_mro_contract.py"
@@ -3738,6 +3747,7 @@
         "test_background_agent_ui.py",
         "test_background_agents.py",
         "test_concurrent_futures_asyncio_compat.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_runtime_async_regressions.py",
         "test_silent_failures_and_audit_data.py"
       ],
@@ -3782,7 +3792,6 @@
     {
       "paths": [
         "assets/characters/mohan/README.md",
-        "assets/characters/mohan/persona/ui-identifiers.json",
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/complete-expressions/manifest.json",
@@ -3798,8 +3807,7 @@
         "docs/character-pack/extraction-worklist.md",
         "docs/character-pack/mohan-inventory-summary.md",
         "docs/character-pack/mohan-inventory.json",
-        "domain/persona_defaults.py",
-        "tools/build_character_inventory.py"
+        "domain/persona_defaults.py"
       ],
       "tests": [
         "test_build_character_inventory.py"
@@ -3808,11 +3816,24 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/pack-source.json"
+        "assets/characters/mohan/pack-source.json",
+        "assets/characters/mohan/persona/ui-identifiers.json"
       ],
       "tests": [
         "test_build_character_inventory.py",
         "test_build_character_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/dialogue/runtime.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_build_character_pack.py",
+        "test_persona_dialogue_voice_extraction.py",
+        "test_tachyon_evidence.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3984,6 +4005,16 @@
     },
     {
       "paths": [
+        "tools/build_character_inventory.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_persona_dialogue_voice_extraction.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/wellbeing_runtime.py"
       ],
       "tests": [
@@ -4084,6 +4115,16 @@
         "test_swallowed_error_d04.py",
         "test_v312_release_consistency.py",
         "test_v4_development_version_consistency.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/voice/profile.json"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_voice_prompt_integrity.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6584,6 +6625,7 @@
       ],
       "tests": [
         "test_integrations_audit2_gaps.py",
+        "test_persona_dialogue_voice_extraction.py",
         "test_realtime_transcription_config.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -7138,6 +7180,35 @@
     },
     {
       "paths": [
+        "tests/data/persona-dialogue-voice-before.json"
+      ],
+      "tests": [
+        "test_persona_dialogue_voice_extraction.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "integrations/realtime_speech_output.py"
+      ],
+      "tests": [
+        "test_persona_dialogue_voice_extraction.py",
+        "test_realtime_speech_output.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/sensory_synesthesia.py"
+      ],
+      "tests": [
+        "test_persona_dialogue_voice_extraction.py",
+        "test_sensory_synesthesia.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/portable_secrets.py"
       ],
       "tests": [
@@ -7534,15 +7605,6 @@
     },
     {
       "paths": [
-        "integrations/realtime_speech_output.py"
-      ],
-      "tests": [
-        "test_realtime_speech_output.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "assets/characters/mohan/expressions/state-catalog.json",
         "assets/ui/checkmark.svg",
         "docs/PYTHON-3.15-MIGRATION.md",
@@ -7687,15 +7749,6 @@
         "test_self_generating_wardrobe.py",
         "test_silent_failures_and_audit_data.py",
         "test_wardrobe_storage.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/sensory_synesthesia.py"
-      ],
-      "tests": [
-        "test_sensory_synesthesia.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7982,15 +8035,6 @@
       ],
       "tests": [
         "test_vision_sbom.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/mohan/voice/profile.json"
-      ],
-      "tests": [
-        "test_voice_prompt_integrity.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
