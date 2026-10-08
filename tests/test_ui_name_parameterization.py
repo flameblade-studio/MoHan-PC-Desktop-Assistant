@@ -121,3 +121,15 @@ def test_remote_page_keeps_the_existing_default_character_text() -> None:
     assert "<h1>墨寒遠端</h1>" in remote_control.MOBILE_PAGE
     assert "<label>傳給墨寒</label>" in remote_control.MOBILE_PAGE
     assert "{character_name}" not in remote_control.MOBILE_PAGE
+
+
+def test_runtime_system_messages_keep_character_named_data_verbatim() -> None:
+    from presentation.flagship_ui_localization import FlagshipTranslator
+
+    for language in ("zh-TW", "zh-CN", "en", "ja"):
+        translator = FlagshipTranslator(language)
+        opened = translator.system_message("已開啟資料夾：D:/墨寒")
+        assert opened.endswith("D:/墨寒")
+        assert "{character_name}" not in opened
+        unknown = "含有墨寒字樣的未知執行期訊息"
+        assert translator.system_message(unknown) == unknown

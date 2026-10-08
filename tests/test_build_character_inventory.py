@@ -374,3 +374,12 @@ def test_product_identity_literals_are_product_shell_not_extraction() -> None:
     assert builder._source_classification("presentation/example.py", evidence) == "product_shell_allowed"
     mixed = builder._content_evidence("presentation/example.py", source + 'GREETING = "主上，墨寒在此。"\n')
     assert builder._source_classification("presentation/example.py", mixed) != "product_shell_allowed"
+
+
+def test_product_identity_exempts_only_its_own_span() -> None:
+    source = 'LABEL = f"MoHan {provider_id} OAuth token — 墨寒會回覆主上"\n'
+    evidence = builder._content_evidence("presentation/example.py", source)
+    rules = {(row["matched"], row["rule"]) for row in evidence}
+    assert ("MoHan", "product_identity_literal") in rules
+    assert ("墨寒", "character_name_literal") in rules
+    assert builder._source_classification("presentation/example.py", evidence) != "product_shell_allowed"

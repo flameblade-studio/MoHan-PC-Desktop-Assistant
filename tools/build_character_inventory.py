@@ -595,14 +595,27 @@ def _match_line(lines: list[str], node: ast.Constant, matched: str) -> int:
     )
 
 
-def _fstring_templates(tree: ast.Module) -> dict[int, str]:
-    """Map each f-string constant piece to its whole template text."""
-    templates: dict[int, str] = {}
+def _fstring_templates(tree: ast.Module) -> dict[int, tuple[str, int]]:
+    """Map each f-string constant piece to its template text and offset within it."""
+    templates: dict[int, tuple[str, int]] = {}
     for node in ast.walk(tree):
-        if isinstance(node, ast.JoinedStr):
-            template = ast.unparse(node)
-            templates.update((id(part), template) for part in node.values if isinstance(part, ast.Constant))
+        if not isinstance(node, ast.JoinedStr):
+            continue
+        pieces = [
+            (part, part.value if isinstance(part, ast.Constant) else "{" + ast.unparse(part.value) + "}")
+            for part in node.values
+        ]
+        template = "".join(text for _, text in pieces)
+        offset = 0
+        for part, text in pieces:
+            if isinstance(part, ast.Constant):
+                templates[id(part)] = (template, offset)
+            offset += len(text)
     return templates
+
+
+def _product_identity_spans(text: str) -> list[tuple[int, int]]:
+    return [match.span() for match in PRODUCT_IDENTITY_LITERAL.finditer(text)]
 
 
 def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
@@ -619,14 +632,17 @@ def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
             and isinstance(node.value, str)
             and id(node) not in docstrings
         ):
-            product_identity = bool(PRODUCT_IDENTITY_LITERAL.search(templates.get(id(node), node.value)))
+            template, offset = templates.get(id(node), (node.value, 0))
+            identity_spans = _product_identity_spans(template)
             for content_rule in CONTENT_RULES:
-                rule = (
-                    PRODUCT_IDENTITY_RULE
-                    if product_identity and content_rule.name == "character_name_literal"
-                    else content_rule
-                )
                 for match in content_rule.pattern.finditer(node.value):
+                    start, end = match.start() + offset, match.end() + offset
+                    rule = (
+                        PRODUCT_IDENTITY_RULE
+                        if content_rule.name == "character_name_literal"
+                        and any(left <= start and end <= right for left, right in identity_spans)
+                        else content_rule
+                    )
                     line = _match_line(lines, node, match.group(0))
                     key = (line, rule.name, match.group(0))
                     found[key] = {

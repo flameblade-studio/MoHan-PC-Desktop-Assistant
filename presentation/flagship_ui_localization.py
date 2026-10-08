@@ -131,11 +131,14 @@ _SOURCE_COPY_ALIASES = frozendict({
 def _current_source(source: str) -> str:
     """Map retired UI copy to the current catalog while preserving behavior."""
 
+    # Only fixed catalog copy is templated; runtime data that merely contains
+    # the character's name (a folder called 墨寒, say) must pass through verbatim.
     normalized = source
     values = character_ui_values("zh-TW")
     for key in sorted(values, key=lambda item: len(values[item]), reverse=True):
         normalized = normalized.replace(values[key], "{" + key + "}")
-    source = normalized
+    if normalized in _SOURCE_COPY_ALIASES or normalized in FLAGSHIP_TRANSLATIONS:
+        source = normalized
     if source.startswith("公開版預設關閉。") and source.endswith(
         "本機 OpenCV 不受此設定影響。"
     ):
