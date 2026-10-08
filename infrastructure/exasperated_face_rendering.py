@@ -3,12 +3,18 @@ from __future__ import annotations
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
+lazy from domain.companion_animation_contract import outfit_silhouette
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.face_rig import FaceMotionFrame
 lazy from infrastructure.exasperated_candidate_assets import (
     DIMENSION as EXASPERATED_DIMENSION, load_exasperated_candidate_assets,
 )
 
 MOUTH_APERTURE_THRESHOLD = 0.01
+_EXASPERATED_SILHOUETTE = outfit_silhouette(
+    CHARACTER_EXPRESSION_ROLES["exasperation"],
+    "front",
+)
 
 
 class ExasperatedFaceRenderingMixin:
@@ -60,7 +66,9 @@ class ExasperatedFaceRenderingMixin:
                     painter.end()
         if self._candidate_appearance_overlay is not None:
             frame = self._candidate_appearance_overlay.apply(
-                frame, "front-exasperated", mouth_expression=mouth_expression
+                frame,
+                _EXASPERATED_SILHOUETTE,
+                mouth_expression=mouth_expression,
             )
             if frame.isNull() or (frame.width(), frame.height()) != (
                 EXASPERATED_DIMENSION, EXASPERATED_DIMENSION

@@ -9,6 +9,7 @@ lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from application.appearance_ports import AppearanceRenderOptions
 lazy from application.appearance_ports import MakeupOverlayPort
+lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.face_rig import FaceMotionFrame
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 lazy from infrastructure.animated_appearance import AnimatedAppearance
@@ -23,6 +24,7 @@ lazy from infrastructure.complete_halfbody_expressions import (
 MAX_FRAME_CONTEXTS = 2 * len(COMPLETE_POSES) * len(FAMILIES) * len(EYES)
 MAX_DECODED_FRAMES = 24
 CLOSED_APERTURE = 0.01
+_CHEEK_SILHOUETTE = default_rig_manifest().pose_silhouettes["cheek"]
 
 
 class CompleteHalfbodyRenderer:
@@ -175,7 +177,11 @@ class CompleteHalfbodyRenderer:
             self._set_active_mouth_state(viseme, self._oral_mask(pose, family))
         else:
             self._set_active_mouth_state(None, None)
-        appearance_view_id = "cheek-rest" if pose in COMPLETE_CHEEK_POSES else pose
+        appearance_view_id = (
+            _CHEEK_SILHOUETTE
+            if pose in COMPLETE_CHEEK_POSES
+            else pose
+        )
         makeup_view_id = self._makeup_view_id(pose, eye)
         declares = getattr(self._overlay, "makeup_declares_view", None)
         if makeup_view_id is not None and (

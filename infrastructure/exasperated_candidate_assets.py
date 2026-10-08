@@ -15,11 +15,12 @@ lazy from domain.character_runtime_data import (
     default_expression_catalog,
     default_rig_manifest,
 )
+lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_EXPRESSION_ROLES
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.exasperated-runtime-candidate.v1"
 FORMAL_INSTALL_SCHEMA = "mohan.source-bound-exasperated-default-install.v1"
-FORMAL_ASSET_RELATIVE_DIR = "assets/expressions/source-bound-exasperated"
+FORMAL_ASSET_RELATIVE_DIR = CHARACTER_ASSET_PATHS["source_bound_expression"]
 APPROVED_SOURCE_SHA256 = "0bb3d74affef4d2df831cf45d7f6d756b69cb58aee3693aea14f38f5d47996df"
 DIMENSION = default_rig_manifest().half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
@@ -84,7 +85,7 @@ class ExasperatedCandidateAssets:
     def patch(self, expression: str) -> QPixmap | None:
         variant = EXPRESSION_VARIANTS.get(expression)
         if variant is None:
-            if expression == "exasperated_front":
+            if expression == CHARACTER_EXPRESSION_ROLES["exasperation"]:
                 return None
             raise ValueError(f"Unsupported exasperated mouth expression: {expression}")
         patch = QPixmap()

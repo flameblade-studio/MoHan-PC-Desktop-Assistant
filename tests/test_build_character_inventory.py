@@ -151,7 +151,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 15  # 13 persona/dialogue/voice/UI files + rig manifest + expression catalog
+CHARACTER_DATA_FILE_COUNT = 16  # 13 persona/dialogue/voice/UI files + rig manifest + runtime bindings + expression catalog
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
@@ -160,6 +160,7 @@ def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> Non
     data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
+    assert rows["assets/characters/mohan/rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
     assert rows["assets/characters/mohan/dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
     assert rows["assets/characters/mohan/persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
@@ -174,12 +175,12 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     }
     assert {"engine_extract", "product_shell_allowed"} <= set(inventory["embedded_code_classification_counts"])
     assert {
-        "application/behavior_director.py",
-        "domain/constants.py",
+        "domain/outfit_pack_official.py",
         "infrastructure/app_resources.py",
         "presentation/ui_localization.py",
     } <= set(by_path)
     assert "domain/expression_system.py" not in by_path
+    assert by_path["domain/constants.py"]["classification"] == "product_shell_allowed"
     for row in rows:
         assert row["migration"] == builder.EMBEDDED
         assert row["classification"] in builder.CLASSIFICATION_REASONS

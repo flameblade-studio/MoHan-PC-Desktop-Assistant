@@ -27,6 +27,7 @@ lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import personalize_text, profile_setting
 lazy from domain.constants import (
+    CHARACTER_EXPRESSION_ROLES,
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )
@@ -353,7 +354,7 @@ class CompanionProactiveMixin:
         if not speaking:
             if observation.presence is PresenceState.PRESENT:
                 self.set_state(
-                    "gentle_smile_front",
+                    CHARACTER_EXPRESSION_ROLES["gentle"],
                     source="visual",
                     intensity=0.35,
                 )
@@ -489,8 +490,12 @@ class CompanionProactiveMixin:
             )
             if line:
                 self._last_sensory_weather_line_at = monotonic_now
-                self.set_state("gentle_smile_front", source="visual", intensity=0.45)
-                self.speak(line, "gentle_smile_front")
+                self.set_state(
+                    CHARACTER_EXPRESSION_ROLES["gentle"],
+                    source="visual",
+                    intensity=0.45,
+                )
+                self.speak(line, CHARACTER_EXPRESSION_ROLES["gentle"])
                 return
 
         drowsiness = float(
@@ -504,7 +509,7 @@ class CompanionProactiveMixin:
         ):
             self.speak(
                 random_somniloquy(str(self.db.setting("ui_language", "zh-TW"))),
-                "gentle_smile_front",
+                CHARACTER_EXPRESSION_ROLES["gentle"],
             )
             return
 

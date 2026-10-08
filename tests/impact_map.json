@@ -762,6 +762,16 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/rig/runtime-bindings.json",
+        "domain/character_runtime_data.py"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_build_character_inventory.py"
+      ]
+    },
+    {
+      "paths": [
         "tests/conftest.py"
       ],
       "tests": [
@@ -2013,6 +2023,24 @@
     },
     {
       "paths": [
+        "domain/outfit_pack_official.py"
+      ],
+      "tests": [
+        "test_active_outfit_overlay.py",
+        "test_build_character_inventory.py",
+        "test_hairstyle_face_clip.py",
+        "test_official_default_pack.py",
+        "test_official_native_headwear.py",
+        "test_outfit_hand_occlusion.py",
+        "test_rear_hair_composition.py",
+        "test_reviewed_pose_foundation.py",
+        "test_reviewed_pose_overlay.py",
+        "test_reviewed_pose_variants.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/layered_full_body_renderer.py"
       ],
       "tests": [
@@ -2049,23 +2077,6 @@
         "test_mouth_authority_geometry.py",
         "test_pose_atlas_declared_digest.py",
         "test_pose_atlas_runtime_inventory.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/outfit_pack_official.py"
-      ],
-      "tests": [
-        "test_active_outfit_overlay.py",
-        "test_hairstyle_face_clip.py",
-        "test_official_default_pack.py",
-        "test_official_native_headwear.py",
-        "test_outfit_hand_occlusion.py",
-        "test_rear_hair_composition.py",
-        "test_reviewed_pose_foundation.py",
-        "test_reviewed_pose_overlay.py",
-        "test_reviewed_pose_variants.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2545,7 +2556,6 @@
       "tests": [
         "test_adaptive_character_runtime.py",
         "test_behavior_director.py",
-        "test_build_character_inventory.py",
         "test_emotion_semantic_mapping.py",
         "test_full_body_performance_bridge.py",
         "test_performance_app_bridge.py",
@@ -3792,6 +3802,7 @@
     {
       "paths": [
         "assets/characters/mohan/README.md",
+        "assets/characters/mohan/rig/runtime-bindings.json",
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/complete-expressions/manifest.json",
@@ -3905,6 +3916,45 @@
     },
     {
       "paths": [
+        "domain/constants.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_runtime_data.py",
+        "test_character_source.py",
+        "test_core_hand_regions.py",
+        "test_face_motion_interpolation.py",
+        "test_full_body_authored_blink.py",
+        "test_full_body_authored_speech.py",
+        "test_full_body_png_integrity.py",
+        "test_golden_render.py",
+        "test_layered_face_assets.py",
+        "test_layered_full_body.py",
+        "test_mouth_authority_geometry.py",
+        "test_pose_atlas_assets.py",
+        "test_pose_atlas_generation_provenance.py",
+        "test_pose_atlas_runtime_inventory.py",
+        "test_pose_atlas_static_identity_audit.py",
+        "test_preview_packaging.py",
+        "test_release_automation.py",
+        "test_wardrobe_body_profile_gate.py",
+        "test_wardrobe_current_weight_wiring.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/mohan-halfbody.ico"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_runtime_data.py",
+        "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/companion_animation_contract.py"
       ],
       "tests": [
@@ -3928,33 +3978,6 @@
         "test_reviewed_pose_rendering.py",
         "test_viseme_sync_contract.py",
         "test_visual_acceptance_regressions.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/constants.py"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_character_source.py",
-        "test_core_hand_regions.py",
-        "test_face_motion_interpolation.py",
-        "test_full_body_authored_blink.py",
-        "test_full_body_authored_speech.py",
-        "test_full_body_png_integrity.py",
-        "test_golden_render.py",
-        "test_layered_face_assets.py",
-        "test_layered_full_body.py",
-        "test_mouth_authority_geometry.py",
-        "test_pose_atlas_assets.py",
-        "test_pose_atlas_generation_provenance.py",
-        "test_pose_atlas_runtime_inventory.py",
-        "test_pose_atlas_static_identity_audit.py",
-        "test_preview_packaging.py",
-        "test_release_automation.py",
-        "test_wardrobe_body_profile_gate.py",
-        "test_wardrobe_current_weight_wiring.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4038,7 +4061,6 @@
     },
     {
       "paths": [
-        "assets/mohan-halfbody.ico",
         "assets/mohan-taskbar-icon.png"
       ],
       "tests": [
@@ -4541,10 +4563,45 @@
     },
     {
       "paths": [
+        "assets/onboarding/first-run-ink-tech.png",
+        "assets/ui/mohan-cloud.svg",
         "domain/character_runtime_data.py"
       ],
       "tests": [
         "test_character_runtime_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/ui/mohan-celestial-palace-v1.png"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_dashboard_artwork.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/ui/mohan-strategist-lobby-v1.png"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_dashboard_visual_consistency.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/expressions/idle_front.png"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_official_default_pack.py",
+        "test_openai_outfit_generator.py",
+        "test_pose_atlas_identity_candidate.py",
+        "test_release_automation.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5059,15 +5116,6 @@
     },
     {
       "paths": [
-        "assets/ui/mohan-celestial-palace-v1.png"
-      ],
-      "tests": [
-        "test_dashboard_artwork.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "presentation/dashboard_theme_materials.py"
       ],
       "tests": [
@@ -5132,15 +5180,6 @@
         "test_dashboard_readability_preferences.py",
         "test_lingxiao_theme.py",
         "test_swallowed_error_d06.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/ui/mohan-strategist-lobby-v1.png"
-      ],
-      "tests": [
-        "test_dashboard_visual_consistency.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7007,18 +7046,6 @@
       ],
       "tests": [
         "test_official_default_pack.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/expressions/idle_front.png"
-      ],
-      "tests": [
-        "test_official_default_pack.py",
-        "test_openai_outfit_generator.py",
-        "test_pose_atlas_identity_candidate.py",
-        "test_release_automation.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

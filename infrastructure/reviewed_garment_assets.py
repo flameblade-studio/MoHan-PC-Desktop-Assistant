@@ -150,7 +150,10 @@ class ReviewedGarmentPose:
         else:
             raise TypeError("Reviewed garment composition expects QImage or QPixmap.")
         if (source.width(), source.height()) != (DIMENSION, DIMENSION):
-            raise ValueError("Reviewed garment composition requires a 1254x1254 frame.")
+            raise ValueError(
+                f"Reviewed garment composition requires a "
+                f"{DIMENSION}x{DIMENSION} frame."
+            )
 
         # ``copy`` detaches Qt's implicit storage before any painter operation;
         # the caller's source frame therefore remains byte-for-byte untouched.

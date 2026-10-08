@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy from dataclasses import dataclass, replace
 
 lazy from domain.constants import (
+    CHARACTER_EXPRESSION_ROLES,
     FLOAT_COMPARISON_EPSILON,
     SHYNESS_BLUSH_WEIGHT,
     SHYNESS_GAZE_WEIGHT,
@@ -35,25 +36,34 @@ VISEME_MOUTH_TARGETS = frozendict(
 HAPPY_EXPRESSIONS = frozenset(
     {
         "happy",
-        "gentle_smile_front",
-        "proud_front",
-        "relieved_front",
-        "restrained_amused_front",
+        CHARACTER_EXPRESSION_ROLES["gentle"],
+        CHARACTER_EXPRESSION_ROLES["pride"],
+        CHARACTER_EXPRESSION_ROLES["relief"],
+        CHARACTER_EXPRESSION_ROLES["amusement"],
     }
 )
-BLUSH_EXPRESSIONS = frozenset({"shy_front", "shy_cute_front"})
+BLUSH_EXPRESSIONS = frozenset(
+    {
+        CHARACTER_EXPRESSION_ROLES["bashful"],
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    }
+)
 LIFTED_BROW_EXPRESSIONS = frozenset(
-    {"surprised_front", "eureka_front", "attentive_front"}
+    {
+        CHARACTER_EXPRESSION_ROLES["surprise"],
+        CHARACTER_EXPRESSION_ROLES["insight"],
+        CHARACTER_EXPRESSION_ROLES["attention"],
+    }
 )
 TENSE_BROW_EXPRESSIONS = frozenset(
     {
-        "determined_front",
+        CHARACTER_EXPRESSION_ROLES["resolve"],
         "worried",
-        "worried_front",
-        "exasperated_front",
-        "mock_scold",
-        "mock_hit_front",
-        "protective_front",
+        CHARACTER_EXPRESSION_ROLES["concern"],
+        CHARACTER_EXPRESSION_ROLES["exasperation"],
+        CHARACTER_EXPRESSION_ROLES["gentle_scold"],
+        CHARACTER_EXPRESSION_ROLES["mock_strike"],
+        CHARACTER_EXPRESSION_ROLES["protection"],
     }
 )
 

@@ -9,7 +9,7 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QBitmap, QColor, QImage, QPainter, QPixmap, QRegion
 
 lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
+lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
     FOUNDATION_SLOT,
     MAKEUP_SLOTS,
@@ -73,7 +73,7 @@ class ActiveOutfitLayerMixin:
             return None if cached is None else QRegion(cached)
         path = (
             self._asset_root
-            / "assets/pose-atlas/v5-appearance-replacement-masks"
+            / CHARACTER_ASSET_PATHS["appearance_masks"]
             / OFFICIAL_OUTFIT_PACK_ID
             / f"{view_id}.png"
         )
@@ -102,7 +102,11 @@ class ActiveOutfitLayerMixin:
         cached = self._core_body_overlays_by_view.get(view_id)
         if cached is not None:
             return cached
-        path = self._asset_root / "assets/pose-atlas/v5-body-overlays" / f"{view_id}.png"
+        path = (
+            self._asset_root
+            / CHARACTER_ASSET_PATHS["body_overlays"]
+            / f"{view_id}.png"
+        )
         if not path.exists():
             self._core_body_overlays_by_view[view_id] = ()
             return ()
@@ -132,7 +136,7 @@ class ActiveOutfitLayerMixin:
             return None if cached is None else QRegion(cached)
         path = (
             self._asset_root
-            / "assets/pose-atlas/v5-appearance-silhouettes"
+            / CHARACTER_ASSET_PATHS["appearance_silhouettes"]
             / OFFICIAL_OUTFIT_PACK_ID
             / f"{view_id}.png"
         )
@@ -167,7 +171,7 @@ class ActiveOutfitLayerMixin:
             return ()
         image_provider = getattr(region_provider, "overlay_images", None)
         if image_provider is None:
-            directory = self._asset_root / "assets/pose-atlas/v5-hand-overlays"
+            directory = self._asset_root / CHARACTER_ASSET_PATHS["hand_overlays"]
             paths = tuple(directory / f"{view_id}_{side}.png" for side in ("left", "right"))
             if not any(path.exists() for path in paths):
                 self._core_hand_overlays_by_view[view_id] = ()

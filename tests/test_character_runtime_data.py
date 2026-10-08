@@ -16,6 +16,12 @@ lazy from domain.character_runtime_data import (
     load_expression_catalog,
     load_rig_manifest,
 )
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    CHARACTER_LAYER_ROLES,
+    CHARACTER_POSE_ROLES,
+)
 
 EXPECTED_VIEW_COUNT = 24
 EXPECTED_LAYER_COUNT = 25
@@ -46,6 +52,92 @@ def test_bundled_runtime_data_preserves_the_accepted_contract() -> None:
     assert len(rig.poses) == EXPECTED_POSE_COUNT
     assert set(expressions.face_pose_assets) == {"cheek", "lean", "front"}
     assert len(expressions.state_to_pose) == EXPECTED_EXPRESSION_COUNT
+
+
+def test_bundled_runtime_bindings_preserve_existing_assets_and_role_values() -> None:
+    rig = default_rig_manifest()
+
+    assert dict(CHARACTER_POSE_ROLES) == {
+        "front_idle": "front-crossed",
+        "left_cheek": "left-cheek-rest",
+        "left_idle": "left-neutral",
+        "rear_full": "back-full",
+        "rear_left": "back-two-thirds-left",
+        "rear_right": "back-two-thirds-right",
+        "right_idle": "right-neutral",
+    }
+    assert dict(CHARACTER_EXPRESSION_ROLES) == {
+        "amusement": "restrained_amused_front",
+        "attention": "attentive_front",
+        "bashful": "shy_front",
+        "bashful_cute": "shy_cute_front",
+        "concern": "worried_front",
+        "exasperation": "exasperated_front",
+        "gentle": "gentle_smile_front",
+        "gentle_scold": "mock_scold",
+        "happiness": "happy",
+        "insight": "eureka_front",
+        "mock_strike": "mock_hit_front",
+        "noticed": "caught",
+        "pride": "proud_front",
+        "protection": "protective_front",
+        "relief": "relieved_front",
+        "reminder": "reminder",
+        "resolve": "determined_front",
+        "side_gaze": "glance",
+        "surprise": "surprised_front",
+        "thought": "thinking_front",
+        "worry": "worried",
+    }
+    assert dict(CHARACTER_LAYER_ROLES) == {
+        "left_blush": "blush_left",
+        "left_brow": "brow_left",
+        "left_eyelid": "eyelid_left",
+        "left_eyeliner": "eyeliner_left",
+        "left_iris": "iris_left",
+        "left_mouth_corner": "corner_left",
+        "left_side_hair": "hair_left",
+        "left_sleeve": "sleeve_left",
+        "lower_lip": "lip_lower",
+        "mouth_cavity": "oral_cavity",
+        "rear_hair": "hair_back",
+        "right_blush": "blush_right",
+        "right_brow": "brow_right",
+        "right_eyelid": "eyelid_right",
+        "right_eyeliner": "eyeliner_right",
+        "right_iris": "iris_right",
+        "right_mouth_corner": "corner_right",
+        "right_side_hair": "hair_right",
+        "right_sleeve": "sleeve_right",
+        "teeth_and_tongue": "teeth_tongue",
+        "upper_lip": "lip_upper",
+    }
+    assert set(CHARACTER_LAYER_ROLES.values()) == (
+        set(rig.layer_z_order) - {"body", "base", "jaw", "ornament"}
+    )
+    assert dict(CHARACTER_ASSET_PATHS) == {
+        "application_icon": "assets/mohan-halfbody.ico",
+        "appearance_masks": "assets/pose-atlas/v5-appearance-replacement-masks",
+        "appearance_silhouettes": "assets/pose-atlas/v5-appearance-silhouettes",
+        "body_overlays": "assets/pose-atlas/v5-body-overlays",
+        "dashboard_artwork": "assets/ui/mohan-celestial-palace-v1.png",
+        "first_run_portrait": "assets/expressions/idle_front.png",
+        "garment_visibility": "assets/pose-atlas/v5-garment-visibility",
+        "halfbody_detachable": "assets/expressions/detachable",
+        "halfbody_layers": "assets/expressions/layered",
+        "halfbody_root": "assets/expressions",
+        "hand_overlays": "assets/pose-atlas/v5-hand-overlays",
+        "lobby_backdrop": "assets/ui/mohan-strategist-lobby-v1.png",
+        "onboarding_artwork": "assets/onboarding/first-run-ink-tech.png",
+        "source_bound_expression": "assets/expressions/source-bound-exasperated",
+        "theme_artwork": "assets/ui/mohan-cloud.svg",
+    }
+    required_paths = {
+        key: path
+        for key, path in CHARACTER_ASSET_PATHS.items()
+        if key != "halfbody_detachable"
+    }
+    assert all(Path(path).exists() for path in required_paths.values())
 
 
 def test_default_runtime_data_is_read_once_and_cached(

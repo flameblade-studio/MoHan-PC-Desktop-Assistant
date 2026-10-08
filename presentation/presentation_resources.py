@@ -10,7 +10,11 @@ lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QFont, QIcon, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
-APP_ICON_PATH = "assets/mohan-halfbody.ico"
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.constants import CHARACTER_ASSET_PATHS
+
+APP_ICON_PATH = CHARACTER_ASSET_PATHS["application_icon"]
+_ENGLISH_DISPLAY_NAME = load_mohan_character_data().personas["en"].identity.display_name
 
 # Window-local fallback used by direct widget tests.  The application
 # composition root installs the complete theme on QApplication in production.
@@ -142,7 +146,9 @@ def application_icon() -> QIcon:
     icon_path = resource_path(APP_ICON_PATH)
     icon = QIcon(str(icon_path))
     if icon.isNull():
-        raise RuntimeError(f"MoHan application icon could not be loaded: {icon_path}")
+        raise RuntimeError(
+            f"{_ENGLISH_DISPLAY_NAME} application icon could not be loaded: {icon_path}"
+        )
     return icon
 
 

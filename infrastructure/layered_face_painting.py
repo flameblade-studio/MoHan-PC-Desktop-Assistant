@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion, QTransform
 
+lazy from domain.constants import CHARACTER_LAYER_ROLES
 lazy from infrastructure.layered_face_assets import LayeredFacePose
 
 MAX_CACHED_MASK_BOUNDS = 64
@@ -97,9 +98,14 @@ class LayeredFacePaintingMixin:
             and abs(height_scale - 1.0) < SCALE_EPSILON
         ):
             return
-        for layer_name in ("lip_upper", "lip_lower"):
+        for layer_name in (
+            CHARACTER_LAYER_ROLES["upper_lip"],
+            CHARACTER_LAYER_ROLES["lower_lip"],
+        ):
             path = pose.path(layer_name)
-            dy = mouth.aperture * (-2.0 if layer_name == "lip_upper" else 8.0)
+            dy = mouth.aperture * (
+                -2.0 if layer_name == CHARACTER_LAYER_ROLES["upper_lip"] else 8.0
+            )
             self._paint_transformed(
                 target,
                 path,
@@ -113,14 +119,14 @@ class LayeredFacePaintingMixin:
         aperture = max(0.0, min(1.0, float(mouth.aperture)))
         self._paint_transformed(
             target,
-            pose.path("oral_cavity"),
+            pose.path(CHARACTER_LAYER_ROLES["mouth_cavity"]),
             scale_x=1.0 + mouth.rounding * 0.08,
             scale_y=1.0 + aperture * 1.4,
             dy=aperture * 3.0,
         )
         self._paint_transformed(
             target,
-            pose.path("teeth_tongue"),
+            pose.path(CHARACTER_LAYER_ROLES["teeth_and_tongue"]),
             scale_y=1.0 + aperture * 0.45,
             dy=aperture * 2.0,
         )

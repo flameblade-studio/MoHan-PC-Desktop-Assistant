@@ -13,6 +13,7 @@ lazy from application.speech_performance import (
     SpeechPerformanceTimeline,
 )
 lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
     FLOAT_COMPARISON_EPSILON,
     POSE_ATLAS_RELATIVE_ROOT,
 )
@@ -141,7 +142,7 @@ def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
 
 def _layered_half_body_checks() -> tuple[_SelfTestCheck, ...]:
     """Verify the packaged three-pose, 25-layer portrait asset contract."""
-    root = resource_path("assets/expressions/layered")
+    root = resource_path(CHARACTER_ASSET_PATHS["halfbody_layers"])
     # Expression-specific dynamic assets (for example cheek-glance oral masks)
     # share this directory; the contract counts only the three pose rigs.
     layers = (

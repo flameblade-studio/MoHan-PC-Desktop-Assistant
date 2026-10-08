@@ -13,7 +13,11 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.constants import (
+    CHARACTER_LAYER_ROLES,
+    CHARACTER_POSE_ROLES,
+    FLOAT_COMPARISON_EPSILON,
+)
 lazy from domain.face_rig import FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from infrastructure.layered_full_body_assets import (
     COMPLETE_EXPRESSION_PRESERVE_BODY_POLICY,
@@ -22,7 +26,7 @@ lazy from infrastructure.layered_full_body_assets import (
 )
 
 MOUTH_APERTURE_THRESHOLD = 0.01
-COMPLETE_EXPRESSION_NEUTRAL_POSE_ID = "front-crossed"
+COMPLETE_EXPRESSION_NEUTRAL_POSE_ID = CHARACTER_POSE_ROLES["front_idle"]
 IRIS_GAZE_SCALE_X = 6.0
 IRIS_GAZE_SCALE_Y = 4.0
 
@@ -41,7 +45,10 @@ class CompleteExpressionRendering:
         dy = round(float(motion.gaze_y) * IRIS_GAZE_SCALE_Y)
         if not (dx or dy):
             return
-        layers = ("iris_left", "iris_right")
+        layers = (
+            CHARACTER_LAYER_ROLES["left_iris"],
+            CHARACTER_LAYER_ROLES["right_iris"],
+        )
         sources = tuple(self._cached_pixmap(view.path(name)) for name in layers)
         region = QRegion()
         for source in sources:

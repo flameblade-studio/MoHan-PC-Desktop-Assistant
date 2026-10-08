@@ -22,9 +22,10 @@ BODY_PROFILE = frozendict({"id": MOHAN_BODY_PROFILE.profile_id, "version": MOHAN
 FULL_BODY_RIG_ID = "mohan-full-body-v1"
 FULL_BODY_CONTRACT = "full-body-v4"
 LEGACY_CONTRACT = "legacy-v3"
-CANONICAL_YAWS = default_rig_manifest().view_ring.yaws
+_RIG_MANIFEST = default_rig_manifest()
+CANONICAL_YAWS = _RIG_MANIFEST.view_ring.yaws
 LEGACY_YAWS = (-30, 0, 30)
-BUILTIN_POSES = frozenset({"cheek-rest", "left-neutral", "front-crossed"})
+BUILTIN_POSES = frozenset(_RIG_MANIFEST.pose_silhouettes.values())
 LAYER_ROLES = frozenset({
     "body", "face-alignment", "hair-alignment", "garment-alignment",
     "headwear-alignment", "weapon-alignment", "left-arm-correction",

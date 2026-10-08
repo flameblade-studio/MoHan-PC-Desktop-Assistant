@@ -10,6 +10,7 @@ lazy from application.companion_phrasebook import (
     CompanionPhrasebook,
     public_companion_line,
 )
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 
 PENDING_OUTFIT_KEY = "wardrobe_reveal_pending_outfit_id"
 LAST_REVEALED_OUTFIT_KEY = "wardrobe_last_revealed_outfit_id"
@@ -92,7 +93,7 @@ def decide_outfit_reveal(
     return OutfitRevealCue(
         context.outfit_id,
         WARDROBE_REVEAL_QUESTION,
-        "shy_cute_front",
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
         "show-outfit",
         "full-body",
     )

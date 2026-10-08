@@ -12,6 +12,7 @@ layered-architecture line budget.
 """
 
 lazy from application.behavior_director import SemanticEmotion
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.expression_system import EXPRESSION_TO_EMOTION
 
 __all__ = (
@@ -28,22 +29,22 @@ __all__ = (
 # only adds a bounded offset that keeps the rate inside the valid band.
 _EMOTION_RATE_ADJUSTMENT = frozendict({
     "shy": -1,
-    "shy_front": -1,
-    "shy_cute_front": -1,
+    CHARACTER_EXPRESSION_ROLES["bashful"]: -1,
+    CHARACTER_EXPRESSION_ROLES["bashful_cute"]: -1,
     "gentle": -1,
-    "gentle_smile_front": -1,
+    CHARACTER_EXPRESSION_ROLES["gentle"]: -1,
     "worried": -1,
-    "worried_front": -1,
+    CHARACTER_EXPRESSION_ROLES["concern"]: -1,
     "reminder": -1,
     "happy": 1,
     "proud": 1,
-    "proud_front": 1,
+    CHARACTER_EXPRESSION_ROLES["pride"]: 1,
     "eureka": 1,
-    "eureka_front": 1,
+    CHARACTER_EXPRESSION_ROLES["insight"]: 1,
     "surprised": 1,
-    "surprised_front": 1,
+    CHARACTER_EXPRESSION_ROLES["surprise"]: 1,
     "exasperated": 1,
-    "exasperated_front": 1,
+    CHARACTER_EXPRESSION_ROLES["exasperation"]: 1,
 })
 
 

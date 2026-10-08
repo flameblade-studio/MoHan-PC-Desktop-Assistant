@@ -35,6 +35,7 @@ lazy from domain.companion_animation_contract import (
     HAPPY_SPEECH_CLOSED_EXPRESSION,
     MOUTH_CLOSE_DEADLINE_MS,
 )
+lazy from domain.constants import CHARACTER_POSE_ROLES
 lazy from domain.expression_system import parse_internal_emotion
 lazy from domain.language_support import (
     response_language_instruction,
@@ -124,11 +125,7 @@ class CompanionSpeechRuntimeMixin:
         if bridge is None:
             return
         previous = bridge.last_known_good
-        current_pose = (
-            previous.performance.pose
-            if previous is not None
-            else "front-crossed"
-        )
+        current_pose = previous.performance.pose if previous is not None else CHARACTER_POSE_ROLES["front_idle"]
         lifecycle = {
             "preparing": SpeechLifecycle.STARTING,
             "speaking": SpeechLifecycle.SPEAKING,
