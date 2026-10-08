@@ -198,7 +198,7 @@ class FlagshipCloudMixin:
             for line in self.cloud_scopes.toPlainText().splitlines()
             if line.strip()
         ]
-        self.cloud_status.setText(self._t("等待瀏覽器授權，請勿關閉墨寒……"))
+        self.cloud_status.setText(self._t("等待瀏覽器授權，請勿關閉{character_name}……"))
         worker = OAuthWorker(
             provider_id,
             client_id,

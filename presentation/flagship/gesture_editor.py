@@ -83,7 +83,7 @@ class FlagshipGestureEditorMixin:
         self.gesture_command.setMaxLength(256)
         self.gesture_command.setAccessibleName(self._t("自訂文字指令"))
         self.gesture_command.setPlaceholderText(
-            self._t("輸入一行交給墨寒安全命令流程的文字指令")
+            self._t("輸入一行交給{character_name}安全命令流程的文字指令")
         )
         self.gesture_definition_enabled = self._preference_checkbox(
             self._t("啟用此手勢"), False

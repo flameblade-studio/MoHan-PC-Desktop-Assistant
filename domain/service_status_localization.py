@@ -2,8 +2,14 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 lazy from enum import StrEnum
+lazy import json
+lazy from functools import cache
 lazy from string import Formatter
 
+lazy from domain.character_pack.character_data import (
+    MOHAN_CHARACTER_DATA_ROOT,
+    load_mohan_character_data,
+)
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.safe_error import SafeError, sanitize_error
 
@@ -63,6 +69,74 @@ class ServiceStatus(StrEnum):
 
 
 SUPPORTED_SERVICE_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
+_UI_IDENTIFIER_KEYS = frozenset(
+    {"self_reference", "signature_weapon_theme_label"}
+)
+_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / "persona/ui-identifiers.json"
+
+
+@cache
+def _ui_identifiers() -> Mapping[str, Mapping[str, str]]:
+    try:
+        value = json.loads(_UI_IDENTIFIERS_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise RuntimeError(
+            "Character UI identifiers require valid UTF-8 JSON."
+        ) from exc
+    if type(value) is not dict or set(value) != {
+        "schema",
+        "schema_version",
+        "locales",
+    }:
+        raise RuntimeError("Character UI identifiers require the v1 schema shape.")
+    if (
+        value["schema"] != "flameblade.character-ui-identifiers.v1"
+        or value["schema_version"] != 1
+    ):
+        raise RuntimeError("Character UI identifiers require schema version 1.")
+    locales = value["locales"]
+    if type(locales) is not dict or set(locales) != set(
+        SUPPORTED_SERVICE_LANGUAGES
+    ):
+        raise RuntimeError("Character UI identifiers require all four locales.")
+    result: dict[str, Mapping[str, str]] = {}
+    for locale in SUPPORTED_SERVICE_LANGUAGES:
+        entry = locales[locale]
+        if type(entry) is not dict or set(entry) != _UI_IDENTIFIER_KEYS:
+            raise RuntimeError(
+                f"Character UI identifiers are incomplete for {locale}."
+            )
+        normalized: dict[str, str] = {}
+        for key in sorted(_UI_IDENTIFIER_KEYS):
+            text = entry[key]
+            if type(text) is not str or not text.strip():
+                raise RuntimeError(
+                    f"Character UI identifier {key} is invalid for {locale}."
+                )
+            normalized[key] = text
+        result[locale] = frozendict(normalized)
+    return frozendict(result)
+
+
+def character_ui_values(language: str) -> dict[str, str]:
+    """Return localized character-owned values for generic UI templates."""
+
+    locale = canonical_ui_language(language)
+    identity = load_mohan_character_data().personas[locale].identity
+    return {
+        "character_name": identity.display_name,
+        "user_title": identity.default_user_title,
+        **_ui_identifiers()[locale],
+    }
+
+
+def render_character_ui_template(language: str, template: str) -> str:
+    """Resolve character placeholders without consuming other format fields."""
+
+    rendered = template
+    for key, value in character_ui_values(language).items():
+        rendered = rendered.replace("{" + key + "}", value)
+    return rendered
 
 
 def _text(
@@ -351,10 +425,10 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
         "Windows に中国語音声認識パッケージがありません。先に言語設定で中国語の音声機能を追加してください。",
     ),
     ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED: _text(
-        "Windows 拒絕墨寒使用麥克風。請到「設定 → 隱私權與安全性 → 麥克風」，開啟麥克風存取權、讓應用程式存取麥克風，以及讓桌面應用程式存取麥克風。",
-        "Windows 拒绝墨寒使用麦克风。请前往“设置 → 隐私和安全性 → 麦克风”，开启麦克风访问权限、允许应用访问麦克风，以及允许桌面应用访问麦克风。",
-        "Windows requires microphone permission for MoHan. In Settings → Privacy & security → Microphone, enable Microphone access, Let apps access your microphone, and Let desktop apps access your microphone.",
-        "Windows が墨寒のマイク使用を拒否しました。「設定 → プライバシーとセキュリティ → マイク」で、マイクへのアクセス、アプリのマイクアクセス、デスクトップアプリのマイクアクセスを有効にしてください。",
+        "Windows 拒絕{character_name}使用麥克風。請到「設定 → 隱私權與安全性 → 麥克風」，開啟麥克風存取權、讓應用程式存取麥克風，以及讓桌面應用程式存取麥克風。",
+        "Windows 拒绝{character_name}使用麦克风。请前往“设置 → 隐私和安全性 → 麦克风”，开启麦克风访问权限、允许应用访问麦克风，以及允许桌面应用访问麦克风。",
+        "Windows requires microphone permission for {character_name}. In Settings → Privacy & security → Microphone, enable Microphone access, Let apps access your microphone, and Let desktop apps access your microphone.",
+        "Windows が{character_name}のマイク使用を拒否しました。「設定 → プライバシーとセキュリティ → マイク」で、マイクへのアクセス、アプリのマイクアクセス、デスクトップアプリのマイクアクセスを有効にしてください。",
     ),
     ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR: _text(
         "Windows 語音辨識無法使用：{detail}",
@@ -450,7 +524,8 @@ def service_status(
     """Return localized service text while keeping provider diagnostics private."""
 
     locale = canonical_ui_language(language)
-    return _TEXT[key][locale].format(**_sanitized_values(key, values))
+    template = render_character_ui_template(locale, _TEXT[key][locale])
+    return template.format(**_sanitized_values(key, values))
 
 
 def append_service_status(
@@ -470,5 +545,7 @@ __all__ = (
     "SUPPORTED_SERVICE_LANGUAGES",
     "ServiceStatus",
     "append_service_status",
+    "character_ui_values",
+    "render_character_ui_template",
     "service_status",
 )

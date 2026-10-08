@@ -29,7 +29,7 @@ class FlagshipOverviewMixin:
     def _overview_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        title = QLabel(self._t("<b>墨寒旗艦任務中心</b>"))
+        title = QLabel(self._t("<b>{character_name}旗艦任務中心</b>"))
         title.setStyleSheet("font-size:18px;color:#2f6987;")
         note = QLabel(
             self._t(
@@ -100,7 +100,7 @@ class FlagshipOverviewMixin:
         for theme_id, label in (
             (THEME_IDS[0], self._t("墨金・凌霄")),
             (THEME_IDS[1], self._t("霧靄青瓷")),
-            (THEME_IDS[2], self._t("赤焰劍光")),
+            (THEME_IDS[2], self._t("{signature_weapon_theme_label}")),
         ):
             self.flagship_theme.addItem(label, theme_id)
         self.flagship_theme.setAccessibleName(self._t("凌霄主題"))

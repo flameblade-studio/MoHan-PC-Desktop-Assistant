@@ -23,6 +23,7 @@ lazy from domain.language_support import (
 )
 lazy from domain.outfit_pack import IncompatibleBodyProfileError, OutfitPackError
 lazy from domain.scalar_conversion import scalar_int
+lazy from domain.service_status_localization import render_character_ui_template
 lazy from presentation.companion_platform import reminder_line
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_control_style import enforce_readable_combo_popups
@@ -452,7 +453,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         hero_subtitle = QLabel(
             self._t(
                 "wardrobe_pavilion_subtitle",
-                "讓墨寒依天候、心情與場合挑選完整造型，也保留您的決定。",
+                "讓{character_name}依天候、心情與場合挑選完整造型，也保留您的決定。",
             )
         )
         hero_subtitle.setWordWrap(True)
@@ -467,7 +468,10 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
             require_qwidget(self),
             self._t("wardrobe_import", "匯入服裝套件"),
             str(Path.home() / "Downloads"),
-            "MoHan outfit package (*.mohan-outfit *.zip)",
+            render_character_ui_template(
+                self.ui_language,
+                "{character_name} outfit package (*.mohan-outfit *.zip)",
+            ),
         )
         if not source:
             return
@@ -785,7 +789,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
             self.speak_requested.emit(
                 self._t(
                     "work_timer_already_running",
-                    "計時仍在進行，主上不必重複開局。",
+                    "計時仍在進行，{user_title}不必重複開局。",
                 ),
                 "idle",
             )
@@ -823,7 +827,7 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
             self.set_api_status(
                 self._t(
                     "sleep_mode_status",
-                    "休眠模式已啟；墨寒會保持安靜，提醒與緊急警報仍照規則處理。",
+                    "休眠模式已啟；{character_name}會保持安靜，提醒與緊急警報仍照規則處理。",
                 )
             )
             return
@@ -836,57 +840,47 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
                 "離席": "Away mode enabled. I will brief you when you return.",
                 "休眠": "Sleep mode enabled. Reminders and urgent alerts remain active.",
             }
-            self.speak_requested.emit(
-                lines.get(
-                    mode,
-                    f"{display_label(self.ui_language, mode, MODE_LABELS)} "
-                    "mode enabled.",
-                ),
-                "speaking",
+            fallback = (
+                f"{display_label(self.ui_language, mode, MODE_LABELS)} mode enabled."
             )
-            return
-        if is_simplified_chinese(self.ui_language):
+        elif is_simplified_chinese(self.ui_language):
             lines = {
-                "工作": "工作模式已启动。妾只在必要时打断主上。",
+                "工作": "工作模式已启动。{self_reference}只在必要时打断{user_title}。",
                 "陪伴": "陪伴模式已启动。今夜不谈胜负，也无妨。",
-                "勿擾": "勿扰模式已启动。除紧急事项外，妾不会打断主上。",
-                "會議": "会议模式已启动。妾会保持安静，只记录必要事项。",
-                "離席": "离席模式已启动。主上回来时，妾再呈上期间摘要。",
+                "勿擾": "勿扰模式已启动。除紧急事项外，{self_reference}不会打断{user_title}。",
+                "會議": "会议模式已启动。{self_reference}会保持安静，只记录必要事项。",
+                "離席": "离席模式已启动。{user_title}回来时，{self_reference}再呈上期间摘要。",
                 "休眠": "休眠模式已启动。提醒与紧急警报仍会按规则处理。",
             }
-            self.speak_requested.emit(
-                lines.get(
-                    mode,
-                    f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS)}"
-                    "模式已启动。",
-                ),
-                "speaking",
+            fallback = (
+                f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS)}"
+                "模式已启动。"
             )
-            return
-        if is_japanese(self.ui_language):
+        elif is_japanese(self.ui_language):
             lines = {
-                "工作": "仕事モードを開始しました。必要な時だけ主様にお声がけします。",
+                "工作": "仕事モードを開始しました。必要な時だけ{user_title}にお声がけします。",
                 "陪伴": "お供モードを開始しました。今宵は勝ち負けを語らずともよいでしょう。",
-                "勿擾": "集中モードを開始しました。緊急時以外、妾は静かにしております。",
+                "勿擾": "集中モードを開始しました。緊急時以外、{self_reference}は静かにしております。",
                 "會議": "会議モードを開始しました。静かに、必要なことだけを記録します。",
                 "離席": "離席モードを開始しました。お戻りの際に要点をお伝えします。",
                 "休眠": "休眠モードを開始しました。リマインダーと緊急通知は規則どおり動きます。",
             }
-            self.speak_requested.emit(
-                lines.get(
-                    mode,
-                    f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS, JAPANESE_MODE_LABELS)}モードを開始しました。",
-                ),
-                "speaking",
+            fallback = (
+                f"{display_label(self.ui_language, mode, MODE_LABELS, SIMPLIFIED_MODE_LABELS, JAPANESE_MODE_LABELS)}"
+                "モードを開始しました。"
             )
-            return
-        lines = {
-            "工作": "工作模式已啟。妾只在必要時打斷主上。",
-            "陪伴": "陪伴模式已啟。今夜不談勝負，也無妨。",
-            "勿擾": "勿擾模式已啟。除緊急事項外，妾不打斷主上。",
-            "會議": "會議模式已啟。妾會保持安靜，只記錄必要事項。",
-            "離席": "離席模式已啟。主上回來時，妾再呈上期間摘要。",
-            "休眠": "休眠模式已啟。妾暫歸劍中，提醒與緊急警報仍照規則處理。",
-        }
-        line = lines.get(mode, f"{mode}模式已啟。")
+        else:
+            lines = {
+                "工作": "工作模式已啟。{self_reference}只在必要時打斷{user_title}。",
+                "陪伴": "陪伴模式已啟。今夜不談勝負，也無妨。",
+                "勿擾": "勿擾模式已啟。除緊急事項外，{self_reference}不打斷{user_title}。",
+                "會議": "會議模式已啟。{self_reference}會保持安靜，只記錄必要事項。",
+                "離席": "離席模式已啟。{user_title}回來時，{self_reference}再呈上期間摘要。",
+                "休眠": "休眠模式已啟。{self_reference}暫歸劍中，提醒與緊急警報仍照規則處理。",
+            }
+            fallback = f"{mode}模式已啟。"
+        line = render_character_ui_template(
+            self.ui_language,
+            lines.get(mode, fallback),
+        )
         self.speak_requested.emit(line, "speaking")

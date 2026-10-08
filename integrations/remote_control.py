@@ -19,6 +19,7 @@ lazy from typing import Any, BinaryIO
 lazy from urllib.parse import parse_qs, urlparse
 
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.service_status_localization import character_ui_values
 
 StatusProvider = Callable[[], dict[str, Any]]
 CommandHandler = Callable[[str, str], dict[str, Any]]
@@ -74,7 +75,7 @@ def remote_file_unavailable(language: str) -> str:
 MOBILE_PAGE = """<!doctype html>
 <html lang="zh-Hant-TW"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>墨寒遠端</title>
+<title>{character_name}遠端</title>
 <style>
 body{font-family:system-ui;background:#0d1b28;color:#e8f5fb;margin:0;padding:20px}
 main{max-width:680px;margin:auto}.card{background:#152a3a;border:1px solid #35566a;
@@ -82,12 +83,12 @@ border-radius:14px;padding:16px;margin:12px 0}input,button{box-sizing:border-box
 font:inherit;border-radius:10px;border:1px solid #467089;padding:12px}
 input{width:100%;background:#102333;color:white;margin:6px 0}button{background:#28546b;
 color:white;margin:6px 6px 6px 0}pre{white-space:pre-wrap;word-break:break-word}
-</style><main><h1>墨寒遠端</h1>
+</style><main><h1>{character_name}遠端</h1>
 <div class="card"><label>一次性配對權杖</label><input id="token" type="password"
 autocomplete="off"><button onclick="save()">僅保存於此瀏覽器</button></div>
 <div class="card"><button onclick="status()">更新狀態</button>
 <pre id="status">等待連線</pre></div>
-<div class="card"><label>傳給墨寒</label><input id="command" maxlength="2000"
+<div class="card"><label>傳給{character_name}</label><input id="command" maxlength="2000"
 placeholder="例如：顯示今天待辦"><button onclick="send()">送出指令</button>
 <pre id="result"></pre></div>
 <script>
@@ -103,7 +104,10 @@ async function send(){const text=document.querySelector('#command').value;
 try{document.querySelector('#result').textContent=JSON.stringify(await call('/api/v1/command',
 {method:'POST',body:JSON.stringify({text})}),null,2)}catch(e){
 document.querySelector('#result').textContent='指令需要重試：'+e.message}}
-</script></main></html>"""
+</script></main></html>""".replace(
+    "{character_name}",
+    character_ui_values("zh-TW")["character_name"],
+)
 
 
 @dataclass(frozen=True, slots=True)

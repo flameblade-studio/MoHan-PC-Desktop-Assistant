@@ -78,7 +78,7 @@ class DashboardWardrobePreviewMixin:
         scene = CelestialFrame(kind="scene")
         scene_layout = QVBoxLayout(scene)
         scene_layout.setContentsMargins(14, 20, 14, 0)
-        preview_title = QLabel(self._t("wardrobe_character_preview", "墨寒造型預覽"))
+        preview_title = QLabel(self._t("wardrobe_character_preview", "{character_name}造型預覽"))
         preview_title.setAlignment(Qt.AlignCenter)
         preview_title.setProperty("mohanRole", "cardTitle")
         self.wardrobe_character_preview = WardrobeTurntableLabel(scene)
@@ -88,7 +88,7 @@ class DashboardWardrobePreviewMixin:
         scene.setMinimumSize(PREVIEW_WIDTH, PREVIEW_MIN_HEIGHT)
         self.wardrobe_character_preview.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
         self.wardrobe_character_preview.setAccessibleName(
-            self._t("wardrobe_character_preview", "墨寒造型預覽")
+            self._t("wardrobe_character_preview", "{character_name}造型預覽")
         )
         ports = self.presentation_ports
         self._wardrobe_outfit_overlay = ports.outfit_overlay_factory(

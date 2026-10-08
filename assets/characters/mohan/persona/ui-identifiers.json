@@ -1,0 +1,22 @@
+{
+  "locales": {
+    "en": {
+      "self_reference": "I",
+      "signature_weapon_theme_label": "Crimson Swordlight"
+    },
+    "ja-JP": {
+      "self_reference": "妾",
+      "signature_weapon_theme_label": "赤焔剣光"
+    },
+    "zh-CN": {
+      "self_reference": "妾",
+      "signature_weapon_theme_label": "赤焰剑光"
+    },
+    "zh-TW": {
+      "self_reference": "妾",
+      "signature_weapon_theme_label": "赤焰劍光"
+    }
+  },
+  "schema": "flameblade.character-ui-identifiers.v1",
+  "schema_version": 1
+}

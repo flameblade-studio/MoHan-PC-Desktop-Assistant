@@ -48,10 +48,10 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
         'Payments, purchases, password export, security disabling, and arbitrary PowerShell or administrator commands remain permanently outside automatic execution. This page preserves that boundary.',
         '支払い、購入、パスワード書き出し、安全保護の停止、任意の PowerShell・管理者コマンドは自動実行の対象から永久に除外します。このページもその境界を維持します。',
     ),
-    "選擇允許墨寒操作的資料夾": translations(
-        "选择允许墨寒操作的文件夹",
-        "Choose a folder MoHan may access",
-        "墨寒に操作を許可するフォルダーを選択",
+    "選擇允許{character_name}操作的資料夾": translations(
+        "选择允许{character_name}操作的文件夹",
+        "Choose a folder {character_name} may access",
+        "{character_name}に操作を許可するフォルダーを選択",
     ),
     "資料夾權限": translations("文件夹权限", "Folder Permission", "フォルダー権限"),
     "輸入 read（只讀）或 write（可建立、移動與重新命名）": translations(
@@ -59,10 +59,10 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
         "Enter read (read only) or write (create, move, and rename)",
         "read（読み取り専用）または write（作成・移動・名前変更可）を入力",
     ),
-    "選擇允許墨寒啟動的程式": translations(
-        "选择允许墨寒启动的程序",
-        "Choose an app MoHan may launch",
-        "墨寒に起動を許可するアプリを選択",
+    "選擇允許{character_name}啟動的程式": translations(
+        "选择允许{character_name}启动的程序",
+        "Choose an app {character_name} may launch",
+        "{character_name}に起動を許可するアプリを選択",
     ),
     "Windows 程式 (*.exe);;所有檔案 (*)": translations(
         "Windows 程序 (*.exe);;所有文件 (*)",
@@ -75,10 +75,10 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
         "アプリ／実行ファイル (*);;すべてのファイル (*)",
     ),
     "程式別名": translations("程序别名", "App Alias", "アプリの別名"),
-    "日後對墨寒說的程式名稱": translations(
-        "日后对墨寒说的程序名称",
-        "The app name you will use when speaking to MoHan",
-        "今後、墨寒に伝えるアプリ名",
+    "日後對{character_name}說的程式名稱": translations(
+        "日后对{character_name}说的程序名称",
+        "The app name you will use when speaking to {character_name}",
+        "今後、{character_name}に伝えるアプリ名",
     ),
     "加入允許網站": translations(
         "添加允许网站", "Add Allowed Website", "許可する Web サイトを追加"
@@ -99,15 +99,15 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
     "移除允許項目": translations(
         "移除允许项目", "Remove Allowed Item", "許可項目を削除"
     ),
-    "確定撤銷墨寒對此項目的存取權？": translations(
-        "确定撤销墨寒对此项目的访问权？",
-        "Revoke MoHan's access to this item?",
-        "この項目に対する墨寒のアクセス権を取り消しますか？",
+    "確定撤銷{character_name}對此項目的存取權？": translations(
+        "确定撤销{character_name}对此项目的访问权？",
+        "Revoke {character_name}'s access to this item?",
+        "この項目に対する{character_name}のアクセス権を取り消しますか？",
     ),
-    "安全權限已保存。妾會守住這條界線。": translations(
-        "安全权限已保存。妾会守住这条界线。",
-        "Security permissions saved. I will hold this boundary.",
-        "セキュリティ権限を保存しました。妾がこの境界を守ります。",
+    "安全權限已保存。{self_reference}會守住這條界線。": translations(
+        "安全权限已保存。{self_reference}会守住这条界线。",
+        "Security permissions saved. {self_reference} will hold this boundary.",
+        "セキュリティ権限を保存しました。{self_reference}がこの境界を守ります。",
     ),
     "重新整理": translations("刷新", "Refresh", "更新"),
     "<p>尚無工具操作紀錄。</p>": translations(
@@ -120,10 +120,10 @@ SECURITY_AUDIT_TRANSLATIONS: TranslationCatalog = frozendict({
         "Second Confirmation for High-Risk Action",
         "高リスク操作の再確認",
     ),
-    "墨寒請求執行工具": translations(
-        "墨寒请求执行工具",
-        "MoHan Requests Tool Execution",
-        "墨寒がツール実行を要求しています",
+    "{character_name}請求執行工具": translations(
+        "{character_name}请求执行工具",
+        "{character_name} Requests Tool Execution",
+        "{character_name}がツール実行を要求しています",
     ),
     "風險：{risk}\n來源：{source}\n操作：{description}\n\n參數預覽：\n{detail}\n\n是否允許？": translations(
         "风险：{risk}\n来源：{source}\n操作：{description}\n\n参数预览：\n{detail}\n\n是否允许？",
