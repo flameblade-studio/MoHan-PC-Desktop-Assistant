@@ -13,6 +13,7 @@ lazy from domain.character_data_types import (
     CharacterRigManifest,
     ExpressionStateCatalog,
 )
+lazy from domain.character_pack.appearance_data import APPEARANCE_DEFAULTS_SCHEMA
 lazy from domain.character_expression_data import load_expression_catalog
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_pack.character_data_models import MohanCharacterData
@@ -29,6 +30,7 @@ lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_rig_data import load_rig_manifest
 lazy from domain.character_source import (
     CharacterAppearanceContract,
+    CharacterAppearanceDefaults,
     CharacterAssets,
     CharacterBodyProfileReference,
     CharacterCanvas,
@@ -190,6 +192,7 @@ class CharacterPackReader(
             language: character_data.dialogues[language].phrasebook
             for language in LANGUAGES
         }
+        self._appearance_defaults = character_data.appearance_defaults
         self._body_profile = CharacterBodyProfileReference(profile_id, profile_version)
         self._fullbody_canvas = fullbody_canvas
         self._halfbody_canvas = halfbody_canvas
@@ -215,6 +218,10 @@ class CharacterPackReader(
     @property
     def appearance(self) -> CharacterAppearanceContract:
         return self
+
+    @property
+    def appearance_defaults(self) -> CharacterAppearanceDefaults:
+        return self._appearance_defaults
 
     @property
     def asset_root(self) -> Path:
@@ -405,6 +412,11 @@ def _character_data_contract(
         "voice_profile",
         {VOICE_SCHEMA: 1},
     )
+    appearance = _required_schema_components(
+        manifest,
+        "appearance_defaults",
+        {APPEARANCE_DEFAULTS_SCHEMA: 1},
+    )
     identity_component = persona[IDENTITY_SCHEMA][0]
     character_root = _component_root(
         identity_component,
@@ -434,6 +446,10 @@ def _character_data_contract(
         voice[VOICE_SCHEMA][0],
         _rooted_path(character_root, "voice/profile.json"),
     )
+    _require_component_path(
+        appearance[APPEARANCE_DEFAULTS_SCHEMA][0],
+        _rooted_path(character_root, "appearance/defaults.json"),
+    )
     return (
         character_root,
         (
@@ -442,6 +458,7 @@ def _character_data_contract(
             *dialogue[DIALOGUE_SCHEMA],
             dialogue[EVENTS_SCHEMA][0],
             voice[VOICE_SCHEMA][0],
+            appearance[APPEARANCE_DEFAULTS_SCHEMA][0],
         ),
     )
 
@@ -642,6 +659,7 @@ def _relative_path(value: str) -> PurePosixPath:
 
 
 __all__ = (
+    "APPEARANCE_DEFAULTS_SCHEMA",
     "DIALOGUE_SCHEMA",
     "EVENTS_SCHEMA",
     "EXPRESSION_STATE_SCHEMA",

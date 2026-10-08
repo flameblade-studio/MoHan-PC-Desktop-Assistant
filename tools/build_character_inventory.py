@@ -42,6 +42,7 @@ NON_PRODUCT_ROOTS = (
     {"path": "tests/golden/", "classification": "regression_evidence"},
 )
 CATEGORY_LABELS = {
+    "character_appearance_defaults": "角色外觀預設資料／角色外观默认数据／Character appearance defaults／キャラクター外観の既定値",
     "appearance_pack": "正式外觀包／正式外观包／Official appearance archives／正式外観パック",
     "appearance_replacement_mask": "外觀替換遮罩／外观替换遮罩／Appearance replacement masks／外観置換マスク",
     "appearance_silhouette": "服裝輪廓／服装轮廓／Garment silhouettes／衣装の輪郭",
@@ -113,7 +114,8 @@ GROUPS = (
     Group("assets/expressions/reviewed-garments/", "native_garment_motion", "infrastructure/reviewed_garment_assets.py", "payload = path.read_bytes()"),
     Group("assets/expressions/source-bound-exasperated/", "source_bound_expression", "infrastructure/exasperated_candidate_assets.py", "records = receipt.get(\"installed_files_sha256\")"),
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
-    Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", 'resource_path(f"assets/expressions/{expression}.png")'),
+    Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
+    Group("assets/characters/mohan/appearance/", "character_appearance_defaults", "domain/character_pack/appearance_data.py", 'Path(path).read_text(encoding="utf-8")'),
     Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / "persona/ui-identifiers.json"'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data.py", 'root / "persona"'),
     Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"'),
@@ -282,7 +284,7 @@ CONTENT_RULES = (
             r"(?<![A-Za-z0-9])mohan\.(?:makeup|official|default|sponsor)\.[a-z0-9][a-z0-9.-]*"
             r"|(?<![A-Za-z0-9-])mohan-signature(?![A-Za-z0-9-])"
         ),
-        "assets/characters/mohan/pack-source.json",
+        "assets/characters/mohan/appearance/defaults.json",
         "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
     ),
     ContentRule(
@@ -377,6 +379,19 @@ PRODUCT_IDENTITY_RULE = ContentRule(
     "infrastructure/app_resources.py",
     "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
 )
+PERSISTED_IDENTIFIER_RULE = ContentRule(
+    "persisted_identifier",
+    "product_shell",
+    re.compile(r"mohan\.default\.blue-silver"),
+    "application/wardrobe_service.py",
+    "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+)
+PERSISTED_IDENTIFIER_PATHS = frozenset(
+    {
+        "application/wardrobe_service.py",
+        "domain/outfit_pack_official.py",
+    }
+)
 PRODUCT_IDENTITY_REASON = "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。"
 
 UI_TEXT_REFERENCE_PATHS = frozenset(
@@ -421,6 +436,7 @@ UI_TEXT_REFERENCE_PATHS = frozenset(
 
 CLASSIFICATION_REASONS = {
     "engine_extract": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+    "persisted_identifier": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
     "product_shell_allowed": "此檔位於逐檔白名單；命中內容是墨寒產品殼識別，可依既有產品契約保留。",
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。",
 }
@@ -711,6 +727,10 @@ def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
                         PRODUCT_IDENTITY_RULE
                         if content_rule.name == "character_name_literal"
                         and any(left <= start and end <= right for left, right in identity_spans)
+                        else PERSISTED_IDENTIFIER_RULE
+                        if content_rule.name == "character_appearance_pack_identifier"
+                        and path in PERSISTED_IDENTIFIER_PATHS
+                        and match.group(0) == "mohan.default.blue-silver"
                         else content_rule
                     )
                     line = _match_line(lines, node, match.group(0))
@@ -775,6 +795,8 @@ def _source_classification(path: str, evidence: list[dict[str, Any]]) -> str:
     rules = {row["rule"] for row in evidence} - {PRODUCT_IDENTITY_RULE.name}
     if not rules:
         return "product_shell_allowed"
+    if rules == {PERSISTED_IDENTIFIER_RULE.name}:
+        return "persisted_identifier"
     shell_rules = {"character_name_literal", "character_asset_path_literal"}
     if path in PRODUCT_SHELL_ALLOWLIST and rules <= shell_rules:
         return "product_shell_allowed"
@@ -805,7 +827,7 @@ def _source_difficulty(evidence: list[dict[str, Any]]) -> str:
 
 
 def _work_package(classification: str, evidence: list[dict[str, Any]]) -> str | None:
-    if classification == "product_shell_allowed":
+    if classification in {"persisted_identifier", "product_shell_allowed"}:
         return None
     if classification == "ui_text_reference":
         return "ui-name-parameterization"
@@ -1009,11 +1031,11 @@ def build_extraction_worklist(inventory: dict[str, Any]) -> dict[str, Any]:
     code_rows = [row for row in inventory["files"] if row["scope"] == "embedded_code"]
     pending_rows = [
         row for row in code_rows
-        if row["classification"] != "product_shell_allowed"
+        if row["classification"] not in {"persisted_identifier", "product_shell_allowed"}
     ]
     allowed_rows = [
         row for row in code_rows
-        if row["classification"] == "product_shell_allowed"
+        if row["classification"] in {"persisted_identifier", "product_shell_allowed"}
     ]
     packages = []
     assigned_paths = []
@@ -1066,6 +1088,7 @@ def build_extraction_worklist(inventory: dict[str, Any]) -> dict[str, Any]:
             "engine_extract_files": classification_counts["engine_extract"],
             "ui_text_reference_files": classification_counts["ui_text_reference"],
             "product_shell_allowed_files": len(allowed_rows),
+            "persisted_identifier_files": classification_counts["persisted_identifier"],
             "manual_review_hint_only_files": hint_only_count,
             "work_packages": len(packages),
         },
@@ -1161,7 +1184,10 @@ def render_summary(inventory: dict[str, Any]) -> str:
         classifications.get("engine_extract", 0)
         + classifications.get("ui_text_reference", 0)
     )
-    allowed_count = classifications.get("product_shell_allowed", 0)
+    allowed_count = (
+        classifications.get("persisted_identifier", 0)
+        + classifications.get("product_shell_allowed", 0)
+    )
     hint_only_count = sum(
         row["status"] == "review_hint_only"
         for row in inventory["manual_review_hints"]

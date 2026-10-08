@@ -253,6 +253,7 @@ def _measure_file(path: Path) -> tuple[int, str]:
 # Every character-data category must map explicitly; an unknown one fails the
 # build instead of silently landing in program_data with the wrong license class.
 CHARACTER_DATA_LICENSE_COMPONENTS = {
+    "character_appearance_defaults": "program_data",
     "character_voice_data": "voice",
     "character_dialogue_data": "persona_dialogue",
     "character_persona_data": "persona_dialogue",
