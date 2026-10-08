@@ -5,6 +5,7 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
 lazy from domain.autonomous_wardrobe import WardrobeCandidate
+lazy from domain.contracts import default_character_display_name
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_PACK_ID,
     BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS,
@@ -50,7 +51,9 @@ lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_o
 # means "the built-in look" (today the official Blue-and-White Hanfu pack plus
 # the built-in classic makeup) and is kept stable so saved profiles keep working.
 BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"
-BUILTIN_OUTFIT_FALLBACK_NAME = "墨寒藍白漢服"
+BUILTIN_OUTFIT_FALLBACK_NAME = (
+    f"{default_character_display_name('zh-TW')}藍白漢服"
+)
 BARE_MAKEUP_ID = "none"
 BUILTIN_MAKEUP_PREFIX = "builtin/"
 SELECTION_ID_PARTS = 3

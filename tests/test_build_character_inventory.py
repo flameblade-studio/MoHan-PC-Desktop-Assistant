@@ -174,11 +174,12 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     }
     assert {"engine_extract", "product_shell_allowed"} <= set(inventory["embedded_code_classification_counts"])
     assert {
+        "application/behavior_director.py",
         "domain/constants.py",
-        "domain/expression_system.py",
         "infrastructure/app_resources.py",
         "presentation/ui_localization.py",
     } <= set(by_path)
+    assert "domain/expression_system.py" not in by_path
     for row in rows:
         assert row["migration"] == builder.EMBEDDED
         assert row["classification"] in builder.CLASSIFICATION_REASONS

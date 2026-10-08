@@ -8,6 +8,7 @@ lazy from enum import StrEnum
 lazy from typing import Final, Self
 
 lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.contracts import default_character_display_name
 
 _RIG_MANIFEST = default_rig_manifest()
 
@@ -89,8 +90,18 @@ GESTURE_ACTION_LABELS: Final = frozendict({
     GestureAction.WORK_MODE: LocalizedLabel("切換工作模式", "切换工作模式", "Switch to work mode", "仕事モードへ切り替え"),
     GestureAction.COMPANION_MODE: LocalizedLabel("切換陪伴模式", "切换陪伴模式", "Switch to companion mode", "コンパニオンモードへ切り替え"),
     GestureAction.DO_NOT_DISTURB_MODE: LocalizedLabel("切換勿擾模式", "切换勿扰模式", "Switch to do-not-disturb mode", "おやすみモードへ切り替え"),
-    GestureAction.POSITIVE_ACKNOWLEDGEMENT: LocalizedLabel("墨寒以正向表情回應", "墨寒以正向表情回应", "MoHan responds positively", "墨寒が肯定的に応える"),
-    GestureAction.CUSTOM_COMMAND: LocalizedLabel("自訂墨寒文字指令", "自定义墨寒文字指令", "Custom MoHan text command", "墨寒のカスタム文字指示"),
+    GestureAction.POSITIVE_ACKNOWLEDGEMENT: LocalizedLabel(
+        f"{default_character_display_name('zh-TW')}以正向表情回應",
+        f"{default_character_display_name('zh-CN')}以正向表情回应",
+        f"{default_character_display_name('en')} responds positively",
+        f"{default_character_display_name('ja-JP')}が肯定的に応える",
+    ),
+    GestureAction.CUSTOM_COMMAND: LocalizedLabel(
+        f"自訂{default_character_display_name('zh-TW')}文字指令",
+        f"自定义{default_character_display_name('zh-CN')}文字指令",
+        f"Custom {default_character_display_name('en')} text command",
+        f"{default_character_display_name('ja-JP')}のカスタム文字指示",
+    ),
 })
 
 

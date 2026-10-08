@@ -6,7 +6,11 @@ lazy from pathlib import Path
 lazy from types import MappingProxyType
 lazy from typing import Protocol
 
-lazy from domain.contracts import SecretStoreFactoryPort, SecretStorePort
+lazy from domain.contracts import (
+    SecretStoreFactoryPort,
+    SecretStorePort,
+    default_character_display_name,
+)
 lazy from infrastructure.portable_secrets import (
     SECRET_IDS,
     PortableSecretsPayload,
@@ -92,32 +96,32 @@ def bind_dashboard_portable_secrets(
         "home_assistant": _create_store(
             factory,
             root / "home-assistant-token.dpapi",
-            "MoHan Home Assistant token",
+            f"{default_character_display_name('en')} Home Assistant token",
         ),
         "oauth_google": _create_store(
             factory,
             root / "oauth-google.dpapi",
-            "MoHan google OAuth token",
+            f"{default_character_display_name('en')} google OAuth token",
         ),
         "oauth_microsoft": _create_store(
             factory,
             root / "oauth-microsoft.dpapi",
-            "MoHan microsoft OAuth token",
+            f"{default_character_display_name('en')} microsoft OAuth token",
         ),
         "oauth_github": _create_store(
             factory,
             root / "oauth-github.dpapi",
-            "MoHan github OAuth token",
+            f"{default_character_display_name('en')} github OAuth token",
         ),
         "face_identities": _create_store(
             factory,
             root / "face-identities.dpapi",
-            "MoHan local face identity templates",
+            f"{default_character_display_name('en')} local face identity templates",
         ),
         "gesture_templates": _create_store(
             factory,
             root / "gesture-templates.dpapi",
-            "MoHan local gesture skeleton templates",
+            f"{default_character_display_name('en')} local gesture skeleton templates",
         ),
     }
     return bind_portable_secret_stores(

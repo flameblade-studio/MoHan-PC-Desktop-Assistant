@@ -72,7 +72,7 @@
     }
   ],
   "embedded_code_classification_counts": {
-    "engine_extract": 69,
+    "engine_extract": 53,
     "product_shell_allowed": 14
   },
   "files": [
@@ -628,286 +628,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 13912,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 231,
-          "matched": "MoHan",
-          "path": "application/native_acceleration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan native acceleration is unavailable; using Python: %s\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 248,
-          "matched": "MoHan",
-          "path": "application/native_acceleration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan native operation %s requires attention; using Python fallback (attention event %d): %s\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/native_acceleration.py",
-      "readers": [
-        {
-          "line": 32,
-          "path": "application/service_container.py",
-          "text": "lazy from application.native_acceleration import NativeAcceleration"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "dbcf6081f1629fa4df61985254c6760c32fa94b064283b486a1d73b73da8c464",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 20,
-          "line": 20,
-          "name": "LOGGER"
-        },
-        {
-          "end_line": 21,
-          "line": 21,
-          "name": "NATIVE_MODULE_NAME"
-        },
-        {
-          "end_line": 22,
-          "line": 22,
-          "name": "PAIR_LENGTH"
-        },
-        {
-          "end_line": 23,
-          "line": 23,
-          "name": "_Result"
-        },
-        {
-          "end_line": 36,
-          "line": 27,
-          "name": "NativeAccelerationStatus"
-        },
-        {
-          "end_line": 265,
-          "line": 39,
-          "name": "NativeAcceleration"
-        },
-        {
-          "end_line": 270,
-          "line": 268,
-          "name": "_error_summary"
-        },
-        {
-          "end_line": 294,
-          "line": 273,
-          "name": "_results_are_equivalent"
-        },
-        {
-          "end_line": 310,
-          "line": 297,
-          "name": "_float_pair_is_close"
-        },
-        {
-          "end_line": 323,
-          "line": 313,
-          "name": "_normalize_analysis_result"
-        },
-        {
-          "end_line": 338,
-          "line": 326,
-          "name": "_normalize_vowel_result"
-        },
-        {
-          "end_line": 344,
-          "line": 341,
-          "name": "_normalize_bytes_result"
-        },
-        {
-          "end_line": 375,
-          "line": 347,
-          "name": "_normalize_rate_result"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 16915,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 350,
-          "matched": "MoHan",
-          "path": "application/native_rgba_acceleration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan native RGBA acceleration is unavailable; using Python: %s\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 379,
-          "matched": "MoHan",
-          "path": "application/native_rgba_acceleration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan native RGBA operation %s requires attention; using Python fallback \""
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/native_rgba_acceleration.py",
-      "readers": [
-        {
-          "line": 8,
-          "path": "application/rgba_compositing.py",
-          "text": "lazy from application.native_rgba_acceleration import NativeRgbaAcceleration"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "b491f5a28b74defc48715cb7397d204650ab9138867568c196a5243b3419d7e0",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 13,
-          "line": 13,
-          "name": "LOGGER"
-        },
-        {
-          "end_line": 14,
-          "line": 14,
-          "name": "NATIVE_RGBA_MODULE_NAME"
-        },
-        {
-          "end_line": 15,
-          "line": 15,
-          "name": "RGBA_CHANNELS"
-        },
-        {
-          "end_line": 16,
-          "line": 16,
-          "name": "ALPHA_MAX"
-        },
-        {
-          "end_line": 17,
-          "line": 17,
-          "name": "CROSSFADE_MAX"
-        },
-        {
-          "end_line": 22,
-          "line": 21,
-          "name": "RgbaAccelerationError"
-        },
-        {
-          "end_line": 35,
-          "line": 26,
-          "name": "NativeRgbaAccelerationStatus"
-        },
-        {
-          "end_line": 52,
-          "line": 39,
-          "name": "_RegionCompositeInput"
-        },
-        {
-          "end_line": 61,
-          "line": 55,
-          "name": "alpha_over_rgba_python"
-        },
-        {
-          "end_line": 77,
-          "line": 64,
-          "name": "crossfade_rgba_python"
-        },
-        {
-          "end_line": 137,
-          "line": 80,
-          "name": "composite_region_rgba_python"
-        },
-        {
-          "end_line": 384,
-          "line": 140,
-          "name": "NativeRgbaAcceleration"
-        },
-        {
-          "end_line": 393,
-          "line": 387,
-          "name": "_validate_equal_rgba"
-        },
-        {
-          "end_line": 404,
-          "line": 396,
-          "name": "_validate_crossfade_weight"
-        },
-        {
-          "end_line": 417,
-          "line": 407,
-          "name": "_validate_region_inputs"
-        },
-        {
-          "end_line": 430,
-          "line": 420,
-          "name": "_pixel_count"
-        },
-        {
-          "end_line": 436,
-          "line": 433,
-          "name": "_validate_rgba_size"
-        },
-        {
-          "end_line": 443,
-          "line": 439,
-          "name": "_validate_coordinate"
-        },
-        {
-          "end_line": 451,
-          "line": 446,
-          "name": "_validate_mask"
-        },
-        {
-          "end_line": 456,
-          "line": 454,
-          "name": "_validate_bytes"
-        },
-        {
-          "end_line": 465,
-          "line": 459,
-          "name": "_normalize_rgba_input"
-        },
-        {
-          "end_line": 491,
-          "line": 468,
-          "name": "_blend_pixel"
-        },
-        {
-          "end_line": 496,
-          "line": 494,
-          "name": "_error_summary"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 3742,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -1323,683 +1043,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 34498,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity",
-        "product_identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 136,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "root = Path(os.environ.get(\"LOCALAPPDATA\") or home) / \"YanJianStudio\" / \"MoHan\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 141,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "root = home / \"Library\" / \"Application Support\" / \"YanJianStudio\" / \"MoHan\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 143,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "cache = home / \"Library\" / \"Caches\" / \"YanJianStudio\" / \"MoHan\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 146,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "suffix = Path(\"YanJianStudio\") / \"MoHan\""
-        },
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 897,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "(\"home_assistant\", \"home-assistant-token.dpapi\", \"MoHan Home Assistant token\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 898,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "(\"oauth_google\", \"oauth-google.dpapi\", \"MoHan google OAuth token\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 899,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "(\"oauth_microsoft\", \"oauth-microsoft.dpapi\", \"MoHan microsoft OAuth token\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 900,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "(\"oauth_github\", \"oauth-github.dpapi\", \"MoHan github OAuth token\"),"
-        },
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 901,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "(\"face_identities\", \"face-identities.dpapi\", \"MoHan local face identity templates\"),"
-        },
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 902,
-          "matched": "MoHan",
-          "path": "application/presentation_ports.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "(\"gesture_templates\", \"gesture-templates.dpapi\", \"MoHan local gesture skeleton templates\"),"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/presentation_ports.py",
-      "readers": [
-        {
-          "line": 33,
-          "path": "application/service_container.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 16,
-          "path": "infrastructure/profile_transfer.py",
-          "text": "lazy from application.presentation_ports import ProfileTransferError"
-        },
-        {
-          "line": 45,
-          "path": "presentation/autonomous_outfit_generation_controller.py",
-          "text": "lazy from application.presentation_ports import DEFAULT_TEXT_MODEL"
-        },
-        {
-          "line": 30,
-          "path": "presentation/companion_core.py",
-          "text": "lazy from application.presentation_ports import fallback_platform_services"
-        },
-        {
-          "line": 12,
-          "path": "presentation/companion_proactive.py",
-          "text": "lazy from application.presentation_ports import PresentationDatabasePort"
-        },
-        {
-          "line": 9,
-          "path": "presentation/companion_speech_runtime.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 14,
-          "path": "presentation/companion_window.py",
-          "text": "lazy from application.presentation_ports import default_data_dir"
-        },
-        {
-          "line": 7,
-          "path": "presentation/dashboard_composition.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 19,
-          "path": "presentation/dashboard_conversation.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 25,
-          "path": "presentation/dashboard_dialogs.py",
-          "text": "lazy from application.presentation_ports import PresentationDatabasePort"
-        },
-        {
-          "line": 24,
-          "path": "presentation/dashboard_platforms.py",
-          "text": "lazy from application.presentation_ports import PlatformProgressUpdate"
-        },
-        {
-          "line": 30,
-          "path": "presentation/dashboard_settings.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 13,
-          "path": "presentation/dashboard_shell.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 19,
-          "path": "presentation/dashboard_voice.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 3,
-          "path": "presentation/dashboard_voice_catalog.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 6,
-          "path": "presentation/dashboard_voice_runtime.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 9,
-          "path": "presentation/dashboard_wardrobe_categories.py",
-          "text": "lazy from application.presentation_ports import PresentationDatabasePort"
-        },
-        {
-          "line": 8,
-          "path": "presentation/dashboard_wardrobe_packages.py",
-          "text": "lazy from application.presentation_ports import PresentationDatabasePort"
-        },
-        {
-          "line": 9,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from application.presentation_ports import PresentationDatabasePort"
-        },
-        {
-          "line": 20,
-          "path": "presentation/first_run_wizard.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 27,
-          "path": "presentation/profile_transfer_ui.py",
-          "text": "lazy from application.presentation_ports import ("
-        },
-        {
-          "line": 21,
-          "path": "presentation/updater_ui.py",
-          "text": "lazy from application.presentation_ports import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "55d10a9eeb0d90b5d5ad18963fb8aa154f21e2543f6723cb6252dcd7fa3991b5",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json",
-        "infrastructure/app_resources.py"
-      ],
-      "symbols": [
-        {
-          "end_line": 38,
-          "line": 38,
-          "name": "_CHARACTER_DATA"
-        },
-        {
-          "end_line": 39,
-          "line": 39,
-          "name": "_VOICE_PROFILE"
-        },
-        {
-          "end_line": 40,
-          "line": 40,
-          "name": "_VOICE_PROFILE_DEFAULTS"
-        },
-        {
-          "end_line": 43,
-          "line": 43,
-          "name": "MAX_TERM_LENGTH"
-        },
-        {
-          "end_line": 44,
-          "line": 44,
-          "name": "MAX_TERMS"
-        },
-        {
-          "end_line": 45,
-          "line": 45,
-          "name": "MIN_COMPARISON_LENGTH"
-        },
-        {
-          "end_line": 46,
-          "line": 46,
-          "name": "MIN_SUBSTRING_LENGTH"
-        },
-        {
-          "end_line": 47,
-          "line": 47,
-          "name": "SIMILARITY_THRESHOLD"
-        },
-        {
-          "end_line": 49,
-          "line": 49,
-          "name": "DEFAULT_TEXT_MODEL"
-        },
-        {
-          "end_line": 54,
-          "line": 50,
-          "name": "TEXT_MODELS"
-        },
-        {
-          "end_line": 55,
-          "line": 55,
-          "name": "DEFAULT_TRANSCRIPTION_MODEL"
-        },
-        {
-          "end_line": 59,
-          "line": 56,
-          "name": "DEFAULT_TRANSCRIPTION_PROMPT"
-        },
-        {
-          "end_line": 61,
-          "line": 61,
-          "name": "REALTIME_OUTPUT_OPENAI"
-        },
-        {
-          "end_line": 62,
-          "line": 62,
-          "name": "REALTIME_OUTPUT_AZURE"
-        },
-        {
-          "end_line": 63,
-          "line": 63,
-          "name": "REALTIME_OUTPUT_AZURE_HD"
-        },
-        {
-          "end_line": 65,
-          "line": 65,
-          "name": "PROFILE_EXTENSION"
-        },
-        {
-          "end_line": 66,
-          "line": 66,
-          "name": "MANIFEST_FILENAME"
-        },
-        {
-          "end_line": 67,
-          "line": 67,
-          "name": "SENSITIVE_FILENAME"
-        },
-        {
-          "end_line": 68,
-          "line": 68,
-          "name": "SENSITIVE_MANIFEST_KEY"
-        },
-        {
-          "end_line": 80,
-          "line": 71,
-          "name": "PresentationDatabasePort"
-        },
-        {
-          "end_line": 87,
-          "line": 84,
-          "name": "PlatformPaths"
-        },
-        {
-          "end_line": 100,
-          "line": 91,
-          "name": "PlatformCapabilities"
-        },
-        {
-          "end_line": 115,
-          "line": 103,
-          "name": "PlatformServicePort"
-        },
-        {
-          "end_line": 177,
-          "line": 118,
-          "name": "_PresentationFallbackPlatformService"
-        },
-        {
-          "end_line": 183,
-          "line": 180,
-          "name": "fallback_platform_services"
-        },
-        {
-          "end_line": 194,
-          "line": 186,
-          "name": "default_data_dir"
-        },
-        {
-          "end_line": 217,
-          "line": 198,
-          "name": "PlatformProgressUpdate"
-        },
-        {
-          "end_line": 227,
-          "line": 220,
-          "name": "_DURATION_FORMATS"
-        },
-        {
-          "end_line": 237,
-          "line": 230,
-          "name": "format_duration"
-        },
-        {
-          "end_line": 259,
-          "line": 241,
-          "name": "AIWorkerRequest"
-        },
-        {
-          "end_line": 266,
-          "line": 262,
-          "name": "AIWorkerSignalsPort"
-        },
-        {
-          "end_line": 272,
-          "line": 269,
-          "name": "AIWorkerPort"
-        },
-        {
-          "end_line": 275,
-          "line": 275,
-          "name": "AIWorkerFactory"
-        },
-        {
-          "end_line": 289,
-          "line": 279,
-          "name": "RealtimeSessionConfig"
-        },
-        {
-          "end_line": 299,
-          "line": 293,
-          "name": "RealtimeVoiceRequest"
-        },
-        {
-          "end_line": 310,
-          "line": 303,
-          "name": "AzureRealtimeVoice"
-        },
-        {
-          "end_line": 317,
-          "line": 314,
-          "name": "LocalRealtimeVoice"
-        },
-        {
-          "end_line": 326,
-          "line": 321,
-          "name": "RealtimeSpeechOutputConfig"
-        },
-        {
-          "end_line": 337,
-          "line": 330,
-          "name": "RealtimeSpeechOutputConfigRequest"
-        },
-        {
-          "end_line": 357,
-          "line": 340,
-          "name": "RealtimeSpeechOutputPort"
-        },
-        {
-          "end_line": 360,
-          "line": 360,
-          "name": "RealtimeSpeechOutputConfigFactory"
-        },
-        {
-          "end_line": 372,
-          "line": 363,
-          "name": "create_realtime_output_config"
-        },
-        {
-          "end_line": 412,
-          "line": 375,
-          "name": "sanitize_realtime_transcription_prompt"
-        },
-        {
-          "end_line": 433,
-          "line": 415,
-          "name": "resembles_transcription_prompt"
-        },
-        {
-          "end_line": 454,
-          "line": 437,
-          "name": "AzureSpeechRegion"
-        },
-        {
-          "end_line": 491,
-          "line": 457,
-          "name": "AZURE_SPEECH_REGIONS"
-        },
-        {
-          "end_line": 505,
-          "line": 494,
-          "name": "azure_region_options"
-        },
-        {
-          "end_line": 518,
-          "line": 508,
-          "name": "azure_region_identifiers"
-        },
-        {
-          "end_line": 526,
-          "line": 521,
-          "name": "azure_region_supports_hd_flash"
-        },
-        {
-          "end_line": 529,
-          "line": 529,
-          "name": "_AZURE_FEMALE_VOICES"
-        },
-        {
-          "end_line": 530,
-          "line": 530,
-          "name": "_AZURE_HD_FEMALE_VOICES"
-        },
-        {
-          "end_line": 535,
-          "line": 533,
-          "name": "azure_female_voices"
-        },
-        {
-          "end_line": 547,
-          "line": 538,
-          "name": "azure_hd_female_voices"
-        },
-        {
-          "end_line": 554,
-          "line": 550,
-          "name": "normalize_azure_region"
-        },
-        {
-          "end_line": 570,
-          "line": 557,
-          "name": "female_windows_voices_for_language"
-        },
-        {
-          "end_line": 602,
-          "line": 573,
-          "name": "preferred_windows_voice"
-        },
-        {
-          "end_line": 640,
-          "line": 605,
-          "name": "VoiceCatalogPort"
-        },
-        {
-          "end_line": 655,
-          "line": 643,
-          "name": "FaceRendererPort"
-        },
-        {
-          "end_line": 664,
-          "line": 658,
-          "name": "ProfileManifestPort"
-        },
-        {
-          "end_line": 671,
-          "line": 667,
-          "name": "ProfileImportResultPort"
-        },
-        {
-          "end_line": 681,
-          "line": 674,
-          "name": "PortableProfileManagerPort"
-        },
-        {
-          "end_line": 684,
-          "line": 684,
-          "name": "PortableProfileManagerFactory"
-        },
-        {
-          "end_line": 692,
-          "line": 687,
-          "name": "ProfileTransferError"
-        },
-        {
-          "end_line": 706,
-          "line": 695,
-          "name": "_UnavailableProfileManager"
-        },
-        {
-          "end_line": 711,
-          "line": 709,
-          "name": "unavailable_profile_manager_factory"
-        },
-        {
-          "end_line": 719,
-          "line": 714,
-          "name": "InstallerAssetPort"
-        },
-        {
-          "end_line": 730,
-          "line": 722,
-          "name": "ReleaseInfoPort"
-        },
-        {
-          "end_line": 740,
-          "line": 733,
-          "name": "UpdateManagerPort"
-        },
-        {
-          "end_line": 743,
-          "line": 743,
-          "name": "UpdateManagerFactory"
-        },
-        {
-          "end_line": 755,
-          "line": 746,
-          "name": "_UnavailableUpdateManager"
-        },
-        {
-          "end_line": 760,
-          "line": 758,
-          "name": "unavailable_update_manager_factory"
-        },
-        {
-          "end_line": 764,
-          "line": 763,
-          "name": "SafeBoundaryError"
-        },
-        {
-          "end_line": 767,
-          "line": 767,
-          "name": "PortableSecretBinder"
-        },
-        {
-          "end_line": 768,
-          "line": 768,
-          "name": "AutostartConfigurator"
-        },
-        {
-          "end_line": 769,
-          "line": 769,
-          "name": "FaceAssetValidator"
-        },
-        {
-          "end_line": 770,
-          "line": 770,
-          "name": "FaceRendererFactory"
-        },
-        {
-          "end_line": 771,
-          "line": 771,
-          "name": "VisibleWindowsProvider"
-        },
-        {
-          "end_line": 777,
-          "line": 774,
-          "name": "FullBodyRendererPort"
-        },
-        {
-          "end_line": 781,
-          "line": 781,
-          "name": "FullBodyRendererFactory"
-        },
-        {
-          "end_line": 785,
-          "line": 784,
-          "name": "no_full_body_renderer_factory"
-        },
-        {
-          "end_line": 805,
-          "line": 789,
-          "name": "PresentationPorts"
-        },
-        {
-          "end_line": 820,
-          "line": 808,
-          "name": "_PORTABLE_SECRET_IDS"
-        },
-        {
-          "end_line": 877,
-          "line": 824,
-          "name": "PortableSecretBinding"
-        },
-        {
-          "end_line": 913,
-          "line": 880,
-          "name": "bind_dashboard_portable_secrets"
-        },
-        {
-          "end_line": 931,
-          "line": 917,
-          "name": "DashboardServices"
-        },
-        {
-          "end_line": 935,
-          "line": 933,
-          "name": "safe_error_from_exception"
-        },
-        {
-          "end_line": 942,
-          "line": 938,
-          "name": "is_boundary_failure"
-        },
-        {
-          "end_line": 995,
-          "line": 945,
-          "name": "__all__"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 4213,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -2165,291 +1208,23 @@
       "work_package": null
     },
     {
-      "bytes": 25647,
+      "bytes": 20677,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "content_categories": [
-        "identity",
-        "product_identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 622,
-          "matched": "MoHan",
-          "path": "application/service_container.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "\"MoHan OpenAI API key\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 626,
-          "matched": "MoHan",
-          "path": "application/service_container.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan Azure Speech key\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 630,
-          "matched": "MoHan",
-          "path": "application/service_container.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan Azure Dragon HD Speech key\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/service_container.py",
-      "readers": [
-        {
-          "line": 31,
-          "path": "presentation/companion_core.py",
-          "text": "lazy from application.service_container import CompanionServices"
-        },
-        {
-          "line": 15,
-          "path": "presentation/companion_window.py",
-          "text": "lazy from application.service_container import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "208f591f10ad8d9b547a06d63729477f9ad412bd7f365ba72c23336ac71c856a",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json",
-        "infrastructure/app_resources.py"
-      ],
-      "symbols": [
-        {
-          "end_line": 221,
-          "line": 122,
-          "name": "LegacyMohanCharacterSource"
-        },
-        {
-          "end_line": 230,
-          "line": 224,
-          "name": "_character_relative_path"
-        },
-        {
-          "end_line": 236,
-          "line": 233,
-          "name": "create_default_character_source"
-        },
-        {
-          "end_line": 275,
-          "line": 240,
-          "name": "CompanionServices"
-        },
-        {
-          "end_line": 334,
-          "line": 278,
-          "name": "_ProductionVoiceCatalog"
-        },
-        {
-          "end_line": 357,
-          "line": 337,
-          "name": "_create_ai_worker"
-        },
-        {
-          "end_line": 427,
-          "line": 360,
-          "name": "create_presentation_ports"
-        },
-        {
-          "end_line": 433,
-          "line": 430,
-          "name": "_VisionProviderPort"
-        },
-        {
-          "end_line": 439,
-          "line": 436,
-          "name": "VisionProviderFactory"
-        },
-        {
-          "end_line": 481,
-          "line": 442,
-          "name": "_SecretBackedVisionProvider"
-        },
-        {
-          "end_line": 494,
-          "line": 484,
-          "name": "_UnavailableVisionProvider"
-        },
-        {
-          "end_line": 514,
-          "line": 497,
-          "name": "_default_vision_provider_factory"
-        },
-        {
-          "end_line": 535,
-          "line": 517,
-          "name": "create_cloud_vision_service_factory"
-        },
-        {
-          "end_line": 554,
-          "line": 538,
-          "name": "_local_speech_engine"
-        },
-        {
-          "end_line": 574,
-          "line": 557,
-          "name": "_realtime_speech_output"
-        },
-        {
-          "end_line": 594,
-          "line": 577,
-          "name": "_initialize_backup_manager"
-        },
-        {
-          "end_line": 742,
-          "line": 597,
-          "name": "create_default_services"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 5276,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 32,
-          "matched": "墨寒",
-          "path": "application/theme_pack_service.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"zh-TW\": \"墨寒藍銀主題\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 33,
-          "matched": "墨寒",
-          "path": "application/theme_pack_service.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"zh-CN\": \"墨寒蓝银主题\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 34,
-          "matched": "MoHan",
-          "path": "application/theme_pack_service.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"en\": \"MoHan Blue-Silver\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 35,
-          "matched": "墨寒",
-          "path": "application/theme_pack_service.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"ja-JP\": \"墨寒ブルーシルバー\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/theme_pack_service.py",
-      "readers": [
-        {
-          "line": 10,
-          "path": "presentation/dashboard_window.py",
-          "text": "lazy from application.theme_pack_service import ThemePackService"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "7a5303c72445e7fc255b5daff5cd844d7cd28474864791bd521d47b0975243be",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 27,
-          "line": 21,
-          "name": "__all__"
-        },
-        {
-          "end_line": 37,
-          "line": 30,
-          "name": "_BUILTIN_NAMES"
-        },
-        {
-          "end_line": 53,
-          "line": 41,
-          "name": "InstalledTheme"
-        },
-        {
-          "end_line": 61,
-          "line": 57,
-          "name": "ThemeGenerationRequest"
-        },
-        {
-          "end_line": 72,
-          "line": 64,
-          "name": "ThemeGenerationPort"
-        },
-        {
-          "end_line": 76,
-          "line": 75,
-          "name": "ThemeGenerationUnavailable"
-        },
-        {
-          "end_line": 184,
-          "line": 79,
-          "name": "ThemePackService"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 20568,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "appearance",
-        "identity"
+        "appearance"
       ],
       "content_locations": [
         {
           "content_kind": "appearance",
           "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "line": 52,
+          "line": 53,
           "matched": "mohan.default.blue-silver",
           "path": "application/wardrobe_service.py",
           "rule": "character_appearance_pack_identifier",
           "suggested_data_target": "assets/characters/mohan/pack-source.json",
           "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 53,
-          "matched": "墨寒",
-          "path": "application/wardrobe_service.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "BUILTIN_OUTFIT_FALLBACK_NAME = \"墨寒藍白漢服\""
         }
       ],
       "estimated_difficulty": "low",
@@ -2494,85 +1269,84 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "3aee4f2723273466a9c1adc39d6e3bf280fa543f219c48f42ea09598518fd60d",
+      "sha256": "4e3de9f1b8fd51ff893c6f25f1b13a21bade90dd9ee9928b8b236969cbc2c0e3",
       "suggested_data_targets": [
-        "assets/characters/mohan/pack-source.json",
-        "assets/characters/mohan/persona/profile.json"
+        "assets/characters/mohan/pack-source.json"
       ],
       "symbols": [
         {
-          "end_line": 52,
-          "line": 52,
+          "end_line": 53,
+          "line": 53,
           "name": "BUILTIN_OUTFIT_ID"
         },
         {
-          "end_line": 53,
-          "line": 53,
+          "end_line": 56,
+          "line": 54,
           "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
         },
         {
-          "end_line": 54,
-          "line": 54,
+          "end_line": 57,
+          "line": 57,
           "name": "BARE_MAKEUP_ID"
         },
         {
-          "end_line": 55,
-          "line": 55,
+          "end_line": 58,
+          "line": 58,
           "name": "BUILTIN_MAKEUP_PREFIX"
         },
         {
-          "end_line": 56,
-          "line": 56,
+          "end_line": 59,
+          "line": 59,
           "name": "SELECTION_ID_PARTS"
         },
         {
-          "end_line": 66,
-          "line": 60,
+          "end_line": 69,
+          "line": 63,
           "name": "InstalledOutfit"
         },
         {
-          "end_line": 84,
-          "line": 70,
+          "end_line": 87,
+          "line": 73,
           "name": "MakeupOption"
         },
         {
-          "end_line": 91,
-          "line": 88,
+          "end_line": 94,
+          "line": 91,
           "name": "MakeupState"
         },
         {
-          "end_line": 97,
-          "line": 94,
+          "end_line": 100,
+          "line": 97,
           "name": "_selection_id"
         },
         {
-          "end_line": 108,
-          "line": 100,
+          "end_line": 111,
+          "line": 103,
           "name": "_localized_name"
         },
         {
-          "end_line": 114,
-          "line": 111,
+          "end_line": 117,
+          "line": 114,
           "name": "_ensemble_id"
         },
         {
-          "end_line": 119,
-          "line": 117,
+          "end_line": 122,
+          "line": 120,
           "name": "_localized_pack_name"
         },
         {
-          "end_line": 134,
-          "line": 122,
+          "end_line": 137,
+          "line": 125,
           "name": "_localized_ensemble_name"
         },
         {
-          "end_line": 144,
-          "line": 137,
+          "end_line": 147,
+          "line": 140,
           "name": "_makeup_option_id"
         },
         {
-          "end_line": 552,
-          "line": 147,
+          "end_line": 555,
+          "line": 150,
           "name": "WardrobeService"
         }
       ],
@@ -22056,7 +20830,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 365,
+          "line": 366,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -49827,7 +48601,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 365,
+          "line": 366,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -91918,7 +90692,7 @@
         {
           "line": 7,
           "path": "domain/contracts.py",
-          "text": "lazy from domain.character_pack.character_data import load_mohan_character_data"
+          "text": "lazy from domain.character_pack.character_data import ("
         },
         {
           "line": 3,
@@ -92276,7 +91050,7 @@
           "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
         },
         {
-          "line": 18,
+          "line": 19,
           "path": "application/native_acceleration.py",
           "text": "lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE"
         },
@@ -92291,7 +91065,7 @@
           "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
         },
         {
-          "line": 66,
+          "line": 67,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT"
         },
@@ -92741,426 +91515,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 4890,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 32,
-          "matched": "MoHan",
-          "path": "domain/contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "description: str = \"MoHan protected secret\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/contracts.py",
-      "readers": [
-        {
-          "line": 37,
-          "path": "application/cloud_vision_ui_bridge.py",
-          "text": "lazy from domain.contracts import SecretStorePort"
-        },
-        {
-          "line": 21,
-          "path": "application/presentation_ports.py",
-          "text": "lazy from domain.contracts import ("
-        },
-        {
-          "line": 39,
-          "path": "application/service_container.py",
-          "text": "lazy from domain.contracts import ("
-        },
-        {
-          "line": 9,
-          "path": "domain/app_profile.py",
-          "text": "lazy from domain.contracts import ProfileDatabasePort"
-        },
-        {
-          "line": 7,
-          "path": "domain/speech_providers.py",
-          "text": "lazy from domain.contracts import ("
-        },
-        {
-          "line": 9,
-          "path": "infrastructure/face_identity_store.py",
-          "text": "lazy from domain.contracts import SecretStorePort"
-        },
-        {
-          "line": 8,
-          "path": "infrastructure/gesture_template_store.py",
-          "text": "lazy from domain.contracts import SecretStorePort"
-        },
-        {
-          "line": 9,
-          "path": "infrastructure/portable_secret_binding.py",
-          "text": "lazy from domain.contracts import SecretStoreFactoryPort, SecretStorePort"
-        },
-        {
-          "line": 7,
-          "path": "infrastructure/portable_secrets.py",
-          "text": "lazy from domain.contracts import SecretStorePort"
-        },
-        {
-          "line": 17,
-          "path": "infrastructure/profile_transfer.py",
-          "text": "lazy from domain.contracts import ProfileDatabasePort, SecretStorePort"
-        },
-        {
-          "line": 8,
-          "path": "infrastructure/secret_store.py",
-          "text": "lazy from domain.contracts import SecretStoreFactoryPort, SecretStorePort"
-        },
-        {
-          "line": 9,
-          "path": "integrations/realtime_speech_output.py",
-          "text": "lazy from domain.contracts import AzureSpeechEnginePort, LocalSpeechEnginePort"
-        },
-        {
-          "line": 13,
-          "path": "presentation/dashboard_composition.py",
-          "text": "lazy from domain.contracts import ("
-        },
-        {
-          "line": 11,
-          "path": "presentation/dashboard_voice_runtime.py",
-          "text": "lazy from domain.contracts import SecretStorePort"
-        },
-        {
-          "line": 27,
-          "path": "presentation/flagship/cloud.py",
-          "text": "lazy from domain.contracts import SecretStorePort"
-        },
-        {
-          "line": 25,
-          "path": "presentation/flagship/control_center.py",
-          "text": "lazy from domain.contracts import SecretStoreFactoryPort"
-        },
-        {
-          "line": 22,
-          "path": "presentation/flagship/runtime.py",
-          "text": "lazy from domain.contracts import SecretStoreFactoryPort"
-        },
-        {
-          "line": 39,
-          "path": "presentation/profile_transfer_ui.py",
-          "text": "lazy from domain.contracts import ProfileDatabasePort"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "dca2b421510a11cd6ab5a219a39dbb28e306b8f47c1b10e61bf2cb10664b8eff",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 9,
-          "line": 9,
-          "name": "_VOICE_DEFAULTS"
-        },
-        {
-          "end_line": 15,
-          "line": 15,
-          "name": "SignalPort"
-        },
-        {
-          "end_line": 23,
-          "line": 18,
-          "name": "SecretStorePort"
-        },
-        {
-          "end_line": 33,
-          "line": 26,
-          "name": "SecretStoreFactoryPort"
-        },
-        {
-          "end_line": 42,
-          "line": 36,
-          "name": "ProfileDatabasePort"
-        },
-        {
-          "end_line": 64,
-          "line": 45,
-          "name": "LocalSpeechEnginePort"
-        },
-        {
-          "end_line": 87,
-          "line": 67,
-          "name": "CloudSpeechEnginePort"
-        },
-        {
-          "end_line": 125,
-          "line": 90,
-          "name": "AzureSpeechEnginePort"
-        },
-        {
-          "end_line": 145,
-          "line": 128,
-          "name": "SpeechProviderRegistryPort"
-        },
-        {
-          "end_line": 186,
-          "line": 148,
-          "name": "RealtimeVoicePort"
-        },
-        {
-          "end_line": 210,
-          "line": 189,
-          "name": "SpeechListenerPort"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 11364,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "expression"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "expression",
-          "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
-          "line": 28,
-          "matched": "MOHAN_EMOTION",
-          "path": "domain/expression_system.py",
-          "rule": "character_protocol_label_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "\"[[MOHAN_EMOTION:情緒:強度]]。情緒只能使用：\""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
-          "line": 34,
-          "matched": "MOHAN_EMOTION",
-          "path": "domain/expression_system.py",
-          "rule": "character_protocol_label_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "r\"\\[\\[\\s*MOHAN_EMOTION\\s*:\\s*([a-z_]+)\""
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
-          "line": 39,
-          "matched": "MOHAN_EMOTION",
-          "path": "domain/expression_system.py",
-          "rule": "character_protocol_label_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json",
-          "text": "r\"\\[\\[\\s*MOHAN_EMOTION\\b[^\\]]*\\]\\]\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/expression_system.py",
-      "readers": [
-        {
-          "line": 17,
-          "path": "integrations/ai_client.py",
-          "text": "lazy from domain.expression_system import INTERNAL_EMOTION_INSTRUCTION"
-        },
-        {
-          "line": 67,
-          "path": "presentation/companion_core.py",
-          "text": "lazy from domain.expression_system import ("
-        },
-        {
-          "line": 20,
-          "path": "presentation/companion_face_assets.py",
-          "text": "lazy from domain.expression_system import FaceAnchorProfile"
-        },
-        {
-          "line": 15,
-          "path": "presentation/companion_speech_emotion.py",
-          "text": "lazy from domain.expression_system import EXPRESSION_TO_EMOTION"
-        },
-        {
-          "line": 38,
-          "path": "presentation/companion_speech_runtime.py",
-          "text": "lazy from domain.expression_system import parse_internal_emotion"
-        },
-        {
-          "line": 26,
-          "path": "presentation/dashboard_conversation.py",
-          "text": "lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "3544d1620803f079097294fb8367304d368aba3b2f6c322d99374abe96bf3d97",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 11,
-          "line": 11,
-          "name": "_EXPRESSION_CATALOG"
-        },
-        {
-          "end_line": 14,
-          "line": 14,
-          "name": "COMPLEX_PROMPT_LENGTH"
-        },
-        {
-          "end_line": 15,
-          "line": 15,
-          "name": "VERY_COMPLEX_PROMPT_LENGTH"
-        },
-        {
-          "end_line": 16,
-          "line": 16,
-          "name": "ATTENTIVE_PROMPT_LENGTH"
-        },
-        {
-          "end_line": 17,
-          "line": 17,
-          "name": "MIN_QUESTION_MARKS"
-        },
-        {
-          "end_line": 18,
-          "line": 18,
-          "name": "MIN_SENTENCE_BREAKS"
-        },
-        {
-          "end_line": 19,
-          "line": 19,
-          "name": "MIN_COMPLEX_SCORE"
-        },
-        {
-          "end_line": 21,
-          "line": 21,
-          "name": "EMOTION_TO_EXPRESSION"
-        },
-        {
-          "end_line": 25,
-          "line": 22,
-          "name": "EXPRESSION_TO_EMOTION"
-        },
-        {
-          "end_line": 32,
-          "line": 26,
-          "name": "INTERNAL_EMOTION_INSTRUCTION"
-        },
-        {
-          "end_line": 37,
-          "line": 33,
-          "name": "_EMOTION_TAG"
-        },
-        {
-          "end_line": 41,
-          "line": 38,
-          "name": "_ANY_EMOTION_TAG"
-        },
-        {
-          "end_line": 50,
-          "line": 45,
-          "name": "TaggedReply"
-        },
-        {
-          "end_line": 63,
-          "line": 54,
-          "name": "FaceAnchorProfile"
-        },
-        {
-          "end_line": 73,
-          "line": 67,
-          "name": "WaitExpressionCue"
-        },
-        {
-          "end_line": 76,
-          "line": 76,
-          "name": "AI_WAIT_TIMEOUT_MS"
-        },
-        {
-          "end_line": 77,
-          "line": 77,
-          "name": "_COMPLEX_WAIT_DELAY_MS"
-        },
-        {
-          "end_line": 78,
-          "line": 78,
-          "name": "_ATTENTIVE_WAIT_DELAY_MS"
-        },
-        {
-          "end_line": 99,
-          "line": 79,
-          "name": "_DEEP_THINKING_MARKERS"
-        },
-        {
-          "end_line": 156,
-          "line": 102,
-          "name": "plan_wait_expressions"
-        },
-        {
-          "end_line": 173,
-          "line": 159,
-          "name": "parse_internal_emotion"
-        },
-        {
-          "end_line": 181,
-          "line": 177,
-          "name": "ExpressionRule"
-        },
-        {
-          "end_line": 189,
-          "line": 184,
-          "name": "DEFAULT_EXPRESSION_RULE"
-        },
-        {
-          "end_line": 200,
-          "line": 190,
-          "name": "EXPRESSION_RULES"
-        },
-        {
-          "end_line": 210,
-          "line": 201,
-          "name": "SOURCE_PRIORITY_BONUS"
-        },
-        {
-          "end_line": 211,
-          "line": 211,
-          "name": "BASE_EXPRESSIONS"
-        },
-        {
-          "end_line": 219,
-          "line": 219,
-          "name": "DEVOTION_PRIORITY_BONUS"
-        },
-        {
-          "end_line": 220,
-          "line": 220,
-          "name": "FAVOR_DEVOTED_THRESHOLD"
-        },
-        {
-          "end_line": 231,
-          "line": 223,
-          "name": "devotion_bonus"
-        },
-        {
-          "end_line": 241,
-          "line": 235,
-          "name": "ExpressionDecision"
-        },
-        {
-          "end_line": 378,
-          "line": 244,
-          "name": "ExpressionArbiter"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 10654,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -93416,276 +91770,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 17294,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 92,
-          "matched": "MoHan",
-          "path": "domain/gesture_configuration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "GestureAction.POSITIVE_ACKNOWLEDGEMENT: LocalizedLabel(\"墨寒以正向表情回應\", \"墨寒以正向表情回应\", \"MoHan responds positively\", \"墨寒が肯定的に応える\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 92,
-          "matched": "墨寒",
-          "path": "domain/gesture_configuration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "GestureAction.POSITIVE_ACKNOWLEDGEMENT: LocalizedLabel(\"墨寒以正向表情回應\", \"墨寒以正向表情回应\", \"MoHan responds positively\", \"墨寒が肯定的に応える\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 93,
-          "matched": "MoHan",
-          "path": "domain/gesture_configuration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "GestureAction.CUSTOM_COMMAND: LocalizedLabel(\"自訂墨寒文字指令\", \"自定义墨寒文字指令\", \"Custom MoHan text command\", \"墨寒のカスタム文字指示\"),"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 93,
-          "matched": "墨寒",
-          "path": "domain/gesture_configuration.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "GestureAction.CUSTOM_COMMAND: LocalizedLabel(\"自訂墨寒文字指令\", \"自定义墨寒文字指令\", \"Custom MoHan text command\", \"墨寒のカスタム文字指示\"),"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/gesture_configuration.py",
-      "readers": [
-        {
-          "line": 13,
-          "path": "application/gesture_action_dispatcher.py",
-          "text": "lazy from domain.gesture_configuration import GestureAction"
-        },
-        {
-          "line": 7,
-          "path": "application/gesture_action_router.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 20,
-          "path": "application/gesture_controller.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 12,
-          "path": "application/gesture_recognizer.py",
-          "text": "lazy from domain.gesture_configuration import GestureLandmark, GestureSample"
-        },
-        {
-          "line": 23,
-          "path": "application/gesture_runtime.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 9,
-          "path": "infrastructure/gesture_configuration_store.py",
-          "text": "from domain.gesture_configuration import ("
-        },
-        {
-          "line": 9,
-          "path": "infrastructure/gesture_template_store.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 21,
-          "path": "presentation/flagship/gesture_editor.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 35,
-          "path": "presentation/flagship/settings_security.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 10,
-          "path": "presentation/flagship/shared.py",
-          "text": "lazy from domain.gesture_configuration import ("
-        },
-        {
-          "line": 28,
-          "path": "presentation/flagship/vision.py",
-          "text": "lazy from domain.gesture_configuration import GestureSource"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "1b20eae80796cd0a381bcf925304efba6f0c95de3628be6272608f1deb2a122c",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 12,
-          "line": 12,
-          "name": "_RIG_MANIFEST"
-        },
-        {
-          "end_line": 14,
-          "line": 14,
-          "name": "GESTURE_CONFIGURATION_FORMAT"
-        },
-        {
-          "end_line": 15,
-          "line": 15,
-          "name": "GESTURE_CONFIGURATION_VERSION"
-        },
-        {
-          "end_line": 16,
-          "line": 16,
-          "name": "MAX_CUSTOM_GESTURES"
-        },
-        {
-          "end_line": 17,
-          "line": 17,
-          "name": "MAX_SAMPLES_PER_GESTURE"
-        },
-        {
-          "end_line": 18,
-          "line": 18,
-          "name": "LANDMARKS_PER_HAND"
-        },
-        {
-          "end_line": 19,
-          "line": 19,
-          "name": "MAX_COMMAND_LENGTH"
-        },
-        {
-          "end_line": 20,
-          "line": 20,
-          "name": "MIN_COORDINATE"
-        },
-        {
-          "end_line": 21,
-          "line": 21,
-          "name": "MAX_COORDINATE"
-        },
-        {
-          "end_line": 22,
-          "line": 22,
-          "name": "MAX_NAME_LENGTH"
-        },
-        {
-          "end_line": 23,
-          "line": 23,
-          "name": "COORDINATE_DIMENSIONS"
-        },
-        {
-          "end_line": 28,
-          "line": 26,
-          "name": "GestureSource"
-        },
-        {
-          "end_line": 45,
-          "line": 31,
-          "name": "GestureAction"
-        },
-        {
-          "end_line": 65,
-          "line": 49,
-          "name": "LocalizedLabel"
-        },
-        {
-          "end_line": 77,
-          "line": 68,
-          "name": "BUILTIN_GESTURE_LABELS"
-        },
-        {
-          "end_line": 94,
-          "line": 79,
-          "name": "GESTURE_ACTION_LABELS"
-        },
-        {
-          "end_line": 111,
-          "line": 98,
-          "name": "GestureBinding"
-        },
-        {
-          "end_line": 124,
-          "line": 115,
-          "name": "GestureLandmark"
-        },
-        {
-          "end_line": 133,
-          "line": 128,
-          "name": "GestureSample"
-        },
-        {
-          "end_line": 163,
-          "line": 137,
-          "name": "GestureDefinition"
-        },
-        {
-          "end_line": 173,
-          "line": 168,
-          "name": "DEFAULT_GESTURE_BINDINGS"
-        },
-        {
-          "end_line": 185,
-          "line": 176,
-          "name": "default_gesture_definitions"
-        },
-        {
-          "end_line": 277,
-          "line": 189,
-          "name": "GestureConfiguration"
-        },
-        {
-          "end_line": 297,
-          "line": 280,
-          "name": "export_gesture_configuration"
-        },
-        {
-          "end_line": 326,
-          "line": 300,
-          "name": "import_gesture_configuration"
-        },
-        {
-          "end_line": 342,
-          "line": 329,
-          "name": "_restore_missing_builtins"
-        },
-        {
-          "end_line": 365,
-          "line": 345,
-          "name": "_definition_payload"
-        },
-        {
-          "end_line": 394,
-          "line": 368,
-          "name": "_definition_from_payload"
-        },
-        {
-          "end_line": 410,
-          "line": 397,
-          "name": "_sample_from_payload"
-        },
-        {
-          "end_line": 416,
-          "line": 413,
-          "name": "_strict_bool"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 43407,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -93842,7 +91926,7 @@
           "text": "lazy from domain.outfit_pack import ("
         },
         {
-          "line": 67,
+          "line": 68,
           "path": "application/service_container.py",
           "text": "lazy from domain.outfit_pack import MAKEUP_CANVASES"
         },
@@ -93852,7 +91936,7 @@
           "text": "lazy from domain.outfit_pack import ("
         },
         {
-          "line": 8,
+          "line": 9,
           "path": "application/wardrobe_service.py",
           "text": "lazy from domain.outfit_pack import ("
         },
@@ -93932,7 +92016,7 @@
           "text": "lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT"
         },
         {
-          "line": 31,
+          "line": 32,
           "path": "presentation/autonomous_outfit_generation_controller.py",
           "text": "lazy from domain.outfit_pack import ("
         },
@@ -95029,7 +93113,7 @@
           "text": "lazy from domain.outfit_pack_makeup import MakeupSafeRegion, verify_makeup_layers"
         },
         {
-          "line": 36,
+          "line": 37,
           "path": "application/wardrobe_service.py",
           "text": "lazy from domain.outfit_pack_makeup import ("
         },
@@ -95429,7 +93513,7 @@
       "path": "domain/outfit_pack_official.py",
       "readers": [
         {
-          "line": 47,
+          "line": 48,
           "path": "application/wardrobe_service.py",
           "text": "lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble"
         },
@@ -96298,7 +94382,7 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 1787,
+      "bytes": 2191,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "原墨寒專案的版本、儲存庫與更新網址屬產品殼。",
@@ -96315,6 +94399,16 @@
           "rule": "character_name_literal",
           "suggested_data_target": "assets/characters/mohan/persona/profile.json",
           "text": "PROJECT_REPOSITORY = \"flameblade-studio/MoHan-PC-Desktop-Assistant\""
+        },
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "line": 13,
+          "matched": "MoHan",
+          "path": "domain/version_info.py",
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "text": "PROFILE_APP_DIRECTORY = \"MoHan\""
         }
       ],
       "estimated_difficulty": "low",
@@ -96322,6 +94416,11 @@
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "domain/version_info.py",
       "readers": [
+        {
+          "line": 30,
+          "path": "application/presentation_ports.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
         {
           "line": 11,
           "path": "application/preview_app.py",
@@ -96338,6 +94437,21 @@
           "text": "lazy from domain.version_info import APP_VERSION as _APP_VERSION"
         },
         {
+          "line": 8,
+          "path": "infrastructure/platform_linux.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
+        {
+          "line": 7,
+          "path": "infrastructure/platform_macos.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
+        {
+          "line": 9,
+          "path": "infrastructure/platform_windows.py",
+          "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
+        },
+        {
           "line": 41,
           "path": "presentation/dashboard_settings.py",
           "text": "lazy from domain.version_info import APP_VERSION"
@@ -96349,7 +94463,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "c84cd4abda2ac9537d7a669bfd187f52afd7450e09e4479ed19dfe8ba3648639",
+      "sha256": "18c623a4e4dda05521778f69b2c98206cbf240069a83cd0f4cda81202164a1ec",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
       ],
@@ -96360,28 +94474,38 @@
           "name": "PROJECT_REPOSITORY"
         },
         {
-          "end_line": 9,
-          "line": 9,
+          "end_line": 12,
+          "line": 12,
+          "name": "PROFILE_VENDOR_DIRECTORY"
+        },
+        {
+          "end_line": 13,
+          "line": 13,
+          "name": "PROFILE_APP_DIRECTORY"
+        },
+        {
+          "end_line": 15,
+          "line": 15,
           "name": "FALLBACK_VERSION"
         },
         {
-          "end_line": 11,
-          "line": 11,
+          "end_line": 17,
+          "line": 17,
           "name": "UNKNOWN_VERSION"
         },
         {
-          "end_line": 22,
-          "line": 14,
+          "end_line": 28,
+          "line": 20,
           "name": "_build_info_path"
         },
         {
-          "end_line": 58,
-          "line": 25,
+          "end_line": 64,
+          "line": 31,
           "name": "build_info"
         },
         {
-          "end_line": 61,
-          "line": 61,
+          "end_line": 67,
+          "line": 67,
           "name": "APP_VERSION"
         }
       ],
@@ -96560,7 +94684,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 80,
+          "line": 81,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -96864,7 +94988,7 @@
       "path": "infrastructure/core_hand_regions.py",
       "readers": [
         {
-          "line": 84,
+          "line": 85,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.core_hand_regions import load_core_hand_regions"
         },
@@ -96945,7 +95069,7 @@
       "path": "infrastructure/exasperated_candidate_appearance.py",
       "readers": [
         {
-          "line": 89,
+          "line": 90,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance"
         }
@@ -97067,7 +95191,7 @@
       "path": "infrastructure/exasperated_candidate_assets.py",
       "readers": [
         {
-          "line": 90,
+          "line": 91,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.exasperated_candidate_assets import ("
         },
@@ -98243,7 +96367,7 @@
       "path": "infrastructure/layered_face_renderer.py",
       "readers": [
         {
-          "line": 85,
+          "line": 86,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer"
         }
@@ -98744,7 +96868,7 @@
       "path": "infrastructure/layered_full_body_renderer.py",
       "readers": [
         {
-          "line": 86,
+          "line": 87,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer"
         },
@@ -98859,352 +96983,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 2618,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 38,
-          "matched": "MoHan",
-          "path": "infrastructure/platform_linux.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "suffix = Path(\"YanJianStudio\") / \"MoHan\""
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "infrastructure/platform_linux.py",
-      "readers": [
-        {
-          "line": 10,
-          "path": "infrastructure/platform_services.py",
-          "text": "lazy from infrastructure.platform_linux import LinuxPlatformServices"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "b40bed87875d4d11f118979d3c89dbeb5df4c6c1d8071ba26dc180156f8b4a2e",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 92,
-          "line": 15,
-          "name": "LinuxPlatformServices"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 1824,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 38,
-          "matched": "MoHan",
-          "path": "infrastructure/platform_macos.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "user_home / \"Library\" / \"Application Support\" / \"YanJianStudio\" / \"MoHan\""
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 43,
-          "matched": "MoHan",
-          "path": "infrastructure/platform_macos.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "cache=user_home / \"Library\" / \"Caches\" / \"YanJianStudio\" / \"MoHan\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "infrastructure/platform_macos.py",
-      "readers": [
-        {
-          "line": 11,
-          "path": "infrastructure/platform_services.py",
-          "text": "lazy from infrastructure.platform_macos import MacOSPlatformServices"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "4582c99e7abce893aeacea0689008e5eb275c5407b84a923b776c02e076d298b",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 65,
-          "line": 14,
-          "name": "MacOSPlatformServices"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 1847,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 23,
-          "matched": "MoHan",
-          "path": "infrastructure/platform_services.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "raise RuntimeError(f\"MoHan 尚未定義此作業系統平台：{candidate}\")"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "infrastructure/platform_services.py",
-      "readers": [
-        {
-          "line": 99,
-          "path": "application/service_container.py",
-          "text": "lazy from infrastructure.platform_services import current_platform_services"
-        },
-        {
-          "line": 11,
-          "path": "infrastructure/app_resources.py",
-          "text": "lazy from infrastructure.platform_services import ("
-        },
-        {
-          "line": 12,
-          "path": "infrastructure/flagship_windows_toolbox.py",
-          "text": "lazy from infrastructure.platform_services import current_platform_services"
-        },
-        {
-          "line": 30,
-          "path": "presentation/flagship/runtime.py",
-          "text": "lazy from infrastructure.platform_services import current_platform_services"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "f60c6c9a207697bedcb8537c2394a242171ebe10817644eca61581dbfebfcb2a",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 23,
-          "line": 15,
-          "name": "normalized_platform_id"
-        },
-        {
-          "end_line": 38,
-          "line": 26,
-          "name": "create_platform_services"
-        },
-        {
-          "end_line": 43,
-          "line": 42,
-          "name": "current_platform_services"
-        },
-        {
-          "end_line": 55,
-          "line": 46,
-          "name": "resolved_data_dir"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 2818,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 42,
-          "matched": "MoHan",
-          "path": "infrastructure/platform_windows.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "application_root = local_root / \"YanJianStudio\" / \"MoHan\""
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "infrastructure/platform_windows.py",
-      "readers": [
-        {
-          "line": 12,
-          "path": "infrastructure/platform_services.py",
-          "text": "lazy from infrastructure.platform_windows import WindowsPlatformServices"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "b488d5c86ab9f697a3f640d6a85af02f55c1bb54aeac54764f2bf610a5605e36",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 87,
-          "line": 16,
-          "name": "WindowsPlatformServices"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "bytes": 5018,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity",
-        "product_identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 95,
-          "matched": "MoHan",
-          "path": "infrastructure/portable_secret_binding.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "\"MoHan Home Assistant token\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 100,
-          "matched": "MoHan",
-          "path": "infrastructure/portable_secret_binding.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan google OAuth token\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 105,
-          "matched": "MoHan",
-          "path": "infrastructure/portable_secret_binding.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan microsoft OAuth token\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 110,
-          "matched": "MoHan",
-          "path": "infrastructure/portable_secret_binding.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan github OAuth token\","
-        },
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 115,
-          "matched": "MoHan",
-          "path": "infrastructure/portable_secret_binding.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "\"MoHan local face identity templates\","
-        },
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 120,
-          "matched": "MoHan",
-          "path": "infrastructure/portable_secret_binding.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "\"MoHan local gesture skeleton templates\","
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "infrastructure/portable_secret_binding.py",
-      "readers": [],
-      "scope": "embedded_code",
-      "sha256": "d861126b9c26d22aaf03f4e2f6640701903bf56019c96213d796e64c21bbf4a5",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json",
-        "infrastructure/app_resources.py"
-      ],
-      "symbols": [
-        {
-          "end_line": 19,
-          "line": 18,
-          "name": "PortableSecretBindingError"
-        },
-        {
-          "end_line": 22,
-          "line": 22,
-          "name": "_BOUNDARY_ERRORS"
-        },
-        {
-          "end_line": 31,
-          "line": 25,
-          "name": "DashboardSecretBoundaries"
-        },
-        {
-          "end_line": 47,
-          "line": 35,
-          "name": "PortableSecretBinding"
-        },
-        {
-          "end_line": 72,
-          "line": 50,
-          "name": "bind_portable_secret_stores"
-        },
-        {
-          "end_line": 130,
-          "line": 75,
-          "name": "bind_dashboard_portable_secrets"
-        },
-        {
-          "end_line": 146,
-          "line": 133,
-          "name": "_create_store"
-        },
-        {
-          "end_line": 156,
-          "line": 149,
-          "name": "_is_secret_store"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 38365,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -99230,7 +97008,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 100,
+          "line": 101,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -99750,108 +97528,6 @@
       "work_package": "rig-and-asset-parameterization"
     },
     {
-      "bytes": 5657,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity",
-        "product_identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "product_identity",
-          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 31,
-          "matched": "MoHan",
-          "path": "infrastructure/secret_store.py",
-          "rule": "product_identity_literal",
-          "suggested_data_target": "infrastructure/app_resources.py",
-          "text": "description: str = \"MoHan OpenAI API key\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 143,
-          "matched": "MoHan",
-          "path": "infrastructure/secret_store.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "description: str = \"MoHan protected secret\","
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 150,
-          "matched": "墨寒",
-          "path": "infrastructure/secret_store.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"尚未完成實機驗證；墨寒不會退回明文保存。\""
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "infrastructure/secret_store.py",
-      "readers": [
-        {
-          "line": 101,
-          "path": "application/service_container.py",
-          "text": "lazy from infrastructure.secret_store import platform_secret_store_factory"
-        },
-        {
-          "line": 31,
-          "path": "presentation/flagship/runtime.py",
-          "text": "lazy from infrastructure.secret_store import platform_secret_store_factory"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "cc7fb881b16f2244f2953edf57effbb71fea55b0dc78cc6589a9932b621deb0d",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json",
-        "infrastructure/app_resources.py"
-      ],
-      "symbols": [
-        {
-          "end_line": 13,
-          "line": 12,
-          "name": "DATA_BLOB"
-        },
-        {
-          "end_line": 18,
-          "line": 16,
-          "name": "_blob"
-        },
-        {
-          "end_line": 22,
-          "line": 21,
-          "name": "SecretDecryptError"
-        },
-        {
-          "end_line": 107,
-          "line": 25,
-          "name": "SecretStore"
-        },
-        {
-          "end_line": 126,
-          "line": 110,
-          "name": "UnavailableSecretStore"
-        },
-        {
-          "end_line": 152,
-          "line": 129,
-          "name": "PlatformSecretStoreFactory"
-        },
-        {
-          "end_line": 160,
-          "line": 155,
-          "name": "platform_secret_store_factory"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 9788,
       "category": "embedded_character_content",
       "classification": "engine_extract",
@@ -100123,7 +97799,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 102,
+          "line": 103,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -100234,7 +97910,7 @@
       "path": "integrations/ai_client.py",
       "readers": [
         {
-          "line": 105,
+          "line": 106,
           "path": "application/service_container.py",
           "text": "lazy from integrations.ai_client import ("
         },
@@ -100747,7 +98423,7 @@
       "path": "integrations/openai_outfit_generator.py",
       "readers": [
         {
-          "line": 38,
+          "line": 39,
           "path": "presentation/autonomous_outfit_generation_controller.py",
           "text": "lazy from integrations.openai_outfit_generator import ("
         }
@@ -101069,7 +98745,7 @@
       "path": "integrations/realtime_speech_output.py",
       "readers": [
         {
-          "line": 118,
+          "line": 119,
           "path": "application/service_container.py",
           "text": "lazy from integrations.realtime_speech_output import RealtimeSpeechOutput"
         },
@@ -101167,106 +98843,6 @@
         }
       ],
       "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "bytes": 19225,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 290,
-          "matched": "MoHan",
-          "path": "presentation/autonomous_outfit_generation_controller.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"An elegant original Northern-Song-inspired outfit for MoHan, \""
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/autonomous_outfit_generation_controller.py",
-      "readers": [
-        {
-          "line": 9,
-          "path": "presentation/companion_window.py",
-          "text": "lazy from presentation.autonomous_outfit_generation_controller import ("
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "d86b7a84b3241cea3882b037a5c3549b59c24df74d425847baa444b00c39f144",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 49,
-          "line": 49,
-          "name": "LAST_GENERATED_KEY"
-        },
-        {
-          "end_line": 50,
-          "line": 50,
-          "name": "LAST_ATTEMPT_KEY"
-        },
-        {
-          "end_line": 51,
-          "line": 51,
-          "name": "PENDING_JOB_KEY"
-        },
-        {
-          "end_line": 52,
-          "line": 52,
-          "name": "FAILED_ATTEMPT_BACKOFF"
-        },
-        {
-          "end_line": 53,
-          "line": 53,
-          "name": "INITIAL_AUTONOMOUS_DELAY_MS"
-        },
-        {
-          "end_line": 54,
-          "line": 54,
-          "name": "AUTONOMOUS_CHECK_INTERVAL_MS"
-        },
-        {
-          "end_line": 60,
-          "line": 57,
-          "name": "_NoTrendScout"
-        },
-        {
-          "end_line": 66,
-          "line": 63,
-          "name": "_GenerationSignals"
-        },
-        {
-          "end_line": 102,
-          "line": 69,
-          "name": "_GenerationWorker"
-        },
-        {
-          "end_line": 470,
-          "line": 105,
-          "name": "AutonomousOutfitGenerationController"
-        },
-        {
-          "end_line": 482,
-          "line": 473,
-          "name": "_optional_time"
-        },
-        {
-          "end_line": 487,
-          "line": 485,
-          "name": "_allowed_setting"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "bytes": 42141,
@@ -105383,91 +102959,6 @@
       "work_package": null
     },
     {
-      "bytes": 10525,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "identity"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 238,
-          "matched": "MoHan",
-          "path": "presentation/theme_pack_ui.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
-          "text": "\"MoHan theme package (*.mohan-theme *.zip)\","
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/theme_pack_ui.py",
-      "readers": [
-        {
-          "line": 62,
-          "path": "presentation/dashboard_settings.py",
-          "text": "lazy from presentation.theme_pack_ui import ThemePackPanel"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "496aab20b8433b34c76b2409701a2855f4e28f724fca5616676055a949bf5620",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 30,
-          "line": 24,
-          "name": "__all__"
-        },
-        {
-          "end_line": 32,
-          "line": 32,
-          "name": "BUILTIN_THEME_ID"
-        },
-        {
-          "end_line": 50,
-          "line": 36,
-          "name": "ThemeCatalogEntry"
-        },
-        {
-          "end_line": 56,
-          "line": 53,
-          "name": "ThemeCatalogPort"
-        },
-        {
-          "end_line": 72,
-          "line": 59,
-          "name": "ThemeSessionPort"
-        },
-        {
-          "end_line": 75,
-          "line": 75,
-          "name": "ThemeInstaller"
-        },
-        {
-          "end_line": 76,
-          "line": 76,
-          "name": "ThemeRemover"
-        },
-        {
-          "end_line": 81,
-          "line": 79,
-          "name": "_ThemePackPanelOptions"
-        },
-        {
-          "end_line": 313,
-          "line": 84,
-          "name": "ThemePackPanel"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
       "bytes": 51191,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -105568,7 +103059,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 22,
+          "line": 23,
           "path": "presentation/theme_pack_ui.py",
           "text": "lazy from presentation.ui_localization import ui_text"
         }
@@ -105831,12 +103322,9 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal",
-        "product_identity_literal"
-      ],
+      "evidence_rules": [],
       "path": "application/presentation_ports.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "voice_preferences"
       ]
@@ -105850,12 +103338,9 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_name_literal",
-        "product_identity_literal"
-      ],
+      "evidence_rules": [],
       "path": "application/service_container.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "rig_angle_expression_pose_rules"
       ]
@@ -105969,11 +103454,9 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_protocol_label_literal"
-      ],
+      "evidence_rules": [],
       "path": "domain/expression_system.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "rig_angle_expression_pose_rules"
       ]
@@ -106564,7 +104047,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 83,
+    "embedded_code": 67,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
