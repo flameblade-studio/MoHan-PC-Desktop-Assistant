@@ -809,6 +809,7 @@
         "test_body_sidecar_profile_knee.py",
         "test_brow_tension_mirror.py",
         "test_build_character_inventory.py",
+        "test_build_character_pack.py",
         "test_build_half_body_layered_rig.py",
         "test_build_makeup_safe_regions.py",
         "test_build_v120_physics_layers.py",
@@ -1398,6 +1399,7 @@
         "test_autonomous_wardrobe.py",
         "test_autonomous_wardrobe_runtime.py",
         "test_body_pose_renderer.py",
+        "test_build_character_pack.py",
         "test_build_makeup_safe_regions.py",
         "test_cancellation_semantics.py",
         "test_character_body_profile.py",
@@ -3793,6 +3795,16 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/pack-source.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_build_character_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/character_body_profile.py"
       ],
       "tests": [
@@ -3998,6 +4010,65 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_source_bound_garment_visibility.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "tests": [
+        "test_build_character_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/__init__.py"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_pack.py",
+        "test_character_persona_data.py",
+        "test_character_source.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/validation.py"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_pack.py",
+        "test_character_source.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/persona/profile.json",
+        "tools/build_character_pack.py"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_source.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/version_info.py"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_preview_packaging.py",
+        "test_release_automation.py",
+        "test_sbom_validation.py",
+        "test_swallowed_error_d04.py",
+        "test_v312_release_consistency.py",
+        "test_v4_development_version_consistency.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4298,27 +4369,6 @@
       ],
       "tests": [
         "test_character_pack.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_pack/__init__.py"
-      ],
-      "tests": [
-        "test_character_pack.py",
-        "test_character_persona_data.py",
-        "test_character_source.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_pack/validation.py"
-      ],
-      "tests": [
-        "test_character_pack.py",
-        "test_character_source.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7284,20 +7334,6 @@
       "tests": [
         "test_preview_packaging.py",
         "test_release_automation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/version_info.py"
-      ],
-      "tests": [
-        "test_preview_packaging.py",
-        "test_release_automation.py",
-        "test_sbom_validation.py",
-        "test_swallowed_error_d04.py",
-        "test_v312_release_consistency.py",
-        "test_v4_development_version_consistency.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

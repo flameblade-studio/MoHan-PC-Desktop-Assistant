@@ -1,0 +1,238 @@
+{
+  "schema": "flameblade.character-pack-build-source.v1",
+  "schema_version": 1,
+  "pack_id": "flameblade.mohan",
+  "pack_version": "1.0.0",
+  "character_id": "mohan",
+  "identity": {
+    "profile": "assets/characters/mohan/persona/profile.json",
+    "personas": {
+      "zh-TW": "assets/characters/mohan/persona/zh-TW.json",
+      "zh-CN": "assets/characters/mohan/persona/zh-CN.json",
+      "en": "assets/characters/mohan/persona/en.json",
+      "ja-JP": "assets/characters/mohan/persona/ja-JP.json"
+    }
+  },
+  "engine_compatibility": {
+    "api_version": 1,
+    "min_engine_version": "4.6.0",
+    "max_engine_version_exclusive": "5.0.0",
+    "required_features": []
+  },
+  "distribution": {
+    "standalone_downloadable": true,
+    "access": "private",
+    "redistribution": "owner_decision_pending"
+  },
+  "licenses": {
+    "program_data": {
+      "status": "owner_decision_pending",
+      "rights_holder": "CHOU MING HUA",
+      "license_expression": null,
+      "notice_path": null
+    },
+    "character_art": {
+      "status": "owner_decision_pending",
+      "rights_holder": "CHOU MING HUA",
+      "license_expression": null,
+      "notice_path": null
+    },
+    "persona_dialogue": {
+      "status": "owner_decision_pending",
+      "rights_holder": "CHOU MING HUA",
+      "license_expression": null,
+      "notice_path": null
+    },
+    "voice": {
+      "status": "owner_decision_pending",
+      "rights_holder": "CHOU MING HUA",
+      "license_expression": null,
+      "notice_path": null
+    }
+  },
+  "source_refs": [
+    {
+      "path": "assets/pose-atlas/v5-base/BUILD-METADATA.json",
+      "scope": "Generation-2 PoseAtlas release-asset build metadata and its embedded source authorization only."
+    },
+    {
+      "path": "assets/expressions/source-bound-exasperated/receipt.json",
+      "scope": "Installed source-bound front-exasperated file hashes and recorded source hash only; release remains false."
+    }
+  ],
+  "approval_refs": [
+    {
+      "path": "assets/expressions/source-bound-exasperated/approval/garment-approval.json",
+      "scope": "Front-exasperated garment source appearance only; release remains false."
+    },
+    {
+      "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
+      "scope": "Four detachable makeup looks and existing native expression states only."
+    }
+  ],
+  "components": [
+    {
+      "id": "mohan.rig",
+      "kind": "fullbody_rig",
+      "schema": "flameblade.character-rig.v1",
+      "path": "assets/characters/mohan/rig/rig-manifest.json",
+      "required": true,
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      }
+    },
+    {
+      "id": "mohan.expression-states",
+      "kind": "expression_manifest",
+      "schema": "flameblade.expression-state-catalog.v1",
+      "path": "assets/characters/mohan/expressions/state-catalog.json",
+      "required": true,
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      }
+    },
+    {
+      "id": "mohan.fullbody-expressions",
+      "kind": "expression_manifest",
+      "schema": "mohan.complete-expression-manifest.v1",
+      "path": "assets/pose-atlas/v5-base-layered/complete_expression_manifest.json",
+      "required": true,
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      }
+    },
+    {
+      "id": "mohan.halfbody-expressions",
+      "kind": "expression_manifest",
+      "schema": "mohan.complete-halfbody-expressions.v1",
+      "path": "assets/expressions/complete-expressions/manifest.json",
+      "required": true,
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      }
+    },
+    {
+      "id": "mohan.makeup.builtin",
+      "kind": "outfit_pack",
+      "schema": "mohan-outfit-pack.v2",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
+      "required": true,
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      }
+    },
+    {
+      "id": "mohan.official.blue-white-hanfu",
+      "kind": "outfit_pack",
+      "schema": "mohan-outfit-pack.v2",
+      "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
+      "required": true,
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      }
+    },
+    {
+      "id": "mohan.identity",
+      "kind": "persona",
+      "schema": "flameblade.character-identity-profile.v1",
+      "path": "assets/characters/mohan/persona/profile.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.persona.zh-tw",
+      "kind": "persona",
+      "schema": "flameblade.character-persona.v1",
+      "path": "assets/characters/mohan/persona/zh-TW.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.persona.zh-cn",
+      "kind": "persona",
+      "schema": "flameblade.character-persona.v1",
+      "path": "assets/characters/mohan/persona/zh-CN.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.persona.en",
+      "kind": "persona",
+      "schema": "flameblade.character-persona.v1",
+      "path": "assets/characters/mohan/persona/en.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.persona.ja-jp",
+      "kind": "persona",
+      "schema": "flameblade.character-persona.v1",
+      "path": "assets/characters/mohan/persona/ja-JP.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.dialogue.zh-tw",
+      "kind": "dialogue",
+      "schema": "flameblade.character-dialogue.v1",
+      "path": "assets/characters/mohan/dialogue/zh-TW.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.dialogue.zh-cn",
+      "kind": "dialogue",
+      "schema": "flameblade.character-dialogue.v1",
+      "path": "assets/characters/mohan/dialogue/zh-CN.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.dialogue.en",
+      "kind": "dialogue",
+      "schema": "flameblade.character-dialogue.v1",
+      "path": "assets/characters/mohan/dialogue/en.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.dialogue.ja-jp",
+      "kind": "dialogue",
+      "schema": "flameblade.character-dialogue.v1",
+      "path": "assets/characters/mohan/dialogue/ja-JP.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.dialogue.events",
+      "kind": "dialogue",
+      "schema": "flameblade.character-events.v1",
+      "path": "assets/characters/mohan/dialogue/events.json",
+      "required": true,
+      "body_profile": null
+    },
+    {
+      "id": "mohan.voice",
+      "kind": "voice_profile",
+      "schema": "flameblade.character-voice-profile.v1",
+      "path": "assets/characters/mohan/voice/profile.json",
+      "required": true,
+      "body_profile": null
+    }
+  ],
+  "validation_limits": {
+    "max_archive_bytes": 805306368,
+    "max_zip_directory_bytes": 8388608,
+    "max_manifest_bytes": 1048576,
+    "max_file_bytes": 67108864,
+    "max_total_bytes": 805306368,
+    "max_files": 4096,
+    "max_compression_ratio": 100
+  }
+}
