@@ -1,17 +1,19 @@
 {
   "classification_definitions": {
     "engine_extract": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+    "persisted_identifier": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
     "product_shell_allowed": "此檔位於逐檔白名單；命中內容是墨寒產品殼識別，可依既有產品契約保留。",
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 19,
-    "engine_extract_files": 4,
-    "manual_review_hint_only_files": 64,
-    "product_shell_allowed_files": 15,
-    "true_extraction_files": 4,
+    "actual_embedded_code_files": 17,
+    "engine_extract_files": 0,
+    "manual_review_hint_only_files": 65,
+    "persisted_identifier_files": 2,
+    "product_shell_allowed_files": 17,
+    "true_extraction_files": 0,
     "ui_text_reference_files": 0,
-    "work_packages": 2
+    "work_packages": 0
   },
   "declared_product_shell_allowlist": [
     {
@@ -65,148 +67,7 @@
       "status": "allowed_content_present"
     }
   ],
-  "extraction_items": [
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "appearance",
-          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 53,
-              "matched": "mohan.default.blue-silver",
-              "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
-            }
-          ],
-          "rule": "character_appearance_pack_identifier",
-          "suggested_data_target": "assets/characters/mohan/pack-source.json"
-        }
-      ],
-      "estimated_difficulty": "low",
-      "path": "application/wardrobe_service.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/pack-source.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "appearance",
-          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 22,
-              "matched": "mohan.makeup.builtin",
-              "text": "BUILTIN_MAKEUP_PACK_ID = \"mohan.makeup.builtin\""
-            },
-            {
-              "line": 23,
-              "matched": "mohan-signature",
-              "text": "BUILTIN_MAKEUP_ITEM_ID = \"mohan-signature\""
-            },
-            {
-              "line": 32,
-              "matched": "mohan.official.blue-white-hanfu",
-              "text": "OFFICIAL_OUTFIT_PACK_ID = \"mohan.official.blue-white-hanfu\""
-            }
-          ],
-          "rule": "character_appearance_pack_identifier",
-          "suggested_data_target": "assets/characters/mohan/pack-source.json"
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "path": "domain/outfit_pack_official.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/pack-source.json"
-      ],
-      "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 402,
-              "matched": "sleeve_left",
-              "text": "\"sleeve_left_overlay\","
-            },
-            {
-              "line": 403,
-              "matched": "sleeve_right",
-              "text": "\"sleeve_right_overlay\","
-            },
-            {
-              "line": 404,
-              "matched": "hair_left",
-              "text": "\"hair_left_overlay\","
-            },
-            {
-              "line": 405,
-              "matched": "hair_right",
-              "text": "\"hair_right_overlay\","
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_core.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 170,
-              "matched": "assets/expressions/",
-              "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
-            },
-            {
-              "line": 214,
-              "matched": "assets/expressions/",
-              "text": "source = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
-            },
-            {
-              "line": 654,
-              "matched": "assets/expressions/",
-              "text": "face_path = resource_path(f\"assets/expressions/v120_face{suffix}.png\")"
-            },
-            {
-              "line": 655,
-              "matched": "assets/expressions/",
-              "text": "eye_path = resource_path(f\"assets/expressions/v120_eyes{suffix}.png\")"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_visual_dynamics.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    }
-  ],
+  "extraction_items": [],
   "owner_decisions": {
     "art_tool_license": "MIT",
     "character_asset_license": "owner_decision_pending",
@@ -242,6 +103,31 @@
       "work_package": null
     },
     {
+      "classification": "persisted_identifier",
+      "content": [
+        {
+          "content_kind": "product_shell",
+          "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+          "locations": [
+            {
+              "line": 56,
+              "matched": "mohan.default.blue-silver",
+              "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "persisted_identifier",
+          "suggested_data_target": "application/wardrobe_service.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "application/wardrobe_service.py",
+      "reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+      "suggested_data_targets": [
+        "application/wardrobe_service.py"
+      ],
+      "work_package": null
+    },
+    {
       "classification": "product_shell_allowed",
       "content": [
         {
@@ -268,6 +154,31 @@
       "reason": "現行 PoseAtlas 世代目錄名依專案契約只在此定義一次（AGENTS.md：換代只改這裡），屬墨寒產品殼。",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "persisted_identifier",
+      "content": [
+        {
+          "content_kind": "product_shell",
+          "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+          "locations": [
+            {
+              "line": 40,
+              "matched": "mohan.default.blue-silver",
+              "text": "DEFAULT_OUTFIT_SELECTION_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "persisted_identifier",
+          "suggested_data_target": "application/wardrobe_service.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "domain/outfit_pack_official.py",
+      "reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+      "suggested_data_targets": [
+        "application/wardrobe_service.py"
       ],
       "work_package": null
     },
@@ -1038,38 +949,5 @@
   "schema": "mohan.character-extraction-worklist.v1",
   "schema_version": 1,
   "source_inventory": "docs/character-pack/mohan-inventory.json",
-  "work_packages": [
-    {
-      "exclusions": "不改產品殼白名單，不處理圖像路徑、姿勢與圖層。",
-      "exclusive_files": [
-        "application/wardrobe_service.py",
-        "domain/outfit_pack_official.py"
-      ],
-      "file_count": 2,
-      "id": "engine-identity-parameterization",
-      "objective": "把引擎、平台與儲存邊界中的墨寒名稱改由產品或角色身分設定注入。",
-      "titles": [
-        "引擎身分參數化",
-        "引擎身份参数化",
-        "Engine identity parameterization",
-        "エンジン身元のパラメータ化"
-      ]
-    },
-    {
-      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
-      "exclusive_files": [
-        "presentation/companion_core.py",
-        "presentation/companion_visual_dynamics.py"
-      ],
-      "file_count": 2,
-      "id": "rig-and-asset-parameterization",
-      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
-      "titles": [
-        "Rig 與素材路徑參數化",
-        "Rig 与素材路径参数化",
-        "Rig and asset parameterization",
-        "Rig と素材パスのパラメータ化"
-      ]
-    }
-  ]
+  "work_packages": []
 }

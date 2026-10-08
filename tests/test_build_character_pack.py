@@ -16,6 +16,7 @@ lazy from tools import build_character_pack as builder
 ROOT = Path(__file__).resolve().parents[1]
 MIB = 1024 * 1024
 PACK_SCOPES = frozenset({"runtime_data", "product_validation_data"})
+APPEARANCE_DEFAULTS_PATH = "assets/characters/mohan/appearance/defaults.json"
 
 
 def _write_json(path: Path, value: object) -> bytes:
@@ -45,6 +46,28 @@ def _synthetic_inputs(root: Path) -> tuple[Path, Path, dict[str, bytes]]:
     payloads: dict[str, bytes] = {}
     profile_path = "assets/characters/mohan/persona/profile.json"
     payloads[profile_path] = _write_json(root / profile_path, profile)
+    appearance_path = APPEARANCE_DEFAULTS_PATH
+    appearance = {
+        "schema": "flameblade.character-appearance-defaults.v1",
+        "schema_version": 1,
+        "makeup": {
+            "pack_id": "example.makeup",
+            "item_id": "signature",
+            "variants": ["classic"],
+            "menu_variants": ["classic"],
+            "always_visible_variants": ["classic"],
+        },
+        "outfit": {
+            "pack_id": "example.outfit",
+            "ensemble_id": "default",
+            "native_hair": {"item_id": "hair", "variant_id": "default"},
+            "native_headwear": {
+                "item_id": "headwear",
+                "variant_id": "default",
+            },
+        },
+    }
+    payloads[appearance_path] = _write_json(root / appearance_path, appearance)
     names = {"zh-TW": ("墨寒", "寒"), "zh-CN": ("墨寒", "寒"), "en": ("MoHan", "Han"), "ja-JP": ("墨寒", "寒")}
     persona_paths: dict[str, str] = {}
     for language, (display_name, alias) in names.items():
@@ -69,7 +92,13 @@ def _synthetic_inputs(root: Path) -> tuple[Path, Path, dict[str, bytes]]:
     payloads[source_ref] = _write_json(root / source_ref, {"schema": "example.source.v1"})
     payloads[approval_ref] = _write_json(root / approval_ref, {"schema": "example.approval.v1"})
     rows = [
-        _inventory_row(path, data, "character_persona_data")
+        _inventory_row(
+            path,
+            data,
+            "character_appearance_defaults"
+            if path == appearance_path
+            else "character_persona_data",
+        )
         for path, data in payloads.items()
     ]
     rows.append({
@@ -116,14 +145,24 @@ def _synthetic_inputs(root: Path) -> tuple[Path, Path, dict[str, bytes]]:
             },
             "source_refs": [{"path": source_ref, "scope": "Synthetic source fixture only."}],
             "approval_refs": [{"path": approval_ref, "scope": "Synthetic approval fixture only."}],
-            "components": [{
-                "id": "mohan.rig",
-                "kind": "fullbody_rig",
-                "schema": "example.rig.v1",
-                "path": rig_path,
-                "required": True,
-                "body_profile": body_profile,
-            }],
+            "components": [
+                {
+                    "id": "mohan.appearance-defaults",
+                    "kind": "appearance_defaults",
+                    "schema": appearance["schema"],
+                    "path": appearance_path,
+                    "required": True,
+                    "body_profile": None,
+                },
+                {
+                    "id": "mohan.rig",
+                    "kind": "fullbody_rig",
+                    "schema": "example.rig.v1",
+                    "path": rig_path,
+                    "required": True,
+                    "body_profile": body_profile,
+                },
+            ],
             "validation_limits": {
                 "max_archive_bytes": 8 * MIB,
                 "max_zip_directory_bytes": MIB,
@@ -182,6 +221,8 @@ def test_zip_build_is_byte_for_byte_deterministic_and_valid(tmp_path: Path) -> N
             assert info.comment == b""
         for path, data in payloads.items():
             assert archive.read(path) == data
+        archived_appearance = json.loads(archive.read(APPEARANCE_DEFAULTS_PATH))
+        assert archived_appearance["outfit"]["ensemble_id"] == "default"
 
 
 def test_manifest_projects_identity_rights_components_and_original_paths(tmp_path: Path) -> None:
@@ -208,7 +249,12 @@ def test_manifest_projects_identity_rights_components_and_original_paths(tmp_pat
     }
     assert {entry["status"] for entry in manifest["licenses"].values()} == {"owner_decision_pending"}
     assert {entry["rights_holder"] for entry in manifest["licenses"].values()} == {"CHOU MING HUA"}
-    assert manifest["components"][0]["body_profile"] == {"id": "mohan-body-v2", "version": 2}
+    rig_component = next(
+        component
+        for component in manifest["components"]
+        if component["kind"] == "fullbody_rig"
+    )
+    assert rig_component["body_profile"] == {"id": "mohan-body-v2", "version": 2}
     assert [entry["path"] for entry in manifest["files"]] == sorted(payloads)
     assert all((output / path).read_bytes() == data for path, data in payloads.items())
     manifest_text = (output / "manifest.json").read_text(encoding="utf-8")
@@ -260,6 +306,19 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     assert manifest["pack_id"] == "flameblade.mohan"
     assert manifest["character"]["id"] == "mohan"
     assert manifest["distribution"]["access"] == "private"
+    appearance_record = next(
+        entry
+        for entry in manifest["files"]
+        if entry["path"] == APPEARANCE_DEFAULTS_PATH
+    )
+    assert appearance_record["license_component"] == "program_data"
+    appearance_component = next(
+        component
+        for component in manifest["components"]
+        if component["kind"] == "appearance_defaults"
+    )
+    assert appearance_component["path"] == APPEARANCE_DEFAULTS_PATH
+    assert (output / APPEARANCE_DEFAULTS_PATH).is_file()
     assert builder.DEFAULT_SOURCE.as_posix() not in {
         str(entry["path"]) for entry in manifest["files"]
     }
@@ -282,6 +341,7 @@ def _repository_payload_totals() -> tuple[int, int]:
 
 
 def test_character_data_categories_map_to_explicit_license_components() -> None:
+    assert builder._license_component("assets/characters/mohan/appearance/defaults.json", "character_appearance_defaults") == "program_data"
     assert builder._license_component("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data") == "persona_dialogue"
     assert builder._license_component("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data") == "persona_dialogue"
     assert builder._license_component("assets/characters/mohan/voice/profile.json", "character_voice_data") == "voice"

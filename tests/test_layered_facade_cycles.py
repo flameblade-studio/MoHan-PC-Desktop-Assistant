@@ -54,7 +54,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "integrations.azure_speech": 833,
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,
-    "presentation.companion_core": 1_085,
+    "presentation.companion_core": 1_084,
     "presentation.companion_face_animation": 1_148,
     "presentation.companion_speech_runtime": 1_165,
     "presentation.companion_visual_dynamics": 965,
@@ -69,6 +69,7 @@ NON_PRODUCT_PYTHON_DIRECTORIES = (
         "build-temp",  # generated packaging/build output
         "constants",  # shared, dependency-free constant library outside product layers
         "dist",  # generated release/package output
+        "huapu",  # separately gated product-neutral authoring toolkit
         "native",  # Rust workspace; any Python files below it are generated bindings
         "tests",
         "tmp",  # local recovery and audit evidence, outside product source scope

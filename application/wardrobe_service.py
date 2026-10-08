@@ -45,7 +45,10 @@ lazy from domain.outfit_pack_makeup import (
     write_makeup_intensity,
     write_makeup_slot_intensity,
 )
-lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble
+lazy from domain.outfit_pack_official import (
+    OFFICIAL_OUTFIT_PACK_ID,
+    official_outfit_ensemble,
+)
 
 # Opaque sentinel persisted in the ``active_outfit_id`` setting since v2; it
 # means "the built-in look" (today the official Blue-and-White Hanfu pack plus
