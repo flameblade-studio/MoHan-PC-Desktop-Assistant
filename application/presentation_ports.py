@@ -126,11 +126,7 @@ class _PresentationFallbackPlatformService:
 
     def __init__(self) -> None:
         platform_id = (
-            "windows"
-            if sys.platform.startswith("win")
-            else "macos"
-            if sys.platform == "darwin"
-            else "linux"
+            "windows" if sys.platform.startswith("win") else "macos" if sys.platform == "darwin" else "linux"
         )
         home = Path.home()
         if platform_id == "windows":
