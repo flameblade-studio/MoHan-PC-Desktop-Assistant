@@ -3402,6 +3402,7 @@
         "test_build_character_pack.py",
         "test_character_pack.py",
         "test_character_persona_data.py",
+        "test_character_runtime_data.py",
         "test_character_source.py",
         "test_check_pose_atlas_release.py",
         "test_engine_identity_parameterization.py",
@@ -3929,7 +3930,8 @@
         "docs/character-pack/extraction-worklist.md",
         "docs/character-pack/mohan-inventory-summary.md",
         "docs/character-pack/mohan-inventory.json",
-        "domain/persona_defaults.py"
+        "domain/persona_defaults.py",
+        "tests/impact_map.json"
       ],
       "tests": [
         "test_build_character_inventory.py"
@@ -4172,16 +4174,6 @@
         "test_wellbeing_app_bridge.py",
         "test_wellbeing_occurrences.py",
         "test_wellbeing_runtime.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "tests/impact_map.json"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_pytest_collection_contract.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4601,6 +4593,7 @@
       ],
       "tests": [
         "test_character_persona_data.py",
+        "test_character_runtime_data.py",
         "test_character_source.py",
         "test_engine_identity_parameterization.py"
       ],
@@ -4702,6 +4695,7 @@
       "paths": [
         "assets/onboarding/first-run-ink-tech.png",
         "assets/ui/mohan-cloud.svg",
+        "domain/character_data_types.py",
         "domain/character_runtime_data.py"
       ],
       "tests": [
@@ -4726,6 +4720,16 @@
       "tests": [
         "test_character_runtime_data.py",
         "test_dashboard_visual_consistency.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/character_data_models.py"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_official_default_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7226,8 +7230,7 @@
     {
       "paths": [
         "ASSETS-LICENSE.md",
-        "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
-        "domain/character_pack/character_data_models.py"
+        "assets/pose-atlas/v5-base/yaw+000-pitch+00.png"
       ],
       "tests": [
         "test_official_default_pack.py"

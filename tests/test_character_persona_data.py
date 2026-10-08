@@ -364,6 +364,30 @@ def test_character_data_requires_all_four_locales(tmp_path: Path) -> None:
         load_mohan_character_data(root)
 
 
+def test_character_data_rejects_boolean_schema_version(tmp_path: Path) -> None:
+    root = _copied_character_root(tmp_path)
+    path = root / "persona/profile.json"
+    _rewrite_json(path, lambda value: value.__setitem__("schema_version", True))
+
+    with pytest.raises(CharacterDataError, match="schema version 1"):
+        load_mohan_character_data(root)
+
+
+def test_character_data_rejects_duplicate_json_keys(tmp_path: Path) -> None:
+    root = _copied_character_root(tmp_path)
+    path = root / "persona/profile.json"
+    text = path.read_text(encoding="utf-8")
+    duplicate = text.replace(
+        '  "schema_version": 1',
+        '  "schema_version": 1,\n  "schema_version": 1',
+        1,
+    )
+    path.write_text(duplicate, encoding="utf-8", newline="\n")
+
+    with pytest.raises(CharacterDataError, match="duplicate JSON key"):
+        load_mohan_character_data(root)
+
+
 class _VoiceSettings:
     def __init__(self) -> None:
         self.values: dict[str, object] = {

@@ -28,7 +28,6 @@ lazy from domain.character_pack.character_data_models import (
 SUPPORTED_LOCALES = ("zh-TW", "zh-CN", "en", "ja-JP")
 MOHAN_CHARACTER_DATA_ROOT = Path(__file__).resolve().parents[2].joinpath("assets", "characters", "mohan")
 
-
 canonical_character_locale = _canonical_character_locale
 
 
@@ -316,7 +315,9 @@ def _string_array_map(
 
 def _schema(value: object, path: str, expected: str) -> dict[str, object]:
     source = value if type(value) is dict else {}
-    if source.get("schema") != expected or source.get("schema_version") != 1:
+    schema_version = source.get("schema_version")
+    invalid_version = type(schema_version) is not int or schema_version != 1
+    if source.get("schema") != expected or invalid_version:
         raise CharacterDataError(f"{path}: expected {expected} schema version 1")
     return source
 
@@ -795,6 +796,5 @@ __all__ = (
     "EventsProfile", "IdentityProfile",
     "MohanCharacterData", "PersonaLocale",
     "VoiceProfile",
-    "canonical_character_locale",
-    "load_mohan_character_data",
+    "canonical_character_locale", "load_mohan_character_data",
 )

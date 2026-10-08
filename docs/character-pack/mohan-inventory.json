@@ -638,7 +638,7 @@
       "path": "assets/characters/mohan/dialogue/en.json",
       "readers": [
         {
-          "line": 182,
+          "line": 181,
           "path": "domain/character_pack/character_data.py",
           "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
         }
@@ -655,7 +655,7 @@
       "path": "assets/characters/mohan/dialogue/events.json",
       "readers": [
         {
-          "line": 182,
+          "line": 181,
           "path": "domain/character_pack/character_data.py",
           "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
         }
@@ -672,7 +672,7 @@
       "path": "assets/characters/mohan/dialogue/ja-JP.json",
       "readers": [
         {
-          "line": 182,
+          "line": 181,
           "path": "domain/character_pack/character_data.py",
           "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
         }
@@ -706,7 +706,7 @@
       "path": "assets/characters/mohan/dialogue/zh-CN.json",
       "readers": [
         {
-          "line": 182,
+          "line": 181,
           "path": "domain/character_pack/character_data.py",
           "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
         }
@@ -723,7 +723,7 @@
       "path": "assets/characters/mohan/dialogue/zh-TW.json",
       "readers": [
         {
-          "line": 182,
+          "line": 181,
           "path": "domain/character_pack/character_data.py",
           "text": "_read_json(root / \"dialogue\" / f\"{locale}.json\"),"
         }
@@ -740,9 +740,9 @@
       "path": "assets/characters/mohan/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 28,
-          "path": "domain/character_data_types.py",
-          "text": "_DEFAULT_CHARACTER_ROOT / \"expressions\" / \"state-catalog.json\""
+          "line": 422,
+          "path": "domain/character_expression_data.py",
+          "text": "return load_expression_catalog(DEFAULT_EXPRESSION_CATALOG_PATH)"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -768,7 +768,7 @@
       "path": "assets/characters/mohan/persona/en.json",
       "readers": [
         {
-          "line": 172,
+          "line": 171,
           "path": "domain/character_pack/character_data.py",
           "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
         }
@@ -785,7 +785,7 @@
       "path": "assets/characters/mohan/persona/ja-JP.json",
       "readers": [
         {
-          "line": 172,
+          "line": 171,
           "path": "domain/character_pack/character_data.py",
           "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
         }
@@ -802,7 +802,7 @@
       "path": "assets/characters/mohan/persona/profile.json",
       "readers": [
         {
-          "line": 172,
+          "line": 171,
           "path": "domain/character_pack/character_data.py",
           "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
         }
@@ -836,7 +836,7 @@
       "path": "assets/characters/mohan/persona/zh-CN.json",
       "readers": [
         {
-          "line": 172,
+          "line": 171,
           "path": "domain/character_pack/character_data.py",
           "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
         }
@@ -853,7 +853,7 @@
       "path": "assets/characters/mohan/persona/zh-TW.json",
       "readers": [
         {
-          "line": 172,
+          "line": 171,
           "path": "domain/character_pack/character_data.py",
           "text": "identity = _parse_identity(_read_json(root / \"persona\" / \"profile.json\"))"
         }
@@ -870,9 +870,9 @@
       "path": "assets/characters/mohan/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 26,
-          "path": "domain/character_data_types.py",
-          "text": "DEFAULT_RIG_MANIFEST_PATH = _DEFAULT_CHARACTER_ROOT / \"rig\" / \"rig-manifest.json\""
+          "line": 683,
+          "path": "domain/character_rig_data.py",
+          "text": "return load_rig_manifest(DEFAULT_RIG_MANIFEST_PATH)"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -904,7 +904,7 @@
       "path": "assets/characters/mohan/voice/profile.json",
       "readers": [
         {
-          "line": 188,
+          "line": 187,
           "path": "domain/character_pack/character_data.py",
           "text": "voice = _parse_voice(_read_json(root / \"voice\" / \"profile.json\"))"
         }

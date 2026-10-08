@@ -7,16 +7,16 @@ lazy import stat
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path, PurePosixPath
 
-lazy from domain.character_data_types import (
+lazy from domain.character_pack.character_data_models import (
     EXPRESSION_SCHEMA as CHARACTER_EXPRESSION_SCHEMA,
     RIG_SCHEMA as CHARACTER_RIG_SCHEMA,
     CharacterRigManifest,
     ExpressionStateCatalog,
+    MohanCharacterData,
 )
 lazy from domain.character_pack.appearance_data import APPEARANCE_DEFAULTS_SCHEMA
 lazy from domain.character_expression_data import load_expression_catalog
 lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_pack.character_data_models import MohanCharacterData
 lazy from domain.character_pack.models import (
     CharacterPackComponent,
     CharacterPackFile,

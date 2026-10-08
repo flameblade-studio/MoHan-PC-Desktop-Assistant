@@ -8,6 +8,9 @@ lazy from pathlib import Path
 
 lazy import pytest
 
+lazy from domain import character_data_types as compatibility_types
+lazy from domain.character_pack import character_data_models
+lazy from domain.character_pack.character_data import CharacterDataError
 lazy from domain.character_runtime_data import (
     DEFAULT_EXPRESSION_CATALOG_PATH,
     DEFAULT_RIG_MANIFEST_PATH,
@@ -27,6 +30,13 @@ EXPECTED_VIEW_COUNT = 24
 EXPECTED_LAYER_COUNT = 25
 EXPECTED_POSE_COUNT = 7
 EXPECTED_EXPRESSION_COUNT = 22
+
+
+def test_legacy_type_path_reexports_canonical_character_pack_contracts() -> None:
+    assert compatibility_types.CharacterDataError is character_data_models.CharacterDataError
+    assert compatibility_types.CharacterRigManifest is character_data_models.CharacterRigManifest
+    assert compatibility_types.ExpressionStateCatalog is character_data_models.ExpressionStateCatalog
+    assert compatibility_types.CanvasSpec is character_data_models.CanvasSpec
 
 
 def _payload(path: Path) -> dict:
@@ -206,7 +216,7 @@ def test_runtime_data_rejects_duplicate_keys(tmp_path: Path) -> None:
     candidate = tmp_path / "expressions.json"
     candidate.write_text(duplicate, encoding="utf-8")
 
-    with pytest.raises(ValueError, match="strict JSON"):
+    with pytest.raises(CharacterDataError, match="strict JSON"):
         load_expression_catalog(candidate)
 
 
@@ -232,5 +242,5 @@ def test_expression_catalog_rejects_unknown_pose(tmp_path: Path) -> None:
 
 
 def test_missing_runtime_data_fails_closed(tmp_path: Path) -> None:
-    with pytest.raises(ValueError, match="Cannot read character data"):
+    with pytest.raises(CharacterDataError, match="Cannot read character data"):
         load_rig_manifest(tmp_path / "missing.json")

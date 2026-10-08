@@ -2,32 +2,32 @@
 
 from __future__ import annotations
 
-lazy from domain import character_data_types as _data_types
 lazy from domain import character_expression_data as _expression_data
 lazy from domain import character_rig_data as _rig_data
+lazy from domain.character_pack import character_data_models as _data_models
 
 # Resolve the public facade once so consumers never receive nested lazy proxies.
-DEFAULT_EXPRESSION_CATALOG_PATH = _data_types.DEFAULT_EXPRESSION_CATALOG_PATH
-DEFAULT_RIG_MANIFEST_PATH = _data_types.DEFAULT_RIG_MANIFEST_PATH
-EXPRESSION_SCHEMA = _data_types.EXPRESSION_SCHEMA
-RIG_SCHEMA = _data_types.RIG_SCHEMA
-SCHEMA_VERSION = _data_types.SCHEMA_VERSION
-ArmSpec = _data_types.ArmSpec
-BodyMeasurementsSpec = _data_types.BodyMeasurementsSpec
-BodyProportionsSpec = _data_types.BodyProportionsSpec
-BrowGuardSpec = _data_types.BrowGuardSpec
-CanvasSpec = _data_types.CanvasSpec
-CharacterRigManifest = _data_types.CharacterRigManifest
-ExpressionRuleSpec = _data_types.ExpressionRuleSpec
-ExpressionStateCatalog = _data_types.ExpressionStateCatalog
-FaceCalibrationSpec = _data_types.FaceCalibrationSpec
-FacePoseAssetSpec = _data_types.FacePoseAssetSpec
-FullBodyCalibrationSpec = _data_types.FullBodyCalibrationSpec
-PhysicsSpec = _data_types.PhysicsSpec
-PoseSpec = _data_types.PoseSpec
-SourceBoundExasperatedSpec = _data_types.SourceBoundExasperatedSpec
-ViewportSpec = _data_types.ViewportSpec
-ViewRingSpec = _data_types.ViewRingSpec
+DEFAULT_EXPRESSION_CATALOG_PATH = _data_models.DEFAULT_EXPRESSION_CATALOG_PATH
+DEFAULT_RIG_MANIFEST_PATH = _data_models.DEFAULT_RIG_MANIFEST_PATH
+EXPRESSION_SCHEMA = _data_models.EXPRESSION_SCHEMA
+RIG_SCHEMA = _data_models.RIG_SCHEMA
+SCHEMA_VERSION = _data_models.SCHEMA_VERSION
+ArmSpec = _data_models.ArmSpec
+BodyMeasurementsSpec = _data_models.BodyMeasurementsSpec
+BodyProportionsSpec = _data_models.BodyProportionsSpec
+BrowGuardSpec = _data_models.BrowGuardSpec
+CanvasSpec = _data_models.CanvasSpec
+CharacterRigManifest = _data_models.CharacterRigManifest
+ExpressionRuleSpec = _data_models.ExpressionRuleSpec
+ExpressionStateCatalog = _data_models.ExpressionStateCatalog
+FaceCalibrationSpec = _data_models.FaceCalibrationSpec
+FacePoseAssetSpec = _data_models.FacePoseAssetSpec
+FullBodyCalibrationSpec = _data_models.FullBodyCalibrationSpec
+PhysicsSpec = _data_models.PhysicsSpec
+PoseSpec = _data_models.PoseSpec
+SourceBoundExasperatedSpec = _data_models.SourceBoundExasperatedSpec
+ViewportSpec = _data_models.ViewportSpec
+ViewRingSpec = _data_models.ViewRingSpec
 default_expression_catalog = _expression_data.default_expression_catalog
 load_expression_catalog = _expression_data.load_expression_catalog
 default_rig_manifest = _rig_data.default_rig_manifest
