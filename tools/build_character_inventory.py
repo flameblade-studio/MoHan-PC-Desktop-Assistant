@@ -68,6 +68,7 @@ CATEGORY_LABELS = {
     "ui_background": "介面角色背景／界面角色背景／Character UI backgrounds／キャラクター背景",
     "ui_brand_decoration": "介面品牌裝飾／界面品牌装饰／UI brand decoration／ブランド装飾",
     "ui_character_icon": "角色圖示／角色图标／Character icon／キャラクターアイコン",
+    "character_runtime_dialogue_data": "角色執行期台詞資料／角色运行期台词数据／Character runtime dialogue data／キャラクターの実行時台詞データ",
     "character_persona_data": "角色身分與人格資料／角色身份与人格数据／Character identity and persona data／キャラクターの身元と人格データ",
     "character_dialogue_data": "角色台詞與事件資料／角色台词与事件数据／Character dialogue and event data／キャラクターの台詞とイベントデータ",
     "character_voice_data": "角色聲音偏好資料／角色声音偏好数据／Character voice preference data／キャラクターの音声設定データ",
@@ -111,6 +112,7 @@ GROUPS = (
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", 'resource_path(f"assets/expressions/{expression}.png")'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data.py", 'root / "persona"'),
+    Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"'),
     Group("assets/characters/mohan/dialogue/", "character_dialogue_data", "domain/character_pack/character_data.py", 'root / "dialogue"'),
     Group("assets/characters/mohan/voice/", "character_voice_data", "domain/character_pack/character_data.py", 'root / "voice" / "profile.json"'),
     Group("assets/characters/mohan/rig/", "character_rig_data", "domain/character_data_types.py", '"rig-manifest.json"'),
@@ -203,6 +205,16 @@ CONTENT_RULES = (
         re.compile(r"mohan-body-v2|flameblade\.mohan"),
         "assets/characters/mohan/rig/rig-manifest.json",
         "角色身形或角色識別碼仍寫在原始碼。",
+    ),
+    ContentRule(
+        "character_appearance_pack_identifier",
+        "appearance",
+        re.compile(
+            r"(?<![A-Za-z0-9])mohan\.(?:makeup|official|default|sponsor)\.[a-z0-9][a-z0-9.-]*"
+            r"|(?<![A-Za-z0-9-])mohan-signature(?![A-Za-z0-9-])"
+        ),
+        "assets/characters/mohan/pack-source.json",
+        "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
     ),
     ContentRule(
         "character_protocol_label_literal",
@@ -554,6 +566,15 @@ def _docstring_nodes(tree: ast.Module) -> set[int]:
     return result
 
 
+def _match_line(lines: list[str], node: ast.Constant, matched: str) -> int:
+    """Return the first source line of a possibly multi-line literal that shows the match."""
+    last = node.end_lineno or node.lineno
+    return next(
+        (number for number in range(node.lineno, last + 1) if matched in lines[number - 1]),
+        node.lineno,
+    )
+
+
 def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
     """Return literal evidence only; identifiers, comments and hints do not count."""
     lines = text.splitlines()
@@ -568,11 +589,12 @@ def _content_evidence(path: str, text: str) -> list[dict[str, Any]]:
         ):
             for rule in CONTENT_RULES:
                 for match in rule.pattern.finditer(node.value):
-                    key = (node.lineno, rule.name, match.group(0))
+                    line = _match_line(lines, node, match.group(0))
+                    key = (line, rule.name, match.group(0))
                     found[key] = {
                         "path": path,
-                        "line": node.lineno,
-                        "text": lines[node.lineno - 1].strip(),
+                        "line": line,
+                        "text": lines[line - 1].strip(),
                         "matched": match.group(0),
                         "rule": rule.name,
                         "content_kind": rule.content_kind,

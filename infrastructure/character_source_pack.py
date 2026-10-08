@@ -3,12 +3,19 @@
 from __future__ import annotations
 
 lazy import hashlib
-lazy import json
-lazy import re
 lazy import stat
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path, PurePosixPath
 
+lazy from domain.character_data_types import (
+    EXPRESSION_SCHEMA as CHARACTER_EXPRESSION_SCHEMA,
+    RIG_SCHEMA as CHARACTER_RIG_SCHEMA,
+    CharacterRigManifest,
+    ExpressionStateCatalog,
+)
+lazy from domain.character_expression_data import load_expression_catalog
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import MohanCharacterData
 lazy from domain.character_pack.models import (
     CharacterPackComponent,
     CharacterPackFile,
@@ -18,6 +25,8 @@ lazy from domain.character_pack.models import (
     ValidationLimits,
 )
 lazy from domain.character_pack.validation import DEFAULT_LIMITS, validate_character_pack
+lazy from domain.character_pose import canonical_view_id
+lazy from domain.character_rig_data import load_rig_manifest
 lazy from domain.character_source import (
     CharacterAppearanceContract,
     CharacterAssets,
@@ -27,13 +36,24 @@ lazy from domain.character_source import (
 )
 lazy from domain.language_support import canonical_ui_language
 
+IDENTITY_SCHEMA = "flameblade.character-identity-profile.v1"
 PERSONA_SCHEMA = "flameblade.character-persona.v1"
 DIALOGUE_SCHEMA = "flameblade.character-dialogue.v1"
-FULLBODY_RIG_SCHEMA = "flameblade.character-fullbody-rig.v1"
-HALFBODY_RIG_SCHEMA = "flameblade.character-halfbody-rig.v1"
+EVENTS_SCHEMA = "flameblade.character-events.v1"
+VOICE_SCHEMA = "flameblade.character-voice-profile.v1"
+FULLBODY_RIG_SCHEMA = CHARACTER_RIG_SCHEMA
+HALFBODY_RIG_SCHEMA = CHARACTER_RIG_SCHEMA
+EXPRESSION_STATE_SCHEMA = CHARACTER_EXPRESSION_SCHEMA
 LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
-MAX_COMPONENT_TEXT_LENGTH = 16_384
-_EVENT_KEY = re.compile(r"[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?\Z")
+_FULLBODY_EXPRESSION_SCHEMA = "mohan.complete-expression-manifest.v1"
+_HALFBODY_EXPRESSION_SCHEMA = "mohan.complete-halfbody-expressions.v1"
+_KNOWN_EXPRESSION_SCHEMAS = frozenset(
+    {
+        EXPRESSION_STATE_SCHEMA,
+        _FULLBODY_EXPRESSION_SCHEMA,
+        _HALFBODY_EXPRESSION_SCHEMA,
+    }
+)
 
 
 class CharacterPackReadError(ValueError):
@@ -74,35 +94,83 @@ class CharacterPackReader(
         manifest = _validated_directory_manifest(result)
         root = Path(source).resolve(strict=True)
         records = {record.path: record for record in manifest.files}
-        persona_component = _required_component(manifest, "persona", PERSONA_SCHEMA)
-        dialogue_component = _required_component(manifest, "dialogue", DIALOGUE_SCHEMA)
-        fullbody_component = _required_component(
+        character_root, character_data_components = _character_data_contract(manifest)
+        rig_component = _required_component(
             manifest,
             "fullbody_rig",
             FULLBODY_RIG_SCHEMA,
         )
-        halfbody_component = _required_component(
-            manifest,
-            "halfbody_rig",
-            HALFBODY_RIG_SCHEMA,
+        expression_component = _required_expression_component(manifest)
+        _require_component_path(
+            rig_component,
+            _rooted_path(character_root, "rig/rig-manifest.json"),
         )
-        persona_data = _parse_persona(
-            _component_document(root, records, persona_component),
-            persona_component,
+        _require_component_path(
+            expression_component,
+            _rooted_path(character_root, "expressions/state-catalog.json"),
         )
-        dialogue_data = _parse_dialogue(
-            _component_document(root, records, dialogue_component),
-            dialogue_component,
+        loaded_components = (
+            *character_data_components,
+            rig_component,
+            expression_component,
         )
-        fullbody_canvas, view_ids, layer_order = _parse_fullbody_rig(
-            _component_document(root, records, fullbody_component),
-            fullbody_component,
+        _verify_component_files(root, records, loaded_components)
+        character_root_path = root.joinpath(*character_root.parts)
+        character_data = _load_character_data(character_root_path, character_root.as_posix())
+        rig = _load_rig(root, rig_component)
+        expression_catalog = _load_expression_catalog(root, expression_component)
+        _verify_component_files(root, records, loaded_components)
+
+        canonical_name = str(character_data.identity.defaults["assistant_name"])
+        if manifest.canonical_name != canonical_name or dict(manifest.display_names) != {
+            language: character_data.personas[language].identity.display_name
+            for language in LANGUAGES
+        }:
+            raise CharacterPackReadError(
+                "invalid_component",
+                "Manifest identity does not match the validated character data.",
+                _rooted_path(character_root, "persona/profile.json"),
+            )
+        profile = (rig.body_profile_id, rig.body_profile_version)
+        if profile != (rig_component.body_profile_id, rig_component.body_profile_version):
+            raise CharacterPackReadError(
+                "incompatible_body_profile",
+                "The rig component binding does not match its validated content.",
+                rig_component.path,
+            )
+        if profile != (
+            expression_component.body_profile_id,
+            expression_component.body_profile_version,
+        ):
+            raise CharacterPackReadError(
+                "incompatible_body_profile",
+                "The expression component binding does not match the character rig.",
+                expression_component.path,
+            )
+        if expression_catalog.character_id != rig.character_id:
+            raise CharacterPackReadError(
+                "invalid_component",
+                "The expression catalog and rig must identify the same character.",
+                expression_component.path,
+            )
+        profile_id, profile_version = profile
+        if profile_id is None or profile_version is None:
+            raise CharacterPackReadError(
+                "incompatible_body_profile",
+                "The character rig requires a body-profile binding.",
+                rig_component.path,
+            )
+
+        fullbody_canvas = CharacterCanvas(
+            rig.full_body_canvas.width,
+            rig.full_body_canvas.height,
+            rig.full_body_canvas.mode,
         )
-        halfbody_canvas = _parse_halfbody_rig(
-            _component_document(root, records, halfbody_component),
-            halfbody_component,
+        halfbody_canvas = CharacterCanvas(
+            rig.half_body_asset_canvas.width,
+            rig.half_body_asset_canvas.height,
+            rig.half_body_asset_canvas.mode,
         )
-        body_profile = _body_profile(fullbody_component, halfbody_component)
 
         # Assign only after every outer and child contract has passed. A rejected
         # package therefore cannot leak a partially initialized source.
@@ -110,14 +178,23 @@ class CharacterPackReader(
         self._manifest = manifest
         self._root = root
         self._records = records
-        self._display_names = dict(manifest.display_names)
-        self._titles, self._persona_prompts = persona_data
-        self._dialogue = dialogue_data
-        self._body_profile = body_profile
+        self._canonical_name = canonical_name
+        wake_word = str(character_data.identity.defaults["wake_word"])
+        self._aliases = () if wake_word == canonical_name else (wake_word,)
+        self._default_user_title = str(character_data.identity.defaults["user_title"])
+        self._persona_prompts = {
+            language: character_data.personas[language].system_prompt
+            for language in LANGUAGES
+        }
+        self._dialogue = {
+            language: character_data.dialogues[language].phrasebook
+            for language in LANGUAGES
+        }
+        self._body_profile = CharacterBodyProfileReference(profile_id, profile_version)
         self._fullbody_canvas = fullbody_canvas
         self._halfbody_canvas = halfbody_canvas
-        self._view_ids = view_ids
-        self._layer_order = layer_order
+        self._view_ids = tuple(canonical_view_id(yaw) for yaw in rig.view_ring.yaws)
+        self._layer_order = rig.layer_z_order
 
     @property
     def validation_result(self) -> CharacterPackValidationResult:
@@ -171,17 +248,19 @@ class CharacterPackReader(
 
     @property
     def canonical_name(self) -> str:
-        return self._manifest.canonical_name
+        return self._canonical_name
 
     @property
     def aliases(self) -> tuple[str, ...]:
-        return self._manifest.aliases
+        return self._aliases
 
     def display_name(self, language: str) -> str:
-        return self._display_names[canonical_ui_language(language)]
+        canonical_ui_language(language)
+        return self._canonical_name
 
     def default_user_title(self, language: str) -> str:
-        return self._titles[canonical_ui_language(language)]
+        canonical_ui_language(language)
+        return self._default_user_title
 
     def persona_prompt(self, language: str) -> str:
         return self._persona_prompts[canonical_ui_language(language)]
@@ -237,12 +316,23 @@ def _required_component(
     schema: str,
 ) -> CharacterPackComponent:
     matches = tuple(component for component in manifest.components if component.kind == kind)
-    if len(matches) != 1 or not matches[0].required:
+    if not matches:
         raise CharacterPackReadError(
             "missing_component",
             f"Exactly one required {kind} component is needed.",
         )
-    component = matches[0]
+    if len(matches) > 1:
+        raise CharacterPackReadError(
+            "duplicate_component",
+            f"Exactly one required {kind} component is needed.",
+        )
+    component = next(iter(matches))
+    if not component.required:
+        raise CharacterPackReadError(
+            "missing_component",
+            f"The {kind} component must be required.",
+            component.path,
+        )
     if component.schema != schema:
         raise CharacterPackReadError(
             "unsupported_component_schema",
@@ -252,254 +342,235 @@ def _required_component(
     return component
 
 
-def _component_document(
-    root: Path,
-    records: Mapping[str, CharacterPackFile],
-    component: CharacterPackComponent,
-) -> dict[str, object]:
-    record = records[component.path]
-    data = _read_verified_file(root, record)
-    try:
-        value = json.loads(
-            data.decode("utf-8"),
-            object_pairs_hook=_unique_object,
-            parse_constant=_reject_json_constant,
-        )
-    except (UnicodeError, json.JSONDecodeError) as error:
-        raise CharacterPackReadError(
-            "invalid_component",
-            f"Component JSON is not valid UTF-8 data: {type(error).__name__}.",
-            component.path,
-        ) from None
-    if not isinstance(value, dict):
-        raise CharacterPackReadError(
-            "invalid_component",
-            "Component JSON must contain one object.",
-            component.path,
-        )
-    return value
-
-
-def _parse_persona(
-    value: dict[str, object],
-    component: CharacterPackComponent,
-) -> tuple[dict[str, str], dict[str, str]]:
-    entry = _exact_keys(
-        value,
-        {"schema", "schema_version", "default_user_titles", "persona_prompts"},
-        component.path,
+def _required_expression_component(
+    manifest: CharacterPackManifest,
+) -> CharacterPackComponent:
+    candidates = tuple(
+        component
+        for component in manifest.components
+        if component.kind == "expression_manifest"
     )
-    _schema_header(entry, component)
-    return (
-        _localized_text(entry["default_user_titles"], component.path),
-        _localized_text(entry["persona_prompts"], component.path),
+    unsupported = tuple(
+        component
+        for component in candidates
+        if component.required and component.schema not in _KNOWN_EXPRESSION_SCHEMAS
     )
-
-
-def _parse_dialogue(
-    value: dict[str, object],
-    component: CharacterPackComponent,
-) -> dict[str, dict[str, tuple[str, ...]]]:
-    entry = _exact_keys(value, {"schema", "schema_version", "locales"}, component.path)
-    _schema_header(entry, component)
-    locales = entry["locales"]
-    if not isinstance(locales, dict) or set(locales) != set(LANGUAGES):
-        raise CharacterPackReadError(
-            "invalid_component",
-            "Dialogue must contain exactly the four supported locales.",
-            component.path,
-        )
-    parsed: dict[str, dict[str, tuple[str, ...]]] = {}
-    for language in LANGUAGES:
-        catalog = locales[language]
-        if not isinstance(catalog, dict):
-            raise CharacterPackReadError(
-                "invalid_component",
-                "Each dialogue locale must be an event object.",
-                component.path,
-            )
-        events: dict[str, tuple[str, ...]] = {}
-        for key, raw_lines in catalog.items():
-            if not isinstance(key, str) or not _EVENT_KEY.fullmatch(key):
-                raise CharacterPackReadError(
-                    "invalid_component",
-                    "Dialogue event keys must be portable identifiers.",
-                    component.path,
-                )
-            if not isinstance(raw_lines, list) or not raw_lines:
-                raise CharacterPackReadError(
-                    "invalid_component",
-                    "Dialogue events require at least one line.",
-                    component.path,
-                )
-            events[key] = tuple(
-                _nonempty_text(line, "Dialogue lines", component.path)
-                for line in raw_lines
-            )
-        parsed[language] = events
-    return parsed
-
-
-def _parse_fullbody_rig(
-    value: dict[str, object],
-    component: CharacterPackComponent,
-) -> tuple[CharacterCanvas, tuple[str, ...], tuple[str, ...]]:
-    entry = _exact_keys(
-        value,
-        {"schema", "schema_version", "canvas", "views", "layers"},
-        component.path,
-    )
-    _schema_header(entry, component)
-    return (
-        _canvas(entry["canvas"], component.path),
-        _unique_text_list(entry["views"], "views", component.path),
-        _unique_text_list(entry["layers"], "layers", component.path),
-    )
-
-
-def _parse_halfbody_rig(
-    value: dict[str, object],
-    component: CharacterPackComponent,
-) -> CharacterCanvas:
-    entry = _exact_keys(
-        value,
-        {"schema", "schema_version", "canvas"},
-        component.path,
-    )
-    _schema_header(entry, component)
-    return _canvas(entry["canvas"], component.path)
-
-
-def _schema_header(
-    entry: Mapping[str, object],
-    component: CharacterPackComponent,
-) -> None:
-    if entry["schema"] != component.schema or entry["schema_version"] != 1:
+    if unsupported:
+        component = unsupported[0]
         raise CharacterPackReadError(
             "unsupported_component_schema",
-            "The component schema name and version must match its manifest entry.",
+            "A required expression component uses an unsupported schema.",
+            component.path,
+        )
+    matches = tuple(
+        component
+        for component in candidates
+        if component.schema == EXPRESSION_STATE_SCHEMA
+    )
+    if not matches:
+        raise CharacterPackReadError(
+            "missing_component",
+            "Exactly one required expression-state component is needed.",
+        )
+    if len(matches) > 1:
+        raise CharacterPackReadError(
+            "duplicate_component",
+            "Exactly one required expression-state component is needed.",
+        )
+    component = next(iter(matches))
+    if not component.required:
+        raise CharacterPackReadError(
+            "missing_component",
+            "The expression-state component must be required.",
+            component.path,
+        )
+    return component
+
+
+def _character_data_contract(
+    manifest: CharacterPackManifest,
+) -> tuple[PurePosixPath, tuple[CharacterPackComponent, ...]]:
+    persona = _required_schema_components(
+        manifest,
+        "persona",
+        {IDENTITY_SCHEMA: 1, PERSONA_SCHEMA: len(LANGUAGES)},
+    )
+    dialogue = _required_schema_components(
+        manifest,
+        "dialogue",
+        {DIALOGUE_SCHEMA: len(LANGUAGES), EVENTS_SCHEMA: 1},
+    )
+    voice = _required_schema_components(
+        manifest,
+        "voice_profile",
+        {VOICE_SCHEMA: 1},
+    )
+    identity_component = persona[IDENTITY_SCHEMA][0]
+    character_root = _component_root(
+        identity_component,
+        PurePosixPath("persona/profile.json"),
+    )
+    _require_component_paths(
+        persona[PERSONA_SCHEMA],
+        {
+            _rooted_path(character_root, f"persona/{language}.json")
+            for language in LANGUAGES
+        },
+        "persona",
+    )
+    _require_component_paths(
+        dialogue[DIALOGUE_SCHEMA],
+        {
+            _rooted_path(character_root, f"dialogue/{language}.json")
+            for language in LANGUAGES
+        },
+        "dialogue",
+    )
+    _require_component_path(
+        dialogue[EVENTS_SCHEMA][0],
+        _rooted_path(character_root, "dialogue/events.json"),
+    )
+    _require_component_path(
+        voice[VOICE_SCHEMA][0],
+        _rooted_path(character_root, "voice/profile.json"),
+    )
+    return (
+        character_root,
+        (
+            identity_component,
+            *persona[PERSONA_SCHEMA],
+            *dialogue[DIALOGUE_SCHEMA],
+            dialogue[EVENTS_SCHEMA][0],
+            voice[VOICE_SCHEMA][0],
+        ),
+    )
+
+
+def _required_schema_components(
+    manifest: CharacterPackManifest,
+    kind: str,
+    expected: Mapping[str, int],
+) -> dict[str, tuple[CharacterPackComponent, ...]]:
+    candidates = tuple(
+        component for component in manifest.components if component.kind == kind
+    )
+    for component in candidates:
+        if component.schema not in expected:
+            raise CharacterPackReadError(
+                "unsupported_component_schema",
+                f"A required {kind} component uses an unsupported schema.",
+                component.path,
+            )
+    grouped: dict[str, tuple[CharacterPackComponent, ...]] = {}
+    for schema, count in expected.items():
+        matches = tuple(
+            component for component in candidates if component.schema == schema
+        )
+        if len(matches) < count or any(not component.required for component in matches):
+            raise CharacterPackReadError(
+                "missing_component",
+                f"The {kind} contract requires {count} required {schema} component(s).",
+            )
+        if len(matches) > count:
+            raise CharacterPackReadError(
+                "duplicate_component",
+                f"The {kind} contract requires exactly {count} {schema} component(s).",
+            )
+        grouped[schema] = matches
+    return grouped
+
+
+def _component_root(
+    component: CharacterPackComponent,
+    suffix: PurePosixPath,
+) -> PurePosixPath:
+    path = _relative_path(component.path)
+    if len(path.parts) < len(suffix.parts) or path.parts[-len(suffix.parts) :] != suffix.parts:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"The component path must end with {suffix.as_posix()}.",
+            component.path,
+        )
+    return PurePosixPath(*path.parts[: -len(suffix.parts)])
+
+
+def _rooted_path(root: PurePosixPath, relative: str) -> str:
+    return PurePosixPath(*root.parts, *PurePosixPath(relative).parts).as_posix()
+
+
+def _require_component_path(
+    component: CharacterPackComponent,
+    expected: str,
+) -> None:
+    if component.path != expected:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"The component path must be {expected}.",
             component.path,
         )
 
 
-def _body_profile(
-    fullbody: CharacterPackComponent,
-    halfbody: CharacterPackComponent,
-) -> CharacterBodyProfileReference:
-    profile = (fullbody.body_profile_id, fullbody.body_profile_version)
-    if profile != (halfbody.body_profile_id, halfbody.body_profile_version):
-        raise CharacterPackReadError(
-            "incompatible_body_profile",
-            "Full-body and half-body rigs must share one body profile.",
-        )
-    profile_id, version = profile
-    if profile_id is None or version is None:
-        raise CharacterPackReadError(
-            "incompatible_body_profile",
-            "Visual components require a body-profile binding.",
-        )
-    return CharacterBodyProfileReference(profile_id, version)
-
-
-def _localized_text(value: object, path: str) -> dict[str, str]:
-    if not isinstance(value, dict) or set(value) != set(LANGUAGES):
-        raise CharacterPackReadError(
-            "invalid_component",
-            "Localized values must contain exactly the four supported locales.",
-            path,
-        )
-    return {
-        language: _nonempty_text(value[language], "Localized values", path)
-        for language in LANGUAGES
-    }
-
-
-def _canvas(value: object, path: str) -> CharacterCanvas:
-    entry = _exact_keys(value, {"width", "height", "mode"}, path)
-    width = entry["width"]
-    height = entry["height"]
-    mode = entry["mode"]
-    if (
-        not isinstance(width, int)
-        or isinstance(width, bool)
-        or not isinstance(height, int)
-        or isinstance(height, bool)
-        or width < 1
-        or height < 1
-        or not isinstance(mode, str)
-        or mode != "RGBA"
-    ):
-        raise CharacterPackReadError(
-            "invalid_component",
-            "Character canvases require positive dimensions and RGBA mode.",
-            path,
-        )
-    return CharacterCanvas(width, height, mode)
-
-
-def _unique_text_list(value: object, label: str, path: str) -> tuple[str, ...]:
-    if not isinstance(value, list) or not value:
-        raise CharacterPackReadError(
-            "invalid_component",
-            f"Character {label} require a non-empty list.",
-            path,
-        )
-    result = tuple(_nonempty_text(item, f"Character {label}", path) for item in value)
-    if len(set(result)) != len(result):
-        raise CharacterPackReadError(
-            "invalid_component",
-            f"Character {label} must remain unique.",
-            path,
-        )
-    return result
-
-
-def _nonempty_text(value: object, label: str, path: str) -> str:
-    if (
-        not isinstance(value, str)
-        or not value.strip()
-        or len(value) > MAX_COMPONENT_TEXT_LENGTH
-    ):
-        raise CharacterPackReadError(
-            "invalid_component",
-            f"{label} must contain bounded non-empty text.",
-            path,
-        )
-    return value
-
-
-def _exact_keys(
-    value: object,
+def _require_component_paths(
+    components: tuple[CharacterPackComponent, ...],
     expected: set[str],
-    path: str,
-) -> dict[str, object]:
-    if not isinstance(value, dict) or set(value) != expected:
+    label: str,
+) -> None:
+    actual = {component.path for component in components}
+    if actual != expected:
+        unexpected = sorted(actual - expected)
+        path = unexpected[0] if unexpected else None
         raise CharacterPackReadError(
             "invalid_component",
-            "Component data has missing or unknown fields.",
+            f"The {label} components must use the canonical locale paths.",
             path,
         )
-    return value
 
 
-def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
-    result: dict[str, object] = {}
-    for key, value in pairs:
-        if key in result:
-            raise CharacterPackReadError(
-                "invalid_component",
-                "Component JSON object keys must be unique.",
-                key,
-            )
-        result[key] = value
-    return result
+def _verify_component_files(
+    root: Path,
+    records: Mapping[str, CharacterPackFile],
+    components: tuple[CharacterPackComponent, ...],
+) -> None:
+    for component in components:
+        _read_verified_file(root, records[component.path])
 
 
-def _reject_json_constant(value: str) -> None:
-    raise CharacterPackReadError(
-        "invalid_component",
-        f"Component JSON cannot contain {value}.",
-    )
+def _load_character_data(root: Path, relative_root: str) -> MohanCharacterData:
+    try:
+        return load_mohan_character_data(root)
+    except (OSError, UnicodeError, ValueError) as error:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"Character data validation failed: {type(error).__name__}.",
+            relative_root,
+        ) from None
+
+
+def _load_rig(root: Path, component: CharacterPackComponent) -> CharacterRigManifest:
+    path = root.joinpath(*PurePosixPath(component.path).parts)
+    try:
+        return load_rig_manifest(path)
+    except (OSError, UnicodeError, ValueError) as error:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"Character rig validation failed: {type(error).__name__}.",
+            component.path,
+        ) from None
+
+
+def _load_expression_catalog(
+    root: Path,
+    component: CharacterPackComponent,
+) -> ExpressionStateCatalog:
+    path = root.joinpath(*PurePosixPath(component.path).parts)
+    try:
+        return load_expression_catalog(path)
+    except (OSError, UnicodeError, ValueError) as error:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"Expression catalog validation failed: {type(error).__name__}.",
+            component.path,
+        ) from None
 
 
 def _read_verified_file(root: Path, record: CharacterPackFile) -> bytes:
@@ -572,9 +643,13 @@ def _relative_path(value: str) -> PurePosixPath:
 
 __all__ = (
     "DIALOGUE_SCHEMA",
+    "EVENTS_SCHEMA",
+    "EXPRESSION_STATE_SCHEMA",
     "FULLBODY_RIG_SCHEMA",
     "HALFBODY_RIG_SCHEMA",
+    "IDENTITY_SCHEMA",
     "PERSONA_SCHEMA",
+    "VOICE_SCHEMA",
     "CharacterPackReadError",
     "CharacterPackReader",
 )
