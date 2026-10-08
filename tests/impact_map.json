@@ -1017,6 +1017,7 @@
         "test_lazy_import_owner_contract.py",
         "test_lingxiao_theme.py",
         "test_lingxiao_theme_packs.py",
+        "test_linkeyun_character_data.py",
         "test_lipsync_timing.py",
         "test_local_visual_intelligence.py",
         "test_localized_transcription_prompts.py",
@@ -1535,6 +1536,7 @@
         "test_layered_face_assets.py",
         "test_layered_full_body.py",
         "test_layered_import_checker.py",
+        "test_linkeyun_character_data.py",
         "test_lipsync_timing.py",
         "test_local_visual_intelligence.py",
         "test_localized_transcription_prompts.py",
@@ -1824,6 +1826,7 @@
         "test_layered_face_calibration.py",
         "test_layered_full_body.py",
         "test_layered_import_checker.py",
+        "test_linkeyun_character_data.py",
         "test_localized_transcription_prompts.py",
         "test_makeup_blink_states.py",
         "test_makeup_detail_controls.py",
@@ -3404,6 +3407,7 @@
         "test_engine_identity_parameterization.py",
         "test_fetch_character_pack.py",
         "test_huapu.py",
+        "test_linkeyun_character_data.py",
         "test_official_default_pack.py",
         "test_verify_character_pack_lock.py"
       ],
@@ -3422,6 +3426,7 @@
         "test_check_pose_atlas_release.py",
         "test_fetch_character_pack.py",
         "test_huapu.py",
+        "test_linkeyun_character_data.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -3438,6 +3443,7 @@
         "test_fetch_character_pack.py",
         "test_generate_test_impact_map.py",
         "test_huapu.py",
+        "test_linkeyun_character_data.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -3454,6 +3460,7 @@
         "test_fetch_character_pack.py",
         "test_huapu.py",
         "test_layered_facade_cycles.py",
+        "test_linkeyun_character_data.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -3476,6 +3483,7 @@
         "test_check_pose_atlas_release.py",
         "test_fetch_character_pack.py",
         "test_huapu.py",
+        "test_linkeyun_character_data.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -3906,8 +3914,6 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/README.md",
-        "assets/characters/mohan/rig/runtime-bindings.json",
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/complete-expressions/manifest.json",
@@ -3927,51 +3933,6 @@
       ],
       "tests": [
         "test_build_character_inventory.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/mohan/persona/ui-identifiers.json"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_build_character_pack.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/mohan/appearance/defaults.json"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_build_character_pack.py",
-        "test_character_source.py",
-        "test_official_default_pack.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/mohan/pack-source.json"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_build_character_pack.py",
-        "test_huapu.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/mohan/dialogue/runtime.json"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_build_character_pack.py",
-        "test_persona_dialogue_voice_extraction.py",
-        "test_tachyon_evidence.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4151,6 +4112,27 @@
     },
     {
       "paths": [
+        "README.md"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_four_language_documentation.py",
+        "test_linkeyun_character_data.py",
+        "test_native_packaging_contract.py",
+        "test_openai_vision_release_gate.py",
+        "test_preview_packaging.py",
+        "test_public_release_audit.py",
+        "test_readme_media.py",
+        "test_release_automation.py",
+        "test_v312_release_consistency.py",
+        "test_v4_development_version_consistency.py",
+        "test_v4_release_document_integrity.py",
+        "test_v4_vision_documentation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "tools/generate_test_impact_map.py"
       ],
       "tests": [
@@ -4225,6 +4207,7 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/persona/ui-identifiers.json",
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "tests": [
@@ -4250,6 +4233,7 @@
         "test_build_character_pack.py",
         "test_character_source.py",
         "test_engine_identity_parameterization.py",
+        "test_linkeyun_character_data.py",
         "test_preview_packaging.py",
         "test_release_automation.py",
         "test_sbom_validation.py",
@@ -4267,7 +4251,29 @@
         "test_build_character_pack.py",
         "test_character_source.py",
         "test_huapu.py",
+        "test_linkeyun_character_data.py",
         "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/appearance/defaults.json"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_official_default_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/dialogue/runtime.json"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_persona_dialogue_voice_extraction.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4738,15 +4744,6 @@
     },
     {
       "paths": [
-        "infrastructure/character_source_pack.py"
-      ],
-      "tests": [
-        "test_character_source.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "application/service_container.py"
       ],
       "tests": [
@@ -4766,6 +4763,16 @@
         "test_service_language_wiring.py",
         "test_shared_hand_region_provider.py",
         "test_swallowed_error_d05.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/character_source_pack.py"
+      ],
+      "tests": [
+        "test_character_source.py",
+        "test_linkeyun_character_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6209,25 +6216,6 @@
     },
     {
       "paths": [
-        "README.md"
-      ],
-      "tests": [
-        "test_four_language_documentation.py",
-        "test_native_packaging_contract.py",
-        "test_openai_vision_release_gate.py",
-        "test_preview_packaging.py",
-        "test_public_release_audit.py",
-        "test_readme_media.py",
-        "test_release_automation.py",
-        "test_v312_release_consistency.py",
-        "test_v4_development_version_consistency.py",
-        "test_v4_release_document_integrity.py",
-        "test_v4_vision_documentation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "tests/data/four_look_makeup_pack/owner-approval.json",
         "tools/art_pipeline/four_look_makeup_pack.py"
       ],
@@ -6906,6 +6894,26 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/appearance/defaults.json",
+        "assets/characters/lin-keyun/pack-source.json"
+      ],
+      "tests": [
+        "test_linkeyun_character_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/appearance_data.py"
+      ],
+      "tests": [
+        "test_linkeyun_character_data.py",
+        "test_official_default_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/object_interaction.py"
       ],
       "tests": [
@@ -7219,7 +7227,6 @@
       "paths": [
         "ASSETS-LICENSE.md",
         "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
-        "domain/character_pack/appearance_data.py",
         "domain/character_pack/character_data_models.py"
       ],
       "tests": [

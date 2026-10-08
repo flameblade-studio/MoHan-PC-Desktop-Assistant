@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import json
 lazy import re
+lazy import string
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path
 lazy from typing import Any
@@ -102,6 +103,29 @@ def _strings(value: object) -> Iterable[str]:
             yield from _strings(child)
 
 
+def _string_leaves(value: object, path: str = "$") -> Iterable[tuple[str, str]]:
+    if isinstance(value, str):
+        yield path, value
+    elif isinstance(value, Mapping):
+        for key, child in value.items():
+            yield from _string_leaves(child, f"{path}.{key}")
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            yield from _string_leaves(child, f"{path}[{index}]")
+
+
+def _placeholders(value: str) -> frozenset[str]:
+    result: set[str] = set()
+    for _literal, field_name, format_spec, _conversion in string.Formatter().parse(
+        value
+    ):
+        if field_name is not None:
+            result.add(field_name)
+        if format_spec:
+            result.update(_placeholders(format_spec))
+    return frozenset(result)
+
+
 def test_linkeyun_directory_matches_the_character_data_contract() -> None:
     files = {
         path.relative_to(LIN_KEYUN_ROOT).as_posix()
@@ -138,6 +162,22 @@ def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
             == EXPECTED_PHRASEBOOK_LINE_COUNT
         )
         assert len(dialogue["templates"]) == EXPECTED_TEMPLATE_COUNT
+
+
+def test_linkeyun_dialogue_placeholders_match_mohan_in_every_language() -> None:
+    for language in LANGUAGES:
+        mohan = dict(
+            _string_leaves(_load(MOHAN_ROOT, f"dialogue/{language}.json"))
+        )
+        linkeyun = dict(
+            _string_leaves(_load(LIN_KEYUN_ROOT, f"dialogue/{language}.json"))
+        )
+        assert linkeyun.keys() == mohan.keys()
+        for path, mohan_value in mohan.items():
+            assert _placeholders(linkeyun[path]) == _placeholders(mohan_value), (
+                language,
+                path,
+            )
 
 
 def test_linkeyun_four_languages_are_complete_and_character_specific() -> None:

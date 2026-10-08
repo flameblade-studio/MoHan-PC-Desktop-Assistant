@@ -45,6 +45,7 @@ class CharacterPackBuildSettings:
 
     manifest_schema: str
     build_source_schema: str
+    characters_root: str
     engine_version: str
     languages: tuple[str, ...]
     pack_scopes: frozenset[str]
@@ -66,6 +67,15 @@ class CharacterPackBuildSettings:
         )
         if any(not value or value != value.strip() for value in text_values):
             raise ValueError("character-pack build settings require non-empty trimmed text")
+        character_root = PurePosixPath(self.characters_root)
+        if (
+            character_root.is_absolute()
+            or "\\" in self.characters_root
+            or not character_root.parts
+            or character_root.as_posix() != self.characters_root
+            or any(part in {"", ".", ".."} for part in character_root.parts)
+        ):
+            raise ValueError("characters_root must be a canonical relative POSIX path")
         if not self.languages or len(set(self.languages)) != len(self.languages):
             raise ValueError("character-pack languages must be non-empty and unique")
         if not self.pack_scopes or not self.media_types:
@@ -116,9 +126,21 @@ def build_character_pack(
     source_file = _input_path(root, source_path)
     source = _load_json_object(source_file)
     _require_source_header(source, settings)
+    character_id = _text(source.get("character_id"), "character_id")
+    if (
+        PurePosixPath(character_id).parts != (character_id,)
+        or character_id in {".", ".."}
+        or "\\" in character_id
+    ):
+        raise CharacterPackBuildError("character_id must be one path segment")
     limits = _validation_limits(source.get("validation_limits"))
     inventory = _load_json_object(inventory_file)
-    payloads = _inventory_payloads(root, inventory, settings)
+    payloads = _inventory_payloads(
+        root,
+        inventory,
+        settings,
+        character_id=character_id,
+    )
     manifest = _manifest(source, payloads, root, settings)
     manifest["package_hash"] = compute_package_hash(manifest)
     manifest_bytes = _json_bytes(manifest)
@@ -202,6 +224,8 @@ def _inventory_payloads(
     root: Path,
     inventory: Mapping[str, object],
     settings: CharacterPackBuildSettings,
+    *,
+    character_id: str,
 ) -> tuple[_Payload, ...]:
     rows = _array(inventory.get("files"), "inventory.files")
     payloads: list[_Payload] = []
@@ -212,6 +236,23 @@ def _inventory_payloads(
             continue
         relative = _text(row.get("path"), "inventory.files[].path")
         if "!" in relative:
+            continue
+        pure = PurePosixPath(relative)
+        if (
+            pure.is_absolute()
+            or "\\" in relative
+            or pure.as_posix() != relative
+            or any(part in {"", ".", ".."} for part in pure.parts)
+        ):
+            raise CharacterPackBuildError(
+                f"inventory path is not repository-relative: {relative}"
+            )
+        character_root = PurePosixPath(settings.characters_root).parts
+        if (
+            pure.parts[: len(character_root)] == character_root
+            and len(pure.parts) > len(character_root)
+            and pure.parts[len(character_root)] != character_id
+        ):
             continue
         if relative in seen:
             raise CharacterPackBuildError(f"duplicate inventory payload: {relative}")
@@ -285,7 +326,7 @@ def _manifest(
         }
         for item in payloads
     ]
-    return {
+    manifest: dict[str, object] = {
         "schema": settings.manifest_schema,
         "pack_id": _text(source.get("pack_id"), "pack_id"),
         "pack_version": _text(source.get("pack_version"), "pack_version"),
@@ -304,6 +345,10 @@ def _manifest(
         "components": _components(source.get("components"), payload_by_path, settings),
         "package_hash": "0" * 64,
     }
+    dependencies = _dependencies(source.get("dependencies", []))
+    if dependencies:
+        manifest["dependencies"] = dependencies
+    return manifest
 
 
 def _identity(
@@ -441,6 +486,34 @@ def _components(
         })
     components.sort(key=lambda item: _text(item["id"], "component id"))
     return components
+
+
+def _dependencies(value: object) -> list[dict[str, object]]:
+    dependencies: list[dict[str, object]] = []
+    fields = ("id", "kind", "min_version", "max_version_exclusive", "required")
+    for raw in _array(value, "dependencies"):
+        entry = _object(raw, "dependencies[]")
+        _exact_keys(entry, fields, "dependencies[]")
+        required = entry["required"]
+        if not isinstance(required, bool):
+            raise CharacterPackBuildError("dependencies[].required must be a boolean")
+        dependencies.append(
+            {
+                "id": _text(entry["id"], "dependencies[].id"),
+                "kind": _text(entry["kind"], "dependencies[].kind"),
+                "min_version": _text(
+                    entry["min_version"],
+                    "dependencies[].min_version",
+                ),
+                "max_version_exclusive": _text(
+                    entry["max_version_exclusive"],
+                    "dependencies[].max_version_exclusive",
+                ),
+                "required": required,
+            }
+        )
+    dependencies.sort(key=lambda item: _text(item["id"], "dependency id"))
+    return dependencies
 
 
 def _validate_component_source(

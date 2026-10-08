@@ -12,6 +12,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from domain.character_pack.validation import SCHEMA
+lazy from domain.character_pack.appearance_data import (
+    APPEARANCE_DEFAULTS_SCHEMA,
+    load_character_appearance_defaults,
+)
+lazy from domain.character_pack.character_data_models import CharacterDataError
 lazy from domain.outfit_pack import inspect_outfit_pack
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from huapu import character_pack_builder as _core
@@ -64,6 +69,14 @@ def _license_component(path: str, category: str) -> str:
 
 
 def _validate_mohan_component(path: Path, schema: str) -> bool:
+    if schema == APPEARANCE_DEFAULTS_SCHEMA:
+        try:
+            load_character_appearance_defaults(path)
+        except CharacterDataError as error:
+            raise CharacterPackBuildError(
+                f"appearance defaults component is invalid: {path.as_posix()}"
+            ) from error
+        return True
     if path.suffix != ".mohan-outfit":
         return False
     inspect_outfit_pack(path)
@@ -75,6 +88,7 @@ def _validate_mohan_component(path: Path, schema: str) -> bool:
 DEFAULT_BUILD_SETTINGS = CharacterPackBuildSettings(
     manifest_schema=SCHEMA,
     build_source_schema=BUILD_SOURCE_SCHEMA,
+    characters_root="assets/characters",
     engine_version=FALLBACK_VERSION,
     languages=LANGUAGES,
     pack_scopes=PACK_SCOPES,

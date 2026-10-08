@@ -354,7 +354,7 @@
       "sha256": "fa158b12bd0aedd4660538abdb2bdada5a3d72e89e52955c80d1828599a865ef"
     },
     {
-      "bytes": 14899,
+      "bytes": 14935,
       "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -368,7 +368,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "6c4356b66561f9c73bf276599593e17cc689ce267159661003421454c899342c"
+      "sha256": "a1f96a797400be265373143fb1cf22ff6e3a797f533d0b7d07223ae44a421c0a"
     },
     {
       "bytes": 13031,
@@ -378,8 +378,8 @@
       "path": "assets/characters/lin-keyun/dialogue/runtime.json",
       "readers": [
         {
-          "line": 208,
-          "path": "tools/build_character_pack.py",
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
           "text": "source = _repository_payload(root, relative)"
         }
       ],
@@ -508,8 +508,8 @@
       "path": "assets/characters/lin-keyun/persona/ui-identifiers.json",
       "readers": [
         {
-          "line": 208,
-          "path": "tools/build_character_pack.py",
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
           "text": "source = _repository_payload(root, relative)"
         }
       ],
@@ -576,8 +576,8 @@
       "path": "assets/characters/lin-keyun/rig/runtime-bindings.json",
       "readers": [
         {
-          "line": 208,
-          "path": "tools/build_character_pack.py",
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
           "text": "source = _repository_payload(root, relative)"
         }
       ],
