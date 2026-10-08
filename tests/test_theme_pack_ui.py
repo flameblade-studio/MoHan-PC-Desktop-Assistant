@@ -205,8 +205,11 @@ def assert_install_refreshes_without_preview() -> None:
         with patch(
             "PySide6.QtWidgets.QFileDialog.getOpenFileName",
             return_value=("C:/Downloads/dawn.mohan-theme", ""),
-        ):
+        ) as open_file:
             panel._upload_one_file()
+        assert open_file.call_args.args[3] == (
+            "MoHan theme package (*.mohan-theme *.zip)"
+        )
         assert panel.theme_list.count() == EXPECTED_THEME_COUNT_AFTER_UPLOAD
         assert tuple(session.preview_calls) == previous_calls
         assert panel.theme_list.currentItem().data(Qt.UserRole) == "builtin"

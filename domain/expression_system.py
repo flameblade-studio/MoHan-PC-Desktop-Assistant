@@ -7,6 +7,7 @@ lazy from collections.abc import Callable, Collection
 lazy from dataclasses import dataclass
 
 lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.contracts import default_character_display_name
 
 _EXPRESSION_CATALOG = default_expression_catalog()
 
@@ -23,20 +24,24 @@ EXPRESSION_TO_EMOTION = frozendict({
     expression: emotion
     for emotion, expression in EMOTION_TO_EXPRESSION.items()
 })
+_EMOTION_PROTOCOL_LABEL = (
+    re.sub(r"[^a-z0-9]+", "", default_character_display_name("en"), flags=re.I).upper()
+    + "_EMOTION"
+)
 INTERNAL_EMOTION_INSTRUCTION = (
     "在回覆正文的最後附加一個不可見控制標籤，格式必須是 "
-    "[[MOHAN_EMOTION:情緒:強度]]。情緒只能使用："
+    f"[[{_EMOTION_PROTOCOL_LABEL}:情緒:強度]]。情緒只能使用："
     + "、".join(EMOTION_TO_EXPRESSION)
     + "；強度為 0.00 至 1.00。標籤不可放入正文、不可解釋、"
     "不可朗讀。一般陳述使用 neutral；只有語意明確時才使用情緒標籤。"
 )
 _EMOTION_TAG = re.compile(
-    r"\[\[\s*MOHAN_EMOTION\s*:\s*([a-z_]+)"
+    rf"\[\[\s*{re.escape(_EMOTION_PROTOCOL_LABEL)}\s*:\s*([a-z_]+)"
     r"(?:\s*:\s*(0(?:\.\d+)?|1(?:\.0+)?))?\s*\]\]",
     re.IGNORECASE,
 )
 _ANY_EMOTION_TAG = re.compile(
-    r"\[\[\s*MOHAN_EMOTION\b[^\]]*\]\]",
+    rf"\[\[\s*{re.escape(_EMOTION_PROTOCOL_LABEL)}\b[^\]]*\]\]",
     re.IGNORECASE,
 )
 

@@ -10,6 +10,8 @@ lazy from collections.abc import Callable, Sequence
 lazy from dataclasses import dataclass
 lazy from types import ModuleType
 
+lazy from domain.contracts import default_character_display_name
+
 LOGGER = logging.getLogger(__name__)
 NATIVE_RGBA_MODULE_NAME = "_mohan_accel"
 RGBA_CHANNELS = 4
@@ -347,7 +349,8 @@ class NativeRgbaAcceleration:
             except Exception as error:
                 self._load_error = _error_summary(error)
                 LOGGER.info(
-                    "MoHan native RGBA acceleration is unavailable; using Python: %s",
+                    f"{default_character_display_name('en')} native RGBA acceleration "
+                    "is unavailable; using Python: %s",
                     self._load_error,
                 )
             finally:
@@ -376,7 +379,8 @@ class NativeRgbaAcceleration:
             count = self._operation_failures.get(operation, 0) + 1
             self._operation_failures[operation] = count
         LOGGER.warning(
-            "MoHan native RGBA operation %s requires attention; using Python fallback "
+            f"{default_character_display_name('en')} native RGBA operation %s "
+            "requires attention; using Python fallback "
             "(attention event %d): %s",
             operation,
             count,

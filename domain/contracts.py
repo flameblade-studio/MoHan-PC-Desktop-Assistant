@@ -4,9 +4,25 @@ lazy import sqlite3
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data import (
+    canonical_character_locale,
+    load_mohan_character_data,
+)
 
-_VOICE_DEFAULTS = load_mohan_character_data().voice
+_CHARACTER_DATA = load_mohan_character_data()
+_VOICE_DEFAULTS = _CHARACTER_DATA.voice
+
+
+def default_character_display_name(language: str = "en") -> str:
+    """Return the bundled character's localized name from character data."""
+
+    locale = canonical_character_locale(language)
+    return _CHARACTER_DATA.personas[locale].identity.display_name
+
+
+DEFAULT_PROTECTED_SECRET_DESCRIPTION = (
+    f"{default_character_display_name('en')} protected secret"
+)
 
 # PySide exposes class-level ``Signal`` descriptors and instance-level
 # ``SignalInstance`` objects.  Its generated stubs do not preserve that binding
@@ -29,7 +45,7 @@ class SecretStoreFactoryPort(Protocol):
     def __call__(
         self,
         path: Path,
-        description: str = "MoHan protected secret",
+        description: str = DEFAULT_PROTECTED_SECRET_DESCRIPTION,
     ) -> SecretStorePort: ...
 
 

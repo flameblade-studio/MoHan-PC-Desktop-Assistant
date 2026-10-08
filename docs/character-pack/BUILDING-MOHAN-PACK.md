@@ -4,7 +4,7 @@
 
 `tools/build_character_pack.py` 依 `docs/character-pack/mohan-inventory.json` 的 `runtime_data` 與 `product_validation_data` 範圍建置完整墨寒角色包。輸出保留每個實體檔案的 repo 相對路徑與原始位元組；兩個 `.mohan-outfit` 內已列出的 1,332 個虛擬成員不會重複封裝。`assets/characters/mohan/pack-source.json` 保存包身分、權利狀態、有限核准範圍、元件入口與驗證上限；它是只供建置器使用的支援描述，在正式清冊中屬 `excluded_support`，不會列入 `manifest.json` 的 `files` 或角色包 payload。
 
-目前正式清冊含 1,702 個實體 payload：1,654 個執行期檔案與 48 個產品自測檔案，合計 619,890,794 bytes；`pack-source.json` 的支援檔身分不會增加這個數字。最終數字由當下正式清冊實測，不在程式中寫死。建置器逐檔重算大小與 SHA-256，任何清冊漂移都會在建立輸出前失敗。manifest 的四語顯示名、正式名與別名由現有 persona 資料投影；`flameblade.character-rig.v1` 是同時包含 rig 與 `mohan-body-v2` v2 綁定的唯一既有入口，因此只建立一筆 `fullbody_rig` component，正式讀取器從同一份已驗證內容取得全身與半身契約，不偽造平行格式或獨立 body-profile 檔。來源與核准引用保留各自原 scope，不能解讀為整包散布核准。
+實體 payload 由正式清冊中的執行期檔案與產品自測檔案組成，最新數量與位元組數以 `mohan-inventory.json` 的 `scope_counts` 為準；`pack-source.json` 的支援檔身分不會增加這個數字。最終數字由當下正式清冊實測，不在程式中寫死。建置器逐檔重算大小與 SHA-256，任何清冊漂移都會在建立輸出前失敗。manifest 的四語顯示名、正式名與別名由現有 persona 資料投影；`flameblade.character-rig.v1` 是同時包含 rig 與 `mohan-body-v2` v2 綁定的唯一既有入口，因此只建立一筆 `fullbody_rig` component，正式讀取器從同一份已驗證內容取得全身與半身契約，不偽造平行格式或獨立 body-profile 檔。來源與核准引用保留各自原 scope，不能解讀為整包散布核准。
 
 ### 大小政策
 
@@ -27,7 +27,7 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 `tools/build_character_pack.py` 按 `docs/character-pack/mohan-inventory.json` 的 `runtime_data` 与 `product_validation_data` 范围构建完整墨寒角色包。输出保留每个实体文件的 repo 相对路径与原始字节；两个 `.mohan-outfit` 中已列出的 1,332 个虚拟成员不会重复打包。`assets/characters/mohan/pack-source.json` 保存包身份、权利状态、有限批准范围、组件入口和验证上限；它是仅供构建器使用的支持描述，在正式清册中属于 `excluded_support`，不会列入 `manifest.json` 的 `files` 或角色包 payload。
 
-当前正式清册包含 1,702 个实体 payload：1,654 个运行时文件与 48 个产品自测文件，合计 619,890,794 bytes；`pack-source.json` 的支持文件身份不会增加这个数字。最终数字由当时的正式清册实测，不在程序中写死。构建器逐文件重算大小与 SHA-256，任何清册漂移都会在建立输出前失败。manifest 的四语显示名、正式名与别名由现有 persona 数据投影；`flameblade.character-rig.v1` 是同时包含 rig 与 `mohan-body-v2` v2 绑定的唯一现有入口，因此只建立一项 `fullbody_rig` component，正式读取器从同一份已验证内容取得全身与半身契约，不伪造平行格式或独立 body-profile 文件。来源与批准引用保留各自原 scope，不能解释为整包分发批准。
+实体 payload 由正式清册中的运行时文件与产品自测文件组成，最新数量与字节数以 `mohan-inventory.json` 的 `scope_counts` 为准；`pack-source.json` 的支持文件身份不会增加这个数字。最终数字由当时的正式清册实测，不在程序中写死。构建器逐文件重算大小与 SHA-256，任何清册漂移都会在建立输出前失败。manifest 的四语显示名、正式名与别名由现有 persona 数据投影；`flameblade.character-rig.v1` 是同时包含 rig 与 `mohan-body-v2` v2 绑定的唯一现有入口，因此只建立一项 `fullbody_rig` component，正式读取器从同一份已验证内容取得全身与半身契约，不伪造平行格式或独立 body-profile 文件。来源与批准引用保留各自原 scope，不能解释为整包分发批准。
 
 ### 大小策略
 
@@ -50,7 +50,7 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 `tools/build_character_pack.py` builds the complete MoHan character pack from the `runtime_data` and `product_validation_data` scopes in `docs/character-pack/mohan-inventory.json`. Every physical file keeps its repository-relative path and original bytes. The 1,332 virtual members already contained in the two `.mohan-outfit` archives are not packaged twice. `assets/characters/mohan/pack-source.json` records package identity, rights states, narrow approval scopes, typed component entry points, and validation limits. It is a builder-only support declaration classified as `excluded_support` in the formal inventory, so it is absent from the `manifest.json` `files` list and character-pack payload.
 
-The current formal inventory contains 1,702 physical payloads: 1,654 runtime files and 48 product self-test files, totaling 619,890,794 bytes. The support-file status of `pack-source.json` does not increase that count. The final count is measured from the current formal inventory and is not hardcoded in the program. The builder remeasures every byte count and SHA-256 and fails before creating output if the inventory has drifted. Four-language display names, the canonical name, and aliases are projected from the existing persona data. `flameblade.character-rig.v1` is the sole existing entry point that contains both the rig and its `mohan-body-v2` v2 binding, so the manifest uses one `fullbody_rig` component. The production reader obtains both full-body and half-body contracts from that same validated content without inventing a parallel format or a separate body-profile file. Source and approval references retain their original narrow scopes and do not authorize distribution of the whole package.
+Physical payloads are the formal inventory's runtime files plus product self-test files; the current counts and byte totals come from `scope_counts` in `mohan-inventory.json`. The support-file status of `pack-source.json` does not increase that count. The final count is measured from the current formal inventory and is not hardcoded in the program. The builder remeasures every byte count and SHA-256 and fails before creating output if the inventory has drifted. Four-language display names, the canonical name, and aliases are projected from the existing persona data. `flameblade.character-rig.v1` is the sole existing entry point that contains both the rig and its `mohan-body-v2` v2 binding, so the manifest uses one `fullbody_rig` component. The production reader obtains both full-body and half-body contracts from that same validated content without inventing a parallel format or a separate body-profile file. Source and approval references retain their original narrow scopes and do not authorize distribution of the whole package.
 
 ### Size policy
 
@@ -73,7 +73,7 @@ This step does not change product read paths, installation, updates, or runtime 
 
 `tools/build_character_pack.py` は `docs/character-pack/mohan-inventory.json` の `runtime_data` と `product_validation_data` の範囲から完全な墨寒キャラクターパックをビルドします。各実ファイルはリポジトリ相対パスと元のバイト列を維持します。二つの `.mohan-outfit` に含まれ、一覧化済みの 1,332 個の仮想メンバーを重複して格納しません。`assets/characters/mohan/pack-source.json` はパックの身元、権利状態、限定された承認範囲、型付きコンポーネント入口、検証上限を記録します。これはビルダー専用の支援記述で、正式一覧では `excluded_support` に分類されるため、`manifest.json` の `files` とキャラクターパック payload には入りません。
 
-現在の正式一覧には実 payload が 1,702 個あります。内訳は実行時ファイル 1,654 個と製品セルフテスト用ファイル 48 個で、合計 619,890,794 bytes です。`pack-source.json` は支援ファイルなので、この数を増やしません。最終値はその時点の正式一覧から実測し、プログラムへ固定しません。ビルダーは全ファイルのサイズと SHA-256 を再計測し、一覧が変化していれば出力作成前に失敗します。四言語の表示名、正式名、別名は既存 persona データから投影します。`flameblade.character-rig.v1` は rig と `mohan-body-v2` v2 の結合を同時に含む唯一の既存入口なので、一つの `fullbody_rig` component を使います。正式読取器は同じ検証済み内容から全身と半身の契約を取得し、並行形式や存在しない独立 body-profile ファイルを作りません。出典と承認の参照は元の限定範囲を維持し、パック全体の配布承認を意味しません。
+実 payload は正式一覧の実行時ファイルと製品セルフテスト用ファイルで構成され、最新の数とバイト数は `mohan-inventory.json` の `scope_counts` に従います。`pack-source.json` は支援ファイルなので、この数を増やしません。最終値はその時点の正式一覧から実測し、プログラムへ固定しません。ビルダーは全ファイルのサイズと SHA-256 を再計測し、一覧が変化していれば出力作成前に失敗します。四言語の表示名、正式名、別名は既存 persona データから投影します。`flameblade.character-rig.v1` は rig と `mohan-body-v2` v2 の結合を同時に含む唯一の既存入口なので、一つの `fullbody_rig` component を使います。正式読取器は同じ検証済み内容から全身と半身の契約を取得し、並行形式や存在しない独立 body-profile ファイルを作りません。出典と承認の参照は元の限定範囲を維持し、パック全体の配布承認を意味しません。
 
 ### サイズ方針
 

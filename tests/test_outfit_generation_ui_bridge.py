@@ -110,6 +110,11 @@ def test_explicit_generation_bypasses_only_the_unattended_backoff() -> None:
         assert statuses[-1] == "generating"
         assert controller._active_worker is not None
         assert controller._active_worker.request.user_initiated is True
+        assert controller._active_worker.request.creative_direction == (
+            "An elegant original Northern-Song-inspired outfit for MoHan, "
+            "adapted to the current weather and mood while preserving her "
+            "blue-silver sword-spirit identity."
+        )
         assert len(controller._pool.workers) == 1
 
         cache_root = root / "outfit-generation-cache"

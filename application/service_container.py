@@ -45,6 +45,7 @@ lazy from domain.contracts import (
     SecretStorePort,
     SpeechListenerPort,
     SpeechProviderRegistryPort,
+    default_character_display_name,
 )
 lazy from domain.app_profile import DEFAULT_PROFILE, default_persona_for_language
 lazy from domain.character_body_profile import body_profile_reference
@@ -619,15 +620,15 @@ def create_default_services(
     secret_factory = platform_secret_store_factory(runtime_platform)
     secret_store = secret_factory(
         data_path / "openai-key.dpapi",
-        "MoHan OpenAI API key",
+        f"{default_character_display_name('en')} OpenAI API key",
     )
     azure_secret_store = secret_factory(
         data_path / "azure-speech-key.dpapi",
-        "MoHan Azure Speech key",
+        f"{default_character_display_name('en')} Azure Speech key",
     )
     azure_hd_secret_store = secret_factory(
         data_path / "azure-dragon-hd-key.dpapi",
-        "MoHan Azure Dragon HD Speech key",
+        f"{default_character_display_name('en')} Azure Dragon HD Speech key",
     )
     listener = SpeechListener(
         listener_script,

@@ -239,11 +239,25 @@ def _measure_file(path: Path) -> tuple[int, str]:
     return size, digest.hexdigest()
 
 
+# Every character-data category must map explicitly; an unknown one fails the
+# build instead of silently landing in program_data with the wrong license class.
+CHARACTER_DATA_LICENSE_COMPONENTS = {
+    "character_voice_data": "voice",
+    "character_dialogue_data": "persona_dialogue",
+    "character_persona_data": "persona_dialogue",
+    "character_runtime_dialogue_data": "persona_dialogue",
+    "character_ui_identifier_data": "persona_dialogue",
+    "character_rig_data": "program_data",
+    "character_runtime_binding_data": "program_data",
+    "character_expression_catalog": "program_data",
+}
+
+
 def _license_component(path: str, category: str) -> str:
-    if category == "character_voice_data":
-        return "voice"
-    if category in {"character_dialogue_data", "character_persona_data"}:
-        return "persona_dialogue"
+    if path.startswith("assets/characters/"):
+        if category not in CHARACTER_DATA_LICENSE_COMPONENTS:
+            raise CharacterPackBuildError(f"character data category has no license component: {category} ({path})")
+        return CHARACTER_DATA_LICENSE_COMPONENTS[category]
     if PurePosixPath(path).suffix.lower() in {".ico", ".mohan-outfit", ".png", ".svg"}:
         return "character_art"
     return "program_data"
