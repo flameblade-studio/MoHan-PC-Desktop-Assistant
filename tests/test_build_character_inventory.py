@@ -22,7 +22,6 @@ MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
 DERIVATIVE_COUNT = 234
-MIN_WORK_PACKAGE_COUNT = 3
 MAX_WORK_PACKAGE_COUNT = 5
 DERIVATIVE_COUNTS = {
     "fullbody_blink": 24,
@@ -293,7 +292,9 @@ def test_work_packages_are_exclusive_and_product_shell_is_reasoned(
     worklist: dict[str, Any],
 ) -> None:
     counts = worklist["counts"]
-    assert MIN_WORK_PACKAGE_COUNT <= counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    # Packages shrink as extraction lands; any remaining work must still be packaged.
+    assert counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    assert (counts["work_packages"] > 0) == bool(worklist["extraction_items"])
     assert counts["true_extraction_files"] == (
         counts["engine_extract_files"] + counts["ui_text_reference_files"]
     )
