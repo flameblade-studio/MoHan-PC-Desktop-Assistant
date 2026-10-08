@@ -1467,6 +1467,17 @@
       "sha256": "4fb8857a3bd3f39fd330f8cae8622741034dc8e437417dda3e3f36ae3ac6de6e"
     },
     {
+      "bytes": 7151,
+      "category": "archive_or_support",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/pack-source.json",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "6c98e8022ab03b091ae14af371ae89e5d4f7f7e12efee3be0f661c801ca6b318"
+    },
+    {
       "bytes": 3149,
       "category": "character_persona_data",
       "manifest_references": [],
@@ -90698,6 +90709,11 @@
           "text": "lazy from domain.character_pack.character_data import ("
         },
         {
+          "line": 17,
+          "path": "infrastructure/character_source_pack.py",
+          "text": "lazy from domain.character_pack.character_data import load_mohan_character_data"
+        },
+        {
           "line": 10,
           "path": "infrastructure/db.py",
           "text": "lazy from domain.character_pack.character_data import load_mohan_character_data"
@@ -108074,7 +108090,7 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 18,
+    "excluded_support": 19,
     "product_validation_data": 48,
     "runtime_data": 2986
   },

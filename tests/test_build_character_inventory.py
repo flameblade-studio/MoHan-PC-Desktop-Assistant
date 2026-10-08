@@ -157,10 +157,11 @@ CHARACTER_DATA_FILE_COUNT = 13  # 11 persona/dialogue/voice files + rig manifest
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
     rows = {row["path"]: row for row in inventory["files"] if row["path"].startswith("assets/characters/mohan/")}
-    data_rows = {path: row for path, row in rows.items() if path.endswith(".json")}
+    build_only = {"assets/characters/mohan/README.md", "assets/characters/mohan/pack-source.json"}
+    data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
-    assert rows["assets/characters/mohan/README.md"]["scope"] == "excluded_support"
+    assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
 def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> None:
