@@ -30,6 +30,25 @@ class PersonaIdentity:
 
 
 @dataclass(frozen=True, slots=True)
+class AppearanceItemSelection:
+    item_id: str
+    variant_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class CharacterAppearanceDefaults:
+    makeup_pack_id: str
+    makeup_item_id: str
+    makeup_variants: tuple[str, ...]
+    makeup_menu_variants: tuple[str, ...]
+    makeup_always_visible_variants: tuple[str, ...]
+    outfit_pack_id: str
+    outfit_ensemble_id: str
+    native_hair: AppearanceItemSelection
+    native_headwear: AppearanceItemSelection
+
+
+@dataclass(frozen=True, slots=True)
 class PersonaLocale:
     locale: str
     identity: PersonaIdentity
@@ -139,6 +158,7 @@ class VoiceProfile:
 
 @dataclass(frozen=True, slots=True)
 class MohanCharacterData:
+    appearance_defaults: CharacterAppearanceDefaults
     identity: IdentityProfile
     personas: Mapping[str, PersonaLocale]
     dialogues: Mapping[str, DialogueLocale]
@@ -147,7 +167,9 @@ class MohanCharacterData:
 
 
 __all__ = (
+    "AppearanceItemSelection",
     "AzureVoicePreferences",
+    "CharacterAppearanceDefaults",
     "CharacterDataError",
     "DialogueLocale",
     "EventsProfile",

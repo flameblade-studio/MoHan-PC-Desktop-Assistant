@@ -14,6 +14,7 @@ lazy from application.companion_phrasebook import (
 lazy from domain.app_profile import DEFAULT_PROFILE, default_persona_for_language
 lazy from domain.character_body_profile import body_profile_reference
 lazy from domain.character_full_body_rig import compatible_yaws
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_pack.validation import compute_package_hash
 lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_source import (
@@ -30,6 +31,7 @@ lazy from domain.outfit_pack import MAKEUP_CANVASES
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.app_resources import resource_path
 lazy from infrastructure.character_source_pack import (
+    APPEARANCE_DEFAULTS_SCHEMA,
     CharacterPackReadError,
     CharacterPackReader,
     DIALOGUE_SCHEMA,
@@ -54,6 +56,13 @@ def _json_bytes(value: object) -> bytes:
 def _component_specs() -> list[dict[str, object]]:
     body_profile = {"id": "synthetic-body-v1", "version": 1}
     specs: list[dict[str, object]] = [
+        {
+            "id": "synthetic.appearance-defaults",
+            "kind": "appearance_defaults",
+            "schema": APPEARANCE_DEFAULTS_SCHEMA,
+            "path": "character/appearance/defaults.json",
+            "body_profile": None,
+        },
         {
             "id": "synthetic.identity",
             "kind": "persona",
@@ -289,6 +298,61 @@ def test_character_pack_reader_rejects_invalid_real_component_content(
     assert captured.value.code == "invalid_component"
 
 
+def _assert_appearance_data_fails_closed(
+    pack: Path,
+    built: builder.CharacterPackBuildResult,
+) -> None:
+    appearance_path = "assets/characters/mohan/appearance/defaults.json"
+    appearance_file = pack / appearance_path
+    manifest_path = pack / "manifest.json"
+    original_appearance = appearance_file.read_bytes()
+    original_manifest = manifest_path.read_bytes()
+    manifest = json.loads(original_manifest)
+    try:
+        missing = dict(manifest)
+        missing["components"] = [
+            component
+            for component in manifest["components"]
+            if component["kind"] != "appearance_defaults"
+        ]
+        missing["package_hash"] = compute_package_hash(missing)
+        manifest_path.write_bytes(_json_bytes(missing))
+        with pytest.raises(CharacterPackReadError) as captured:
+            CharacterPackReader(
+                pack,
+                engine_version=FALLBACK_VERSION,
+                limits=built.validation_limits,
+            )
+        assert captured.value.code == "missing_component"
+
+        malformed = b"{}\n"
+        appearance_file.write_bytes(malformed)
+        malformed_hash = hashlib.sha256(malformed).hexdigest()
+        malformed_manifest = json.loads(original_manifest)
+        for record in malformed_manifest["files"]:
+            if record["path"] == appearance_path:
+                record["bytes"] = len(malformed)
+                record["sha256"] = malformed_hash
+        for component in malformed_manifest["components"]:
+            if component["path"] == appearance_path:
+                component["sha256"] = malformed_hash
+        malformed_manifest["package_hash"] = compute_package_hash(
+            malformed_manifest
+        )
+        manifest_path.write_bytes(_json_bytes(malformed_manifest))
+        with pytest.raises(CharacterPackReadError) as captured:
+            CharacterPackReader(
+                pack,
+                engine_version=FALLBACK_VERSION,
+                limits=built.validation_limits,
+            )
+        assert captured.value.code == "invalid_component"
+        assert captured.value.path == "assets/characters/mohan"
+    finally:
+        appearance_file.write_bytes(original_appearance)
+        manifest_path.write_bytes(original_manifest)
+
+
 def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
     pack = tmp_path / "flameblade.mohan"
     built = builder.build_character_pack(pack, output_format="directory")
@@ -307,6 +371,7 @@ def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
     assert source.canonical_name == legacy.canonical_name
     assert source.aliases == legacy.aliases
     assert source.body_profile == legacy.body_profile
+    assert source.appearance_defaults == legacy.appearance_defaults
     assert source.view_ids == legacy.view_ids
     assert source.fullbody_canvas == legacy.fullbody_canvas
     assert source.halfbody_canvas == legacy.halfbody_canvas
@@ -341,6 +406,8 @@ def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
     with pytest.raises(CharacterPackReadError, match="undeclared_path"):
         source.resolve_path("assets/characters/mohan/unknown.json")
 
+    _assert_appearance_data_fails_closed(pack, built)
+
 
 def test_default_source_matches_every_existing_public_contract_field() -> None:
     source = service_container.create_default_character_source()
@@ -366,6 +433,7 @@ def test_default_source_matches_every_existing_public_contract_field() -> None:
         canonical_view_id(yaw) for yaw in compatible_yaws()
     )
     assert source.layer_order == FULL_BODY_LAYER_Z_ORDER
+    assert source.appearance_defaults == load_mohan_character_data().appearance_defaults
     for language in LANGUAGES:
         assert source.display_name(language) == DEFAULT_PROFILE["assistant_name"]
         assert source.default_user_title(language) == DEFAULT_PROFILE["user_title"]

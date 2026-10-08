@@ -261,11 +261,8 @@ def test_legacy_exact_language_fallback_is_unchanged(language: str) -> None:
     assert probe.spoken == [["嗨，我在這裡！", "happy"]]
 
 
-def test_assigned_sources_only_retain_excluded_rig_content() -> None:
+def test_assigned_sources_have_no_extractable_character_content() -> None:
     for relative in ASSIGNED_PATHS:
         source = (ROOT / relative).read_text(encoding="utf-8")
         evidence = build_character_inventory._content_evidence(relative, source)
-        assert all(
-            item["content_kind"] in {"rig", "rig_assets"}
-            for item in evidence
-        )
+        assert evidence == []

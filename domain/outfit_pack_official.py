@@ -19,23 +19,50 @@ lazy from collections.abc import Callable, Iterable
 lazy from pathlib import Path
 lazy from typing import Protocol
 
-BUILTIN_MAKEUP_PACK_ID = "mohan.makeup.builtin"
-BUILTIN_MAKEUP_ITEM_ID = "mohan-signature"
-BUILTIN_MAKEUP_VARIANTS = ("classic", "light", "glamorous")
+lazy from domain.character_source import (
+    CharacterAppearanceDefaults,
+    CharacterSource,
+    character_appearance_defaults,
+)
+
+
+def _load_official_appearance(
+    source: CharacterSource | None = None,
+) -> CharacterAppearanceDefaults:
+    """Read already validated appearance data through the character-source boundary."""
+
+    return character_appearance_defaults(source)
+
+
+_APPEARANCE = _load_official_appearance()
+# Compatibility alias for callers introduced with character-pack 1.0.1.  This
+# value is a persisted product-shell sentinel, not character appearance data.
+DEFAULT_OUTFIT_SELECTION_ID = "mohan.default.blue-silver"
+BUILTIN_MAKEUP_PACK_ID = _APPEARANCE.makeup_pack_id
+BUILTIN_MAKEUP_ITEM_ID = _APPEARANCE.makeup_item_id
+BUILTIN_MAKEUP_VARIANTS = _APPEARANCE.makeup_variants
 # Keep the persisted/default variant order stable while presenting the menu from
 # the lightest look to the strongest look.
-BUILTIN_MAKEUP_MENU_VARIANTS = ("light", "classic", "glamorous")
+BUILTIN_MAKEUP_MENU_VARIANTS = _APPEARANCE.makeup_menu_variants
 # Classic and light remain visible for profiles that predate the optional
 # glamorous material.  Optional variants enter the menu only when the official
 # archive actually declares them.
-BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = ("light", "classic")
-OFFICIAL_OUTFIT_PACK_ID = "mohan.official.blue-white-hanfu"
-OFFICIAL_OUTFIT_ENSEMBLE_ID = "blue-white-hanfu"
+BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = _APPEARANCE.makeup_always_visible_variants
+OFFICIAL_OUTFIT_PACK_ID = _APPEARANCE.outfit_pack_id
+OFFICIAL_OUTFIT_ENSEMBLE_ID = _APPEARANCE.outfit_ensemble_id
 # These persisted ids predate the reviewed V5 sources.  On the V5 full-body
 # atlas, the named hair is already in the native layers; repainting the old
 # loose-hair asset would add a second hairstyle over the accepted bun.
-OFFICIAL_NATIVE_HAIR_ALIAS = (OFFICIAL_OUTFIT_PACK_ID, "loose-hair", "ink-black")
-OFFICIAL_NATIVE_HEADWEAR_ALIAS = (OFFICIAL_OUTFIT_PACK_ID, "silver-hairpiece", "silver")
+OFFICIAL_NATIVE_HAIR_ALIAS = (
+    OFFICIAL_OUTFIT_PACK_ID,
+    _APPEARANCE.native_hair.item_id,
+    _APPEARANCE.native_hair.variant_id,
+)
+OFFICIAL_NATIVE_HEADWEAR_ALIAS = (
+    OFFICIAL_OUTFIT_PACK_ID,
+    _APPEARANCE.native_headwear.item_id,
+    _APPEARANCE.native_headwear.variant_id,
+)
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
 # Ids reserved for archives under the official pack root; user imports remain separate from them.
@@ -48,9 +75,20 @@ Resolution = tuple[str, Identity]
 
 def is_official_native_alias(category: str, identity: Identity) -> bool:
     """Recognize a legacy official id without changing saved selections."""
+    appearance = _load_official_appearance()
+    hair = (
+        appearance.outfit_pack_id,
+        appearance.native_hair.item_id,
+        appearance.native_hair.variant_id,
+    )
+    headwear = (
+        appearance.outfit_pack_id,
+        appearance.native_headwear.item_id,
+        appearance.native_headwear.variant_id,
+    )
     return (
-        (category == "hairstyle" and identity == OFFICIAL_NATIVE_HAIR_ALIAS)
-        or (category == "headwear" and identity == OFFICIAL_NATIVE_HEADWEAR_ALIAS)
+        (category == "hairstyle" and identity == hair)
+        or (category == "headwear" and identity == headwear)
     )
 
 
@@ -101,11 +139,13 @@ class EnsembleLike(Protocol):
 
 def official_outfit_ensemble(ensembles: Iterable[EnsembleLike]) -> EnsembleLike | None:
     """The official default ensemble among the installed ones; the sentinel identifies a stripped build."""
+    appearance = _load_official_appearance()
     return next(
         (
             ensemble
             for ensemble in ensembles
-            if (ensemble.pack_id, ensemble.ensemble_id) == (OFFICIAL_OUTFIT_PACK_ID, OFFICIAL_OUTFIT_ENSEMBLE_ID)
+            if (ensemble.pack_id, ensemble.ensemble_id)
+            == (appearance.outfit_pack_id, appearance.outfit_ensemble_id)
         ),
         None,
     )
@@ -113,8 +153,10 @@ def official_outfit_ensemble(ensembles: Iterable[EnsembleLike]) -> EnsembleLike 
 
 def builtin_makeup_resolution(requested: Identity, installed_makeup: Iterable[SelectionLike]) -> Resolution:
     """``builtin`` makeup means the official built-in variant while its pack ships; a bare face until then."""
-    variant = requested[2] if requested[2] in BUILTIN_MAKEUP_VARIANTS else BUILTIN_MAKEUP_VARIANTS[0]
-    official = (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, variant)
+    appearance = _load_official_appearance()
+    variants = appearance.makeup_variants
+    variant = requested[2] if requested[2] in variants else variants[0]
+    official = (appearance.makeup_pack_id, appearance.makeup_item_id, variant)
     installed = {(item.pack_id, item.item_id, item.variant_id) for item in installed_makeup}
     return ("installed", official) if official in installed else ("builtin", BARE_SELECTION)
 
@@ -127,7 +169,14 @@ def builtin_outfit_resolution(category: str, requested: Identity, ensembles: Ite
     )
     if selection is None or selection.item_id is None or selection.variant_id is None:
         return ("builtin", requested)
-    return ("installed", (OFFICIAL_OUTFIT_PACK_ID, selection.item_id, selection.variant_id))
+    return (
+        "installed",
+        (
+            _load_official_appearance().outfit_pack_id,
+            selection.item_id,
+            selection.variant_id,
+        ),
+    )
 
 
 def resolve_builtin_sentinel(

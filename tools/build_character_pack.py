@@ -39,6 +39,7 @@ CharacterPackBuildSettings = _core.CharacterPackBuildSettings
 
 # Every character-data category maps explicitly; unknown data fails closed.
 CHARACTER_DATA_LICENSE_COMPONENTS = {
+    "character_appearance_defaults": "program_data",
     "character_voice_data": "voice",
     "character_dialogue_data": "persona_dialogue",
     "character_persona_data": "persona_dialogue",

@@ -6,6 +6,9 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from typing import Protocol, runtime_checkable
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
+
 
 @dataclass(frozen=True, slots=True)
 class CharacterCanvas:
@@ -74,6 +77,9 @@ class CharacterAppearanceContract(Protocol):
     """Read the body, view ring, canvases, and layer order of a character."""
 
     @property
+    def appearance_defaults(self) -> CharacterAppearanceDefaults: ...
+
+    @property
     def body_profile(self) -> CharacterBodyProfileReference: ...
 
     @property
@@ -103,11 +109,37 @@ class CharacterSource(Protocol):
     def appearance(self) -> CharacterAppearanceContract: ...
 
 
+_active_character_source: CharacterSource | None = None
+
+
+def activate_character_source(source: CharacterSource | None) -> None:
+    """Select the validated character source used by data-backed domain defaults."""
+
+    global _active_character_source
+    if source is not None and not isinstance(source, CharacterSource):
+        raise TypeError("The active character source must satisfy CharacterSource.")
+    _active_character_source = source
+
+
+def character_appearance_defaults(
+    source: CharacterSource | None = None,
+) -> CharacterAppearanceDefaults:
+    """Read appearance defaults from a source or the strict bundled data loader."""
+
+    selected = source if source is not None else _active_character_source
+    if selected is not None:
+        return selected.appearance.appearance_defaults
+    return load_mohan_character_data().appearance_defaults
+
+
 __all__ = (
     "CharacterAppearanceContract",
+    "CharacterAppearanceDefaults",
     "CharacterAssets",
     "CharacterBodyProfileReference",
     "CharacterCanvas",
     "CharacterPersona",
     "CharacterSource",
+    "activate_character_source",
+    "character_appearance_defaults",
 )
