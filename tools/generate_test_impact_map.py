@@ -25,6 +25,10 @@ SOURCE_ROOTS = frozenset(
 )
 SOURCE_SUFFIXES = frozenset({".py", ".pyi"})
 NATIVE_SOURCE_SUFFIXES = frozenset({".rs", ".toml"})
+# Product-neutral cores reached through thin ``tools/`` compatibility facades.
+# A test that imports a facade exercises the core behind it, so the derivation
+# follows facade -> core edges (and edges inside the core) transitively.
+FACADE_CORE_PREFIXES = ("huapu/",)
 # Keep this mapping empty unless a tracked source has no executable test surface.
 # Every exception must name the exact path and provide a durable engineering reason.
 SOURCE_COVERAGE_EXCEPTIONS: dict[str, str] = {}
@@ -254,13 +258,19 @@ def derive_test_associations(
             current_dependencies = dependencies.get(current, ())
             related.update(current_dependencies)
             related.update(references.get(current, ()))
-            pending.extend(
-                dependency
-                for dependency in current_dependencies
-                if dependency not in visited
-                and dependency in dependencies
-                and dependency.startswith("tests/")
-            )
+            for dependency in current_dependencies:
+                if dependency in visited or dependency not in dependencies:
+                    continue
+                if dependency.startswith(("tests/", *FACADE_CORE_PREFIXES)):
+                    pending.append(dependency)
+                elif dependency.startswith("tools/"):
+                    cores = tuple(
+                        core
+                        for core in dependencies[dependency]
+                        if core.startswith(FACADE_CORE_PREFIXES)
+                    )
+                    related.update(cores)
+                    pending.extend(cores)
         for related_path in related:
             if related_path != test_path:
                 associations[related_path].add(PurePosixPath(test_path).name)

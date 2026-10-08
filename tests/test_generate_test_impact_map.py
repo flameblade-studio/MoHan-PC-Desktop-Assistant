@@ -66,6 +66,26 @@ def test_derives_dependencies_through_imported_test_helpers(tmp_path: Path) -> N
     assert associations["domain/state.py"] == ("test_planner.py",)
 
 
+def test_derives_core_dependencies_behind_tool_facades(tmp_path: Path) -> None:
+    paths = (
+        "huapu/hashing.py",
+        "huapu/lock.py",
+        "tests/test_lock_tool.py",
+        "tools/verify_lock.py",
+    )
+    _write(tmp_path, "huapu/hashing.py", "VALUE = 1\n")
+    _write(tmp_path, "huapu/lock.py", "lazy from huapu.hashing import VALUE\n")
+    _write(tmp_path, "tools/verify_lock.py", "lazy from huapu.lock import VALUE\n")
+    _write(tmp_path, "tests/test_lock_tool.py", "lazy import tools.verify_lock\n")
+
+    associations = generator.derive_test_associations(tmp_path, paths)
+
+    expected = ("test_lock_tool.py",)
+    assert associations["tools/verify_lock.py"] == expected
+    assert associations["huapu/lock.py"] == expected
+    assert associations["huapu/hashing.py"] == expected
+
+
 def test_pytest_conftest_changes_select_every_test(tmp_path: Path) -> None:
     paths = (
         "tests/conftest.py",

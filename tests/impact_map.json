@@ -1413,6 +1413,7 @@
         "test_appearance_dynamics.py",
         "test_appearance_renderer.py",
         "test_application_bootstrap_contract.py",
+        "test_approved_asset_install.py",
         "test_architecture_contracts.py",
         "test_audio_buffer.py",
         "test_audit_pose_atlas_working.py",
@@ -3391,6 +3392,97 @@
     },
     {
       "paths": [
+        "domain/character_pack/__init__.py"
+      ],
+      "tests": [
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_pack.py",
+        "test_character_persona_data.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_engine_identity_parameterization.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_official_default_pack.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/models.py",
+        "domain/character_pack/validation.py"
+      ],
+      "tests": [
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/hashing.py"
+      ],
+      "tests": [
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_generate_test_impact_map.py",
+        "test_huapu.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/__init__.py"
+      ],
+      "tests": [
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_layered_facade_cycles.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "character-pack.lock.json",
+        "huapu/character_pack_builder.py",
+        "huapu/character_pack_lock.py",
+        "huapu/inventory.py",
+        "huapu/licenses.py",
+        "huapu/receipts.py",
+        "huapu/rendering.py",
+        "huapu/schema.py"
+      ],
+      "tests": [
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/approved_install.py",
         "tools/art_pipeline/approved_asset_install.py"
       ],
       "tests": [
@@ -4142,37 +4234,6 @@
     },
     {
       "paths": [
-        "domain/character_pack/__init__.py"
-      ],
-      "tests": [
-        "test_build_character_pack.py",
-        "test_character_pack.py",
-        "test_character_persona_data.py",
-        "test_character_source.py",
-        "test_engine_identity_parameterization.py",
-        "test_fetch_character_pack.py",
-        "test_huapu.py",
-        "test_official_default_pack.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_pack/validation.py"
-      ],
-      "tests": [
-        "test_build_character_pack.py",
-        "test_character_pack.py",
-        "test_character_source.py",
-        "test_fetch_character_pack.py",
-        "test_huapu.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "assets/characters/mohan/persona/profile.json"
       ],
       "tests": [
@@ -4521,17 +4582,6 @@
     },
     {
       "paths": [
-        "domain/character_pack/models.py"
-      ],
-      "tests": [
-        "test_character_pack.py",
-        "test_huapu.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "tests/data/p4-persona-before.json"
       ],
       "tests": [
@@ -4736,6 +4786,16 @@
       "tests": [
         "test_check_pose_atlas_release.py",
         "test_github_governance.py",
+        "test_huapu.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/pose_release.py"
+      ],
+      "tests": [
+        "test_check_pose_atlas_release.py",
         "test_huapu.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -5915,7 +5975,6 @@
     },
     {
       "paths": [
-        "character-pack.lock.json",
         "tools/fetch_character_pack.py"
       ],
       "tests": [
@@ -6704,30 +6763,10 @@
     },
     {
       "paths": [
-        "huapu/approved_install.py",
-        "huapu/character_pack_builder.py",
-        "huapu/character_pack_lock.py",
-        "huapu/hashing.py",
-        "huapu/inventory.py",
-        "huapu/licenses.py",
-        "huapu/pose_audit.py",
-        "huapu/pose_release.py",
-        "huapu/receipts.py",
-        "huapu/rendering.py",
-        "huapu/schema.py"
+        "huapu/pose_audit.py"
       ],
       "tests": [
         "test_huapu.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "huapu/__init__.py"
-      ],
-      "tests": [
-        "test_huapu.py",
-        "test_layered_facade_cycles.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
