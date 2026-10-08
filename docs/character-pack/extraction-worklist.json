@@ -5,13 +5,13 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 109,
-    "engine_extract_files": 68,
-    "manual_review_hint_only_files": 34,
+    "actual_embedded_code_files": 68,
+    "engine_extract_files": 27,
+    "manual_review_hint_only_files": 52,
     "product_shell_allowed_files": 7,
-    "true_extraction_files": 102,
+    "true_extraction_files": 61,
     "ui_text_reference_files": 34,
-    "work_packages": 4
+    "work_packages": 3
   },
   "declared_product_shell_allowlist": [
     {
@@ -65,31 +65,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 49,
-              "matched": "front-crossed",
-              "text": "silhouettes: tuple[str, ...] = (\"front-crossed\",)"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/appearance_renderer.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "expression",
           "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
           "locations": [
@@ -139,126 +114,6 @@
         "assets/characters/mohan/expressions/state-catalog.json"
       ],
       "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 113,
-              "matched": "back-full",
-              "text": "if self.pose == \"back-full\" and self.gaze is not GazeTarget.AWAY:"
-            },
-            {
-              "line": 242,
-              "matched": "right-neutral",
-              "text": "if plan.pose.endswith(\"-right\") or plan.pose == \"right-neutral\":"
-            },
-            {
-              "line": 248,
-              "matched": "left-neutral",
-              "text": "elif plan.pose.endswith(\"-left\") or plan.pose == \"left-neutral\":"
-            },
-            {
-              "line": 319,
-              "matched": "back-full",
-              "text": "\"back-full\","
-            },
-            {
-              "line": 374,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\","
-            },
-            {
-              "line": 390,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\", \"front-000\", \"speaking\", \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 395,
-              "matched": "left-neutral",
-              "text": "\"left-neutral\", \"left-030\", \"speaking\", \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 400,
-              "matched": "right-neutral",
-              "text": "\"right-neutral\", \"right-030\", \"speaking\", \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 411,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\", \"front-000\", \"idle\", \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 425,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\", \"front-000\", face, \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 430,
-              "matched": "left-neutral",
-              "text": "\"left-neutral\", \"left-030\", face, \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 435,
-              "matched": "right-neutral",
-              "text": "\"right-neutral\", \"right-030\", face, \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 443,
-              "matched": "left-cheek-rest",
-              "text": "\"left-cheek-rest\", \"left-030\", \"cheek\", \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 445,
-              "matched": "cheek-rest",
-              "text": "2_600, False, \"ambient-cheek-rest\","
-            },
-            {
-              "line": 453,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\", \"front-000\","
-            },
-            {
-              "line": 463,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\", \"front-000\","
-            },
-            {
-              "line": 507,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\", \"front-000\", \"neutral\", \"relaxed\", \"relaxed\","
-            },
-            {
-              "line": 558,
-              "matched": "front-crossed",
-              "text": "return plan.pose in {\"front-crossed\", \"left-neutral\", \"right-neutral\"}"
-            },
-            {
-              "line": 558,
-              "matched": "left-neutral",
-              "text": "return plan.pose in {\"front-crossed\", \"left-neutral\", \"right-neutral\"}"
-            },
-            {
-              "line": 558,
-              "matched": "right-neutral",
-              "text": "return plan.pose in {\"front-crossed\", \"left-neutral\", \"right-neutral\"}"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/behavior_director.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -319,121 +174,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 95,
-              "matched": "shy_cute_front",
-              "text": "\"shy_cute_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/outfit_reveal.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 144,
-              "matched": "assets/expressions/",
-              "text": "root = resource_path(\"assets/expressions/layered\")"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/packaged_self_test.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 97,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\": 0,"
-            },
-            {
-              "line": 98,
-              "matched": "left-neutral",
-              "text": "\"left-neutral\": 1,"
-            },
-            {
-              "line": 99,
-              "matched": "right-neutral",
-              "text": "\"right-neutral\": 1,"
-            },
-            {
-              "line": 100,
-              "matched": "back-two-thirds-left",
-              "text": "\"back-two-thirds-left\": 2,"
-            },
-            {
-              "line": 101,
-              "matched": "back-two-thirds-right",
-              "text": "\"back-two-thirds-right\": 2,"
-            },
-            {
-              "line": 102,
-              "matched": "back-full",
-              "text": "\"back-full\": 3,"
-            },
-            {
-              "line": 137,
-              "matched": "front-crossed",
-              "text": "pose=\"front-crossed\","
-            },
-            {
-              "line": 141,
-              "matched": "right-neutral",
-              "text": "elif candidate.pose == \"right-neutral\" and not preferences.view_360_enabled:"
-            },
-            {
-              "line": 144,
-              "matched": "front-crossed",
-              "text": "pose=\"front-crossed\","
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/performance_coordinator.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -504,46 +244,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 121,
-              "matched": "mock_scold",
-              "text": "ReminderExpression.RESTRAINED_TSUNDERE: \"mock_scold\","
-            },
-            {
-              "line": 122,
-              "matched": "determined_front",
-              "text": "ReminderExpression.QUIETLY_FIRM: \"determined_front\","
-            },
-            {
-              "line": 126,
-              "matched": "shy_front",
-              "text": "OccasionExpression.QUIETLY_HOPEFUL: \"shy_front\","
-            },
-            {
-              "line": 127,
-              "matched": "worried_front",
-              "text": "OccasionExpression.RESTRAINED_SULK: \"worried_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/proactive_companion_composition.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -624,6 +324,19 @@
       "classification": "engine_extract",
       "content": [
         {
+          "content_kind": "appearance",
+          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 52,
+              "matched": "mohan.default.blue-silver",
+              "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "character_appearance_pack_identifier",
+          "suggested_data_target": "assets/characters/mohan/pack-source.json"
+        },
+        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -641,249 +354,10 @@
       "path": "application/wardrobe_service.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
+        "assets/characters/mohan/pack-source.json",
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 22,
-              "matched": "gentle_smile_front",
-              "text": "\"happy\": \"gentle_smile_front\","
-            },
-            {
-              "line": 23,
-              "matched": "gentle_smile_front",
-              "text": "\"proud\": \"gentle_smile_front\","
-            },
-            {
-              "line": 24,
-              "matched": "gentle_smile_front",
-              "text": "\"proud_front\": \"gentle_smile_front\","
-            },
-            {
-              "line": 24,
-              "matched": "proud_front",
-              "text": "\"proud_front\": \"gentle_smile_front\","
-            },
-            {
-              "line": 25,
-              "matched": "gentle_smile_front",
-              "text": "\"relieved\": \"gentle_smile_front\","
-            },
-            {
-              "line": 26,
-              "matched": "gentle_smile_front",
-              "text": "\"relieved_front\": \"gentle_smile_front\","
-            },
-            {
-              "line": 26,
-              "matched": "relieved_front",
-              "text": "\"relieved_front\": \"gentle_smile_front\","
-            },
-            {
-              "line": 27,
-              "matched": "shy_cute_front",
-              "text": "\"shy\": \"shy_cute_front\","
-            },
-            {
-              "line": 28,
-              "matched": "shy_cute_front",
-              "text": "\"shy_front\": \"shy_cute_front\","
-            },
-            {
-              "line": 28,
-              "matched": "shy_front",
-              "text": "\"shy_front\": \"shy_cute_front\","
-            },
-            {
-              "line": 29,
-              "matched": "shy_cute_front",
-              "text": "\"shy_cute_front\": \"shy_cute_front\","
-            },
-            {
-              "line": 30,
-              "matched": "restrained_amused_front",
-              "text": "\"amused\": \"restrained_amused_front\","
-            },
-            {
-              "line": 31,
-              "matched": "restrained_amused_front",
-              "text": "\"restrained_amused_front\": \"restrained_amused_front\","
-            },
-            {
-              "line": 32,
-              "matched": "worried_front",
-              "text": "\"worried\": \"worried_front\","
-            },
-            {
-              "line": 33,
-              "matched": "worried_front",
-              "text": "\"worried_front\": \"worried_front\","
-            },
-            {
-              "line": 34,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle\": \"gentle_smile_front\","
-            },
-            {
-              "line": 35,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\": \"gentle_smile_front\","
-            },
-            {
-              "line": 36,
-              "matched": "attentive_front",
-              "text": "\"surprised\": \"attentive_front\","
-            },
-            {
-              "line": 37,
-              "matched": "attentive_front",
-              "text": "\"surprised_front\": \"attentive_front\","
-            },
-            {
-              "line": 37,
-              "matched": "surprised_front",
-              "text": "\"surprised_front\": \"attentive_front\","
-            },
-            {
-              "line": 38,
-              "matched": "attentive_front",
-              "text": "\"eureka\": \"attentive_front\","
-            },
-            {
-              "line": 39,
-              "matched": "attentive_front",
-              "text": "\"eureka_front\": \"attentive_front\","
-            },
-            {
-              "line": 39,
-              "matched": "eureka_front",
-              "text": "\"eureka_front\": \"attentive_front\","
-            },
-            {
-              "line": 40,
-              "matched": "attentive_front",
-              "text": "\"thinking\": \"attentive_front\","
-            },
-            {
-              "line": 41,
-              "matched": "attentive_front",
-              "text": "\"thinking_front\": \"attentive_front\","
-            },
-            {
-              "line": 41,
-              "matched": "thinking_front",
-              "text": "\"thinking_front\": \"attentive_front\","
-            },
-            {
-              "line": 42,
-              "matched": "attentive_front",
-              "text": "\"attentive\": \"attentive_front\","
-            },
-            {
-              "line": 43,
-              "matched": "attentive_front",
-              "text": "\"attentive_front\": \"attentive_front\","
-            },
-            {
-              "line": 44,
-              "matched": "caught",
-              "text": "\"caught\": \"shy_cute_front\","
-            },
-            {
-              "line": 44,
-              "matched": "shy_cute_front",
-              "text": "\"caught\": \"shy_cute_front\","
-            },
-            {
-              "line": 45,
-              "matched": "determined_front",
-              "text": "\"protective\": \"determined_front\","
-            },
-            {
-              "line": 46,
-              "matched": "determined_front",
-              "text": "\"protective_front\": \"determined_front\","
-            },
-            {
-              "line": 46,
-              "matched": "protective_front",
-              "text": "\"protective_front\": \"determined_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/affective_state.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 28,
-              "matched": "assets/characters/mohan",
-              "text": "MOHAN_CHARACTER_DATA_ROOT = Path(__file__).resolve().parents[2] / \"assets/characters/mohan\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/character_pack/character_data.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 150,
-              "matched": "assets/pose-atlas/v5",
-              "text": "POSE_ATLAS_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base\""
-            },
-            {
-              "line": 151,
-              "matched": "assets/pose-atlas/v5",
-              "text": "POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base-layered\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/constants.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -918,9 +392,9 @@
           "description": "角色命名的情緒協定標籤仍寫在引擎原始碼。",
           "locations": [
             {
-              "line": 27,
+              "line": 28,
               "matched": "MOHAN_EMOTION",
-              "text": "\"在回覆正文的最後附加一個不可見控制標籤，格式必須是 \""
+              "text": "\"[[MOHAN_EMOTION:情緒:強度]]。情緒只能使用：\""
             },
             {
               "line": 34,
@@ -944,101 +418,6 @@
         "assets/characters/mohan/expressions/state-catalog.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 38,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            },
-            {
-              "line": 39,
-              "matched": "proud_front",
-              "text": "\"proud_front\","
-            },
-            {
-              "line": 40,
-              "matched": "relieved_front",
-              "text": "\"relieved_front\","
-            },
-            {
-              "line": 41,
-              "matched": "restrained_amused_front",
-              "text": "\"restrained_amused_front\","
-            },
-            {
-              "line": 44,
-              "matched": "shy_cute_front",
-              "text": "BLUSH_EXPRESSIONS = frozenset({\"shy_front\", \"shy_cute_front\"})"
-            },
-            {
-              "line": 44,
-              "matched": "shy_front",
-              "text": "BLUSH_EXPRESSIONS = frozenset({\"shy_front\", \"shy_cute_front\"})"
-            },
-            {
-              "line": 46,
-              "matched": "attentive_front",
-              "text": "{\"surprised_front\", \"eureka_front\", \"attentive_front\"}"
-            },
-            {
-              "line": 46,
-              "matched": "eureka_front",
-              "text": "{\"surprised_front\", \"eureka_front\", \"attentive_front\"}"
-            },
-            {
-              "line": 46,
-              "matched": "surprised_front",
-              "text": "{\"surprised_front\", \"eureka_front\", \"attentive_front\"}"
-            },
-            {
-              "line": 50,
-              "matched": "determined_front",
-              "text": "\"determined_front\","
-            },
-            {
-              "line": 52,
-              "matched": "worried_front",
-              "text": "\"worried_front\","
-            },
-            {
-              "line": 53,
-              "matched": "exasperated_front",
-              "text": "\"exasperated_front\","
-            },
-            {
-              "line": 54,
-              "matched": "mock_scold",
-              "text": "\"mock_scold\","
-            },
-            {
-              "line": 55,
-              "matched": "mock_hit_front",
-              "text": "\"mock_hit_front\","
-            },
-            {
-              "line": 56,
-              "matched": "protective_front",
-              "text": "\"protective_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/face_motion.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -1084,366 +463,36 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
+          "content_kind": "appearance",
+          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
           "locations": [
             {
-              "line": 72,
-              "matched": "glance",
-              "text": "GLANCE_MAKEUP_SILHOUETTES = (\"cheek-glance\", \"cheek-glance-half\", \"cheek-glance-closed\")"
+              "line": 22,
+              "matched": "mohan.makeup.builtin",
+              "text": "BUILTIN_MAKEUP_PACK_ID = \"mohan.makeup.builtin\""
             },
             {
-              "line": 73,
-              "matched": "caught",
-              "text": "BATCH2_MAKEUP_SILHOUETTES = tuple(f\"cheek-{expression}{suffix}\" for expression in (\"caught\", \"happy\", \"worried\", \"reminder\") for suffix in (\"\", \"-half\", \"-closed\"))"
+              "line": 23,
+              "matched": "mohan-signature",
+              "text": "BUILTIN_MAKEUP_ITEM_ID = \"mohan-signature\""
             },
             {
-              "line": 76,
-              "matched": "protective_front",
-              "text": "EXPRESSION_SILHOUETTE_ALIASES = frozendict({\"cheek\": \"cheek-rest\", \"lean\": \"left-neutral\", \"front\": \"front-crossed\", \"protective_front\": \"front-crossed\"})"
+              "line": 32,
+              "matched": "mohan.official.blue-white-hanfu",
+              "text": "OFFICIAL_OUTFIT_PACK_ID = \"mohan.official.blue-white-hanfu\""
             }
           ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 65,
-              "matched": "cheek-rest",
-              "text": "BASE_SILHOUETTES = (\"cheek-rest\", \"left-neutral\", \"front-crossed\")"
-            },
-            {
-              "line": 65,
-              "matched": "front-crossed",
-              "text": "BASE_SILHOUETTES = (\"cheek-rest\", \"left-neutral\", \"front-crossed\")"
-            },
-            {
-              "line": 65,
-              "matched": "left-neutral",
-              "text": "BASE_SILHOUETTES = (\"cheek-rest\", \"left-neutral\", \"front-crossed\")"
-            },
-            {
-              "line": 66,
-              "matched": "front-eureka",
-              "text": "GESTURE_SILHOUETTES = (\"front-mock-scold\", \"front-mock-hit\", \"front-eureka\", \"front-exasperated\")"
-            },
-            {
-              "line": 66,
-              "matched": "front-exasperated",
-              "text": "GESTURE_SILHOUETTES = (\"front-mock-scold\", \"front-mock-hit\", \"front-eureka\", \"front-exasperated\")"
-            },
-            {
-              "line": 66,
-              "matched": "front-mock-hit",
-              "text": "GESTURE_SILHOUETTES = (\"front-mock-scold\", \"front-mock-hit\", \"front-eureka\", \"front-exasperated\")"
-            },
-            {
-              "line": 66,
-              "matched": "front-mock-scold",
-              "text": "GESTURE_SILHOUETTES = (\"front-mock-scold\", \"front-mock-hit\", \"front-eureka\", \"front-exasperated\")"
-            },
-            {
-              "line": 76,
-              "matched": "cheek-rest",
-              "text": "EXPRESSION_SILHOUETTE_ALIASES = frozendict({\"cheek\": \"cheek-rest\", \"lean\": \"left-neutral\", \"front\": \"front-crossed\", \"protective_front\": \"front-crossed\"})"
-            },
-            {
-              "line": 76,
-              "matched": "front-crossed",
-              "text": "EXPRESSION_SILHOUETTE_ALIASES = frozendict({\"cheek\": \"cheek-rest\", \"lean\": \"left-neutral\", \"front\": \"front-crossed\", \"protective_front\": \"front-crossed\"})"
-            },
-            {
-              "line": 76,
-              "matched": "left-neutral",
-              "text": "EXPRESSION_SILHOUETTE_ALIASES = frozendict({\"cheek\": \"cheek-rest\", \"lean\": \"left-neutral\", \"front\": \"front-crossed\", \"protective_front\": \"front-crossed\"})"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+          "rule": "character_appearance_pack_identifier",
+          "suggested_data_target": "assets/characters/mohan/pack-source.json"
         }
       ],
-      "estimated_difficulty": "high",
-      "path": "domain/outfit_pack.py",
+      "estimated_difficulty": "medium",
+      "path": "domain/outfit_pack_official.py",
       "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
       "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
+        "assets/characters/mohan/pack-source.json"
       ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "角色身形或角色識別碼仍寫在原始碼。",
-          "locations": [
-            {
-              "line": 21,
-              "matched": "mohan-body-v2",
-              "text": "BODY_PROFILE_ID = \"mohan-body-v2\""
-            }
-          ],
-          "rule": "character_body_profile_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/outfit_pack_archive.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 92,
-              "matched": "assets/expressions/",
-              "text": "HALF_BODY_RIG_ROOT = \"assets/expressions/layered\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 66,
-              "matched": "brow_left",
-              "text": "(\"eyelid_left\", \"eyeliner_left\", \"brow_left\"),"
-            },
-            {
-              "line": 66,
-              "matched": "eyelid_left",
-              "text": "(\"eyelid_left\", \"eyeliner_left\", \"brow_left\"),"
-            },
-            {
-              "line": 66,
-              "matched": "eyeliner_left",
-              "text": "(\"eyelid_left\", \"eyeliner_left\", \"brow_left\"),"
-            },
-            {
-              "line": 67,
-              "matched": "brow_right",
-              "text": "(\"eyelid_right\", \"eyeliner_right\", \"brow_right\"),"
-            },
-            {
-              "line": 67,
-              "matched": "eyelid_right",
-              "text": "(\"eyelid_right\", \"eyeliner_right\", \"brow_right\"),"
-            },
-            {
-              "line": 67,
-              "matched": "eyeliner_right",
-              "text": "(\"eyelid_right\", \"eyeliner_right\", \"brow_right\"),"
-            },
-            {
-              "line": 69,
-              "matched": "blush_left",
-              "text": "\"cheeks\": ((\"blush_left\",), (\"blush_right\",)),"
-            },
-            {
-              "line": 69,
-              "matched": "blush_right",
-              "text": "\"cheeks\": ((\"blush_left\",), (\"blush_right\",)),"
-            },
-            {
-              "line": 70,
-              "matched": "corner_left",
-              "text": "\"lips\": ((\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"),),"
-            },
-            {
-              "line": 70,
-              "matched": "corner_right",
-              "text": "\"lips\": ((\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"),),"
-            },
-            {
-              "line": 70,
-              "matched": "lip_lower",
-              "text": "\"lips\": ((\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"),),"
-            },
-            {
-              "line": 70,
-              "matched": "lip_upper",
-              "text": "\"lips\": ((\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"),),"
-            },
-            {
-              "line": 78,
-              "matched": "eyelid_left",
-              "text": "((\"iris_left\", \"iris_right\"), (\"eyelid_left\", \"eyelid_right\")),"
-            },
-            {
-              "line": 78,
-              "matched": "eyelid_right",
-              "text": "((\"iris_left\", \"iris_right\"), (\"eyelid_left\", \"eyelid_right\")),"
-            },
-            {
-              "line": 78,
-              "matched": "iris_left",
-              "text": "((\"iris_left\", \"iris_right\"), (\"eyelid_left\", \"eyelid_right\")),"
-            },
-            {
-              "line": 78,
-              "matched": "iris_right",
-              "text": "((\"iris_left\", \"iris_right\"), (\"eyelid_left\", \"eyelid_right\")),"
-            },
-            {
-              "line": 79,
-              "matched": "lip_lower",
-              "text": "((\"oral_cavity\", \"teeth_tongue\"), (\"lip_upper\", \"lip_lower\")),"
-            },
-            {
-              "line": 79,
-              "matched": "lip_upper",
-              "text": "((\"oral_cavity\", \"teeth_tongue\"), (\"lip_upper\", \"lip_lower\")),"
-            },
-            {
-              "line": 79,
-              "matched": "oral_cavity",
-              "text": "((\"oral_cavity\", \"teeth_tongue\"), (\"lip_upper\", \"lip_lower\")),"
-            },
-            {
-              "line": 79,
-              "matched": "teeth_tongue",
-              "text": "((\"oral_cavity\", \"teeth_tongue\"), (\"lip_upper\", \"lip_lower\")),"
-            },
-            {
-              "line": 99,
-              "matched": "eyelid_left",
-              "text": "\"iris_left\", \"iris_right\", \"eyelid_left\", \"eyelid_right\","
-            },
-            {
-              "line": 99,
-              "matched": "eyelid_right",
-              "text": "\"iris_left\", \"iris_right\", \"eyelid_left\", \"eyelid_right\","
-            },
-            {
-              "line": 99,
-              "matched": "iris_left",
-              "text": "\"iris_left\", \"iris_right\", \"eyelid_left\", \"eyelid_right\","
-            },
-            {
-              "line": 99,
-              "matched": "iris_right",
-              "text": "\"iris_left\", \"iris_right\", \"eyelid_left\", \"eyelid_right\","
-            },
-            {
-              "line": 100,
-              "matched": "lip_lower",
-              "text": "\"oral_cavity\", \"lip_upper\", \"lip_lower\","
-            },
-            {
-              "line": 100,
-              "matched": "lip_upper",
-              "text": "\"oral_cavity\", \"lip_upper\", \"lip_lower\","
-            },
-            {
-              "line": 100,
-              "matched": "oral_cavity",
-              "text": "\"oral_cavity\", \"lip_upper\", \"lip_lower\","
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 84,
-              "matched": "cheek-rest",
-              "text": "\"cheek-rest\": \"cheek\","
-            },
-            {
-              "line": 85,
-              "matched": "left-neutral",
-              "text": "\"left-neutral\": \"lean\","
-            },
-            {
-              "line": 86,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\": \"front\","
-            },
-            {
-              "line": 87,
-              "matched": "front-mock-scold",
-              "text": "\"front-mock-scold\": \"front\","
-            },
-            {
-              "line": 88,
-              "matched": "front-mock-hit",
-              "text": "\"front-mock-hit\": \"front\","
-            },
-            {
-              "line": 89,
-              "matched": "front-eureka",
-              "text": "\"front-eureka\": \"front\","
-            },
-            {
-              "line": 90,
-              "matched": "front-exasperated",
-              "text": "\"front-exasperated\": \"front\","
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/outfit_pack_makeup.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 27,
-              "matched": "cheek-rest",
-              "text": "BUILTIN_POSES = frozenset({\"cheek-rest\", \"left-neutral\", \"front-crossed\"})"
-            },
-            {
-              "line": 27,
-              "matched": "front-crossed",
-              "text": "BUILTIN_POSES = frozenset({\"cheek-rest\", \"left-neutral\", \"front-crossed\"})"
-            },
-            {
-              "line": 27,
-              "matched": "left-neutral",
-              "text": "BUILTIN_POSES = frozenset({\"cheek-rest\", \"left-neutral\", \"front-crossed\"})"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/pose_pack.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
+      "work_package": "engine-identity-parameterization"
     },
     {
       "classification": "ui_text_reference",
@@ -1624,1036 +673,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 32,
-              "matched": "shy_cute_front",
-              "text": "SHY_EXPRESSIONS = frozenset({\"shy\", \"shy_cute_front\", \"shy_front\"})"
-            },
-            {
-              "line": 32,
-              "matched": "shy_front",
-              "text": "SHY_EXPRESSIONS = frozenset({\"shy\", \"shy_cute_front\", \"shy_front\"})"
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/shyness.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 76,
-              "matched": "assets/pose-atlas/v5",
-              "text": "/ \"assets/pose-atlas/v5-appearance-replacement-masks\""
-            },
-            {
-              "line": 105,
-              "matched": "assets/pose-atlas/v5",
-              "text": "path = self._asset_root / \"assets/pose-atlas/v5-body-overlays\" / f\"{view_id}.png\""
-            },
-            {
-              "line": 135,
-              "matched": "assets/pose-atlas/v5",
-              "text": "/ \"assets/pose-atlas/v5-appearance-silhouettes\""
-            },
-            {
-              "line": 170,
-              "matched": "assets/pose-atlas/v5",
-              "text": "directory = self._asset_root / \"assets/pose-atlas/v5-hand-overlays\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/active_outfit_overlay_layers.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行畫布尺寸仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 58,
-              "matched": "1254x1254",
-              "text": "raise ValueError(f\"Complete half-body {label} canvas must be 1254x1254: {value}\")"
-            }
-          ],
-          "rule": "character_canvas_size_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 18,
-              "matched": "glance",
-              "text": "GLANCE_COMPLETE_POSE = \"cheek-glance\""
-            },
-            {
-              "line": 20,
-              "matched": "caught",
-              "text": "\"cheek-glance\", \"cheek-caught\", \"cheek-happy\", \"cheek-worried\", \"cheek-reminder\","
-            },
-            {
-              "line": 20,
-              "matched": "glance",
-              "text": "\"cheek-glance\", \"cheek-caught\", \"cheek-happy\", \"cheek-worried\", \"cheek-reminder\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/complete_halfbody_expressions.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 178,
-              "matched": "cheek-rest",
-              "text": "appearance_view_id = \"cheek-rest\" if pose in COMPLETE_CHEEK_POSES else pose"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/complete_halfbody_renderer.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 72,
-              "matched": "assets/expressions/",
-              "text": "Path(asset_root) / \"assets/expressions/layered\""
-            },
-            {
-              "line": 88,
-              "matched": "assets/pose-atlas/v5",
-              "text": "overlay_directory = Path(asset_root) / \"assets/pose-atlas/v5-hand-overlays\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/core_hand_regions.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 210,
-              "matched": "exasperated_front",
-              "text": "if mouth_expression not in {None, \"exasperated_front\"} and mouth_expression not in EXPRESSION_VARIANTS:"
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 205,
-              "matched": "front-exasperated",
-              "text": "if silhouette != \"front-exasperated\":"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/exasperated_candidate_appearance.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 22,
-              "matched": "assets/expressions/",
-              "text": "FORMAL_ASSET_RELATIVE_DIR = \"assets/expressions/source-bound-exasperated\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 87,
-              "matched": "exasperated_front",
-              "text": "if expression == \"exasperated_front\":"
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/exasperated_candidate_assets.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 63,
-              "matched": "front-exasperated",
-              "text": "frame, \"front-exasperated\", mouth_expression=mouth_expression"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/exasperated_face_rendering.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 39,
-              "matched": "oral_cavity",
-              "text": "\"oral_cavity\","
-            },
-            {
-              "line": 40,
-              "matched": "teeth_tongue",
-              "text": "\"teeth_tongue\","
-            },
-            {
-              "line": 41,
-              "matched": "lip_lower",
-              "text": "\"lip_lower\","
-            },
-            {
-              "line": 42,
-              "matched": "lip_upper",
-              "text": "\"lip_upper\","
-            },
-            {
-              "line": 43,
-              "matched": "corner_left",
-              "text": "\"corner_left\","
-            },
-            {
-              "line": 44,
-              "matched": "corner_right",
-              "text": "\"corner_right\","
-            },
-            {
-              "line": 45,
-              "matched": "blush_left",
-              "text": "\"blush_left\","
-            },
-            {
-              "line": 46,
-              "matched": "blush_right",
-              "text": "\"blush_right\","
-            },
-            {
-              "line": 47,
-              "matched": "iris_left",
-              "text": "\"iris_left\","
-            },
-            {
-              "line": 48,
-              "matched": "iris_right",
-              "text": "\"iris_right\","
-            },
-            {
-              "line": 49,
-              "matched": "eyelid_left",
-              "text": "\"eyelid_left\","
-            },
-            {
-              "line": 50,
-              "matched": "eyelid_right",
-              "text": "\"eyelid_right\","
-            },
-            {
-              "line": 51,
-              "matched": "eyeliner_left",
-              "text": "\"eyeliner_left\","
-            },
-            {
-              "line": 52,
-              "matched": "eyeliner_right",
-              "text": "\"eyeliner_right\","
-            },
-            {
-              "line": 53,
-              "matched": "brow_left",
-              "text": "\"brow_left\","
-            },
-            {
-              "line": 54,
-              "matched": "brow_right",
-              "text": "\"brow_right\","
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/layered_face_calibration.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 100,
-              "matched": "lip_lower",
-              "text": "for layer_name in (\"lip_upper\", \"lip_lower\"):"
-            },
-            {
-              "line": 100,
-              "matched": "lip_upper",
-              "text": "for layer_name in (\"lip_upper\", \"lip_lower\"):"
-            },
-            {
-              "line": 102,
-              "matched": "lip_upper",
-              "text": "dy = mouth.aperture * (-2.0 if layer_name == \"lip_upper\" else 8.0)"
-            },
-            {
-              "line": 116,
-              "matched": "oral_cavity",
-              "text": "pose.path(\"oral_cavity\"),"
-            },
-            {
-              "line": 123,
-              "matched": "teeth_tongue",
-              "text": "pose.path(\"teeth_tongue\"),"
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/layered_face_painting.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 214,
-              "matched": "exasperated_front",
-              "text": "if gesture == \"exasperated_front\" and self._exasperated_candidate_dir is not None:"
-            },
-            {
-              "line": 297,
-              "matched": "exasperated_front",
-              "text": "and gesture_portrait_expression(expression) == \"exasperated_front\""
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 58,
-              "matched": "hair_back",
-              "text": "\"body\", \"hair_back\", \"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\","
-            },
-            {
-              "line": 58,
-              "matched": "oral_cavity",
-              "text": "\"body\", \"hair_back\", \"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\","
-            },
-            {
-              "line": 58,
-              "matched": "teeth_tongue",
-              "text": "\"body\", \"hair_back\", \"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\","
-            },
-            {
-              "line": 59,
-              "matched": "lip_lower",
-              "text": "\"lip_lower\", \"lip_upper\","
-            },
-            {
-              "line": 59,
-              "matched": "lip_upper",
-              "text": "\"lip_lower\", \"lip_upper\","
-            },
-            {
-              "line": 60,
-              "matched": "blush_left",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 60,
-              "matched": "blush_right",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 60,
-              "matched": "corner_left",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 60,
-              "matched": "corner_right",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 60,
-              "matched": "iris_left",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 61,
-              "matched": "eyelid_left",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 61,
-              "matched": "eyelid_right",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 61,
-              "matched": "eyeliner_left",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 61,
-              "matched": "iris_right",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 62,
-              "matched": "brow_left",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\", \"hair_left\", \"hair_right\","
-            },
-            {
-              "line": 62,
-              "matched": "brow_right",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\", \"hair_left\", \"hair_right\","
-            },
-            {
-              "line": 62,
-              "matched": "eyeliner_right",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\", \"hair_left\", \"hair_right\","
-            },
-            {
-              "line": 62,
-              "matched": "hair_left",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\", \"hair_left\", \"hair_right\","
-            },
-            {
-              "line": 62,
-              "matched": "hair_right",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\", \"hair_left\", \"hair_right\","
-            },
-            {
-              "line": 63,
-              "matched": "sleeve_left",
-              "text": "\"sleeve_left\", \"sleeve_right\", \"ornament\","
-            },
-            {
-              "line": 63,
-              "matched": "sleeve_right",
-              "text": "\"sleeve_left\", \"sleeve_right\", \"ornament\","
-            },
-            {
-              "line": 66,
-              "matched": "lip_lower",
-              "text": "\"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\", \"lip_lower\", \"lip_upper\","
-            },
-            {
-              "line": 66,
-              "matched": "lip_upper",
-              "text": "\"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\", \"lip_lower\", \"lip_upper\","
-            },
-            {
-              "line": 66,
-              "matched": "oral_cavity",
-              "text": "\"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\", \"lip_lower\", \"lip_upper\","
-            },
-            {
-              "line": 66,
-              "matched": "teeth_tongue",
-              "text": "\"base\", \"jaw\", \"oral_cavity\", \"teeth_tongue\", \"lip_lower\", \"lip_upper\","
-            },
-            {
-              "line": 67,
-              "matched": "blush_left",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 67,
-              "matched": "blush_right",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 67,
-              "matched": "corner_left",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 67,
-              "matched": "corner_right",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 67,
-              "matched": "iris_left",
-              "text": "\"corner_left\", \"corner_right\", \"blush_left\", \"blush_right\", \"iris_left\","
-            },
-            {
-              "line": 68,
-              "matched": "eyelid_left",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 68,
-              "matched": "eyelid_right",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 68,
-              "matched": "eyeliner_left",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 68,
-              "matched": "iris_right",
-              "text": "\"iris_right\", \"eyelid_left\", \"eyelid_right\", \"eyeliner_left\","
-            },
-            {
-              "line": 69,
-              "matched": "brow_left",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\","
-            },
-            {
-              "line": 69,
-              "matched": "brow_right",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\","
-            },
-            {
-              "line": 69,
-              "matched": "eyeliner_right",
-              "text": "\"eyeliner_right\", \"brow_left\", \"brow_right\","
-            },
-            {
-              "line": 519,
-              "matched": "oral_cavity",
-              "text": "\"oral_cavity\","
-            },
-            {
-              "line": 520,
-              "matched": "teeth_tongue",
-              "text": "\"teeth_tongue\","
-            },
-            {
-              "line": 521,
-              "matched": "lip_lower",
-              "text": "\"lip_lower\","
-            },
-            {
-              "line": 522,
-              "matched": "lip_upper",
-              "text": "\"lip_upper\","
-            },
-            {
-              "line": 523,
-              "matched": "corner_left",
-              "text": "\"corner_left\","
-            },
-            {
-              "line": 524,
-              "matched": "corner_right",
-              "text": "\"corner_right\","
-            },
-            {
-              "line": 561,
-              "matched": "hair_back",
-              "text": "\"hair_back\","
-            },
-            {
-              "line": 564,
-              "matched": "oral_cavity",
-              "text": "\"oral_cavity\","
-            },
-            {
-              "line": 565,
-              "matched": "teeth_tongue",
-              "text": "\"teeth_tongue\","
-            },
-            {
-              "line": 566,
-              "matched": "lip_lower",
-              "text": "\"lip_lower\","
-            },
-            {
-              "line": 567,
-              "matched": "lip_upper",
-              "text": "\"lip_upper\","
-            },
-            {
-              "line": 568,
-              "matched": "corner_left",
-              "text": "\"corner_left\","
-            },
-            {
-              "line": 569,
-              "matched": "corner_right",
-              "text": "\"corner_right\","
-            },
-            {
-              "line": 570,
-              "matched": "blush_left",
-              "text": "\"blush_left\","
-            },
-            {
-              "line": 571,
-              "matched": "blush_right",
-              "text": "\"blush_right\","
-            },
-            {
-              "line": 572,
-              "matched": "iris_left",
-              "text": "\"iris_left\","
-            },
-            {
-              "line": 573,
-              "matched": "iris_right",
-              "text": "\"iris_right\","
-            },
-            {
-              "line": 574,
-              "matched": "eyelid_left",
-              "text": "\"eyelid_left\","
-            },
-            {
-              "line": 575,
-              "matched": "eyelid_right",
-              "text": "\"eyelid_right\","
-            },
-            {
-              "line": 576,
-              "matched": "eyeliner_left",
-              "text": "\"eyeliner_left\","
-            },
-            {
-              "line": 577,
-              "matched": "eyeliner_right",
-              "text": "\"eyeliner_right\","
-            },
-            {
-              "line": 578,
-              "matched": "brow_left",
-              "text": "\"brow_left\","
-            },
-            {
-              "line": 579,
-              "matched": "brow_right",
-              "text": "\"brow_right\","
-            },
-            {
-              "line": 650,
-              "matched": "hair_left",
-              "text": "\"hair_left\","
-            },
-            {
-              "line": 651,
-              "matched": "hair_right",
-              "text": "\"hair_right\","
-            },
-            {
-              "line": 652,
-              "matched": "sleeve_left",
-              "text": "\"sleeve_left\","
-            },
-            {
-              "line": 653,
-              "matched": "sleeve_right",
-              "text": "\"sleeve_right\","
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 294,
-              "matched": "cheek-rest",
-              "text": "return bool(callable(capability) and capability(\"cheek-rest\"))"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/layered_face_renderer.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 44,
-              "matched": "iris_left",
-              "text": "layers = (\"iris_left\", \"iris_right\")"
-            },
-            {
-              "line": 44,
-              "matched": "iris_right",
-              "text": "layers = (\"iris_left\", \"iris_right\")"
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 25,
-              "matched": "front-crossed",
-              "text": "COMPLETE_EXPRESSION_NEUTRAL_POSE_ID = \"front-crossed\""
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/layered_full_body_complete_expression.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 415,
-              "matched": "hair_back",
-              "text": "self._paint_opacity(result, view.path(\"hair_back\"), 1.0)"
-            },
-            {
-              "line": 420,
-              "matched": "hair_left",
-              "text": "self._paint_opacity(result, view.path(\"hair_left\"), 1.0)"
-            },
-            {
-              "line": 421,
-              "matched": "hair_right",
-              "text": "self._paint_opacity(result, view.path(\"hair_right\"), 1.0)"
-            },
-            {
-              "line": 424,
-              "matched": "sleeve_left",
-              "text": "self._paint_translated(result, view.path(\"sleeve_left\"), dy=left_lift)"
-            },
-            {
-              "line": 425,
-              "matched": "sleeve_right",
-              "text": "self._paint_translated(result, view.path(\"sleeve_right\"), dy=right_lift)"
-            },
-            {
-              "line": 451,
-              "matched": "corner_left",
-              "text": "\"jaw\", \"lip_lower\", \"lip_upper\", \"corner_left\", \"corner_right\","
-            },
-            {
-              "line": 451,
-              "matched": "corner_right",
-              "text": "\"jaw\", \"lip_lower\", \"lip_upper\", \"corner_left\", \"corner_right\","
-            },
-            {
-              "line": 451,
-              "matched": "lip_lower",
-              "text": "\"jaw\", \"lip_lower\", \"lip_upper\", \"corner_left\", \"corner_right\","
-            },
-            {
-              "line": 451,
-              "matched": "lip_upper",
-              "text": "\"jaw\", \"lip_lower\", \"lip_upper\", \"corner_left\", \"corner_right\","
-            },
-            {
-              "line": 452,
-              "matched": "blush_left",
-              "text": "\"blush_left\", \"blush_right\", \"iris_left\", \"iris_right\","
-            },
-            {
-              "line": 452,
-              "matched": "blush_right",
-              "text": "\"blush_left\", \"blush_right\", \"iris_left\", \"iris_right\","
-            },
-            {
-              "line": 452,
-              "matched": "iris_left",
-              "text": "\"blush_left\", \"blush_right\", \"iris_left\", \"iris_right\","
-            },
-            {
-              "line": 452,
-              "matched": "iris_right",
-              "text": "\"blush_left\", \"blush_right\", \"iris_left\", \"iris_right\","
-            },
-            {
-              "line": 453,
-              "matched": "eyelid_left",
-              "text": "\"eyelid_left\", \"eyelid_right\", \"eyeliner_left\", \"eyeliner_right\","
-            },
-            {
-              "line": 453,
-              "matched": "eyelid_right",
-              "text": "\"eyelid_left\", \"eyelid_right\", \"eyeliner_left\", \"eyeliner_right\","
-            },
-            {
-              "line": 453,
-              "matched": "eyeliner_left",
-              "text": "\"eyelid_left\", \"eyelid_right\", \"eyeliner_left\", \"eyeliner_right\","
-            },
-            {
-              "line": 453,
-              "matched": "eyeliner_right",
-              "text": "\"eyelid_left\", \"eyelid_right\", \"eyeliner_left\", \"eyeliner_right\","
-            },
-            {
-              "line": 454,
-              "matched": "brow_left",
-              "text": "\"brow_left\", \"brow_right\","
-            },
-            {
-              "line": 454,
-              "matched": "brow_right",
-              "text": "\"brow_left\", \"brow_right\","
-            },
-            {
-              "line": 632,
-              "matched": "eyelid_left",
-              "text": "\"eyelid_left\","
-            },
-            {
-              "line": 633,
-              "matched": "eyelid_right",
-              "text": "\"eyelid_right\","
-            },
-            {
-              "line": 634,
-              "matched": "eyeliner_left",
-              "text": "\"eyeliner_left\","
-            },
-            {
-              "line": 635,
-              "matched": "eyeliner_right",
-              "text": "\"eyeliner_right\","
-            },
-            {
-              "line": 708,
-              "matched": "oral_cavity",
-              "text": "cavity_path = view.path(\"oral_cavity\")"
-            },
-            {
-              "line": 739,
-              "matched": "corner_left",
-              "text": "for name in (\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"):"
-            },
-            {
-              "line": 739,
-              "matched": "corner_right",
-              "text": "for name in (\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"):"
-            },
-            {
-              "line": 739,
-              "matched": "lip_lower",
-              "text": "for name in (\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"):"
-            },
-            {
-              "line": 739,
-              "matched": "lip_upper",
-              "text": "for name in (\"lip_upper\", \"lip_lower\", \"corner_left\", \"corner_right\"):"
-            },
-            {
-              "line": 764,
-              "matched": "lip_upper",
-              "text": "\"lip_upper\","
-            },
-            {
-              "line": 765,
-              "matched": "lip_lower",
-              "text": "\"lip_lower\","
-            },
-            {
-              "line": 766,
-              "matched": "corner_left",
-              "text": "\"corner_left\","
-            },
-            {
-              "line": 767,
-              "matched": "corner_right",
-              "text": "\"corner_right\","
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 198,
-              "matched": "front-crossed",
-              "text": "pose_id: str = \"front-crossed\","
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/layered_full_body_renderer.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -2809,69 +828,6 @@
       "classification": "engine_extract",
       "content": [
         {
-          "content_kind": "rig",
-          "description": "墨寒現行畫布尺寸仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 153,
-              "matched": "1254x1254",
-              "text": "raise ValueError(\"Reviewed garment composition requires a 1254x1254 frame.\")"
-            }
-          ],
-          "rule": "character_canvas_size_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/reviewed_garment_assets.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行畫布尺寸仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 210,
-              "matched": "1254x1254",
-              "text": "raise ValueError(f\"Reviewed pose motion asset must be 1254x1254: {context}\")"
-            }
-          ],
-          "rule": "character_canvas_size_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 385,
-              "matched": "oral_cavity",
-              "text": "required_gray = (\"coverage\", \"oral_cavity\")"
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/reviewed_pose_motion.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -2886,9 +842,9 @@
               "text": "description: str = \"MoHan protected secret\","
             },
             {
-              "line": 149,
+              "line": 150,
               "matched": "墨寒",
-              "text": "f\"{capabilities.display_name} 的原生安全金鑰保存\""
+              "text": "\"尚未完成實機驗證；墨寒不會退回明文保存。\""
             }
           ],
           "rule": "character_name_literal",
@@ -2902,92 +858,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 27,
-              "matched": "assets/pose-atlas/v5",
-              "text": "MANIFEST = Path(\"assets/pose-atlas/v5-garment-visibility/manifest.json\")"
-            },
-            {
-              "line": 103,
-              "matched": "assets/pose-atlas/v5",
-              "text": "f\"assets/pose-atlas/v5-garment-visibility/{view_id}-{side}-native-hand.png\","
-            },
-            {
-              "line": 151,
-              "matched": "assets/pose-atlas/v5",
-              "text": "_source_bytes(root, entry[\"native_source\"], f\"assets/pose-atlas/v5-base/{view_id}.png\")"
-            },
-            {
-              "line": 164,
-              "matched": "assets/pose-atlas/v5",
-              "text": "root, entry[\"visibility\"], f\"assets/pose-atlas/v5-garment-visibility/{view_id}.png\""
-            },
-            {
-              "line": 207,
-              "matched": "assets/pose-atlas/v5",
-              "text": "layered = root / \"assets/pose-atlas/v5-base-layered\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行畫布尺寸仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 78,
-              "matched": "1024x1536",
-              "text": "raise OutfitPackError(\"Garment visibility needs a 1024x1536 canvas.\")"
-            },
-            {
-              "line": 110,
-              "matched": "1024x1536",
-              "text": "raise OutfitPackError(\"Native hand support needs a 1024x1536 canvas.\")"
-            }
-          ],
-          "rule": "character_canvas_size_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 208,
-              "matched": "hair_back",
-              "text": "for layer in (\"hair_back\", \"hair_left\", \"hair_right\", \"ornament\"):"
-            },
-            {
-              "line": 208,
-              "matched": "hair_left",
-              "text": "for layer in (\"hair_back\", \"hair_left\", \"hair_right\", \"ornament\"):"
-            },
-            {
-              "line": 208,
-              "matched": "hair_right",
-              "text": "for layer in (\"hair_back\", \"hair_left\", \"hair_right\", \"ornament\"):"
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/source_bound_garment_visibility.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -3064,157 +934,6 @@
       "work_package": "ui-name-parameterization"
     },
     {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行畫布尺寸仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 40,
-              "matched": "1254x1254",
-              "text": "HALF_SIZE = (1254, 1254)"
-            },
-            {
-              "line": 42,
-              "matched": "1024x1536",
-              "text": "FULL_SIZE = (1024, 1536)"
-            }
-          ],
-          "rule": "character_canvas_size_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 275,
-              "matched": "mock_scold",
-              "text": "\"front-mock-scold\": root / \"assets\" / \"expressions\" / \"mock_scold.png\","
-            },
-            {
-              "line": 276,
-              "matched": "mock_hit_front",
-              "text": "\"front-mock-hit\": root / \"assets\" / \"expressions\" / \"mock_hit_front.png\","
-            },
-            {
-              "line": 277,
-              "matched": "eureka_front",
-              "text": "\"front-eureka\": root / \"assets\" / \"expressions\" / \"eureka_front.png\","
-            },
-            {
-              "line": 278,
-              "matched": "exasperated_front",
-              "text": "\"front-exasperated\": root / \"assets\" / \"expressions\" / \"exasperated_front.png\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 539,
-              "matched": "MoHan",
-              "text": "\"Create a production-ready transparent PNG clothing overlay for the \""
-            },
-            {
-              "line": 557,
-              "matched": "MoHan",
-              "text": "\"Create a production-ready transparent PNG handheld accessory overlay \""
-            },
-            {
-              "line": 603,
-              "matched": "墨寒",
-              "text": "\"display_names\": _localized(\"墨寒自主設計服裝\"),"
-            },
-            {
-              "line": 607,
-              "matched": "MoHan",
-              "text": "\"author\": \"MoHan autonomous wardrobe with OpenAI GPT Image 2\","
-            },
-            {
-              "line": 625,
-              "matched": "墨寒",
-              "text": "\"display_names\": _localized(\"墨寒原髮型\"),"
-            },
-            {
-              "line": 639,
-              "matched": "墨寒",
-              "text": "\"display_names\": _localized(\"墨寒自主搭配\"),"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 272,
-              "matched": "cheek-rest",
-              "text": "\"cheek-rest\": root / \"assets\" / \"expressions\" / \"idle.png\","
-            },
-            {
-              "line": 273,
-              "matched": "left-neutral",
-              "text": "\"left-neutral\": root / \"assets\" / \"expressions\" / \"idle_lean.png\","
-            },
-            {
-              "line": 274,
-              "matched": "front-crossed",
-              "text": "\"front-crossed\": root / \"assets\" / \"expressions\" / \"idle_front.png\","
-            },
-            {
-              "line": 275,
-              "matched": "front-mock-scold",
-              "text": "\"front-mock-scold\": root / \"assets\" / \"expressions\" / \"mock_scold.png\","
-            },
-            {
-              "line": 276,
-              "matched": "front-mock-hit",
-              "text": "\"front-mock-hit\": root / \"assets\" / \"expressions\" / \"mock_hit_front.png\","
-            },
-            {
-              "line": 277,
-              "matched": "front-eureka",
-              "text": "\"front-eureka\": root / \"assets\" / \"expressions\" / \"eureka_front.png\","
-            },
-            {
-              "line": 278,
-              "matched": "front-exasperated",
-              "text": "\"front-exasperated\": root / \"assets\" / \"expressions\" / \"exasperated_front.png\","
-            },
-            {
-              "line": 674,
-              "matched": "cheek-rest",
-              "text": "\"cheek-rest\": \"cheek\","
-            },
-            {
-              "line": 675,
-              "matched": "left-neutral",
-              "text": "\"left-neutral\": \"lean\","
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "integrations/openai_outfit_generator.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
       "classification": "ui_text_reference",
       "content": [
         {
@@ -3227,9 +946,9 @@
               "text": "\"replying\": \"已辨識，墨寒正在回覆\","
             },
             {
-              "line": 120,
+              "line": 122,
               "matched": "墨寒",
-              "text": "\"OpenAI 回報目前儲存的 API 金鑰需要在同一 Project 啟用「{model}」使用權限。\""
+              "text": "\"Project；再於該 Project 建立具適當權限的 API Key，並到墨寒的\""
             },
             {
               "line": 166,
@@ -3237,9 +956,9 @@
               "text": "\"replying\": \"已识别，墨寒正在回复\","
             },
             {
-              "line": 168,
+              "line": 170,
               "matched": "墨寒",
-              "text": "\"OpenAI 报告当前保存的 API 密钥需要在同一 Project 启用“{model}”使用权限。\""
+              "text": "\"再于该 Project 建立具备适当权限的 API Key，并到墨寒的“设置”页\""
             },
             {
               "line": 215,
@@ -3247,9 +966,9 @@
               "text": "\"replying\": \"Recognized; MoHan is replying\","
             },
             {
-              "line": 217,
+              "line": 219,
               "matched": "MoHan",
-              "text": "\"Enable “{model}” access for the saved OpenAI API key in the same Project. Confirm that the \""
+              "text": "\"authorized key again in MoHan Settings.\""
             },
             {
               "line": 264,
@@ -3257,9 +976,9 @@
               "text": "\"replying\": \"認識しました。墨寒が応答しています\","
             },
             {
-              "line": 266,
+              "line": 268,
               "matched": "墨寒",
-              "text": "\"保存された OpenAI API キーで「{model}」を利用する権限を同じ Project に設定してください。\""
+              "text": "\"持つキーを墨寒の設定で保存してください。\""
             }
           ],
           "rule": "character_name_literal",
@@ -3311,14 +1030,14 @@
               "text": "+ \"\\n以下是主上允許妾長期保留的本機記憶，請自然融入整體語氣：\\n\""
             },
             {
-              "line": 440,
+              "line": 441,
               "matched": "主上",
-              "text": "+ \"\\n\\n## 即時對話承接規則\\n\""
+              "text": "\"先理解並承接最近一輪話題，延續目前語氣；客服、行政或工作需求訪談只在主上明確要求時採用。\""
             },
             {
-              "line": 440,
+              "line": 443,
               "matched": "妾",
-              "text": "+ \"\\n\\n## 即時對話承接規則\\n\""
+              "text": "\"直接延續妾上一句的內容；前文待提供時，\""
             }
           ],
           "rule": "character_title_or_dialogue_literal",
@@ -3371,9 +1090,9 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 74,
+              "line": 77,
               "matched": "墨寒",
-              "text": "MOBILE_PAGE = \"\"\"<!doctype html>"
+              "text": "<title>墨寒遠端</title>"
             }
           ],
           "rule": "character_name_literal",
@@ -3437,36 +1156,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "engine-identity-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 49,
-              "matched": "eureka_front",
-              "text": "dark = (pixels[:, :, :3].mean(axis=2) < (EUREKA_DARK_LIMIT if expression == \"eureka_front\" else DARK_LIMIT)) & (pixels[:, :, 3] > 0)"
-            },
-            {
-              "line": 58,
-              "matched": "eureka_front",
-              "text": "kernel_size = max(1, round((EUREKA_GUARD_WIDTH if expression == \"eureka_front\" else NATIVE_GUARD_WIDTH) * width / NATIVE_SIZE)) | 1"
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_blink_brow_guard.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -3833,184 +1522,6 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 61,
-              "matched": "assets/expressions",
-              "text": "resource_path(\"assets/expressions\")"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 637,
-              "matched": "hair_left",
-              "text": "\"hair_left\": self._masked_region("
-            },
-            {
-              "line": 641,
-              "matched": "hair_right",
-              "text": "\"hair_right\": self._masked_region("
-            },
-            {
-              "line": 645,
-              "matched": "sleeve_left",
-              "text": "\"sleeve_left\": self._masked_region("
-            },
-            {
-              "line": 649,
-              "matched": "sleeve_right",
-              "text": "\"sleeve_right\": self._masked_region("
-            }
-          ],
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_face_assets.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 356,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            },
-            {
-              "line": 492,
-              "matched": "gentle_smile_front",
-              "text": "self.set_state(\"gentle_smile_front\", source=\"visual\", intensity=0.45)"
-            },
-            {
-              "line": 493,
-              "matched": "gentle_smile_front",
-              "text": "self.speak(line, \"gentle_smile_front\")"
-            },
-            {
-              "line": 507,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\","
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_proactive.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 31,
-              "matched": "shy_front",
-              "text": "\"shy_front\": -1,"
-            },
-            {
-              "line": 32,
-              "matched": "shy_cute_front",
-              "text": "\"shy_cute_front\": -1,"
-            },
-            {
-              "line": 34,
-              "matched": "gentle_smile_front",
-              "text": "\"gentle_smile_front\": -1,"
-            },
-            {
-              "line": 36,
-              "matched": "worried_front",
-              "text": "\"worried_front\": -1,"
-            },
-            {
-              "line": 40,
-              "matched": "proud_front",
-              "text": "\"proud_front\": 1,"
-            },
-            {
-              "line": 42,
-              "matched": "eureka_front",
-              "text": "\"eureka_front\": 1,"
-            },
-            {
-              "line": 44,
-              "matched": "surprised_front",
-              "text": "\"surprised_front\": 1,"
-            },
-            {
-              "line": 46,
-              "matched": "exasperated_front",
-              "text": "\"exasperated_front\": 1,"
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_speech_emotion.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 130,
-              "matched": "front-crossed",
-              "text": "else \"front-crossed\""
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_speech_runtime.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
               "line": 172,
               "matched": "assets/expressions/",
               "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
@@ -4057,9 +1568,9 @@
               "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
             },
             {
-              "line": 150,
+              "line": 151,
               "matched": "赤焰劍",
-              "text": "f\"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。\""
+              "text": "\"自赤焰劍中醒來，往後便由妾伴您左右。\","
             },
             {
               "line": 156,
@@ -4080,56 +1591,6 @@
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": "persona-dialogue-voice-extraction"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 176,
-              "matched": "assets/expressions/",
-              "text": "source = QPixmap(str(resource_path(f\"assets/expressions/{filename}\")))"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/companion_visual_physics.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 27,
-              "matched": "assets/ui/mohan",
-              "text": "ARTWORK_PATH = \"assets/ui/mohan-celestial-palace-v1.png\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/dashboard_artwork.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -4533,13 +1994,13 @@
             },
             {
               "line": 881,
-              "matched": "MoHan",
+              "matched": "墨寒",
               "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
             },
             {
-              "line": 881,
-              "matched": "墨寒",
-              "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
+              "line": 882,
+              "matched": "MoHan",
+              "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
             }
           ],
           "rule": "character_name_literal",
@@ -4790,9 +2251,9 @@
               "text": "\"墨寒說話時暫停上傳麥克風，播放結束後再恢復；\""
             },
             {
-              "line": 702,
+              "line": 703,
               "matched": "墨寒",
-              "text": "\"Realtime 保留原生音訊理解；每句說完後，畫面文字改用\""
+              "text": "\"完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。\","
             },
             {
               "line": 798,
@@ -4960,36 +2421,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "ui-name-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 117,
-              "matched": "assets/onboarding/first-run",
-              "text": "\"assets/onboarding/first-run-ink-tech.png\""
-            },
-            {
-              "line": 139,
-              "matched": "assets/expressions/",
-              "text": "str(resource_path(\"assets/expressions/idle_front.png\"))"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/first_run_wizard.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "ui_text_reference",
@@ -5789,31 +3220,6 @@
       "work_package": "ui-name-parameterization"
     },
     {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 74,
-              "matched": "assets/ui/mohan",
-              "text": "_THEME_ASSET = resource_path(\"assets/ui/mohan-cloud.svg\")"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/flagship_theme.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
       "classification": "ui_text_reference",
       "content": [
         {
@@ -5847,70 +3253,6 @@
         "assets/characters/mohan/persona/profile.json"
       ],
       "work_package": "ui-name-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 94,
-              "matched": "assets/ui/mohan",
-              "text": "_LOBBY_BACKDROP = resource_path(\"assets/ui/mohan-strategist-lobby-v1.png\")"
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/lingxiao_shell.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 13,
-              "matched": "assets/mohan-",
-              "text": "APP_ICON_PATH = \"assets/mohan-halfbody.ico\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        },
-        {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "locations": [
-            {
-              "line": 145,
-              "matched": "MoHan",
-              "text": "raise RuntimeError(f\"MoHan application icon could not be loaded: {icon_path}\")"
-            }
-          ],
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "presentation/presentation_resources.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
     },
     {
       "classification": "engine_extract",
@@ -6081,13 +3423,13 @@
             },
             {
               "line": 540,
-              "matched": "MoHan",
+              "matched": "墨寒",
               "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
             },
             {
-              "line": 540,
-              "matched": "墨寒",
-              "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
+              "line": 541,
+              "matched": "MoHan",
+              "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
             },
             {
               "line": 559,
@@ -6200,9 +3542,9 @@
               "text": "\"Pauses microphone upload while MoHan speaks and resumes after playback; \""
             },
             {
-              "line": 464,
+              "line": 466,
               "matched": "MoHan",
-              "text": "\"Realtime keeps native audio understanding. After each utterance, the \""
+              "text": "\"recording, and MoHan replies only after it succeeds.\""
             },
             {
               "line": 487,
@@ -6330,9 +3672,9 @@
               "text": "'墨寒の発話中はマイク送信を一時停止し、再生後に再開します。この設定では現在の操作を継続します。'"
             },
             {
-              "line": 283,
+              "line": 284,
               "matched": "墨寒",
-              "text": "\"Realtime 本来の音声理解を保ち、発話後の画面文字には録音全体の \""
+              "text": "\"OpenAI 高精度文字起こしを使用します。成功後に墨寒が返答します。\""
             },
             {
               "line": 301,
@@ -6411,13 +3753,13 @@
             },
             {
               "line": 535,
-              "matched": "MoHan",
+              "matched": "墨寒",
               "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
             },
             {
-              "line": 535,
-              "matched": "墨寒",
-              "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
+              "line": 536,
+              "matched": "MoHan",
+              "text": "\" CHOU MING HUA および MoHan Desktop Assistant コントリビューター、\""
             },
             {
               "line": 556,
@@ -6914,9 +4256,9 @@
               "text": "\"這個安裝包用來驗證墨寒能在 macOS／Linux 啟動、顯示四語介面，\""
             },
             {
-              "line": 73,
+              "line": 74,
               "matched": "墨寒",
-              "text": "\"Preview 不提供 API 金鑰、OAuth 或 Home Assistant 權杖輸入。\""
+              "text": "\"在原生安全保存完成前，墨寒不會退回明文保存，也不會假裝功能可用。\""
             },
             {
               "line": 79,
@@ -6934,9 +4276,9 @@
               "text": "\"此安装包用于验证墨寒能在 macOS／Linux 启动、显示四语界面，\""
             },
             {
-              "line": 103,
+              "line": 104,
               "matched": "墨寒",
-              "text": "\"Preview 不提供 API 密钥、OAuth 或 Home Assistant 令牌输入。\""
+              "text": "\"原生安全保存完成前，墨寒不会退回明文保存，也不会假装功能可用。\""
             },
             {
               "line": 109,
@@ -6949,9 +4291,9 @@
               "text": "\"heading\": \"MoHan has arrived on this platform—carefully\","
             },
             {
-              "line": 135,
+              "line": 136,
               "matched": "MoHan",
-              "text": "\"This Preview does not provide API-key, OAuth, or Home Assistant token \""
+              "text": "\"fields. Until native secure storage is verified, MoHan will not \""
             },
             {
               "line": 142,
@@ -6999,6 +4341,7 @@
         "domain/contracts.py",
         "domain/expression_system.py",
         "domain/gesture_configuration.py",
+        "domain/outfit_pack_official.py",
         "infrastructure/platform_linux.py",
         "infrastructure/platform_macos.py",
         "infrastructure/platform_services.py",
@@ -7008,7 +4351,7 @@
         "presentation/autonomous_outfit_generation_controller.py",
         "presentation/theme_pack_ui.py"
       ],
-      "file_count": 17,
+      "file_count": 18,
       "id": "engine-identity-parameterization",
       "objective": "把引擎、平台與儲存邊界中的墨寒名稱改由產品或角色身分設定注入。",
       "titles": [
@@ -7039,62 +4382,6 @@
         "人格、台词与声音抽离",
         "Persona, dialogue and voice extraction",
         "人格・台詞・音声の抽出"
-      ]
-    },
-    {
-      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
-      "exclusive_files": [
-        "application/appearance_renderer.py",
-        "application/behavior_director.py",
-        "application/outfit_reveal.py",
-        "application/packaged_self_test.py",
-        "application/performance_coordinator.py",
-        "application/proactive_companion_composition.py",
-        "domain/affective_state.py",
-        "domain/character_pack/character_data.py",
-        "domain/constants.py",
-        "domain/face_motion.py",
-        "domain/outfit_pack.py",
-        "domain/outfit_pack_archive.py",
-        "domain/outfit_pack_makeup.py",
-        "domain/pose_pack.py",
-        "domain/shyness.py",
-        "infrastructure/active_outfit_overlay_layers.py",
-        "infrastructure/complete_halfbody_expressions.py",
-        "infrastructure/complete_halfbody_renderer.py",
-        "infrastructure/core_hand_regions.py",
-        "infrastructure/exasperated_candidate_appearance.py",
-        "infrastructure/exasperated_candidate_assets.py",
-        "infrastructure/exasperated_face_rendering.py",
-        "infrastructure/layered_face_calibration.py",
-        "infrastructure/layered_face_painting.py",
-        "infrastructure/layered_face_renderer.py",
-        "infrastructure/layered_full_body_complete_expression.py",
-        "infrastructure/layered_full_body_renderer.py",
-        "infrastructure/reviewed_garment_assets.py",
-        "infrastructure/reviewed_pose_motion.py",
-        "infrastructure/source_bound_garment_visibility.py",
-        "integrations/openai_outfit_generator.py",
-        "presentation/companion_blink_brow_guard.py",
-        "presentation/companion_face_assets.py",
-        "presentation/companion_proactive.py",
-        "presentation/companion_speech_emotion.py",
-        "presentation/companion_speech_runtime.py",
-        "presentation/companion_visual_physics.py",
-        "presentation/dashboard_artwork.py",
-        "presentation/first_run_wizard.py",
-        "presentation/flagship_theme.py",
-        "presentation/lingxiao_shell.py",
-        "presentation/presentation_resources.py"
-      ],
-      "file_count": 42,
-      "id": "rig-and-asset-parameterization",
-      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
-      "titles": [
-        "Rig 與素材路徑參數化",
-        "Rig 与素材路径参数化",
-        "Rig and asset parameterization",
-        "Rig と素材パスのパラメータ化"
       ]
     },
     {

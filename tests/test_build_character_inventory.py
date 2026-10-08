@@ -152,15 +152,17 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 13  # 11 persona/dialogue/voice files + rig manifest + expression catalog
+CHARACTER_DATA_FILE_COUNT = 14  # 11 persona/dialogue/voice files + rig manifest + runtime bindings + expression catalog
 
 
 def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
     rows = {row["path"]: row for row in inventory["files"] if row["path"].startswith("assets/characters/mohan/")}
-    data_rows = {path: row for path, row in rows.items() if path.endswith(".json")}
+    build_only = {"assets/characters/mohan/README.md", "assets/characters/mohan/pack-source.json"}
+    data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
-    assert rows["assets/characters/mohan/README.md"]["scope"] == "excluded_support"
+    assert rows["assets/characters/mohan/rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
+    assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
 def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> None:
@@ -333,3 +335,27 @@ def test_summary_fragment_and_owner_boundaries(
             assert row["migration"] == builder.EMBEDDED
             assert row["symbols"]
             assert row["content_locations"]
+
+
+def test_appearance_pack_identifiers_are_detected() -> None:
+    source = 'PACK = "mohan.official.blue-white-hanfu"\nLOOK = "mohan-signature"\nSCHEMA = "mohan.makeup-safe-regions.v2"\n'
+    evidence = builder._content_evidence("domain/example.py", source)
+    matched = {row["matched"] for row in evidence if row["rule"] == "character_appearance_pack_identifier"}
+    assert matched == {"mohan.official.blue-white-hanfu", "mohan-signature"}
+
+
+def test_multiline_literal_evidence_points_at_the_matching_line() -> None:
+    source = 'TEXT = (\n    "first line "\n    "主上 second line"\n)\n'
+    evidence = builder._content_evidence("domain/example.py", source)
+    row = next(row for row in evidence if row["matched"] == "主上")
+    assert row["line"] == source.splitlines().index('    "主上 second line"') + 1
+    assert "主上" in row["text"]
+
+
+def test_inventory_test_is_mapped_to_every_scanned_source() -> None:
+    from tools import generate_test_impact_map as impact
+
+    rules = json.loads((ROOT / "tests/impact_map.json").read_text(encoding="utf-8"))["rules"]
+    test_names = frozenset(path.name for path in (ROOT / "tests").glob("test_*.py"))
+    for path in builder._python_sources(ROOT):
+        assert "test_build_character_inventory.py" in impact.mapped_tests_for_path(path, rules, test_names), path
