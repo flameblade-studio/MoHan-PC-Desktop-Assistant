@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.0.zip",
-    "bytes": 620734820,
-    "sha256": "59f08b79c7a693f7d43da080a71def36c9946091605bb3afb790c09013823649"
+    "bytes": 620752754,
+    "sha256": "2d44d4f642e2938d38e27d7b4eacc0cb8eb877ff137db71b9e150009af02bdf7"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -27,6 +27,11 @@
       "sha256": "89f96109c8b34b52cf2ffd2718daaa8f1ccfed859fcfe48c4658fbc18858ed63"
     },
     {
+      "bytes": 13138,
+      "path": "assets/characters/mohan/dialogue/runtime.json",
+      "sha256": "841f091862ab40fb39aff6983b09a83de0cb35859b5bc14a40b6012bc5ff859f"
+    },
+    {
       "bytes": 12124,
       "path": "assets/characters/mohan/dialogue/zh-CN.json",
       "sha256": "fe9eb5d2f353b896c1e2389183710d8ce8798416df28f25377f3967ec6f1c425"
@@ -37,9 +42,9 @@
       "sha256": "bc21ffab90bbe350b8ab0d11b1cf6cc6c0f6373f2bcc6630dcaebc95676dc634"
     },
     {
-      "bytes": 11230,
+      "bytes": 11386,
       "path": "assets/characters/mohan/expressions/state-catalog.json",
-      "sha256": "4fb8857a3bd3f39fd330f8cae8622741034dc8e437417dda3e3f36ae3ac6de6e"
+      "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
       "bytes": 3149,
@@ -57,6 +62,11 @@
       "sha256": "1563e635b0acbf34bf0d3a88f9d7c7d6e1ed0a3b07291b94abe7e6fdf2b20ade"
     },
     {
+      "bytes": 524,
+      "path": "assets/characters/mohan/persona/ui-identifiers.json",
+      "sha256": "dfa4caa5d41be9b6b12fe7997cc5e805384a8d6ac587c1b417d4c4122872c343"
+    },
+    {
       "bytes": 3640,
       "path": "assets/characters/mohan/persona/zh-CN.json",
       "sha256": "dd83494b189e43ea0e1b72e68087b32c9610fa195bd19d0235c4d7b3ee028b21"
@@ -70,6 +80,11 @@
       "bytes": 14838,
       "path": "assets/characters/mohan/rig/rig-manifest.json",
       "sha256": "c933abeaece6f077f8e4a8df9b0a5ee81cbc32381055f3d8973a0301ed3d2f4d"
+    },
+    {
+      "bytes": 2791,
+      "path": "assets/characters/mohan/rig/runtime-bindings.json",
+      "sha256": "4e3c76ef890e1767f78f2a1fb5c31c594335671d1c6a53fa0b2234bc41425231"
     },
     {
       "bytes": 6194,
@@ -8524,7 +8539,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.0",
-  "package_hash": "3359297a63f8343df3884e4eedda47ac1ce46a96ea373492681bc7945be0e47a",
+  "package_hash": "627613d4a19eb09c01048ca8801df2cb5481fe83013088f251390febd619b848",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
