@@ -5,17 +5,20 @@ from __future__ import annotations
 lazy from functools import lru_cache
 lazy from pathlib import Path
 
-lazy from domain.character_data_types import (
+lazy from domain.character_pack.character_data_models import (
     DEFAULT_EXPRESSION_CATALOG_PATH,
     EXPRESSION_SCHEMA,
     MAX_CHANNEL_VALUE,
     PAIR_LENGTH,
     SCHEMA_VERSION,
     BrowGuardSpec,
+    CharacterDataError,
     ExpressionRuleSpec,
     ExpressionStateCatalog,
     FacePoseAssetSpec,
     SourceBoundExasperatedSpec,
+)
+lazy from domain.character_pack.character_data_validation import (
     _array,
     _int_pair,
     _integer,
@@ -42,13 +45,13 @@ def _rule(value: object, *, name: str) -> ExpressionRuleSpec:
         _integer(payload["cooldown_ms"], name=f"{name}.cooldown_ms", minimum=0),
     )
     if result.minimum_ms > result.maximum_ms:
-        raise ValueError(f"{name} minimum_ms cannot exceed maximum_ms.")
+        raise CharacterDataError(f"{name} minimum_ms cannot exceed maximum_ms.")
     return result
 
 
 def _rect_mapping(value: object, *, name: str) -> frozendict[str, tuple[int, int, int, int]]:
     if not isinstance(value, dict) or not value:
-        raise ValueError(f"{name} must be a non-empty object.")
+        raise CharacterDataError(f"{name} must be a non-empty object.")
     return frozendict(
         {
             _text(key, name=f"{name} key"): _rect(item, name=f"{name}.{key}")
@@ -59,7 +62,7 @@ def _rect_mapping(value: object, *, name: str) -> frozendict[str, tuple[int, int
 
 def _offset_mapping(value: object, *, name: str) -> frozendict[str, tuple[int, int]]:
     if not isinstance(value, dict) or not value:
-        raise ValueError(f"{name} must be a non-empty object.")
+        raise CharacterDataError(f"{name} must be a non-empty object.")
     return frozendict(
         {
             _text(key, name=f"{name} key"): _int_pair(item, name=f"{name}.{key}")
@@ -70,7 +73,7 @@ def _offset_mapping(value: object, *, name: str) -> frozendict[str, tuple[int, i
 
 def _face_pose_assets(value: object) -> frozendict[str, FacePoseAssetSpec]:
     if not isinstance(value, dict) or not value:
-        raise ValueError("face_pose_assets must be a non-empty object.")
+        raise CharacterDataError("face_pose_assets must be a non-empty object.")
     expected = frozenset(
         {
             "base",
@@ -96,7 +99,7 @@ def _face_pose_assets(value: object) -> frozendict[str, FacePoseAssetSpec]:
             )
         )
         if len(eye_rects) != PAIR_LENGTH:
-            raise ValueError(f"{name}.eye_rects must contain two eye regions.")
+            raise CharacterDataError(f"{name}.eye_rects must contain two eye regions.")
         result[_text(pose, name="face pose id")] = FacePoseAssetSpec(
             _text(spec["base"], name=f"{name}.base"),
             _text(spec["blink"], name=f"{name}.blink"),
@@ -159,7 +162,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         minimum=1,
     )
     if schema != EXPRESSION_SCHEMA or schema_version != SCHEMA_VERSION:
-        raise ValueError("Expression catalog schema is unsupported.")
+        raise CharacterDataError("Expression catalog schema is unsupported.")
     state_to_pose = _text_mapping(payload["state_to_pose"], name="state_to_pose")
     emotion_to_expression = _text_mapping(
         payload["emotion_to_expression"],
@@ -170,14 +173,14 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         _unique_texts(payload["base_expressions"], name="base_expressions")
     )
     if not set(emotion_to_expression.values()) <= state_names | base_expressions:
-        raise ValueError("Emotion mappings must target declared expression states.")
+        raise CharacterDataError("Emotion mappings must target declared expression states.")
     prefix_pairs: list[tuple[str, str]] = []
     for index, raw_item in enumerate(
         _array(payload["speaking_blink_prefixes"], name="speaking_blink_prefixes")
     ):
         pair = _array(raw_item, name=f"speaking_blink_prefixes[{index}]")
         if len(pair) != PAIR_LENGTH:
-            raise ValueError("Each speaking blink prefix requires two text values.")
+            raise CharacterDataError("Each speaking blink prefix requires two text values.")
         prefix_pairs.append(
             (
                 _text(pair[0], name="speaking blink source"),
@@ -185,7 +188,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
             )
         )
     if len(prefix_pairs) != len(set(prefix_pairs)):
-        raise ValueError("speaking_blink_prefixes must be unique.")
+        raise CharacterDataError("speaking_blink_prefixes must be unique.")
     mouth_rectangles = _object(
         payload["mouth_rectangles"],
         name="mouth_rectangles",
@@ -203,7 +206,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
     )
     state_rule_payload = rules["states"]
     if not isinstance(state_rule_payload, dict) or not state_rule_payload:
-        raise ValueError("rules.states must be a non-empty object.")
+        raise CharacterDataError("rules.states must be a non-empty object.")
     expression_rules = frozendict(
         {
             _text(state, name="rules state"): _rule(
@@ -214,7 +217,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         }
     )
     if not set(expression_rules) <= state_names:
-        raise ValueError("Expression rules must target declared states.")
+        raise CharacterDataError("Expression rules must target declared states.")
     new_expression_assets = _unique_texts(
         payload["new_expression_assets"],
         name="new_expression_assets",
@@ -254,9 +257,9 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         | ai_wait_expressions
     )
     if not referenced_states <= state_names:
-        raise ValueError("Expression subsets must target declared states.")
+        raise CharacterDataError("Expression subsets must target declared states.")
     if not ai_wait_current_states <= state_names | base_expressions:
-        raise ValueError("AI wait current states must target declared states.")
+        raise CharacterDataError("AI wait current states must target declared states.")
     blink_frames = _text_mapping(payload["blink_frames"], name="blink_frames")
     half_blink_frames = _text_mapping(
         payload["half_blink_frames"],
@@ -266,7 +269,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
     eye_offsets = _offset_mapping(offsets["eye"], name="offsets.eye")
     mouth_offsets = _offset_mapping(offsets["mouth"], name="offsets.mouth")
     if set(face_offsets) != state_names or set(eye_offsets) != state_names or set(mouth_offsets) != state_names:
-        raise ValueError("Every expression state requires face, eye, and mouth offsets.")
+        raise CharacterDataError("Every expression state requires face, eye, and mouth offsets.")
     face_pose_assets = _face_pose_assets(payload["face_pose_assets"])
     mouth_rect_by_pose = _rect_mapping(
         mouth_rectangles["by_pose"],
@@ -277,13 +280,13 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         name="mouth_rectangles.overrides",
     )
     if set(mouth_rect_by_pose) != set(face_pose_assets):
-        raise ValueError("Mouth rectangles must cover every declared face pose.")
+        raise CharacterDataError("Mouth rectangles must cover every declared face pose.")
     if not set(state_to_pose.values()) <= set(face_pose_assets):
-        raise ValueError("Expression states must target a declared face pose.")
+        raise CharacterDataError("Expression states must target a declared face pose.")
     if not set(mouth_rect_overrides) <= state_names:
-        raise ValueError("Mouth rectangle overrides must target declared states.")
+        raise CharacterDataError("Mouth rectangle overrides must target declared states.")
     if not set(blink_frames) <= state_names:
-        raise ValueError("Blink frames must target declared states.")
+        raise CharacterDataError("Blink frames must target declared states.")
     brow_guard_payload = _object(
         payload["blink_brow_guard"],
         name="blink_brow_guard",
@@ -327,7 +330,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         or dark_limit > MAX_CHANNEL_VALUE
         or eureka_dark_limit > MAX_CHANNEL_VALUE
     ):
-        raise ValueError("Blink brow guard declarations are incomplete or out of range.")
+        raise CharacterDataError("Blink brow guard declarations are incomplete or out of range.")
     brow_guard = BrowGuardSpec(
         brow_regions,
         dark_limit,
@@ -349,7 +352,7 @@ def load_expression_catalog(  # ruff: ignore[too-many-branches, too-many-locals,
         brow_expressions,
     )
     if brow_guard.guard_sigma <= 0.0:
-        raise ValueError("blink_brow_guard.guard_sigma must be positive.")
+        raise CharacterDataError("blink_brow_guard.guard_sigma must be positive.")
     source_bound_payload = _object(
         payload["source_bound_exasperated"],
         name="source_bound_exasperated",
