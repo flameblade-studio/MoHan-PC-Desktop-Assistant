@@ -72,7 +72,6 @@
     }
   ],
   "embedded_code_classification_counts": {
-    "engine_extract": 4,
     "product_shell_allowed": 15
   },
   "files": [
@@ -145,151 +144,6 @@
         }
       ],
       "work_package": null
-    },
-    {
-      "bytes": 20677,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "appearance"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "appearance",
-          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "line": 53,
-          "matched": "mohan.default.blue-silver",
-          "path": "application/wardrobe_service.py",
-          "rule": "character_appearance_pack_identifier",
-          "suggested_data_target": "assets/characters/mohan/pack-source.json",
-          "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
-        }
-      ],
-      "estimated_difficulty": "low",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "application/wardrobe_service.py",
-      "readers": [
-        {
-          "line": 9,
-          "path": "application/autonomous_wardrobe_runtime.py",
-          "text": "lazy from application.wardrobe_service import WardrobeService"
-        },
-        {
-          "line": 11,
-          "path": "presentation/_dashboard_wardrobe_tab.py",
-          "text": "lazy from application.wardrobe_service import WardrobeService"
-        },
-        {
-          "line": 25,
-          "path": "presentation/autonomous_outfit_generation_controller.py",
-          "text": "lazy from application.wardrobe_service import WardrobeService"
-        },
-        {
-          "line": 16,
-          "path": "presentation/dashboard_shell.py",
-          "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID"
-        },
-        {
-          "line": 11,
-          "path": "presentation/dashboard_wardrobe_categories.py",
-          "text": "lazy from application.wardrobe_service import WardrobeService"
-        },
-        {
-          "line": 12,
-          "path": "presentation/dashboard_wardrobe_categories.py",
-          "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID"
-        },
-        {
-          "line": 9,
-          "path": "presentation/dashboard_wardrobe_packages.py",
-          "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "4e3de9f1b8fd51ff893c6f25f1b13a21bade90dd9ee9928b8b236969cbc2c0e3",
-      "suggested_data_targets": [
-        "assets/characters/mohan/pack-source.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 53,
-          "line": 53,
-          "name": "BUILTIN_OUTFIT_ID"
-        },
-        {
-          "end_line": 56,
-          "line": 54,
-          "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
-        },
-        {
-          "end_line": 57,
-          "line": 57,
-          "name": "BARE_MAKEUP_ID"
-        },
-        {
-          "end_line": 58,
-          "line": 58,
-          "name": "BUILTIN_MAKEUP_PREFIX"
-        },
-        {
-          "end_line": 59,
-          "line": 59,
-          "name": "SELECTION_ID_PARTS"
-        },
-        {
-          "end_line": 69,
-          "line": 63,
-          "name": "InstalledOutfit"
-        },
-        {
-          "end_line": 87,
-          "line": 73,
-          "name": "MakeupOption"
-        },
-        {
-          "end_line": 94,
-          "line": 91,
-          "name": "MakeupState"
-        },
-        {
-          "end_line": 100,
-          "line": 97,
-          "name": "_selection_id"
-        },
-        {
-          "end_line": 111,
-          "line": 103,
-          "name": "_localized_name"
-        },
-        {
-          "end_line": 117,
-          "line": 114,
-          "name": "_ensemble_id"
-        },
-        {
-          "end_line": 122,
-          "line": 120,
-          "name": "_localized_pack_name"
-        },
-        {
-          "end_line": 137,
-          "line": 125,
-          "name": "_localized_ensemble_name"
-        },
-        {
-          "end_line": 147,
-          "line": 140,
-          "name": "_makeup_option_id"
-        },
-        {
-          "end_line": 555,
-          "line": 150,
-          "name": "WardrobeService"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "bytes": 2561,
@@ -422,7 +276,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 7151,
+      "bytes": 7909,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -430,7 +284,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "6c98e8022ab03b091ae14af371ae89e5d4f7f7e12efee3be0f661c801ca6b318"
+      "sha256": "404ae24e11d7cd60fd2838486d125c109781c5e0e9f3524de06d3265b372b7bb"
     },
     {
       "bytes": 3149,
@@ -600,7 +454,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -622,7 +476,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -644,7 +498,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -666,7 +520,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -688,7 +542,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -710,7 +564,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -732,7 +586,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -754,7 +608,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -776,7 +630,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -798,7 +652,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -820,7 +674,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5079,7 +4933,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5101,7 +4955,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5123,7 +4977,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5145,7 +4999,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5194,7 +5048,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5216,7 +5070,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5238,7 +5092,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5260,7 +5114,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5282,7 +5136,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5304,7 +5158,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5326,7 +5180,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5348,7 +5202,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5370,7 +5224,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5392,7 +5246,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5414,7 +5268,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5436,7 +5290,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5458,7 +5312,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5480,7 +5334,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5502,7 +5356,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5524,7 +5378,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5546,7 +5400,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5568,7 +5422,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5590,7 +5444,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5612,7 +5466,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5634,7 +5488,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5656,7 +5510,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5678,7 +5532,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5700,7 +5554,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5722,7 +5576,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5744,7 +5598,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5766,7 +5620,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5788,7 +5642,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -5810,7 +5664,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7526,7 +7380,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7548,7 +7402,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7570,7 +7424,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7592,7 +7446,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7614,7 +7468,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7636,7 +7490,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7658,7 +7512,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7680,7 +7534,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7702,7 +7556,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7724,7 +7578,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7746,7 +7600,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7768,7 +7622,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7790,7 +7644,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7812,7 +7666,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7834,7 +7688,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7856,7 +7710,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7878,7 +7732,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7900,7 +7754,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7922,7 +7776,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7944,7 +7798,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7966,7 +7820,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -7988,7 +7842,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8010,7 +7864,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8032,7 +7886,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8054,7 +7908,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8076,7 +7930,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8098,7 +7952,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8120,7 +7974,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8142,7 +7996,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8164,7 +8018,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8186,7 +8040,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -8208,7 +8062,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10080,7 +9934,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10102,7 +9956,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10124,7 +9978,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10146,7 +10000,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10168,7 +10022,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10190,7 +10044,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10212,7 +10066,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -10234,7 +10088,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -11925,7 +11779,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -11947,7 +11801,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -11969,7 +11823,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -11991,7 +11845,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12013,7 +11867,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12035,7 +11889,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12057,7 +11911,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12079,7 +11933,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12101,7 +11955,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12123,7 +11977,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12145,7 +11999,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12167,7 +12021,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12189,7 +12043,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12211,7 +12065,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12233,7 +12087,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12255,7 +12109,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12277,7 +12131,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12299,7 +12153,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12321,7 +12175,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12343,7 +12197,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12365,7 +12219,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12387,7 +12241,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12409,7 +12263,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12431,7 +12285,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12453,7 +12307,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12475,7 +12329,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12497,7 +12351,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12519,7 +12373,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12541,7 +12395,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12563,7 +12417,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12585,7 +12439,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12607,7 +12461,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12629,7 +12483,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12651,7 +12505,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12673,7 +12527,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12695,7 +12549,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12717,7 +12571,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12874,7 +12728,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12896,7 +12750,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12918,7 +12772,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12940,7 +12794,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12962,7 +12816,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -12984,7 +12838,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13006,7 +12860,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13028,7 +12882,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13050,7 +12904,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13072,7 +12926,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13094,7 +12948,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13116,7 +12970,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13138,7 +12992,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13160,7 +13014,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13182,7 +13036,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13204,7 +13058,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13226,7 +13080,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13248,7 +13102,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -13270,7 +13124,7 @@
         {
           "line": 170,
           "path": "presentation/companion_visual_dynamics.py",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
+          "text": "pix = QPixmap(str(resource_path(f\"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png\")))"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -89470,7 +89324,7 @@
         {
           "line": 40,
           "path": "presentation/companion_core.py",
-          "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
+          "text": "lazy from domain.constants import CHARACTER_LAYER_ROLES, POSE_ATLAS_RELATIVE_ROOT"
         },
         {
           "line": 80,
@@ -89496,6 +89350,11 @@
           "line": 38,
           "path": "presentation/companion_speech_runtime.py",
           "text": "lazy from domain.constants import CHARACTER_POSE_ROLES"
+        },
+        {
+          "line": 27,
+          "path": "presentation/companion_visual_dynamics.py",
+          "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
         {
           "line": 10,
@@ -89901,211 +89760,6 @@
         }
       ],
       "work_package": null
-    },
-    {
-      "bytes": 6788,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "appearance"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "appearance",
-          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "line": 22,
-          "matched": "mohan.makeup.builtin",
-          "path": "domain/outfit_pack_official.py",
-          "rule": "character_appearance_pack_identifier",
-          "suggested_data_target": "assets/characters/mohan/pack-source.json",
-          "text": "BUILTIN_MAKEUP_PACK_ID = \"mohan.makeup.builtin\""
-        },
-        {
-          "content_kind": "appearance",
-          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "line": 23,
-          "matched": "mohan-signature",
-          "path": "domain/outfit_pack_official.py",
-          "rule": "character_appearance_pack_identifier",
-          "suggested_data_target": "assets/characters/mohan/pack-source.json",
-          "text": "BUILTIN_MAKEUP_ITEM_ID = \"mohan-signature\""
-        },
-        {
-          "content_kind": "appearance",
-          "description": "墨寒專屬外觀包或外觀項目識別碼仍寫在原始碼。",
-          "line": 32,
-          "matched": "mohan.official.blue-white-hanfu",
-          "path": "domain/outfit_pack_official.py",
-          "rule": "character_appearance_pack_identifier",
-          "suggested_data_target": "assets/characters/mohan/pack-source.json",
-          "text": "OFFICIAL_OUTFIT_PACK_ID = \"mohan.official.blue-white-hanfu\""
-        }
-      ],
-      "estimated_difficulty": "medium",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "domain/outfit_pack_official.py",
-      "readers": [
-        {
-          "line": 48,
-          "path": "application/wardrobe_service.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble"
-        },
-        {
-          "line": 34,
-          "path": "domain/outfit_pack.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel"
-        },
-        {
-          "line": 12,
-          "path": "infrastructure/active_outfit_base_clear.py",
-          "text": "lazy from domain.outfit_pack_official import ("
-        },
-        {
-          "line": 33,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "lazy from domain.outfit_pack_official import native_overlay_is_redundant"
-        },
-        {
-          "line": 32,
-          "path": "infrastructure/active_outfit_overlay_layers.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID"
-        },
-        {
-          "line": 14,
-          "path": "presentation/dashboard_wardrobe_categories.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_NATIVE_HAIR_ALIAS"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "c8008de303294efeb2e03d29c2054b1eaad25b4a4283e654fd11aa0d849b547c",
-      "suggested_data_targets": [
-        "assets/characters/mohan/pack-source.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 22,
-          "line": 22,
-          "name": "BUILTIN_MAKEUP_PACK_ID"
-        },
-        {
-          "end_line": 23,
-          "line": 23,
-          "name": "BUILTIN_MAKEUP_ITEM_ID"
-        },
-        {
-          "end_line": 24,
-          "line": 24,
-          "name": "BUILTIN_MAKEUP_VARIANTS"
-        },
-        {
-          "end_line": 27,
-          "line": 27,
-          "name": "BUILTIN_MAKEUP_MENU_VARIANTS"
-        },
-        {
-          "end_line": 31,
-          "line": 31,
-          "name": "BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS"
-        },
-        {
-          "end_line": 32,
-          "line": 32,
-          "name": "OFFICIAL_OUTFIT_PACK_ID"
-        },
-        {
-          "end_line": 33,
-          "line": 33,
-          "name": "OFFICIAL_OUTFIT_ENSEMBLE_ID"
-        },
-        {
-          "end_line": 37,
-          "line": 37,
-          "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
-        },
-        {
-          "end_line": 38,
-          "line": 38,
-          "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
-        },
-        {
-          "end_line": 40,
-          "line": 40,
-          "name": "OFFICIAL_OUTFIT_CATEGORIES"
-        },
-        {
-          "end_line": 42,
-          "line": 42,
-          "name": "OFFICIAL_PACK_IDS"
-        },
-        {
-          "end_line": 43,
-          "line": 43,
-          "name": "BARE_SELECTION"
-        },
-        {
-          "end_line": 45,
-          "line": 45,
-          "name": "Identity"
-        },
-        {
-          "end_line": 46,
-          "line": 46,
-          "name": "Resolution"
-        },
-        {
-          "end_line": 54,
-          "line": 49,
-          "name": "is_official_native_alias"
-        },
-        {
-          "end_line": 65,
-          "line": 57,
-          "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
-        },
-        {
-          "end_line": 81,
-          "line": 68,
-          "name": "native_overlay_is_redundant"
-        },
-        {
-          "end_line": 87,
-          "line": 84,
-          "name": "SelectionLike"
-        },
-        {
-          "end_line": 93,
-          "line": 90,
-          "name": "EnsembleSelectionLike"
-        },
-        {
-          "end_line": 99,
-          "line": 96,
-          "name": "EnsembleLike"
-        },
-        {
-          "end_line": 111,
-          "line": 102,
-          "name": "official_outfit_ensemble"
-        },
-        {
-          "end_line": 119,
-          "line": 114,
-          "name": "builtin_makeup_resolution"
-        },
-        {
-          "end_line": 130,
-          "line": 122,
-          "name": "builtin_outfit_resolution"
-        },
-        {
-          "end_line": 148,
-          "line": 133,
-          "name": "resolve_builtin_sentinel"
-        }
-      ],
-      "work_package": "engine-identity-parameterization"
     },
     {
       "bytes": 2191,
@@ -91452,246 +91106,6 @@
       "work_package": null
     },
     {
-      "bytes": 50166,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "rig"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 402,
-          "matched": "sleeve_left",
-          "path": "presentation/companion_core.py",
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "\"sleeve_left_overlay\","
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 403,
-          "matched": "sleeve_right",
-          "path": "presentation/companion_core.py",
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "\"sleeve_right_overlay\","
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 404,
-          "matched": "hair_left",
-          "path": "presentation/companion_core.py",
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "\"hair_left_overlay\","
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行圖層名稱仍寫在程式流程。",
-          "line": 405,
-          "matched": "hair_right",
-          "path": "presentation/companion_core.py",
-          "rule": "character_layer_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "\"hair_right_overlay\","
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/companion_core.py",
-      "readers": [
-        {
-          "line": 19,
-          "path": "presentation/companion_window.py",
-          "text": "lazy from presentation.companion_core import CompanionCoreMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "1c3d5ef0f0236ad8709c19a8e681587e3376f7227c2913bcdb93f2c51227f541",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 51,
-          "line": 51,
-          "name": "WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS"
-        },
-        {
-          "end_line": 52,
-          "line": 52,
-          "name": "GAZE_CONFIDENCE_THRESHOLD"
-        },
-        {
-          "end_line": 53,
-          "line": 53,
-          "name": "SMILE_COOLDOWN_SECONDS"
-        },
-        {
-          "end_line": 54,
-          "line": 54,
-          "name": "CHIN_COOLDOWN_SECONDS"
-        },
-        {
-          "end_line": 55,
-          "line": 55,
-          "name": "BROW_COOLDOWN_SECONDS"
-        },
-        {
-          "end_line": 56,
-          "line": 56,
-          "name": "HIGH_FIVE_COOLDOWN_SECONDS"
-        },
-        {
-          "end_line": 57,
-          "line": 57,
-          "name": "PINCH_COOLDOWN_SECONDS"
-        },
-        {
-          "end_line": 102,
-          "line": 102,
-          "name": "__all__"
-        },
-        {
-          "end_line": 103,
-          "line": 103,
-          "name": "_LOGGER"
-        },
-        {
-          "end_line": 107,
-          "line": 107,
-          "name": "_FULL_BODY_MODES"
-        },
-        {
-          "end_line": 108,
-          "line": 108,
-          "name": "_EXPRESSIONS"
-        },
-        {
-          "end_line": 1085,
-          "line": 111,
-          "name": "CompanionCoreMixin"
-        }
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "bytes": 40871,
-      "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "content_categories": [
-        "rig_assets"
-      ],
-      "content_locations": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 170,
-          "matched": "assets/expressions/",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "pix = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
-        },
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 214,
-          "matched": "assets/expressions/",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "source = QPixmap(str(resource_path(f\"assets/expressions/{expression}.png\")))"
-        },
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 654,
-          "matched": "assets/expressions/",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "face_path = resource_path(f\"assets/expressions/v120_face{suffix}.png\")"
-        },
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 655,
-          "matched": "assets/expressions/",
-          "path": "presentation/companion_visual_dynamics.py",
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "eye_path = resource_path(f\"assets/expressions/v120_eyes{suffix}.png\")"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "migration": "被程式寫死需先改",
-      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
-      "path": "presentation/companion_visual_dynamics.py",
-      "readers": [
-        {
-          "line": 27,
-          "path": "presentation/companion_window.py",
-          "text": "lazy from presentation.companion_visual_dynamics import CompanionVisualDynamicsMixin"
-        }
-      ],
-      "scope": "embedded_code",
-      "sha256": "651e9e599dec039a1a93c8793feeeee5b01a6103e28b8de50465324bb5fe0d2c",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "symbols": [
-        {
-          "end_line": 49,
-          "line": 49,
-          "name": "__all__"
-        },
-        {
-          "end_line": 50,
-          "line": 50,
-          "name": "MAX_BUBBLE_LENGTH"
-        },
-        {
-          "end_line": 51,
-          "line": 51,
-          "name": "GAZE_DISTANCE_THRESHOLD"
-        },
-        {
-          "end_line": 52,
-          "line": 52,
-          "name": "MOTION_ZERO_THRESHOLD"
-        },
-        {
-          "end_line": 53,
-          "line": 53,
-          "name": "_EXPRESSION_CATALOG"
-        },
-        {
-          "end_line": 54,
-          "line": 54,
-          "name": "_EXPRESSIONS"
-        },
-        {
-          "end_line": 55,
-          "line": 55,
-          "name": "_STARTUP_DIALOGUE"
-        },
-        {
-          "end_line": 965,
-          "line": 58,
-          "name": "CompanionVisualDynamicsMixin"
-        }
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
       "bytes": 35350,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -92199,7 +91613,7 @@
           "text": "lazy from presentation.ui_localization import ui_text"
         },
         {
-          "line": 47,
+          "line": 48,
           "path": "presentation/companion_visual_dynamics.py",
           "text": "lazy from presentation.ui_localization import ui_text"
         },
@@ -92934,11 +92348,9 @@
       ]
     },
     {
-      "evidence_rules": [
-        "character_asset_path_literal"
-      ],
+      "evidence_rules": [],
       "path": "presentation/companion_visual_dynamics.py",
-      "status": "confirmed_by_content_rules",
+      "status": "review_hint_only",
       "suggested_categories": [
         "identity_persona_dialogue"
       ]
@@ -93184,7 +92596,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 19,
+    "embedded_code": 15,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,

@@ -22,7 +22,6 @@ MASTER_COUNT = 24
 CORE_COUNT = 600
 PACK_COUNT = 2
 DERIVATIVE_COUNT = 234
-MAX_WORK_PACKAGE_COUNT = 5
 DERIVATIVE_COUNTS = {
     "fullbody_blink": 24,
     "fullbody_visible_hand": 8,
@@ -30,6 +29,12 @@ DERIVATIVE_COUNTS = {
     "fullbody_complete_masks": 13,
     "fullbody_complete_oral": 33,
 }
+EXTRACTED_ENGINE_SOURCES = (
+    "application/wardrobe_service.py",
+    "domain/outfit_pack_official.py",
+    "presentation/companion_core.py",
+    "presentation/companion_visual_dynamics.py",
+)
 
 
 @pytest.fixture(scope="module")
@@ -173,9 +178,9 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     assert set(inventory["embedded_code_classification_counts"]) <= {
         "engine_extract", "product_shell_allowed", "ui_text_reference",
     }
-    assert {"engine_extract", "product_shell_allowed"} <= set(inventory["embedded_code_classification_counts"])
+    assert "engine_extract" not in inventory["embedded_code_classification_counts"]
+    assert "product_shell_allowed" in inventory["embedded_code_classification_counts"]
     assert {
-        "domain/outfit_pack_official.py",
         "infrastructure/app_resources.py",
         "presentation/ui_localization.py",
     } <= set(by_path)
@@ -198,6 +203,12 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
             1 <= symbol["line"] <= symbol["end_line"] <= line_count
             for symbol in row["symbols"]
         )
+
+
+def test_final_engine_sources_have_no_extractable_character_content() -> None:
+    for relative in EXTRACTED_ENGINE_SOURCES:
+        source = (ROOT / relative).read_text(encoding="utf-8")
+        assert builder._content_evidence(relative, source) == []
 
 
 def test_moved_content_and_hint_only_files_are_not_counted(
@@ -293,8 +304,8 @@ def test_work_packages_are_exclusive_and_product_shell_is_reasoned(
     worklist: dict[str, Any],
 ) -> None:
     counts = worklist["counts"]
-    # Packages shrink as extraction lands; any remaining work must still be packaged.
-    assert counts["work_packages"] <= MAX_WORK_PACKAGE_COUNT
+    assert counts["work_packages"] == 0
+    assert worklist["extraction_items"] == []
     assert (counts["work_packages"] > 0) == bool(worklist["extraction_items"])
     assert counts["true_extraction_files"] == (
         counts["engine_extract_files"] + counts["ui_text_reference_files"]

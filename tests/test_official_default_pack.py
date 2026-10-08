@@ -36,11 +36,18 @@ lazy from domain.outfit_pack import (
 )
 lazy from domain.outfit_pack_makeup import builtin_makeup_pack_path, verify_makeup_layers
 lazy from domain.outfit_pack_official import (
+    BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS,
     BUILTIN_MAKEUP_ITEM_ID,
+    BUILTIN_MAKEUP_MENU_VARIANTS,
     BUILTIN_MAKEUP_PACK_ID,
+    BUILTIN_MAKEUP_VARIANTS,
+    DEFAULT_OUTFIT_SELECTION_ID,
+    OFFICIAL_NATIVE_HAIR_ALIAS,
+    OFFICIAL_NATIVE_HEADWEAR_ALIAS,
     OFFICIAL_OUTFIT_ENSEMBLE_ID,
     OFFICIAL_OUTFIT_PACK_ID,
     OFFICIAL_PACK_IDS,
+    _load_official_appearance,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from test_outfit_pack import _manifest, _pack, _png
@@ -164,6 +171,49 @@ def _assert_makeup_variant_contract(variant) -> None:
             )
     if foundation_silhouettes:
         assert set(variant.eye_states) == {"half", "closed"}
+
+
+def test_official_appearance_identifiers_come_from_character_data() -> None:
+    source = json.loads(
+        (ROOT / "assets/characters/mohan/pack-source.json").read_text(
+            encoding="utf-8"
+        )
+    )["appearance_defaults"]
+    makeup = source["makeup"]
+    outfit = source["outfit"]
+
+    assert DEFAULT_OUTFIT_SELECTION_ID == BUILTIN_OUTFIT_ID == source["default_outfit_id"]
+    assert (
+        makeup["pack_id"],
+        makeup["item_id"],
+    ) == (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID)
+    assert tuple(makeup["variants"]) == BUILTIN_MAKEUP_VARIANTS
+    assert tuple(makeup["menu_variants"]) == BUILTIN_MAKEUP_MENU_VARIANTS
+    assert tuple(
+        makeup["always_visible_variants"]
+    ) == BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS
+    assert (
+        outfit["pack_id"],
+        outfit["ensemble_id"],
+    ) == (OFFICIAL_OUTFIT_PACK_ID, OFFICIAL_OUTFIT_ENSEMBLE_ID)
+    assert (
+        outfit["pack_id"],
+        outfit["native_hair"]["item_id"],
+        outfit["native_hair"]["variant_id"],
+    ) == OFFICIAL_NATIVE_HAIR_ALIAS
+    assert (
+        outfit["pack_id"],
+        outfit["native_headwear"]["item_id"],
+        outfit["native_headwear"]["variant_id"],
+    ) == OFFICIAL_NATIVE_HEADWEAR_ALIAS
+
+
+def test_official_appearance_data_fails_closed(tmp_path: Path) -> None:
+    invalid = tmp_path / "pack-source.json"
+    invalid.write_text("{}\n", encoding="utf-8", newline="\n")
+
+    with pytest.raises(RuntimeError, match="valid UTF-8 JSON"):
+        _load_official_appearance(invalid)
 
 
 def test_official_packs_ship_sealed_and_valid() -> None:

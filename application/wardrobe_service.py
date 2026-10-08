@@ -45,12 +45,16 @@ lazy from domain.outfit_pack_makeup import (
     write_makeup_intensity,
     write_makeup_slot_intensity,
 )
-lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble
+lazy from domain.outfit_pack_official import (
+    DEFAULT_OUTFIT_SELECTION_ID,
+    OFFICIAL_OUTFIT_PACK_ID,
+    official_outfit_ensemble,
+)
 
 # Opaque sentinel persisted in the ``active_outfit_id`` setting since v2; it
 # means "the built-in look" (today the official Blue-and-White Hanfu pack plus
 # the built-in classic makeup) and is kept stable so saved profiles keep working.
-BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"
+BUILTIN_OUTFIT_ID = DEFAULT_OUTFIT_SELECTION_ID
 BUILTIN_OUTFIT_FALLBACK_NAME = (
     f"{default_character_display_name('zh-TW')}藍白漢服"
 )

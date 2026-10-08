@@ -2,7 +2,7 @@
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.0",
+  "pack_version": "1.0.1",
   "character_id": "mohan",
   "identity": {
     "profile": "assets/characters/mohan/persona/profile.json",
@@ -11,6 +11,39 @@
       "zh-CN": "assets/characters/mohan/persona/zh-CN.json",
       "en": "assets/characters/mohan/persona/en.json",
       "ja-JP": "assets/characters/mohan/persona/ja-JP.json"
+    }
+  },
+  "appearance_defaults": {
+    "default_outfit_id": "mohan.default.blue-silver",
+    "makeup": {
+      "pack_id": "mohan.makeup.builtin",
+      "item_id": "mohan-signature",
+      "variants": [
+        "classic",
+        "light",
+        "glamorous"
+      ],
+      "menu_variants": [
+        "light",
+        "classic",
+        "glamorous"
+      ],
+      "always_visible_variants": [
+        "light",
+        "classic"
+      ]
+    },
+    "outfit": {
+      "pack_id": "mohan.official.blue-white-hanfu",
+      "ensemble_id": "blue-white-hanfu",
+      "native_hair": {
+        "item_id": "loose-hair",
+        "variant_id": "ink-black"
+      },
+      "native_headwear": {
+        "item_id": "silver-hairpiece",
+        "variant_id": "silver"
+      }
     }
   },
   "engine_compatibility": {

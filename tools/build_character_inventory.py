@@ -112,7 +112,7 @@ GROUPS = (
     Group("assets/expressions/reviewed-garments/", "native_garment_motion", "infrastructure/reviewed_garment_assets.py", "payload = path.read_bytes()"),
     Group("assets/expressions/source-bound-exasperated/", "source_bound_expression", "infrastructure/exasperated_candidate_assets.py", "records = receipt.get(\"installed_files_sha256\")"),
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
-    Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", 'resource_path(f"assets/expressions/{expression}.png")'),
+    Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
     Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / "persona/ui-identifiers.json"'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data.py", 'root / "persona"'),
     Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"'),

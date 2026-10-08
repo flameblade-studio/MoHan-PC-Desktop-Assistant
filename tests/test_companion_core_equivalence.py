@@ -6,6 +6,8 @@ lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
 
+lazy from presentation.companion_core import CompanionCoreMixin
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WINDOW_PATH = PROJECT_ROOT / "presentation" / "companion_window.py"
 CORE_PATH = PROJECT_ROOT / "presentation" / "companion_core.py"
@@ -186,6 +188,31 @@ assert "app" not in sys.modules
         check=False,
     )
     assert completed.returncode == 0, completed.stderr or completed.stdout
+
+
+def test_full_body_publish_hides_the_same_legacy_overlays() -> None:
+    hidden: list[str] = []
+    subject = CompanionCoreMixin()
+    attributes = (
+        "expression_overlay",
+        "sleeve_left_overlay",
+        "sleeve_right_overlay",
+        "hair_left_overlay",
+        "hair_right_overlay",
+        "physics_overlay",
+        "face_overlay",
+        "eye_overlay",
+    )
+    for attribute in attributes:
+        setattr(
+            subject,
+            attribute,
+            type("Overlay", (), {"hide": lambda self, name=attribute: hidden.append(name)})(),
+        )
+
+    subject._hide_legacy_character_overlays()
+
+    assert hidden == list(attributes)
 
 
 def test_companion_window_uses_the_unique_core_owner_in_canonical_order() -> None:
