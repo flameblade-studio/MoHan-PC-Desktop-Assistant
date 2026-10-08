@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
-
 """Shyness level state machine (害羞程度狀態機).
 
 The shyness micro-expression chain (blush → lowered gaze → pursed lips) needs a
@@ -18,6 +16,8 @@ rather than a binary on/off:
 The level eases toward its target with a bounded lerp so it eases smoothly, and it
 decays back to zero when the drivers relax. This is pure domain logic with Qt outside the domain boundary.
 """
+
+lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 
 # How strongly each driver contributes to the shyness target.
 GAZE_WEIGHT = 0.5
