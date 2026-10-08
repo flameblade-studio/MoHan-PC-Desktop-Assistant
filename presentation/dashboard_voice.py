@@ -668,14 +668,14 @@ class DashboardVoiceMixin:
         checkbox = QCheckBox(
             self._t(
                 "echo_guard_option",
-                "防止墨寒把自己的聲音誤認成主上（推薦）",
+                "防止{character_name}把自己的聲音誤認成{user_title}（推薦）",
             )
         )
         checkbox.setChecked(bool(self.db.setting("realtime_echo_guard", True)))
         checkbox.setToolTip(
             self._t(
                 "echo_guard_tooltip",
-                "墨寒說話時暫停上傳麥克風，播放結束後再恢復；"
+                "{character_name}說話時暫停上傳麥克風，播放結束後再恢復；"
                 "啟用時無法在她說話途中插話。",
             )
         )
@@ -700,7 +700,7 @@ class DashboardVoiceMixin:
             self._t(
                 "hybrid_transcript_tooltip",
                 "Realtime 保留原生音訊理解；每句說完後，畫面文字改用"
-                "完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。",
+                "完整錄音的 OpenAI 高精度轉錄。成功後才允許{character_name}回答。",
             )
         )
         return checkbox
@@ -795,7 +795,7 @@ class DashboardVoiceMixin:
         if capabilities.offline_speech_recognition:
             text = self._t(
                 "recognition_note",
-                "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
+                "單次麥克風預設使用 gpt-4o-mini-transcribe 與{character_name}專用繁中詞庫；"
                 "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
                 "麥克風可立即送出。Windows 備援可自行關閉。",
             )
@@ -845,7 +845,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "azure_hd_speech_note",
-                '可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。墨寒以音訊分析維持 Dragon HD 嘴型同步，發話等待時間取決於網路與區域距離。合成出現錯誤時，依序回退至一般 Azure 與 Windows 本機語音，每層各嘗試一次。',
+                '可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。{character_name}以音訊分析維持 Dragon HD 嘴型同步，發話等待時間取決於網路與區域距離。合成出現錯誤時，依序回退至一般 Azure 與 Windows 本機語音，每層各嘗試一次。',
             )
         )
 
@@ -863,7 +863,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "echo_guard_note",
-                '防回音開啟時，墨寒說話期間會暫停上傳麥克風，並清除本機與伺服器端殘留音訊，結束約一秒後恢復。對話頁僅顯示高精度整句轉錄的最終結果。',
+                '防回音開啟時，{character_name}說話期間會暫停上傳麥克風，並清除本機與伺服器端殘留音訊，結束約一秒後恢復。對話頁僅顯示高精度整句轉錄的最終結果。',
             )
         )
 

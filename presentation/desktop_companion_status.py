@@ -135,7 +135,7 @@ def build_desktop_companion_stage(
     status_layout.setContentsMargins(18, 18, 18, 18)
     status_layout.setSpacing(12)
     status_title = QLabel(
-        shell._t("desktop_status_title", "墨寒正在桌面上與您互動")
+        shell._t("desktop_status_title", "{character_name}正在桌面上與您互動")
     )
     status_title.setProperty("mohanRole", "desktopCompanionStatusTitle")
     status_title.setWordWrap(True)
@@ -143,7 +143,7 @@ def build_desktop_companion_stage(
     status_note = QLabel(
         shell._t(
             "desktop_status_description",
-            "桌面上的墨寒是唯一可見、可拖移並會回應您的角色。",
+            "桌面上的{character_name}是唯一可見、可拖移並會回應您的角色。",
         )
     )
     status_note.setProperty("mohanRole", "desktopCompanionStatusNote")

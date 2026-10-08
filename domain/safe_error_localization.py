@@ -9,6 +9,7 @@ lazy from domain.safe_error import (
     SafeErrorType,
     sanitize_error,
 )
+lazy from domain.service_status_localization import render_character_ui_template
 
 __all__ = ["safe_error_message"]
 
@@ -110,10 +111,10 @@ _MESSAGES: Mapping[SafeDiagnostic, Mapping[str, str]] = frozendict({
         "サービスから予期しない結果が返されました。しばらくしてから再試行してください。",
     ),
     SafeDiagnostic.INTERNAL_FAILURE: _text(
-        "墨寒執行此操作時發生內部錯誤，請重試。",
-        "墨寒执行此操作时发生内部错误，请重试。",
-        "MoHan needs attention while performing this operation. Try again.",
-        "墨寒がこの操作を実行中に内部エラーが発生しました。再試行してください。",
+        "{character_name}執行此操作時發生內部錯誤，請重試。",
+        "{character_name}执行此操作时发生内部错误，请重试。",
+        "{character_name} needs attention while performing this operation. Try again.",
+        "{character_name}がこの操作を実行中に内部エラーが発生しました。再試行してください。",
     ),
     SafeDiagnostic.UNKNOWN_FAILURE: _text(
         "操作未能完成，請重試。",
@@ -134,7 +135,10 @@ def safe_error_message(
 
     safe = error if isinstance(error, SafeError) else _safe_error(error, http_status)
     locale = canonical_ui_language(language)
-    message = _MESSAGES[safe.diagnostic][locale]
+    message = render_character_ui_template(
+        locale,
+        _MESSAGES[safe.diagnostic][locale],
+    )
     diagnostic = (
         f"type={safe.error_type.value}; "
         f"diagnostic={safe.diagnostic.value}"

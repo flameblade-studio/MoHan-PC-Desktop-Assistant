@@ -93,7 +93,7 @@ class FlagshipCompanionMixin:
             self._t("特殊節日提醒"), preferences.special_occasions_enabled
         )
         self.companion_birthday_enabled = self._preference_checkbox(
-            self._t("墨寒生日提醒"), preferences.birthday_enabled
+            self._t("{character_name}生日提醒"), preferences.birthday_enabled
         )
         self.companion_focus_protection = self._preference_checkbox(
             self._t("專注時暫停主動提醒"),

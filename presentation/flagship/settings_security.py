@@ -432,7 +432,7 @@ class FlagshipSettingsSecurityMixin:
     def add_allowed_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(
             require_qwidget(self),
-            self._t("選擇允許墨寒操作的資料夾"),
+            self._t("選擇允許{character_name}操作的資料夾"),
         )
         if not path:
             return
@@ -456,7 +456,7 @@ class FlagshipSettingsSecurityMixin:
     def add_allowed_app(self) -> None:
         path, _filter = QFileDialog.getOpenFileName(
             require_qwidget(self),
-            self._t("選擇允許墨寒啟動的程式"),
+            self._t("選擇允許{character_name}啟動的程式"),
             "",
             (
                 self._t("Windows 程式 (*.exe);;所有檔案 (*)")
@@ -468,7 +468,7 @@ class FlagshipSettingsSecurityMixin:
             return
         name, ok = self._simple_text_dialog(
             self._t("程式別名"),
-            self._t("日後對墨寒說的程式名稱"),
+            self._t("日後對{character_name}說的程式名稱"),
         )
         if not ok or not name:
             return
@@ -513,7 +513,7 @@ class FlagshipSettingsSecurityMixin:
             QMessageBox.question(
                 require_qwidget(self),
                 self._t("移除允許項目"),
-                self._t("確定撤銷墨寒對此項目的存取權？"),
+                self._t("確定撤銷{character_name}對此項目的存取權？"),
             )
             != QMessageBox.Yes
         ):
@@ -547,6 +547,6 @@ class FlagshipSettingsSecurityMixin:
         self.db.set_setting("flagship_permissions", values)
         self._configure_executor()
         self.speak_requested.emit(
-            self._t("安全權限已保存。妾會守住這條界線。"),
+            self._t("安全權限已保存。{self_reference}會守住這條界線。"),
             "happy",
         )

@@ -70,7 +70,7 @@ class FlagshipAuditMixin:
         title = (
             self._t("高風險操作二次確認")
             if decision.confirmation_count > 1 and index > 1
-            else self._t("墨寒請求執行工具")
+            else self._t("{character_name}請求執行工具")
         )
         detail = json.dumps(
             request.arguments,

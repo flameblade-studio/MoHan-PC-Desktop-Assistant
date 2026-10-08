@@ -17,6 +17,7 @@ lazy from urllib.request import Request, urlopen
 
 lazy from domain.flagship_action_models import sanitize_external_content
 lazy from domain.safe_error import sanitize_error
+lazy from domain.service_status_localization import render_character_ui_template
 
 
 @dataclass(frozen=True, slots=True)
@@ -211,7 +212,10 @@ def _callback_handler(
                 if query.get(key):
                     received[key] = query[key][0]
             body = (
-                "墨寒已收到授權結果，可以關閉此頁。"
+                render_character_ui_template(
+                    "zh-TW",
+                    "{character_name}已收到授權結果，可以關閉此頁。",
+                )
                 if "code" in received
                 else "授權結果尚在處理，可以關閉此頁並回到應用程式。"
             ).encode("utf-8")

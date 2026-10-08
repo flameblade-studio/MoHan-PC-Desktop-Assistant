@@ -47,7 +47,7 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # the gate's own counting rule
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
-    "application.presentation_ports": 995,
+    "application.presentation_ports": 992,
     "domain.outfit_pack": 845,
     "infrastructure.db": 1_188,
     "infrastructure.profile_transfer": 1_070,
@@ -60,7 +60,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "presentation.companion_visual_dynamics": 969,
     "presentation.dashboard_conversation": 882,
     "presentation.dashboard_settings": 911,
-    "presentation.dashboard_shell": 892,
+    "presentation.dashboard_shell": 886,
     "presentation.dashboard_voice": 1_067,
 }
 MAX_ROOT_APP_LINES = 50

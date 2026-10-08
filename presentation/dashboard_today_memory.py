@@ -218,7 +218,7 @@ class DashboardTodayMemoryMixin:
         intro = QLabel(
             self._t(
                 "memory_intro",
-                "墨寒只保存主上允許留下的人物、偏好、目標、工作流程與"
+                "{character_name}只保存{user_title}允許留下的人物、偏好、目標、工作流程與"
                 "重要日期。記憶存於本機，可分類瀏覽、逐項編輯或刪除。",
             )
         )
@@ -231,7 +231,7 @@ class DashboardTodayMemoryMixin:
         self.memory_input.setPlaceholderText(
             self._t(
                 "memory_input_placeholder",
-                "例如：主上偏好先完成漫畫，再處理行政工作",
+                "例如：{user_title}偏好先完成漫畫，再處理行政工作",
             )
         )
         self.memory_category = QComboBox()
@@ -447,7 +447,7 @@ class DashboardTodayMemoryMixin:
             empty = QLabel(
                 self._t(
                     "todo_empty",
-                    "今日卷冊尚空。\n主上先寫下一件真正重要的事。",
+                    "今日卷冊尚空。\n{user_title}先寫下一件真正重要的事。",
                 )
             )
             empty.setObjectName("emptyState")
@@ -762,7 +762,7 @@ class DashboardTodayMemoryMixin:
             self._t("memory_clear_title", "清除長期記憶"),
             self._t(
                 "memory_clear_confirm",
-                '確定永久刪除墨寒保存的全部長期記憶嗎？',
+                '確定永久刪除{character_name}保存的全部長期記憶嗎？',
             ),
         )
         if answer == QMessageBox.Yes:
