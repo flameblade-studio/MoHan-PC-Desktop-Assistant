@@ -4100,6 +4100,7 @@
         "test_build_character_pack.py",
         "test_character_pack.py",
         "test_character_persona_data.py",
+        "test_character_runtime_data.py",
         "test_character_source.py",
         "test_engine_identity_parameterization.py",
         "test_fetch_character_pack.py",
@@ -4488,6 +4489,17 @@
     },
     {
       "paths": [
+        "domain/character_pack/character_data.py"
+      ],
+      "tests": [
+        "test_character_persona_data.py",
+        "test_character_runtime_data.py",
+        "test_engine_identity_parameterization.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/chronicle.py"
       ],
       "tests": [
@@ -4545,16 +4557,6 @@
     },
     {
       "paths": [
-        "domain/character_pack/character_data.py"
-      ],
-      "tests": [
-        "test_character_persona_data.py",
-        "test_engine_identity_parameterization.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "application/multisensory_interaction.py"
       ],
       "tests": [
@@ -4592,6 +4594,8 @@
       "paths": [
         "assets/onboarding/first-run-ink-tech.png",
         "assets/ui/mohan-cloud.svg",
+        "domain/character_data_types.py",
+        "domain/character_pack/character_data_models.py",
         "domain/character_runtime_data.py"
       ],
       "tests": [

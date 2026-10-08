@@ -6,7 +6,7 @@ lazy from functools import lru_cache
 lazy from itertools import product
 lazy from pathlib import Path
 
-lazy from domain.character_data_types import (
+lazy from domain.character_pack.character_data_models import (
     DEFAULT_RIG_MANIFEST_PATH,
     FULL_BODY_LAYER_COUNT,
     FULL_VIEW_COUNT,
@@ -19,6 +19,7 @@ lazy from domain.character_data_types import (
     ArmSpec,
     BodyMeasurementsSpec,
     BodyProportionsSpec,
+    CharacterDataError,
     CharacterRigManifest,
     FaceCalibrationSpec,
     FullBodyCalibrationSpec,
@@ -26,6 +27,8 @@ lazy from domain.character_data_types import (
     PoseSpec,
     ViewportSpec,
     ViewRingSpec,
+)
+lazy from domain.character_pack.character_data_validation import (
     _array,
     _boolean,
     _canvas,
@@ -74,7 +77,7 @@ def _arm(value: object, *, name: str) -> ArmSpec:
         or result.forearm_length <= 0.0
         or result.hand_length <= 0.0
     ):
-        raise ValueError(f"{name} must use normalized anchors and positive lengths.")
+        raise CharacterDataError(f"{name} must use normalized anchors and positive lengths.")
     return result
 
 
@@ -98,7 +101,7 @@ def _pose(value: object, *, name: str, yaws: frozenset[int]) -> PoseSpec:
     )
     yaw = _integer(payload["yaw_degrees"], name=f"{name}.yaw_degrees")
     if yaw not in yaws:
-        raise ValueError(f"{name}.yaw_degrees must use the declared view ring.")
+        raise CharacterDataError(f"{name}.yaw_degrees must use the declared view ring.")
     return PoseSpec(
         _text(payload["id"], name=f"{name}.id"),
         yaw,
@@ -123,7 +126,7 @@ def _side_anchors(
     name: str,
 ) -> frozendict[str, frozendict[str, tuple[int, int]]]:
     if not isinstance(value, dict) or not value:
-        raise ValueError(f"{name} must be a non-empty object.")
+        raise CharacterDataError(f"{name} must be a non-empty object.")
     return frozendict(
         {
             _text(pose, name=f"{name} pose"): _side_anchor_pair(raw, name=f"{name}.{pose}")
@@ -167,10 +170,10 @@ def _physics(value: object) -> PhysicsSpec:
         )
         suffix = item["suffix"]
         if not isinstance(suffix, str):
-            raise ValueError("physics pose suffix must be text.")
+            raise CharacterDataError("physics pose suffix must be text.")
         suffixes.append((suffix, _text(item["pose"], name="physics pose")))
     if not suffixes or len(suffixes) != len(set(suffixes)):
-        raise ValueError("physics.pose_suffixes must be unique and non-empty.")
+        raise CharacterDataError("physics.pose_suffixes must be unique and non-empty.")
     anchors = _object(
         payload["anchors"],
         name="physics.anchors",
@@ -178,13 +181,13 @@ def _physics(value: object) -> PhysicsSpec:
     )
     ornament_payload = anchors["ornament"]
     if not isinstance(ornament_payload, dict) or not ornament_payload:
-        raise ValueError("physics.anchors.ornament must be a non-empty object.")
+        raise CharacterDataError("physics.anchors.ornament must be a non-empty object.")
     probability = _number(
         payload["pose_switch_probability"],
         name="physics.pose_switch_probability",
     )
     if not 0.0 <= probability <= 1.0:
-        raise ValueError("physics.pose_switch_probability must be within 0..1.")
+        raise CharacterDataError("physics.pose_switch_probability must be within 0..1.")
     result = PhysicsSpec(
         tuple(suffixes),
         _unique_texts(
@@ -217,14 +220,14 @@ def _physics(value: object) -> PhysicsSpec:
         or result.max_gesture_sway < 0.0
         or not 0.0 <= result.gesture_energy_threshold <= 1.0
     ):
-        raise ValueError("Physics calibrations must use supported non-negative ranges.")
+        raise CharacterDataError("Physics calibrations must use supported non-negative ranges.")
     pose_names = {pose for _suffix, pose in result.pose_suffixes}
     if (
         set(result.ornament_anchors) != pose_names
         or set(result.hair_anchors) != pose_names
         or set(result.sleeve_anchors) != pose_names
     ):
-        raise ValueError("Physics anchors must cover every declared physics pose.")
+        raise CharacterDataError("Physics anchors must cover every declared physics pose.")
     return result
 
 
@@ -258,9 +261,9 @@ def _face_calibration(value: object) -> FaceCalibrationSpec:
         for key in keys
     )
     if any(value < 0.0 for value in values):
-        raise ValueError("face_calibration values must be non-negative.")
+        raise CharacterDataError("face_calibration values must be non-negative.")
     if any(value > 1.0 for value in (*values[:4], *values[13:])):
-        raise ValueError("Face opacity, shyness, and viseme weights must be within 0..1.")
+        raise CharacterDataError("Face opacity, shyness, and viseme weights must be within 0..1.")
     return FaceCalibrationSpec(*values)
 
 
@@ -306,7 +309,7 @@ def _full_body_calibration(value: object) -> FullBodyCalibrationSpec:
         for key in proportion_keys
     )
     if any(value <= 0.0 for value in proportion_values):
-        raise ValueError("Full-body proportions must be positive.")
+        raise CharacterDataError("Full-body proportions must be positive.")
     directions = payload["direction_vectors"]
     if not isinstance(directions, dict) or set(directions) != {
         "forward",
@@ -314,7 +317,7 @@ def _full_body_calibration(value: object) -> FullBodyCalibrationSpec:
         "left",
         "right",
     }:
-        raise ValueError("Full-body direction vectors must cover four directions.")
+        raise CharacterDataError("Full-body direction vectors must cover four directions.")
     result = FullBodyCalibrationSpec(
         BodyProportionsSpec(*proportion_values),
         _float_pair(payload["root"], name="full_body_calibration.root"),
@@ -356,7 +359,7 @@ def _full_body_calibration(value: object) -> FullBodyCalibrationSpec:
         or result.sole_half_width <= 0.0
         or any(vector == (0.0, 0.0) for vector in result.direction_vectors.values())
     ):
-        raise ValueError("Full-body calibration values are outside supported ranges.")
+        raise CharacterDataError("Full-body calibration values are outside supported ranges.")
     return result
 
 
@@ -391,7 +394,7 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
         minimum=1,
     )
     if schema != RIG_SCHEMA or schema_version != SCHEMA_VERSION:
-        raise ValueError("Rig manifest schema is unsupported.")
+        raise CharacterDataError("Rig manifest schema is unsupported.")
     body_profile = _object(
         payload["body_profile"],
         name="body_profile",
@@ -449,10 +452,10 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
         minimum=1,
     )
     if yaws != tuple(range(-180, 180, step)):
-        raise ValueError("Rig view ring must declare one ordered complete 360-degree ring.")
+        raise CharacterDataError("Rig view ring must declare one ordered complete 360-degree ring.")
     legacy_alias_payload = view_ring["legacy_aliases"]
     if not isinstance(legacy_alias_payload, dict) or not legacy_alias_payload:
-        raise ValueError("full_body.view_ring.legacy_aliases must be a non-empty object.")
+        raise CharacterDataError("full_body.view_ring.legacy_aliases must be a non-empty object.")
     legacy_aliases = frozendict(
         {
             _text(alias, name="legacy view alias"): _integer(
@@ -463,7 +466,7 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
         }
     )
     if not set(legacy_aliases.values()) <= set(yaws):
-        raise ValueError("Legacy view aliases must target declared yaws.")
+        raise CharacterDataError("Legacy view aliases must target declared yaws.")
     half_body = _object(
         payload["half_body"],
         name="half_body",
@@ -506,7 +509,7 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
     )
     pose_ids = tuple(item.pose_id for item in poses)
     if not poses or len(pose_ids) != len(set(pose_ids)):
-        raise ValueError("poses.registry must contain unique pose identifiers.")
+        raise CharacterDataError("poses.registry must contain unique pose identifiers.")
     relaxed_hand = _object(
         pose_payload["relaxed_hand"],
         name="poses.relaxed_hand",
@@ -519,18 +522,18 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
         )
     )
     if len(hand_points) != HAND_LANDMARK_COUNT:
-        raise ValueError("poses.relaxed_hand requires exactly 21 points.")
+        raise CharacterDataError("poses.relaxed_hand requires exactly 21 points.")
     layer_z_order = _unique_texts(
         full_body["layer_z_order"],
         name="full_body.layer_z_order",
     )
     if len(layer_z_order) != FULL_BODY_LAYER_COUNT:
-        raise ValueError("full_body.layer_z_order requires exactly 25 layers.")
+        raise CharacterDataError("full_body.layer_z_order requires exactly 25 layers.")
     required_layers = frozenset(
         _unique_texts(full_body["required_layers"], name="full_body.required_layers")
     )
     if not required_layers <= set(layer_z_order):
-        raise ValueError("full_body.required_layers must reference declared layers.")
+        raise CharacterDataError("full_body.required_layers must reference declared layers.")
     registered_composite_layers = _unique_texts(
         full_body["registered_composite_layers"],
         name="full_body.registered_composite_layers",
@@ -543,7 +546,7 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
         not set(registered_composite_layers) <= set(layer_z_order)
         or not set(face_authority_layers) <= set(layer_z_order)
     ):
-        raise ValueError("Full-body composition lists must reference declared layers.")
+        raise CharacterDataError("Full-body composition lists must reference declared layers.")
     mirror_views = _text_mapping(
         view_ring["mirror_views"],
         name="full_body.view_ring.mirror_views",
@@ -563,16 +566,16 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
             for pitch in pitch_degrees
         )
     ):
-        raise ValueError("view_ring.pitch_degrees must be unique values within -45..45.")
+        raise CharacterDataError("view_ring.pitch_degrees must be unique values within -45..45.")
     if len(yaws) != FULL_VIEW_COUNT or pitch_degrees != (0,):
-        raise ValueError("Bundled full-body rig requires one 24-yaw zero-pitch ring.")
+        raise CharacterDataError("Bundled full-body rig requires one 24-yaw zero-pitch ring.")
     declared_views = {
         f"yaw{yaw:+04d}-pitch{pitch:+03d}" for pitch, yaw in product(pitch_degrees, yaws)
     }
     if set(mirror_views) != declared_views or set(mirror_views.values()) != declared_views:
-        raise ValueError("mirror_views must cover every declared view exactly once.")
+        raise CharacterDataError("mirror_views must cover every declared view exactly once.")
     if any(mirror_views[mirror_views[view]] != view for view in declared_views):
-        raise ValueError("mirror_views must be a symmetric mapping.")
+        raise CharacterDataError("mirror_views must be a symmetric mapping.")
     viewport_spec = ViewportSpec(
         _integer(viewport["canvas_width"], name="viewport.canvas_width", minimum=1),
         _integer(viewport["image_size"], name="viewport.image_size", minimum=1),
@@ -586,26 +589,26 @@ def load_rig_manifest(  # ruff: ignore[too-many-branches, too-many-locals, too-m
         ),
     )
     if not viewport_spec.scale_min <= viewport_spec.scale_default <= viewport_spec.scale_max:
-        raise ValueError("viewport.scale_default must stay within the declared range.")
+        raise CharacterDataError("viewport.scale_default must stay within the declared range.")
     legacy_pose_ids = _unique_texts(
         pose_payload["legacy_pose_ids"],
         name="poses.legacy_pose_ids",
     )
     if not set(legacy_pose_ids) <= set(pose_ids):
-        raise ValueError("poses.legacy_pose_ids must target declared poses.")
+        raise CharacterDataError("poses.legacy_pose_ids must target declared poses.")
     behavior_pose_views = _text_mapping(
         pose_payload["behavior_views"],
         name="poses.behavior_views",
     )
     if set(behavior_pose_views) != set(pose_ids):
-        raise ValueError("poses.behavior_views must cover every declared pose.")
+        raise CharacterDataError("poses.behavior_views must cover every declared pose.")
     side_view_yaw_limit = _integer(
         full_body["side_view_yaw_limit"],
         name="full_body.side_view_yaw_limit",
         minimum=0,
     )
     if side_view_yaw_limit > MAX_YAW_DEGREES:
-        raise ValueError("full_body.side_view_yaw_limit cannot exceed 180 degrees.")
+        raise CharacterDataError("full_body.side_view_yaw_limit cannot exceed 180 degrees.")
     return CharacterRigManifest(
         schema,
         schema_version,
