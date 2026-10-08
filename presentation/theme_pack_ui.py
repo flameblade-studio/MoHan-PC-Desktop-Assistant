@@ -18,6 +18,7 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 
+lazy from domain.contracts import default_character_display_name
 lazy from domain.language_support import canonical_ui_language
 lazy from presentation.ui_localization import ui_text
 
@@ -235,7 +236,8 @@ class ThemePackPanel(QWidget):
             self,
             self._t("wardrobe_upload_single_file", "上傳單一檔案"),
             str(Path.home() / "Downloads"),
-            "MoHan theme package (*.mohan-theme *.zip)",
+            f"{default_character_display_name('en')} theme package "
+            "(*.mohan-theme *.zip)",
         )
         if not source:
             return

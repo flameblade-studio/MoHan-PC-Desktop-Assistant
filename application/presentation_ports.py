@@ -27,6 +27,7 @@ lazy from domain.contracts import (
     SpeechListenerPort,
 )
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from domain.prompt_cache import PromptCacheTelemetry, PromptCacheTokenEvidence
 lazy from domain.safe_error import SafeError
 lazy from domain.speech_providers import (
@@ -38,7 +39,7 @@ lazy from domain.speech_providers import (
 _CHARACTER_DATA = load_mohan_character_data()
 _VOICE_PROFILE = _CHARACTER_DATA.voice
 _VOICE_PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
-
+_CHARACTER_DISPLAY_NAME = _CHARACTER_DATA.personas["en"].identity.display_name
 # Transcription-prompt heuristics.
 MAX_TERM_LENGTH = 40
 MAX_TERMS = 16
@@ -125,25 +126,21 @@ class _PresentationFallbackPlatformService:
 
     def __init__(self) -> None:
         platform_id = (
-            "windows"
-            if sys.platform.startswith("win")
-            else "macos"
-            if sys.platform == "darwin"
-            else "linux"
+            "windows" if sys.platform.startswith("win") else "macos" if sys.platform == "darwin" else "linux"
         )
         home = Path.home()
         if platform_id == "windows":
-            root = Path(os.environ.get("LOCALAPPDATA") or home) / "YanJianStudio" / "MoHan"
+            root = Path(os.environ.get("LOCALAPPDATA") or home) / PROFILE_VENDOR_DIRECTORY / PROFILE_APP_DIRECTORY
             config = root
             cache = root / "cache"
             display_name = "Windows"
         elif platform_id == "macos":
-            root = home / "Library" / "Application Support" / "YanJianStudio" / "MoHan"
+            root = home / "Library" / "Application Support" / PROFILE_VENDOR_DIRECTORY / PROFILE_APP_DIRECTORY
             config = root
-            cache = home / "Library" / "Caches" / "YanJianStudio" / "MoHan"
+            cache = home / "Library" / "Caches" / PROFILE_VENDOR_DIRECTORY / PROFILE_APP_DIRECTORY
             display_name = "macOS"
         else:
-            suffix = Path("YanJianStudio") / "MoHan"
+            suffix = Path(PROFILE_VENDOR_DIRECTORY) / PROFILE_APP_DIRECTORY
             root = Path(os.environ.get("XDG_DATA_HOME") or home / ".local" / "share") / suffix
             config = Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config") / suffix
             cache = Path(os.environ.get("XDG_CACHE_HOME") or home / ".cache") / suffix
@@ -894,12 +891,12 @@ def bind_dashboard_portable_secrets(
     generated = {
         secret_id: factory(root / filename, description)
         for secret_id, filename, description in (
-            ("home_assistant", "home-assistant-token.dpapi", "MoHan Home Assistant token"),
-            ("oauth_google", "oauth-google.dpapi", "MoHan google OAuth token"),
-            ("oauth_microsoft", "oauth-microsoft.dpapi", "MoHan microsoft OAuth token"),
-            ("oauth_github", "oauth-github.dpapi", "MoHan github OAuth token"),
-            ("face_identities", "face-identities.dpapi", "MoHan local face identity templates"),
-            ("gesture_templates", "gesture-templates.dpapi", "MoHan local gesture skeleton templates"),
+            ("home_assistant", "home-assistant-token.dpapi", f"{_CHARACTER_DISPLAY_NAME} Home Assistant token"),
+            ("oauth_google", "oauth-google.dpapi", f"{_CHARACTER_DISPLAY_NAME} google OAuth token"),
+            ("oauth_microsoft", "oauth-microsoft.dpapi", f"{_CHARACTER_DISPLAY_NAME} microsoft OAuth token"),
+            ("oauth_github", "oauth-github.dpapi", f"{_CHARACTER_DISPLAY_NAME} github OAuth token"),
+            ("face_identities", "face-identities.dpapi", f"{_CHARACTER_DISPLAY_NAME} local face identity templates"),
+            ("gesture_templates", "gesture-templates.dpapi", f"{_CHARACTER_DISPLAY_NAME} local gesture skeleton templates"),
         )
     }
     stores = {

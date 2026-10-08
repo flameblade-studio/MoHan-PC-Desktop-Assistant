@@ -20,6 +20,7 @@
   看似遺失既有對話、記憶與設定。
 - macOS 使用 `~/Library/Application Support/YanJianStudio/MoHan`；Linux
   遵循 `XDG_DATA_HOME`、`XDG_CONFIG_HOME`、`XDG_CACHE_HOME`。
+- `YanJianStudio` 是早期沿用的資料夾名稱，為保留既有資料而不更改；工作室官方英文名為 Flameblade Studio。
 - macOS／Linux 原生安全金鑰保存完成前，程式讓金鑰留在明文保存範圍之外。
 - 設定頁與旗艦控制中心共用同一個可注入的金鑰邊界；平台通過驗證後才開放
   金鑰、OAuth、Home Assistant 權杖輸入與相應的原生語音選項。
@@ -51,6 +52,7 @@
 - Windows 数据目录继续使用 `%LOCALAPPDATA%\YanJianStudio\MoHan`。
 - macOS 使用 `~/Library/Application Support/YanJianStudio/MoHan`；Linux
   遵循 `XDG_DATA_HOME`、`XDG_CONFIG_HOME`、`XDG_CACHE_HOME`。
+- `YanJianStudio` 是早期沿用的文件夹名称，为保留现有数据而不更改；工作室官方英文名为 Flameblade Studio。
 - 在 macOS／Linux 原生安全密钥保存完成前，程序让密钥保持在明文保存范围之外。
 - 设置页与旗舰控制中心共用同一个可注入密钥边界；平台通过验证后才开放密钥、
   OAuth、Home Assistant 权杖输入与相应的原生语音选项。
@@ -85,6 +87,7 @@ suite, installer testing, and published packages.
   `%LOCALAPPDATA%\YanJianStudio\MoHan`, preserving all existing profiles.
 - macOS uses `~/Library/Application Support/YanJianStudio/MoHan`; Linux follows
   `XDG_DATA_HOME`, `XDG_CONFIG_HOME`, and `XDG_CACHE_HOME`.
+- `YanJianStudio` is a legacy folder name kept unchanged to preserve existing data; the studio's official English name is Flameblade Studio.
 - Until native secure storage is implemented and validated on macOS/Linux,
   MoHan keeps secrets outside plaintext storage through its fail-closed state.
 - Settings and the flagship control center share one injectable secret-store
@@ -122,6 +125,7 @@ macOS／Linux の表明範囲は、現在までに完成した Preview 機能で
 - Windows の保存先は `%LOCALAPPDATA%\YanJianStudio\MoHan` を維持します。
 - macOS は `~/Library/Application Support/YanJianStudio/MoHan`、Linux は
   `XDG_DATA_HOME`、`XDG_CONFIG_HOME`、`XDG_CACHE_HOME` に従います。
+- `YanJianStudio` は既存データを保持するため変更しない初期からのフォルダー名です。工房の公式英語名は Flameblade Studio です。
 - macOS／Linux の安全なネイティブ保存が完成するまで、キーを平文保存の範囲外に維持し、
   安全側で停止します。
 - 設定画面とフラッグシップ制御画面は、同じ注入可能なキー保存境界を使用します。

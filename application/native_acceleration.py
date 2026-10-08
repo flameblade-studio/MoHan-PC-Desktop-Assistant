@@ -13,6 +13,7 @@ lazy from typing import TypeVar, cast
 
 lazy from domain import lip_sync as python_lip_sync
 lazy from domain import pcm_audio as python_pcm_audio
+lazy from domain.contracts import default_character_display_name
 
 # Re-exported from the centralized constants module for a single source of truth.
 lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE
@@ -228,7 +229,8 @@ class NativeAcceleration:
             except Exception as error:
                 self._load_error = _error_summary(error)
                 LOGGER.info(
-                    "MoHan native acceleration is unavailable; using Python: %s",
+                    f"{default_character_display_name('en')} native acceleration "
+                    "is unavailable; using Python: %s",
                     self._load_error,
                 )
             finally:
@@ -245,7 +247,8 @@ class NativeAcceleration:
             count = self._operation_failures.get(operation, 0) + 1
             self._operation_failures[operation] = count
         LOGGER.warning(
-            "MoHan native operation %s requires attention; using Python fallback (attention event %d): %s",
+            f"{default_character_display_name('en')} native operation %s requires "
+            "attention; using Python fallback (attention event %d): %s",
             operation,
             count,
             type(error).__name__,

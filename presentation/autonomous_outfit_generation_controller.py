@@ -28,6 +28,7 @@ lazy from domain.constants import (
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )
+lazy from domain.contracts import default_character_display_name
 lazy from domain.outfit_pack import (
     MOOD_TAGS,
     OCCASION_TAGS,
@@ -287,7 +288,8 @@ class AutonomousOutfitGenerationController(QObject):
             mood=str(self._db.setting("current_mood", "calm") or "calm"),
             occasion=self._wardrobe_occasion(),
             creative_direction=(
-                "An elegant original Northern-Song-inspired outfit for MoHan, "
+                "An elegant original Northern-Song-inspired outfit for "
+                f"{default_character_display_name('en')}, "
                 "adapted to the current weather and mood while preserving her "
                 "blue-silver sword-spirit identity."
             ),
