@@ -65,7 +65,7 @@
 
 `domain/character_source.py` 只定義 `CharacterAssets`、`CharacterPersona`、`CharacterAppearanceContract` 與組合用 `CharacterSource` Protocol。引擎透過這些型別取得素材路徑、名字與稱謂、人格與事件台詞，以及 body profile、24 視角、雙畫布和圖層順序；domain 不依賴檔案格式或產品殼。
 
-`LegacyMohanCharacterSource` 只轉接既有公開常數與函式，並由 `application/service_container.py` 作為預設來源注入，所以現行素材位置、設定優先權及畫面結果不變。`CharacterPackReader` 先以 `domain.character_pack` 完整驗證資料夾，再驗證必要 persona、dialogue、fullbody rig 與 halfbody rig 子契約；任一步失敗即拒絕整包，絕不退回半套資料或 legacy fallback。`assets/characters/mohan/` 以相同相對路徑納入產品封裝；公開、私有、素材授權及 DLC 關係仍依擁有者決定。
+`LegacyMohanCharacterSource` 只轉接既有公開常數與函式，並由 `application/service_container.py` 作為預設來源注入，所以現行素材位置、設定優先權及畫面結果不變。`CharacterPackReader` 先以 `domain.character_pack` 完整驗證資料夾，再驗證必要 persona、dialogue、fullbody rig 與 halfbody rig 子契約；任一步失敗即拒絕整包，絕不退回半套資料或 legacy fallback。`assets/characters/mohan/` 以相同相對路徑納入產品封裝；墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材採 CC BY-NC-ND 4.0，DLC 關係仍由擁有者決定。
 
 ### 資料所有權
 
@@ -207,7 +207,7 @@
 
 `domain/character_source.py` 只定义 `CharacterAssets`、`CharacterPersona`、`CharacterAppearanceContract` 与用于组合的 `CharacterSource` Protocol。引擎通过这些类型取得素材路径、名字与称谓、人格与事件台词，以及 body profile、24 视角、双画布和图层顺序；domain 不依赖文件格式或产品外壳。
 
-`LegacyMohanCharacterSource` 只适配现有公开常量与函数，并由 `application/service_container.py` 作为默认来源注入，因此现有素材位置、设置优先级和画面结果不变。`CharacterPackReader` 先通过 `domain.character_pack` 完整验证目录，再验证必要的 persona、dialogue、fullbody rig 与 halfbody rig 子契约；任一步失败即拒绝整个包，绝不回退到不完整数据或 legacy fallback。`assets/characters/mohan/` 以相同相对路径加入产品封装；公开、私有、素材授权及 DLC 关系仍由所有者决定。
+`LegacyMohanCharacterSource` 只适配现有公开常量与函数，并由 `application/service_container.py` 作为默认来源注入，因此现有素材位置、设置优先级和画面结果不变。`CharacterPackReader` 先通过 `domain.character_pack` 完整验证目录，再验证必要的 persona、dialogue、fullbody rig 与 halfbody rig 子契约；任一步失败即拒绝整个包，绝不回退到不完整数据或 legacy fallback。`assets/characters/mohan/` 以相同相对路径加入产品封装；墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材采用 CC BY-NC-ND 4.0，DLC 关系仍由所有者决定。
 
 ### 数据所有权
 
@@ -354,7 +354,7 @@ Local-module dependencies form a directed acyclic graph and enforced by `tests/t
 
 `domain/character_source.py` defines only the `CharacterAssets`, `CharacterPersona`, `CharacterAppearanceContract`, and composing `CharacterSource` protocols. Through these types, the engine obtains asset paths, names and titles, persona and event dialogue, plus the body profile, 24-view ring, two canvases, and layer order. The domain has no dependency on storage formats or the product shell.
 
-`LegacyMohanCharacterSource` adapts established public constants and functions only, and `application/service_container.py` injects it as the default source, preserving current asset locations, setting precedence, and rendered output. `CharacterPackReader` first validates the complete directory through `domain.character_pack`, then validates the required persona, dialogue, full-body rig, and half-body rig child contracts. Any failure rejects the whole pack without partial data or a legacy fallback. Product packaging preserves `assets/characters/mohan/` at the same relative path. Public or private access, asset licensing, and the DLC relationship remain owner decisions.
+`LegacyMohanCharacterSource` adapts established public constants and functions only, and `application/service_container.py` injects it as the default source, preserving current asset locations, setting precedence, and rendered output. `CharacterPackReader` first validates the complete directory through `domain.character_pack`, then validates the required persona, dialogue, full-body rig, and half-body rig child contracts. Any failure rejects the whole pack without partial data or a legacy fallback. Product packaging preserves `assets/characters/mohan/` at the same relative path. The public MoHan release page carries the MoHan and Lin Keyun packs under CC BY-NC-ND 4.0; the DLC relationship remains an owner decision.
 
 ### Data ownership
 
@@ -496,7 +496,7 @@ The architecture gate reports physical five-layer package modules, root compatib
 
 `domain/character_source.py` は `CharacterAssets`、`CharacterPersona`、`CharacterAppearanceContract` と、それらを束ねる `CharacterSource` Protocol だけを定義します。エンジンはこの型境界から、素材パス、名前と敬称、人格とイベント台詞、body profile、24 視点、二つのキャンバス、レイヤー順を取得します。domain は保存形式や製品シェルへ依存しません。
 
-`LegacyMohanCharacterSource` は既存の公開定数と関数だけを変換し、`application/service_container.py` が既定ソースとして注入するため、現在の素材位置、設定の優先順位、表示結果を維持します。`CharacterPackReader` は最初に `domain.character_pack` でディレクトリ全体を検証し、続いて必須の persona、dialogue、fullbody rig、halfbody rig 子契約を検証します。どこか一つでも失敗すればパック全体を拒否し、不完全なデータや legacy fallback を返しません。製品パッケージは `assets/characters/mohan/` を同じ相対パスで収録します。公開または非公開、素材ライセンス、DLC との関係は引き続き所有者が決定します。
+`LegacyMohanCharacterSource` は既存の公開定数と関数だけを変換し、`application/service_container.py` が既定ソースとして注入するため、現在の素材位置、設定の優先順位、表示結果を維持します。`CharacterPackReader` は最初に `domain.character_pack` でディレクトリ全体を検証し、続いて必須の persona、dialogue、fullbody rig、halfbody rig 子契約を検証します。どこか一つでも失敗すればパック全体を拒否し、不完全なデータや legacy fallback を返しません。製品パッケージは `assets/characters/mohan/` を同じ相対パスで収録します。墨寒と林可芸のパックは墨寒プロジェクトの公開ページで公開し、素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は引き続き所有者が決定します。
 
 ### データ所有権
 

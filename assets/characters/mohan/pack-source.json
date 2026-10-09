@@ -21,7 +21,7 @@
   },
   "distribution": {
     "standalone_downloadable": true,
-    "access": "private",
+    "access": "public",
     "redistribution": "allowed"
   },
   "licenses": {

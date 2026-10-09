@@ -17,7 +17,6 @@ lazy from tools import verify_character_pack_lock as verifier
 
 MIB = 1024 * 1024
 ROOT = Path(__file__).resolve().parents[1]
-PRIVATE_TOKEN_NAME = "MOHAN_CHARACTER_PACK_TOKEN"
 LIMITS = ValidationLimits(
     max_archive_bytes=8 * MIB,
     max_zip_directory_bytes=MIB,
@@ -164,7 +163,7 @@ def test_update_can_keep_the_exact_release_archive(tmp_path: Path) -> None:
     assert hashlib.sha256(archive_path.read_bytes()).hexdigest() == result.archive_sha256
 
 
-def test_lock_rejects_a_repository_other_than_the_owner_approved_private_repo(tmp_path: Path) -> None:
+def test_lock_rejects_a_repository_other_than_the_owner_approved_public_repo(tmp_path: Path) -> None:
     root = _prepare_repo(tmp_path / "repo")
     lock_path = root / "character-pack.lock.json"
     verifier.update_character_pack_lock(
@@ -183,7 +182,7 @@ def test_lock_rejects_a_repository_other_than_the_owner_approved_private_repo(tm
         verifier.load_character_pack_lock(lock_path)
 
 
-def test_repository_lock_uses_the_owner_approved_private_release_identity() -> None:
+def test_repository_lock_uses_the_owner_approved_public_release_identity() -> None:
     lock = verifier.load_character_pack_lock(ROOT / "character-pack.lock.json")
     assert lock.pack_id == "flameblade.mohan"
     assert lock.pack_version == "1.0.2"
@@ -193,12 +192,24 @@ def test_repository_lock_uses_the_owner_approved_private_release_identity() -> N
     assert lock.files
 
 
-def test_consistency_workflow_uses_no_private_token_or_private_repository_download() -> None:
+def test_release_lock_loader_accepts_the_lin_keyun_public_release_identity() -> None:
+    lock = verifier.load_release_character_pack_lock(
+        ROOT / "docs" / "character-pack" / "lin-keyun-pack.lock.json"
+    )
+    assert lock.pack_id == "flameblade.lin-keyun"
+    assert lock.pack_version == "1.0.0"
+    assert lock.source.repository == verifier.SOURCE_REPOSITORY
+    assert lock.source.release_tag == "lin-keyun-pack-v1.0.0"
+    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.0.zip"
+    assert lock.files
+
+
+def test_consistency_workflow_verifies_both_public_release_locks() -> None:
     workflow = (
         ROOT / ".github" / "workflows" / "character-pack-lock.yml"
     ).read_text(encoding="utf-8")
     assert "pull_request:" in workflow
     assert "push:" in workflow
     assert "python tools/verify_character_pack_lock.py" in workflow
-    assert PRIVATE_TOKEN_NAME not in workflow
+    assert "python tools/verify_character_pack_lock.py --profile lin-keyun" in workflow
     assert "fetch_character_pack.py" not in workflow

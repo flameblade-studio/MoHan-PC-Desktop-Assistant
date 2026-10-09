@@ -73,7 +73,7 @@
     "character_asset_license": "CC-BY-NC-ND-4.0",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
-    "pack_visibility": "private_repository",
+    "pack_visibility": "public_mohan_release_page",
     "standalone_download_design": true
   },
   "product_shell_allowed": [

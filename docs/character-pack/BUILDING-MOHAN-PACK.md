@@ -16,12 +16,12 @@
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.0.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
 ```
 
 成功輸出包含 `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明確驗證上限與 `CHARACTER_PACK_VALID=1`。ZIP 使用排序後的成員、1980-01-01 固定時間戳、固定權限、無額外 metadata、`ZIP_STORED` 與停用 ZIP64；同一輸入兩次會得到相同 `package_hash` 與完全相同的 ZIP bytes。資料夾與 ZIP 的邏輯 `package_hash` 相同。
 
-本步不改產品讀取路徑、安裝、更新或執行期組裝。`distribution.access` 是擁有者已裁定的 `private`；`standalone_downloadable` 是 true；再散布與四類素材授權維持 `owner_decision_pending`。
+本步不改產品讀取路徑、安裝、更新或執行期組裝。`distribution.access` 是擁有者已裁定的 `public`，`standalone_downloadable` 與再散布皆已允許，四類素材採 CC BY-NC-ND 4.0；DLC 關係仍待擁有者決定。
 
 ## 简体中文
 
@@ -39,12 +39,12 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.0.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
 ```
 
 成功输出包含 `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明确验证上限与 `CHARACTER_PACK_VALID=1`。ZIP 使用排序后的成员、1980-01-01 固定时间戳、固定权限、无额外 metadata、`ZIP_STORED` 与停用 ZIP64；同一输入两次会得到相同 `package_hash` 与完全相同的 ZIP bytes。文件夹与 ZIP 的逻辑 `package_hash` 相同。
 
-本步不改产品读取路径、安装、更新或运行时装配。`distribution.access` 是所有者已裁定的 `private`；`standalone_downloadable` 是 true；再分发与四类素材授权保持 `owner_decision_pending`。
+本步不改产品读取路径、安装、更新或运行时装配。`distribution.access` 是所有者已裁定的 `public`，`standalone_downloadable` 与再分发均已允许，四类素材采用 CC BY-NC-ND 4.0；DLC 关系仍待所有者决定。
 
 ## English
 
@@ -62,12 +62,12 @@ The output path must not already exist. Both forms are fully checked with the `d
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.0.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
 ```
 
 Successful output reports `PACKAGE_HASH`, `PAYLOAD_FILES`, `PAYLOAD_BYTES`, the explicit limits, and `CHARACTER_PACK_VALID=1`. ZIP output uses sorted members, the fixed timestamp 1980-01-01, fixed permissions, no extra metadata, `ZIP_STORED`, and disabled ZIP64. Identical inputs produce the same `package_hash` and byte-identical ZIPs. Equivalent directory and ZIP packages share the same logical `package_hash`.
 
-This step does not change product read paths, installation, updates, or runtime composition. `distribution.access` is the owner-approved `private`, `standalone_downloadable` is true, and redistribution plus all four material-license categories remain `owner_decision_pending`.
+This step does not change product read paths, installation, updates, or runtime composition. The owner-approved `distribution.access` is `public`; `standalone_downloadable` and redistribution are allowed, and all four material categories use CC BY-NC-ND 4.0. The DLC relationship remains an owner decision.
 
 ## 日本語
 
@@ -85,9 +85,9 @@ This step does not change product read paths, installation, updates, or runtime 
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.0.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
 ```
 
 成功時は `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明示上限、`CHARACTER_PACK_VALID=1` を出力します。ZIP は並べ替えたメンバー、固定日時 1980-01-01、固定権限、追加 metadata なし、`ZIP_STORED`、ZIP64 無効を使用します。同じ入力から同じ `package_hash` と完全に同じ ZIP bytes を生成します。同等のディレクトリと ZIP は同じ論理 `package_hash` を共有します。
 
-本段階では製品の読込先、インストール、更新、実行時組み立てを変更しません。`distribution.access` は所有者が決定した `private`、`standalone_downloadable` は true です。再配布と四種類の素材ライセンスは `owner_decision_pending` のままです。
+本段階では製品の読込先、インストール、更新、実行時組み立てを変更しません。所有者が決定した `distribution.access` は `public` で、`standalone_downloadable` と再配布を許可し、四種類の素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は所有者の決定待ちです。

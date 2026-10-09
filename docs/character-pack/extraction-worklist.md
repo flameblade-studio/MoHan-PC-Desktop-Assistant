@@ -14,7 +14,7 @@
 
 `application/runtime_bootstrap.py`、`application/wardrobe_service.py`、`domain/constants.py`、`domain/outfit_pack_official.py`、`domain/version_info.py`、`infrastructure/app_resources.py`、`infrastructure/profile_transfer.py`、`infrastructure/updater.py`、`integrations/cloud_connectors.py`、`presentation/auxiliary_ui_localization.py`、`presentation/dashboard_settings.py`、`presentation/flagship/cloud.py`、`presentation/flagship/runtime.py`、`presentation/preview_app.py`、`presentation/ui_localization.py`、`presentation/ui_localization_en.py`、`presentation/ui_localization_ja.py`
 
-角色素材授權與 DLC 關係仍待擁有者決定；本清單不改變私有倉庫與獨立下載設計裁定。
+墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材採 CC BY-NC-ND 4.0；DLC 關係仍待擁有者決定。
 
 詳細證據與逐檔理由見 `extraction-worklist.json`。
 
@@ -32,7 +32,7 @@
 
 `application/runtime_bootstrap.py`、`application/wardrobe_service.py`、`domain/constants.py`、`domain/outfit_pack_official.py`、`domain/version_info.py`、`infrastructure/app_resources.py`、`infrastructure/profile_transfer.py`、`infrastructure/updater.py`、`integrations/cloud_connectors.py`、`presentation/auxiliary_ui_localization.py`、`presentation/dashboard_settings.py`、`presentation/flagship/cloud.py`、`presentation/flagship/runtime.py`、`presentation/preview_app.py`、`presentation/ui_localization.py`、`presentation/ui_localization_en.py`、`presentation/ui_localization_ja.py`
 
-角色素材授权与 DLC 关系仍待所有者决定；本清单不改变私有仓库和独立下载设计裁定。
+墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材采用 CC BY-NC-ND 4.0；DLC 关系仍待所有者决定。
 
 详细证据与逐文件理由见 `extraction-worklist.json`。
 
@@ -50,7 +50,7 @@ The old list leaves 65 manual-review-only hints with no content-rule evidence; t
 
 `application/runtime_bootstrap.py`、`application/wardrobe_service.py`、`domain/constants.py`、`domain/outfit_pack_official.py`、`domain/version_info.py`、`infrastructure/app_resources.py`、`infrastructure/profile_transfer.py`、`infrastructure/updater.py`、`integrations/cloud_connectors.py`、`presentation/auxiliary_ui_localization.py`、`presentation/dashboard_settings.py`、`presentation/flagship/cloud.py`、`presentation/flagship/runtime.py`、`presentation/preview_app.py`、`presentation/ui_localization.py`、`presentation/ui_localization_en.py`、`presentation/ui_localization_ja.py`
 
-Character-asset licensing and the DLC relationship still require the owner's decision; this list does not change the private-repository or independent-download decisions.
+The public MoHan release page carries the MoHan and Lin Keyun character packs under CC BY-NC-ND 4.0; the DLC relationship remains an owner decision.
 
 See `extraction-worklist.json` for detailed evidence and per-file reasons.
 
@@ -68,6 +68,6 @@ See `extraction-worklist.json` for detailed evidence and per-file reasons.
 
 `application/runtime_bootstrap.py`、`application/wardrobe_service.py`、`domain/constants.py`、`domain/outfit_pack_official.py`、`domain/version_info.py`、`infrastructure/app_resources.py`、`infrastructure/profile_transfer.py`、`infrastructure/updater.py`、`integrations/cloud_connectors.py`、`presentation/auxiliary_ui_localization.py`、`presentation/dashboard_settings.py`、`presentation/flagship/cloud.py`、`presentation/flagship/runtime.py`、`presentation/preview_app.py`、`presentation/ui_localization.py`、`presentation/ui_localization_en.py`、`presentation/ui_localization_ja.py`
 
-キャラクター素材のライセンスと DLC の関係は所有者の決定待ちです。本一覧は非公開リポジトリと独立ダウンロード設計の決定を変更しません。
+墨寒と林可芸のキャラクターパックは墨寒プロジェクトの公開ページで公開し、素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は所有者の決定待ちです。
 
 詳細な証拠とファイルごとの理由は `extraction-worklist.json` を参照してください。

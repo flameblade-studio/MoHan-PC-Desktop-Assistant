@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.mohan-1.0.2.zip",
-    "bytes": 620761848,
-    "sha256": "b0b2609886c85a1adfbfea8f6d8784a43960343962061dd34e510c1d948e1bb8"
+    "asset_name": "flameblade.lin-keyun-1.0.0.zip",
+    "bytes": 620759321,
+    "sha256": "d4e78b6a21b4dd4e98df11b2e0539955542a78aa38d804e8f4b54cc2db192b02"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -12,94 +12,94 @@
   },
   "files": [
     {
-      "bytes": 6910,
-      "path": "assets/characters/mohan/LICENSE.md",
-      "sha256": "8655f87ca7f39be6abc5430f7bfad423c02dce57e350294702cdf8e01893951e"
+      "bytes": 6979,
+      "path": "assets/characters/lin-keyun/LICENSE.md",
+      "sha256": "cde3158a0a822fda1ea14f7114adfdbb9e25cd7f8395a138023d37ba2828e7e6"
     },
     {
-      "bytes": 698,
-      "path": "assets/characters/mohan/appearance/defaults.json",
-      "sha256": "493c65419a7ff56900dc1ce0841b61582ec316877722ba9dc5791597fa55752e"
+      "bytes": 626,
+      "path": "assets/characters/lin-keyun/appearance/defaults.json",
+      "sha256": "36046de83bc740f459d97486288cd874a145d9d34e16512b3155576653adea4d"
     },
     {
-      "bytes": 12637,
-      "path": "assets/characters/mohan/dialogue/en.json",
-      "sha256": "bad15f81604e2f8793c9e32245adc1962d87a48a73ac4ef2a6a6f439135e28b7"
+      "bytes": 12082,
+      "path": "assets/characters/lin-keyun/dialogue/en.json",
+      "sha256": "14d6961fc1e5fb79f61401b09f3db276ada3c68823fd4f7d2884577c41b40f62"
     },
     {
-      "bytes": 972,
-      "path": "assets/characters/mohan/dialogue/events.json",
-      "sha256": "525b5d78588333d08e85dda8cedfe607d3a82a0e7af32ed6734fc326b84ff50a"
+      "bytes": 928,
+      "path": "assets/characters/lin-keyun/dialogue/events.json",
+      "sha256": "fa158b12bd0aedd4660538abdb2bdada5a3d72e89e52955c80d1828599a865ef"
     },
     {
-      "bytes": 15209,
-      "path": "assets/characters/mohan/dialogue/ja-JP.json",
-      "sha256": "89f96109c8b34b52cf2ffd2718daaa8f1ccfed859fcfe48c4658fbc18858ed63"
+      "bytes": 14935,
+      "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
+      "sha256": "a1f96a797400be265373143fb1cf22ff6e3a797f533d0b7d07223ae44a421c0a"
     },
     {
-      "bytes": 13138,
-      "path": "assets/characters/mohan/dialogue/runtime.json",
-      "sha256": "841f091862ab40fb39aff6983b09a83de0cb35859b5bc14a40b6012bc5ff859f"
+      "bytes": 13031,
+      "path": "assets/characters/lin-keyun/dialogue/runtime.json",
+      "sha256": "0b58f924804991466ab8de724f90629903209b14ec939cb7b467ab8ea534cf86"
     },
     {
-      "bytes": 12124,
-      "path": "assets/characters/mohan/dialogue/zh-CN.json",
-      "sha256": "fe9eb5d2f353b896c1e2389183710d8ce8798416df28f25377f3967ec6f1c425"
+      "bytes": 11684,
+      "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
+      "sha256": "0fe13afafc1eaf464775a8d3e8ef7584dc56464d1cb95aa8553d1892f908192c"
     },
     {
-      "bytes": 12205,
-      "path": "assets/characters/mohan/dialogue/zh-TW.json",
-      "sha256": "bc21ffab90bbe350b8ab0d11b1cf6cc6c0f6373f2bcc6630dcaebc95676dc634"
+      "bytes": 11688,
+      "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
+      "sha256": "f459a1a6984eb61c711a62c2313d76e11a617c96b4e9bae9793264eed9cc9274"
     },
     {
-      "bytes": 11386,
-      "path": "assets/characters/mohan/expressions/state-catalog.json",
-      "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
+      "bytes": 13892,
+      "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
+      "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
     },
     {
-      "bytes": 3149,
-      "path": "assets/characters/mohan/persona/en.json",
-      "sha256": "104d4f661d54ed1e15c5fdfad7fb29df6462567e3b145cb7e83e4f1d6b0acf97"
+      "bytes": 2163,
+      "path": "assets/characters/lin-keyun/persona/en.json",
+      "sha256": "4106ee1c9f0977e6e9722ce0e26e4f1b71be390b72af0648bbac475233bbde3d"
     },
     {
-      "bytes": 3642,
-      "path": "assets/characters/mohan/persona/ja-JP.json",
-      "sha256": "6d7df74c002fdb2452f60a767c84d268c583780944f753a89e26715ebc2510a0"
+      "bytes": 2563,
+      "path": "assets/characters/lin-keyun/persona/ja-JP.json",
+      "sha256": "680d28143908311b2c7b0d4ae52b64ebafad7da8c4e805d99e57b0b63344d158"
     },
     {
-      "bytes": 2630,
-      "path": "assets/characters/mohan/persona/profile.json",
-      "sha256": "1563e635b0acbf34bf0d3a88f9d7c7d6e1ed0a3b07291b94abe7e6fdf2b20ade"
+      "bytes": 2587,
+      "path": "assets/characters/lin-keyun/persona/profile.json",
+      "sha256": "7e987396a7a6aeff3901d8e29a2f0a2f28dd50aa5de8c200400aa6566c165a84"
     },
     {
-      "bytes": 524,
-      "path": "assets/characters/mohan/persona/ui-identifiers.json",
-      "sha256": "dfa4caa5d41be9b6b12fe7997cc5e805384a8d6ac587c1b417d4c4122872c343"
+      "bytes": 526,
+      "path": "assets/characters/lin-keyun/persona/ui-identifiers.json",
+      "sha256": "d8be05a3610a8a40e4db3e531a5e9a5d3ebb3d0ceda0fd2af2a258dac5e5dc7f"
     },
     {
-      "bytes": 3640,
-      "path": "assets/characters/mohan/persona/zh-CN.json",
-      "sha256": "dd83494b189e43ea0e1b72e68087b32c9610fa195bd19d0235c4d7b3ee028b21"
+      "bytes": 1996,
+      "path": "assets/characters/lin-keyun/persona/zh-CN.json",
+      "sha256": "d1a61f2829c3aa7e293f874bd36e6f13714882fc74f18f1456ac9a34aaa57b8b"
     },
     {
-      "bytes": 3235,
-      "path": "assets/characters/mohan/persona/zh-TW.json",
-      "sha256": "31a6277bd364785b60efea94bcc4fbb1f4b214fcbe948900238de2a554015aa3"
+      "bytes": 1993,
+      "path": "assets/characters/lin-keyun/persona/zh-TW.json",
+      "sha256": "9a27565e0e74986536f42cba9d9ee3cf8de184b6946aabc23bc6d3a244245ea0"
     },
     {
-      "bytes": 14838,
-      "path": "assets/characters/mohan/rig/rig-manifest.json",
-      "sha256": "c933abeaece6f077f8e4a8df9b0a5ee81cbc32381055f3d8973a0301ed3d2f4d"
+      "bytes": 17106,
+      "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
+      "sha256": "eedd60bd7bfec1bddccf6c84cd003fe713a5f85a83e8bd12ada78c0d594dd3eb"
     },
     {
       "bytes": 2791,
-      "path": "assets/characters/mohan/rig/runtime-bindings.json",
-      "sha256": "4e3c76ef890e1767f78f2a1fb5c31c594335671d1c6a53fa0b2234bc41425231"
+      "path": "assets/characters/lin-keyun/rig/runtime-bindings.json",
+      "sha256": "def026492f3afcf4f11b2dc90bf51eaa281a216dac96bc04a54f833a334e012d"
     },
     {
-      "bytes": 6194,
-      "path": "assets/characters/mohan/voice/profile.json",
-      "sha256": "a00d0b35d1aa4433ab0aa8c813de1878571ad9ffdf958b5c581da12111d8e654"
+      "bytes": 5655,
+      "path": "assets/characters/lin-keyun/voice/profile.json",
+      "sha256": "f6d8ac9d84834852a4481fca73f7a0ffbed7c1c912e2667be77314d7e9fec3ff"
     },
     {
       "bytes": 706024,
@@ -8547,13 +8547,13 @@
       "sha256": "8d4be289717894530d663811256b7e7a04266887af83c315dba87bc053ffb712"
     }
   ],
-  "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.2",
-  "package_hash": "51cba699bdec4f3bd303ff8f513ab88a752852d9dcc61eed2ed5d6ea99db7fad",
+  "pack_id": "flameblade.lin-keyun",
+  "pack_version": "1.0.0",
+  "package_hash": "97a8e25405069f7cdbc1449d4b2d965cf504debcda0ede9a857f36d2be7427b2",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "mohan-pack-v1.0.2",
+    "release_tag": "lin-keyun-pack-v1.0.0",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {

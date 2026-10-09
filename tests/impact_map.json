@@ -6011,6 +6011,7 @@
     },
     {
       "paths": [
+        "docs/character-pack/lin-keyun-pack.lock.json",
         "tools/fetch_character_pack.py"
       ],
       "tests": [

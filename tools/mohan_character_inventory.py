@@ -970,7 +970,14 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
     return {
         "schema": "mohan.character-inventory.v1", "schema_version": 1,
         "purpose": "existing_content_index_only",
-        "owner_decisions": {"standalone_download_design": True, "pack_visibility": "private_repository", "character_asset_license": "CC-BY-NC-ND-4.0", "dlc_relationship": "owner_decision_pending", "engine_license": "MIT", "art_tool_license": "MIT"},
+        "owner_decisions": {
+            "standalone_download_design": True,
+            "pack_visibility": "public_mohan_release_page",
+            "character_asset_license": "CC-BY-NC-ND-4.0",
+            "dlc_relationship": "owner_decision_pending",
+            "engine_license": "MIT",
+            "art_tool_license": "MIT",
+        },
         "scope_notes": ["runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤", "embedded_code 只由實際字串或角色專屬數值規則產生；人工提示、註解與 docstring 不計數", "content_locations 的 line、text、matched 與 rule 是可重現判定證據", "readers 的 line 與 text 指向讀取或模板；manifest_references 點名精確宣告", "封存、製作鏡像、審閱原圖與來源 sidecar 均明確排除；既有核准 scope 沿用", "scratchpad、artifacts、.quality-tmp、docs/release-evidence、tests/golden 全樹不屬產品包輸入"],
         "non_product_roots": [dict(row) for row in NON_PRODUCT_ROOTS],
         "runtime_file_counts": dict(sorted(counts.items())),
@@ -1110,7 +1117,7 @@ def render_extraction_summary(worklist: dict[str, Any]) -> str:
             f"舊名單另有 {counts['manual_review_hint_only_files']} 個檔案只剩人工複核提示，沒有實際內容規則證據，因此不計入待搬數。每個待搬檔只出現在下列一個獨占工作包。",
             "工作包", "獨占檔案數",
             "產品殼允許保留",
-            "角色素材授權與 DLC 關係仍待擁有者決定；本清單不改變私有倉庫與獨立下載設計裁定。",
+            "墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材採 CC BY-NC-ND 4.0；DLC 關係仍待擁有者決定。",
             "詳細證據與逐檔理由見 `extraction-worklist.json`。",
         ),
         (
@@ -1119,7 +1126,7 @@ def render_extraction_summary(worklist: dict[str, Any]) -> str:
             f"旧名单另有 {counts['manual_review_hint_only_files']} 个文件只剩人工复核提示，没有实际内容规则证据，因此不计入待迁移数。每个待迁移文件只出现在下列一个独占工作包。",
             "工作包", "独占文件数",
             "产品壳允许保留",
-            "角色素材授权与 DLC 关系仍待所有者决定；本清单不改变私有仓库和独立下载设计裁定。",
+            "墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材采用 CC BY-NC-ND 4.0；DLC 关系仍待所有者决定。",
             "详细证据与逐文件理由见 `extraction-worklist.json`。",
         ),
         (
@@ -1128,7 +1135,7 @@ def render_extraction_summary(worklist: dict[str, Any]) -> str:
             f"The old list leaves {counts['manual_review_hint_only_files']} manual-review-only hints with no content-rule evidence; they are not counted as extraction work. Every pending file belongs to exactly one exclusive package below.",
             "Work package", "Exclusive files",
             "Allowed product-shell files",
-            "Character-asset licensing and the DLC relationship still require the owner's decision; this list does not change the private-repository or independent-download decisions.",
+            "The public MoHan release page carries the MoHan and Lin Keyun character packs under CC BY-NC-ND 4.0; the DLC relationship remains an owner decision.",
             "See `extraction-worklist.json` for detailed evidence and per-file reasons.",
         ),
         (
@@ -1137,7 +1144,7 @@ def render_extraction_summary(worklist: dict[str, Any]) -> str:
             f"旧一覧には実内容の規則証拠がない人工確認専用の候補が {counts['manual_review_hint_only_files']} ファイル残りますが、抽出数には含めません。各対象ファイルは以下の独占作業パッケージ一つだけに属します。",
             "作業パッケージ", "独占ファイル数",
             "製品シェルで保持可能",
-            "キャラクター素材のライセンスと DLC の関係は所有者の決定待ちです。本一覧は非公開リポジトリと独立ダウンロード設計の決定を変更しません。",
+            "墨寒と林可芸のキャラクターパックは墨寒プロジェクトの公開ページで公開し、素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は所有者の決定待ちです。",
             "詳細な証拠とファイルごとの理由は `extraction-worklist.json` を参照してください。",
         ),
     )
@@ -1205,10 +1212,10 @@ def render_summary(inventory: dict[str, Any]) -> str:
         f"正式パック内には衣装 {look}、髪型 {hair}、髪飾り {headwear}、メイク {makeup} 項目があります。差分と四言語の名称は appearance_catalog に記録します。",
     )
     sections = (
-        ("繁體中文", "這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。", "類別", "檔案數", f"實際內容規則找到 {code_count} 個程式檔；其中真正待搬或參數化 {extraction_count} 個，產品殼允許保留 {allowed_count} 個。舊名單另有 {hint_only_count} 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。", "圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。", "v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence 審閱證據、tests/golden 回歸證據、製作鏡像與未引用審閱原圖都不進產品包；完整機器分類見 non_product_roots。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。", "角色包自開始就支援獨立下載；墨寒角色包放在私有倉庫（擁有者 2026-10-05 裁定）；角色素材授權及 DLC 關係待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。"),
-        ("简体中文", "本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。", "类别", "文件数", f"实际内容规则找到 {code_count} 个程序文件；其中真正待迁移或参数化 {extraction_count} 个，产品壳允许保留 {allowed_count} 个。旧名单另有 {hint_only_count} 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。", "图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。", "v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence 审阅证据、tests/golden 回归证据、制作镜像和未引用审阅原图均不进入产品包；完整机器分类见 non_product_roots。reviewed-garments 与 source-bound-exasperated 中正式加载或验证的数据予以保留。", "角色包从开始就支持独立下载；墨寒角色包放在私有仓库（所有者 2026-10-05 裁定）；角色素材授权及 DLC 关系待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。"),
-        ("English", "This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.", "Category", "Files", f"Actual-content rules find {code_count} source files: {extraction_count} require extraction or parameterization and {allowed_count} are allowed product-shell files. Another {hint_only_count} files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.", "Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.", "Generation-1 v4 calibration, artifacts candidates, .quality-tmp temporaries, docs/release-evidence reviews, tests/golden regression evidence, authoring mirrors and unreferenced review originals stay outside the product pack; non_product_roots records the machine-readable boundary. Formally loaded or verified reviewed-garments and source-bound-exasperated data remains included.", "Independent download is a design requirement from inception. The MoHan character pack lives in a private repository (owner decision, 2026-10-05); character asset licensing and DLC relationships await owner decisions. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope."),
-        ("日本語", "この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。", "分類", "ファイル数", f"実内容の規則により {code_count} ソースファイルを検出しました。抽出またはパラメータ化が必要なのは {extraction_count}、製品シェルで保持可能なのは {allowed_count} ファイルです。旧一覧のうち {hint_only_count} ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。", "画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。", "v4 の第一世代校正、artifacts の候補、.quality-tmp の一時出力、docs/release-evidence の審査証拠、tests/golden の回帰証拠、制作ミラー、未参照の審査原画は製品パックに含めません。機械可読の境界は non_product_roots に記録します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。", "独立ダウンロードは当初からの設計要件です。墨寒キャラクターパックは非公開リポジトリに置きます（所有者決定、2026-10-05）。素材ライセンスと DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用します。既存の設定と外観承認の範囲を維持します。"),
+        ("繁體中文", "這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。", "類別", "檔案數", f"實際內容規則找到 {code_count} 個程式檔；其中真正待搬或參數化 {extraction_count} 個，產品殼允許保留 {allowed_count} 個。舊名單另有 {hint_only_count} 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。", "圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。", "v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence 審閱證據、tests/golden 回歸證據、製作鏡像與未引用審閱原圖都不進產品包；完整機器分類見 non_product_roots。reviewed-garments 與 source-bound-exasperated 內被正式載入或驗證的資料保留。", "角色包自開始就支援獨立下載；墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材採 CC BY-NC-ND 4.0；DLC 關係待擁有者決定。引擎與炎劍畫譜採 MIT。既有使用者設定與外觀核准保持原範圍。"),
+        ("简体中文", "本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。", "类别", "文件数", f"实际内容规则找到 {code_count} 个程序文件；其中真正待迁移或参数化 {extraction_count} 个，产品壳允许保留 {allowed_count} 个。旧名单另有 {hint_only_count} 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。", "图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。", "v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence 审阅证据、tests/golden 回归证据、制作镜像和未引用审阅原图均不进入产品包；完整机器分类见 non_product_roots。reviewed-garments 与 source-bound-exasperated 中正式加载或验证的数据予以保留。", "角色包从开始就支持独立下载；墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材采用 CC BY-NC-ND 4.0；DLC 关系待所有者决定。引擎与炎剑画谱采用 MIT。现有用户设置与外观批准保持原范围。"),
+        ("English", "This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.", "Category", "Files", f"Actual-content rules find {code_count} source files: {extraction_count} require extraction or parameterization and {allowed_count} are allowed product-shell files. Another {hint_only_count} files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.", "Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.", "Generation-1 v4 calibration, artifacts candidates, .quality-tmp temporaries, docs/release-evidence reviews, tests/golden regression evidence, authoring mirrors and unreferenced review originals stay outside the product pack; non_product_roots records the machine-readable boundary. Formally loaded or verified reviewed-garments and source-bound-exasperated data remains included.", "Independent download is a design requirement from inception. The public MoHan release page carries the MoHan and Lin Keyun character packs under CC BY-NC-ND 4.0; the DLC relationship remains an owner decision. The engine and art tool use MIT. Existing user settings and appearance approvals retain their scope."),
+        ("日本語", "この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。", "分類", "ファイル数", f"実内容の規則により {code_count} ソースファイルを検出しました。抽出またはパラメータ化が必要なのは {extraction_count}、製品シェルで保持可能なのは {allowed_count} ファイルです。旧一覧のうち {hint_only_count} ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。", "画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。", "v4 の第一世代校正、artifacts の候補、.quality-tmp の一時出力、docs/release-evidence の審査証拠、tests/golden の回帰証拠、制作ミラー、未参照の審査原画は製品パックに含めません。機械可読の境界は non_product_roots に記録します。reviewed-garments と source-bound-exasperated の正式に読込または検証するデータは含めます。", "独立ダウンロードは当初からの設計要件です。墨寒と林可芸のキャラクターパックは墨寒プロジェクトの公開ページで公開し、素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は所有者の決定待ちです。エンジンと素材管理ツールは MIT を採用し、既存の設定と外観承認の範囲を維持します。"),
     )
     parts = ["# 墨寒角色內容清冊摘要／墨寒角色内容清册摘要／MoHan Character Inventory Summary／墨寒キャラクター内容一覧\n"]
     for locale, (language, intro, category, files, code, data, exclusions, decisions) in enumerate(sections):

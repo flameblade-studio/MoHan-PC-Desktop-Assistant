@@ -64,6 +64,27 @@ class CharacterPackLockSettings:
 
 
 @dataclass(frozen=True, slots=True)
+class CharacterPackReleaseProfile:
+    """Source document and release naming for one published character pack."""
+
+    pack_id: str
+    lock_path: Path
+    source_path: Path
+    source_repository: str
+    release_tag_prefix: str
+
+    def settings(self) -> CharacterPackLockSettings:
+        """Return the strict lock policy for this release series."""
+        return CharacterPackLockSettings(
+            LOCK_SCHEMA,
+            LOCK_SCHEMA_VERSION,
+            self.source_repository,
+            self.release_tag_prefix,
+            self.source_path,
+        )
+
+
+@dataclass(frozen=True, slots=True)
 class LockedArchive:
     """Immutable release-archive identity."""
 
@@ -74,7 +95,7 @@ class LockedArchive:
 
 @dataclass(frozen=True, slots=True)
 class LockedSource:
-    """Private release location without credentials."""
+    """Public release location pinned by repository and tag."""
 
     repository: str
     release_tag: str
@@ -138,6 +159,27 @@ def load_character_pack_lock(
     settings: CharacterPackLockSettings,
 ) -> CharacterPackLock:
     """Load a unique-key UTF-8 lock and enforce its complete schema."""
+    return _parse_lock_document(_read_lock_document(path), settings)
+
+
+def load_profiled_character_pack_lock(
+    path: str | Path,
+    *,
+    settings_by_pack_id: Mapping[str, CharacterPackLockSettings],
+) -> CharacterPackLock:
+    """Load a lock using the caller-approved settings for its declared pack."""
+    document = _read_lock_document(path)
+    pack_id = document.get("pack_id")
+    settings = settings_by_pack_id.get(pack_id) if isinstance(pack_id, str) else None
+    if settings is None:
+        raise CharacterPackLockError(
+            "character-pack lock has no supported public release profile"
+        )
+    return _parse_lock_document(document, settings)
+
+
+def _read_lock_document(path: str | Path) -> dict[str, Any]:
+    """Read one strict lock document without applying a release profile."""
     lock_path = Path(path)
     try:
         document = json.loads(
@@ -149,7 +191,7 @@ def load_character_pack_lock(
         raise
     except (OSError, UnicodeError, json.JSONDecodeError, RecursionError) as error:
         raise CharacterPackLockError(f"character-pack lock is unreadable: {lock_path}") from error
-    return _parse_lock_document(_object(document, "lock"), settings)
+    return _object(document, "lock")
 
 
 def verify_character_pack_lock(

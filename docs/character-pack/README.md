@@ -2,7 +2,7 @@
 
 ## 繁體中文
 
-角色包是一份可以單獨下載的「角色行李箱」，把角色身分、資料清冊與權利說明放在一起。驗證器會確認行李箱完整、符合引擎版本，並安全拒絕可疑內容。墨寒仍由原產品提供原有體驗；本階段只新增格式與獨立驗證工具。可獨立下載是格式能力，公開、私有、素材授權與 DLC 關係依擁有者決定。
+角色包是一份可以單獨下載的「角色行李箱」，把角色身分、資料清冊與權利說明放在一起。驗證器會確認行李箱完整、符合引擎版本，並安全拒絕可疑內容。墨寒仍由原產品提供原有體驗；本階段只新增格式與獨立驗證工具。格式仍可表達公開、私有與待決狀態；目前墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材採 CC BY-NC-ND 4.0，DLC 關係仍待擁有者決定。
 
 ### 入口與身分
 
@@ -88,7 +88,7 @@ with TemporaryDirectory() as temporary:
 
 ## 简体中文
 
-角色包是一份可以单独下载的“角色行李箱”，把角色身份、数据清单与权利说明放在一起。验证器确认行李箱完整、符合引擎版本，并安全拒绝可疑内容。墨寒仍由原产品提供原有体验；本阶段只新增格式与独立验证工具。可独立下载是格式能力，公开、私有、素材授权与 DLC 关系由所有者决定。
+角色包是一份可以单独下载的“角色行李箱”，把角色身份、数据清单与权利说明放在一起。验证器确认行李箱完整、符合引擎版本，并安全拒绝可疑内容。墨寒仍由原产品提供原有体验；本阶段只新增格式与独立验证工具。格式仍可表达公开、私有和待定状态；目前墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材采用 CC BY-NC-ND 4.0，DLC 关系仍待所有者决定。
 
 ### 入口与身份
 
@@ -174,7 +174,7 @@ with TemporaryDirectory() as temporary:
 
 ## English
 
-A character pack is a downloadable suitcase containing a character's identity, file inventory, and rights declarations. The validator checks completeness and engine compatibility and safely rejects suspicious content. MoHan continues to provide its existing experience through the original product; this phase adds a format and a standalone validator. Standalone download is a format capability; the owner decides public or private access, asset licensing, and DLC relationships.
+A character pack is a downloadable suitcase containing a character's identity, file inventory, and rights declarations. The validator checks completeness and engine compatibility and safely rejects suspicious content. MoHan continues to provide its existing experience through the original product; this phase adds a format and a standalone validator. The format still represents public, private, and pending states. The public MoHan release page currently carries the MoHan and Lin Keyun packs under CC BY-NC-ND 4.0; the DLC relationship remains an owner decision.
 
 ### Entry point and identity
 
@@ -260,7 +260,7 @@ with TemporaryDirectory() as temporary:
 
 ## 日本語
 
-キャラクターパックは、キャラクターの身元、ファイル一覧、権利の宣言をまとめた、単独でダウンロードできる「荷物箱」です。検証器は完全性とエンジンの互換性を確認し、疑わしい内容を安全に拒否します。墨寒の既存体験は元の製品が引き続き提供し、この段階では形式と独立した検証器を追加します。単独ダウンロードは形式の能力であり、公開・非公開、素材のライセンス、DLC の関係は所有者が決めます。
+キャラクターパックは、キャラクターの身元、ファイル一覧、権利の宣言をまとめた、単独でダウンロードできる「荷物箱」です。検証器は完全性とエンジンの互換性を確認し、疑わしい内容を安全に拒否します。墨寒の既存体験は元の製品が引き続き提供し、この段階では形式と独立した検証器を追加します。形式は公開、非公開、決定待ちを引き続き表現できます。現在は墨寒と林可芸のパックを墨寒プロジェクトの公開ページで公開し、素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は所有者の決定待ちです。
 
 ### 入口と身元
 

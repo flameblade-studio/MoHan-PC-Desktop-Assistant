@@ -637,7 +637,7 @@
       "sha256": "8655f87ca7f39be6abc5430f7bfad423c02dce57e350294702cdf8e01893951e"
     },
     {
-      "bytes": 2561,
+      "bytes": 1959,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -645,7 +645,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "4544c76d0e94021a456ecb9c87b05e275e511f395aa1f6dac22911af1bebffdd"
+      "sha256": "227ca8ab52b01b9bcadd7bf66f332c46df0adc979d41fdb8d1e51dc12589dad2"
     },
     {
       "bytes": 698,
@@ -784,7 +784,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 7743,
+      "bytes": 7742,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -792,7 +792,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "fee88c3bc579497c8fe66d7cb87632e879e37dd0bf9d710ec5c7421d7af88baa"
+      "sha256": "f094aaba1e80f218c830ad225c91eedb11653a211976fd07119b31d380deb227"
     },
     {
       "bytes": 3149,
@@ -93167,7 +93167,7 @@
     "character_asset_license": "CC-BY-NC-ND-4.0",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
-    "pack_visibility": "private_repository",
+    "pack_visibility": "public_mohan_release_page",
     "standalone_download_design": true
   },
   "product_shell_allowlist": [
