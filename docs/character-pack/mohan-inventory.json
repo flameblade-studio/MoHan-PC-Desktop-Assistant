@@ -20170,7 +20170,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 378,
+          "line": 380,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47941,7 +47941,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 378,
+          "line": 380,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
