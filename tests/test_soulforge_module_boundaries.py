@@ -90,19 +90,44 @@ def _local_target(target: str, known: frozenset[str]) -> str | None:
     return None
 
 
-def _literal_dynamic_import(node: ast.Call) -> str | None:
+def _importlib_bindings(tree: ast.AST) -> tuple[frozenset[str], frozenset[str]]:
+    """Names bound to the importlib module and to importlib.import_module."""
+
+    modules = {"importlib"}
+    functions: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            modules.update(
+                alias.asname or alias.name
+                for alias in node.names
+                if alias.name == "importlib"
+            )
+        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module == "importlib":
+            functions.update(
+                alias.asname or alias.name
+                for alias in node.names
+                if alias.name == "import_module"
+            )
+    return frozenset(modules), frozenset(functions)
+
+
+def _literal_dynamic_import(
+    node: ast.Call,
+    importlib_names: frozenset[str] = frozenset({"importlib"}),
+    import_module_names: frozenset[str] = frozenset(),
+) -> str | None:
     if not node.args or not isinstance(node.args[0], ast.Constant):
         return None
     value = node.args[0].value
     if not isinstance(value, str):
         return None
     function = node.func
-    if isinstance(function, ast.Name) and function.id == "__import__":
+    if isinstance(function, ast.Name) and function.id in {"__import__", *import_module_names}:
         return value
     if (
         isinstance(function, ast.Attribute)
         and isinstance(function.value, ast.Name)
-        and function.value.id == "importlib"
+        and function.value.id in importlib_names
         and function.attr == "import_module"
     ):
         return value
@@ -115,6 +140,7 @@ def _import_edges(
     known: frozenset[str],
 ) -> tuple[ImportEdge, ...]:
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    importlib_names, import_module_names = _importlib_bindings(tree)
     edges: set[ImportEdge] = set()
     for node in ast.walk(tree):
         targets: list[str] = []
@@ -129,7 +155,9 @@ def _import_edges(
                 for alias in node.names
             )
         elif isinstance(node, ast.Call):
-            target = _literal_dynamic_import(node)
+            target = _literal_dynamic_import(
+                node, importlib_names, import_module_names
+            )
             if target is not None:
                 targets.append(target)
         for target in targets:
@@ -209,6 +237,10 @@ def test_soulforge_engine_dependencies_do_not_exceed_the_baseline() -> None:
         edge for edge in current if _violation_key(edge) not in baseline
     )
     assert not new_violations, new_violations
+    # Lock every reduction: a removed violation must also leave the baseline,
+    # otherwise the same edge could silently return later.
+    stale = baseline - {_violation_key(edge) for edge in current}
+    assert not stale, f"remove resolved edges from violation_baseline: {sorted(stale)}"
 
 
 def test_import_scan_treats_eager_lazy_relative_and_dynamic_imports_equally(
@@ -263,3 +295,20 @@ def test_empty_baseline_rejects_a_synthetic_new_violation(tmp_path: Path) -> Non
         frozenset({("engine", "mohan_product_shell")}),
     )
     assert tuple(_violation_key(edge) for edge in violations) == (("engine", "shell"),)
+
+
+def test_import_scan_resolves_importlib_aliases(tmp_path: Path) -> None:
+    source = tmp_path / "feature.py"
+    source.write_text(
+        "lazy import importlib as loader\n"
+        "lazy from importlib import import_module\n"
+        "lazy from importlib import import_module as load\n"
+        "loader.import_module('shell_a')\n"
+        "import_module('shell_b')\n"
+        "load('shell_c')\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    known = frozenset({"feature", "shell_a", "shell_b", "shell_c"})
+    edges = _import_edges("feature", source, known)
+    assert {edge.imported for edge in edges} == {"shell_a", "shell_b", "shell_c"}

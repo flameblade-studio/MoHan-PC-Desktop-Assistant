@@ -16,7 +16,12 @@ lazy from huapu.character_pack_lock import (
     update_character_pack_lock,
     verify_character_pack_lock,
 )
-lazy from huapu.inventory import AssetInventoryConfig, AssetSpec, build_asset_inventory
+lazy from huapu.inventory import (
+    AssetInventoryConfig,
+    AssetSpec,
+    build_asset_inventory,
+    classify_character_asset_path,
+)
 lazy from huapu.licenses import (
     LicenseCheckResult,
     LicenseClaim,
@@ -48,6 +53,7 @@ __all__ = (
     "build_asset_inventory",
     "build_character_pack",
     "check_license_allowlist",
+    "classify_character_asset_path",
     "digest_file",
     "load_character_pack_lock",
     "render_receipt",

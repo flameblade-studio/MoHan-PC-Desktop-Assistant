@@ -8,7 +8,7 @@
 
 採用 `huapu/` 作為套件名，因為「炎劍畫譜」已由擁有者核定，短名稱可在下一工作包原樣搬到獨立 repository。套件只依賴標準函式庫與公開的 `domain.character_pack` 契約；它不得匯入 presentation、application、infrastructure、integrations、其他 domain 私有模組或 `tools`。
 
-公開 API 分為：`SchemaVersion` 與 `HUAPU_API_VERSION`；`FileDigest`、`digest_file`、`sha256_bytes`；`Receipt` 與 deterministic receipt renderer；`AssetInventoryConfig`、`AssetSpec`、`build_asset_inventory`；呼叫端注入的 `LicensePolicy` 與白名單檢查；`CharacterPackBuildSettings`／builder；`CharacterPackLockSettings`／load、verify、update；以及唯一視覺邊界 `HeadlessRenderer` Protocol。設定決定 schema、角色 ID、根目錄、媒體型別、語言、引擎版本、授權分類、release repository 與 tag；核心沒有墨寒 fallback。
+公開 API 分為：`SchemaVersion` 與 `HUAPU_API_VERSION`；`FileDigest`、`digest_file`、`sha256_bytes`；`Receipt` 與 deterministic receipt renderer；`AssetInventoryConfig`、`AssetSpec`、`build_asset_inventory`、採用呼叫端角色根目錄的 `classify_character_asset_path`；呼叫端注入的 `LicensePolicy` 與白名單檢查；`CharacterPackBuildSettings`／builder；`CharacterPackLockSettings`／load、verify、update；以及唯一視覺邊界 `HeadlessRenderer` Protocol。設定決定 schema、角色 ID、根目錄、媒體型別、語言、引擎版本、授權分類、release repository 與 tag；核心沒有墨寒 fallback。
 
 ### 相容入口與未完成項目
 
@@ -24,7 +24,7 @@
 
 采用 `huapu/` 作为包名，因为“炎剑画谱”已经由所有者核定，短名称可在下一工作包原样移到独立 repository。该包只依赖标准库与公开的 `domain.character_pack` 契约；不得导入 presentation、application、infrastructure、integrations、其他 domain 私有模块或 `tools`。
 
-公开 API 包括：`SchemaVersion` 与 `HUAPU_API_VERSION`；`FileDigest`、`digest_file`、`sha256_bytes`；`Receipt` 与确定性 receipt renderer；`AssetInventoryConfig`、`AssetSpec`、`build_asset_inventory`；调用方注入的 `LicensePolicy` 与白名单检查；`CharacterPackBuildSettings`／builder；`CharacterPackLockSettings`／load、verify、update；以及唯一视觉边界 `HeadlessRenderer` Protocol。schema、角色 ID、根目录、媒体类型、语言、引擎版本、授权分类、release repository 与 tag 均由设置提供；核心没有墨寒 fallback。
+公开 API 包括：`SchemaVersion` 与 `HUAPU_API_VERSION`；`FileDigest`、`digest_file`、`sha256_bytes`；`Receipt` 与确定性 receipt renderer；`AssetInventoryConfig`、`AssetSpec`、`build_asset_inventory`、采用调用方角色根目录的 `classify_character_asset_path`；调用方注入的 `LicensePolicy` 与白名单检查；`CharacterPackBuildSettings`／builder；`CharacterPackLockSettings`／load、verify、update；以及唯一视觉边界 `HeadlessRenderer` Protocol。schema、角色 ID、根目录、媒体类型、语言、引擎版本、授权分类、release repository 与 tag 均由设置提供；核心没有墨寒 fallback。
 
 ### 兼容入口与未完成项目
 
@@ -40,7 +40,7 @@ The per-path classification (`C` Huapu core, `A` MoHan configuration or adapter,
 
 The package is named `huapu/` because the owner approved Flameblade Huapu as the product name, and the short import can move unchanged in the next repository-extraction package. It depends only on the standard library and the public `domain.character_pack` contract. It must not import presentation, application, infrastructure, integrations, other private domain modules, or `tools`.
 
-The public APIs are `SchemaVersion` and `HUAPU_API_VERSION`; `FileDigest`, `digest_file`, and `sha256_bytes`; `Receipt` and deterministic receipt rendering; `AssetInventoryConfig`, `AssetSpec`, and `build_asset_inventory`; caller-injected `LicensePolicy` allowlist checks; `CharacterPackBuildSettings` and the builder; `CharacterPackLockSettings` with load, verify, and update; and the sole visual boundary, the `HeadlessRenderer` Protocol. Settings own schemas, character IDs, roots, media types, languages, engine versions, license classification, release repositories, and tags. The core has no MoHan fallback.
+The public APIs are `SchemaVersion` and `HUAPU_API_VERSION`; `FileDigest`, `digest_file`, and `sha256_bytes`; `Receipt` and deterministic receipt rendering; `AssetInventoryConfig`, `AssetSpec`, `build_asset_inventory`, and `classify_character_asset_path` with a caller-owned character root; caller-injected `LicensePolicy` allowlist checks; `CharacterPackBuildSettings` and the builder; `CharacterPackLockSettings` with load, verify, and update; and the sole visual boundary, the `HeadlessRenderer` Protocol. Settings own schemas, character IDs, roots, media types, languages, engine versions, license classification, release repositories, and tags. The core has no MoHan fallback.
 
 ### Compatibility entries and remaining work
 
@@ -56,7 +56,7 @@ Character-asset licensing and the DLC relationship remain owner decisions. `huap
 
 所有者が「炎剣画譜」を正式名称として承認しており、次の repository 分離作業でも短い import 名を変更せず使えるため、package 名を `huapu/` とします。この package は標準ライブラリと公開された `domain.character_pack` 契約だけに依存します。presentation、application、infrastructure、integrations、その他の非公開 domain module、`tools` を import しません。
 
-公開 API は `SchemaVersion` と `HUAPU_API_VERSION`、`FileDigest`／`digest_file`／`sha256_bytes`、`Receipt` と決定的な receipt 出力、`AssetInventoryConfig`／`AssetSpec`／`build_asset_inventory`、呼出側が注入する `LicensePolicy` の allowlist 検査、`CharacterPackBuildSettings` と builder、`CharacterPackLockSettings` と load／verify／update、視覚処理の唯一の境界である `HeadlessRenderer` Protocol です。schema、character ID、root、media type、言語、engine version、license 分類、release repository、tag は設定側が所有し、コアには墨寒 fallback がありません。
+公開 API は `SchemaVersion` と `HUAPU_API_VERSION`、`FileDigest`／`digest_file`／`sha256_bytes`、`Receipt` と決定的な receipt 出力、`AssetInventoryConfig`／`AssetSpec`／`build_asset_inventory`／呼出側が所有する character root を使う `classify_character_asset_path`、呼出側が注入する `LicensePolicy` の allowlist 検査、`CharacterPackBuildSettings` と builder、`CharacterPackLockSettings` と load／verify／update、視覚処理の唯一の境界である `HeadlessRenderer` Protocol です。schema、character ID、root、media type、言語、engine version、license 分類、release repository、tag は設定側が所有し、コアには墨寒 fallback がありません。
 
 ### 互換入口と残作業
 

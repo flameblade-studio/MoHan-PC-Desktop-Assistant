@@ -255,6 +255,7 @@ def test_manifest_projects_identity_rights_components_and_original_paths(tmp_pat
         if component["kind"] == "fullbody_rig"
     )
     assert rig_component["body_profile"] == {"id": "mohan-body-v2", "version": 2}
+    assert "dependencies" not in manifest
     assert [entry["path"] for entry in manifest["files"]] == sorted(payloads)
     assert all((output / path).read_bytes() == data for path, data in payloads.items())
     manifest_text = (output / "manifest.json").read_text(encoding="utf-8")
@@ -275,6 +276,35 @@ def test_stale_inventory_fails_before_creating_output(tmp_path: Path) -> None:
     _write_json(inventory, document)
     output = tmp_path / "rejected"
     with pytest.raises(builder.CharacterPackBuildError, match="stale"):
+        builder.build_character_pack(
+            output,
+            output_format="directory",
+            repo_root=tmp_path / "repo",
+            inventory_path=inventory,
+            source_path=source,
+        )
+    assert not output.exists()
+
+
+def test_invalid_appearance_component_fails_before_creating_output(
+    tmp_path: Path,
+) -> None:
+    inventory, source, _payloads = _synthetic_inputs(tmp_path / "repo")
+    appearance_file = tmp_path / "repo" / APPEARANCE_DEFAULTS_PATH
+    appearance = json.loads(appearance_file.read_text(encoding="utf-8"))
+    appearance["outfit"]["native_headwear"] = {}
+    data = _write_json(appearance_file, appearance)
+    document = json.loads(inventory.read_text(encoding="utf-8"))
+    record = next(
+        row for row in document["files"]
+        if row["path"] == APPEARANCE_DEFAULTS_PATH
+    )
+    record["bytes"] = len(data)
+    record["sha256"] = hashlib.sha256(data).hexdigest()
+    _write_json(inventory, document)
+
+    output = tmp_path / "rejected"
+    with pytest.raises(builder.CharacterPackBuildError, match="appearance defaults"):
         builder.build_character_pack(
             output,
             output_format="directory",
@@ -328,7 +358,7 @@ def _manifest_from_directory(path: Path) -> dict[str, object]:
     return json.loads((path / "manifest.json").read_text(encoding="utf-8"))
 
 
-def _repository_payload_totals() -> tuple[int, int]:
+def _repository_payload_totals(character_id: str = "mohan") -> tuple[int, int]:
     inventory = json.loads(
         (ROOT / builder.DEFAULT_INVENTORY).read_text(encoding="utf-8")
     )
@@ -336,6 +366,10 @@ def _repository_payload_totals() -> tuple[int, int]:
         row
         for row in inventory["files"]
         if row["scope"] in PACK_SCOPES and "!" not in row["path"]
+        and (
+            not row["path"].startswith("assets/characters/")
+            or row["path"].startswith(f"assets/characters/{character_id}/")
+        )
     ]
     return len(selected), sum(row["bytes"] for row in selected)
 
