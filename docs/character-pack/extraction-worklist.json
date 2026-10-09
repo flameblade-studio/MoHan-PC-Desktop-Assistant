@@ -70,7 +70,7 @@
   "extraction_items": [],
   "owner_decisions": {
     "art_tool_license": "MIT",
-    "character_asset_license": "owner_decision_pending",
+    "character_asset_license": "CC-BY-NC-ND-4.0",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
     "pack_visibility": "private_repository",

@@ -4,7 +4,7 @@
 
 這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。
 
-產品資料合計 1723 個實體檔案：執行期 1675 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1332 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1109 個排除檔案與 17 個程式定位檔。下表只計執行期實體檔案。
+產品資料合計 1725 個實體檔案：執行期 1677 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1332 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1109 個排除檔案與 17 個程式定位檔。下表只計執行期實體檔案。
 
 | 類別 | 檔案數 |
 |---|---:|
@@ -15,6 +15,7 @@
 | 角色外觀預設資料 (`character_appearance_defaults`) | 2 |
 | 角色台詞與事件資料 (`character_dialogue_data`) | 10 |
 | 角色表情狀態目錄 (`character_expression_catalog`) | 2 |
+| 角色授權通知 (`character_license_notice`) | 2 |
 | 角色身分與人格資料 (`character_persona_data`) | 10 |
 | 角色外觀骨架資料 (`character_rig_data`) | 2 |
 | 角色執行期素材綁定資料 (`character_runtime_binding_data`) | 2 |
@@ -62,7 +63,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。
 
-产品数据合计 1723 个实体文件：运行时 1675 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1332 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1109 个排除文件和 17 个程序定位文件。下表只计运行时实体文件。
+产品数据合计 1725 个实体文件：运行时 1677 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1332 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1109 个排除文件和 17 个程序定位文件。下表只计运行时实体文件。
 
 | 类别 | 文件数 |
 |---|---:|
@@ -73,6 +74,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 | 角色外观默认数据 (`character_appearance_defaults`) | 2 |
 | 角色台词与事件数据 (`character_dialogue_data`) | 10 |
 | 角色表情状态目录 (`character_expression_catalog`) | 2 |
+| 角色授权通知 (`character_license_notice`) | 2 |
 | 角色身份与人格数据 (`character_persona_data`) | 10 |
 | 角色外观骨架数据 (`character_rig_data`) | 2 |
 | 角色运行期素材绑定数据 (`character_runtime_binding_data`) | 2 |
@@ -120,7 +122,7 @@ v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence
 
 This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.
 
-Product data totals 1723 physical files: 1675 runtime files and 48 required self-test sidecars (landmarks and hands). The 1332 members inside two appearance archives are indexed separately and already included in those archives. There are also 1109 excluded files and 17 source-location files. The table counts runtime physical files only.
+Product data totals 1725 physical files: 1677 runtime files and 48 required self-test sidecars (landmarks and hands). The 1332 members inside two appearance archives are indexed separately and already included in those archives. There are also 1109 excluded files and 17 source-location files. The table counts runtime physical files only.
 
 | Category | Files |
 |---|---:|
@@ -131,6 +133,7 @@ Product data totals 1723 physical files: 1675 runtime files and 48 required self
 | Character appearance defaults (`character_appearance_defaults`) | 2 |
 | Character dialogue and event data (`character_dialogue_data`) | 10 |
 | Character expression state catalog (`character_expression_catalog`) | 2 |
+| Character license notices (`character_license_notice`) | 2 |
 | Character identity and persona data (`character_persona_data`) | 10 |
 | Character rig data (`character_rig_data`) | 2 |
 | Character runtime binding data (`character_runtime_binding_data`) | 2 |
@@ -178,7 +181,7 @@ Independent download is a design requirement from inception. The MoHan character
 
 この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。
 
-製品データは実ファイル 1723 個です。実行時に 1675 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1332 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1109 個とコード位置ファイル 17 個も記録します。下表は実行時の実ファイルのみを数えます。
+製品データは実ファイル 1725 個です。実行時に 1677 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1332 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1109 個とコード位置ファイル 17 個も記録します。下表は実行時の実ファイルのみを数えます。
 
 | 分類 | ファイル数 |
 |---|---:|
@@ -189,6 +192,7 @@ Independent download is a design requirement from inception. The MoHan character
 | キャラクター外観の既定値 (`character_appearance_defaults`) | 2 |
 | キャラクターの台詞とイベントデータ (`character_dialogue_data`) | 10 |
 | キャラクターの表情状態目録 (`character_expression_catalog`) | 2 |
+| キャラクターライセンス通知 (`character_license_notice`) | 2 |
 | キャラクターの身元と人格データ (`character_persona_data`) | 10 |
 | キャラクターのリグデータ (`character_rig_data`) | 2 |
 | キャラクターの実行時素材バインドデータ (`character_runtime_binding_data`) | 2 |

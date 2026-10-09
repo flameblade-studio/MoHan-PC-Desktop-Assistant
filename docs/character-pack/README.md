@@ -20,7 +20,7 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 
 `distribution` 恰含 `standalone_downloadable`、`access`、`redistribution`，首項必須為 true。存取狀態為 `public`、`private`、`owner_decision_pending`；再散布狀態為 `allowed`、`prohibited`、`owner_decision_pending`。這些是宣告，驗證成功不代表發布授權。
 
-`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某類目前無檔案也要完整宣告。每類恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。狀態接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；權利人須為非空文字，上限 500 字元。已宣告授權須附非空授權表達式，上限 500 字元，可使用 SPDX 或 LicenseRef；其餘狀態的表達式為 null。說明文件路徑可為 null，有值時必須列入檔案清冊。工具核對完整性，授權的法律效力與發布資格由擁有者審定。
+`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某類目前無檔案也要完整宣告。每類恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。狀態接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；權利人須為非空文字，上限 500 字元。v1 已知的 SPDX 表達式為 `CC-BY-NC-ND-4.0`；自訂 `LicenseRef-*` 必須附非 null 說明文件路徑。其他未知表達式以 `unsupported_license` 安全拒絕，其餘狀態的表達式為 null。說明文件路徑有值時必須列入檔案清冊。工具核對完整性，授權的法律效力與發布資格由擁有者審定。
 
 ### 檔案、來源與核准
 
@@ -106,7 +106,7 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 
 `distribution` 恰含 `standalone_downloadable`、`access`、`redistribution`，首项必须为 true。访问状态为 `public`、`private`、`owner_decision_pending`；再分发状态为 `allowed`、`prohibited`、`owner_decision_pending`。这些是声明，验证成功不代表发布授权。
 
-`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某类目前无文件也要完整声明。每类恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。状态接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；权利人须为非空文本，上限 500 字符。已声明授权须附非空授权表达式，上限 500 字符，可使用 SPDX 或 LicenseRef；其余状态的表达式为 null。说明文件路径可为 null，有值时必须列入文件清单。工具核对完整性，授权的法律效力与发布资格由所有者审定。
+`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某类目前无文件也要完整声明。每类恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。状态接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；权利人须为非空文本，上限 500 字符。v1 已知的 SPDX 表达式为 `CC-BY-NC-ND-4.0`；自定义 `LicenseRef-*` 必须附非 null 说明文件路径。其他未知表达式以 `unsupported_license` 安全拒绝，其余状态的表达式为 null。说明文件路径有值时必须列入文件清单。工具核对完整性，授权的法律效力与发布资格由所有者审定。
 
 ### 文件、来源与批准
 
@@ -192,7 +192,7 @@ Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, 
 
 `distribution` contains exactly `standalone_downloadable`, `access`, and `redistribution`, with the first value set to true. Access states are `public`, `private`, and `owner_decision_pending`; redistribution states are `allowed`, `prohibited`, and `owner_decision_pending`. These are declarations; successful validation does not grant publication permission.
 
-`licenses` contains exactly `program_data`, `character_art`, `persona_dialogue`, and `voice`, including categories with no current files. Each category contains exactly `status`, `rights_holder`, `license_expression`, and `notice_path`. States are `declared_license`, `all_rights_reserved`, and `owner_decision_pending`; the rights holder is nonempty text limited to 500 characters. A declared license requires a nonempty expression of at most 500 characters, which can use SPDX or LicenseRef; other states use null expressions. Notice paths may be null and otherwise must appear in the file inventory. The tool checks completeness; the owner reviews legal validity and publication eligibility.
+`licenses` contains exactly `program_data`, `character_art`, `persona_dialogue`, and `voice`, including categories with no current files. Each category contains exactly `status`, `rights_holder`, `license_expression`, and `notice_path`. States are `declared_license`, `all_rights_reserved`, and `owner_decision_pending`; the rights holder is nonempty text limited to 500 characters. The v1 known SPDX expression is `CC-BY-NC-ND-4.0`; a custom `LicenseRef-*` requires a non-null notice path. Other unknown expressions fail closed with `unsupported_license`, and the other states use null expressions. A present notice path must appear in the file inventory. The tool checks completeness; the owner reviews legal validity and publication eligibility.
 
 ### Files, sources, and approvals
 
@@ -278,7 +278,7 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 
 `distribution` は `standalone_downloadable`、`access`、`redistribution` のみを含み、最初の値は true です。アクセス状態は `public`、`private`、`owner_decision_pending`、再配布状態は `allowed`、`prohibited`、`owner_decision_pending` です。これらは宣言であり、検証成功によって公開の許可が与えられることはありません。
 
-`licenses` は `program_data`、`character_art`、`persona_dialogue`、`voice` を正確に含み、現時点でファイルがない分類にも完全な宣言が必要です。各分類は `status`、`rights_holder`、`license_expression`、`notice_path` のみを含みます。状態は `declared_license`、`all_rights_reserved`、`owner_decision_pending` を受け入れ、権利者は空でない最大 500 文字のテキストです。宣言済みライセンスには空でない最大 500 文字の式が必要で、SPDX または LicenseRef を使えます。他の状態は null の式を使います。説明文書のパスは null にでき、値がある場合は一覧に記載します。ツールは完全性を確認し、法的有効性と公開資格は所有者が審査します。
+`licenses` は `program_data`、`character_art`、`persona_dialogue`、`voice` を正確に含み、現時点でファイルがない分類にも完全な宣言が必要です。各分類は `status`、`rights_holder`、`license_expression`、`notice_path` のみを含みます。状態は `declared_license`、`all_rights_reserved`、`owner_decision_pending` を受け入れ、権利者は空でない最大 500 文字のテキストです。v1 で既知の SPDX 式は `CC-BY-NC-ND-4.0` です。独自の `LicenseRef-*` には null ではない説明文書のパスが必要です。その他の未知の式は `unsupported_license` で安全側に拒否し、他の状態は null の式を使います。説明文書のパスがある場合は一覧に記載します。ツールは完全性を確認し、法的有効性と公開資格は所有者が審査します。
 
 ### ファイル、出典、承認
 

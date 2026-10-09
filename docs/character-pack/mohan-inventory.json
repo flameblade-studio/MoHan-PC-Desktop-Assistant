@@ -292,6 +292,23 @@
       "work_package": null
     },
     {
+      "bytes": 6979,
+      "category": "character_license_notice",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/LICENSE.md",
+      "readers": [
+        {
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "cde3158a0a822fda1ea14f7114adfdbb9e25cd7f8395a138023d37ba2828e7e6"
+    },
+    {
       "bytes": 2808,
       "category": "archive_or_support",
       "manifest_references": [],
@@ -388,7 +405,7 @@
       "sha256": "0b58f924804991466ab8de724f90629903209b14ec939cb7b467ab8ea534cf86"
     },
     {
-      "bytes": 11678,
+      "bytes": 11684,
       "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -402,10 +419,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "ead11cdb9eaf934f9f6e67f17891f84e2ae7766e67b9954ba0d57e7ed71d05df"
+      "sha256": "0fe13afafc1eaf464775a8d3e8ef7584dc56464d1cb95aa8553d1892f908192c"
     },
     {
-      "bytes": 11682,
+      "bytes": 11688,
       "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -419,7 +436,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "559894e6c1731e7bdf950ead0238a8cb611b2fa308450035b5de464d4b12cf09"
+      "sha256": "f459a1a6984eb61c711a62c2313d76e11a617c96b4e9bae9793264eed9cc9274"
     },
     {
       "bytes": 13892,
@@ -439,7 +456,7 @@
       "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
     },
     {
-      "bytes": 7438,
+      "bytes": 7775,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -447,7 +464,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "f79b74cbe5a25dfa090143d00220b64675a75dc074883a989bdab560be348497"
+      "sha256": "46902c8168fd6785dbd6d4b624876adcaacb140fc06d91bc975e8f422adcff97"
     },
     {
       "bytes": 2163,
@@ -603,6 +620,23 @@
       "sha256": "f6d8ac9d84834852a4481fca73f7a0ffbed7c1c912e2667be77314d7e9fec3ff"
     },
     {
+      "bytes": 6910,
+      "category": "character_license_notice",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/LICENSE.md",
+      "readers": [
+        {
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "8655f87ca7f39be6abc5430f7bfad423c02dce57e350294702cdf8e01893951e"
+    },
+    {
       "bytes": 2561,
       "category": "archive_or_support",
       "manifest_references": [],
@@ -750,7 +784,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 7422,
+      "bytes": 7743,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -758,7 +792,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "17276688a4fc1bd025018d0b911ab91db299079c84a644ed896e51407e7454ae"
+      "sha256": "fee88c3bc579497c8fe66d7cb87632e879e37dd0bf9d710ec5c7421d7af88baa"
     },
     {
       "bytes": 3149,
@@ -93130,7 +93164,7 @@
   ],
   "owner_decisions": {
     "art_tool_license": "MIT",
-    "character_asset_license": "owner_decision_pending",
+    "character_asset_license": "CC-BY-NC-ND-4.0",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
     "pack_visibility": "private_repository",
@@ -93187,6 +93221,7 @@
     "character_appearance_defaults": 2,
     "character_dialogue_data": 10,
     "character_expression_catalog": 2,
+    "character_license_notice": 2,
     "character_persona_data": 10,
     "character_rig_data": 2,
     "character_runtime_binding_data": 2,
@@ -93230,7 +93265,7 @@
     "excluded_review_source": 39,
     "excluded_support": 21,
     "product_validation_data": 48,
-    "runtime_data": 3007
+    "runtime_data": 3009
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

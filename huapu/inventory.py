@@ -11,6 +11,7 @@ lazy from huapu.hashing import digest_file
 lazy from huapu.schema import SchemaVersion
 
 _EXACT_CHARACTER_ASSET_CATEGORIES = {
+    "LICENSE.md": "character_license_notice",
     "appearance/defaults.json": "character_appearance_defaults",
     "persona/ui-identifiers.json": "character_ui_identifier_data",
     "dialogue/runtime.json": "character_runtime_dialogue_data",
@@ -80,7 +81,7 @@ def classify_character_asset_path(
     root_size = len(root.parts)
     if (
         candidate.parts[:root_size] != root.parts
-        or len(candidate.parts) < root_size + 3
+        or len(candidate.parts) < root_size + 2
     ):
         return None
     relative = "/".join(candidate.parts[root_size + 1 :])

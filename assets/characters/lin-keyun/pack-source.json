@@ -174,7 +174,7 @@
   ],
   "distribution": {
     "access": "public",
-    "redistribution": "owner_decision_pending",
+    "redistribution": "allowed",
     "standalone_downloadable": true
   },
   "engine_compatibility": {
@@ -194,28 +194,28 @@
   },
   "licenses": {
     "character_art": {
-      "license_expression": null,
-      "notice_path": null,
-      "rights_holder": "CHOU MING HUA",
-      "status": "owner_decision_pending"
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/lin-keyun/LICENSE.md",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "status": "declared_license"
     },
     "persona_dialogue": {
-      "license_expression": null,
-      "notice_path": null,
-      "rights_holder": "CHOU MING HUA",
-      "status": "owner_decision_pending"
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/lin-keyun/LICENSE.md",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "status": "declared_license"
     },
     "program_data": {
-      "license_expression": null,
-      "notice_path": null,
-      "rights_holder": "CHOU MING HUA",
-      "status": "owner_decision_pending"
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/lin-keyun/LICENSE.md",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "status": "declared_license"
     },
     "voice": {
-      "license_expression": null,
-      "notice_path": null,
-      "rights_holder": "CHOU MING HUA",
-      "status": "owner_decision_pending"
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/lin-keyun/LICENSE.md",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "status": "declared_license"
     }
   },
   "pack_id": "flameblade.lin-keyun",

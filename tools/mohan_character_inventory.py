@@ -43,6 +43,7 @@ NON_PRODUCT_ROOTS = (
     {"path": "tests/golden/", "classification": "regression_evidence"},
 )
 CATEGORY_LABELS = {
+    "character_license_notice": "角色授權通知／角色授权通知／Character license notices／キャラクターライセンス通知",
     "character_appearance_defaults": "角色外觀預設資料／角色外观默认数据／Character appearance defaults／キャラクター外観の既定値",
     "appearance_pack": "正式外觀包／正式外观包／Official appearance archives／正式外観パック",
     "appearance_replacement_mask": "外觀替換遮罩／外观替换遮罩／Appearance replacement masks／外観置換マスク",
@@ -139,6 +140,10 @@ GROUPS = (
 )
 
 CHARACTER_DATA_READERS = {
+    "character_license_notice": (
+        "huapu/character_pack_builder.py",
+        "source = _repository_payload(root, relative)",
+    ),
     "character_appearance_defaults": (
         "domain/character_pack/appearance_data.py",
         'Path(path).read_text(encoding="utf-8")',
@@ -965,7 +970,7 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
     return {
         "schema": "mohan.character-inventory.v1", "schema_version": 1,
         "purpose": "existing_content_index_only",
-        "owner_decisions": {"standalone_download_design": True, "pack_visibility": "private_repository", "character_asset_license": "owner_decision_pending", "dlc_relationship": "owner_decision_pending", "engine_license": "MIT", "art_tool_license": "MIT"},
+        "owner_decisions": {"standalone_download_design": True, "pack_visibility": "private_repository", "character_asset_license": "CC-BY-NC-ND-4.0", "dlc_relationship": "owner_decision_pending", "engine_license": "MIT", "art_tool_license": "MIT"},
         "scope_notes": ["runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤", "embedded_code 只由實際字串或角色專屬數值規則產生；人工提示、註解與 docstring 不計數", "content_locations 的 line、text、matched 與 rule 是可重現判定證據", "readers 的 line 與 text 指向讀取或模板；manifest_references 點名精確宣告", "封存、製作鏡像、審閱原圖與來源 sidecar 均明確排除；既有核准 scope 沿用", "scratchpad、artifacts、.quality-tmp、docs/release-evidence、tests/golden 全樹不屬產品包輸入"],
         "non_product_roots": [dict(row) for row in NON_PRODUCT_ROOTS],
         "runtime_file_counts": dict(sorted(counts.items())),

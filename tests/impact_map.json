@@ -4276,6 +4276,16 @@
     },
     {
       "paths": [
+        "assets/characters/mohan/LICENSE.md"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_linkeyun_character_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "assets/characters/mohan/dialogue/runtime.json"
       ],
       "tests": [
@@ -6913,6 +6923,7 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/LICENSE.md",
         "assets/characters/lin-keyun/appearance/defaults.json",
         "assets/characters/lin-keyun/pack-source.json"
       ],
