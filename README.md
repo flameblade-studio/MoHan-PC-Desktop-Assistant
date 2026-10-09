@@ -32,7 +32,8 @@
 
 [觀看實際展示](docs/media/mohan-demo.mp4)。設定與主要畫面：[首次設定](docs/media/first-run-wizard.png)、[語音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待辦與靈感](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全權限](docs/media/security-permissions.png)。
 
-- 透明桌面角色、眨眼、表情、動作與 50 Hz 嘴型同步。
+- V5 二代素體提供全身 24 角度、半身表情、眨眼、說話嘴型與 50 Hz 嘴型同步。
+- 外袍、髮型、髮飾與妝容採可拆卸外觀圖層；內建藍白漢服，妝容可選原妝、淡雅或素顏三段。
 - 文字、Realtime、Windows 本機女聲、OpenAI TTS 與 Azure Speech 選用路徑。
 - 對話、可編輯記憶、待辦、靈感、工作計時、提醒與可攜設定檔。
 - 工具執行需經權限、風險分級、確認、稽核與緊急停止。
@@ -42,6 +43,15 @@
 #### 四語支援範圍
 
 繁體中文、簡體中文、英文與日文均提供首次設定、對話、語音、權限、基本設定、工作模式與提醒。進階頁面仍可能留有繁體中文；Azure Speech（預覽）的實際語音、區域、額度與費用以使用者自己的服務帳號為準。
+
+### 三專案與角色包
+
+墨寒保留既有名稱、網址、版本與使用者，定位為可直接安裝的產品。通用引擎正搬遷至 MIT 授權的 [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine)；角色素材的清冊、核准與匯出工具則是 MIT 授權的 [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu)。
+
+- 墨寒角色包：千年女劍魂墨寒的人設、台詞、聲音與外觀資料，使用 `mohan-pack-v*` 標籤。
+- 林可芸角色包：墨寒的今生，是稱呼使用者「劍主」的現代女性，使用 `lin-keyun-pack-v*` 標籤。
+
+兩個角色包都在本專案的 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 獨立提供，需另外下載，不隨安裝檔附帶。下載不需金鑰，安裝前會核對大小、`SHA-256`、manifest 與逐檔內容。
 
 ### 墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre
 
@@ -153,13 +163,27 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 完整作者規格見 [外觀包文件](docs/OUTFIT-PACKS.md)。
 
-> #### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
+#### 贊助者 DLC：赤焰劍光
+
+##### 取得、驗證與安裝
+
+「赤焰劍光」是 Dashboard 的純裝飾性贊助者 DLC，不解鎖、限制或改變任何功能；墨寒的功能永遠免費。請在 [Ko-fi 赤焰劍光頁面](https://ko-fi.com/s/3cd1bc7d93)完成支持並下載 `flame-sword-theme-dlc.zip`。只解開這一層 ZIP，以 PowerShell 執行 `(Get-FileHash .\flame-sword-theme.mohan-theme -Algorithm SHA256).Hash.ToLower()`，並與隨附的 `SHA256SUMS` 比對；不要再解開 `.mohan-theme`。
+
+開啟 Dashboard，依序前往「系統」→「設定」→「控制台佈景主題」，按「上傳單一檔案」並選取 `flame-sword-theme.mohan-theme`。上傳完成安裝，但不會自行啟用；在清單選取「赤焰劍光」即可「主題預覽」，按右下「保存設定」才會正式套用。按「取消（不要保存）」會回復先前已保存的主題。
+
+若要切回預設，按「還原主題」預覽內建主題，再按「保存設定」。若要移除赤焰劍光，先切回其他主題並保存，重新選取赤焰劍光後按「移除外掛包」，再確認移除；內建主題與目前使用中或預覽中的主題都受到保護，不能直接刪除。
+
+##### 授權
+
+付費代表贊助支持與搶先取得，不是排他散布權。由 CHOU MING HUA（炎劍文化工作室 Flameblade Studio）擁有的第一方 DLC 內容採 [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/)：合法取得者可保留授權資訊與姓名標示，非商用原樣分享；不得商用或分享改作後內容，也不得暗示官方背書。建議標示：「赤焰劍光 © 2026 CHOU MING HUA（炎劍文化工作室 Flameblade Studio），CC BY-NC-ND 4.0」。第三方項目仍依各自條款；完整內容見 `DLC-LICENSE.md` 與主專案 `ASSETS-LICENSE.md`。
+
+> #### ❤️⚔️ 支持墨寒：Ko-fi 自由贊助
 >
-> 贊助者依 Ko-fi 謝禮指引搶先取得外觀、妝容與主題等純裝飾 DLC；付費代表支持與搶先取得，功能權限對所有使用者一致。付費 DLC 採 `CC-BY-NC-ND-4.0`，買家與其他合法取得者可依條款非商用原樣轉發；下載位置與檔名以 Ko-fi 該項謝禮指引為準。
+> Ko-fi 贊助完全自願，不解鎖、不限制，也不改變任何功能。付費 DLC 是純裝飾的贊助謝禮，與角色包同採 CC BY-NC-ND 4.0，詳見上方赤焰劍光說明與 `ASSETS-LICENSE.md`。
 
-### 支持墨寒 / Support MoHan：贊助與授權
+### 支持墨寒 / Support MoHan：支持方式與授權
 
-請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕，或直接前往 [Ko-fi](https://ko-fi.com/flamebladestudio)；目前正式收款選項為 Ko-fi，可選單次或每月贊助。完整功能永遠免費，贊助只提供純裝飾 DLC 謝禮。
+歡迎前往 [Ko-fi](https://ko-fi.com/flamebladestudio) 自由選擇單次或每月贊助；是否贊助不影響任何功能。企業導入、合作或顧問需求請透過 [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 洽詢。
 
 <table>
   <tr>
@@ -169,8 +193,8 @@ https://www.googleapis.com/auth/drive.metadata.readonly
   </tr>
 </table>
 
-- 作者：**CHOU MING HUA**。
-- 原始碼採 [MIT License](LICENSE)；墨寒與林可芸角色素材、`assets/official-packs/`、`assets/makeup*`、含角色形象的應用程式圖示、`docs/media/` 圖片與影片，以及權利人發布的付費 DLC 均採 `CC-BY-NC-ND-4.0`，另有非商用粉絲作品政策與商標保留，不在 MIT 授權範圍。付費代表支持與搶先取得，買家與其他合法取得者可依 CC 條款非商用原樣轉發。
+- 作者：**CHOU MING HUA**；工作室官方英文名為 **Flameblade Studio**。
+- 原始碼採 [MIT License](LICENSE)；墨寒與林可芸的角色內容（臉、名稱、人設、台詞與聲音）、內建外觀、妝容、含角色形象的應用程式圖示、`docs/media/` 宣傳媒體，以及權利人發布的付費 DLC 均採 `CC-BY-NC-ND-4.0`，另有非商用粉絲作品許可，名稱與商標保留，不在 MIT 授權範圍。
 - 素材生產工具與權重只接受 MIT、Apache 2.0、CC0、CC BY（及同級 BSD）白名單；字型是唯一例外：自 2026-09-02 起允許 SIL OFL 1.1，但僅限字型，不延伸至其他素材；角色資產另依 [ASSETS-LICENSE](ASSETS-LICENSE.md) 授權，產線純淨規則詳見 [授權純淨承諾](docs/LICENSE-PURITY.md)。
 - 素材與第三方條款分別見 [ASSETS-LICENSE](ASSETS-LICENSE.md) 與 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 
@@ -185,6 +209,10 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - Preview 整合檢查：先用非重要帳號、測試儲存庫與低風險設備；Microsoft、GitHub、Home Assistant 下一階段將完成各真實環境驗證。
 
 一般問題請到 [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues)，使用討論請到 [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions)，安全問題依 [SECURITY](SECURITY.md) 私下回報；規劃見 [ROADMAP](ROADMAP.md)。
+
+### 技術先行者：搶先採用 Python 3.15
+
+墨寒在 Python 3.15 仍是候選版（3.15.0rc1）時就全面移轉，並大量採用 3.15 新增的延遲載入語法（PEP 810 `lazy import`），以寫法稽核工具把關整個程式庫。開發過程中，我們發現 3.15 的取樣分析工具在特定處理器上有高錯誤率，回報為 [python/cpython#158552](https://github.com/python/cpython/issues/158552)；Python 核心開發者據此修正，修正已收錄於 Python 3.15.0 正式版（[python/cpython#158845](https://github.com/python/cpython/pull/158845)）。墨寒現已執行於 3.15.0 正式版。為穩定起見，JIT 即時編譯預設關閉。
 
 ### 開發者入口
 
@@ -232,7 +260,8 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 [观看实际演示](docs/media/mohan-demo.mp4)。设置与主要界面：[首次设置](docs/media/first-run-wizard.png)、[语音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待办与灵感](docs/media/tasks-and-ideas.png)、[长期记忆](docs/media/long-term-memory.png)、[安全权限](docs/media/security-permissions.png)。
 
-- 透明桌面角色、眨眼、表情、动作与 50 Hz 口型同步。
+- V5 二代素体提供全身 24 角度、半身表情、眨眼、说话口型与 50 Hz 口型同步。
+- 外袍、发型、发饰与妆容采用可拆卸外观图层；内置蓝白汉服，妆容可选原妆、淡雅或素颜三档。
 - 文本、Realtime、Windows 本地女声、OpenAI TTS 与 Azure Speech 可选路径。
 - 对话、可编辑记忆、待办事项、灵感、工作计时、提醒与便携配置文件。
 - 工具执行必须经过权限、风险分级、确认、审计与紧急停止。
@@ -242,6 +271,15 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 #### 四语支持范围
 
 繁体中文、简体中文、英文与日文均提供首次设置、对话、语音、权限、基本设置、工作模式与提醒。高级页面仍可能保留繁体中文；Azure Speech（预览）的实际语音、区域、配额与费用以用户自己的服务账号为准。
+
+### 三项目与角色包
+
+墨寒保留现有名称、网址、版本与用户，定位为可直接安装的产品。通用引擎正在迁移到采用 MIT 许可的 [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine)；负责角色素材清单、批准与导出的工具则是采用 MIT 许可的 [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu)。
+
+- 墨寒角色包：千年女剑魂墨寒的人设、台词、声音与外观数据，使用 `mohan-pack-v*` 标签。
+- 林可芸角色包：墨寒的今生，是称呼用户“剑主”的现代女性，使用 `lin-keyun-pack-v*` 标签。
+
+两个角色包都在本项目的 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 独立提供，需要另外下载，不随安装文件附带。下载无需密钥，安装前会核对大小、`SHA-256`、manifest 与逐文件内容。
 
 ### 墨寒的傲娇工程小剧场
 
@@ -353,13 +391,27 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 完整作者规范见 [外观包文档](docs/OUTFIT-PACKS.md)。
 
-> #### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
+#### 支持者 DLC：赤焰剑光
+
+##### 获取、验证与安装
+
+“赤焰剑光”是 Dashboard 的纯装饰性支持者 DLC，不解锁、限制或改变任何功能；墨寒的功能永远免费。请在 [Ko-fi 赤焰剑光页面](https://ko-fi.com/s/3cd1bc7d93)完成支持并下载 `flame-sword-theme-dlc.zip`。只解压这一层 ZIP，使用 PowerShell 运行 `(Get-FileHash .\flame-sword-theme.mohan-theme -Algorithm SHA256).Hash.ToLower()`，并与随附的 `SHA256SUMS` 比对；请勿继续解压 `.mohan-theme`。
+
+打开 Dashboard，依次前往“系统”→“设置”→“控制台主题”，点击“上传单个文件”并选择 `flame-sword-theme.mohan-theme`。上传会完成安装，但不会自行启用；在列表中选择“赤焰剑光”即可“主题预览”，点击右下角“保存设置”才会正式应用。点击“取消并保留已保存的值”会恢复此前保存的主题。
+
+如需切回默认主题，点击“还原主题”预览内置主题，再点击“保存设置”。如需移除赤焰剑光，请先切换到其他主题并保存，重新选择赤焰剑光后点击“移除扩展包”，再确认移除；内置主题以及当前使用中或预览中的主题均受保护，不能直接删除。
+
+##### 许可
+
+付费代表赞助支持与抢先获取，不是排他分发权。由 CHOU MING HUA（炎剑文化工作室 Flameblade Studio）拥有的第一方 DLC 内容采用 [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/)：合法取得者可以保留许可信息与署名，非商业原样分享；不得商用或分享改作后的内容，也不得暗示官方背书。建议标注：“赤焰剑光 © 2026 CHOU MING HUA（炎剑文化工作室 Flameblade Studio），CC BY-NC-ND 4.0”。第三方项目仍按各自条款执行；完整内容见 `DLC-LICENSE.md` 与主项目 `ASSETS-LICENSE.md`。
+
+> #### ❤️⚔️ 支持墨寒：Ko-fi 自由赞助
 >
-> 赞助者根据 Ko-fi 谢礼说明抢先取得外观、妆容与主题等纯装饰 DLC；付费代表支持与抢先取得，不提供功能特权。付费 DLC 采用 `CC-BY-NC-ND-4.0`，买家与其他合法取得者可依条款非商业原样转发；下载位置与文件名以 Ko-fi 对应谢礼说明为准。
+> Ko-fi 赞助完全自愿，不解锁、不限制，也不改变任何功能。付费 DLC 是纯装饰的赞助谢礼，与角色包同样采用 CC BY-NC-ND 4.0，详见上方赤焰剑光说明与 `ASSETS-LICENSE.md`。
 
-### 支持墨寒：赞助与许可证
+### 支持墨寒：支持方式与许可证
 
-请使用仓库上方由 GitHub 显示的 Sponsor 按钮，或直接前往 [Ko-fi](https://ko-fi.com/flamebladestudio)；当前正式收款选项为 Ko-fi，可选择单次或每月赞助。完整功能始终免费，赞助仅提供纯装饰 DLC 谢礼。
+欢迎前往 [Ko-fi](https://ko-fi.com/flamebladestudio) 自由选择单次或每月赞助；是否赞助不影响任何功能。企业部署、合作或顾问需求请通过 [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 咨询。
 
 <table>
   <tr>
@@ -369,8 +421,8 @@ https://www.googleapis.com/auth/drive.metadata.readonly
   </tr>
 </table>
 
-- 作者：**CHOU MING HUA**。
-- 源代码采用 [MIT License](LICENSE)；墨寒与林可芸角色素材、`assets/official-packs/`、`assets/makeup*`、含角色形象的应用程序图标、`docs/media/` 图片与视频，以及权利人发布的付费 DLC 均采用 `CC-BY-NC-ND-4.0`，另有非商业粉丝作品政策与商标保留，不在 MIT 许可范围内。付费代表支持与抢先取得，买家与其他合法取得者可依 CC 条款非商业原样转发。
+- 作者：**CHOU MING HUA**；工作室官方英文名为 **Flameblade Studio**。
+- 源代码采用 [MIT License](LICENSE)；墨寒与林可芸的角色内容（面容、名称、人设、台词与声音）、内置外观、妆容、含角色形象的应用程序图标、`docs/media/` 宣传媒体，以及权利人发布的付费 DLC 均采用 `CC-BY-NC-ND-4.0`，另有非商业粉丝作品许可，名称与商标保留，不在 MIT 许可范围内。
 - 素材生产工具与权重只接受 MIT、Apache 2.0、CC0、CC BY（及同等级 BSD）白名单；字体是唯一例外：自 2026-09-02 起允许 SIL OFL 1.1，但仅限字体，不延伸至其他素材；角色资产另依 [ASSETS-LICENSE](ASSETS-LICENSE.md) 许可，生产流程纯净规则详见 [许可证纯净承诺](docs/LICENSE-PURITY.md)。
 - 素材与第三方条款分别见 [ASSETS-LICENSE](ASSETS-LICENSE.md) 与 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 
@@ -385,6 +437,10 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - Preview 集成检查：先使用非重要账号、测试仓库与低风险设备；Microsoft、GitHub、Home Assistant 下一阶段将完成各真实环境验证。
 
 一般问题请到 [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues)，使用讨论请到 [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions)，安全问题按 [SECURITY](SECURITY.md) 私下报告；规划见 [ROADMAP](ROADMAP.md)。
+
+### 技术先行者：抢先采用 Python 3.15
+
+墨寒在 Python 3.15 仍是候选版（3.15.0rc1）时就全面迁移，并大量采用 3.15 新增的延迟加载语法（PEP 810 `lazy import`），以写法审计工具把关整个代码库。开发过程中，我们发现 3.15 的采样分析工具在特定处理器上错误率偏高，回报为 [python/cpython#158552](https://github.com/python/cpython/issues/158552)；Python 核心开发者据此修复，修复已收录于 Python 3.15.0 正式版（[python/cpython#158845](https://github.com/python/cpython/pull/158845)）。墨寒现已运行于 3.15.0 正式版。为稳定起见，JIT 即时编译默认关闭。
 
 ### 开发者入口
 
@@ -432,7 +488,8 @@ MoHan is a Windows voice-interactive desktop assistant built around safety, priv
 
 [Watch the live demonstration](docs/media/mohan-demo.mp4). Setup and main screens: [first run](docs/media/first-run-wizard.png), [voice modes](docs/media/voice-modes.png), [expressions](docs/media/expressions.png), [tasks and ideas](docs/media/tasks-and-ideas.png), [long-term memory](docs/media/long-term-memory.png), and [security permissions](docs/media/security-permissions.png).
 
-- Transparent desktop character, blinking, expressions, motion, and 50 Hz lip sync.
+- The V5 generation-2 body provides 24 full-body angles, half-body expressions, blinking, speech mouth shapes, and 50 Hz lip sync.
+- Robe, hairstyle, hairpiece, and makeup use detachable appearance layers; Blue-and-White Hanfu is built in, with classic, light, and bare-face makeup levels.
 - Text, Realtime, Windows local female speech, OpenAI TTS, and optional Azure Speech paths.
 - Conversations, editable memory, tasks, ideas, work timers, reminders, and a portable profile.
 - Tool execution passes through permissions, risk levels, confirmation, auditing, and emergency stop.
@@ -442,6 +499,15 @@ MoHan is a Windows voice-interactive desktop assistant built around safety, priv
 #### Four-language support scope
 
 Traditional Chinese, Simplified Chinese, English, and Japanese cover first run, chat, voice, permissions, basic settings, work modes, and reminders. Some advanced pages may still contain Traditional Chinese; actual voices, regions, quotas, and costs for Azure Speech (Preview) depend on the user's own service account.
+
+### Three projects and character packs
+
+MoHan retains its existing name, URL, versions, and users as the installable product. The general-purpose engine is moving to the MIT-licensed [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine), while the MIT-licensed [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) manages character-asset inventories, approvals, and exports.
+
+- MoHan character pack: persona, dialogue, voice, and appearance data for the thousand-year-old sword spirit, published under `mohan-pack-v*` tags.
+- Lin Keyun character pack: MoHan's present-day incarnation, a modern woman who addresses the user as “Swordmaster,” published under `lin-keyun-pack-v*` tags.
+
+Both packs are separately available from this project's [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) and must be downloaded in addition to the installer. Downloads require no key; size, `SHA-256`, manifest, and every file are verified before installation.
 
 ### MoHan's Tsundere Developer Theatre
 
@@ -553,13 +619,27 @@ Multisensory vision is enabled explicitly by the user. After the user explicitly
 
 See the [outfit-pack documentation](docs/OUTFIT-PACKS.md) for the complete authoring contract.
 
-> #### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
+#### Supporter DLC: Flame Sword Radiance
+
+##### Download, verify, and install
+
+“Flame Sword Radiance” is a purely cosmetic Dashboard DLC for supporters. It unlocks, restricts, or changes no feature; MoHan's functionality remains free forever. Support the project on the [Ko-fi Flame Sword Radiance page](https://ko-fi.com/s/3cd1bc7d93) and download `flame-sword-theme-dlc.zip`. Extract only this outer ZIP. In PowerShell, run `(Get-FileHash .\flame-sword-theme.mohan-theme -Algorithm SHA256).Hash.ToLower()` and compare it with the enclosed `SHA256SUMS`; do not unpack the `.mohan-theme` file.
+
+Open the Dashboard and go to “System” → “Settings” → “Dashboard theme”. Select “Upload one file” and choose `flame-sword-theme.mohan-theme`. Uploading installs the theme but does not activate it. Select “Flame Sword Radiance” in the list for “Theme preview”, then select “Save settings” at the lower right to apply it. “Cancel and keep the saved values” restores the previously saved theme.
+
+To return to the default, select “Restore theme” to preview the built-in theme, then select “Save settings”. To remove Flame Sword Radiance, first switch to another theme and save; select Flame Sword Radiance again, choose “Remove add-on”, and confirm. The built-in theme and any active or previewed theme are protected from direct removal.
+
+##### License
+
+Payment represents sponsorship and early access, not an exclusive distribution right. First-party DLC content owned by CHOU MING HUA (炎劍文化工作室 Flameblade Studio) uses [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/): lawful recipients may share it unchanged and non-commercially while preserving the license information and attribution. Commercial use and distribution of adapted material are not permitted, and official endorsement may not be implied. Suggested credit: “Flame Sword Radiance © 2026 CHOU MING HUA (炎劍文化工作室 Flameblade Studio), CC BY-NC-ND 4.0.” Third-party items remain under their own terms; see `DLC-LICENSE.md` and the main project's `ASSETS-LICENSE.md` for the complete notices.
+
+> #### ❤️⚔️ Support MoHan: voluntary Ko-fi contributions
 >
-> Sponsors receive early access to purely cosmetic appearance, makeup, and theme DLC by following the Ko-fi reward instructions. Payment represents support and early access, not functional privileges. Paid DLC uses `CC-BY-NC-ND-4.0`; buyers and other lawful recipients may redistribute it unchanged and non-commercially under those terms. Follow the relevant Ko-fi reward instructions for the download location and filename.
+> Ko-fi contributions are entirely voluntary: they unlock, restrict, and change no features. Paid DLC is a purely cosmetic thank-you for supporters and, like the character packs, uses CC BY-NC-ND 4.0; see the Flame Sword Radiance section above and `ASSETS-LICENSE.md`.
 
-### Support MoHan: sponsorship and licensing
+### Support MoHan: support and licensing
 
-Use the Sponsor button displayed by GitHub above this repository, or visit [Ko-fi](https://ko-fi.com/flamebladestudio) directly. Ko-fi is the current official funding option and supports one-time or monthly contributions. Every feature remains free; support provides cosmetic DLC thank-you rewards only.
+Visit [Ko-fi](https://ko-fi.com/flamebladestudio) for an optional one-time or monthly contribution; contributing does not affect any feature. For enterprise adoption, partnerships, or consulting, contact Flameblade Studio through [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues).
 
 <table>
   <tr>
@@ -569,8 +649,8 @@ Use the Sponsor button displayed by GitHub above this repository, or visit [Ko-f
   </tr>
 </table>
 
-- Author: **CHOU MING HUA**.
-- Source code uses the [MIT License](LICENSE). MoHan and Lin Keyun character assets, `assets/official-packs/`, `assets/makeup*`, application icons depicting a character, images and videos under `docs/media/`, and paid DLC published by the rights holder all use `CC-BY-NC-ND-4.0`, with a separate non-commercial fan-work policy and reserved trademarks, and remain outside the MIT grant. Payment represents support and early access; buyers and other lawful recipients may redistribute paid DLC unchanged and non-commercially under the CC terms.
+- Author: **CHOU MING HUA**; the studio's official English name is **Flameblade Studio**.
+- Source code uses the [MIT License](LICENSE). MoHan and Lin Keyun character content (faces, names, personas, dialogue, and voices), built-in appearances, makeup, application icons depicting a character, promotional media under `docs/media/`, and paid DLC published by the rights holder all use `CC-BY-NC-ND-4.0`. A separate non-commercial fan-work permission applies; names and trademarks are reserved, and these materials remain outside the MIT grant.
 - Asset-production tools and weights admit only the MIT, Apache 2.0, CC0, CC BY (and equivalent BSD-class) allowlist. Fonts are the sole exception: since 2026-09-02, SIL OFL 1.1 is allowed for fonts only and applies exclusively to fonts. Character assets are licensed separately in [ASSETS-LICENSE](ASSETS-LICENSE.md); see the [License Purity Commitment](docs/LICENSE-PURITY.md) for production-pipeline purity rules.
 - Asset and third-party terms are in [ASSETS-LICENSE](ASSETS-LICENSE.md) and [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 
@@ -585,6 +665,10 @@ This project follows the [Flameblade Open Source Software Family Quality Standar
 - Preview integration check: begin with a non-critical account, test repository, or low-risk device. Microsoft, GitHub, and Home Assistant will complete each real-environment validation in the next stage.
 
 Use [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) for ordinary problems, [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions) for usage, and [SECURITY](SECURITY.md) for private security reports; plans are in the [ROADMAP](ROADMAP.md).
+
+### Early adopter: Python 3.15 ahead of release
+
+MoHan moved entirely to Python 3.15 while it was still a release candidate (3.15.0rc1) and adopted the new lazy-import syntax (PEP 810 `lazy import`) across the codebase, enforced by an idiom audit. Along the way we found a high error rate in 3.15's sampling profiler on certain processors and reported it as [python/cpython#158552](https://github.com/python/cpython/issues/158552); the CPython core developers fixed it, and the fix ships in the Python 3.15.0 final release ([python/cpython#158845](https://github.com/python/cpython/pull/158845)). MoHan now runs on 3.15.0. For stability, the JIT is off by default.
 
 ### Developer entry points
 
@@ -632,7 +716,8 @@ The formal Windows packaging contract builds its first-party native module with 
 
 [実機デモを見る](docs/media/mohan-demo.mp4)。設定と主な画面：[初回設定](docs/media/first-run-wizard.png)、[音声モード](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[タスクとアイデア](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全権限](docs/media/security-permissions.png)。
 
-- 透明デスクトップキャラクター、まばたき、表情、動作、50 Hz リップシンク。
+- V5 第二世代素体は、全身 24 方向、半身表情、まばたき、発話時の口形、50 Hz リップシンクに対応します。
+- 外衣、髪型、髪飾り、メイクは着脱可能な外観レイヤーです。藍白漢服を内蔵し、メイクは基本、薄化粧、素顔の三段階から選べます。
 - テキスト、Realtime、Windows 本機女性音声、OpenAI TTS、任意の Azure Speech 経路。
 - 会話、編集可能な記憶、タスク、アイデア、作業タイマー、リマインダー、可搬プロファイル。
 - ツール実行は権限、危険度、確認、監査、緊急停止を通過します。
@@ -642,6 +727,15 @@ The formal Windows packaging contract builds its first-party native module with 
 #### 日本語の対応範囲
 
 繁体字中国語、簡体字中国語、英語、日本語は、初回設定、会話、音声、権限、基本設定、作業モード、リマインダーに対応します。高度な画面には繁体字中国語が残る場合があります。Azure Speech（プレビュー）の実際の音声、リージョン、割り当て、費用は、利用者自身のサービスアカウントに依存します。
+
+### 三つのプロジェクトとキャラクターパック
+
+墨寒は、従来の名称、URL、バージョン、利用者を引き継ぐインストール可能な製品です。汎用エンジンは MIT ライセンスの [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine) へ移行中です。キャラクター素材の目録、承認、書き出しは、MIT ライセンスの [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) が担います。
+
+- 墨寒キャラクターパック：千年の女剣魂である墨寒の人物設定、台詞、音声、外観データを収録し、`mohan-pack-v*` タグで公開します。
+- 林可芸キャラクターパック：墨寒の現世の姿にあたる現代女性で、利用者を「剣主」と呼びます。`lin-keyun-pack-v*` タグで公開します。
+
+両パックは本プロジェクトの [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) から個別に取得します。インストーラーには同梱されないため、別途ダウンロードしてください。取得にキーは不要で、導入前にサイズ、`SHA-256`、manifest、全ファイルの内容を検証します。
 
 ### 墨寒のツンデレ開発小劇場
 
@@ -753,13 +847,27 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 完全な制作契約は [外観パック文書](docs/OUTFIT-PACKS.md) を参照してください。
 
-> #### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
+#### 支援者 DLC：赤焔剣光
+
+##### 入手、検証、インストール
+
+「赤焔剣光」は支援者向けの純粋な装飾用 Dashboard DLC です。機能の解放、制限、変更には一切関係せず、墨寒の機能は今後もすべて無料です。[Ko-fi の赤焔剣光ページ](https://ko-fi.com/s/3cd1bc7d93)で支援し、`flame-sword-theme-dlc.zip` をダウンロードしてください。この外側の ZIP だけを展開します。PowerShell で `(Get-FileHash .\flame-sword-theme.mohan-theme -Algorithm SHA256).Hash.ToLower()` を実行し、同梱の `SHA256SUMS` と照合してください。`.mohan-theme` 自体は展開しないでください。
+
+Dashboard を開き、「システム」→「設定」→「コントロールセンターのテーマ」へ進み、「ファイルを1つアップロード」で `flame-sword-theme.mohan-theme` を選びます。アップロードによりインストールされますが、自動的には有効になりません。一覧で「赤焔剣光」を選ぶと「テーマプレビュー」になり、右下の「設定を保存」で正式に適用します。「保存済みの値を保ったまま取り消す」を選ぶと、以前に保存したテーマへ戻ります。
+
+既定へ戻す場合は「テーマを元に戻す」で内蔵テーマをプレビューし、「設定を保存」を選びます。赤焔剣光を削除する場合は、先に別のテーマへ切り替えて保存してから、赤焔剣光を再び選び、「追加パッケージを削除」で確認します。内蔵テーマ、および使用中・プレビュー中のテーマは保護され、直接削除できません。
+
+##### ライセンス
+
+支払いは支援と先行入手を意味し、排他的な配布権ではありません。CHOU MING HUA（炎劍文化工作室 Flameblade Studio）が所有する第一者 DLC 内容には [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/) を適用します。適法な取得者はライセンス情報と表示を保持し、非営利かつ無改変で共有できます。商用利用および改変物の配布はできず、公式の推奨・承認を示唆してはなりません。推奨表示：「赤焔剣光 © 2026 CHOU MING HUA（炎劍文化工作室 Flameblade Studio）、CC BY-NC-ND 4.0」。第三者項目には各自の条項が適用されます。完全な通知は `DLC-LICENSE.md` と本体プロジェクトの `ASSETS-LICENSE.md` を参照してください。
+
+> #### ❤️⚔️ 墨寒を応援：Ko-fi での自由な支援
 >
-> 支援者は Ko-fi の謝礼案内に従い、外観、メイク、テーマなど純装飾 DLC を先行取得できます。支払いは支援と先行取得を意味し、機能権限は全利用者で共通です。有料 DLC には `CC-BY-NC-ND-4.0` を適用し、購入者とその他の適法な取得者は条項に従って非営利かつ無改変で再配布できます。ダウンロード先とファイル名は該当する Ko-fi の謝礼案内に従ってください。
+> Ko-fi での支援はあくまで任意であり、機能の解放、制限、変更には一切関係しません。有料 DLC は支援への純粋な装飾的お礼で、キャラクターパックと同じく CC BY-NC-ND 4.0 です。詳しくは上の赤焔剣光の説明と `ASSETS-LICENSE.md` をご覧ください。
 
-### 墨寒を支援：支援とライセンス
+### 墨寒を応援：支援方法とライセンス
 
-このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用いただくか、[Ko-fi](https://ko-fi.com/flamebladestudio) へ直接お越しください。現在の正式な支援先は Ko-fi で、単発または毎月の支援を選べます。全機能は常に無料で、支援の謝礼は純装飾 DLC だけです。
+[Ko-fi](https://ko-fi.com/flamebladestudio) では、一度限りまたは毎月の支援を自由に選べます。支援の有無で機能が変わることはありません。企業導入、協業、コンサルティングのご相談は [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) からお寄せください。
 
 <table>
   <tr>
@@ -769,8 +877,8 @@ https://www.googleapis.com/auth/drive.metadata.readonly
   </tr>
 </table>
 
-- 作者：**CHOU MING HUA**。
-- ソースコードは [MIT License](LICENSE) です。墨寒と林可芸のキャラクター素材、`assets/official-packs/`、`assets/makeup*`、キャラクター像を含むアプリケーションアイコン、`docs/media/` の画像と動画、権利者が公開する有料 DLC には `CC-BY-NC-ND-4.0` を適用し、別途の非営利ファン作品ポリシーと商標留保があり、MIT の許諾範囲外です。支払いは支援と先行取得を意味し、購入者とその他の適法な取得者は CC 条項に従って非営利かつ無改変で再配布できます。
+- 作者：**CHOU MING HUA**。スタジオの正式な英語名は **Flameblade Studio** です。
+- ソースコードには [MIT License](LICENSE) を適用します。墨寒と林可芸のキャラクター内容（顔、名称、人物設定、台詞、音声）、内蔵外観、メイク、キャラクター像を含むアプリケーションアイコン、`docs/media/` の宣伝用メディア、権利者が公開する有料 DLC には `CC-BY-NC-ND-4.0` を適用します。非営利ファン作品には別途の許可があり、名称と商標は留保され、これらの素材は MIT の許諾範囲外です。
 - 素材生成の道具と重みは MIT、Apache 2.0、CC0、CC BY（および同等の BSD 系）ホワイトリストだけを受理します。フォントが唯一の例外で、2026-09-02 以降は SIL OFL 1.1 をフォントに限って認め、他の素材には拡張しません。キャラクター資産は [ASSETS-LICENSE](ASSETS-LICENSE.md) で別途許諾され、生成工程の純浄性規則は [ライセンス純浄性の約束](docs/LICENSE-PURITY.md) に記載します。
 - 素材と第三者条項は [ASSETS-LICENSE](ASSETS-LICENSE.md) と [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md) に記載しています。
 
@@ -785,6 +893,10 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 - Preview 連携の確認：重要でないアカウント、テスト用リポジトリ、低リスク機器から始めてください。Microsoft、GitHub、Home Assistant は全実環境での検証は次の段階で完了します。
 
 一般的な問題は [Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues)、利用相談は [Discussions](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/discussions)、セキュリティ問題は [SECURITY](SECURITY.md) から非公開で報告してください。計画は [ROADMAP](ROADMAP.md) にあります。
+
+### 技術の先駆け：Python 3.15 をいち早く採用
+
+墨寒は Python 3.15 がまだリリース候補版（3.15.0rc1）だった段階で全面的に移行し、3.15 で追加された遅延インポート構文（PEP 810 の `lazy import`）をコードベース全体で採用して、書き方監査ツールで品質を守っています。開発中、3.15 のサンプリングプロファイラーが特定のプロセッサーで高いエラー率を示すことを見つけ、[python/cpython#158552](https://github.com/python/cpython/issues/158552) として報告しました。CPython のコア開発者がこれを修正し、その修正は Python 3.15.0 正式版に収録されています（[python/cpython#158845](https://github.com/python/cpython/pull/158845)）。墨寒は現在 3.15.0 正式版で動作しています。安定性を優先し、JIT は既定で無効です。
 
 ### 開発者向け入口
 
