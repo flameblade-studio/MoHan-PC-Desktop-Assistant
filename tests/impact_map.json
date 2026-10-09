@@ -7774,11 +7774,20 @@
     },
     {
       "paths": [
-        "tests/character_runtime_support.py",
         "tests/test_durations.json"
       ],
       "tests": [
         "test_pytest_collection_contract.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tests/character_runtime_support.py"
+      ],
+      "tests": [
+        "test_pytest_collection_contract.py",
+        "test_run_all_isolation.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
