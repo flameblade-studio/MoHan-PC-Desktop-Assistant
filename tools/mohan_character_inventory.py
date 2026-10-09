@@ -22,6 +22,7 @@ lazy from typing import Any
 lazy from PIL import Image
 
 lazy from huapu.hashing import sha256_bytes
+lazy from huapu.inventory import classify_character_asset_path
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRECT = "純資料可直接搬"
@@ -136,6 +137,58 @@ GROUPS = (
     Group("assets/ui/mohan-strategist-lobby-v1.png", "ui_background", "presentation/lingxiao_shell.py", "_LOBBY_BACKDROP ="),
     Group("assets/ui/mohan-cloud.svg", "ui_brand_decoration", "presentation/flagship_theme.py", "_THEME_ASSET ="),
 )
+
+CHARACTER_DATA_READERS = {
+    "character_appearance_defaults": (
+        "domain/character_pack/appearance_data.py",
+        'Path(path).read_text(encoding="utf-8")',
+    ),
+    "character_ui_identifier_data": (
+        "huapu/character_pack_builder.py",
+        "source = _repository_payload(root, relative)",
+    ),
+    "character_persona_data": (
+        "infrastructure/character_source_pack.py",
+        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+    ),
+    "character_runtime_dialogue_data": (
+        "huapu/character_pack_builder.py",
+        "source = _repository_payload(root, relative)",
+    ),
+    "character_dialogue_data": (
+        "infrastructure/character_source_pack.py",
+        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+    ),
+    "character_voice_data": (
+        "infrastructure/character_source_pack.py",
+        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+    ),
+    "character_runtime_binding_data": (
+        "huapu/character_pack_builder.py",
+        "source = _repository_payload(root, relative)",
+    ),
+    "character_rig_data": (
+        "infrastructure/character_source_pack.py",
+        "rig = _load_rig(root, rig_component)",
+    ),
+    "character_expression_catalog": (
+        "infrastructure/character_source_pack.py",
+        "expression_catalog = _load_expression_catalog(root, expression_component)",
+    ),
+}
+
+
+def _character_data_group(path: str) -> Group | None:
+    """Inject MoHan reader evidence for Huapu's neutral path classification."""
+    category = classify_character_asset_path(
+        path,
+        characters_root="assets/characters",
+    )
+    if category is None:
+        return None
+    reader, anchor = CHARACTER_DATA_READERS[category]
+    return Group(path, category, reader, anchor)
+
 
 MANUAL_REVIEW_HINTS = {
     "identity_persona_dialogue": (
@@ -870,7 +923,10 @@ def build_inventory(root: Path = ROOT) -> dict[str, Any]:
     paths.sort(key=lambda path: path.relative_to(root).as_posix())
     for path in paths:
         relative = path.relative_to(root).as_posix()
-        group = next((g for g in GROUPS if relative.startswith(g.prefix)), None)
+        group = next(
+            (g for g in GROUPS if relative.startswith(g.prefix)),
+            None,
+        ) or _character_data_group(relative)
         category = group.category if group else "archive_or_support"
         if relative == "assets/mohan-taskbar-icon.png":
             category = "ui_character_icon_build_output"

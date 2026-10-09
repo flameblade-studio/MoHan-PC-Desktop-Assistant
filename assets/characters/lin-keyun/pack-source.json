@@ -1,0 +1,244 @@
+{
+  "approval_refs": [
+    {
+      "path": "assets/expressions/source-bound-exasperated/approval/garment-approval.json",
+      "scope": "Front-exasperated garment source appearance only; release remains false."
+    },
+    {
+      "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
+      "scope": "Four detachable makeup looks and existing native expression states only."
+    }
+  ],
+  "character_id": "lin-keyun",
+  "components": [
+    {
+      "body_profile": null,
+      "id": "linkeyun.appearance-defaults",
+      "kind": "appearance_defaults",
+      "path": "assets/characters/lin-keyun/appearance/defaults.json",
+      "required": true,
+      "schema": "flameblade.character-appearance-defaults.v1"
+    },
+    {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "linkeyun.rig",
+      "kind": "fullbody_rig",
+      "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
+      "required": true,
+      "schema": "flameblade.character-rig.v1"
+    },
+    {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "linkeyun.expression-states",
+      "kind": "expression_manifest",
+      "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
+      "required": true,
+      "schema": "flameblade.expression-state-catalog.v1"
+    },
+    {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "linkeyun.fullbody-expressions",
+      "kind": "expression_manifest",
+      "path": "assets/pose-atlas/v5-base-layered/complete_expression_manifest.json",
+      "required": true,
+      "schema": "mohan.complete-expression-manifest.v1"
+    },
+    {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "linkeyun.halfbody-expressions",
+      "kind": "expression_manifest",
+      "path": "assets/expressions/complete-expressions/manifest.json",
+      "required": true,
+      "schema": "mohan.complete-halfbody-expressions.v1"
+    },
+    {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "mohan.makeup.builtin",
+      "kind": "outfit_pack",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
+      "required": true,
+      "schema": "mohan-outfit-pack.v2"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.identity",
+      "kind": "persona",
+      "path": "assets/characters/lin-keyun/persona/profile.json",
+      "required": true,
+      "schema": "flameblade.character-identity-profile.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.persona.zh-tw",
+      "kind": "persona",
+      "path": "assets/characters/lin-keyun/persona/zh-TW.json",
+      "required": true,
+      "schema": "flameblade.character-persona.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.persona.zh-cn",
+      "kind": "persona",
+      "path": "assets/characters/lin-keyun/persona/zh-CN.json",
+      "required": true,
+      "schema": "flameblade.character-persona.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.persona.en",
+      "kind": "persona",
+      "path": "assets/characters/lin-keyun/persona/en.json",
+      "required": true,
+      "schema": "flameblade.character-persona.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.persona.ja-jp",
+      "kind": "persona",
+      "path": "assets/characters/lin-keyun/persona/ja-JP.json",
+      "required": true,
+      "schema": "flameblade.character-persona.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.dialogue.zh-tw",
+      "kind": "dialogue",
+      "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
+      "required": true,
+      "schema": "flameblade.character-dialogue.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.dialogue.zh-cn",
+      "kind": "dialogue",
+      "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
+      "required": true,
+      "schema": "flameblade.character-dialogue.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.dialogue.en",
+      "kind": "dialogue",
+      "path": "assets/characters/lin-keyun/dialogue/en.json",
+      "required": true,
+      "schema": "flameblade.character-dialogue.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.dialogue.ja-jp",
+      "kind": "dialogue",
+      "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
+      "required": true,
+      "schema": "flameblade.character-dialogue.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.dialogue.events",
+      "kind": "dialogue",
+      "path": "assets/characters/lin-keyun/dialogue/events.json",
+      "required": true,
+      "schema": "flameblade.character-events.v1"
+    },
+    {
+      "body_profile": null,
+      "id": "linkeyun.voice",
+      "kind": "voice_profile",
+      "path": "assets/characters/lin-keyun/voice/profile.json",
+      "required": true,
+      "schema": "flameblade.character-voice-profile.v1"
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "linkeyun.official.modern-office",
+      "kind": "outfit_pack",
+      "max_version_exclusive": "2.0.0",
+      "min_version": "1.0.0",
+      "required": true
+    }
+  ],
+  "distribution": {
+    "access": "public",
+    "redistribution": "owner_decision_pending",
+    "standalone_downloadable": true
+  },
+  "engine_compatibility": {
+    "api_version": 1,
+    "max_engine_version_exclusive": "5.0.0",
+    "min_engine_version": "4.6.0",
+    "required_features": []
+  },
+  "identity": {
+    "personas": {
+      "en": "assets/characters/lin-keyun/persona/en.json",
+      "ja-JP": "assets/characters/lin-keyun/persona/ja-JP.json",
+      "zh-CN": "assets/characters/lin-keyun/persona/zh-CN.json",
+      "zh-TW": "assets/characters/lin-keyun/persona/zh-TW.json"
+    },
+    "profile": "assets/characters/lin-keyun/persona/profile.json"
+  },
+  "licenses": {
+    "character_art": {
+      "license_expression": null,
+      "notice_path": null,
+      "rights_holder": "CHOU MING HUA",
+      "status": "owner_decision_pending"
+    },
+    "persona_dialogue": {
+      "license_expression": null,
+      "notice_path": null,
+      "rights_holder": "CHOU MING HUA",
+      "status": "owner_decision_pending"
+    },
+    "program_data": {
+      "license_expression": null,
+      "notice_path": null,
+      "rights_holder": "CHOU MING HUA",
+      "status": "owner_decision_pending"
+    },
+    "voice": {
+      "license_expression": null,
+      "notice_path": null,
+      "rights_holder": "CHOU MING HUA",
+      "status": "owner_decision_pending"
+    }
+  },
+  "pack_id": "flameblade.lin-keyun",
+  "pack_version": "1.0.0",
+  "schema": "flameblade.character-pack-build-source.v1",
+  "schema_version": 1,
+  "source_refs": [
+    {
+      "path": "assets/pose-atlas/v5-base/BUILD-METADATA.json",
+      "scope": "Generation-2 PoseAtlas release-asset build metadata and its embedded source authorization only."
+    },
+    {
+      "path": "assets/expressions/source-bound-exasperated/receipt.json",
+      "scope": "Installed source-bound front-exasperated file hashes and recorded source hash only; release remains false."
+    }
+  ],
+  "validation_limits": {
+    "max_archive_bytes": 805306368,
+    "max_compression_ratio": 100,
+    "max_file_bytes": 67108864,
+    "max_files": 4096,
+    "max_manifest_bytes": 1048576,
+    "max_total_bytes": 805306368,
+    "max_zip_directory_bytes": 8388608
+  }
+}

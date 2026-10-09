@@ -158,16 +158,25 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
 CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 files plus validated appearance defaults.
 
 
-def test_character_data_files_are_runtime_data(inventory: dict[str, Any]) -> None:
-    rows = {row["path"]: row for row in inventory["files"] if row["path"].startswith("assets/characters/mohan/")}
-    build_only = {"assets/characters/mohan/README.md", "assets/characters/mohan/pack-source.json"}
+@pytest.mark.parametrize("character_id", ("mohan", "lin-keyun"))
+def test_character_data_files_are_runtime_data(
+    inventory: dict[str, Any],
+    character_id: str,
+) -> None:
+    prefix = f"assets/characters/{character_id}/"
+    rows = {
+        row["path"]: row
+        for row in inventory["files"]
+        if row["path"].startswith(prefix)
+    }
+    build_only = {f"{prefix}README.md", f"{prefix}pack-source.json"}
     data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
-    assert rows["assets/characters/mohan/rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
-    assert rows["assets/characters/mohan/dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
-    assert rows["assets/characters/mohan/persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
-    assert rows["assets/characters/mohan/appearance/defaults.json"]["category"] == "character_appearance_defaults"
+    assert rows[f"{prefix}rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
+    assert rows[f"{prefix}dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
+    assert rows[f"{prefix}persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
+    assert rows[f"{prefix}appearance/defaults.json"]["category"] == "character_appearance_defaults"
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 

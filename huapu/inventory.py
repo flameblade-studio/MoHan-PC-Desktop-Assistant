@@ -5,10 +5,24 @@ from __future__ import annotations
 lazy import json
 lazy from collections.abc import Mapping, Sequence
 lazy from dataclasses import dataclass
-lazy from pathlib import Path
+lazy from pathlib import Path, PurePosixPath
 
 lazy from huapu.hashing import digest_file
 lazy from huapu.schema import SchemaVersion
+
+_EXACT_CHARACTER_ASSET_CATEGORIES = {
+    "appearance/defaults.json": "character_appearance_defaults",
+    "persona/ui-identifiers.json": "character_ui_identifier_data",
+    "dialogue/runtime.json": "character_runtime_dialogue_data",
+    "rig/runtime-bindings.json": "character_runtime_binding_data",
+}
+_PREFIX_CHARACTER_ASSET_CATEGORIES = (
+    ("persona/", "character_persona_data"),
+    ("dialogue/", "character_dialogue_data"),
+    ("voice/", "character_voice_data"),
+    ("rig/", "character_rig_data"),
+    ("expressions/", "character_expression_catalog"),
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -41,6 +55,42 @@ class AssetSpec:
         for label, value in (("category", self.category), ("scope", self.scope)):
             if not value or value != value.strip():
                 raise ValueError(f"asset {label} must be non-empty trimmed text")
+
+
+def classify_character_asset_path(
+    path: str,
+    *,
+    characters_root: str,
+) -> str | None:
+    """Return the neutral category for one configured character-data path."""
+    candidate = PurePosixPath(path)
+    root = PurePosixPath(characters_root)
+    if (
+        candidate.is_absolute()
+        or root.is_absolute()
+        or "\\" in path
+        or "\\" in characters_root
+        or not candidate.parts
+        or not root.parts
+        or candidate.as_posix() != path
+        or root.as_posix() != characters_root
+        or any(part in {"", ".", ".."} for part in (*candidate.parts, *root.parts))
+    ):
+        raise ValueError("character asset paths must be canonical relative POSIX paths")
+    root_size = len(root.parts)
+    if (
+        candidate.parts[:root_size] != root.parts
+        or len(candidate.parts) < root_size + 3
+    ):
+        return None
+    relative = "/".join(candidate.parts[root_size + 1 :])
+    exact = _EXACT_CHARACTER_ASSET_CATEGORIES.get(relative)
+    if exact is not None:
+        return exact
+    for prefix, category in _PREFIX_CHARACTER_ASSET_CATEGORIES:
+        if relative.startswith(prefix):
+            return category
+    return None
 
 
 def build_asset_inventory(

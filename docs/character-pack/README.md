@@ -30,6 +30,8 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 
 可選 `components` 是既有子格式的具型別入口。每筆恰含 `id`、`kind`、`schema`、`path`、`sha256`、`required`、`body_profile`；元件 ID 與路徑各自唯一，路徑與雜湊必須對上 `files`。種類可為外觀預設、body profile、全身／半身 rig、表情 manifest、服裝包、姿勢包、人格、台詞、聲音設定、UI 素材或回歸 manifest。會影響身形的元件必須以 ID 與正整數版本綁定 body profile，且同一包的非 null 綁定必須完全一致；其他元件可填 null。`schema` 點名應使用的既有子格式與版本，例如 `mohan-outfit-pack.v2` 或 `mohan.complete-expression-manifest.v1`；外層驗證器只驗證引用，真正載入時仍須交給已註冊的子格式驗證器，未知子 schema 必須拒絕。現行 `flameblade.character-rig.v1` 同時承載全身與半身契約，在 v1 元件詞彙中以單一 `fullbody_rig` 入口登記；讀取器從該真實檔案取得兩種畫布，不建立第二份 rig 資料。
 
+`flameblade.character-appearance-defaults.v1` 的 `outfit.native_headwear` 鍵仍為必填，值可為完整的 `item_id`／`variant_id` 物件或 `null`。`null` 明確表示角色沒有原生頭飾；省略欄位、空物件、欄位不完整、未知欄位與空字串都會失敗關閉。既有物件形式不變，因此墨寒資料與行為保持相容。
+
 現有 `.mohan-outfit` v2、`mohan.complete-expression-manifest.v1`、`mohan.complete-halfbody-expressions.v1`、`mohan-body-v2` 與來源、建置、放置、核准紀錄可原樣保存在清冊中。本驗證器驗證外層契約與檔案位元組；子格式、圖片尺寸與模式、素體、表情能力及 352 格外觀驗收仍由既有檢查負責。檔名副檔名限制用於資料包入口，任何載入器也須保持資料模式，避免執行包內內容。
 
 ### 整包雜湊與簽章
@@ -113,6 +115,8 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 `source_refs` 必须为非空数组，`approval_refs` 可为空；每项恰含 `path`、`sha256`、`scope`。引用文件必须列入清单且哈希一致，范围文本上限 500 字符，各数组内路径唯一。批准沿原有范围有效，不能推断成整包分发许可。可引用经批准的摘要记录；完整私人证据是否随包由所有者决定。
 
 可选 `components` 是现有子格式的强类型入口。每项恰含 `id`、`kind`、`schema`、`path`、`sha256`、`required`、`body_profile`；组件 ID 与路径分别唯一，路径和哈希必须与 `files` 对应。种类可为外观默认值、body profile、全身／半身 rig、表情 manifest、服装包、姿势包、人格、台词、声音设置、UI 素材或回归 manifest。影响体型的组件必须用 ID 与正整数版本绑定 body profile，并且同一包内所有非 null 绑定必须完全一致；其他组件可填 null。`schema` 指明应使用的现有子格式与版本，例如 `mohan-outfit-pack.v2` 或 `mohan.complete-expression-manifest.v1`；外层验证器只验证引用，实际加载时仍须交给已注册的子格式验证器，未知子 schema 必须拒绝。当前 `flameblade.character-rig.v1` 同时承载全身与半身契约，在 v1 组件词汇中以单个 `fullbody_rig` 入口登记；读取器从该真实文件取得两种画布，不建立第二份 rig 数据。
+
+`flameblade.character-appearance-defaults.v1` 的 `outfit.native_headwear` 键仍为必填，值可以是完整的 `item_id`／`variant_id` 对象或 `null`。`null` 明确表示角色没有原生头饰；省略字段、空对象、字段不完整、未知字段和空字符串都会失败关闭。现有对象形式不变，因此墨寒数据和行为保持兼容。
 
 现有 `.mohan-outfit` v2、`mohan.complete-expression-manifest.v1`、`mohan.complete-halfbody-expressions.v1`、`mohan-body-v2` 与来源、构建、放置、批准记录可原样保存在清单中。本验证器验证外层契约与文件字节；子格式、图片尺寸与模式、素体、表情能力及 352 格外观验收仍由既有检查负责。文件扩展名限制用于数据包入口，任何加载器也须保持数据模式，避免执行包内内容。
 
@@ -198,6 +202,8 @@ Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, 
 
 Optional `components` entries are typed entry points to existing child formats. Each contains exactly `id`, `kind`, `schema`, `path`, `sha256`, `required`, and `body_profile`; component IDs and paths are independently unique, and each path and hash must match `files`. Kinds cover appearance defaults, body profiles, full-body or half-body rigs, expression manifests, outfit packs, pose packs, persona, dialogue, voice profiles, UI assets, and regression manifests. Components that affect body geometry require a body-profile ID and positive integer version, and every non-null binding in one pack must match exactly; other components may use null. `schema` identifies the registered child format and version, such as `mohan-outfit-pack.v2` or `mohan.complete-expression-manifest.v1`. The envelope validator verifies the reference only; loading must still invoke the registered child validator and reject an unsupported child schema. The current `flameblade.character-rig.v1` carries both full-body and half-body contracts and is registered through one `fullbody_rig` entry in the v1 component vocabulary. The reader obtains both canvases from that real file instead of creating a second rig representation.
 
+In `flameblade.character-appearance-defaults.v1`, the `outfit.native_headwear` key remains required and accepts either a complete `item_id`／`variant_id` object or `null`. `null` explicitly means that the character has no native headwear. A missing key, empty or partial object, unknown field, or blank string fails closed. The existing object form is unchanged, preserving MoHan data and behavior.
+
 Existing `.mohan-outfit` v2, `mohan.complete-expression-manifest.v1`, `mohan.complete-halfbody-expressions.v1`, `mohan-body-v2`, and source, build, placement, and approval records can remain unchanged in the inventory. This validator checks the outer contract and file bytes; existing checks still own child formats, image dimensions and modes, body profiles, expression capabilities, and the 352-cell appearance gate. Extension restrictions apply to the data package entry point; any loader must also preserve data-only handling to avoid executing packaged content.
 
 ### Package hash and signature
@@ -281,6 +287,8 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 `source_refs` は空でない配列、`approval_refs` は空にできます。各項目は `path`、`sha256`、`scope` のみを含みます。参照ファイルは一覧に含まれ、ハッシュが一致し、範囲の説明は最大 500 文字、各配列内のパスは一意です。承認は元の範囲内で有効であり、パック全体の配布許可を意味しません。承認された要約記録を参照でき、完全な非公開証拠を同梱するかは所有者が決定します。
 
 省略可能な `components` は、既存の子形式を型付きで参照する入口です。各項目は `id`、`kind`、`schema`、`path`、`sha256`、`required`、`body_profile` のみを含みます。コンポーネント ID とパスはそれぞれ一意で、パスとハッシュは `files` と一致する必要があります。種類は外観の既定値、body profile、全身／半身 rig、表情 manifest、衣装パック、ポーズパック、人格、台詞、音声設定、UI 素材、回帰 manifest です。体型に影響するコンポーネントは body profile の ID と正の整数バージョンを必須とし、同じパック内の null でない指定はすべて完全に一致する必要があります。それ以外は null を使えます。`schema` は `mohan-outfit-pack.v2` や `mohan.complete-expression-manifest.v1` のように既存の子形式と版を指定します。外側の検証器は参照だけを検証し、実際の読み込みでは登録済みの子形式検証器を呼び出し、未対応の子 schema を拒否します。現在の `flameblade.character-rig.v1` は全身と半身の契約を同時に保持し、v1 コンポーネント語彙では一つの `fullbody_rig` 入口として登録します。読取器はその実ファイルから二つのキャンバスを取得し、第二の rig 表現を作りません。
+
+`flameblade.character-appearance-defaults.v1` の `outfit.native_headwear` キーは引き続き必須で、完全な `item_id`／`variant_id` オブジェクトまたは `null` を受け付けます。`null` は、そのキャラクターに生来の髪飾りがないことを明示します。キーの欠落、空または不完全なオブジェクト、未知のフィールド、空文字列はすべて失敗として拒否します。既存のオブジェクト形式は変更しないため、墨寒のデータと動作は互換性を維持します。
 
 既存の `.mohan-outfit` v2、`mohan.complete-expression-manifest.v1`、`mohan.complete-halfbody-expressions.v1`、`mohan-body-v2`、出典、ビルド、配置、承認記録は変更せず一覧に保存できます。この検証器は外側の契約とファイルのバイト列を検証し、子形式、画像の寸法とモード、素体、表情能力、352 セルの外観検収は既存の検査が担当します。拡張子の制限はデータパックの入口に適用し、各ローダーもデータとして扱い、内容を実行しない設計を維持します。
 
