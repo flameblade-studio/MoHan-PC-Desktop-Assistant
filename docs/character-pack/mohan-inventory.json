@@ -332,7 +332,7 @@
       "path": "assets/characters/lin-keyun/dialogue/en.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -349,7 +349,7 @@
       "path": "assets/characters/lin-keyun/dialogue/events.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -366,7 +366,7 @@
       "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -400,7 +400,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -417,7 +417,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -434,7 +434,7 @@
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 126,
+          "line": 127,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -462,7 +462,7 @@
       "path": "assets/characters/lin-keyun/persona/en.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -479,7 +479,7 @@
       "path": "assets/characters/lin-keyun/persona/ja-JP.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -496,7 +496,7 @@
       "path": "assets/characters/lin-keyun/persona/profile.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -530,7 +530,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-CN.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -547,7 +547,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-TW.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -564,7 +564,7 @@
       "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 125,
+          "line": 126,
           "path": "infrastructure/character_source_pack.py",
           "text": "rig = _load_rig(root, rig_component)"
         }
@@ -598,7 +598,7 @@
       "path": "assets/characters/lin-keyun/voice/profile.json",
       "readers": [
         {
-          "line": 124,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -20136,7 +20136,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 303,
+          "line": 359,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47907,7 +47907,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 303,
+          "line": 359,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -89606,9 +89606,9 @@
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
         },
         {
-          "line": 59,
+          "line": 63,
           "path": "application/service_container.py",
-          "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
+          "text": "lazy from domain.constants import ("
         },
         {
           "line": 17,
@@ -90186,7 +90186,7 @@
       "work_package": null
     },
     {
-      "bytes": 10309,
+      "bytes": 11615,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -90197,7 +90197,7 @@
         {
           "content_kind": "product_shell",
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
-          "line": 54,
+          "line": 55,
           "matched": "mohan.default.blue-silver",
           "path": "domain/outfit_pack_official.py",
           "rule": "persisted_identifier",
@@ -90218,7 +90218,7 @@
         {
           "line": 34,
           "path": "domain/outfit_pack.py",
-          "text": "lazy from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_ids, resolve_builtin_sentinel"
+          "text": "from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations"
         },
         {
           "line": 12,
@@ -90242,184 +90242,214 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "5a6102621d4e5b62f837a450b8dc62455c373d9e30d5d83de2f607f643b64f20",
+      "sha256": "b203a1686fb833656658b9bf69295cae230f62832480d6356936814e50131ca4",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
       "symbols": [
         {
-          "end_line": 31,
-          "line": 31,
+          "end_line": 32,
+          "line": 32,
           "name": "_LOGGER"
         },
         {
-          "end_line": 45,
-          "line": 34,
+          "end_line": 46,
+          "line": 35,
           "name": "_load_official_appearance"
         },
         {
-          "end_line": 51,
-          "line": 51,
+          "end_line": 52,
+          "line": 52,
           "name": "_COMPATIBILITY_APPEARANCE"
-        },
-        {
-          "end_line": 54,
-          "line": 54,
-          "name": "DEFAULT_OUTFIT_SELECTION_ID"
         },
         {
           "end_line": 55,
           "line": 55,
-          "name": "BUILTIN_MAKEUP_PACK_ID"
+          "name": "DEFAULT_OUTFIT_SELECTION_ID"
         },
         {
           "end_line": 56,
           "line": 56,
-          "name": "BUILTIN_MAKEUP_ITEM_ID"
+          "name": "BUILTIN_MAKEUP_PACK_ID"
         },
         {
           "end_line": 57,
           "line": 57,
+          "name": "BUILTIN_MAKEUP_ITEM_ID"
+        },
+        {
+          "end_line": 58,
+          "line": 58,
           "name": "BUILTIN_MAKEUP_VARIANTS"
         },
         {
-          "end_line": 60,
-          "line": 60,
+          "end_line": 61,
+          "line": 61,
           "name": "BUILTIN_MAKEUP_MENU_VARIANTS"
         },
         {
-          "end_line": 66,
-          "line": 64,
-          "name": "BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS"
-        },
-        {
           "end_line": 67,
-          "line": 67,
-          "name": "OFFICIAL_OUTFIT_PACK_ID"
+          "line": 65,
+          "name": "BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS"
         },
         {
           "end_line": 68,
           "line": 68,
+          "name": "OFFICIAL_OUTFIT_PACK_ID"
+        },
+        {
+          "end_line": 69,
+          "line": 69,
           "name": "OFFICIAL_OUTFIT_ENSEMBLE_ID"
         },
         {
-          "end_line": 76,
-          "line": 72,
+          "end_line": 77,
+          "line": 73,
           "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
         },
         {
-          "end_line": 77,
-          "line": 77,
+          "end_line": 78,
+          "line": 78,
           "name": "_NATIVE_HEADWEAR"
         },
         {
-          "end_line": 83,
-          "line": 79,
+          "end_line": 84,
+          "line": 80,
           "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
         },
         {
-          "end_line": 85,
-          "line": 85,
+          "end_line": 86,
+          "line": 86,
           "name": "OFFICIAL_OUTFIT_CATEGORIES"
-        },
-        {
-          "end_line": 87,
-          "line": 87,
-          "name": "OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 88,
           "line": 88,
-          "name": "BARE_SELECTION"
+          "name": "OFFICIAL_PACK_IDS"
+        },
+        {
+          "end_line": 89,
+          "line": 89,
+          "name": "_PACK_IDENTIFIER"
         },
         {
           "end_line": 90,
           "line": 90,
-          "name": "Identity"
+          "name": "_RESERVED_OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 91,
           "line": 91,
-          "name": "Resolution"
+          "name": "_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE"
+        },
+        {
+          "end_line": 92,
+          "line": 92,
+          "name": "BARE_SELECTION"
+        },
+        {
+          "end_line": 94,
+          "line": 94,
+          "name": "Identity"
         },
         {
           "end_line": 95,
-          "line": 94,
-          "name": "official_outfit_pack_id"
+          "line": 95,
+          "name": "Resolution"
         },
         {
           "end_line": 99,
           "line": 98,
-          "name": "official_outfit_ensemble_id"
+          "name": "official_outfit_pack_id"
         },
         {
           "end_line": 103,
           "line": 102,
+          "name": "official_outfit_ensemble_id"
+        },
+        {
+          "end_line": 107,
+          "line": 106,
           "name": "builtin_makeup_pack_id"
         },
         {
-          "end_line": 108,
-          "line": 106,
+          "end_line": 112,
+          "line": 110,
           "name": "official_pack_ids"
         },
         {
-          "end_line": 119,
-          "line": 111,
+          "end_line": 129,
+          "line": 115,
+          "name": "set_official_pack_id_reservations"
+        },
+        {
+          "end_line": 135,
+          "line": 132,
+          "name": "official_pack_id_reservations_complete"
+        },
+        {
+          "end_line": 143,
+          "line": 138,
+          "name": "reserved_official_pack_ids"
+        },
+        {
+          "end_line": 154,
+          "line": 146,
           "name": "official_native_hair_alias"
         },
         {
-          "end_line": 129,
-          "line": 122,
+          "end_line": 164,
+          "line": 157,
           "name": "official_native_headwear_alias"
         },
         {
-          "end_line": 139,
-          "line": 132,
+          "end_line": 174,
+          "line": 167,
           "name": "is_official_native_alias"
         },
         {
-          "end_line": 150,
-          "line": 142,
+          "end_line": 185,
+          "line": 177,
           "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
         },
         {
-          "end_line": 166,
-          "line": 153,
+          "end_line": 201,
+          "line": 188,
           "name": "native_overlay_is_redundant"
         },
         {
-          "end_line": 172,
-          "line": 169,
+          "end_line": 207,
+          "line": 204,
           "name": "SelectionLike"
         },
         {
-          "end_line": 178,
-          "line": 175,
+          "end_line": 213,
+          "line": 210,
           "name": "EnsembleSelectionLike"
         },
         {
-          "end_line": 184,
-          "line": 181,
+          "end_line": 219,
+          "line": 216,
           "name": "EnsembleLike"
         },
         {
-          "end_line": 204,
-          "line": 187,
+          "end_line": 239,
+          "line": 222,
           "name": "official_outfit_ensemble"
         },
         {
-          "end_line": 214,
-          "line": 207,
+          "end_line": 249,
+          "line": 242,
           "name": "builtin_makeup_resolution"
         },
         {
-          "end_line": 238,
-          "line": 217,
+          "end_line": 273,
+          "line": 252,
           "name": "builtin_outfit_resolution"
         },
         {
-          "end_line": 256,
-          "line": 241,
+          "end_line": 291,
+          "line": 276,
           "name": "resolve_builtin_sentinel"
         }
       ],
@@ -90618,7 +90648,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 72,
+          "line": 81,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -90715,7 +90745,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 101,
+          "line": 117,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -90885,7 +90915,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 103,
+          "line": 119,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }

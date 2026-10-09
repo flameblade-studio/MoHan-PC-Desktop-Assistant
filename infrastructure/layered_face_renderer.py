@@ -38,7 +38,7 @@ lazy from infrastructure.exasperated_candidate_assets import (
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
     LayeredFacePose,
-    load_layered_face_assets,
+    load_layered_face_assets as _load_layered_face_assets,
 )
 # Public compatibility re-export retained after the painting helper split.
 from infrastructure.layered_face_painting import MAX_CACHED_MASK_BOUNDS as MAX_CACHED_MASK_BOUNDS
@@ -83,6 +83,12 @@ _TOP_LAYERS = _RIG_MANIFEST.layer_z_order[20:]
 
 
 lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
+
+
+def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
+    """Expose a concrete composition callable across the lazy-import boundary."""
+
+    return _load_layered_face_assets(root)
 
 
 class LayeredParametricFaceRenderer(

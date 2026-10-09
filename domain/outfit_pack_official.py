@@ -17,6 +17,7 @@ from __future__ import annotations
 
 lazy from collections.abc import Callable, Iterable
 lazy import logging
+lazy import re
 lazy from pathlib import Path
 lazy from typing import Protocol
 
@@ -85,6 +86,9 @@ OFFICIAL_NATIVE_HEADWEAR_ALIAS = (
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
 # Ids reserved for archives under the official pack root; user imports remain separate from them.
 OFFICIAL_PACK_IDS = frozenset({OFFICIAL_OUTFIT_PACK_ID, BUILTIN_MAKEUP_PACK_ID})
+_PACK_IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
+_RESERVED_OFFICIAL_PACK_IDS = OFFICIAL_PACK_IDS
+_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE = True
 BARE_SELECTION = ("builtin", "none", "none")
 
 Identity = tuple[str, str, str]
@@ -106,6 +110,37 @@ def builtin_makeup_pack_id(source: CharacterSource | None = None) -> str:
 def official_pack_ids(source: CharacterSource | None = None) -> frozenset[str]:
     appearance = _load_official_appearance(source)
     return frozenset({appearance.outfit_pack_id, appearance.makeup_pack_id})
+
+
+def set_official_pack_id_reservations(
+    pack_ids: Iterable[str],
+    *,
+    complete: bool = True,
+) -> None:
+    """Replace installed-character reservations while retaining built-in IDs."""
+
+    global _OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE, _RESERVED_OFFICIAL_PACK_IDS
+    if isinstance(pack_ids, (str, bytes)):
+        raise TypeError("Provide a collection of official pack ids.")
+    reservations = frozenset(pack_ids)
+    if any(not _PACK_IDENTIFIER.fullmatch(pack_id) for pack_id in reservations):
+        raise ValueError("Provide validated official pack ids.")
+    _RESERVED_OFFICIAL_PACK_IDS = OFFICIAL_PACK_IDS | reservations
+    _OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE = complete
+
+
+def official_pack_id_reservations_complete() -> bool:
+    """Whether every installed character contributed its protected IDs."""
+
+    return _OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE
+
+
+def reserved_official_pack_ids(
+    source: CharacterSource | None = None,
+) -> frozenset[str]:
+    """Return built-in, installed-character, and selected-character IDs."""
+
+    return _RESERVED_OFFICIAL_PACK_IDS | official_pack_ids(source)
 
 
 def official_native_hair_alias(
