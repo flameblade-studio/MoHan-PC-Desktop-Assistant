@@ -13,6 +13,7 @@ lazy from tests.run_all import (
     _isolated_environment,
     _test_commands,
 )
+lazy from tests.character_runtime_support import activate_bundled_character_runtime
 
 _PYTEST_TEMPORARY_DIRECTORY: TemporaryDirectory[str] | None = None
 
@@ -78,6 +79,7 @@ class IsolatedModuleItem(pytest.Item):
 
 def pytest_configure(config: pytest.Config) -> None:
     global _PYTEST_TEMPORARY_DIRECTORY
+    activate_bundled_character_runtime()
     if config.option.basetemp is not None:
         return
     _PYTEST_TEMPORARY_DIRECTORY = TemporaryDirectory(

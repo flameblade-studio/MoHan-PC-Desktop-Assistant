@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from application.service_container import create_default_character_source
 lazy from domain.character_pack.validation import SCHEMA
 lazy from domain.character_pack.appearance_data import (
     APPEARANCE_DEFAULTS_SCHEMA,
@@ -110,6 +111,7 @@ def build_character_pack(
     source_path: str | Path = DEFAULT_SOURCE,
 ) -> CharacterPackBuildResult:
     """Build through Huapu while retaining the historical MoHan API."""
+    create_default_character_source()
     return _core.build_character_pack(
         output,
         output_format=output_format,

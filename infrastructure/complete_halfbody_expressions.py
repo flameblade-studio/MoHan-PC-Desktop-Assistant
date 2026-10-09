@@ -9,7 +9,7 @@ lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy from PySide6.QtGui import QImage
 
 lazy from domain.qt_image_io import image_from_png
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"

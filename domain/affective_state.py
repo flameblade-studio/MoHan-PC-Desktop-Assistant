@@ -14,7 +14,7 @@ it can be unit-tested deterministically and reused by any presentation owner.
 lazy import math
 lazy import time
 lazy from dataclasses import dataclass
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 
 # Each expressive state maps to the "softer" expression that should linger
 # after the primary expression ends.  The residue is always a gentler variant

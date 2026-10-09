@@ -1399,6 +1399,7 @@
     },
     {
       "paths": [
+        "domain/character_runtime.py",
         "infrastructure/bundled_character_source.py",
         "infrastructure/installed_character_packs.py",
         "tests/character_pack_fixtures.py"
@@ -2285,6 +2286,18 @@
         "test_active_character_switching.py",
         "test_character_source.py",
         "test_official_default_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/face_motion.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_face_motion.py",
+        "test_face_motion_interpolation.py",
+        "test_shyness.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5997,17 +6010,6 @@
     },
     {
       "paths": [
-        "domain/face_motion.py"
-      ],
-      "tests": [
-        "test_face_motion.py",
-        "test_face_motion_interpolation.py",
-        "test_shyness.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "infrastructure/face_renderer.py"
       ],
       "tests": [
@@ -7772,6 +7774,7 @@
     },
     {
       "paths": [
+        "tests/character_runtime_support.py",
         "tests/test_durations.json"
       ],
       "tests": [

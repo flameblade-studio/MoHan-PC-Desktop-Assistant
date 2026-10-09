@@ -122,7 +122,7 @@ GROUPS = (
     Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"'),
     Group("assets/characters/mohan/dialogue/", "character_dialogue_data", "domain/character_pack/character_data.py", 'root / "dialogue"'),
     Group("assets/characters/mohan/voice/", "character_voice_data", "domain/character_pack/character_data.py", 'root / "voice" / "profile.json"'),
-    Group("assets/characters/mohan/rig/runtime-bindings.json", "character_runtime_binding_data", "domain/constants.py", '"assets", "characters", "mohan", "rig", "runtime-bindings.json"'),
+    Group("assets/characters/mohan/rig/runtime-bindings.json", "character_runtime_binding_data", "infrastructure/bundled_character_source.py", 'self._character_root / "rig" / "runtime-bindings.json"'),
     Group("assets/characters/mohan/rig/", "character_rig_data", "domain/character_rig_data.py", "load_rig_manifest(DEFAULT_RIG_MANIFEST_PATH)"),
     Group("assets/characters/mohan/expressions/", "character_expression_catalog", "domain/character_expression_data.py", "load_expression_catalog(DEFAULT_EXPRESSION_CATALOG_PATH)"),
     Group("assets/official-packs/", "appearance_pack", "application/service_container.py", 'official_pack_root = asset_root / "assets" / "official-packs"'),
@@ -149,7 +149,7 @@ CHARACTER_DATA_READERS = {
     ),
     "character_persona_data": (
         "infrastructure/character_source_pack.py",
-        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        "character_data = _load_character_data(",
     ),
     "character_runtime_dialogue_data": (
         "huapu/character_pack_builder.py",
@@ -157,11 +157,11 @@ CHARACTER_DATA_READERS = {
     ),
     "character_dialogue_data": (
         "infrastructure/character_source_pack.py",
-        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        "character_data = _load_character_data(",
     ),
     "character_voice_data": (
         "infrastructure/character_source_pack.py",
-        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        "character_data = _load_character_data(",
     ),
     "character_runtime_binding_data": (
         "huapu/character_pack_builder.py",

@@ -9,9 +9,13 @@ lazy from domain.character_pack.character_data import (
     canonical_character_locale,
     load_mohan_character_data,
 )
-lazy from domain.character_pack.character_data_models import VoiceProfile
+lazy from domain.character_pack.character_data_models import CharacterRigManifest, VoiceProfile
 lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_rig_data import load_rig_manifest
+lazy from domain.character_runtime_bindings import (
+    CharacterRuntimeBindings,
+    load_character_runtime_bindings,
+)
 lazy from domain.character_source import (
     CharacterAppearanceContract,
     CharacterAppearanceDefaults,
@@ -42,6 +46,9 @@ class BundledCharacterSource(
             raise ValueError("Bundled character data must remain below the asset root.")
         self._data = load_mohan_character_data(self._character_root)
         self._rig = load_rig_manifest(self._character_root / "rig" / "rig-manifest.json")
+        self._runtime_bindings = load_character_runtime_bindings(
+            self._character_root / "rig" / "runtime-bindings.json"
+        )
         expressions = load_expression_catalog(
             self._character_root / "expressions" / "state-catalog.json"
         )
@@ -148,6 +155,14 @@ class BundledCharacterSource(
     @property
     def layer_order(self) -> tuple[str, ...]:
         return self._rig.layer_z_order
+
+    @property
+    def rig_manifest(self) -> CharacterRigManifest:
+        return self._rig
+
+    @property
+    def runtime_bindings(self) -> CharacterRuntimeBindings:
+        return self._runtime_bindings
 
 
 class LegacyMohanCharacterSource(BundledCharacterSource):

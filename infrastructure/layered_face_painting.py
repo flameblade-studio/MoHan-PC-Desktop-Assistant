@@ -5,7 +5,7 @@ from __future__ import annotations
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion, QTransform
 
-lazy from domain.constants import CHARACTER_LAYER_ROLES
+lazy from domain.character_runtime import CHARACTER_LAYER_ROLES
 lazy from infrastructure.layered_face_assets import LayeredFacePose
 
 MAX_CACHED_MASK_BOUNDS = 64

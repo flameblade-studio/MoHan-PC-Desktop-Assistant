@@ -13,16 +13,19 @@ lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
 lazy from domain.character_runtime_data import (
     default_expression_catalog,
-    default_rig_manifest,
 )
-lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    character_rig_manifest,
+)
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.exasperated-runtime-candidate.v1"
 FORMAL_INSTALL_SCHEMA = "mohan.source-bound-exasperated-default-install.v1"
 FORMAL_ASSET_RELATIVE_DIR = CHARACTER_ASSET_PATHS["source_bound_expression"]
 APPROVED_SOURCE_SHA256 = "0bb3d74affef4d2df831cf45d7f6d756b69cb58aee3693aea14f38f5d47996df"
-DIMENSION = default_rig_manifest().half_body_asset_canvas.width
+DIMENSION = character_rig_manifest().half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
 _SOURCE_BOUND = default_expression_catalog().source_bound_exasperated
 _MOUTH_RECT = _SOURCE_BOUND.mouth_bounds

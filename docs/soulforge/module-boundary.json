@@ -76,6 +76,8 @@
       "domain.character_pack.character_data_validation",
       "domain.character_pack.models",
       "domain.character_pack.validation",
+      "domain.character_runtime",
+      "domain.character_runtime_bindings",
       "domain.character_source",
       "domain.cloud_scene_interpreter",
       "domain.companion_animation_contract",
@@ -471,154 +473,16 @@
   ],
   "violation_baseline": [
     {
-      "importer": "application.appearance_renderer",
-      "imported": "domain.constants",
-      "line": 20,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "application.behavior_director",
-      "imported": "domain.constants",
-      "line": 11,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "application.outfit_reveal",
-      "imported": "domain.constants",
-      "line": 13,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "application.performance_coordinator",
-      "imported": "domain.constants",
-      "line": 26,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "application.proactive_companion_composition",
-      "imported": "domain.constants",
-      "line": 23,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "domain.affective_state",
-      "imported": "domain.constants",
-      "line": 17,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
       "importer": "domain.engine_capabilities",
       "imported": "domain.version_info",
       "line": 7,
       "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
     },
     {
-      "importer": "domain.face_motion",
-      "imported": "domain.constants",
-      "line": 5,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "domain.outfit_pack",
-      "imported": "domain.constants",
-      "line": 31,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "domain.outfit_pack_makeup",
-      "imported": "domain.constants",
-      "line": 29,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "domain.shyness",
-      "imported": "domain.constants",
-      "line": 20,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
       "importer": "infrastructure.active_outfit_overlay",
       "imported": "domain.version_info",
       "line": 34,
       "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
-    },
-    {
-      "importer": "infrastructure.active_outfit_overlay_layers",
-      "imported": "domain.constants",
-      "line": 12,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.complete_halfbody_expressions",
-      "imported": "domain.constants",
-      "line": 12,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.core_hand_regions",
-      "imported": "domain.constants",
-      "line": 9,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.exasperated_candidate_appearance",
-      "imported": "domain.constants",
-      "line": 14,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.exasperated_candidate_assets",
-      "imported": "domain.constants",
-      "line": 18,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.exasperated_face_rendering",
-      "imported": "domain.constants",
-      "line": 7,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_face_assets",
-      "imported": "domain.constants",
-      "line": 14,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_face_calibration",
-      "imported": "domain.constants",
-      "line": 22,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_face_painting",
-      "imported": "domain.constants",
-      "line": 8,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_face_renderer",
-      "imported": "domain.constants",
-      "line": 24,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_full_body_assets",
-      "imported": "domain.constants",
-      "line": 29,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_full_body_complete_expression",
-      "imported": "domain.constants",
-      "line": 16,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.layered_full_body_renderer",
-      "imported": "domain.constants",
-      "line": 22,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
     },
     {
       "importer": "infrastructure.platform_linux",
@@ -637,18 +501,6 @@
       "imported": "domain.version_info",
       "line": 9,
       "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
-    },
-    {
-      "importer": "infrastructure.reviewed_pose_motion",
-      "imported": "domain.constants",
-      "line": 22,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "infrastructure.source_bound_garment_visibility",
-      "imported": "domain.constants",
-      "line": 15,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
     },
     {
       "importer": "presentation._dashboard_wardrobe_tab",

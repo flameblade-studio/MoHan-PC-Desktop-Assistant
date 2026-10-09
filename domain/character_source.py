@@ -3,13 +3,15 @@
 from __future__ import annotations
 
 lazy from dataclasses import dataclass
-lazy from pathlib import Path
+lazy from pathlib import Path, PurePosixPath
 lazy from typing import Protocol, runtime_checkable
 
 lazy from domain.character_pack.character_data_models import (
     CharacterAppearanceDefaults,
+    CharacterRigManifest,
     VoiceProfile,
 )
+lazy from domain.character_runtime_bindings import CharacterRuntimeBindings
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,6 +98,12 @@ class CharacterAppearanceContract(Protocol):
     @property
     def layer_order(self) -> tuple[str, ...]: ...
 
+    @property
+    def rig_manifest(self) -> CharacterRigManifest: ...
+
+    @property
+    def runtime_bindings(self) -> CharacterRuntimeBindings: ...
+
 
 @runtime_checkable
 class CharacterVoice(Protocol):
@@ -122,7 +130,36 @@ class CharacterSource(Protocol):
     def voice(self) -> CharacterVoice: ...
 
 
+@dataclass(frozen=True, slots=True)
+class CharacterEngineProfile:
+    """One composition-root snapshot of character-owned engine inputs."""
+
+    assets: CharacterAssets
+    runtime_bindings: CharacterRuntimeBindings
+    rig_manifest: CharacterRigManifest
+    pose_atlas_generation: int
+    pose_atlas_relative_root: str
+    pose_atlas_layered_relative_root: str
+
+    def __post_init__(self) -> None:
+        if self.pose_atlas_generation < 1:
+            raise ValueError("PoseAtlas generations must be positive.")
+        for value in (
+            self.pose_atlas_relative_root,
+            self.pose_atlas_layered_relative_root,
+        ):
+            path = PurePosixPath(value)
+            if (
+                not value
+                or "\\" in value
+                or path.is_absolute()
+                or any(part in {"", ".", ".."} for part in path.parts)
+            ):
+                raise ValueError("PoseAtlas roots must use canonical relative paths.")
+
+
 _active_character_source: CharacterSource | None = None
+_active_character_engine_profile: CharacterEngineProfile | None = None
 
 
 def activate_character_source(source: CharacterSource | None) -> None:
@@ -132,6 +169,15 @@ def activate_character_source(source: CharacterSource | None) -> None:
     if source is not None and not isinstance(source, CharacterSource):
         raise TypeError("The active character source must satisfy CharacterSource.")
     _active_character_source = source
+
+
+def activate_character_engine_profile(profile: CharacterEngineProfile | None) -> None:
+    """Install the character runtime snapshot built by the product shell."""
+
+    global _active_character_engine_profile
+    if profile is not None and not isinstance(profile, CharacterEngineProfile):
+        raise TypeError("The active character engine profile must use the typed contract.")
+    _active_character_engine_profile = profile
 
 
 def character_appearance_defaults(
@@ -157,16 +203,30 @@ def active_character_source(source: CharacterSource | None = None) -> CharacterS
     return selected
 
 
+def active_character_engine_profile(
+    profile: CharacterEngineProfile | None = None,
+) -> CharacterEngineProfile:
+    """Return injected engine inputs or fail before character work starts."""
+
+    selected = profile if profile is not None else _active_character_engine_profile
+    if selected is None:
+        raise RuntimeError("The composition root must activate a character engine profile first.")
+    return selected
+
+
 __all__ = (
     "CharacterAppearanceContract",
     "CharacterAppearanceDefaults",
     "CharacterAssets",
     "CharacterBodyProfileReference",
     "CharacterCanvas",
+    "CharacterEngineProfile",
     "CharacterPersona",
     "CharacterSource",
     "CharacterVoice",
+    "activate_character_engine_profile",
     "activate_character_source",
+    "active_character_engine_profile",
     "active_character_source",
     "character_appearance_defaults",
     "character_voice_profile",

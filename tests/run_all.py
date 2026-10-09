@@ -762,7 +762,9 @@ def _test_commands(test: Path) -> tuple[list[str], ...]:
     )
     pytest_nodes = _pytest_node_names(tree)
     if main_guards:
-        commands.append([sys.executable, str(test)])
+        commands.append(
+            [sys.executable, "-m", "tests.character_runtime_support", str(test)]
+        )
         missing_nodes = _pytest_nodes_missing_from_main(tree, main_guards)
         if missing_nodes:
             commands.append(

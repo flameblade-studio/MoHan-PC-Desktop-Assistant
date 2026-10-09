@@ -48,7 +48,9 @@ lazy from domain.contracts import (
     default_character_display_name,
 )
 lazy from domain.character_source import (
+    CharacterEngineProfile,
     CharacterSource,
+    activate_character_engine_profile,
     activate_character_source,
 )
 lazy from domain.language_support import (
@@ -56,7 +58,11 @@ lazy from domain.language_support import (
     canonical_ui_language,
     localized_transcription_prompt,
 )
-lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.constants import (
+    POSE_ATLAS_GENERATION,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_RELATIVE_ROOT,
+)
 lazy from domain.openai_vision_preferences import VisionDetail
 lazy from domain.speech_providers import (
     SYSTEM_LOCAL_PROVIDER,
@@ -133,7 +139,7 @@ def create_character_source(character_id: str) -> CharacterSource:
     root = resource_path(".")
     mohan_source: CharacterSource = LegacyMohanCharacterSource(root)
     if selected == DEFAULT_CHARACTER_ID:
-        activate_character_source(mohan_source)
+        _activate_product_character_source(mohan_source)
         return mohan_source
     try:
         development_archive = os.environ.get(
@@ -149,7 +155,7 @@ def create_character_source(character_id: str) -> CharacterSource:
             else load_installed_character_pack(selected)
         )
     except (CharacterPackInstallError, OSError, ValueError) as error:
-        activate_character_source(mohan_source)
+        _activate_product_character_source(mohan_source)
         message = (
             f"Active character {selected!r} was rejected; "
             "the bundled default character remains active: "
@@ -157,8 +163,23 @@ def create_character_source(character_id: str) -> CharacterSource:
         )
         _CHARACTER_SELECTION_LOGGER.exception(message)
         raise RuntimeError(message) from error
-    activate_character_source(source)
+    _activate_product_character_source(source)
     return source
+
+
+def _activate_product_character_source(source: CharacterSource) -> None:
+    """Inject one validated character and product-owned PoseAtlas layout."""
+
+    profile = CharacterEngineProfile(
+        assets=source.assets,
+        runtime_bindings=source.appearance.runtime_bindings,
+        rig_manifest=source.appearance.rig_manifest,
+        pose_atlas_generation=POSE_ATLAS_GENERATION,
+        pose_atlas_relative_root=POSE_ATLAS_RELATIVE_ROOT,
+        pose_atlas_layered_relative_root=POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    )
+    activate_character_source(source)
+    activate_character_engine_profile(profile)
 
 
 def create_default_character_source() -> CharacterSource:

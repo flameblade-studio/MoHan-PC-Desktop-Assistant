@@ -4,7 +4,7 @@ from __future__ import annotations
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
 lazy from domain.companion_animation_contract import outfit_silhouette
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.face_rig import FaceMotionFrame
 lazy from infrastructure.exasperated_candidate_assets import (
     DIMENSION as EXASPERATED_DIMENSION, load_exasperated_candidate_assets,

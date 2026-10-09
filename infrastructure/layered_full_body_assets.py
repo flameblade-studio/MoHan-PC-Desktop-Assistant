@@ -2,7 +2,7 @@
 
 Each PoseAtlas generation ships 600 transparent PNG layers (24 yaw views × 25
 layers) under ``assets/pose-atlas/<generation>-layered/`` (the current root is
-``domain.constants.POSE_ATLAS_LAYERED_ROOT_NAME``). This module loads them into an immutable,
+``domain.character_runtime.pose_atlas_layered_root_name``). This module loads them into an immutable,
 Qt-independent manifest so the full-body renderer can compose a continuously
 controlled full-body portrait and replace the legacy PoseAtlas static photo +
 procedural mouth.
@@ -25,11 +25,10 @@ lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy import cv2
 lazy import numpy as np
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER
+lazy from domain.character_runtime import FULL_BODY_LAYER_Z_ORDER, character_rig_manifest
 lazy from domain.face_rig import EyeState, Viseme
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 FULL_BODY_DIMENSION_WIDTH = _RIG_MANIFEST.full_body_canvas.width
 FULL_BODY_DIMENSION_HEIGHT = _RIG_MANIFEST.full_body_canvas.height
 PNG_HEADER_LENGTH = 33

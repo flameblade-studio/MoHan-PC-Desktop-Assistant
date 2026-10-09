@@ -29,6 +29,10 @@ lazy from domain.character_pack.models import (
 lazy from domain.character_pack.validation import DEFAULT_LIMITS, validate_character_pack
 lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_rig_data import load_rig_manifest
+lazy from domain.character_runtime_bindings import (
+    CharacterRuntimeBindings,
+    load_character_runtime_bindings,
+)
 lazy from domain.character_source import (
     CharacterAppearanceContract,
     CharacterAppearanceDefaults,
@@ -120,11 +124,18 @@ class CharacterPackReader(
             expression_component,
         )
         _verify_component_files(root, records, loaded_components)
-        character_root_path = root.joinpath(*character_root.parts)
-        character_data = _load_character_data(character_root_path, character_root.as_posix())
+        character_data = _load_character_data(
+            root.joinpath(*character_root.parts),
+            character_root.as_posix(),
+        )
         rig = _load_rig(root, rig_component)
         expression_catalog = _load_expression_catalog(root, expression_component)
         _verify_component_files(root, records, loaded_components)
+        runtime_bindings = _load_declared_runtime_bindings(
+            root,
+            records,
+            character_root,
+        )
 
         canonical_name = str(character_data.identity.defaults["assistant_name"])
         if manifest.canonical_name != canonical_name or dict(manifest.display_names) != {
@@ -202,6 +213,8 @@ class CharacterPackReader(
         self._halfbody_canvas = halfbody_canvas
         self._view_ids = tuple(canonical_view_id(yaw) for yaw in rig.view_ring.yaws)
         self._layer_order = rig.layer_z_order
+        self._rig_manifest = rig
+        self._runtime_bindings = runtime_bindings
 
     @property
     def validation_result(self) -> CharacterPackValidationResult:
@@ -322,6 +335,14 @@ class CharacterPackReader(
     @property
     def layer_order(self) -> tuple[str, ...]:
         return self._layer_order
+
+    @property
+    def rig_manifest(self) -> CharacterRigManifest:
+        return self._rig_manifest
+
+    @property
+    def runtime_bindings(self) -> CharacterRuntimeBindings:
+        return self._runtime_bindings
 
 
 def _validated_directory_manifest(
@@ -594,6 +615,38 @@ def _load_rig(root: Path, component: CharacterPackComponent) -> CharacterRigMani
             f"Character rig validation failed: {type(error).__name__}.",
             component.path,
         ) from None
+
+
+def _load_runtime_bindings(
+    root: Path,
+    relative_path: str,
+) -> CharacterRuntimeBindings:
+    path = root.joinpath(*PurePosixPath(relative_path).parts)
+    try:
+        return load_character_runtime_bindings(path)
+    except (OSError, UnicodeError, ValueError, RuntimeError) as error:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"Character runtime-binding validation failed: {type(error).__name__}.",
+            relative_path,
+        ) from None
+
+
+def _load_declared_runtime_bindings(
+    root: Path,
+    records: Mapping[str, CharacterPackFile],
+    character_root: PurePosixPath,
+) -> CharacterRuntimeBindings:
+    relative_path = _rooted_path(character_root, "rig/runtime-bindings.json")
+    record = records.get(relative_path)
+    if record is None:
+        raise CharacterPackReadError(
+            "missing_component",
+            "Character runtime bindings must be declared in the file inventory.",
+            relative_path,
+        )
+    _read_verified_file(root, record)
+    return _load_runtime_bindings(root, relative_path)
 
 
 def _load_expression_catalog(

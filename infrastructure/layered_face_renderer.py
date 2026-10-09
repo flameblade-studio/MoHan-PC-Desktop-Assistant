@@ -20,11 +20,12 @@ lazy from domain.companion_animation_contract import (
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
-lazy from domain.constants import (
+lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS,
     CHARACTER_EXPRESSION_ROLES,
     CHARACTER_LAYER_ROLES,
+    character_rig_manifest,
 )
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from domain.qt_image_io import optional_pixmap, require_pixmap
@@ -55,7 +56,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
 SEAM_HEAL_RADIUS = 7
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 _EXPRESSION_CATALOG = default_expression_catalog()
 _EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
 _CHEEK_SILHOUETTE = _RIG_MANIFEST.pose_silhouettes["cheek"]
