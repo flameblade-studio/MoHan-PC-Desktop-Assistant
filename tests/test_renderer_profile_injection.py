@@ -326,8 +326,8 @@ def test_renderer_factories_bind_source_assets_and_validated_rig(
     ):
         (root / relative).mkdir(parents=True, exist_ok=True)
 
-    face_manifest = object()
-    full_body_manifest = object()
+    face_manifest = SimpleNamespace(kind="face")
+    full_body_manifest = SimpleNamespace(kind="full_body")
     loaded_roots = []
     constructors = {}
     monkeypatch.setattr(
