@@ -6,7 +6,10 @@ lazy from array import array
 lazy from dataclasses import dataclass
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE
+lazy from domain.core_constants import (
+    PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE,
+    PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE,
+)
 
 
 class PcmAudioError(ValueError):

@@ -28,7 +28,7 @@ lazy from domain.audio_acceleration import (
     PcmAccelerationPort,
 )
 lazy from domain.audio_buffer import BoundedAudioQueue, PcmPacketizer
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.lip_sync import VISEME_CUES_PER_SECOND
 lazy from domain.safe_error import sanitize_error
 lazy from integrations.realtime_events import RealtimeEventMethods

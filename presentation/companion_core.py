@@ -28,7 +28,7 @@ lazy from application.gesture_application_adapter import (
 lazy from application.gesture_controller import GestureController
 lazy from application.multimodal_fusion_hub import MultimodalFusionResult
 lazy from application.presentation_ports import fallback_platform_services
-lazy from application.service_container import CompanionServices
+lazy from application.service_contracts import CompanionServicesPort
 lazy from application.speech_performance import (
     SpeechPerformancePhase,
     SpeechPerformanceTimeline,
@@ -424,7 +424,7 @@ class CompanionCoreMixin:
 
     def _initialize_runtime_services(
         self,
-        services: CompanionServices,
+        services: CompanionServicesPort,
     ) -> None:
         self.db = services.db
         self.platform_services = (

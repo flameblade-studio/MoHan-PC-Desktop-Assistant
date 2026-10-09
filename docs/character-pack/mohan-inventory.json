@@ -892,7 +892,7 @@
       "path": "assets/characters/mohan/rig/runtime-bindings.json",
       "readers": [
         {
-          "line": 82,
+          "line": 187,
           "path": "domain/constants.py",
           "text": "\"assets\", \"characters\", \"mohan\", \"rig\", \"runtime-bindings.json\""
         }
@@ -89541,7 +89541,7 @@
       "sha256": "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571"
     },
     {
-      "bytes": 11576,
+      "bytes": 12839,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "現行 PoseAtlas 世代目錄名依專案契約只在此定義一次（AGENTS.md：換代只改這裡），屬墨寒產品殼。",
@@ -89552,7 +89552,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 255,
+          "line": 298,
           "matched": "assets/pose-atlas/v5",
           "path": "domain/constants.py",
           "rule": "character_asset_path_literal",
@@ -89562,7 +89562,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 256,
+          "line": 299,
           "matched": "assets/pose-atlas/v5",
           "path": "domain/constants.py",
           "rule": "character_asset_path_literal",
@@ -89584,21 +89584,6 @@
           "line": 11,
           "path": "application/behavior_director.py",
           "text": "lazy from domain.constants import CHARACTER_POSE_ROLES"
-        },
-        {
-          "line": 11,
-          "path": "application/gesture_recognizer.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
-        },
-        {
-          "line": 8,
-          "path": "application/multimodal_fusion_hub.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
-        },
-        {
-          "line": 19,
-          "path": "application/native_acceleration.py",
-          "text": "lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE"
         },
         {
           "line": 13,
@@ -89626,48 +89611,28 @@
           "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
         },
         {
-          "line": 8,
-          "path": "application/speech_performance.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
-        },
-        {
           "line": 17,
           "path": "domain/affective_state.py",
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
         },
         {
-          "line": 11,
-          "path": "domain/character_pose.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
-        },
-        {
-          "line": 11,
+          "line": 9,
           "path": "domain/constants.py",
           "text": "from domain.constants import HTTP_NOT_FOUND, SERVER_ERROR_BOUNDARY"
         },
         {
-          "line": 12,
+          "line": 10,
           "path": "domain/constants.py",
           "text": "from domain.constants import PNG_SIGNATURE, SHA256_HEX_LENGTH"
         },
         {
-          "line": 13,
+          "line": 11,
           "path": "domain/constants.py",
           "text": "from domain.constants import HOURS_PER_DAY, SECONDS_PER_DAY"
         },
         {
           "line": 5,
           "path": "domain/face_motion.py",
-          "text": "lazy from domain.constants import ("
-        },
-        {
-          "line": 13,
-          "path": "domain/hand_asset_audit.py",
-          "text": "lazy from domain.constants import ("
-        },
-        {
-          "line": 26,
-          "path": "domain/hand_asset_evidence.py",
           "text": "lazy from domain.constants import ("
         },
         {
@@ -89681,24 +89646,9 @@
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES"
         },
         {
-          "line": 9,
-          "path": "domain/pcm_audio.py",
-          "text": "lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE"
-        },
-        {
-          "line": 22,
-          "path": "domain/safe_error.py",
-          "text": "lazy from domain.constants import ("
-        },
-        {
           "line": 20,
           "path": "domain/shyness.py",
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
-        },
-        {
-          "line": 7,
-          "path": "domain/vision_domain.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
         },
         {
           "line": 12,
@@ -89779,16 +89729,6 @@
           "line": 33,
           "path": "integrations/openai_outfit_generator.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_RELATIVE_ROOT, POSE_ATLAS_RELATIVE_ROOT"
-        },
-        {
-          "line": 31,
-          "path": "integrations/realtime_voice.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
-        },
-        {
-          "line": 19,
-          "path": "integrations/speech_audio.py",
-          "text": "lazy from domain.constants import FLOAT_COMPARISON_EPSILON"
         },
         {
           "line": 27,
@@ -89877,364 +89817,369 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "38943f3882603ca24a86763ad0d718fbd0f822195e49e0aab7ebfb88140e1b17",
+      "sha256": "73731d2ffeb8cf0cf75c49355490627a2b9c89a5ff1099061afe672717a86d7e",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 22,
-          "line": 22,
-          "name": "_RIG_MANIFEST"
-        },
-        {
-          "end_line": 26,
-          "line": 24,
-          "name": "_RUNTIME_BINDING_KEYS"
-        },
-        {
-          "end_line": 32,
-          "line": 27,
-          "name": "_RUNTIME_BINDING_SECTIONS"
-        },
-        {
-          "end_line": 68,
-          "line": 33,
-          "name": "_RUNTIME_BINDING_SECTION_KEYS"
-        },
-        {
-          "end_line": 77,
-          "line": 71,
-          "name": "_unique_json_object"
-        },
-        {
-          "end_line": 118,
-          "line": 80,
-          "name": "_load_runtime_bindings"
-        },
-        {
-          "end_line": 121,
-          "line": 121,
-          "name": "_RUNTIME_BINDINGS"
-        },
-        {
-          "end_line": 122,
-          "line": 122,
-          "name": "CHARACTER_ASSET_PATHS"
-        },
-        {
-          "end_line": 123,
-          "line": 123,
-          "name": "CHARACTER_POSE_ROLES"
-        },
-        {
-          "end_line": 124,
-          "line": 124,
-          "name": "CHARACTER_EXPRESSION_ROLES"
-        },
-        {
-          "end_line": 125,
-          "line": 125,
-          "name": "CHARACTER_LAYER_ROLES"
-        },
-        {
-          "end_line": 130,
-          "line": 130,
-          "name": "HTTP_MIN_STATUS"
-        },
-        {
-          "end_line": 131,
-          "line": 131,
-          "name": "HTTP_MAX_STATUS"
-        },
-        {
-          "end_line": 132,
-          "line": 132,
-          "name": "HTTP_CLIENT_ERROR_BOUNDARY"
-        },
-        {
-          "end_line": 133,
-          "line": 133,
-          "name": "HTTP_SERVER_ERROR_BOUNDARY"
-        },
-        {
-          "end_line": 134,
-          "line": 134,
-          "name": "HTTP_SERVER_ERROR_MAX"
-        },
-        {
-          "end_line": 136,
-          "line": 136,
-          "name": "HTTP_OK"
-        },
-        {
-          "end_line": 137,
-          "line": 137,
-          "name": "HTTP_UNAUTHORIZED"
-        },
-        {
-          "end_line": 138,
-          "line": 138,
-          "name": "HTTP_FORBIDDEN"
-        },
-        {
-          "end_line": 139,
-          "line": 139,
-          "name": "HTTP_NOT_FOUND"
-        },
-        {
-          "end_line": 140,
-          "line": 140,
-          "name": "HTTP_TOO_MANY_REQUESTS"
-        },
-        {
-          "end_line": 141,
-          "line": 141,
-          "name": "HTTP_BAD_GATEWAY"
-        },
-        {
-          "end_line": 142,
-          "line": 142,
-          "name": "HTTP_SERVICE_UNAVAILABLE"
-        },
-        {
-          "end_line": 143,
-          "line": 143,
-          "name": "HTTP_GATEWAY_TIMEOUT"
-        },
-        {
-          "end_line": 148,
-          "line": 148,
-          "name": "SHA256_HEX_LENGTH"
-        },
-        {
-          "end_line": 149,
-          "line": 149,
-          "name": "SHA256_RAW_LENGTH"
-        },
-        {
-          "end_line": 154,
-          "line": 154,
-          "name": "PNG_SIGNATURE"
-        },
-        {
-          "end_line": 155,
-          "line": 155,
-          "name": "PNG_BIT_DEPTH"
-        },
-        {
-          "end_line": 156,
-          "line": 156,
-          "name": "PNG_COLOR_TYPE_RGBA"
-        },
-        {
-          "end_line": 157,
-          "line": 157,
-          "name": "PNG_MIN_HEADER_LENGTH"
-        },
-        {
-          "end_line": 159,
-          "line": 159,
+          "end_line": 21,
+          "line": 21,
           "name": "BYTES_PER_PIXEL"
         },
         {
-          "end_line": 160,
-          "line": 160,
-          "name": "RGB_CHANNELS"
-        },
-        {
-          "end_line": 161,
-          "line": 161,
+          "end_line": 22,
+          "line": 22,
           "name": "BYTE_MAX"
         },
         {
-          "end_line": 162,
-          "line": 162,
-          "name": "RGB_MAX"
+          "end_line": 23,
+          "line": 23,
+          "name": "FLOAT_COMPARISON_EPSILON"
         },
         {
-          "end_line": 164,
-          "line": 164,
-          "name": "SYMLINK_FILE_TYPE"
-        },
-        {
-          "end_line": 169,
-          "line": 169,
-          "name": "PCM16_MIN_SAMPLE"
-        },
-        {
-          "end_line": 170,
-          "line": 170,
-          "name": "PCM16_MAX_SAMPLE"
-        },
-        {
-          "end_line": 171,
-          "line": 171,
-          "name": "PCM16_SAMPLE_WIDTH"
-        },
-        {
-          "end_line": 176,
-          "line": 176,
-          "name": "SECONDS_PER_MINUTE"
-        },
-        {
-          "end_line": 177,
-          "line": 177,
-          "name": "MINUTES_PER_HOUR"
-        },
-        {
-          "end_line": 178,
-          "line": 178,
-          "name": "SECONDS_PER_HOUR"
-        },
-        {
-          "end_line": 179,
-          "line": 179,
+          "end_line": 24,
+          "line": 24,
           "name": "HOURS_PER_DAY"
         },
         {
-          "end_line": 180,
-          "line": 180,
+          "end_line": 25,
+          "line": 25,
+          "name": "HTTP_BAD_GATEWAY"
+        },
+        {
+          "end_line": 26,
+          "line": 26,
+          "name": "HTTP_CLIENT_ERROR_BOUNDARY"
+        },
+        {
+          "end_line": 27,
+          "line": 27,
+          "name": "HTTP_FORBIDDEN"
+        },
+        {
+          "end_line": 28,
+          "line": 28,
+          "name": "HTTP_GATEWAY_TIMEOUT"
+        },
+        {
+          "end_line": 29,
+          "line": 29,
+          "name": "HTTP_MAX_STATUS"
+        },
+        {
+          "end_line": 30,
+          "line": 30,
+          "name": "HTTP_MIN_STATUS"
+        },
+        {
+          "end_line": 31,
+          "line": 31,
+          "name": "HTTP_NOT_FOUND"
+        },
+        {
+          "end_line": 32,
+          "line": 32,
+          "name": "HTTP_OK"
+        },
+        {
+          "end_line": 33,
+          "line": 33,
+          "name": "HTTP_SERVER_ERROR_BOUNDARY"
+        },
+        {
+          "end_line": 34,
+          "line": 34,
+          "name": "HTTP_SERVER_ERROR_MAX"
+        },
+        {
+          "end_line": 35,
+          "line": 35,
+          "name": "HTTP_SERVICE_UNAVAILABLE"
+        },
+        {
+          "end_line": 36,
+          "line": 36,
+          "name": "HTTP_TOO_MANY_REQUESTS"
+        },
+        {
+          "end_line": 37,
+          "line": 37,
+          "name": "HTTP_UNAUTHORIZED"
+        },
+        {
+          "end_line": 38,
+          "line": 38,
+          "name": "MINUTES_PER_HOUR"
+        },
+        {
+          "end_line": 39,
+          "line": 39,
+          "name": "PCM16_MAX_SAMPLE"
+        },
+        {
+          "end_line": 40,
+          "line": 40,
+          "name": "PCM16_MIN_SAMPLE"
+        },
+        {
+          "end_line": 41,
+          "line": 41,
+          "name": "PCM16_SAMPLE_WIDTH"
+        },
+        {
+          "end_line": 42,
+          "line": 42,
+          "name": "PNG_BIT_DEPTH"
+        },
+        {
+          "end_line": 43,
+          "line": 43,
+          "name": "PNG_COLOR_TYPE_RGBA"
+        },
+        {
+          "end_line": 44,
+          "line": 44,
+          "name": "PNG_MIN_HEADER_LENGTH"
+        },
+        {
+          "end_line": 45,
+          "line": 45,
+          "name": "PNG_SIGNATURE"
+        },
+        {
+          "end_line": 46,
+          "line": 46,
+          "name": "RGB_CHANNELS"
+        },
+        {
+          "end_line": 47,
+          "line": 47,
+          "name": "RGB_MAX"
+        },
+        {
+          "end_line": 48,
+          "line": 48,
           "name": "SECONDS_PER_DAY"
         },
         {
-          "end_line": 190,
-          "line": 190,
-          "name": "LAYER_OPACITY_EYE_LID"
+          "end_line": 49,
+          "line": 49,
+          "name": "SECONDS_PER_HOUR"
         },
         {
-          "end_line": 193,
-          "line": 191,
-          "name": "LAYER_OPACITY_EYELINER"
+          "end_line": 50,
+          "line": 50,
+          "name": "SECONDS_PER_MINUTE"
         },
         {
-          "end_line": 194,
-          "line": 194,
-          "name": "LAYER_OPACITY_BLUSH"
+          "end_line": 51,
+          "line": 51,
+          "name": "SHA256_HEX_LENGTH"
         },
         {
-          "end_line": 195,
-          "line": 195,
-          "name": "LAYER_OPACITY_IRIS"
+          "end_line": 52,
+          "line": 52,
+          "name": "SHA256_RAW_LENGTH"
         },
         {
-          "end_line": 198,
-          "line": 198,
-          "name": "MOUTH_STRETCH_RATIO"
+          "end_line": 53,
+          "line": 53,
+          "name": "SYMLINK_FILE_TYPE"
         },
         {
-          "end_line": 199,
-          "line": 199,
-          "name": "MOUTH_ROUNDING_RATIO"
+          "end_line": 125,
+          "line": 55,
+          "name": "__all__"
         },
         {
-          "end_line": 200,
-          "line": 200,
-          "name": "MOUTH_HEIGHT_RATIO"
+          "end_line": 127,
+          "line": 127,
+          "name": "_RIG_MANIFEST"
         },
         {
-          "end_line": 203,
-          "line": 201,
-          "name": "MOUTH_APERTURE_NORMALIZER"
+          "end_line": 131,
+          "line": 129,
+          "name": "_RUNTIME_BINDING_KEYS"
         },
         {
-          "end_line": 206,
-          "line": 206,
-          "name": "JAW_TRANSLATION_FACTOR"
+          "end_line": 137,
+          "line": 132,
+          "name": "_RUNTIME_BINDING_SECTIONS"
         },
         {
-          "end_line": 207,
-          "line": 207,
-          "name": "BROW_LIFT_FACTOR"
+          "end_line": 173,
+          "line": 138,
+          "name": "_RUNTIME_BINDING_SECTION_KEYS"
         },
         {
-          "end_line": 208,
-          "line": 208,
-          "name": "BROW_TENSION_FACTOR"
+          "end_line": 182,
+          "line": 176,
+          "name": "_unique_json_object"
         },
         {
-          "end_line": 209,
-          "line": 209,
-          "name": "CORNER_SMILE_FACTOR"
+          "end_line": 223,
+          "line": 185,
+          "name": "_load_runtime_bindings"
         },
         {
-          "end_line": 212,
-          "line": 210,
-          "name": "CORNER_SMILE_LIFT_FACTOR"
+          "end_line": 226,
+          "line": 226,
+          "name": "_RUNTIME_BINDINGS"
         },
         {
-          "end_line": 215,
-          "line": 215,
-          "name": "SHYNESS_BLUSH_WEIGHT"
-        },
-        {
-          "end_line": 216,
-          "line": 216,
-          "name": "SHYNESS_GAZE_WEIGHT"
-        },
-        {
-          "end_line": 217,
-          "line": 217,
-          "name": "SHYNESS_LIP_WEIGHT"
-        },
-        {
-          "end_line": 220,
-          "line": 220,
-          "name": "VISEME_FRAME_INTERVAL_MS"
-        },
-        {
-          "end_line": 221,
-          "line": 221,
-          "name": "INTERPOLATION_EPSILON"
+          "end_line": 227,
+          "line": 227,
+          "name": "CHARACTER_ASSET_PATHS"
         },
         {
           "end_line": 228,
           "line": 228,
-          "name": "FLOAT_COMPARISON_EPSILON"
+          "name": "CHARACTER_POSE_ROLES"
         },
         {
-          "end_line": 238,
-          "line": 238,
-          "name": "FULL_BODY_LAYER_Z_ORDER"
+          "end_line": 229,
+          "line": 229,
+          "name": "CHARACTER_EXPRESSION_ROLES"
         },
         {
-          "end_line": 239,
-          "line": 239,
-          "name": "FULL_BODY_LAYER_COUNT"
+          "end_line": 230,
+          "line": 230,
+          "name": "CHARACTER_LAYER_ROLES"
         },
         {
-          "end_line": 252,
-          "line": 252,
-          "name": "POSE_ATLAS_GENERATION"
+          "end_line": 240,
+          "line": 240,
+          "name": "LAYER_OPACITY_EYE_LID"
+        },
+        {
+          "end_line": 243,
+          "line": 241,
+          "name": "LAYER_OPACITY_EYELINER"
+        },
+        {
+          "end_line": 244,
+          "line": 244,
+          "name": "LAYER_OPACITY_BLUSH"
+        },
+        {
+          "end_line": 245,
+          "line": 245,
+          "name": "LAYER_OPACITY_IRIS"
+        },
+        {
+          "end_line": 248,
+          "line": 248,
+          "name": "MOUTH_STRETCH_RATIO"
+        },
+        {
+          "end_line": 249,
+          "line": 249,
+          "name": "MOUTH_ROUNDING_RATIO"
+        },
+        {
+          "end_line": 250,
+          "line": 250,
+          "name": "MOUTH_HEIGHT_RATIO"
         },
         {
           "end_line": 253,
-          "line": 253,
-          "name": "POSE_ATLAS_ROOT_NAME"
-        },
-        {
-          "end_line": 254,
-          "line": 254,
-          "name": "POSE_ATLAS_LAYERED_ROOT_NAME"
-        },
-        {
-          "end_line": 255,
-          "line": 255,
-          "name": "POSE_ATLAS_RELATIVE_ROOT"
+          "line": 251,
+          "name": "MOUTH_APERTURE_NORMALIZER"
         },
         {
           "end_line": 256,
           "line": 256,
-          "name": "POSE_ATLAS_LAYERED_RELATIVE_ROOT"
+          "name": "JAW_TRANSLATION_FACTOR"
+        },
+        {
+          "end_line": 257,
+          "line": 257,
+          "name": "BROW_LIFT_FACTOR"
+        },
+        {
+          "end_line": 258,
+          "line": 258,
+          "name": "BROW_TENSION_FACTOR"
+        },
+        {
+          "end_line": 259,
+          "line": 259,
+          "name": "CORNER_SMILE_FACTOR"
+        },
+        {
+          "end_line": 262,
+          "line": 260,
+          "name": "CORNER_SMILE_LIFT_FACTOR"
         },
         {
           "end_line": 265,
           "line": 265,
-          "name": "DEFAULT_WEATHER_TEMPERATURE_C"
+          "name": "SHYNESS_BLUSH_WEIGHT"
         },
         {
           "end_line": 266,
           "line": 266,
+          "name": "SHYNESS_GAZE_WEIGHT"
+        },
+        {
+          "end_line": 267,
+          "line": 267,
+          "name": "SHYNESS_LIP_WEIGHT"
+        },
+        {
+          "end_line": 270,
+          "line": 270,
+          "name": "VISEME_FRAME_INTERVAL_MS"
+        },
+        {
+          "end_line": 271,
+          "line": 271,
+          "name": "INTERPOLATION_EPSILON"
+        },
+        {
+          "end_line": 281,
+          "line": 281,
+          "name": "FULL_BODY_LAYER_Z_ORDER"
+        },
+        {
+          "end_line": 282,
+          "line": 282,
+          "name": "FULL_BODY_LAYER_COUNT"
+        },
+        {
+          "end_line": 295,
+          "line": 295,
+          "name": "POSE_ATLAS_GENERATION"
+        },
+        {
+          "end_line": 296,
+          "line": 296,
+          "name": "POSE_ATLAS_ROOT_NAME"
+        },
+        {
+          "end_line": 297,
+          "line": 297,
+          "name": "POSE_ATLAS_LAYERED_ROOT_NAME"
+        },
+        {
+          "end_line": 298,
+          "line": 298,
+          "name": "POSE_ATLAS_RELATIVE_ROOT"
+        },
+        {
+          "end_line": 299,
+          "line": 299,
+          "name": "POSE_ATLAS_LAYERED_RELATIVE_ROOT"
+        },
+        {
+          "end_line": 308,
+          "line": 308,
+          "name": "DEFAULT_WEATHER_TEMPERATURE_C"
+        },
+        {
+          "end_line": 309,
+          "line": 309,
           "name": "DEFAULT_WEATHER_CONDITION"
         }
       ],

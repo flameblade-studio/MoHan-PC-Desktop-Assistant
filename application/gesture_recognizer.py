@@ -8,7 +8,7 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 lazy from operator import itemgetter
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.gesture_configuration import GestureLandmark, GestureSample
 lazy from domain.gesture_intent import HandSide
 
