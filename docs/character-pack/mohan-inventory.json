@@ -89105,7 +89105,7 @@
       "sha256": "a35ebf52fd3ce5f1469b2a36158dba761bc47b973ea3382b3186ca15b1f5af28"
     },
     {
-      "bytes": 11550,
+      "bytes": 11422,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -89113,7 +89113,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "ce25a28d554921eb931e72ded7541b51e4e9ab589ec699e43b4e15eb2961f2e2"
+      "sha256": "0eed260bf247e1c444d6e62b8d425f28b2bbdaa239200c618fb8436f15b293ac"
     },
     {
       "bytes": 99871,

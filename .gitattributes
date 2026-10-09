@@ -35,3 +35,4 @@ docs/release-evidence/ticket-211-*.json -text
 # English: character pack spec examples and the inventory cross-check byte hashes, so no platform may convert their line endings on checkout.
 # 日本語：キャラクターパック仕様の例と一覧はバイトハッシュで相互検証するため、どのプラットフォームでもチェックアウト時に改行を変換してはいけません。
 docs/character-pack/*.json -text
+docs/media/*.json -text
