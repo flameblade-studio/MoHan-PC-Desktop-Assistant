@@ -1,0 +1,4 @@
+### 補齊角色與品牌素材授權範圍／补齐角色与品牌素材许可范围／Complete the character and brand asset license scope／キャラクター・ブランド素材のライセンス範囲を補完
+
+- 官方外觀包、妝容與安全區、角色圖示、說明媒體及付費 DLC 統一採 CC BY-NC-ND 4.0；付費代表支持與搶先取得，合法取得者可依條款非商用原樣轉發。／官方外观包、妆容与安全区、角色图标、说明媒体及付费 DLC 统一采用 CC BY-NC-ND 4.0；付费代表支持与抢先取得，合法取得者可依条款非商业原样转发。／Official appearance packs, makeup and safe regions, character icons, documentation media, and paid DLC now uniformly use CC BY-NC-ND 4.0; payment represents support and early access, and lawful recipients may redistribute unchanged non-commercially under its terms.／公式外観パック、メイクと安全領域、キャラクターアイコン、文書メディア、有料 DLC に CC BY-NC-ND 4.0 を統一適用します。支払いは支援と先行取得を意味し、適法な取得者は条項に従って非営利かつ無改変で再配布できます。
+- 補齊說明媒體來源台帳，並讓外觀包未知授權安全拒絕；重封正式包時圖片位元組維持不變。／补齐说明媒体来源台账，并让外观包未知许可安全拒绝；重新封装正式包时图片字节保持不变。／Complete the documentation-media provenance ledger and fail closed on unknown outfit-pack licenses while preserving every image byte during official-pack resealing.／文書メディアの出典台帳を補完し、未知の外観パックライセンスを安全に拒否します。公式パックの再封止では全画像バイトを維持します。

@@ -65,7 +65,7 @@
 
 `domain/character_source.py` 只定義 `CharacterAssets`、`CharacterPersona`、`CharacterVoice`、`CharacterAppearanceContract` 與組合用 `CharacterSource` Protocol。引擎透過這些型別取得素材路徑、名字與稱謂、人格與事件台詞、聲音設定，以及 body profile、24 視角、雙畫布和圖層順序；domain 不依賴檔案格式或產品殼。
 
-`application/service_container.py` 只在組合根讀取 `MOHAN_ACTIVE_CHARACTER`，接受 `mohan` 或 `lin-keyun` 並注入 `BundledCharacterSource`；未設定時仍以 `LegacyMohanCharacterSource` 選擇墨寒，未知值在啟動前明確拒絕，且不新增選角介面。作用中角色的正式服裝、妝容、原生髮型及可選頭飾都從 `appearance/defaults.json` 解析；正式服裝包缺少時保留該角色並以可讀警告回到素體，不會套用另一角色服裝。`CharacterPackReader` 先以 `domain.character_pack` 完整驗證資料夾，再驗證必要 persona、dialogue、voice、fullbody rig 與 halfbody rig 子契約；任一步失敗即拒絕整包，絕不退回半套資料或 legacy fallback。產品封裝以相同相對路徑納入完整 `assets/characters/`；公開、私有、素材授權及 DLC 關係仍依擁有者決定。
+`application/service_container.py` 只在組合根讀取 `MOHAN_ACTIVE_CHARACTER`，接受 `mohan` 或 `lin-keyun` 並注入 `BundledCharacterSource`；未設定時仍以 `LegacyMohanCharacterSource` 選擇墨寒，未知值在啟動前明確拒絕，且不新增選角介面。作用中角色的正式服裝、妝容、原生髮型及可選頭飾都從 `appearance/defaults.json` 解析；正式服裝包缺少時保留該角色並以可讀警告回到素體，不會套用另一角色服裝。`CharacterPackReader` 先以 `domain.character_pack` 完整驗證資料夾，再驗證必要 persona、dialogue、voice、fullbody rig 與 halfbody rig 子契約；任一步失敗即拒絕整包，絕不退回半套資料或 legacy fallback。產品封裝以相同相對路徑納入完整 `assets/characters/`；墨寒與林可芸角色包附於墨寒專案發布頁，角色內容與付費 DLC 採 CC BY-NC-ND 4.0。
 
 ### 資料所有權
 
@@ -207,7 +207,7 @@
 
 `domain/character_source.py` 只定义 `CharacterAssets`、`CharacterPersona`、`CharacterVoice`、`CharacterAppearanceContract` 与用于组合的 `CharacterSource` Protocol。引擎通过这些类型取得素材路径、名字与称谓、人格与事件台词、语音设置，以及 body profile、24 视角、双画布和图层顺序；domain 不依赖文件格式或产品外壳。
 
-`application/service_container.py` 只在组合根读取 `MOHAN_ACTIVE_CHARACTER`，接受 `mohan` 或 `lin-keyun` 并注入 `BundledCharacterSource`；未设置时仍通过 `LegacyMohanCharacterSource` 选择墨寒，未知值在启动前明确拒绝，且不新增选角界面。活动角色的正式服装、妆容、原生发型及可选头饰都从 `appearance/defaults.json` 解析；正式服装包缺失时保留该角色并以可读警告回到素体，不会套用另一角色的服装。`CharacterPackReader` 先通过 `domain.character_pack` 完整验证目录，再验证必要的 persona、dialogue、voice、fullbody rig 与 halfbody rig 子契约；任一步失败即拒绝整个包，绝不回退到不完整数据或 legacy fallback。产品封装以相同相对路径加入完整的 `assets/characters/`；公开、私有、素材授权及 DLC 关系仍由所有者决定。
+`application/service_container.py` 只在组合根读取 `MOHAN_ACTIVE_CHARACTER`，接受 `mohan` 或 `lin-keyun` 并注入 `BundledCharacterSource`；未设置时仍通过 `LegacyMohanCharacterSource` 选择墨寒，未知值在启动前明确拒绝，且不新增选角界面。活动角色的正式服装、妆容、原生发型及可选头饰都从 `appearance/defaults.json` 解析；正式服装包缺失时保留该角色并以可读警告回到素体，不会套用另一角色的服装。`CharacterPackReader` 先通过 `domain.character_pack` 完整验证目录，再验证必要的 persona、dialogue、voice、fullbody rig 与 halfbody rig 子契约；任一步失败即拒绝整个包，绝不回退到不完整数据或 legacy fallback。产品封装以相同相对路径加入完整的 `assets/characters/`；墨寒与林可芸角色包附于墨寒项目发布页，角色内容与付费 DLC 采用 CC BY-NC-ND 4.0。
 
 ### 数据所有权
 
@@ -354,7 +354,7 @@ Local-module dependencies form a directed acyclic graph and enforced by `tests/t
 
 `domain/character_source.py` defines only the `CharacterAssets`, `CharacterPersona`, `CharacterVoice`, `CharacterAppearanceContract`, and composing `CharacterSource` protocols. Through these types, the engine obtains asset paths, names and titles, persona and event dialogue, voice settings, plus the body profile, 24-view ring, two canvases, and layer order. The domain has no dependency on storage formats or the product shell.
 
-At the composition root only, `application/service_container.py` reads `MOHAN_ACTIVE_CHARACTER`, accepts `mohan` or `lin-keyun`, and injects a `BundledCharacterSource`. With no setting it still selects MoHan through `LegacyMohanCharacterSource`; an unknown value is rejected before startup, and no character-selection UI is added. The active character's official outfit, makeup, native hairstyle, and optional headwear are resolved from `appearance/defaults.json`. If its official outfit pack is absent, the selected character remains active and falls back to the bare base with a readable warning, never another character's outfit. `CharacterPackReader` first validates the complete directory through `domain.character_pack`, then validates the required persona, dialogue, voice, full-body rig, and half-body rig child contracts. Any failure rejects the whole pack without partial data or a legacy fallback. Product packaging preserves the complete `assets/characters/` tree at the same relative path. Public or private access, asset licensing, and the DLC relationship remain owner decisions.
+At the composition root only, `application/service_container.py` reads `MOHAN_ACTIVE_CHARACTER`, accepts `mohan` or `lin-keyun`, and injects a `BundledCharacterSource`. With no setting it still selects MoHan through `LegacyMohanCharacterSource`; an unknown value is rejected before startup, and no character-selection UI is added. The active character's official outfit, makeup, native hairstyle, and optional headwear are resolved from `appearance/defaults.json`. If its official outfit pack is absent, the selected character remains active and falls back to the bare base with a readable warning, never another character's outfit. `CharacterPackReader` first validates the complete directory through `domain.character_pack`, then validates the required persona, dialogue, voice, full-body rig, and half-body rig child contracts. Any failure rejects the whole pack without partial data or a legacy fallback. Product packaging preserves the complete `assets/characters/` tree at the same relative path. The MoHan release page carries the MoHan and Lin Keyun packs, and character content and paid DLC use CC BY-NC-ND 4.0.
 
 ### Data ownership
 
@@ -496,7 +496,7 @@ The architecture gate reports physical five-layer package modules, root compatib
 
 `domain/character_source.py` は `CharacterAssets`、`CharacterPersona`、`CharacterVoice`、`CharacterAppearanceContract` と、それらを束ねる `CharacterSource` Protocol だけを定義します。エンジンはこの型境界から、素材パス、名前と敬称、人格とイベント台詞、音声設定、body profile、24 視点、二つのキャンバス、レイヤー順を取得します。domain は保存形式や製品シェルへ依存しません。
 
-`application/service_container.py` は composition root だけで `MOHAN_ACTIVE_CHARACTER` を読み、`mohan` または `lin-keyun` を受け入れて `BundledCharacterSource` を注入します。未設定時は引き続き `LegacyMohanCharacterSource` で墨寒を選び、不明な値は起動前に明示的に拒否し、キャラクター選択 UI は追加しません。作用中キャラクターの公式衣装、メイク、ネイティブ髪型、任意の頭飾りは `appearance/defaults.json` から解決します。公式衣装パックがない場合も選択したキャラクターを維持し、読める警告とともに素体へ戻り、別キャラクターの衣装は使いません。`CharacterPackReader` は最初に `domain.character_pack` でディレクトリ全体を検証し、続いて必須の persona、dialogue、voice、fullbody rig、halfbody rig 子契約を検証します。どこか一つでも失敗すればパック全体を拒否し、不完全なデータや legacy fallback を返しません。製品パッケージは完全な `assets/characters/` を同じ相対パスで収録します。公開または非公開、素材ライセンス、DLC との関係は引き続き所有者が決定します。
+`application/service_container.py` は composition root だけで `MOHAN_ACTIVE_CHARACTER` を読み、`mohan` または `lin-keyun` を受け入れて `BundledCharacterSource` を注入します。未設定時は引き続き `LegacyMohanCharacterSource` で墨寒を選び、不明な値は起動前に明示的に拒否し、キャラクター選択 UI は追加しません。作用中キャラクターの公式衣装、メイク、ネイティブ髪型、任意の頭飾りは `appearance/defaults.json` から解決します。公式衣装パックがない場合も選択したキャラクターを維持し、読める警告とともに素体へ戻り、別キャラクターの衣装は使いません。`CharacterPackReader` は最初に `domain.character_pack` でディレクトリ全体を検証し、続いて必須の persona、dialogue、voice、fullbody rig、halfbody rig 子契約を検証します。どこか一つでも失敗すればパック全体を拒否し、不完全なデータや legacy fallback を返しません。製品パッケージは完全な `assets/characters/` を同じ相対パスで収録します。墨寒と林可芸のパックは墨寒プロジェクトのリリースページで配布し、キャラクター内容と有料 DLC には CC BY-NC-ND 4.0 を適用します。
 
 ### データ所有権
 

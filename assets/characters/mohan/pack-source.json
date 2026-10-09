@@ -2,7 +2,7 @@
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.1",
+  "pack_version": "1.0.3",
   "character_id": "mohan",
   "identity": {
     "profile": "assets/characters/mohan/persona/profile.json",
@@ -21,33 +21,33 @@
   },
   "distribution": {
     "standalone_downloadable": true,
-    "access": "private",
-    "redistribution": "owner_decision_pending"
+    "access": "public",
+    "redistribution": "allowed"
   },
   "licenses": {
     "program_data": {
-      "status": "owner_decision_pending",
-      "rights_holder": "CHOU MING HUA",
-      "license_expression": null,
-      "notice_path": null
+      "status": "declared_license",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/mohan/LICENSE.md"
     },
     "character_art": {
-      "status": "owner_decision_pending",
-      "rights_holder": "CHOU MING HUA",
-      "license_expression": null,
-      "notice_path": null
+      "status": "declared_license",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/mohan/LICENSE.md"
     },
     "persona_dialogue": {
-      "status": "owner_decision_pending",
-      "rights_holder": "CHOU MING HUA",
-      "license_expression": null,
-      "notice_path": null
+      "status": "declared_license",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/mohan/LICENSE.md"
     },
     "voice": {
-      "status": "owner_decision_pending",
-      "rights_holder": "CHOU MING HUA",
-      "license_expression": null,
-      "notice_path": null
+      "status": "declared_license",
+      "rights_holder": "CHOU MING HUA（炎劍文化工作室 Flameblade Studio）",
+      "license_expression": "CC-BY-NC-ND-4.0",
+      "notice_path": "assets/characters/mohan/LICENSE.md"
     }
   },
   "source_refs": [

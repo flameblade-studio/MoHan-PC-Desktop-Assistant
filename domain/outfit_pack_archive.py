@@ -34,6 +34,18 @@ MANIFEST_KEYS = frozenset({
     "headwear", "accessories", "ensembles",
 })
 LICENSE = re.compile(r"[A-Za-z0-9 .()+-]{1,120}\Z")
+SUPPORTED_SOURCE_LICENSES = frozenset({
+    "All Rights Reserved",
+    "All Rights Reserved - see ASSETS-LICENSE.md",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "CC BY 4.0",
+    "CC-BY-4.0",
+    "CC-BY-NC-ND-4.0",
+    "CC0-1.0",
+    "MIT",
+})
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
 
@@ -84,7 +96,11 @@ def source_declaration(manifest: dict) -> tuple[str, str, str]:
         raise OutfitPackError("Provide a supported source declaration.")
     if source["reference_included"] is not False:
         raise OutfitPackError("Provide a supported source declaration.")
-    if not isinstance(source["license"], str) or not LICENSE.fullmatch(source["license"]):
+    if (
+        not isinstance(source["license"], str)
+        or not LICENSE.fullmatch(source["license"])
+        or source["license"] not in SUPPORTED_SOURCE_LICENSES
+    ):
         raise OutfitPackError("Provide a supported source declaration.")
     return source["kind"], validate_author(source["author"]), source["license"]
 

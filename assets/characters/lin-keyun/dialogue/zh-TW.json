@@ -224,7 +224,7 @@
   "schema": "flameblade.character-dialogue.v1",
   "schema_version": 1,
   "templates": {
-    "background.app_launched": "劍主已開啟 {name}。我會在旁留意，不打擾您工作。",
+    "background.app_launched": "{user_title}已開啟 {name}。我會在旁留意，不打擾您工作。",
     "caught_glance": "我只是在確認你是不是累了，沒有別的意思。",
     "chronicle.first_pr_merged": "劍主，我們第一個 PR 合併的那天，我真的很替你高興。",
     "chronicle.first_release": "劍主，我還記得我們第一次正式發布的那天。",

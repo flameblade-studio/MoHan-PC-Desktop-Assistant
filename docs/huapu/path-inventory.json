@@ -334,14 +334,14 @@
         "tools/verify_character_pack_lock.py"
       ],
       "class": "A",
-      "reason": "Thin CLI and private MoHan release settings over `huapu.character_pack_lock`."
+      "reason": "Thin CLI and public character-pack release settings over `huapu.character_pack_lock`."
     },
     {
       "paths": [
         "tools/fetch_character_pack.py"
       ],
       "class": "S",
-      "reason": "Private repository transport, token handling, and installation policy."
+      "reason": "Public GitHub Release transport and fail-closed installation policy."
     },
     {
       "paths": [
