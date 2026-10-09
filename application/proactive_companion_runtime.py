@@ -28,12 +28,10 @@ lazy from application.special_occasion import OccasionCue, OccasionKind, Occasio
 lazy from application.wellbeing_app_bridge import ReminderTrigger, SpeakRequest
 lazy from application.wellbeing_reminder import WellbeingCue, WellbeingKind
 lazy from application.wellbeing_runtime import RuntimeAttention, RuntimeCue
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 
-_DIALOGUES = load_mohan_character_data().dialogues
+_DIALOGUES = active_character_data().dialogues
 
 MIN_ABSENCE_SECONDS = 60.0
 lazy from domain.companion_proactivity_preferences import (

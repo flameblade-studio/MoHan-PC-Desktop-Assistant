@@ -26,11 +26,11 @@ lazy from application.visual_perception import (
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.character_source import personalize_text, profile_setting
-lazy from domain.constants import (
-    CHARACTER_EXPRESSION_ROLES,
+lazy from domain.core_constants import (
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.sensory_synesthesia import (
     complaint_line as sensory_complaint_line,
     rain_alpha,
@@ -495,7 +495,10 @@ class CompanionProactiveMixin:
                     source="visual",
                     intensity=0.45,
                 )
-                self.speak(line, CHARACTER_EXPRESSION_ROLES["gentle"])
+                self.speak(
+                    line,
+                    CHARACTER_EXPRESSION_ROLES["gentle"],
+                )
                 return
 
         drowsiness = float(

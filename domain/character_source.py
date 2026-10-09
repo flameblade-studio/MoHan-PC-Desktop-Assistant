@@ -9,6 +9,8 @@ lazy from typing import Protocol, runtime_checkable
 
 lazy from domain.character_pack.character_data_models import (
     CharacterAppearanceDefaults,
+    ExpressionStateCatalog,
+    MohanCharacterData,
     CharacterRigManifest,
     VoiceProfile,
 )
@@ -131,6 +133,15 @@ class CharacterSource(Protocol):
     """Composition boundary for one complete character data source."""
 
     @property
+    def character_data(self) -> MohanCharacterData: ...
+
+    @property
+    def character_data_root(self) -> Path: ...
+
+    @property
+    def expression_catalog(self) -> ExpressionStateCatalog: ...
+
+    @property
     def assets(self) -> CharacterAssets: ...
 
     @property
@@ -213,6 +224,43 @@ def character_voice_profile(source: CharacterSource | None = None) -> VoiceProfi
     return active_character_source(source).voice.voice_profile
 
 
+def active_character_data(
+    source: CharacterSource | None = None,
+) -> MohanCharacterData:
+    """Read the selected source's validated character-owned data catalog."""
+
+    return active_character_source(source).character_data
+
+
+def active_expression_catalog(
+    source: CharacterSource | None = None,
+) -> ExpressionStateCatalog:
+    """Read the selected source's validated expression-state catalog."""
+
+    return active_character_source(source).expression_catalog
+
+
+def active_character_data_path(
+    relative_path: str,
+    source: CharacterSource | None = None,
+) -> Path:
+    """Resolve one validated data file below the selected character root."""
+
+    relative = PurePosixPath(relative_path)
+    if (
+        not relative_path
+        or "\\" in relative_path
+        or relative.is_absolute()
+        or any(part in {"", ".", ".."} for part in relative.parts)
+    ):
+        raise ValueError("Character data paths must use canonical relative syntax.")
+    root = active_character_source(source).character_data_root
+    candidate = root.joinpath(*relative.parts).resolve(strict=True)
+    if not candidate.is_relative_to(root.resolve(strict=True)):
+        raise ValueError("Character data paths must remain below the character root.")
+    return candidate
+
+
 def profile_setting(settings: ProfileSettingsPort, key: str) -> str:
     """Read one saved profile value with the active character's injected default."""
 
@@ -265,8 +313,11 @@ __all__ = (
     "ProfileSettingsPort",
     "activate_character_engine_profile",
     "activate_character_source",
+    "active_character_data",
+    "active_character_data_path",
     "active_character_engine_profile",
     "active_character_source",
+    "active_expression_catalog",
     "character_appearance_defaults",
     "character_voice_profile",
     "personalize_text",

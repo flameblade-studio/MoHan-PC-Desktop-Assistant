@@ -28,9 +28,13 @@ lazy from application.self_generating_wardrobe import (
     GeneratedOutfitDraft,
     OutfitCreationRequest,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
-lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_RELATIVE_ROOT, POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    character_rig_manifest,
+    pose_atlas_layered_relative_root,
+    pose_atlas_relative_root,
+)
+lazy from domain.character_source import active_character_data, active_expression_catalog
 lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
 lazy from domain.outfit_generation import (
     OutfitGenerationCancelled,
@@ -39,9 +43,9 @@ lazy from domain.outfit_generation import (
 
 OPENAI_IMAGE_EDITS_URL = "https://api.openai.com/v1/images/edits"
 OPENAI_IMAGE_MODEL = "gpt-image-2"
-_RIG_MANIFEST = default_rig_manifest()
-_EXPRESSION_CATALOG = default_expression_catalog()
-_CHARACTER_DATA = load_mohan_character_data()
+_RIG_MANIFEST = character_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
+_CHARACTER_DATA = active_character_data()
 _ENGLISH_DISPLAY_NAME = _CHARACTER_DATA.personas["en"].identity.display_name
 _TRADITIONAL_DISPLAY_NAME = _CHARACTER_DATA.personas["zh-TW"].identity.display_name
 HALF_SIZE = (_RIG_MANIFEST.half_body_asset_canvas.width, _RIG_MANIFEST.half_body_asset_canvas.height)
@@ -281,7 +285,7 @@ def _reference_path(root: Path, view_id: str) -> Path:
     reference_name = _HALF_BODY_REFERENCE_FILES.get(view_id)
     if reference_name is not None:
         return root / CHARACTER_ASSET_PATHS["halfbody_root"] / reference_name
-    return root / POSE_ATLAS_RELATIVE_ROOT / f"{view_id}.png"
+    return root / pose_atlas_relative_root() / f"{view_id}.png"
 
 
 def _decode_registered_png(
@@ -673,7 +677,7 @@ class OpenAIOutfitDraftGenerator:
 
 def _protected_face_path(root: Path, view_id: str) -> Path:
     if view_id in POSE_ATLAS_SILHOUETTES:
-        return root / POSE_ATLAS_LAYERED_RELATIVE_ROOT / f"{view_id}_base.png"
+        return root / pose_atlas_layered_relative_root() / f"{view_id}_base.png"
     pose = _HALF_BODY_POSES.get(view_id, "front")
     return root / CHARACTER_ASSET_PATHS["halfbody_layers"] / f"{pose}_base.png"
 

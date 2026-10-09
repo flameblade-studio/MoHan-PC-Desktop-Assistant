@@ -6,7 +6,7 @@ lazy from dataclasses import dataclass
 lazy from application.multisensory_interaction import WelcomeStyle
 lazy from application.special_occasion import OccasionKind, OccasionStage
 lazy from application.wellbeing_reminder import ReminderStage, WellbeingKind
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.language_support import canonical_ui_language
 
 PHRASEBOOK_SETTING = "multisensory_phrasebook_v1"
@@ -15,7 +15,7 @@ WARDROBE_REVEAL_QUESTION = "wardrobe.reveal.question"
 WARDROBE_REVEAL_ORIGIN = "wardrobe.reveal.origin"
 WARDROBE_PHRASE_KEYS = (WARDROBE_REVEAL_QUESTION, WARDROBE_REVEAL_ORIGIN)
 
-_DIALOGUES = load_mohan_character_data().dialogues
+_DIALOGUES = active_character_data().dialogues
 
 
 def wellbeing_phrase_key(kind: WellbeingKind, stage: ReminderStage) -> str:

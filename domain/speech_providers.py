@@ -9,9 +9,9 @@ lazy from domain.contracts import (
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 
-_VOICE_PROFILE = load_mohan_character_data().voice
+_VOICE_PROFILE = active_character_data().voice
 
 SYSTEM_LOCAL_PROVIDER = "system-local"
 # Compatibility name retained for third-party imports. Its value is the new

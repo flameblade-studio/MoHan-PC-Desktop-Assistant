@@ -10,7 +10,12 @@ lazy from domain.character_pack.character_data import (
     canonical_character_locale,
     load_mohan_character_data,
 )
-lazy from domain.character_pack.character_data_models import CharacterRigManifest, VoiceProfile
+lazy from domain.character_pack.character_data_models import (
+    CharacterRigManifest,
+    ExpressionStateCatalog,
+    MohanCharacterData,
+    VoiceProfile,
+)
 lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_rig_data import load_rig_manifest
 lazy from domain.character_runtime_bindings import (
@@ -50,10 +55,10 @@ class BundledCharacterSource(
         self._runtime_bindings = load_character_runtime_bindings(
             self._character_root / "rig" / "runtime-bindings.json"
         )
-        expressions = load_expression_catalog(
+        self._expressions = load_expression_catalog(
             self._character_root / "expressions" / "state-catalog.json"
         )
-        if expressions.character_id != self._rig.character_id:
+        if self._expressions.character_id != self._rig.character_id:
             raise ValueError("Bundled character rig and expressions must identify the same character.")
 
     @property
@@ -79,6 +84,18 @@ class BundledCharacterSource(
     @property
     def voice_profile(self) -> VoiceProfile:
         return self._data.voice
+
+    @property
+    def character_data(self) -> MohanCharacterData:
+        return self._data
+
+    @property
+    def character_data_root(self) -> Path:
+        return self._character_root
+
+    @property
+    def expression_catalog(self) -> ExpressionStateCatalog:
+        return self._expressions
 
     @property
     def appearance_defaults(self) -> CharacterAppearanceDefaults:

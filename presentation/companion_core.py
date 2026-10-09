@@ -38,7 +38,7 @@ lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
 lazy from domain.constants import CHARACTER_LAYER_ROLES, POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
@@ -105,7 +105,7 @@ _LOGGER = logging.getLogger(__name__)
 # Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
 # legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
-_EXPRESSIONS = default_expression_catalog().emotion_to_expression
+_EXPRESSIONS = active_expression_catalog().emotion_to_expression
 
 
 class CompanionCoreMixin:

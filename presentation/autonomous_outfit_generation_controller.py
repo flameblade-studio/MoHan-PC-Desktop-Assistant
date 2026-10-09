@@ -24,7 +24,7 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_storage import WardrobeStorageGuard, WardrobeStoragePolicy
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )

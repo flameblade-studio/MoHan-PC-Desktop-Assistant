@@ -7,7 +7,7 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime, timedelta
 lazy from pathlib import Path
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.language_support import (
     LEGACY_AUTHOR_ORGANIZATION, LEGACY_TRANSCRIPTION_PROMPT, canonical_ui_language, localized_transcription_prompt,
 )
@@ -99,7 +99,7 @@ MODEL_DEFAULT_MIGRATIONS = (
     ),
 )
 LEGACY_PROFILE_DEFAULTS = frozendict({
-    **load_mohan_character_data().identity.legacy_defaults,
+    **active_character_data().identity.legacy_defaults,
     "onboarding_complete": True,
     "transcription_language": "zh",
     "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,

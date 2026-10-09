@@ -16,8 +16,8 @@ lazy from domain.character_pack.character_data_models import (
     VoiceProfile,
 )
 lazy from domain.character_pack.appearance_data import APPEARANCE_DEFAULTS_SCHEMA
-lazy from domain.character_expression_data import load_expression_catalog
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_expression_data_loader import load_expression_catalog
+lazy from domain.character_pack.character_data_loader import load_character_data
 lazy from domain.character_pack.models import (
     CharacterPackComponent,
     CharacterPackFile,
@@ -28,7 +28,7 @@ lazy from domain.character_pack.models import (
 )
 lazy from domain.character_pack.validation import DEFAULT_LIMITS, validate_character_pack
 lazy from domain.character_pose import canonical_view_id
-lazy from domain.character_rig_data import load_rig_manifest
+lazy from domain.character_rig_data_loader import load_rig_manifest
 lazy from domain.character_runtime_bindings import (
     CharacterRuntimeBindings,
     load_character_runtime_bindings,
@@ -193,8 +193,11 @@ class CharacterPackReader(
         self._validation_result = result
         self._manifest = manifest
         self._root = root
+        self._character_data_root = root.joinpath(*character_root.parts)
         self._records = records
         self._canonical_name = canonical_name
+        self._character_data = character_data
+        self._expression_catalog = expression_catalog
         self._identity = character_data.identity
         wake_word = str(character_data.identity.defaults["wake_word"])
         self._aliases = () if wake_word == canonical_name else (wake_word,)
@@ -248,6 +251,18 @@ class CharacterPackReader(
     @property
     def voice_profile(self) -> VoiceProfile:
         return self._voice_profile
+
+    @property
+    def character_data(self) -> MohanCharacterData:
+        return self._character_data
+
+    @property
+    def character_data_root(self) -> Path:
+        return self._character_data_root
+
+    @property
+    def expression_catalog(self) -> ExpressionStateCatalog:
+        return self._expression_catalog
 
     @property
     def appearance_defaults(self) -> CharacterAppearanceDefaults:
@@ -621,7 +636,7 @@ def _verify_component_files(
 
 def _load_character_data(root: Path, relative_root: str) -> MohanCharacterData:
     try:
-        return load_mohan_character_data(root)
+        return load_character_data(root)
     except (OSError, UnicodeError, ValueError) as error:
         raise CharacterPackReadError(
             "invalid_component",

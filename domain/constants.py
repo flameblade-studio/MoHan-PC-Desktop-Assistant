@@ -216,5 +216,5 @@ POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base-layered"
 # "indoor" fits every outfit profile, so nothing complains or changes clothes
 # based on observed weather data.
 # ---------------------------------------------------------------------------
-DEFAULT_WEATHER_TEMPERATURE_C: Final = 24.0
-DEFAULT_WEATHER_CONDITION: Final = "indoor"
+DEFAULT_WEATHER_TEMPERATURE_C: Final = _core_constants.DEFAULT_WEATHER_TEMPERATURE_C
+DEFAULT_WEATHER_CONDITION: Final = _core_constants.DEFAULT_WEATHER_CONDITION

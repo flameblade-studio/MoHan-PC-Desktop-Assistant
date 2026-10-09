@@ -26,7 +26,7 @@ lazy from domain.character_pack.character_data import (
     canonical_character_locale,
     load_mohan_character_data,
 )
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions
 lazy from domain.sensory_synesthesia import (
@@ -41,7 +41,7 @@ __all__ = ("DashboardConversationMixin", "classify_memory_text")
 MIN_CHAT_ZOOM_PERCENT = 60
 MAX_CHAT_ZOOM_PERCENT = 200
 _CHARACTER_DATA = load_mohan_character_data()
-_EXPRESSIONS = default_expression_catalog().emotion_to_expression
+_EXPRESSIONS = active_expression_catalog().emotion_to_expression
 _RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
 _REPLY_EXPRESSION_RULES = runtime_reply_expression_rules()
 _ZH_TW_IDENTITY = _CHARACTER_DATA.personas["zh-TW"].identity
