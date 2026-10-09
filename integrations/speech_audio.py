@@ -16,7 +16,7 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.lip_sync import (
     VISEME_CUES_PER_SECOND,
 )

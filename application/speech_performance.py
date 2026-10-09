@@ -5,7 +5,7 @@ lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 
 BOUNDARY_ESTIMATION_THRESHOLD = 0.32
 GESTURE_EMPHASIS_THRESHOLD = 0.42

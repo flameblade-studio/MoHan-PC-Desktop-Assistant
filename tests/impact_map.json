@@ -1198,6 +1198,7 @@
         "test_shyness.py",
         "test_silent_failures_and_audit_data.py",
         "test_somniloquy.py",
+        "test_soulforge_module_boundaries.py",
         "test_source_bound_cosmetic_identity.py",
         "test_source_bound_garment_visibility.py",
         "test_source_bound_integrate.py",
@@ -1646,6 +1647,7 @@
         "test_shy_gaze.py",
         "test_shyness.py",
         "test_somniloquy.py",
+        "test_soulforge_module_boundaries.py",
         "test_source_bound_garment_visibility.py",
         "test_source_bound_makeup.py",
         "test_speech_boundary.py",
@@ -2299,6 +2301,7 @@
         "test_service_status_localization.py",
         "test_shared_hand_region_provider.py",
         "test_silent_failures_and_audit_data.py",
+        "test_soulforge_module_boundaries.py",
         "test_special_occasion.py",
         "test_special_occasion_store.py",
         "test_speech_performance.py",
@@ -3462,6 +3465,7 @@
         "test_huapu.py",
         "test_layered_facade_cycles.py",
         "test_linkeyun_character_data.py",
+        "test_soulforge_module_boundaries.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -3645,7 +3649,8 @@
         "test_check_pose_atlas_release.py",
         "test_hand_asset_audit.py",
         "test_hand_asset_evidence.py",
-        "test_pose_atlas_manifest_builder.py"
+        "test_pose_atlas_manifest_builder.py",
+        "test_soulforge_module_boundaries.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4238,6 +4243,7 @@
         "test_preview_packaging.py",
         "test_release_automation.py",
         "test_sbom_validation.py",
+        "test_soulforge_module_boundaries.py",
         "test_swallowed_error_d04.py",
         "test_v312_release_consistency.py",
         "test_v4_development_version_consistency.py"
@@ -7516,11 +7522,20 @@
     },
     {
       "paths": [
-        "domain/pose_atlas_audit.py",
         "tools/build_pose_contact_sheet.py"
       ],
       "tests": [
         "test_pose_atlas_audit.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/pose_atlas_audit.py"
+      ],
+      "tests": [
+        "test_pose_atlas_audit.py",
+        "test_soulforge_module_boundaries.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -8000,6 +8015,15 @@
       ],
       "tests": [
         "test_shyness.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "docs/soulforge/module-boundary.json"
+      ],
+      "tests": [
+        "test_soulforge_module_boundaries.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

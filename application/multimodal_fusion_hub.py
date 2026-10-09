@@ -5,7 +5,7 @@ lazy from collections.abc import Callable, Mapping, Sequence
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.air_interaction import (
     AirHandSample,
     AirInteractionConfig,

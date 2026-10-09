@@ -8,7 +8,7 @@ lazy from itertools import pairwise
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
 lazy from domain.character_runtime_data import ArmSpec, default_rig_manifest
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 
 _RIG_MANIFEST = default_rig_manifest()
 if (
