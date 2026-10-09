@@ -6011,7 +6011,17 @@
     },
     {
       "paths": [
-        "docs/character-pack/lin-keyun-pack.lock.json",
+        "docs/character-pack/lin-keyun-pack.lock.json"
+      ],
+      "tests": [
+        "test_fetch_character_pack.py",
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "tools/fetch_character_pack.py"
       ],
       "tests": [
