@@ -5,6 +5,7 @@ lazy import json
 lazy import os
 lazy import shutil
 lazy import time
+lazy import zipfile
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
@@ -19,6 +20,8 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from application import service_container
 lazy from application.service_container import create_presentation_ports
 lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
+lazy from domain.outfit_pack_assets import OutfitPackError
+lazy from domain.outfit_pack_source_bound import parse_source_bound_expressions
 lazy from infrastructure.exasperated_candidate_assets import (
     APPROVED_SOURCE_SHA256,
     FORMAL_ASSET_RELATIVE_DIR,
@@ -37,6 +40,64 @@ MIN_SKIN_RED = 180
 
 def _app() -> None:
     _ = QApplication.instance() or QApplication([])
+
+
+@pytest.mark.parametrize("outside", [False, True])
+def test_portable_portrait_uses_its_own_mouth_bounds(tmp_path: Path, outside: bool) -> None:
+    """Shifted lips are accepted; a pixel at the old eye location is rejected."""
+    _app()
+    records = {}
+    with zipfile.ZipFile(tmp_path / "portrait.zip", "w") as archive:
+        for slot in ("portrait", "mid", "open", "round"):
+            path = tmp_path / f"{slot}.png"
+            rect = QRect(0, 0, 1254, 1254) if slot == "portrait" else QRect(580, 595, 50, 25)
+            if outside and slot == "open":
+                rect = QRect(510, 510, 1, 1)
+            digest = _png(path, QColor("#dcaf9b"), rect)
+            relative = f"assets/{slot}.png"
+            archive.writestr(relative, path.read_bytes())
+            records[slot] = {
+                "slot": slot, "path": relative, "sha256": digest,
+                "width": 1254, "height": 1254, "anchor": [0, 0], "z_order": 0,
+            }
+    digest = records["portrait"]["sha256"]
+    manifest = {
+        "schema": "mohan.outfit-source-bound-expression.v1",
+        "expression": "exasperated_front",
+        "silhouette": "front-exasperated",
+        "approved_source_sha256": digest,
+        "mouth_bounds": [573, 574, 85, 67],
+        "selection_binding": {
+            category: {"item_id": "item", "variant_id": "variant"}
+            for category in ("garment", "hairstyle")
+        },
+        "parts": {"portrait": records["portrait"]},
+        "mouths": {key: records[key] for key in ("mid", "open", "round")},
+        "receipt": {
+            "schema": "mohan.outfit-source-bound-expression-receipt.v1",
+            "owner_approved": True,
+            "approved_source_sha256": digest,
+            "installed_files_sha256": {entry["path"]: entry["sha256"] for entry in records.values()},
+            "mouth_source_sha256": {key: records[key]["sha256"] for key in ("mid", "open", "round")},
+            "blink": "none",
+        },
+    }
+    with zipfile.ZipFile(tmp_path / "portrait.zip") as archive:
+        names = set(archive.namelist())
+        if outside:
+            with pytest.raises(OutfitPackError, match="alpha escapes"):
+                parse_source_bound_expressions([manifest], archive, names)
+        else:
+            parsed = parse_source_bound_expressions([manifest], archive, names)
+            assert parsed["exasperated_front"].mouth_bounds == (573, 574, 85, 67)
+        for invalid in (
+            [0, 0, 1254, 1254], [-1, 574, 85, 67], [1200, 574, 85, 67],
+            [573, 1200, 85, 67], [573, 574, 0, 67], [573, 574, 85, -1],
+            [573, 574, 85, True], [573.0, 574, 85, 67], [573, 574, 85], None,
+        ):
+            manifest["mouth_bounds"] = invalid
+            with pytest.raises(OutfitPackError, match="mouth bounds"):
+                parse_source_bound_expressions([manifest], archive, names)
 
 
 def _png(path: Path, color: QColor | None, rect: QRect) -> str:

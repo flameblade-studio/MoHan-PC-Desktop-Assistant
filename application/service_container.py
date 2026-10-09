@@ -86,7 +86,10 @@ lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
-lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.layered_face_renderer import (
+    LayeredParametricFaceRenderer,
+    OutfitSourceBoundExpressionProvider,
+)
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
@@ -411,11 +414,18 @@ def create_presentation_ports() -> PresentationPorts:
             candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
         elif configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
-        return LayeredParametricFaceRenderer(
+        renderer = LayeredParametricFaceRenderer(
             outfit_overlay=outfit_overlay_factory(),
             exasperated_candidate_dir=candidate_dir,
             candidate_appearance_overlay=candidate_appearance,
         )
+        renderer.bind_source_bound_expression_provider(
+            OutfitSourceBoundExpressionProvider(
+                presentation_contracts.default_data_dir() / "outfits",
+                official_pack_root=official_pack_root,
+            )
+        )
+        return renderer
 
     return PresentationPorts(
         ai_worker_factory=_create_ai_worker,

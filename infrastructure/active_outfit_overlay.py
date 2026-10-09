@@ -102,12 +102,16 @@ class ActiveOutfitOverlay(
         self._phase_layers_by_view: dict[OutfitLayerCacheKey, Sequence[Layer]] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
+        self._gesture_expression_feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
         self._makeup_exclusion_by_view: dict[tuple[str, str], QRegion] = {}
         self._core_hand_overlays_by_view: dict[str, Sequence[Layer]] = {}
         self._core_body_overlays_by_view: dict[str, Sequence[Layer]] = {}
         self._official_silhouettes_by_view: dict[str, QRegion | None] = {}
         self._official_replacement_masks_by_view: dict[str, QRegion | None] = {}
+        self._native_head_regions_by_view: dict[str, QRegion] = {}
+        self._native_identity_regions_by_view: dict[str, QRegion] = {}
+        self._generic_base_clear_by_view: dict[str, tuple[QRegion | None, bool]] = {}
         self._garment_active_cache: bool | None = None
         self._official_outfit_active_cache: bool | None = None
         self._safe_regions = None
@@ -555,6 +559,7 @@ class ActiveOutfitOverlay(
         self._layers_by_view.clear()
         self._layers_by_view_without_makeup_slots.clear()
         self._phase_layers_by_view.clear()
+        self._generic_base_clear_by_view.clear()
         getattr(self, "_reviewed_layer_counts", {}).clear()
         getattr(self, "_reviewed_native_frames", {}).clear()
         getattr(self, "_reviewed_native_eyes", {}).clear()
@@ -741,6 +746,8 @@ class ActiveOutfitOverlay(
         allowed = self._hand_allowed_region(allowed, category, variant, view_id)
         layers: list[tuple[int, Layer]] = []
         for declaration in declarations:
+            if declaration.clears_base:
+                continue
             _encoded, image = self._decoded_layer(archive, declaration)
             if (
                 declaration.anchor_x < 0
@@ -754,7 +761,7 @@ class ActiveOutfitOverlay(
                 pixmap,
                 declaration.anchor_x,
                 declaration.anchor_y,
-                forbidden,
+                QRegion() if category == "hairstyle" else forbidden,
                 allow_empty=category != "garment",
             )
             if not has_content:

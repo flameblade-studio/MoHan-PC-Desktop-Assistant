@@ -50,23 +50,10 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
     "application/background_agents.py": frozenset({
         ("from", "domain.python315_concurrency", ("Future", "ThreadPoolExecutor")),
     }),
-    # ``domain.outfit_pack`` re-exports the archive/format primitives and the
-    # error classes it moved into ``domain.outfit_pack_assets``; a lazy import
-    # of a lazily imported name hands other modules the unresolved proxy, so
-    # this single re-export stays eager on purpose.
+    # ``domain.outfit_pack`` re-exports the archive/format primitives; a lazy
+    # import of a lazily imported name hands other modules the unresolved
+    # proxy, so this single re-export stays eager on purpose.
     "domain/outfit_pack.py": frozenset({
-        (
-            "from",
-            "domain.outfit_pack_assets",
-            (
-                "ASSET_PATH",
-                "MANIFEST",
-                "MAX_IMAGE_DIMENSION",
-                "IncompatibleBodyProfileError",
-                "OutfitPackError",
-                "_dimensions",
-            ),
-        ),
         (
             "from",
             "domain.outfit_pack_archive",
@@ -84,6 +71,13 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             "from",
             "infrastructure.layered_face_painting",
             ("MAX_CACHED_MASK_BOUNDS",),
+        ),
+        # A lazy consumer of a lazy re-export receives an uncallable proxy on
+        # Python 3.15rc1; the presentation factory requires the actual class.
+        (
+            "from",
+            "infrastructure.outfit_source_bound_expressions",
+            ("OutfitSourceBoundExpressionProvider",),
         ),
     }),
     # ``infrastructure.layered_full_body_renderer`` re-exports the speech

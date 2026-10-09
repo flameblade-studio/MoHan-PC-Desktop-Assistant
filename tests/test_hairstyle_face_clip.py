@@ -22,10 +22,16 @@ sys.path.insert(0, str(ROOT))
 
 lazy import numpy as np
 lazy import pytest
-lazy from PySide6.QtGui import QImage, QPixmap, QRegion
+lazy from PySide6.QtCore import QPoint, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, OutfitPackError, inspect_outfit_pack
+lazy from domain.outfit_pack import (
+    OFFICIAL_PACK_ROOT,
+    REQUIRED_SILHOUETTES,
+    OutfitPackError,
+    inspect_outfit_pack,
+)
 lazy from domain.outfit_pack_makeup import (
     FEATURE_CORE_LAYERS,
     HAIRSTYLE_FEATURE_CORE_DILATION_PX,
@@ -190,7 +196,10 @@ def test_hair_alpha_has_no_straight_cut_inside_the_face_box(tmp_path: Path, silh
     assert max(runtime_runs) <= MAX_STRAIGHT_EDGE_RUN, runtime_runs
 
 
-@pytest.mark.parametrize("silhouette", sorted(HALF_BODY_RIGS))
+@pytest.mark.parametrize(
+    "silhouette",
+    sorted(set(HALF_BODY_RIGS).intersection(REQUIRED_SILHOUETTES)),
+)
 def test_sealed_hair_stays_out_of_the_dilated_feature_core(silhouette: str) -> None:
     """The assembler's crop and the runtime's reject rule agree on the feature core."""
     _app()
@@ -202,7 +211,7 @@ def test_sealed_hair_stays_out_of_the_dilated_feature_core(silhouette: str) -> N
 
 def test_body_outline_is_optional_but_corruption_fails_closed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _app()
-    overlay = ActiveOutfitOverlay(tmp_path / "store", ROOT)
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
     monkeypatch.setattr(overlay, "_protected_face_path", lambda _view: tmp_path / "front_base.png")
     assert overlay._body_outline_region(STRAND_SILHOUETTE) is None
     path = tmp_path / "front_body_outline.png"
@@ -211,17 +220,86 @@ def test_body_outline_is_optional_but_corruption_fails_closed(tmp_path: Path, mo
         overlay._body_outline_region(STRAND_SILHOUETTE)
 
 
+def test_half_body_outline_falls_back_to_opaque_source_alpha(tmp_path: Path) -> None:
+    _app()
+    frames = tmp_path / "assets" / "expressions" / "complete-expressions" / "frames"
+    frames.mkdir(parents=True)
+    source = QImage(1254, 1254, QImage.Format_RGBA8888)
+    source.fill(Qt.transparent)
+    source.setPixelColor(100, 100, QColor(20, 20, 20, 127))
+    source.setPixelColor(101, 100, QColor(20, 20, 20, 128))
+    assert source.save(str(frames / f"{STRAND_SILHOUETTE}-neutral-rest.rgba.png"), "PNG")
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
+
+    region = overlay._body_outline_region(STRAND_SILHOUETTE)
+
+    assert region is not None
+    assert not region.contains(QPoint(100, 100))
+    assert region.contains(QPoint(101, 100))
+
+
+def test_portrait_hair_feature_clip_uses_source_face_span(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    frames = tmp_path / "assets" / "expressions" / "complete-expressions" / "frames"
+    frames.mkdir(parents=True)
+    source = QImage(1254, 1254, QImage.Format_RGBA8888)
+    source.fill(Qt.transparent)
+    source.setPixelColor(100, 100, QColor(198, 151, 126, 255))
+    source.setPixelColor(120, 100, QColor(198, 151, 126, 255))
+    assert source.save(str(frames / f"{STRAND_SILHOUETTE}-neutral-rest.rgba.png"), "PNG")
+    overlay = ActiveOutfitOverlay(tmp_path / "store", tmp_path)
+    monkeypatch.setattr(
+        overlay,
+        "_feature_region",
+        lambda _view: QRegion(90, 100, 31, 1),
+    )
+
+    feature = overlay._hairstyle_feature_region(STRAND_SILHOUETTE)
+
+    assert not feature.contains(QPoint(99, 100))
+    assert feature.contains(QPoint(100, 100))
+    assert feature.contains(QPoint(110, 100))
+    assert feature.contains(QPoint(120, 100))
+
+
+def test_hair_without_body_outline_keeps_authored_strands(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    overlay = ActiveOutfitOverlay(tmp_path / "store", ROOT)
+    monkeypatch.setattr(overlay, "_body_outline_region", lambda _view: None)
+    image = QImage(1254, 1254, QImage.Format_ARGB32)
+    image.fill(0xFF101010)
+    pixmap = QPixmap.fromImage(image)
+
+    result = overlay._feathered_hair_layer(
+        pixmap, 0, 0, STRAND_SILHOUETTE,
+    )
+
+    assert result.cacheKey() == pixmap.cacheKey()
+
+
 def test_hair_feather_does_not_reveal_desktop_outside_body(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     _app()
     overlay = ActiveOutfitOverlay(tmp_path / "store", ROOT)
-    monkeypatch.setattr(overlay, "_feature_region", lambda _view: QRegion(100, 100, 1, 1))
+    monkeypatch.setattr(
+        overlay,
+        "_hairstyle_feature_region",
+        lambda _view: QRegion(100, 100, 1, 1),
+    )
     monkeypatch.setattr(overlay, "_body_outline_region", lambda _view: QRegion(100, 0, 1154, 1254))
     image = QImage(1254, 1254, QImage.Format_ARGB32)
     image.fill(0xFF101010)
     result = _rgba(overlay._feathered_hair_layer(QPixmap.fromImage(image), 0, 0, STRAND_SILHOUETTE).toImage())
     assert result[100, 90, 3] == OPAQUE
     assert 0 < result[100, 110, 3] < OPAQUE
-    assert result[100, 92:109, 3].max() == 0
+    assert result[100, 92:100, 3].min() == OPAQUE
+    assert result[100, 100, 3] == 0
+    assert result[100, 101:109, 3].max() == 0
     assert result[100, 80, 3] == OPAQUE
 
 
@@ -234,7 +312,7 @@ def test_runtime_hair_mask_is_zero_in_the_core_and_feathers_outward(tmp_path: Pa
     alpha_image, bounds = mask
     multiplier = _rgba(alpha_image)[:, :, 3]
     shape = (1254, 1254)
-    core = _region_mask(_rig_region(silhouette, FEATURE_CORE_LAYERS), shape)
+    core = _region_mask(overlay._hairstyle_feature_region(silhouette), shape)
     dilation, feather = HAIRSTYLE_FEATURE_CORE_DILATION_PX, HAIRSTYLE_FEATURE_CORE_FEATHER_PX
     rings = [dilate(core, dilation)]
     for _step in range(feather):

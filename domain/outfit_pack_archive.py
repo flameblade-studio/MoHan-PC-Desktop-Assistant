@@ -27,7 +27,7 @@ AUTHORING_VERSION = 2
 MAX_ARCHIVE_BYTES = 1024 * 1024 * 1024
 MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 MAX_MEMBERS = 2048
-OPTIONAL_MANIFEST_KEYS = frozenset({"makeup"})
+OPTIONAL_MANIFEST_KEYS = frozenset({"makeup", "source_bound_expressions"})
 MANIFEST_KEYS = frozenset({
     "format", "version", "id", "pack_version", "app_range", "display_names",
     "compatible_body_profile", "source", "authoring", "looks", "hairstyles",
@@ -126,9 +126,13 @@ def declared_asset_paths(items: list[AppearanceItem]) -> list[str]:
     )]
 
 
-def validate_declared_assets(items: list[AppearanceItem], names: set[str]) -> None:
+def validate_declared_assets(
+    items: list[AppearanceItem],
+    names: set[str],
+    extra_paths: tuple[str, ...] = (),
+) -> None:
     """Require every archive asset to have exactly one manifest declaration."""
-    paths = declared_asset_paths(items)
+    paths = [*declared_asset_paths(items), *extra_paths]
     if len(paths) != len(set(paths)) or names != {MANIFEST, *paths}:
         raise OutfitPackError("Every asset must be declared exactly once.")
 

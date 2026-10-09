@@ -20,7 +20,7 @@ lazy from tools.check_four_language_docs import audit_fragment, audit_text
 ROOT = Path(__file__).resolve().parents[1]
 MASTER_COUNT = 24
 CORE_COUNT = 600
-PACK_COUNT = 2
+PACK_COUNT = 3
 DERIVATIVE_COUNT = 234
 PERSISTED_IDENTIFIER_FILE_COUNT = 2
 DERIVATIVE_COUNTS = {
@@ -138,6 +138,12 @@ def test_formal_counts_and_archive_separation(inventory: dict[str, Any]) -> None
     assert taskbar["category"] == "ui_character_icon_build_output"
     assert "mohan-halfbody.ico" in taskbar["reason"]
     assert counts["appearance_pack"] == PACK_COUNT
+    linkeyun_pack = by_path[
+        "assets/characters/lin-keyun/official-packs/"
+        "linkeyun.official.modern-office.mohan-outfit"
+    ]
+    assert linkeyun_pack["scope"] == "runtime_data"
+    assert linkeyun_pack["readers"][0]["path"] == "tools/build_character_pack.py"
     assert any("hairstyles" in row.get("appearance_categories", []) for row in inventory["files"])
     assert any("headwear" in row.get("appearance_categories", []) for row in inventory["files"])
     assert {p.relative_to(ROOT).as_posix() for p in (ROOT / "assets").rglob("*") if p.is_file()} <= set(by_path)

@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import json
 lazy import re
 lazy import string
+lazy import zipfile
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path
 lazy from typing import Any
@@ -20,6 +21,10 @@ LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 APPEARANCE_DEFAULTS_PATH = "appearance/defaults.json"
 APPEARANCE_DEFAULTS_REPOSITORY_PATH = (
     "assets/characters/lin-keyun/appearance/defaults.json"
+)
+OFFICIAL_OUTFIT_REPOSITORY_PATH = (
+    "assets/characters/lin-keyun/official-packs/"
+    "linkeyun.official.modern-office.mohan-outfit"
 )
 RUNTIME_JSON_FILES = (
     "dialogue/en.json",
@@ -43,6 +48,7 @@ EXPECTED_FILES = frozenset(
     {
         *RUNTIME_JSON_FILES,
         APPEARANCE_DEFAULTS_PATH,
+        "official-packs/linkeyun.official.modern-office.mohan-outfit",
         "pack-source.json",
         "README.md",
     }
@@ -292,22 +298,18 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     mohan_source = _load(MOHAN_ROOT, "pack-source.json")
     assert source["pack_id"] == "flameblade.lin-keyun"
     assert source["character_id"] == "lin-keyun"
-    assert source["pack_version"] == "1.0.0"
+    assert source["pack_version"] == "1.0.2"
     assert source["distribution"]["access"] == "public"
     assert source["licenses"] == mohan_source["licenses"]
-    assert source["dependencies"] == [
-        {
-            "id": "linkeyun.official.modern-office",
-            "kind": "outfit_pack",
-            "min_version": "1.0.0",
-            "max_version_exclusive": "2.0.0",
-            "required": True,
-        }
-    ]
+    assert "dependencies" not in source
     component_ids = {component["id"] for component in source["components"]}
     assert "linkeyun.appearance-defaults" in component_ids
+    assert "linkeyun.official.modern-office" in component_ids
     assert "mohan.makeup.builtin" in component_ids
     assert "mohan.official.blue-white-hanfu" not in component_ids
+    with zipfile.ZipFile(ROOT / OFFICIAL_OUTFIT_REPOSITORY_PATH) as archive:
+        outfit_manifest = json.loads(archive.read("manifest.json"))
+    assert outfit_manifest["source"]["license"] == "CC BY-NC-ND 4.0"
 
     readme = (LIN_KEYUN_ROOT / "README.md").read_text(encoding="utf-8")
     for identifier in (
@@ -336,18 +338,22 @@ def test_linkeyun_pack_builds_validates_and_reads_without_mohan_data(
     assert reader.manifest.pack_id == "flameblade.lin-keyun"
     assert reader.manifest.character_id == "lin-keyun"
     assert reader.manifest.access == "public"
-    assert reader.manifest.dependencies[0].dependency_id == (
-        "linkeyun.official.modern-office"
-    )
+    assert reader.manifest.dependencies == ()
     declared = {record.path for record in reader.manifest.files}
     assert any(path.startswith("assets/characters/lin-keyun/") for path in declared)
     assert not any(path.startswith("assets/characters/mohan/") for path in declared)
     assert APPEARANCE_DEFAULTS_REPOSITORY_PATH in declared
+    assert OFFICIAL_OUTFIT_REPOSITORY_PATH in declared
     appearance_record = next(
         record for record in reader.manifest.files
         if record.path == APPEARANCE_DEFAULTS_REPOSITORY_PATH
     )
     assert appearance_record.license_component == "program_data"
+    outfit_record = next(
+        record for record in reader.manifest.files
+        if record.path == OFFICIAL_OUTFIT_REPOSITORY_PATH
+    )
+    assert outfit_record.license_component == "character_art"
     for relative in RUNTIME_JSON_FILES:
         assert f"assets/characters/lin-keyun/{relative}" in declared
     assert reader.appearance_defaults.native_headwear is None

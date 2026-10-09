@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-lazy import hashlib
 lazy import json
 lazy import os
 lazy import re
@@ -22,28 +21,53 @@ EnsembleSelection = _outfit_pack_models.EnsembleSelection
 InstalledEnsemble = _outfit_pack_models.InstalledEnsemble
 InstalledSelection = _outfit_pack_models.InstalledSelection
 OutfitPack = _outfit_pack_models.OutfitPack
+SourceBoundExpression = _outfit_pack_models.SourceBoundExpression
+SourceBoundSelection = _outfit_pack_models.SourceBoundSelection
 PoseAppearanceResolution = _outfit_pack_models.PoseAppearanceResolution
 RemovalResult = _outfit_pack_models.RemovalResult
 SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.makeup_mouth_states import parse_mouth_states
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
-lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
-# Eager on purpose: these names are re-exported (``from domain.outfit_pack import
-# OutfitPackError`` is used across the layers) and a lazy import of a lazily
-# imported name exposes the lazy module proxy to the caller; import the class directly for the class API.
-from domain.outfit_pack_assets import (
-    ASSET_PATH,
-    MANIFEST as MANIFEST,
-    MAX_IMAGE_DIMENSION,
-    IncompatibleBodyProfileError,
-    OutfitPackError,
-    _dimensions,
+# Resolve facade exports through module attributes so callers receive concrete
+# constants, classes, and functions without adding more eager-import exceptions.
+lazy from domain import outfit_pack_assets as _outfit_pack_assets
+FOUNDATION_SLOT = _outfit_pack_assets.FOUNDATION_SLOT
+GARMENT_SLOTS = _outfit_pack_assets.GARMENT_SLOTS
+MANIFEST = _outfit_pack_assets.MANIFEST
+MAKEUP_SLOTS = _outfit_pack_assets.MAKEUP_SLOTS
+MAKEUP_SLOTS_V2 = _outfit_pack_assets.MAKEUP_SLOTS_V2
+MAX_Z_ORDER = _outfit_pack_assets.MAX_Z_ORDER
+MIN_Z_ORDER = _outfit_pack_assets.MIN_Z_ORDER
+IncompatibleBodyProfileError = _outfit_pack_assets.IncompatibleBodyProfileError
+OutfitPackError = _outfit_pack_assets.OutfitPackError
+_parse_appearance_asset = _outfit_pack_assets.parse_appearance_asset
+_asset = _parse_appearance_asset
+
+lazy from domain import outfit_pack_pose_assets as _outfit_pack_pose_assets
+BASE_SILHOUETTES = _outfit_pack_pose_assets.BASE_SILHOUETTES
+BATCH2_MAKEUP_SILHOUETTES = _outfit_pack_pose_assets.BATCH2_MAKEUP_SILHOUETTES
+COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = (
+    _outfit_pack_pose_assets.COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
 )
-lazy from domain.outfit_pack_assets import validate_pose_assets
+EXPRESSION_SILHOUETTE_ALIASES = (
+    _outfit_pack_pose_assets.EXPRESSION_SILHOUETTE_ALIASES
+)
+GESTURE_SILHOUETTES = _outfit_pack_pose_assets.GESTURE_SILHOUETTES
+GLANCE_MAKEUP_SILHOUETTES = _outfit_pack_pose_assets.GLANCE_MAKEUP_SILHOUETTES
+MAKEUP_CANVASES = _outfit_pack_pose_assets.MAKEUP_CANVASES
+OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES = (
+    _outfit_pack_pose_assets.OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES
+)
+OPTIONAL_MAKEUP_SILHOUETTES = _outfit_pack_pose_assets.OPTIONAL_MAKEUP_SILHOUETTES
+POSE_ATLAS_SILHOUETTES = _outfit_pack_pose_assets.POSE_ATLAS_SILHOUETTES
+REQUIRED_SILHOUETTES = _outfit_pack_pose_assets.REQUIRED_SILHOUETTES
+SUPPORTED_SILHOUETTES = _outfit_pack_pose_assets.SUPPORTED_SILHOUETTES
+_appearance_pose_assets = _outfit_pack_pose_assets.parse_appearance_pose_assets
+_makeup_pose_assets = _outfit_pack_pose_assets.parse_makeup_pose_assets
+_partial_pose_assets = _outfit_pack_pose_assets.parse_partial_pose_assets
+_pose_assets = _outfit_pack_pose_assets.parse_pose_assets
 lazy from domain.outfit_pack_archive import (
     AUTHORING_TEMPLATE,
     AUTHORING_VERSION,
@@ -55,6 +79,13 @@ lazy from domain.outfit_pack_archive import (
     source_declaration,
     validate_declared_assets,
 )
+lazy from domain.outfit_pack_source_bound import (
+    MANIFEST_KEY as SOURCE_BOUND_MANIFEST_KEY,
+    SILHOUETTE as SOURCE_BOUND_SILHOUETTE,
+    parse_source_bound_expressions,
+    source_bound_asset_paths,
+    validate_source_bound_bindings,
+)
 from domain.outfit_pack_archive import (
     BODY_PROFILE_ID,
     BODY_PROFILE_VERSION,
@@ -63,29 +94,12 @@ from domain.outfit_pack_archive import (
     declared_asset_paths as _archive_declared_asset_paths,
 )
 _declared_asset_paths = _archive_declared_asset_paths
-_RIG_MANIFEST = default_rig_manifest()
-BASE_SILHOUETTES = tuple(_RIG_MANIFEST.pose_silhouettes.values())
-GESTURE_SILHOUETTES = tuple(_RIG_MANIFEST.gesture_silhouettes.values())
-POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
-REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
-SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-# Optional makeup-only silhouettes share the cheek canvas but never become required garment/body views.
-GLANCE_MAKEUP_SILHOUETTES = tuple(f"cheek-{CHARACTER_EXPRESSION_ROLES['side_gaze']}{suffix}" for suffix in ("", "-half", "-closed"))
-BATCH2_MAKEUP_SILHOUETTES = tuple(f"cheek-{CHARACTER_EXPRESSION_ROLES[role]}{suffix}" for role in ("noticed", "happiness", "worry", "reminder") for suffix in ("", "-half", "-closed"))
-COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = GLANCE_MAKEUP_SILHOUETTES + BATCH2_MAKEUP_SILHOUETTES
-OPTIONAL_MAKEUP_SILHOUETTES = COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
-EXPRESSION_SILHOUETTE_ALIASES = frozendict({**_RIG_MANIFEST.pose_silhouettes, CHARACTER_EXPRESSION_ROLES["protection"]: _RIG_MANIFEST.pose_silhouettes["front"]})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
 })
 BODY_REGIONS = ("neck", "shoulder-left", "shoulder-right", "arm-left", "arm-right", "torso", "leg-left", "leg-right")
 VISIBILITY = frozenset({"visible", "covered"})
 FABRIC_BEHAVIORS = frozenset({"structured", "draped", "stretch", "loose"})
-GARMENT_SLOTS = frozenset({
-    "bodice", "outerwear", "sleeve-left", "sleeve-right", "skirt", "trousers",
-    "legwear-left", "legwear-right", "swimwear", "garment-occluder",
-})
-MAKEUP_OCCLUDER_SLOTS = GARMENT_SLOTS | {"headwear"}
 HAIR_SLOTS = frozenset({"back", "front", "side-left", "side-right", "bangs", "bun", "ponytail"})
 REQUIRED_HAIR_SLOTS = frozenset({"back", "front"})
 HEAD_ATTACHMENTS = frozenset({"crown", "temple-left", "temple-right", "ear-left", "ear-right", "back-head"})
@@ -94,16 +108,6 @@ ACCESSORY_ASSET_SLOTS = frozendict({
     "weapon": frozenset({"weapon", "sheath"}), "handheld": frozenset({"handheld"}),
     "jewelry": frozenset({"jewelry"}), "foreground-effect": frozenset({"foreground-effect"}),
 })
-# Makeup is the one category that legitimately paints the face: legacy packs
-# provide three full-canvas RGBA layers per silhouette.  The opt-in
-# ``foundation_silhouettes`` marker adds a fourth, independent full-canvas skin
-# layer for only the silhouettes listed by that marker.  Both generations are
-# composited above bare skin, clipped to their per-silhouette safe region and
-# scaled by the user's intensity.
-MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
-FOUNDATION_SLOT = "foundation"
-MAKEUP_SLOTS_V2 = frozenset((*MAKEUP_SLOTS, FOUNDATION_SLOT))
-MAKEUP_CANVASES = frozendict({"full-body": (_RIG_MANIFEST.full_body_canvas.width, _RIG_MANIFEST.full_body_canvas.height), "half-body": (_RIG_MANIFEST.half_body_asset_canvas.width, _RIG_MANIFEST.half_body_asset_canvas.height)})
 # Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
 BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
 BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
@@ -125,20 +129,8 @@ THERMAL_BANDS = frozenset({"hot", "warm", "mild", "cool", "cold"})
 WEATHER_TAGS = frozenset({"clear", "cloudy", "rain", "storm", "snow", "windy", "indoor"})
 MOOD_TAGS = frozenset({"calm", "cheerful", "affectionate", "reserved", "upset", "focused"})
 OCCASION_TAGS = frozenset({"everyday", "work", "formal", "holiday", "birthday", "christmas", "valentines"})
-MIN_ANCHOR_COORDINATE = -4096
-MAX_ANCHOR_COORDINATE = 4096
-MIN_Z_ORDER = -100
-MAX_Z_ORDER = 100
 MAX_NAME_LENGTH = 80
-ANCHOR_DIMENSIONS = 2
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
-SHA256 = re.compile(r"[0-9a-f]{64}\Z")
-PROTECTED_TERMS = frozenset({
-    "face", "eye", "eyes", "mouth", "lip", "skin", "identity", "skull",
-    "body-skin", "core-body", "body-contour", "bust-geometry", "torso-geometry",
-})
-# Makeup legitimately names eyes and lips; every other identity term stays banned.
-MAKEUP_PATH_TERMS = PROTECTED_TERMS - frozenset({"eye", "eyes", "lip"})
 
 
 def official_pose_template() -> frozendict[str, object]:
@@ -158,11 +150,20 @@ def resolve_variant_for_view(
 ) -> PoseAppearanceResolution:
     """Resolve the exact authored view while preserving the selected outfit."""
 
-    if view_id not in REQUIRED_SILHOUETTES and view_id not in OPTIONAL_MAKEUP_SILHOUETTES:
+    if (
+        view_id not in REQUIRED_SILHOUETTES
+        and view_id not in OPTIONAL_MAKEUP_SILHOUETTES
+        and view_id not in OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES
+    ):
         raise OutfitPackError("Use a recognized appearance view.")
     try:
         assets = variant.poses[view_id]
     except KeyError:
+        if (
+            set(variant.poses) == set(POSE_ATLAS_SILHOUETTES)
+            and view_id not in POSE_ATLAS_SILHOUETTES
+        ):
+            return PoseAppearanceResolution(view_id, None, (), False)
         raise OutfitPackError("Provide the required view for the selected outfit.") from None
     return PoseAppearanceResolution(
         view_id,
@@ -187,139 +188,46 @@ def _identifier(value: object, label: str) -> str:
     return value
 
 
-def _asset(entry: object, allowed_slots: frozenset[str], archive: zipfile.ZipFile, names: set[str]) -> AppearanceAsset:
-    required = {"slot", "path", "sha256", "width", "height", "anchor", "z_order"}
-    if not isinstance(entry, dict) or not required <= set(entry) or set(entry) - required - {"occludes_makeup"}:
-        raise OutfitPackError("Provide a supported asset declaration.")
-    slot, path = entry["slot"], entry["path"]
-    if not isinstance(slot, str) or slot not in allowed_slots or not isinstance(path, str) or not ASSET_PATH.fullmatch(path) or path not in names:
-        raise OutfitPackError("Use a recognized slot or asset path.")
-    occludes_makeup = entry.get("occludes_makeup", False)
-    if not isinstance(occludes_makeup, bool) or ("occludes_makeup" in entry and slot not in MAKEUP_OCCLUDER_SLOTS):
-        raise OutfitPackError("Makeup occlusion must be a boolean on a garment asset or headwear asset.")
-    screened, terms = (path, MAKEUP_PATH_TERMS) if slot in MAKEUP_SLOTS_V2 else (f"{slot}/{path}", PROTECTED_TERMS)
-    if any(term in screened.lower() for term in terms):
-        raise OutfitPackError("Core identity, skin and geometry remain protected.")
-    anchor = entry["anchor"]
-    values = (entry["width"], entry["height"], entry["z_order"])
-    if not isinstance(entry["sha256"], str) or not SHA256.fullmatch(entry["sha256"]) or not isinstance(anchor, list) or len(anchor) != ANCHOR_DIMENSIONS:
-        raise OutfitPackError("Provide a supported hash or anchor.")
-    if any(not isinstance(value, int) or isinstance(value, bool) for value in (*values, *anchor)):
-        raise OutfitPackError("Provide a supported asset geometry.")
-    width, height, z_order = values
-    if not (1 <= width <= MAX_IMAGE_DIMENSION and 1 <= height <= MAX_IMAGE_DIMENSION and MIN_ANCHOR_COORDINATE <= anchor[0] <= MAX_ANCHOR_COORDINATE and MIN_ANCHOR_COORDINATE <= anchor[1] <= MAX_ANCHOR_COORDINATE and MIN_Z_ORDER <= z_order <= MAX_Z_ORDER):
-        raise OutfitPackError("Asset geometry is outside the allowed range.")
-    data = archive.read(path)
-    if hashlib.sha256(data).hexdigest() != entry["sha256"] or _dimensions(data, Path(path).suffix) != (width, height):
-        raise OutfitPackError(
-            "Asset integrity check requires attention; retry the operation.",
-            reason="manifest_asset_hash_mismatch",
-            asset_path=path,
-        )
-    return AppearanceAsset(slot, path, entry["sha256"], width, height, anchor[0], anchor[1], z_order, occludes_makeup)
-
-
-def _pose_keys(poses: object) -> tuple[str, ...]:
-    if not isinstance(poses, dict):
-        raise OutfitPackError("Every required silhouette must be declared.")
-    keys = set(poses)
-    required = set(REQUIRED_SILHOUETTES)
-    if keys != required:
-        missing = sorted(required - keys)
-        unexpected = sorted(keys - required)
-        details = []
-        if missing:
-            details.append(f"missing: {', '.join(missing)}")
-        if unexpected:
-            details.append(f"unexpected: {', '.join(unexpected)}")
-        raise OutfitPackError(
-            "Every appearance variant requires the complete v2 view set ("
-            + "; ".join(details)
-            + ")."
-        )
-    return SUPPORTED_SILHOUETTES
-
-
-def _pose_assets(poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False) -> frozendict[str, tuple[AppearanceAsset, ...]]:
-    silhouettes = _pose_keys(poses)
-    assert isinstance(poses, dict)
-    parsed = {}
-    for silhouette in silhouettes:
-        entries = poses[silhouette]
-        if not isinstance(entries, list) or not entries:
-            raise OutfitPackError("Every silhouette requires assets.")
-        assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
-        canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
-        validate_pose_assets(assets, archive, canvas, require_visible=slots == GARMENT_SLOTS, full_canvas=full_canvas)
-        if len({asset.slot for asset in assets}) != len(assets):
-            raise OutfitPackError("Duplicate slot in silhouette.")
-        parsed[silhouette] = assets
-    return frozendict(parsed)
-
-
-def _partial_pose_assets(
-    poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False,
-) -> frozendict[str, tuple[AppearanceAsset, ...]]:
-    """Like ``_pose_assets`` but for a declaration that legitimately covers only
-    SOME silhouettes (mouth_states: only the full-body views with an authored
-    speaking mouth, never the half-body gesture poses or the ±90-and-beyond
-    yaw views that have no viseme rendering at all)."""
-    if not isinstance(poses, dict):
-        raise OutfitPackError("Every declared mouth-state silhouette must use a supported view.")
-    if not set(poses).issubset(REQUIRED_SILHOUETTES + OPTIONAL_MAKEUP_SILHOUETTES):
-        raise OutfitPackError("Mouth state declares an unsupported silhouette.")
-    parsed = {}
-    for silhouette, entries in poses.items():
-        if not isinstance(entries, list) or not entries:
-            raise OutfitPackError("Every silhouette requires assets.")
-        assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
-        canvas = MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
-        validate_pose_assets(assets, archive, canvas, require_visible=False, full_canvas=full_canvas)
-        if len({asset.slot for asset in assets}) != len(assets):
-            raise OutfitPackError("Duplicate slot in silhouette.")
-        parsed[silhouette] = assets
-    return frozendict(parsed)
-
-
-def _makeup_pose_assets(
-    poses: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str], *, full_canvas: bool = False,
-) -> frozendict[str, tuple[AppearanceAsset, ...]]:
-    """Like ``_pose_assets`` (the complete, required v2 view set) but a makeup
-    variant's poses/eye_states dict may ALSO declare any subset of the
-    complete-expression optional views on top of that complete set (never in
-    place of it -- the required set is still validated exactly as before).
-
-    Each declared optional silhouette is validated the same way a required one
-    is (canvas, slot set, integrity), just not required to be present at all.
-    Only REQUIRED_SILHOUETTES keys reach _pose_assets.
-    """
-    if not isinstance(poses, dict):
-        raise OutfitPackError("Every required silhouette must be declared.")
-    optional_keys = set(poses) & set(OPTIONAL_MAKEUP_SILHOUETTES)
-    required_poses = {key: value for key, value in poses.items() if key not in optional_keys}
-    parsed = dict(_pose_assets(required_poses, slots, archive, names, full_canvas=full_canvas))
-    for silhouette in optional_keys:
-        entries = poses[silhouette]
-        if not isinstance(entries, list) or not entries:
-            raise OutfitPackError("Every silhouette requires assets.")
-        assets = tuple(_asset(entry, slots, archive, names) for entry in entries)
-        validate_pose_assets(assets, archive, MAKEUP_CANVASES["half-body"], require_visible=False, full_canvas=full_canvas)
-        if len({asset.slot for asset in assets}) != len(assets):
-            raise OutfitPackError("Duplicate slot in silhouette.")
-        parsed[silhouette] = assets
-    return frozendict(parsed)
-
-
 def _variant_base(value: object, extra: set[str]) -> tuple[str, frozendict[str, str]]:
     if not isinstance(value, dict) or set(value) != {"id", "display_names", "poses", *extra}:
         raise OutfitPackError("Provide a supported appearance variant.")
     return _identifier(value["id"], "variant"), _names(value["display_names"])
 
 
+def _source_bound_silhouettes(value: object) -> frozenset[str]:
+    if value is None:
+        return frozenset()
+    if value != [SOURCE_BOUND_SILHOUETTE]:
+        raise OutfitPackError("Provide a supported source-bound silhouette.")
+    return frozenset(value)
+
+
 def _garment_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> AppearanceVariant:
-    variant_id, display = _variant_base(value, {"fabric_behavior", "body_visibility"})
+    optional = {
+        key for key in ("silhouette_scope", "source_bound_silhouettes")
+        if isinstance(value, dict) and key in value
+    }
+    variant_id, display = _variant_base(
+        value,
+        {"fabric_behavior", "body_visibility", *optional},
+    )
     behavior, visibility = value["fabric_behavior"], value["body_visibility"]
-    poses = _pose_assets(value["poses"], GARMENT_SLOTS, archive, names)
+    source_bound = _source_bound_silhouettes(
+        value.get("source_bound_silhouettes")
+    )
+    poses = _appearance_pose_assets(
+        value["poses"],
+        GARMENT_SLOTS,
+        archive,
+        names,
+        silhouette_scope=value.get("silhouette_scope"),
+        source_bound_silhouettes=source_bound,
+    )
+    if any(
+        sum(asset.clears_base for asset in assets) > 1
+        for assets in poses.values()
+    ):
+        raise OutfitPackError("A garment view accepts one base-clear asset.")
     if behavior not in FABRIC_BEHAVIORS or not isinstance(visibility, dict) or set(visibility) != set(poses):
         raise OutfitPackError("Provide a supported garment behavior or visibility.")
     parsed_visibility = {}
@@ -327,12 +235,41 @@ def _garment_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -
         if not isinstance(regions, dict) or set(regions) != set(BODY_REGIONS) or any(state not in VISIBILITY for state in regions.values()):
             raise OutfitPackError("Provide a supported official body visibility.")
         parsed_visibility[silhouette] = frozendict(regions)
-    return AppearanceVariant(variant_id, display, poses, behavior, frozendict(parsed_visibility))
+    return AppearanceVariant(
+        variant_id,
+        display,
+        poses,
+        behavior,
+        frozendict(parsed_visibility),
+        source_bound_silhouettes=source_bound,
+    )
 
 
 def _hair_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> AppearanceVariant:
-    variant_id, display = _variant_base(value, {"face_occlusion_masks", "hand_occlusion", "garment_occlusion"})
-    poses = _pose_assets(value["poses"], HAIR_SLOTS, archive, names)
+    optional = {
+        key for key in ("silhouette_scope", "source_bound_silhouettes")
+        if isinstance(value, dict) and key in value
+    }
+    variant_id, display = _variant_base(
+        value,
+        {
+            "face_occlusion_masks",
+            "hand_occlusion",
+            "garment_occlusion",
+            *optional,
+        },
+    )
+    source_bound = _source_bound_silhouettes(
+        value.get("source_bound_silhouettes")
+    )
+    poses = _appearance_pose_assets(
+        value["poses"],
+        HAIR_SLOTS,
+        archive,
+        names,
+        silhouette_scope=value.get("silhouette_scope"),
+        source_bound_silhouettes=source_bound,
+    )
     slot_sets = [{asset.slot for asset in assets} for assets in poses.values()]
     if any(not slots.issuperset(REQUIRED_HAIR_SLOTS) for slots in slot_sets) or any(slots != slot_sets[0] for slots in slot_sets[1:]):
         raise OutfitPackError("Hair slots must be complete and consistent across silhouettes.")
@@ -342,7 +279,15 @@ def _hair_variant(value: object, archive: zipfile.ZipFile, names: set[str]) -> A
         if not isinstance(mapping, dict) or set(mapping) != set(poses) or any(rule not in allowed for rule in mapping.values()):
             raise OutfitPackError("Provide a supported hair occlusion contract.")
         maps.append(frozendict(mapping))
-    return AppearanceVariant(variant_id, display, poses, face_masks=maps[0], hand_rules=maps[1], garment_rules=maps[2])
+    return AppearanceVariant(
+        variant_id,
+        display,
+        poses,
+        face_masks=maps[0],
+        hand_rules=maps[1],
+        garment_rules=maps[2],
+        source_bound_silhouettes=source_bound,
+    )
 
 
 def _simple_variant(value: object, slots: frozenset[str], archive: zipfile.ZipFile, names: set[str]) -> AppearanceVariant:
@@ -602,13 +547,19 @@ def _parse_outfit_pack(
     manifest = manifest_payload(archive)
     source_kind, author, license_name = source_declaration(manifest)
     items = appearance_items(manifest, archive, names, _item)
+    source_bound = parse_source_bound_expressions(
+        manifest.get(SOURCE_BOUND_MANIFEST_KEY),
+        archive,
+        names,
+    )
+    validate_source_bound_bindings(source_bound, items)
     ensembles = _ensembles(manifest["ensembles"], items)
-    validate_declared_assets(items, names)
+    validate_declared_assets(items, names, source_bound_asset_paths(source_bound))
     pack_id = _identifier(manifest["id"], "pack")
     pack_version_value, app_range = pack_version(manifest)
     return OutfitPack(
         pack_id, pack_version_value, app_range, _names(manifest["display_names"]), source_kind, author, license_name,
-        BODY_PROFILE_ID, tuple(items), ensembles,
+        BODY_PROFILE_ID, tuple(items), ensembles, source_bound,
     )
 
 

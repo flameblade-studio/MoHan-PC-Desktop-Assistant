@@ -9,11 +9,12 @@ lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
 lazy import pytest
-lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QPoint, QRect
+lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, QPoint, QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from infrastructure import active_outfit_overlay as adapter_module
+lazy from infrastructure import active_outfit_base_clear as base_clear_module
 lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
@@ -978,3 +979,507 @@ def test_empty_combined_cache_does_not_reuse_phase_layers(
         overlay._layers_by_view_without_makeup_slots[combined_key] = ()
     assert overlay.layer_count(view) == 0
     assert app is not None
+
+
+def test_generic_full_body_replacement_clears_native_hair_and_garment(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    view = "yaw+000-pitch+00"
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store",
+        tmp_path,
+        visible_hand_region=lambda _view: QRegion(QRect(116, 1416, 4, 4)),
+    )
+    native_head = QRegion(QRect(10, 10, 12, 12))
+    monkeypatch.setattr(
+        overlay,
+        "_native_head_region",
+        lambda _view, _size: native_head,
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_identity_region",
+        lambda _view, _size: QRegion(),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_protected_face_region",
+        lambda _view, _size: QRegion(QRect(108, 1408, 4, 4)),
+    )
+    selections = {
+        "garment": SimpleNamespace(
+            status="installed",
+            effective_pack_id="candidate",
+            effective_item_id="office",
+            effective_variant_id="dark",
+        ),
+        "hairstyle": SimpleNamespace(
+            status="installed",
+            effective_pack_id="candidate",
+            effective_item_id="long-hair",
+            effective_variant_id="brown",
+        ),
+    }
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda category: selections[category],
+    )
+    encoded = _encoded_layer()
+    declaration = AppearanceAsset(
+        "garment-occluder",
+        "assets/garment.png",
+        hashlib.sha256(encoded).hexdigest(),
+        1024,
+        1536,
+        0,
+        0,
+        10,
+        clears_base=True,
+    )
+    variant = AppearanceVariant(
+        "dark",
+        frozendict(),
+        frozendict({view: (declaration,)}),
+    )
+    archive_path = tmp_path / "candidate.mohan-outfit"
+    with zipfile.ZipFile(archive_path, "w"):
+        pass
+    monkeypatch.setattr(
+        overlay,
+        "_selected_variant",
+        lambda _category, _selected: (archive_path, None, variant),
+    )
+    image = QImage(1024, 1536, QImage.Format_RGBA8888)
+    image.fill(Qt.transparent)
+    for y in range(1400, 1421):
+        for x in range(100, 121):
+            image.setPixelColor(x, y, QColor(20, 20, 20, 255))
+    monkeypatch.setattr(
+        overlay,
+        "_decoded_layer",
+        lambda _archive, _asset: (encoded, image),
+    )
+
+    replacement, clears_garment = overlay._generic_replacement_region(
+        view, (1024, 1536),
+    )
+
+    assert replacement is not None
+    assert clears_garment is True
+    assert replacement.contains(QPoint(10, 10))
+    assert replacement.contains(QPoint(100, 1400))
+    assert not replacement.contains(QPoint(109, 1409))
+    assert not replacement.contains(QPoint(117, 1417))
+
+
+def test_generic_half_body_replacement_uses_shared_rig_contract(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    view = "front-crossed"
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store",
+        tmp_path,
+        visible_hand_region=lambda _view: QRegion(QRect(116, 116, 4, 4)),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_head_region",
+        lambda _view, _size: QRegion(QRect(10, 10, 12, 12)),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_identity_region",
+        lambda _view, _size: QRegion(),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_protected_face_region",
+        lambda _view, _size: QRegion(QRect(108, 108, 4, 4)),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_active_hairstyle_region",
+        lambda _view, _size, _hairstyle: QRegion(QRect(10, 10, 12, 12)),
+    )
+    selections = {
+        "garment": SimpleNamespace(
+            status="installed",
+            effective_pack_id="candidate",
+            effective_item_id="office",
+            effective_variant_id="dark",
+        ),
+        "hairstyle": SimpleNamespace(
+            status="installed",
+            effective_pack_id="candidate",
+            effective_item_id="long-hair",
+            effective_variant_id="brown",
+        ),
+    }
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda category: selections[category],
+    )
+    encoded = _encoded_layer()
+    declaration = AppearanceAsset(
+        "garment-occluder",
+        "assets/garment.png",
+        hashlib.sha256(encoded).hexdigest(),
+        1254,
+        1254,
+        0,
+        0,
+        10,
+        clears_base=True,
+    )
+    variant = AppearanceVariant(
+        "dark",
+        frozendict(),
+        frozendict({view: (declaration,)}),
+    )
+    archive_path = tmp_path / "candidate.mohan-outfit"
+    with zipfile.ZipFile(archive_path, "w"):
+        pass
+    monkeypatch.setattr(
+        overlay,
+        "_selected_variant",
+        lambda _category, _selected: (archive_path, None, variant),
+    )
+    image = QImage(1254, 1254, QImage.Format_RGBA8888)
+    image.fill(Qt.transparent)
+    for y in range(100, 121):
+        for x in range(100, 121):
+            image.setPixelColor(x, y, QColor(20, 20, 20, 255))
+    monkeypatch.setattr(
+        overlay,
+        "_decoded_layer",
+        lambda _archive, _asset: (encoded, image),
+    )
+
+    replacement, clears_garment = overlay._generic_replacement_region(
+        view, (1254, 1254),
+    )
+
+    assert replacement is not None
+    assert clears_garment is True
+    # Half-body soft-alpha hair must not retain the old hair beneath it.
+    assert replacement.contains(QPoint(10, 10))
+    assert replacement.contains(QPoint(100, 100))
+    assert not replacement.contains(QPoint(109, 109))
+    assert not replacement.contains(QPoint(117, 117))
+
+
+def test_native_identity_skin_region_excludes_hair_and_white_cloth(
+) -> None:
+    _app()
+    image = QImage(3, 1, QImage.Format_RGBA8888)
+    image.setPixelColor(0, 0, QColor(198, 151, 126, 255))
+    image.setPixelColor(1, 0, QColor(45, 31, 28, 255))
+    image.setPixelColor(2, 0, QColor(240, 240, 238, 255))
+
+    region = ActiveOutfitOverlay._skin_region(image)
+
+    assert region.contains(QPoint(0, 0))
+    assert not region.contains(QPoint(1, 0))
+    assert not region.contains(QPoint(2, 0))
+
+
+def test_optional_cheek_wrist_artifact_region_tracks_only_source_seam() -> None:
+    region = ActiveOutfitOverlay._optional_cheek_wrist_artifact_region()
+
+    assert region.contains(QPoint(587, 1140))
+    assert region.contains(QPoint(611, 1217))
+    assert not region.contains(QPoint(580, 1140))
+    assert not region.contains(QPoint(611, 1130))
+
+
+def test_half_body_native_head_clear_covers_layered_crown_gap(
+    tmp_path: Path,
+) -> None:
+    _app()
+    layered = tmp_path / "assets" / "expressions" / "layered"
+    layered.mkdir(parents=True)
+    for layer in base_clear_module.NATIVE_HEAD_LAYERS:
+        image = QImage(1254, 1254, QImage.Format_RGBA8888)
+        image.fill(Qt.transparent)
+        if layer == "hair_back":
+            image.setPixelColor(100, 100, QColor(20, 20, 20, 255))
+        assert image.save(str(layered / f"front_{layer}.png"), "PNG")
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+
+    region = overlay._native_head_region("front-crossed", (1254, 1254))
+
+    assert region.contains(QPoint(60, 100))
+    assert region.contains(QPoint(140, 100))
+    assert not region.contains(QPoint(59, 100))
+
+
+def test_gesture_native_head_and_identity_come_from_exact_source(
+    tmp_path: Path,
+) -> None:
+    _app()
+    frames = (
+        tmp_path / "assets" / "expressions" / "complete-expressions" / "frames"
+    )
+    frames.mkdir(parents=True)
+    source = QImage(1254, 1254, QImage.Format_RGBA8888)
+    source.fill(Qt.transparent)
+    source.setPixelColor(100, 100, QColor(20, 20, 20, 255))
+    source.setPixelColor(110, 100, QColor(210, 214, 220, 255))
+    source.setPixelColor(120, 100, QColor(35, 60, 145, 255))
+    source.setPixelColor(130, 100, QColor(245, 245, 245, 255))
+    source.setPixelColor(459, 442, QColor(210, 214, 220, 255))
+    source.setPixelColor(600, 442, QColor(35, 25, 20, 255))
+    source.setPixelColor(200, 100, QColor(198, 151, 126, 255))
+    source.setPixelColor(200, 200, QColor(198, 151, 126, 255))
+    assert source.save(
+        str(frames / "front-eureka-neutral-rest.rgba.png"), "PNG",
+    )
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+
+    head = overlay._native_head_region("front-eureka", (1254, 1254))
+    identity = overlay._native_identity_region("front-eureka", (1254, 1254))
+
+    assert head.contains(QPoint(100, 100))
+    assert head.contains(QPoint(110, 100))
+    assert head.contains(QPoint(120, 100))
+    assert head.contains(QPoint(130, 100))
+    assert head.contains(QPoint(200, 100))
+    assert not head.contains(QPoint(200, 200))
+    assert not identity.contains(QPoint(200, 100))
+    assert not identity.contains(QPoint(200, 200))
+    assert head.contains(QPoint(459, 442))
+    assert not identity.contains(QPoint(459, 442))
+    assert identity.contains(QPoint(600, 442))
+
+
+def test_tilted_gesture_identity_excludes_non_skin_contact_support(
+    tmp_path: Path,
+) -> None:
+    _app()
+    frames = (
+        tmp_path / "assets" / "expressions" / "complete-expressions" / "frames"
+    )
+    frames.mkdir(parents=True)
+    source = QImage(1254, 1254, QImage.Format_RGBA8888)
+    source.fill(Qt.transparent)
+    source.setPixelColor(400, 350, QColor(35, 30, 28, 255))
+    source.setPixelColor(401, 350, QColor(35, 30, 28, 127))
+    source.setPixelColor(900, 350, QColor(35, 30, 28, 255))
+    source.setPixelColor(500, 500, QColor(198, 151, 126, 255))
+    assert source.save(
+        str(frames / "front-exasperated-neutral-rest.rgba.png"), "PNG",
+    )
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+
+    identity = overlay._native_identity_region(
+        "front-exasperated", (1254, 1254),
+    )
+
+    assert not identity.contains(QPoint(400, 350))
+    assert not identity.contains(QPoint(401, 350))
+    assert not identity.contains(QPoint(900, 350))
+    assert identity.contains(QPoint(500, 500))
+
+
+def test_source_bound_hair_clear_preserves_native_hands(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    hand = QRegion(QRect(110, 100, 10, 10))
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store",
+        tmp_path,
+        visible_hand_region=lambda _view: hand,
+    )
+    selected = SimpleNamespace(
+        status="installed",
+        effective_pack_id="custom",
+        effective_item_id="straight-hair",
+        effective_variant_id="brown",
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda _category: selected,
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_head_region",
+        lambda _view, _size: QRegion(QRect(100, 100, 30, 10)),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_identity_region",
+        lambda _view, _size: QRegion(),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_active_hairstyle_region",
+        lambda _view, _size, _selection: QRegion(),
+    )
+    replacement, native_head = overlay._generic_hair_replacement_region(
+        "front-eureka", (1254, 1254),
+    )
+
+    assert replacement.contains(QPoint(105, 105))
+    assert not replacement.contains(QPoint(115, 105))
+    assert replacement.contains(QPoint(125, 105))
+    assert native_head.contains(QPoint(115, 105))
+
+
+def test_native_identity_region_keeps_explicit_protected_forehead(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    layered = tmp_path / "assets" / "expressions" / "layered"
+    layered.mkdir(parents=True)
+    body = QImage(1254, 1254, QImage.Format_RGBA8888)
+    body.fill(Qt.transparent)
+    assert body.save(str(layered / "front_body.png"), "PNG")
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+    monkeypatch.setattr(overlay, "_feature_region", lambda _view: QRegion())
+    monkeypatch.setattr(
+        overlay,
+        "_protected_face_region",
+        lambda _view, _size: QRegion(QRect(100, 100, 10, 10)),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_head_region",
+        lambda _view, _size: QRegion(QRect(50, 50, 100, 100)),
+    )
+
+    identity = overlay._native_identity_region("front-crossed", (1254, 1254))
+
+    assert identity.contains(QPoint(105, 105))
+
+
+def test_generic_replacement_does_not_clear_regular_garment_or_native_alias(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    view = "yaw+000-pitch+00"
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_native_head_region",
+        lambda _view, _size: QRegion(QRect(10, 10, 12, 12)),
+    )
+    selections = {
+        "garment": SimpleNamespace(
+            status="installed",
+            effective_pack_id="candidate",
+            effective_item_id="office",
+            effective_variant_id="dark",
+        ),
+        "hairstyle": SimpleNamespace(
+            status="installed",
+            effective_pack_id="mohan.official.blue-white-hanfu",
+            effective_item_id="loose-hair",
+            effective_variant_id="ink-black",
+        ),
+    }
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda category: selections[category],
+    )
+    declaration = AppearanceAsset(
+        "outerwear", "assets/garment.png", "0" * 64,
+        1024, 1536, 0, 0, 10,
+    )
+    variant = AppearanceVariant(
+        "dark", frozendict(), frozendict({view: (declaration,)}),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_selected_variant",
+        lambda _category, _selected: (tmp_path / "unused.zip", None, variant),
+    )
+
+    replacement, clears_garment = overlay._generic_replacement_region(
+        view, (1024, 1536),
+    )
+
+    assert replacement is None
+    assert clears_garment is False
+
+
+def test_source_bound_replacement_merges_custom_hair_clear(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _app()
+    view = "yaw+000-pitch+00"
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+    manifest = tmp_path / base_clear_module.MANIFEST
+    manifest.parent.mkdir(parents=True)
+    manifest.touch()
+    selected = SimpleNamespace(status="installed")
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda _category: selected,
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_selected_variant",
+        lambda _category, _selected: (tmp_path / "pack.zip", None, None),
+    )
+    source_region = QRegion(QRect(100, 100, 5, 5))
+    hair_region = QRegion(QRect(200, 200, 5, 5))
+    hand_overlays = ((QPixmap(), 0, 0, QRegion(), 1.0),)
+    monkeypatch.setattr(
+        base_clear_module,
+        "load_garment_binding",
+        lambda *_args: base_clear_module.GarmentBinding(
+            source_region, hand_overlays, QRegion(),
+        ),
+    )
+    monkeypatch.setattr(
+        base_clear_module,
+        "validate_garment_removal",
+        lambda *_args: None,
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_protected_face_region",
+        lambda _view, _size: QRegion(),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_generic_replacement_region",
+        lambda _view, _size: (hair_region, False),
+    )
+
+    silhouette, replacement, binding = overlay._base_clear_regions(
+        view, (1024, 1536), True, True,
+    )
+
+    assert silhouette is None
+    assert replacement is not None
+    assert replacement.contains(QPoint(101, 101))
+    assert replacement.contains(QPoint(201, 201))
+    assert binding is not None
+    assert binding.hand_overlays == hand_overlays

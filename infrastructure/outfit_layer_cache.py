@@ -13,9 +13,12 @@ class OutfitLayerCacheMixin:
         getattr(self, "_reviewed_layer_counts", {}).pop(view_id, None)
         for cache in (
             self._protected_by_view, self._feature_by_view,
+            self._gesture_expression_feature_by_view,
             self._hair_mask_by_view,
             self._core_hand_overlays_by_view, self._core_body_overlays_by_view,
             self._official_silhouettes_by_view, self._official_replacement_masks_by_view,
+            self._native_head_regions_by_view, self._native_identity_regions_by_view,
+            self._generic_base_clear_by_view,
         ):
             cache.pop(view_id, None)
         for key in tuple(self._makeup_exclusion_by_view):

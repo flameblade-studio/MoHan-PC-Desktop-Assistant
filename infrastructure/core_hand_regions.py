@@ -10,7 +10,11 @@ lazy from domain.constants import (
     CHARACTER_ASSET_PATHS,
     POSE_ATLAS_LAYERED_ROOT_NAME,
 )
-lazy from domain.outfit_pack import OutfitPackError, REQUIRED_SILHOUETTES
+lazy from domain.outfit_pack import (
+    OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
+    REQUIRED_SILHOUETTES,
+    OutfitPackError,
+)
 lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
@@ -22,6 +26,10 @@ _HALF_BODY_CANVAS = (
 _FULL_BODY_CANVAS = (
     _RIG_MANIFEST.full_body_canvas.width,
     _RIG_MANIFEST.full_body_canvas.height,
+)
+CORE_HAND_SILHOUETTES = (
+    *REQUIRED_SILHOUETTES,
+    *OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
 )
 
 
@@ -42,17 +50,17 @@ class CoreHandSnapshot:
         })
 
     def __call__(self, view_id: str) -> QRegion:
-        if view_id not in REQUIRED_SILHOUETTES:
+        if view_id not in CORE_HAND_SILHOUETTES:
             raise OutfitPackError("Use a recognized core visible-hand view.")
         return QRegion(self._regions.get(view_id, QRegion()))
 
     def has_repaintable_overlay(self, view_id: str) -> bool:
-        if view_id not in REQUIRED_SILHOUETTES:
+        if view_id not in CORE_HAND_SILHOUETTES:
             raise OutfitPackError("Use a recognized core visible-hand view.")
         return view_id in self._overlay_images
 
     def overlay_images(self, view_id: str) -> tuple[QImage, QImage] | None:
-        if view_id not in REQUIRED_SILHOUETTES:
+        if view_id not in CORE_HAND_SILHOUETTES:
             raise OutfitPackError("Use a recognized core visible-hand view.")
         images = self._overlay_images.get(view_id)
         if images is None:
@@ -69,7 +77,7 @@ def load_core_hand_regions(asset_root: Path) -> CoreHandSnapshot | None:
     """
     regions: dict[str, QRegion] = {}
     overlay_images: dict[str, tuple[QImage, QImage]] = {}
-    for view_id in REQUIRED_SILHOUETTES:
+    for view_id in CORE_HAND_SILHOUETTES:
         half_body = view_id in HALF_BODY_RIGS
         directory = (
             Path(asset_root) / CHARACTER_ASSET_PATHS["halfbody_layers"]

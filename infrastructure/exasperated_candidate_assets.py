@@ -57,14 +57,32 @@ class ExasperatedAppearanceOverlay(Protocol):
     ) -> QPixmap: ...
 
 
+class ExasperatedCandidateProvider(Protocol):
+    """Resolve an active outfit's optional whole-portrait expression."""
+
+    def assets_for(
+        self,
+        expression_id: str,
+    ) -> ExasperatedCandidateAssets | None: ...
+
+
 @dataclass(frozen=True, slots=True)
 class ExasperatedCandidateAssets:
     """Validated PNG bytes stay immutable after loading, even if files drift."""
 
     parts: dict[str, bytes]
     mouths: dict[str, bytes]
+    portrait: bytes | None = None
+    cache_key: str = APPROVED_SOURCE_SHA256
 
     def compose(self, *, hidden: frozenset[str] = frozenset()) -> QPixmap:
+        if self.portrait is not None:
+            if hidden:
+                raise ValueError("Whole source-bound portraits cannot hide parts.")
+            frame = QPixmap()
+            if not load_pixmap_png(frame, self.portrait):
+                raise ValueError("Cannot decode source-bound portrait.")
+            return frame
         if not hidden <= set(PART_ORDER):
             raise ValueError("Unknown exasperated part.")
         frame = QPixmap(DIMENSION, DIMENSION)

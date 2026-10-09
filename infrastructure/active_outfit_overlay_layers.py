@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import zipfile
 lazy from pathlib import Path
 
+lazy import numpy as np
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QBitmap, QColor, QImage, QPainter, QPixmap, QRegion
 
@@ -12,9 +13,11 @@ lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
     FOUNDATION_SLOT,
+    GESTURE_SILHOUETTES,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
     MIN_Z_ORDER,
+    OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
     OutfitPackError,
 )
 lazy from domain.outfit_pack_makeup import (
@@ -31,7 +34,11 @@ lazy from domain.outfit_pack_makeup import (
 )
 lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID
 lazy from domain.makeup_mouth_states import VISEME_TO_MOUTH_SHAPE
+lazy from domain.qt_image_pixels import rgba8888_image
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
+lazy from infrastructure.source_bound_expression_features import (
+    gesture_expression_feature_region,
+)
 
 _RIG_MANIFEST = default_rig_manifest()
 HALF_BODY_CANVAS = (
@@ -49,7 +56,16 @@ _DILATION_OFFSETS = tuple(
     if dx or dy
 )
 _OPAQUE = 255
+_BODY_OUTLINE_ALPHA_MIN = 128
+_PORTRAIT_SKIN_RED_MIN = 125
+_PORTRAIT_SKIN_RED_GREEN_GAP = 12
+_PORTRAIT_SKIN_GREEN_BLUE_GAP = 3
 _MAKEUP_Z_BASE = MIN_Z_ORDER * 3
+SOURCE_BOUND_EXPRESSION_SILHOUETTES = frozenset((
+    *GESTURE_SILHOUETTES,
+    *OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
+))
+SOURCE_BOUND_FACE_GUARD = QRect(380, 200, 500, 420)
 
 Layer = tuple[QPixmap, int, int, QRegion, float]
 
@@ -229,10 +245,18 @@ class ActiveOutfitLayerMixin:
         alpha, bounds = mask
         body = self._body_outline_region(view_id)
         if body is None:
-            return self._masked_hair(pixmap, anchor_x, anchor_y, alpha, bounds)
-        # Feather against skin, not the desktop behind the character. Keep the
-        # complete dilated feature core reserved, including the body boundary.
-        protected = self._feature_region(view_id)
+            # Without a body-outline authority we cannot distinguish skin from
+            # desktop in the feather ring.  The sealed asset already leaves
+            # the exact feature core empty, so keep its authored strands
+            # instead of cutting a rectangular transparent notch through them.
+            return pixmap
+        # Feather against skin, not the desktop behind the character.  The
+        # exact feature pixels remain reserved everywhere; only the feather
+        # ring inside the body may become transparent.  Making the ring
+        # transparent outside the body cuts a rectangular desktop notch into
+        # authored cheek-side strands.
+        core = self._hairstyle_feature_region(view_id)
+        protected = QRegion(core)
         for _step in range(HAIRSTYLE_FEATURE_CORE_DILATION_PX):
             expanded = protected
             for dx, dy in _DILATION_OFFSETS:
@@ -246,24 +270,61 @@ class ActiveOutfitLayerMixin:
             # a second, straight alpha boundary through otherwise natural
             # strands. Keep the validated authored edge byte-for-byte.
             return pixmap
-        silhouette = QRegion()
-        # Rig cut-outs leave internal holes; those are not desktop background.
-        for y in range(bounds.top(), bounds.bottom() + 1):
-            row = body.intersected(QRegion(bounds.left(), y, bounds.width(), 1)).boundingRect()
-            if not row.isEmpty():
-                silhouette = silhouette.united(QRegion(row))
-        background = QRegion(bounds).subtracted(silhouette).subtracted(protected)
+        # Preserve authored hair wherever the source is not substantially
+        # opaque.  The exact feature core remains excluded, so internal eye and
+        # mouth animation stays visible without turning low-alpha source gaps
+        # beside the cheek into a rectangular desktop notch.
+        background = QRegion(bounds).subtracted(body).subtracted(core)
         alpha = alpha.copy()
         painter = QPainter(alpha)
         painter.setClipRegion(background.translated(-bounds.x(), -bounds.y()))
-        painter.fillRect(alpha.rect(), QColor(0, 0, 0, _OPAQUE))
+        painter.fillRect(alpha.rect(), QColor(_OPAQUE, _OPAQUE, _OPAQUE, _OPAQUE))
         painter.end()
         return self._masked_hair(pixmap, anchor_x, anchor_y, alpha, bounds)
 
     def _body_outline_region(self, view_id: str) -> QRegion | None:
         base = self._protected_face_path(view_id)
         path = base.with_name(base.name.removesuffix("_base.png") + "_body_outline.png")
-        if not path.exists():
+        if path.exists():
+            image = QImage(str(path))
+        elif view_id in HALF_BODY_RIGS:
+            # Older portrait rigs predate explicit body-outline assets.  Their
+            # exact neutral source is still an immutable silhouette authority;
+            # threshold its alpha so antialiased desktop fringe cannot become
+            # a rectangular hole in replacement hair.
+            source = (
+                self._asset_root
+                / CHARACTER_ASSET_PATHS["halfbody_root"]
+                / "complete-expressions"
+                / "frames"
+                / f"{view_id}-neutral-rest.rgba.png"
+            )
+            if not source.exists():
+                return None
+            rgba = rgba8888_image(QImage(str(source)))
+            if rgba.isNull() or rgba.size().toTuple() != self._canvas_size(view_id):
+                raise OutfitPackError("Provide a supported core body outline.")
+            rows = np.frombuffer(rgba.constBits(), dtype=np.uint8).reshape(
+                rgba.height(), rgba.bytesPerLine(),
+            )
+            pixels = rows[:, :rgba.width() * 4].reshape(
+                rgba.height(), rgba.width(), 4,
+            )
+            alpha = np.where(
+                pixels[:, :, 3] >= _BODY_OUTLINE_ALPHA_MIN, _OPAQUE, 0,
+            ).astype(np.uint8)
+            mask = QImage(
+                alpha.data,
+                rgba.width(),
+                rgba.height(),
+                rgba.width(),
+                QImage.Format_Alpha8,
+            ).copy()
+            region = visible_alpha_region(mask)
+            if region.isEmpty():
+                raise OutfitPackError("Core body outline requires visible content.")
+            return region
+        else:
             return None
         image = QImage(str(path))
         if image.isNull() or not image.hasAlphaChannel() or image.size().toTuple() != self._canvas_size(view_id):
@@ -297,7 +358,7 @@ class ActiveOutfitLayerMixin:
         """
         if view_id in self._hair_mask_by_view:
             return self._hair_mask_by_view[view_id]
-        core = self._feature_region(view_id)
+        core = self._hairstyle_feature_region(view_id)
         result = None
         if not core.isEmpty():
             dilation, feather = HAIRSTYLE_FEATURE_CORE_DILATION_PX, HAIRSTYLE_FEATURE_CORE_FEATHER_PX
@@ -553,8 +614,23 @@ class ActiveOutfitLayerMixin:
         # Hair may lie anywhere on the face except the feature core (eyes and
         # mouth); its authored face_masks rule no longer widens the clip.
         if category == "hairstyle":
-            return self._feature_region(view_id)
-        face = self._protected_face_region(view_id, self._canvas_size(view_id))
+            return self._hairstyle_feature_region(view_id)
+        if (
+            category == "headwear"
+            and view_id in SOURCE_BOUND_EXPRESSION_SILHOUETTES
+        ):
+            # Gesture portraits use an exact source-skin guard for garments,
+            # but crown/temple-safe headwear is authored against the shared
+            # half-body rig.  Keep that established attachment authority for
+            # headwear validation so the official hairpiece remains valid.
+            source = QPixmap(str(self._protected_face_path(view_id)))
+            if source.isNull():
+                raise OutfitPackError("Protected identity mask is unavailable.")
+            face = QRegion(source.mask())
+        else:
+            face = self._protected_face_region(
+                view_id, self._canvas_size(view_id),
+            )
         bounds = face.boundingRect()
         allowed = QRegion()
         if category == "headwear":
@@ -589,6 +665,64 @@ class ActiveOutfitLayerMixin:
         self._feature_by_view[view_id] = region
         return region
 
+    def _gesture_expression_feature_region(self, view_id: str) -> QRegion | None:
+        return gesture_expression_feature_region(
+            self._asset_root,
+            view_id,
+            self._gesture_expression_feature_by_view,
+        )
+
+    def _hairstyle_feature_region(self, view_id: str) -> QRegion:
+        """Restrict portrait feature ownership to the source face span.
+
+        Legacy lean feature layers contain valid animated pixels beyond the
+        visible face edge.  Their raw alpha intersects approved cheek-side
+        hair, so using the complete layer as a clip produces horizontal bars.
+        The immutable source skin spans still enclose the actual eyes and mouth
+        while excluding those out-of-face pixels.
+        """
+        if view_id in GESTURE_SILHOUETTES:
+            source_feature = self._gesture_expression_feature_region(view_id)
+            if source_feature is not None:
+                return source_feature
+        feature = self._feature_region(view_id)
+        if view_id not in HALF_BODY_RIGS or feature.isEmpty():
+            return feature
+        source = (
+            self._asset_root
+            / CHARACTER_ASSET_PATHS["halfbody_root"]
+            / "complete-expressions"
+            / "frames"
+            / f"{view_id}-neutral-rest.rgba.png"
+        )
+        image = rgba8888_image(QImage(str(source)))
+        if image.isNull() or image.size().toTuple() != self._canvas_size(view_id):
+            return feature
+        rows = np.frombuffer(image.constBits(), dtype=np.uint8).reshape(
+            image.height(), image.bytesPerLine(),
+        )
+        pixels = rows[:, :image.width() * 4].reshape(
+            image.height(), image.width(), 4,
+        )
+        red = pixels[:, :, 0].astype(np.int16)
+        green = pixels[:, :, 1].astype(np.int16)
+        blue = pixels[:, :, 2].astype(np.int16)
+        skin = (
+            (pixels[:, :, 3] > 0)
+            & (red > _PORTRAIT_SKIN_RED_MIN)
+            & (red > green + _PORTRAIT_SKIN_RED_GREEN_GAP)
+            & (green > blue + _PORTRAIT_SKIN_GREEN_BLUE_GAP)
+        )
+        spans = QRegion()
+        for y in range(image.height()):
+            columns = np.flatnonzero(skin[y])
+            if columns.size:
+                left = int(columns[0])
+                spans = spans.united(
+                    QRegion(left, y, int(columns[-1]) - left + 1, 1)
+                )
+        return feature.intersected(spans)
+
     def _protected_face_region(
         self,
         view_id: str,
@@ -597,6 +731,14 @@ class ActiveOutfitLayerMixin:
         cached = self._protected_by_view.get(view_id)
         if cached is not None:
             return cached
+        if view_id in SOURCE_BOUND_EXPRESSION_SILHOUETTES:
+            region = self._skin_region(
+                self._native_gesture_source(view_id, canvas_size)
+            ).intersected(QRegion(SOURCE_BOUND_FACE_GUARD))
+            if region.isEmpty():
+                raise OutfitPackError("Protected source identity is unavailable.")
+            self._protected_by_view[view_id] = region
+            return region
         path = self._protected_face_path(view_id)
         source = QPixmap(str(path))
         if source.isNull() or source.size().toTuple() != canvas_size:
