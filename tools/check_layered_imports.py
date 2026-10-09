@@ -68,6 +68,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.face_assets",
         "infrastructure.face_renderer",
         "infrastructure.full_body_display_placement",
+        "infrastructure.installed_character_packs",
         "infrastructure.layered_face_renderer",
         "infrastructure.layered_full_body_renderer",
         "infrastructure.multimodal_model_provider",

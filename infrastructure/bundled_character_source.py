@@ -29,11 +29,13 @@ class BundledCharacterSource(
     CharacterAppearanceContract,
     CharacterVoice,
 ):
-    """Load one strict built-in character directory below a shared asset root."""
+    """Load the one character intentionally bundled with the MoHan product."""
 
     def __init__(self, asset_root: Path, character_id: str) -> None:
         self._asset_root = Path(asset_root).resolve(strict=True)
         self._character_id = _character_id(character_id)
+        if self._character_id != "mohan":
+            raise ValueError("The product bundle contains only its default character.")
         character_root = self._asset_root / "assets" / "characters" / self._character_id
         self._character_root = character_root.resolve(strict=True)
         if not self._character_root.is_relative_to(self._asset_root):

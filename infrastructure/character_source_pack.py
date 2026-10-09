@@ -212,6 +212,10 @@ class CharacterPackReader(
         return self._manifest
 
     @property
+    def character_id(self) -> str:
+        return self._manifest.character_id
+
+    @property
     def assets(self) -> CharacterAssets:
         return self
 

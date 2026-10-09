@@ -60,9 +60,15 @@ ZIP 大小、預檢與內容讀取使用同一個已開啟檔案，避免預檢�
 
 資料夾逐項串流列舉，項目數超過上限一筆就停止，避免先把大量目錄項目收集到記憶體。
 
+### 安裝與選角
+
+墨寒產品封裝只內建 `assets/characters/mohan`。`install_character_pack()` 把使用者另行取得的 ZIP 以相同驗證器核對格式、逐檔雜湊、權利宣告與目前引擎相容性，再原子安裝到既有使用者資料根目錄的 `character-packs/<character-id>/`。此位置與設定資料共用平台慣例及 `MOHAN_DATA_DIR` 覆寫，避免把可變下載內容寫進唯讀程式安裝目錄。既有安裝不會被覆寫。
+
+`MOHAN_ACTIVE_CHARACTER=mohan` 永遠使用內建墨寒；其他值只查已安裝且再次驗證通過的角色目錄。失敗會拒絕候選、記錄可讀原因並恢復墨寒。開發者可明確設定 `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` 測試本機 ZIP；未設定時此路徑停用，設定後仍執行完整驗證且不建立持久安裝。
+
 ### API 與最小範例
 
-`validate_character_pack` 回傳 `CharacterPackValidationResult`，包含 valid、來源種類、已驗證 manifest、問題碼與路徑、成功檢查檔數與位元組數、邏輯雜湊及簽章狀態。失敗不回傳 manifest，停止於第一個問題；失敗時計數僅保留已完成階段的數據。可搜尋的問題碼包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。工具只讀本機資料，未接入產品執行期。
+`validate_character_pack` 回傳 `CharacterPackValidationResult`，包含 valid、來源種類、已驗證 manifest、問題碼與路徑、成功檢查檔數與位元組數、邏輯雜湊及簽章狀態。失敗不回傳 manifest，停止於第一個問題；失敗時計數僅保留已完成階段的數據。可搜尋的問題碼包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。驗證器只讀本機資料；產品殼的安裝與執行期 reader 共用此契約。
 
 完整有效清單見 [最小清單](minimal-manifest.json)，對應合成資料見 [來源資料](example-source.json)。下例由專案根目錄執行，複製兩份合成資料建立最小包；例中權利與公開決策均保留未決定。
 
@@ -146,9 +152,15 @@ ZIP 大小、预检与内容读取使用同一个已打开文件，避免预检�
 
 文件夹逐项流式枚举，项目数超过上限一项就停止，避免先把大量目录项目收集到内存。
 
+### 安装与选角
+
+墨寒产品封装只内置 `assets/characters/mohan`。`install_character_pack()` 使用同一验证器核对用户另行取得的 ZIP 的格式、逐文件哈希、权利声明与当前引擎兼容性，再原子安装到现有用户数据根目录的 `character-packs/<character-id>/`。该位置与设置数据共用平台惯例及 `MOHAN_DATA_DIR` 覆盖，避免把可变下载内容写入只读程序安装目录。现有安装不会被覆盖。
+
+`MOHAN_ACTIVE_CHARACTER=mohan` 始终使用内置墨寒；其他值只查找已安装且再次验证通过的角色目录。失败会拒绝候选、记录可读原因并恢复墨寒。开发者可明确设置 `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` 测试本地 ZIP；未设置时该路径停用，设置后仍执行完整验证且不建立持久安装。
+
 ### API 与最小示例
 
-`validate_character_pack` 返回 `CharacterPackValidationResult`，包含 valid、来源类型、已验证 manifest、问题码与路径、成功检查文件数与字节数、逻辑哈希及签名状态。失败不返回 manifest，停止于首个问题；失败时计数仅保留已完成阶段的数据。可搜索的问题码包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。工具只读本地数据，未接入产品运行时。
+`validate_character_pack` 返回 `CharacterPackValidationResult`，包含 valid、来源类型、已验证 manifest、问题码与路径、成功检查文件数与字节数、逻辑哈希及签名状态。失败不返回 manifest，停止于首个问题；失败时计数仅保留已完成阶段的数据。可搜索的问题码包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。验证器只读本地数据；产品壳的安装与运行时 reader 共用该契约。
 
 完整有效清单见 [最小清单](minimal-manifest.json)，对应合成数据见 [来源数据](example-source.json)。下例从项目根目录执行，复制两份合成数据建立最小包；例中权利与公开决策均保留未决定。
 
@@ -232,9 +244,15 @@ ZIP size checks, preflight, and payload reads share one open file so replacing t
 
 Directory enumeration streams entries and stops after one entry beyond the ceiling, avoiding allocation of a complete directory listing before enforcing the limit.
 
+### Installation and character selection
+
+MoHan product packages bundle only `assets/characters/mohan`. `install_character_pack()` applies the same validator to a separately obtained ZIP, checking its format, per-file hashes, rights declarations, and current-engine compatibility before atomically installing it at `character-packs/<character-id>/` below the existing user-data root. This follows the settings platform convention and `MOHAN_DATA_DIR` override while keeping mutable downloads out of the read-only application directory. Existing installations are never overwritten.
+
+`MOHAN_ACTIVE_CHARACTER=mohan` always selects bundled MoHan. Any other value searches only an installed directory that passes validation again. Rejection records a readable reason and restores MoHan. Developers may explicitly set `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` to test a local ZIP; the path is disabled when unset, still performs full validation when enabled, and creates no persistent installation.
+
 ### API and minimal example
 
-`validate_character_pack` returns `CharacterPackValidationResult`, containing valid, source kind, a validated manifest, issue codes and paths, successfully checked file and byte counts, logical hash, and signature status. Failure returns no manifest and stops at the first issue; failure counts retain only completed-stage data. Searchable codes include `unsupported_schema`, `missing_file`, `file_hash_mismatch`, `unsafe_path`, `suspicious_compression_ratio`, `file_too_large`, `license_incomplete`, and `incompatible_engine`. The tool reads local data and is not connected to the product runtime.
+`validate_character_pack` returns `CharacterPackValidationResult`, containing valid, source kind, a validated manifest, issue codes and paths, successfully checked file and byte counts, logical hash, and signature status. Failure returns no manifest and stops at the first issue; failure counts retain only completed-stage data. Searchable codes include `unsupported_schema`, `missing_file`, `file_hash_mismatch`, `unsafe_path`, `suspicious_compression_ratio`, `file_too_large`, `license_incomplete`, and `incompatible_engine`. The validator reads only local data; the product-shell installer and runtime reader share this contract.
 
 See the complete valid [minimal manifest](minimal-manifest.json) and its [synthetic source data](example-source.json). Run the following from the repository root to copy both synthetic files into a minimal pack; rights and publication decisions remain pending in this example.
 
@@ -318,9 +336,15 @@ ZIP のサイズ確認、事前検査、内容の読み取りには同じ開い�
 
 フォルダーは項目を一つずつ列挙し、上限を一項目超えた時点で停止します。大量の項目を先にメモリーへ集める処理を避けます。
 
+### インストールとキャラクター選択
+
+墨寒の製品パッケージには `assets/characters/mohan` だけを同梱します。`install_character_pack()` は別途取得した ZIP に同じ検証器を適用し、形式、ファイル別ハッシュ、権利宣言、現在のエンジンとの互換性を確認してから、既存のユーザーデータルートにある `character-packs/<character-id>/` へ原子的にインストールします。設定データと同じプラットフォーム慣例および `MOHAN_DATA_DIR` の上書きを使い、変更可能なダウンロードを読み取り専用のアプリケーションディレクトリーへ書き込みません。既存のインストールは上書きしません。
+
+`MOHAN_ACTIVE_CHARACTER=mohan` は常に同梱の墨寒を選択します。他の値は、再検証に合格したインストール済みディレクトリーだけを検索します。拒否時は読みやすい理由を記録し、墨寒へ戻します。開発者は `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` を明示してローカル ZIP をテストできます。未設定時はこの経路を無効にし、有効時も完全な検証を行い、永続インストールは作りません。
+
 ### API と最小例
 
-`validate_character_pack` は `CharacterPackValidationResult` を返し、valid、出典種別、検証済み manifest、問題コードとパス、成功したファイル数とバイト数、論理ハッシュ、署名状態を含みます。失敗時は manifest を返さず最初の問題で停止し、件数は完了済み段階のデータだけを保持します。検索可能なコードには `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine` があります。ツールはローカルデータを読み取り、製品の実行時には接続されていません。
+`validate_character_pack` は `CharacterPackValidationResult` を返し、valid、出典種別、検証済み manifest、問題コードとパス、成功したファイル数とバイト数、論理ハッシュ、署名状態を含みます。失敗時は manifest を返さず最初の問題で停止し、件数は完了済み段階のデータだけを保持します。検索可能なコードには `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine` があります。検証器はローカルデータだけを読み取り、製品シェルのインストーラーと実行時 reader が同じ契約を共有します。
 
 有効な完全一覧は [最小一覧](minimal-manifest.json)、対応する合成データは [出典データ](example-source.json) を参照してください。次の例をリポジトリーのルートから実行し、二つの合成ファイルをコピーして最小パックを作成します。この例では権利と公開の決定を保留しています。
 

@@ -296,6 +296,7 @@
       "infrastructure.app_resources",
       "infrastructure.backup_manager",
       "infrastructure.bundled_character_source",
+      "infrastructure.installed_character_packs",
       "infrastructure.profile_transfer",
       "infrastructure.update_manifest_signature",
       "infrastructure.updater",

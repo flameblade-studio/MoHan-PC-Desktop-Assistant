@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import sqlite3
 lazy import threading
 lazy import os
+lazy import logging
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
@@ -71,8 +72,13 @@ lazy from domain.vision_provider_contracts import (
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.bundled_character_source import (
-    BundledCharacterSource,
     LegacyMohanCharacterSource,
+)
+lazy from infrastructure.installed_character_packs import (
+    DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,
+    CharacterPackInstallError,
+    load_development_character_pack_archive,
+    load_installed_character_pack,
 )
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
@@ -116,24 +122,41 @@ lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 ACTIVE_CHARACTER_ENV = "MOHAN_ACTIVE_CHARACTER"
 DEFAULT_CHARACTER_ID = "mohan"
-SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID, "lin-keyun"})
+SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID})
+_CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
 
 
 def create_character_source(character_id: str) -> CharacterSource:
-    """Build and activate one supported bundled character source."""
+    """Build one bundled or installed source and keep MoHan on rejection."""
 
     selected = str(character_id).strip()
-    if selected not in SUPPORTED_CHARACTER_IDS:
-        choices = ", ".join(sorted(SUPPORTED_CHARACTER_IDS))
-        raise RuntimeError(
-            f"Unsupported active character {selected!r}; choose one of: {choices}."
-        )
     root = resource_path(".")
-    source: CharacterSource = (
-        LegacyMohanCharacterSource(root)
-        if selected == DEFAULT_CHARACTER_ID
-        else BundledCharacterSource(root, selected)
-    )
+    mohan_source: CharacterSource = LegacyMohanCharacterSource(root)
+    if selected == DEFAULT_CHARACTER_ID:
+        activate_character_source(mohan_source)
+        return mohan_source
+    try:
+        development_archive = os.environ.get(
+            DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,
+            "",
+        ).strip()
+        source: CharacterSource = (
+            load_development_character_pack_archive(
+                development_archive,
+                expected_character_id=selected,
+            )
+            if development_archive
+            else load_installed_character_pack(selected)
+        )
+    except (CharacterPackInstallError, OSError, ValueError) as error:
+        activate_character_source(mohan_source)
+        message = (
+            f"Active character {selected!r} was rejected; "
+            "the bundled default character remains active: "
+            f"{error}"
+        )
+        _CHARACTER_SELECTION_LOGGER.exception(message)
+        raise RuntimeError(message) from error
     activate_character_source(source)
     return source
 

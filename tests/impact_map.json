@@ -1399,6 +1399,17 @@
     },
     {
       "paths": [
+        "infrastructure/bundled_character_source.py",
+        "infrastructure/installed_character_packs.py",
+        "tests/character_pack_fixtures.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/__init__.py"
       ],
       "tests": [
@@ -1937,37 +1948,6 @@
     },
     {
       "paths": [
-        "infrastructure/active_outfit_overlay.py"
-      ],
-      "tests": [
-        "test_active_character_switching.py",
-        "test_active_outfit_overlay.py",
-        "test_active_outfit_overlay_makeup.py",
-        "test_animated_makeup_depth.py",
-        "test_closed_eye_makeup_regression.py",
-        "test_full_body_complete_expression.py",
-        "test_gesture_outfit_silhouettes.py",
-        "test_hairstyle_face_clip.py",
-        "test_installed_outfit_blink_roundtrip.py",
-        "test_installed_outfit_cache.py",
-        "test_makeup_blink_states.py",
-        "test_makeup_detail_controls.py",
-        "test_official_default_pack.py",
-        "test_outfit_hand_occlusion.py",
-        "test_outfit_overlay_hardening.py",
-        "test_outfit_phase_counts.py",
-        "test_rear_hair_composition.py",
-        "test_reviewed_garment_overlay.py",
-        "test_reviewed_pose_dynamic_source.py",
-        "test_reviewed_pose_overlay.py",
-        "test_shared_hand_region_provider.py",
-        "test_source_bound_garment_visibility.py",
-        "test_wardrobe_preview_composite.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "domain/outfit_pack_official.py"
       ],
       "tests": [
@@ -2141,30 +2121,103 @@
     },
     {
       "paths": [
-        "domain/constants.py"
+        "domain/character_pack/__init__.py"
       ],
       "tests": [
         "test_active_character_switching.py",
-        "test_build_character_inventory.py",
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_pack.py",
+        "test_character_persona_data.py",
         "test_character_runtime_data.py",
         "test_character_source.py",
-        "test_core_hand_regions.py",
-        "test_face_motion_interpolation.py",
-        "test_full_body_authored_blink.py",
-        "test_full_body_authored_speech.py",
-        "test_full_body_png_integrity.py",
-        "test_golden_render.py",
-        "test_layered_face_assets.py",
-        "test_layered_full_body.py",
-        "test_mouth_authority_geometry.py",
-        "test_pose_atlas_assets.py",
-        "test_pose_atlas_generation_provenance.py",
-        "test_pose_atlas_runtime_inventory.py",
-        "test_pose_atlas_static_identity_audit.py",
-        "test_preview_packaging.py",
-        "test_release_automation.py",
-        "test_wardrobe_body_profile_gate.py",
-        "test_wardrobe_current_weight_wiring.py"
+        "test_check_pose_atlas_release.py",
+        "test_engine_identity_parameterization.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_linkeyun_character_data.py",
+        "test_official_default_pack.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_pack/models.py",
+        "domain/character_pack/validation.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/hashing.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_generate_test_impact_map.py",
+        "test_huapu.py",
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "huapu/__init__.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_layered_facade_cycles.py",
+        "test_linkeyun_character_data.py",
+        "test_soulforge_module_boundaries.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "character-pack.lock.json",
+        "huapu/character_pack_builder.py",
+        "huapu/character_pack_lock.py",
+        "huapu/inventory.py",
+        "huapu/licenses.py",
+        "huapu/receipts.py",
+        "huapu/rendering.py",
+        "huapu/schema.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_approved_asset_install.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2182,6 +2235,20 @@
         "test_wardrobe_builtin_recovery.py",
         "test_wardrobe_corrupt_listing.py",
         "test_wardrobe_ui.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/build_character_pack.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_huapu.py",
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2263,6 +2330,36 @@
         "test_reviewed_pose_dynamic_source.py",
         "test_reviewed_pose_rendering.py",
         "test_shyness.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/active_outfit_overlay.py"
+      ],
+      "tests": [
+        "test_active_outfit_overlay.py",
+        "test_active_outfit_overlay_makeup.py",
+        "test_animated_makeup_depth.py",
+        "test_closed_eye_makeup_regression.py",
+        "test_full_body_complete_expression.py",
+        "test_gesture_outfit_silhouettes.py",
+        "test_hairstyle_face_clip.py",
+        "test_installed_outfit_blink_roundtrip.py",
+        "test_installed_outfit_cache.py",
+        "test_makeup_blink_states.py",
+        "test_makeup_detail_controls.py",
+        "test_official_default_pack.py",
+        "test_outfit_hand_occlusion.py",
+        "test_outfit_overlay_hardening.py",
+        "test_outfit_phase_counts.py",
+        "test_rear_hair_composition.py",
+        "test_reviewed_garment_overlay.py",
+        "test_reviewed_pose_dynamic_source.py",
+        "test_reviewed_pose_overlay.py",
+        "test_shared_hand_region_provider.py",
+        "test_source_bound_garment_visibility.py",
+        "test_wardrobe_preview_composite.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3497,103 +3594,6 @@
     },
     {
       "paths": [
-        "domain/character_pack/__init__.py"
-      ],
-      "tests": [
-        "test_approved_asset_install.py",
-        "test_build_character_pack.py",
-        "test_character_pack.py",
-        "test_character_persona_data.py",
-        "test_character_runtime_data.py",
-        "test_character_source.py",
-        "test_check_pose_atlas_release.py",
-        "test_engine_identity_parameterization.py",
-        "test_fetch_character_pack.py",
-        "test_huapu.py",
-        "test_linkeyun_character_data.py",
-        "test_official_default_pack.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_pack/models.py",
-        "domain/character_pack/validation.py"
-      ],
-      "tests": [
-        "test_approved_asset_install.py",
-        "test_build_character_pack.py",
-        "test_character_pack.py",
-        "test_character_source.py",
-        "test_check_pose_atlas_release.py",
-        "test_fetch_character_pack.py",
-        "test_huapu.py",
-        "test_linkeyun_character_data.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "huapu/hashing.py"
-      ],
-      "tests": [
-        "test_approved_asset_install.py",
-        "test_build_character_pack.py",
-        "test_character_source.py",
-        "test_check_pose_atlas_release.py",
-        "test_fetch_character_pack.py",
-        "test_generate_test_impact_map.py",
-        "test_huapu.py",
-        "test_linkeyun_character_data.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "huapu/__init__.py"
-      ],
-      "tests": [
-        "test_approved_asset_install.py",
-        "test_build_character_pack.py",
-        "test_character_source.py",
-        "test_check_pose_atlas_release.py",
-        "test_fetch_character_pack.py",
-        "test_huapu.py",
-        "test_layered_facade_cycles.py",
-        "test_linkeyun_character_data.py",
-        "test_soulforge_module_boundaries.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "character-pack.lock.json",
-        "huapu/character_pack_builder.py",
-        "huapu/character_pack_lock.py",
-        "huapu/inventory.py",
-        "huapu/licenses.py",
-        "huapu/receipts.py",
-        "huapu/rendering.py",
-        "huapu/schema.py"
-      ],
-      "tests": [
-        "test_approved_asset_install.py",
-        "test_build_character_pack.py",
-        "test_character_source.py",
-        "test_check_pose_atlas_release.py",
-        "test_fetch_character_pack.py",
-        "test_huapu.py",
-        "test_linkeyun_character_data.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "huapu/approved_install.py",
         "tools/art_pipeline/approved_asset_install.py"
       ],
@@ -4109,6 +4109,34 @@
     },
     {
       "paths": [
+        "domain/constants.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_character_runtime_data.py",
+        "test_character_source.py",
+        "test_core_hand_regions.py",
+        "test_face_motion_interpolation.py",
+        "test_full_body_authored_blink.py",
+        "test_full_body_authored_speech.py",
+        "test_full_body_png_integrity.py",
+        "test_golden_render.py",
+        "test_layered_face_assets.py",
+        "test_layered_full_body.py",
+        "test_mouth_authority_geometry.py",
+        "test_pose_atlas_assets.py",
+        "test_pose_atlas_generation_provenance.py",
+        "test_pose_atlas_runtime_inventory.py",
+        "test_pose_atlas_static_identity_audit.py",
+        "test_preview_packaging.py",
+        "test_release_automation.py",
+        "test_wardrobe_body_profile_gate.py",
+        "test_wardrobe_current_weight_wiring.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "assets/mohan-halfbody.ico"
       ],
       "tests": [
@@ -4278,16 +4306,6 @@
     },
     {
       "paths": [
-        "assets/characters/mohan/persona/profile.json"
-      ],
-      "tests": [
-        "test_build_character_pack.py",
-        "test_character_source.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "domain/version_info.py"
       ],
       "tests": [
@@ -4307,25 +4325,23 @@
     },
     {
       "paths": [
-        "tools/build_character_pack.py"
-      ],
-      "tests": [
-        "test_build_character_pack.py",
-        "test_character_source.py",
-        "test_huapu.py",
-        "test_linkeyun_character_data.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "assets/characters/mohan/appearance/defaults.json"
       ],
       "tests": [
         "test_build_character_pack.py",
         "test_character_source.py",
         "test_official_default_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/mohan/persona/profile.json"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_character_source.py",
+        "test_preview_packaging.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

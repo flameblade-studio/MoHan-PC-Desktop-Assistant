@@ -4,7 +4,7 @@
 
 正式資料在 `docs/soulforge/module-boundary.json`（逐模組分類、違規基線與已修違規）。
 
-本文件把五個候選套件的 375 個 Python 模組逐一分成引擎 263、墨寒產品殼 52、炎劍畫譜 9、待拆 51。JSON 使用完整 module name，不用 glob；新增、刪除、重複或漏列模組都會使測試失敗。
+本文件把五個候選套件的 376 個 Python 模組逐一分成引擎 263、墨寒產品殼 53、炎劍畫譜 9、待拆 51。JSON 使用完整 module name，不用 glob；新增、刪除、重複或漏列模組都會使測試失敗。
 
 「引擎」是可移入 Soulforge 的角色中立能力。「墨寒產品殼」保留產品名稱、版本與倉庫、既有安裝資料位置、更新／備份格式、品牌視覺及最外層產品組裝。「炎劍畫譜」是素材稽核、證據與發布前驗證能力。「待拆」代表同檔仍同時擁有引擎與墨寒資料來源，例如直接呼叫 `load_mohan_character_data()` 的相容 facade；資料已外置不等於依賴已中立。
 
@@ -16,7 +16,7 @@
 
 正式数据在 `docs/soulforge/module-boundary.json`（逐模块分类、违规基线与已修违规）。
 
-本文档将五个候选包的 375 个 Python 模块逐一分为引擎 263、墨寒产品壳 52、炎剑画谱 9、待拆 51。JSON 使用完整 module name，不使用 glob；新增、删除、重复或漏列模块都会使测试失败。
+本文档将五个候选包的 376 个 Python 模块逐一分为引擎 263、墨寒产品壳 53、炎剑画谱 9、待拆 51。JSON 使用完整 module name，不使用 glob；新增、删除、重复或漏列模块都会使测试失败。
 
 “引擎”是可移入 Soulforge 的角色中立能力。“墨寒产品壳”保留产品名称、版本与仓库、现有安装数据位置、更新与备份格式、品牌视觉及最外层产品组装。“炎剑画谱”是素材审计、证据与发布前验证能力。“待拆”表示同一文件仍同时拥有引擎与墨寒数据来源，例如直接调用 `load_mohan_character_data()` 的兼容 facade；数据已外置不等于依赖已中立。
 
@@ -28,7 +28,7 @@
 
 The canonical data is `docs/soulforge/module-boundary.json` (per-module classification, violation baseline and removed violations).
 
-This document classifies all 375 Python modules in the five candidate packages: 263 engine modules, 52 MoHan product-shell modules, 9 Huapu modules, and 51 pending-split modules. The JSON uses exact module names rather than globs. Adding, removing, duplicating, or omitting a module fails the test.
+This document classifies all 376 Python modules in the five candidate packages: 263 engine modules, 53 MoHan product-shell modules, 9 Huapu modules, and 51 pending-split modules. The JSON uses exact module names rather than globs. Adding, removing, duplicating, or omitting a module fails the test.
 
 “Engine” means character-neutral capability that can move into Soulforge. “MoHan product shell” retains product identity, release version and repository, existing installed-data locations, update and backup formats, branded visuals, and outermost product composition. “Huapu” owns asset audit, evidence, and pre-publication validation. “Pending split” identifies a file that still owns both engine behavior and a MoHan data source, including compatibility facades that call `load_mohan_character_data()`; externalized data alone does not make the dependency neutral.
 
@@ -40,7 +40,7 @@ This package removes nine reverse dependencies that existed only to obtain HTTP,
 
 正式データは `docs/soulforge/module-boundary.json`（モジュール別分類、違反基準、解消済み違反）にあります。
 
-本書は五つの候補パッケージにある 375 個の Python モジュールを、エンジン 263、墨寒製品シェル 52、炎剣画譜 9、分割待ち 51 に一つずつ分類します。JSON は glob ではなく完全な module name を使用し、モジュールの追加、削除、重複、記載漏れをテスト失敗にします。
+本書は五つの候補パッケージにある 376 個の Python モジュールを、エンジン 263、墨寒製品シェル 53、炎剣画譜 9、分割待ち 51 に一つずつ分類します。JSON は glob ではなく完全な module name を使用し、モジュールの追加、削除、重複、記載漏れをテスト失敗にします。
 
 「エンジン」は Soulforge へ移せるキャラクター中立の機能です。「墨寒製品シェル」は製品識別、リリース版数とリポジトリ、既存のインストール済みデータ位置、更新とバックアップ形式、ブランド表示、最外層の製品構成を保持します。「炎剣画譜」は素材監査、証拠、公開前検証を所有します。「分割待ち」は一つのファイルがエンジン動作と墨寒データ源の両方を所有する状態であり、`load_mohan_character_data()` を直接呼ぶ互換 facade も含みます。データの外部化だけでは依存は中立になりません。
 
