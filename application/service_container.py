@@ -5,7 +5,7 @@ lazy import threading
 lazy import os
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
-lazy from pathlib import Path, PurePosixPath
+lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QObject
@@ -28,7 +28,6 @@ lazy from application.cloud_vision_ui_bridge import (
     CloudVisionServiceFactoryPort,
     StoredVisionAuthorizationSource,
 )
-lazy from application.companion_phrasebook import public_companion_line
 lazy from application.native_acceleration import NativeAcceleration
 lazy from application.presentation_ports import (
     AIWorkerPort,
@@ -47,28 +46,16 @@ lazy from domain.contracts import (
     SpeechProviderRegistryPort,
     default_character_display_name,
 )
-lazy from domain.app_profile import DEFAULT_PROFILE, default_persona_for_language
-lazy from domain.character_body_profile import body_profile_reference
-lazy from domain.character_full_body_rig import compatible_yaws
-lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_source import (
-    CharacterAppearanceContract,
-    CharacterAppearanceDefaults,
-    CharacterAssets,
-    CharacterBodyProfileReference,
-    CharacterCanvas,
-    CharacterPersona,
     CharacterSource,
     activate_character_source,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import (
     DEFAULT_UI_LANGUAGE,
     canonical_ui_language,
     localized_transcription_prompt,
 )
-lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.outfit_pack import MAKEUP_CANVASES
+lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.openai_vision_preferences import VisionDetail
 lazy from domain.speech_providers import (
     SYSTEM_LOCAL_PROVIDER,
@@ -83,6 +70,10 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
+lazy from infrastructure.bundled_character_source import (
+    BundledCharacterSource,
+    LegacyMohanCharacterSource,
+)
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
@@ -123,127 +114,36 @@ lazy from integrations.realtime_speech_output import RealtimeSpeechOutput
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
-class LegacyMohanCharacterSource(
-    CharacterAssets,
-    CharacterPersona,
-    CharacterAppearanceContract,
-):
-    """Expose current MoHan values without duplicating character data."""
+ACTIVE_CHARACTER_ENV = "MOHAN_ACTIVE_CHARACTER"
+DEFAULT_CHARACTER_ID = "mohan"
+SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID, "lin-keyun"})
 
-    def __init__(self, asset_root: Path) -> None:
-        self._asset_root = Path(asset_root)
 
-    @property
-    def assets(self) -> CharacterAssets:
-        return self
+def create_character_source(character_id: str) -> CharacterSource:
+    """Build and activate one supported bundled character source."""
 
-    @property
-    def persona(self) -> CharacterPersona:
-        return self
-
-    @property
-    def appearance(self) -> CharacterAppearanceContract:
-        return self
-
-    @property
-    def appearance_defaults(self) -> CharacterAppearanceDefaults:
-        return load_mohan_character_data().appearance_defaults
-
-    @property
-    def asset_root(self) -> Path:
-        return self._asset_root
-
-    def resolve_path(self, relative_path: str) -> Path:
-        normalized = _character_relative_path(relative_path)
-        root = self._asset_root.resolve(strict=True)
-        candidate = self._asset_root.joinpath(*normalized.parts)
-        if not candidate.resolve(strict=True).is_relative_to(root):
-            raise ValueError("Character asset paths must remain below the asset root.")
-        return candidate
-
-    @property
-    def canonical_name(self) -> str:
-        return str(DEFAULT_PROFILE["assistant_name"])
-
-    @property
-    def aliases(self) -> tuple[str, ...]:
-        wake_word = str(DEFAULT_PROFILE["wake_word"])
-        return () if wake_word == self.canonical_name else (wake_word,)
-
-    def display_name(self, language: str) -> str:
-        canonical_ui_language(language)
-        return self.canonical_name
-
-    def default_user_title(self, language: str) -> str:
-        canonical_ui_language(language)
-        return str(DEFAULT_PROFILE["user_title"])
-
-    def persona_prompt(self, language: str) -> str:
-        return default_persona_for_language(language)
-
-    def dialogue_line(
-        self,
-        language: str,
-        key: str,
-        *,
-        variation_index: int = 0,
-    ) -> str:
-        return public_companion_line(
-            language,
-            key,
-            variation_index=variation_index,
+    selected = str(character_id).strip()
+    if selected not in SUPPORTED_CHARACTER_IDS:
+        choices = ", ".join(sorted(SUPPORTED_CHARACTER_IDS))
+        raise RuntimeError(
+            f"Unsupported active character {selected!r}; choose one of: {choices}."
         )
-
-    @property
-    def body_profile(self) -> CharacterBodyProfileReference:
-        reference = body_profile_reference()
-        profile_id = reference["id"]
-        version = reference["version"]
-        if (
-            not isinstance(profile_id, str)
-            or not isinstance(version, int)
-            or isinstance(version, bool)
-        ):
-            raise TypeError("The legacy body-profile reference is invalid.")
-        return CharacterBodyProfileReference(
-            profile_id=profile_id,
-            version=version,
-        )
-
-    @property
-    def view_ids(self) -> tuple[str, ...]:
-        return tuple(canonical_view_id(yaw) for yaw in compatible_yaws())
-
-    @property
-    def fullbody_canvas(self) -> CharacterCanvas:
-        width, height = MAKEUP_CANVASES["full-body"]
-        return CharacterCanvas(width, height, "RGBA")
-
-    @property
-    def halfbody_canvas(self) -> CharacterCanvas:
-        width, height = MAKEUP_CANVASES["half-body"]
-        return CharacterCanvas(width, height, "RGBA")
-
-    @property
-    def layer_order(self) -> tuple[str, ...]:
-        return FULL_BODY_LAYER_Z_ORDER
-
-
-def _character_relative_path(value: str) -> PurePosixPath:
-    if not isinstance(value, str) or not value or "\\" in value:
-        raise ValueError("Character asset paths must use relative POSIX syntax.")
-    path = PurePosixPath(value)
-    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
-        raise ValueError("Character asset paths must use canonical relative syntax.")
-    return path
+    root = resource_path(".")
+    source: CharacterSource = (
+        LegacyMohanCharacterSource(root)
+        if selected == DEFAULT_CHARACTER_ID
+        else BundledCharacterSource(root, selected)
+    )
+    activate_character_source(source)
+    return source
 
 
 def create_default_character_source() -> CharacterSource:
-    """Compose the compatibility source used by the unchanged MoHan runtime."""
+    """Select the launch-configured character while keeping MoHan as default."""
 
-    source = LegacyMohanCharacterSource(resource_path("."))
-    activate_character_source(source)
-    return source
+    return create_character_source(
+        os.environ.get(ACTIVE_CHARACTER_ENV, DEFAULT_CHARACTER_ID)
+    )
 
 
 @dataclass
@@ -370,7 +270,12 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
-    character_source = create_default_character_source()
+    return _create_presentation_ports(create_default_character_source())
+
+
+def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
+    """Build presentation adapters from the already selected character source."""
+
     asset_root = character_source.assets.asset_root
     official_pack_root = asset_root / "assets" / "official-packs"
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
@@ -613,6 +518,7 @@ def create_default_services(
     ui_language: str | None = None,
 ) -> CompanionServices:
     runtime_platform = platform_services or current_platform_services()
+    character_source = create_default_character_source()
     data_path.mkdir(parents=True, exist_ok=True)
     db = StudioDB(data_path / "mohan.db")
     language_value = (
@@ -722,7 +628,7 @@ def create_default_services(
             pcm_acceleration=pcm_acceleration,
         ),
         listener=listener,
-        presentation_ports=create_presentation_ports(),
+        presentation_ports=_create_presentation_ports(character_source),
         realtime_speech_output=_realtime_speech_output(
             runtime_platform,
             parent,

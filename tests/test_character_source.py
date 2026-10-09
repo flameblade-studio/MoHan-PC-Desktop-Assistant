@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import json
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 lazy import pytest
 
@@ -22,6 +23,7 @@ lazy from domain.character_source import (
     CharacterAssets,
     CharacterPersona,
     CharacterSource,
+    CharacterVoice,
 )
 lazy from domain.constants import (
     FULL_BODY_LAYER_Z_ORDER,
@@ -367,11 +369,13 @@ def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
     assert isinstance(source.assets, CharacterAssets)
     assert isinstance(source.persona, CharacterPersona)
     assert isinstance(source.appearance, CharacterAppearanceContract)
+    assert isinstance(source.voice, CharacterVoice)
     assert source.validation_result.valid
     assert source.canonical_name == legacy.canonical_name
     assert source.aliases == legacy.aliases
     assert source.body_profile == legacy.body_profile
     assert source.appearance_defaults == legacy.appearance_defaults
+    assert source.voice_profile == legacy.voice_profile
     assert source.view_ids == legacy.view_ids
     assert source.fullbody_canvas == legacy.fullbody_canvas
     assert source.halfbody_canvas == legacy.halfbody_canvas
@@ -434,6 +438,7 @@ def test_default_source_matches_every_existing_public_contract_field() -> None:
     )
     assert source.layer_order == FULL_BODY_LAYER_Z_ORDER
     assert source.appearance_defaults == load_mohan_character_data().appearance_defaults
+    assert source.voice_profile == load_mohan_character_data().voice
     for language in LANGUAGES:
         assert source.display_name(language) == DEFAULT_PROFILE["assistant_name"]
         assert source.default_user_title(language) == DEFAULT_PROFILE["user_title"]
@@ -458,7 +463,12 @@ def test_presentation_composition_uses_injected_character_asset_root(
     (root / "assets" / "official-packs").mkdir(parents=True)
     expected_atlas = root / POSE_ATLAS_RELATIVE_ROOT
     expected_atlas.mkdir(parents=True)
-    source = service_container.LegacyMohanCharacterSource(root)
+    source = SimpleNamespace(
+        assets=SimpleNamespace(
+            asset_root=root,
+            resolve_path=lambda relative: root / relative,
+        ),
+    )
     monkeypatch.setattr(
         service_container,
         "create_default_character_source",
@@ -480,9 +490,9 @@ def test_presentation_composition_uses_injected_character_asset_root(
     assert renderer["display_placement"] == expected_atlas
 
 
-def test_preview_packager_includes_complete_mohan_character_directory() -> None:
+def test_preview_packager_includes_complete_character_directory() -> None:
     source = (
         Path(__file__).resolve().parents[1] / "tools" / "build_preview_package.py"
     ).read_text(encoding="utf-8")
-    assert "ROOT / 'assets' / 'characters' / 'mohan'" in source
-    assert "assets/characters/mohan" in source
+    assert "ROOT / 'assets' / 'characters'" in source
+    assert "assets/characters" in source

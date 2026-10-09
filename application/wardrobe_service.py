@@ -6,11 +6,8 @@ lazy from pathlib import Path
 
 lazy from domain.autonomous_wardrobe import WardrobeCandidate
 lazy from domain.contracts import default_character_display_name
+lazy from domain.character_source import active_character_source
 lazy from domain.outfit_pack import (
-    BUILTIN_MAKEUP_PACK_ID,
-    BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS,
-    BUILTIN_MAKEUP_MENU_VARIANTS,
-    BUILTIN_MAKEUP_VARIANTS,
     FOUNDATION_SLOT,
     InstalledEnsemble,
     IncompatibleBodyProfileError,
@@ -47,6 +44,8 @@ lazy from domain.outfit_pack_makeup import (
 )
 lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_PACK_ID,
+    _load_official_appearance,
+    official_outfit_pack_id,
     official_outfit_ensemble,
 )
 
@@ -115,7 +114,7 @@ def _localized_name(selection: InstalledSelection, language: str) -> str:
 
 
 def _ensemble_id(ensemble: InstalledEnsemble) -> str:
-    if ensemble.pack_id == OFFICIAL_OUTFIT_PACK_ID:
+    if ensemble.pack_id == official_outfit_pack_id():
         return BUILTIN_OUTFIT_ID
     return "/".join((ensemble.pack_id, ensemble.ensemble_id))
 
@@ -141,13 +140,24 @@ def _localized_ensemble_name(
 
 
 def _makeup_option_id(pack_id: str, item_id: str, variant_id: str) -> str:
+    appearance = _load_official_appearance()
     if pack_id == "builtin" and item_id == "none":
         return BARE_MAKEUP_ID
-    if pack_id in {"builtin", BUILTIN_MAKEUP_PACK_ID}:
+    if pack_id in {"builtin", appearance.makeup_pack_id}:
         # The ``builtin/builtin/builtin`` sentinel of a fresh profile means the classic variant.
-        variant = variant_id if variant_id in BUILTIN_MAKEUP_VARIANTS else BUILTIN_MAKEUP_VARIANTS[0]
+        variant = (
+            variant_id
+            if variant_id in appearance.makeup_variants
+            else appearance.makeup_variants[0]
+        )
         return f"{BUILTIN_MAKEUP_PREFIX}{variant}"
     return "/".join((pack_id, item_id, variant_id))
+
+
+def _builtin_outfit_fallback_name(language: str) -> str:
+    if official_outfit_pack_id() == OFFICIAL_OUTFIT_PACK_ID:
+        return BUILTIN_OUTFIT_FALLBACK_NAME
+    return active_character_source().persona.display_name(language)
 
 
 class WardrobeService:
@@ -176,12 +186,16 @@ class WardrobeService:
             official_pack_root=self.official_pack_root,
         )
         official = official_outfit_ensemble(every_ensemble)
+        official_pack_id = official_outfit_pack_id()
         installed_ensembles = tuple(
-            ensemble for ensemble in every_ensemble if ensemble.pack_id != OFFICIAL_OUTFIT_PACK_ID
+            ensemble for ensemble in every_ensemble
+            if ensemble.pack_id != official_pack_id
         )
         built_in = InstalledOutfit(
             BUILTIN_OUTFIT_ID,
-            BUILTIN_OUTFIT_FALLBACK_NAME if official is None else _localized_pack_name(official, language),
+            _builtin_outfit_fallback_name(language)
+            if official is None
+            else _localized_pack_name(official, language),
             True,
             True,
             ensemble=official,
@@ -294,6 +308,7 @@ class WardrobeService:
 
     def makeup_options(self, language: str = "zh-TW") -> tuple[MakeupOption, ...]:
         """Bare face, available built-in variants, then every installed makeup variant."""
+        appearance = _load_official_appearance()
         installed = list_installed_selections(
             self.install_root,
             "makeup",
@@ -302,12 +317,13 @@ class WardrobeService:
         official = {
             selection.variant_id: selection
             for selection in installed
-            if selection.pack_id == BUILTIN_MAKEUP_PACK_ID
+            if selection.pack_id == appearance.makeup_pack_id
         }
         menu_variants = tuple(
             variant_id
-            for variant_id in BUILTIN_MAKEUP_MENU_VARIANTS
-            if variant_id in official or variant_id in BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS
+            for variant_id in appearance.makeup_menu_variants
+            if variant_id in official
+            or variant_id in appearance.makeup_always_visible_variants
         )
         built_in = tuple(
             MakeupOption(
@@ -328,12 +344,13 @@ class WardrobeService:
                 selection,
             )
             for selection in installed
-            if selection.pack_id != BUILTIN_MAKEUP_PACK_ID
+            if selection.pack_id != appearance.makeup_pack_id
         )
         return (MakeupOption(BARE_MAKEUP_ID, "", True, True), *built_in, *packs)
 
     def active_makeup(self) -> MakeupState:
         """The effective makeup option; ``fallback`` marks a vanished pack replaced by the built-in default."""
+        appearance = _load_official_appearance()
         resolution = resolve_active_selection(
             self.install_root,
             "makeup",
@@ -355,14 +372,16 @@ class WardrobeService:
             and resolution.requested_item_id != "none"
             and (
                 resolution.requested_variant_id == "builtin"
-                or resolution.requested_variant_id in BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS
+                or resolution.requested_variant_id
+                in appearance.makeup_always_visible_variants
             )
         ):
             # The built-in variant is chosen but its official art is not shipped yet:
             # keep showing the user's choice rather than pretending they picked bare.
             effective = requested
         fallback = (
-            resolution.requested_pack_id not in {"builtin", BUILTIN_MAKEUP_PACK_ID}
+            resolution.requested_pack_id
+            not in {"builtin", appearance.makeup_pack_id}
             and resolution.requested_pack_id != resolution.effective_pack_id
         )
         return MakeupState(effective, requested, fallback)

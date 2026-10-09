@@ -172,9 +172,11 @@ class ExasperatedCandidateAppearance:
         makeup = resolve_active_selection(
             self.store, "makeup", official_pack_root=self.official_pack_root,
         )
-        if garment.effective_pack_id not in {"builtin", OFFICIAL_OUTFIT_PACK_ID}:
+        active_outfit_pack_id = outfit_pack_official.official_outfit_pack_id()
+        active_makeup_pack_id = outfit_pack_official.builtin_makeup_pack_id()
+        if garment.effective_pack_id not in {"builtin", active_outfit_pack_id}:
             raise ValueError("Selected garment has no source-bound exasperated candidate.")
-        if makeup.effective_pack_id not in {"builtin", BUILTIN_MAKEUP_PACK_ID}:
+        if makeup.effective_pack_id not in {"builtin", active_makeup_pack_id}:
             raise ValueError("Selected cosmetics have no source-bound exasperated candidate.")
         if self.schema == VARIANT_SCHEMA:
             if makeup.effective_pack_id == "builtin":
@@ -185,14 +187,15 @@ class ExasperatedCandidateAppearance:
                 self._selected_variant = makeup.effective_variant_id
         else:
             if (
-                makeup.effective_pack_id == BUILTIN_MAKEUP_PACK_ID
+                makeup.effective_pack_id == active_makeup_pack_id
                 and makeup.effective_variant_id not in REQUIRED_LOOK_VARIANTS
             ):
                 raise ValueError("Selected makeup variant is unavailable in the candidate appearance.")
             self._selected_variant = None
         intensity = (
             read_makeup_intensity(self.store)
-            if self.cosmetics_available and makeup.effective_pack_id == BUILTIN_MAKEUP_PACK_ID
+            if self.cosmetics_available
+            and makeup.effective_pack_id == active_makeup_pack_id
             else 0.0
         )
         if self.schema != VARIANT_SCHEMA and makeup.effective_variant_id == "light":
@@ -201,7 +204,7 @@ class ExasperatedCandidateAppearance:
         self.set_makeup_intensities(
             {slot: intensity * slots[slot] for slot in self.cosmetic_slots}
         )
-        self.garment_enabled = garment.effective_pack_id == OFFICIAL_OUTFIT_PACK_ID
+        self.garment_enabled = garment.effective_pack_id == active_outfit_pack_id
 
     def apply(
         self, frame: QPixmap, silhouette: str, *, mouth_expression: str | None = None,

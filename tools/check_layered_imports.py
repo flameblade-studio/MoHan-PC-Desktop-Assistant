@@ -60,6 +60,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.active_outfit_overlay",
         "infrastructure.app_resources",
         "infrastructure.backup_manager",
+        "infrastructure.bundled_character_source",
         "infrastructure.core_hand_regions",
         "infrastructure.db",
         "infrastructure.exasperated_candidate_appearance",

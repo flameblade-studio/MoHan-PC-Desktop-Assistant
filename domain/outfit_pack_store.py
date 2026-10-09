@@ -19,11 +19,33 @@ def _installed_pack_paths(
     store: Path,
     *,
     official_pack_root: Path,
+    official_pack_ids: frozenset[str] | None = None,
 ) -> tuple[Path, ...]:
     """User-installed packs first, then the official packs shipped with the app (always restorable)."""
     paths = []
-    for root in (Path(store) / "packages", Path(official_pack_root)):
-        paths.extend(sorted(root.glob("*.mohan-outfit")) if root.is_dir() else ())
+    installed_root = Path(store) / "packages"
+    if installed_root.is_dir():
+        paths.extend(sorted(installed_root.glob("*.mohan-outfit")))
+    official_root = Path(official_pack_root)
+    if official_root.is_dir():
+        official_paths = sorted(official_root.glob("*.mohan-outfit"))
+        installed_ids = {path.stem for path in paths}
+        duplicate = next(
+            (path for path in official_paths if path.stem in installed_ids),
+            None,
+        )
+        if duplicate is not None:
+            raise OutfitPackError(
+                "Appearance pack identifiers must be unique.",
+                reason="duplicate_pack_id",
+                pack_id=duplicate.stem,
+                asset_path=duplicate.name,
+            )
+        paths.extend(
+            official_paths
+            if official_pack_ids is None
+            else (path for path in official_paths if path.stem in official_pack_ids)
+        )
     pack_ids: dict[str, Path] = {}
     for path in paths:
         previous = pack_ids.setdefault(path.stem, path)

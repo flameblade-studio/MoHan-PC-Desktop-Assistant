@@ -147,7 +147,7 @@
       "work_package": null
     },
     {
-      "bytes": 20690,
+      "bytes": 21265,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -158,7 +158,7 @@
         {
           "content_kind": "product_shell",
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
-          "line": 56,
+          "line": 55,
           "matched": "mohan.default.blue-silver",
           "path": "application/wardrobe_service.py",
           "rule": "persisted_identifier",
@@ -208,84 +208,89 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "ba604d6ae72f9fe55994a176db2c48693ac738e775b9941a302afe596ed7b9da",
+      "sha256": "bc463b6d3501a7cf9e1948c439e8954af6aa616d16cd6b4be19a6d55a8475848",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
       "symbols": [
         {
-          "end_line": 56,
-          "line": 56,
+          "end_line": 55,
+          "line": 55,
           "name": "BUILTIN_OUTFIT_ID"
         },
         {
-          "end_line": 59,
-          "line": 57,
+          "end_line": 58,
+          "line": 56,
           "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
+        },
+        {
+          "end_line": 59,
+          "line": 59,
+          "name": "BARE_MAKEUP_ID"
         },
         {
           "end_line": 60,
           "line": 60,
-          "name": "BARE_MAKEUP_ID"
+          "name": "BUILTIN_MAKEUP_PREFIX"
         },
         {
           "end_line": 61,
           "line": 61,
-          "name": "BUILTIN_MAKEUP_PREFIX"
-        },
-        {
-          "end_line": 62,
-          "line": 62,
           "name": "SELECTION_ID_PARTS"
         },
         {
-          "end_line": 72,
-          "line": 66,
+          "end_line": 71,
+          "line": 65,
           "name": "InstalledOutfit"
         },
         {
-          "end_line": 90,
-          "line": 76,
+          "end_line": 89,
+          "line": 75,
           "name": "MakeupOption"
         },
         {
-          "end_line": 97,
-          "line": 94,
+          "end_line": 96,
+          "line": 93,
           "name": "MakeupState"
         },
         {
-          "end_line": 103,
-          "line": 100,
+          "end_line": 102,
+          "line": 99,
           "name": "_selection_id"
         },
         {
-          "end_line": 114,
-          "line": 106,
+          "end_line": 113,
+          "line": 105,
           "name": "_localized_name"
         },
         {
-          "end_line": 120,
-          "line": 117,
+          "end_line": 119,
+          "line": 116,
           "name": "_ensemble_id"
         },
         {
-          "end_line": 125,
-          "line": 123,
+          "end_line": 124,
+          "line": 122,
           "name": "_localized_pack_name"
         },
         {
-          "end_line": 140,
-          "line": 128,
+          "end_line": 139,
+          "line": 127,
           "name": "_localized_ensemble_name"
         },
         {
-          "end_line": 150,
-          "line": 143,
+          "end_line": 154,
+          "line": 142,
           "name": "_makeup_option_id"
         },
         {
-          "end_line": 558,
-          "line": 153,
+          "end_line": 160,
+          "line": 157,
+          "name": "_builtin_outfit_fallback_name"
+        },
+        {
+          "end_line": 577,
+          "line": 163,
           "name": "WardrobeService"
         }
       ],
@@ -327,7 +332,7 @@
       "path": "assets/characters/lin-keyun/dialogue/en.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -344,7 +349,7 @@
       "path": "assets/characters/lin-keyun/dialogue/events.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -361,7 +366,7 @@
       "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -395,7 +400,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -412,7 +417,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -429,7 +434,7 @@
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 123,
+          "line": 126,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -457,7 +462,7 @@
       "path": "assets/characters/lin-keyun/persona/en.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -474,7 +479,7 @@
       "path": "assets/characters/lin-keyun/persona/ja-JP.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -491,7 +496,7 @@
       "path": "assets/characters/lin-keyun/persona/profile.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -525,7 +530,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-CN.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -542,7 +547,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-TW.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -559,7 +564,7 @@
       "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 122,
+          "line": 125,
           "path": "infrastructure/character_source_pack.py",
           "text": "rig = _load_rig(root, rig_component)"
         }
@@ -593,7 +598,7 @@
       "path": "assets/characters/lin-keyun/voice/profile.json",
       "readers": [
         {
-          "line": 121,
+          "line": 124,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(character_root_path, character_root.as_posix())"
         }
@@ -13667,7 +13672,7 @@
       "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13694,7 +13699,7 @@
       "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13721,7 +13726,7 @@
       "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13748,7 +13753,7 @@
       "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13775,7 +13780,7 @@
       "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13802,7 +13807,7 @@
       "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13829,7 +13834,7 @@
       "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13856,7 +13861,7 @@
       "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13883,7 +13888,7 @@
       "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13910,7 +13915,7 @@
       "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13937,7 +13942,7 @@
       "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13964,7 +13969,7 @@
       "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -13991,7 +13996,7 @@
       "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14018,7 +14023,7 @@
       "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14045,7 +14050,7 @@
       "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14072,7 +14077,7 @@
       "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14099,7 +14104,7 @@
       "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14126,7 +14131,7 @@
       "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14153,7 +14158,7 @@
       "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14180,7 +14185,7 @@
       "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14207,7 +14212,7 @@
       "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14234,7 +14239,7 @@
       "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14261,7 +14266,7 @@
       "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14288,7 +14293,7 @@
       "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14315,7 +14320,7 @@
       "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14342,7 +14347,7 @@
       "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14369,7 +14374,7 @@
       "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14396,7 +14401,7 @@
       "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14423,7 +14428,7 @@
       "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14450,7 +14455,7 @@
       "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14477,7 +14482,7 @@
       "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14504,7 +14509,7 @@
       "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14531,7 +14536,7 @@
       "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14558,7 +14563,7 @@
       "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14585,7 +14590,7 @@
       "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14612,7 +14617,7 @@
       "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14639,7 +14644,7 @@
       "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14666,7 +14671,7 @@
       "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14693,7 +14698,7 @@
       "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14720,7 +14725,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14747,7 +14752,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14774,7 +14779,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14801,7 +14806,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14828,7 +14833,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14855,7 +14860,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14882,7 +14887,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14909,7 +14914,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14936,7 +14941,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14963,7 +14968,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -14990,7 +14995,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15017,7 +15022,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15044,7 +15049,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15071,7 +15076,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15098,7 +15103,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15125,7 +15130,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15152,7 +15157,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15179,7 +15184,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15206,7 +15211,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15233,7 +15238,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15260,7 +15265,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15287,7 +15292,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15314,7 +15319,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15341,7 +15346,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15368,7 +15373,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15395,7 +15400,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15422,7 +15427,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15449,7 +15454,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15476,7 +15481,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15503,7 +15508,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15530,7 +15535,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15557,7 +15562,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15584,7 +15589,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15611,7 +15616,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15638,7 +15643,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15665,7 +15670,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15692,7 +15697,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15719,7 +15724,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15746,7 +15751,7 @@
       "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15763,7 +15768,7 @@
       "path": "assets/makeup-safe-regions.json",
       "readers": [
         {
-          "line": 342,
+          "line": 339,
           "path": "domain/outfit_pack_makeup.py",
           "text": "payload = json.loads(source.read_text(encoding=\"utf-8\"))"
         }
@@ -15798,7 +15803,7 @@
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15833,7 +15838,7 @@
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15868,7 +15873,7 @@
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15903,7 +15908,7 @@
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15938,7 +15943,7 @@
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -15973,7 +15978,7 @@
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16000,7 +16005,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16027,7 +16032,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16054,7 +16059,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16081,7 +16086,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16108,7 +16113,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16135,7 +16140,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16162,7 +16167,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16189,7 +16194,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16216,7 +16221,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16243,7 +16248,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16270,7 +16275,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16297,7 +16302,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16324,7 +16329,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16351,7 +16356,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16378,7 +16383,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16405,7 +16410,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16432,7 +16437,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16459,7 +16464,7 @@
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16494,7 +16499,7 @@
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16529,7 +16534,7 @@
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16564,7 +16569,7 @@
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16599,7 +16604,7 @@
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16634,7 +16639,7 @@
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16669,7 +16674,7 @@
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16704,7 +16709,7 @@
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16739,7 +16744,7 @@
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16774,7 +16779,7 @@
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16809,7 +16814,7 @@
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16844,7 +16849,7 @@
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16879,7 +16884,7 @@
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16914,7 +16919,7 @@
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16949,7 +16954,7 @@
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -16984,7 +16989,7 @@
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -17019,7 +17024,7 @@
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-foundation-closed.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -17054,7 +17059,7 @@
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-foundation-half.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -17089,7 +17094,7 @@
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-foundation-rest.png",
       "readers": [
         {
-          "line": 190,
+          "line": 187,
           "path": "domain/outfit_pack_makeup.py",
           "text": "data = mask_path.read_bytes()"
         }
@@ -20131,7 +20136,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 375,
+          "line": 280,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47902,7 +47907,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 375,
+          "line": 280,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -89616,9 +89621,9 @@
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
         },
         {
-          "line": 70,
+          "line": 58,
           "path": "application/service_container.py",
-          "text": "lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT"
+          "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
         },
         {
           "line": 8,
@@ -89671,7 +89676,7 @@
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
         },
         {
-          "line": 29,
+          "line": 30,
           "path": "domain/outfit_pack_makeup.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES"
         },
@@ -90236,7 +90241,7 @@
       "work_package": null
     },
     {
-      "bytes": 8301,
+      "bytes": 10309,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -90247,7 +90252,7 @@
         {
           "content_kind": "product_shell",
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
-          "line": 40,
+          "line": 54,
           "matched": "mohan.default.blue-silver",
           "path": "domain/outfit_pack_official.py",
           "rule": "persisted_identifier",
@@ -90261,14 +90266,14 @@
       "path": "domain/outfit_pack_official.py",
       "readers": [
         {
-          "line": 48,
+          "line": 45,
           "path": "application/wardrobe_service.py",
           "text": "lazy from domain.outfit_pack_official import ("
         },
         {
           "line": 34,
           "path": "domain/outfit_pack.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel"
+          "text": "lazy from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_ids, resolve_builtin_sentinel"
         },
         {
           "line": 12,
@@ -90283,158 +90288,193 @@
         {
           "line": 32,
           "path": "infrastructure/active_outfit_overlay_layers.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID"
+          "text": "lazy from domain.outfit_pack_official import official_outfit_pack_id"
         },
         {
           "line": 14,
           "path": "presentation/dashboard_wardrobe_categories.py",
-          "text": "lazy from domain.outfit_pack_official import OFFICIAL_NATIVE_HAIR_ALIAS"
+          "text": "lazy from domain.outfit_pack_official import official_native_hair_alias"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "fee0f5bb1df4c45e9c3118543b4bc7eb904e27304237e6bd9b4087ca8476810a",
+      "sha256": "5a6102621d4e5b62f837a450b8dc62455c373d9e30d5d83de2f607f643b64f20",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
       "symbols": [
         {
-          "end_line": 34,
-          "line": 29,
+          "end_line": 31,
+          "line": 31,
+          "name": "_LOGGER"
+        },
+        {
+          "end_line": 45,
+          "line": 34,
           "name": "_load_official_appearance"
-        },
-        {
-          "end_line": 37,
-          "line": 37,
-          "name": "_APPEARANCE"
-        },
-        {
-          "end_line": 40,
-          "line": 40,
-          "name": "DEFAULT_OUTFIT_SELECTION_ID"
-        },
-        {
-          "end_line": 41,
-          "line": 41,
-          "name": "BUILTIN_MAKEUP_PACK_ID"
-        },
-        {
-          "end_line": 42,
-          "line": 42,
-          "name": "BUILTIN_MAKEUP_ITEM_ID"
-        },
-        {
-          "end_line": 43,
-          "line": 43,
-          "name": "BUILTIN_MAKEUP_VARIANTS"
-        },
-        {
-          "end_line": 46,
-          "line": 46,
-          "name": "BUILTIN_MAKEUP_MENU_VARIANTS"
-        },
-        {
-          "end_line": 50,
-          "line": 50,
-          "name": "BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS"
         },
         {
           "end_line": 51,
           "line": 51,
-          "name": "OFFICIAL_OUTFIT_PACK_ID"
+          "name": "_COMPATIBILITY_APPEARANCE"
         },
         {
-          "end_line": 52,
-          "line": 52,
-          "name": "OFFICIAL_OUTFIT_ENSEMBLE_ID"
+          "end_line": 54,
+          "line": 54,
+          "name": "DEFAULT_OUTFIT_SELECTION_ID"
+        },
+        {
+          "end_line": 55,
+          "line": 55,
+          "name": "BUILTIN_MAKEUP_PACK_ID"
+        },
+        {
+          "end_line": 56,
+          "line": 56,
+          "name": "BUILTIN_MAKEUP_ITEM_ID"
+        },
+        {
+          "end_line": 57,
+          "line": 57,
+          "name": "BUILTIN_MAKEUP_VARIANTS"
         },
         {
           "end_line": 60,
-          "line": 56,
-          "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
+          "line": 60,
+          "name": "BUILTIN_MAKEUP_MENU_VARIANTS"
         },
         {
-          "end_line": 61,
-          "line": 61,
-          "name": "_NATIVE_HEADWEAR"
+          "end_line": 66,
+          "line": 64,
+          "name": "BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS"
+        },
+        {
+          "end_line": 67,
+          "line": 67,
+          "name": "OFFICIAL_OUTFIT_PACK_ID"
         },
         {
           "end_line": 68,
-          "line": 64,
-          "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
-        },
-        {
-          "end_line": 70,
-          "line": 70,
-          "name": "OFFICIAL_OUTFIT_CATEGORIES"
-        },
-        {
-          "end_line": 72,
-          "line": 72,
-          "name": "OFFICIAL_PACK_IDS"
-        },
-        {
-          "end_line": 73,
-          "line": 73,
-          "name": "BARE_SELECTION"
-        },
-        {
-          "end_line": 75,
-          "line": 75,
-          "name": "Identity"
+          "line": 68,
+          "name": "OFFICIAL_OUTFIT_ENSEMBLE_ID"
         },
         {
           "end_line": 76,
-          "line": 76,
+          "line": 72,
+          "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
+        },
+        {
+          "end_line": 77,
+          "line": 77,
+          "name": "_NATIVE_HEADWEAR"
+        },
+        {
+          "end_line": 83,
+          "line": 79,
+          "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
+        },
+        {
+          "end_line": 85,
+          "line": 85,
+          "name": "OFFICIAL_OUTFIT_CATEGORIES"
+        },
+        {
+          "end_line": 87,
+          "line": 87,
+          "name": "OFFICIAL_PACK_IDS"
+        },
+        {
+          "end_line": 88,
+          "line": 88,
+          "name": "BARE_SELECTION"
+        },
+        {
+          "end_line": 90,
+          "line": 90,
+          "name": "Identity"
+        },
+        {
+          "end_line": 91,
+          "line": 91,
           "name": "Resolution"
         },
         {
-          "end_line": 96,
-          "line": 79,
-          "name": "is_official_native_alias"
+          "end_line": 95,
+          "line": 94,
+          "name": "official_outfit_pack_id"
         },
         {
-          "end_line": 107,
-          "line": 99,
-          "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
+          "end_line": 99,
+          "line": 98,
+          "name": "official_outfit_ensemble_id"
         },
         {
-          "end_line": 123,
-          "line": 110,
-          "name": "native_overlay_is_redundant"
+          "end_line": 103,
+          "line": 102,
+          "name": "builtin_makeup_pack_id"
+        },
+        {
+          "end_line": 108,
+          "line": 106,
+          "name": "official_pack_ids"
+        },
+        {
+          "end_line": 119,
+          "line": 111,
+          "name": "official_native_hair_alias"
         },
         {
           "end_line": 129,
-          "line": 126,
+          "line": 122,
+          "name": "official_native_headwear_alias"
+        },
+        {
+          "end_line": 139,
+          "line": 132,
+          "name": "is_official_native_alias"
+        },
+        {
+          "end_line": 150,
+          "line": 142,
+          "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
+        },
+        {
+          "end_line": 166,
+          "line": 153,
+          "name": "native_overlay_is_redundant"
+        },
+        {
+          "end_line": 172,
+          "line": 169,
           "name": "SelectionLike"
         },
         {
-          "end_line": 135,
-          "line": 132,
+          "end_line": 178,
+          "line": 175,
           "name": "EnsembleSelectionLike"
         },
         {
-          "end_line": 141,
-          "line": 138,
+          "end_line": 184,
+          "line": 181,
           "name": "EnsembleLike"
         },
         {
-          "end_line": 155,
-          "line": 144,
+          "end_line": 204,
+          "line": 187,
           "name": "official_outfit_ensemble"
         },
         {
-          "end_line": 165,
-          "line": 158,
+          "end_line": 214,
+          "line": 207,
           "name": "builtin_makeup_resolution"
         },
         {
-          "end_line": 183,
-          "line": 168,
+          "end_line": 238,
+          "line": 217,
           "name": "builtin_outfit_resolution"
         },
         {
-          "end_line": 201,
-          "line": 186,
+          "end_line": 256,
+          "line": 241,
           "name": "resolve_builtin_sentinel"
         }
       ],
@@ -90633,7 +90673,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 84,
+          "line": 71,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -90730,7 +90770,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 104,
+          "line": 95,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -90900,7 +90940,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 106,
+          "line": 97,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }

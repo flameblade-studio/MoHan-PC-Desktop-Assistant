@@ -11,7 +11,7 @@ lazy from domain.outfit_pack import (
 )
 lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_CATEGORIES,
-    OFFICIAL_OUTFIT_PACK_ID,
+    official_outfit_pack_id,
 )
 lazy from infrastructure.active_outfit_overlay_layers import FULL_BODY_CANVAS
 lazy from infrastructure.source_bound_garment_visibility import (
@@ -93,7 +93,7 @@ class ActiveOutfitBaseClearMixin:
         if not garment_is_active:
             return None
         garment = self._resolve_base_clear_selection("garment")
-        if garment.effective_pack_id != OFFICIAL_OUTFIT_PACK_ID:
+        if garment.effective_pack_id != official_outfit_pack_id():
             return None
         silhouette = self._official_silhouette_region(view_id, canvas_size)
         if silhouette is None:
@@ -111,7 +111,10 @@ class ActiveOutfitBaseClearMixin:
         result = True
         for category in OFFICIAL_OUTFIT_CATEGORIES:
             selected = self._resolve_base_clear_selection(category)
-            if getattr(selected, "effective_pack_id", None) == OFFICIAL_OUTFIT_PACK_ID:
+            if (
+                getattr(selected, "effective_pack_id", None)
+                == official_outfit_pack_id()
+            ):
                 continue
             requested = tuple(
                 getattr(selected, f"requested_{field}", None)
