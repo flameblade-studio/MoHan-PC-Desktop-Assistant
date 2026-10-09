@@ -464,7 +464,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "46902c8168fd6785dbd6d4b624876adcaacb140fc06d91bc975e8f422adcff97"
+      "sha256": "c1fab2627fe698e54d48e69c88e1e0ba11dc223a36d4624b2f57d22c73251f0c"
     },
     {
       "bytes": 2163,
@@ -637,7 +637,7 @@
       "sha256": "8655f87ca7f39be6abc5430f7bfad423c02dce57e350294702cdf8e01893951e"
     },
     {
-      "bytes": 1959,
+      "bytes": 2097,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -645,7 +645,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "227ca8ab52b01b9bcadd7bf66f332c46df0adc979d41fdb8d1e51dc12589dad2"
+      "sha256": "9871a9c6b3063268b561f167d814463b34e35b0fb21ccd6a834a52b3a7fb918c"
     },
     {
       "bytes": 698,
@@ -792,7 +792,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "f094aaba1e80f218c830ad225c91eedb11653a211976fd07119b31d380deb227"
+      "sha256": "18d6d689c4c02739c8c67e7730a38072e76f4f331edf1463420a37efff95ea1e"
     },
     {
       "bytes": 3149,
@@ -20109,7 +20109,7 @@
       "sha256": "6bc40b7ea882984f474d4d4abdd88212035e274a6c0927cc8c7151557e6502fd"
     },
     {
-      "bytes": 72528,
+      "bytes": 72499,
       "category": "makeup_authoring_mirror",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -20117,7 +20117,7 @@
       "readers": [],
       "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
       "scope": "excluded_authoring_mirror",
-      "sha256": "394f06ab06d83bf9190ef086eaf5b21fdf8042dc617441179ace3508f3c3ac88"
+      "sha256": "aeb2278c271cd6fdb1d39bf9b46c7f68178fa6a3de9514889bfa0fe607230699"
     },
     {
       "bytes": 419110,
@@ -20158,7 +20158,7 @@
       "sha256": "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
     },
     {
-      "bytes": 29635506,
+      "bytes": 29634200,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -20172,7 +20172,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "fbb10e86f250f1c773f00043125c85eb0a7f95233152e30eeaa811d9404de75f"
+      "sha256": "174a58315109592e8e69bf0b0f231c411930e79c51b8c039063df4d9d56c58c2"
     },
     {
       "appearance_categories": [
@@ -47914,22 +47914,22 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 568376,
+      "bytes": 568348,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!manifest.json",
       "readers": [
         {
-          "line": 56,
+          "line": 68,
           "path": "domain/outfit_pack_archive.py",
           "text": "manifest = json.loads(archive.read(MANIFEST).decode(\"utf-8\"))"
         }
       ],
       "scope": "runtime_data",
-      "sha256": "d98b212901af1bd561b18a990e88061667311421cd321a7652df79d1e54cdcef"
+      "sha256": "e9630e9896f3cce622420a900099ea6b9bef9a6baa42b3a2e4133c18c9f52773"
     },
     {
-      "bytes": 29201841,
+      "bytes": 29201813,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -47943,7 +47943,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "a34ff16f870c53c4fec64a4e91273d2674ca3f75df18a4a644d16dd487accf91"
+      "sha256": "958930db0da15fb382290b8f92ab76b72ae13550441c0690ddd753a2704bdd7b"
     },
     {
       "appearance_categories": [
@@ -50799,19 +50799,19 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 76701,
+      "bytes": 76672,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit!manifest.json",
       "readers": [
         {
-          "line": 56,
+          "line": 68,
           "path": "domain/outfit_pack_archive.py",
           "text": "manifest = json.loads(archive.read(MANIFEST).decode(\"utf-8\"))"
         }
       ],
       "scope": "runtime_data",
-      "sha256": "cf781348ac3fbc8ee5c52405f3eb3860eab7bf12466af8adf6a101a208da8659"
+      "sha256": "a22e154413bdb3b22f9e65db656db045a9239be583c2b61bde0d32720d62277d"
     },
     {
       "bytes": 1422107,
@@ -89100,7 +89100,7 @@
       "sha256": "a35ebf52fd3ce5f1469b2a36158dba761bc47b973ea3382b3186ca15b1f5af28"
     },
     {
-      "bytes": 8038,
+      "bytes": 11550,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -89108,7 +89108,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "50130936609185fa642ec57e9b4927719bc6516b7bc070904b371a0a52749ff6"
+      "sha256": "ce25a28d554921eb931e72ded7541b51e4e9ab589ec699e43b4e15eb2961f2e2"
     },
     {
       "bytes": 99871,
@@ -93168,6 +93168,7 @@
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
     "pack_visibility": "public_mohan_release_page",
+    "paid_dlc_license": "CC-BY-NC-ND-4.0",
     "standalone_download_design": true
   },
   "product_shell_allowlist": [

@@ -74,6 +74,7 @@
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
     "pack_visibility": "public_mohan_release_page",
+    "paid_dlc_license": "CC-BY-NC-ND-4.0",
     "standalone_download_design": true
   },
   "product_shell_allowed": [

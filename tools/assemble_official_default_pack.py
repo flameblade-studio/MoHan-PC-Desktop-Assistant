@@ -74,7 +74,7 @@ lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICI
 
 # Character art is studio property; see ASSETS-LICENSE.md (the manifest field only
 # admits letters, digits, spaces and ``.()+-``).
-ASSETS_LICENSE_NAME = "All Rights Reserved - see ASSETS-LICENSE.md"
+ASSETS_LICENSE_NAME = "CC-BY-NC-ND-4.0"
 AUTHOR = "Flameblade Studio"
 PACK_VERSION = "1.0.0"
 APP_VERSION_RANGE = ">=4.0.0,<5.0.0"

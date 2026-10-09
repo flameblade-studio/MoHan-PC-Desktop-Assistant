@@ -7256,7 +7256,6 @@
     },
     {
       "paths": [
-        "ASSETS-LICENSE.md",
         "assets/pose-atlas/v5-base/yaw+000-pitch+00.png"
       ],
       "tests": [

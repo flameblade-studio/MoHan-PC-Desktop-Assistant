@@ -362,6 +362,7 @@ def test_summary_fragment_and_owner_boundaries(
     assert decisions["standalone_download_design"] is True
     assert decisions["pack_visibility"] == "public_mohan_release_page"
     assert decisions["character_asset_license"] == "CC-BY-NC-ND-4.0"
+    assert decisions["paid_dlc_license"] == "CC-BY-NC-ND-4.0"
     assert decisions["dlc_relationship"] == "owner_decision_pending"
     for row in inventory["files"]:
         if row["scope"] == "embedded_code":

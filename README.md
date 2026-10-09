@@ -155,7 +155,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 > #### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
 >
-> 贊助者依 Ko-fi 謝禮指引取得外觀、妝容與主題等純裝飾 DLC；目前採單次贊助與每月贊助雙軌，功能權限對所有使用者一致。下載位置與檔名以 Ko-fi 該項謝禮指引為準。
+> 贊助者依 Ko-fi 謝禮指引搶先取得外觀、妝容與主題等純裝飾 DLC；付費代表支持與搶先取得，功能權限對所有使用者一致。付費 DLC 採 `CC-BY-NC-ND-4.0`，買家與其他合法取得者可依條款非商用原樣轉發；下載位置與檔名以 Ko-fi 該項謝禮指引為準。
 
 ### 支持墨寒 / Support MoHan：贊助與授權
 
@@ -170,7 +170,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 </table>
 
 - 作者：**CHOU MING HUA**。
-- 原始碼採 [MIT License](LICENSE)；墨寒與林可芸的角色圖像、人設、台詞及聲音設定採 `CC-BY-NC-ND-4.0`，另有非商用粉絲作品政策，不在 MIT 授權範圍。
+- 原始碼採 [MIT License](LICENSE)；墨寒與林可芸角色素材、`assets/official-packs/`、`assets/makeup*`、含角色形象的應用程式圖示、`docs/media/` 圖片與影片，以及權利人發布的付費 DLC 均採 `CC-BY-NC-ND-4.0`，另有非商用粉絲作品政策與商標保留，不在 MIT 授權範圍。付費代表支持與搶先取得，買家與其他合法取得者可依 CC 條款非商用原樣轉發。
 - 素材生產工具與權重只接受 MIT、Apache 2.0、CC0、CC BY（及同級 BSD）白名單；字型是唯一例外：自 2026-09-02 起允許 SIL OFL 1.1，但僅限字型，不延伸至其他素材；角色資產另依 [ASSETS-LICENSE](ASSETS-LICENSE.md) 授權，產線純淨規則詳見 [授權純淨承諾](docs/LICENSE-PURITY.md)。
 - 素材與第三方條款分別見 [ASSETS-LICENSE](ASSETS-LICENSE.md) 與 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 
@@ -355,7 +355,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 > #### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
 >
-> 赞助者根据 Ko-fi 谢礼说明获取外观、妆容与主题等纯装饰 DLC；目前采用单次赞助与每月赞助双轨，不提供功能特权。下载位置与文件名以 Ko-fi 对应谢礼说明为准。
+> 赞助者根据 Ko-fi 谢礼说明抢先取得外观、妆容与主题等纯装饰 DLC；付费代表支持与抢先取得，不提供功能特权。付费 DLC 采用 `CC-BY-NC-ND-4.0`，买家与其他合法取得者可依条款非商业原样转发；下载位置与文件名以 Ko-fi 对应谢礼说明为准。
 
 ### 支持墨寒：赞助与许可证
 
@@ -370,7 +370,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 </table>
 
 - 作者：**CHOU MING HUA**。
-- 源代码采用 [MIT License](LICENSE)；墨寒与林可芸的角色图像、人设、台词及声音设置采用 `CC-BY-NC-ND-4.0`，另有非商业粉丝作品政策，不在 MIT 许可范围内。
+- 源代码采用 [MIT License](LICENSE)；墨寒与林可芸角色素材、`assets/official-packs/`、`assets/makeup*`、含角色形象的应用程序图标、`docs/media/` 图片与视频，以及权利人发布的付费 DLC 均采用 `CC-BY-NC-ND-4.0`，另有非商业粉丝作品政策与商标保留，不在 MIT 许可范围内。付费代表支持与抢先取得，买家与其他合法取得者可依 CC 条款非商业原样转发。
 - 素材生产工具与权重只接受 MIT、Apache 2.0、CC0、CC BY（及同等级 BSD）白名单；字体是唯一例外：自 2026-09-02 起允许 SIL OFL 1.1，但仅限字体，不延伸至其他素材；角色资产另依 [ASSETS-LICENSE](ASSETS-LICENSE.md) 许可，生产流程纯净规则详见 [许可证纯净承诺](docs/LICENSE-PURITY.md)。
 - 素材与第三方条款分别见 [ASSETS-LICENSE](ASSETS-LICENSE.md) 与 [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md)。
 
@@ -555,7 +555,7 @@ See the [outfit-pack documentation](docs/OUTFIT-PACKS.md) for the complete autho
 
 > #### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
 >
-> Sponsors obtain purely cosmetic appearance, makeup, and theme DLC by following the Ko-fi reward instructions. The current dual track is one-time or monthly support; neither grants functional privileges. Follow the relevant Ko-fi reward instructions for the download location and filename.
+> Sponsors receive early access to purely cosmetic appearance, makeup, and theme DLC by following the Ko-fi reward instructions. Payment represents support and early access, not functional privileges. Paid DLC uses `CC-BY-NC-ND-4.0`; buyers and other lawful recipients may redistribute it unchanged and non-commercially under those terms. Follow the relevant Ko-fi reward instructions for the download location and filename.
 
 ### Support MoHan: sponsorship and licensing
 
@@ -570,7 +570,7 @@ Use the Sponsor button displayed by GitHub above this repository, or visit [Ko-f
 </table>
 
 - Author: **CHOU MING HUA**.
-- Source code uses the [MIT License](LICENSE); MoHan and Lin Keyun character artwork, personas, dialogue, and voice settings use `CC-BY-NC-ND-4.0` with a separate non-commercial fan-work policy and remain outside the MIT grant.
+- Source code uses the [MIT License](LICENSE). MoHan and Lin Keyun character assets, `assets/official-packs/`, `assets/makeup*`, application icons depicting a character, images and videos under `docs/media/`, and paid DLC published by the rights holder all use `CC-BY-NC-ND-4.0`, with a separate non-commercial fan-work policy and reserved trademarks, and remain outside the MIT grant. Payment represents support and early access; buyers and other lawful recipients may redistribute paid DLC unchanged and non-commercially under the CC terms.
 - Asset-production tools and weights admit only the MIT, Apache 2.0, CC0, CC BY (and equivalent BSD-class) allowlist. Fonts are the sole exception: since 2026-09-02, SIL OFL 1.1 is allowed for fonts only and applies exclusively to fonts. Character assets are licensed separately in [ASSETS-LICENSE](ASSETS-LICENSE.md); see the [License Purity Commitment](docs/LICENSE-PURITY.md) for production-pipeline purity rules.
 - Asset and third-party terms are in [ASSETS-LICENSE](ASSETS-LICENSE.md) and [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md).
 
@@ -755,7 +755,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 > #### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
 >
-> 支援者は Ko-fi の謝礼案内に従い、外観、メイク、テーマなど純装飾 DLC を取得できます。現在は単発支援と毎月支援の二本立てで、機能権限は全利用者で共通です。ダウンロード先とファイル名は、該当する Ko-fi の謝礼案内に従ってください。
+> 支援者は Ko-fi の謝礼案内に従い、外観、メイク、テーマなど純装飾 DLC を先行取得できます。支払いは支援と先行取得を意味し、機能権限は全利用者で共通です。有料 DLC には `CC-BY-NC-ND-4.0` を適用し、購入者とその他の適法な取得者は条項に従って非営利かつ無改変で再配布できます。ダウンロード先とファイル名は該当する Ko-fi の謝礼案内に従ってください。
 
 ### 墨寒を支援：支援とライセンス
 
@@ -770,7 +770,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 </table>
 
 - 作者：**CHOU MING HUA**。
-- ソースコードは [MIT License](LICENSE) です。墨寒と林可芸のキャラクター画像、人物設定、台詞、音声設定には `CC-BY-NC-ND-4.0` と別途の非営利ファン作品ポリシーが適用され、MIT の許諾範囲外です。
+- ソースコードは [MIT License](LICENSE) です。墨寒と林可芸のキャラクター素材、`assets/official-packs/`、`assets/makeup*`、キャラクター像を含むアプリケーションアイコン、`docs/media/` の画像と動画、権利者が公開する有料 DLC には `CC-BY-NC-ND-4.0` を適用し、別途の非営利ファン作品ポリシーと商標留保があり、MIT の許諾範囲外です。支払いは支援と先行取得を意味し、購入者とその他の適法な取得者は CC 条項に従って非営利かつ無改変で再配布できます。
 - 素材生成の道具と重みは MIT、Apache 2.0、CC0、CC BY（および同等の BSD 系）ホワイトリストだけを受理します。フォントが唯一の例外で、2026-09-02 以降は SIL OFL 1.1 をフォントに限って認め、他の素材には拡張しません。キャラクター資産は [ASSETS-LICENSE](ASSETS-LICENSE.md) で別途許諾され、生成工程の純浄性規則は [ライセンス純浄性の約束](docs/LICENSE-PURITY.md) に記載します。
 - 素材と第三者条項は [ASSETS-LICENSE](ASSETS-LICENSE.md) と [THIRD-PARTY-NOTICES](THIRD_PARTY_NOTICES.md) に記載しています。
 

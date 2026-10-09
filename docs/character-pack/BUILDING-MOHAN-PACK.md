@@ -16,7 +16,7 @@
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 ```
 
 成功輸出包含 `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明確驗證上限與 `CHARACTER_PACK_VALID=1`。ZIP 使用排序後的成員、1980-01-01 固定時間戳、固定權限、無額外 metadata、`ZIP_STORED` 與停用 ZIP64；同一輸入兩次會得到相同 `package_hash` 與完全相同的 ZIP bytes。資料夾與 ZIP 的邏輯 `package_hash` 相同。
@@ -39,7 +39,7 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 ```
 
 成功输出包含 `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明确验证上限与 `CHARACTER_PACK_VALID=1`。ZIP 使用排序后的成员、1980-01-01 固定时间戳、固定权限、无额外 metadata、`ZIP_STORED` 与停用 ZIP64；同一输入两次会得到相同 `package_hash` 与完全相同的 ZIP bytes。文件夹与 ZIP 的逻辑 `package_hash` 相同。
@@ -62,7 +62,7 @@ The output path must not already exist. Both forms are fully checked with the `d
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 ```
 
 Successful output reports `PACKAGE_HASH`, `PAYLOAD_FILES`, `PAYLOAD_BYTES`, the explicit limits, and `CHARACTER_PACK_VALID=1`. ZIP output uses sorted members, the fixed timestamp 1980-01-01, fixed permissions, no extra metadata, `ZIP_STORED`, and disabled ZIP64. Identical inputs produce the same `package_hash` and byte-identical ZIPs. Equivalent directory and ZIP packages share the same logical `package_hash`.
@@ -85,7 +85,7 @@ This step does not change product read paths, installation, updates, or runtime 
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.2.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 ```
 
 成功時は `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明示上限、`CHARACTER_PACK_VALID=1` を出力します。ZIP は並べ替えたメンバー、固定日時 1980-01-01、固定権限、追加 metadata なし、`ZIP_STORED`、ZIP64 無効を使用します。同じ入力から同じ `package_hash` と完全に同じ ZIP bytes を生成します。同等のディレクトリと ZIP は同じ論理 `package_hash` を共有します。

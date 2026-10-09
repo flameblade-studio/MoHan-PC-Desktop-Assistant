@@ -329,7 +329,7 @@ def test_official_packs_ship_sealed_and_valid() -> None:
     outfit = inspect_outfit_pack(OUTFIT_PACK_PATH)
     assert (outfit.pack_id, outfit.compatible_body_profile, outfit.source_kind) == (OFFICIAL_OUTFIT_PACK_ID, BODY_PROFILE_ID, "original")
     assert outfit.author == "Flameblade Studio"
-    assert "ASSETS-LICENSE.md" in outfit.license_name
+    assert outfit.license_name == "CC-BY-NC-ND-4.0"
     assert ActiveOutfitOverlay._compatible(outfit.app_range)
     assert [ensemble.ensemble_id for ensemble in outfit.ensembles] == [OFFICIAL_OUTFIT_ENSEMBLE_ID]
     items = {item.category: item for item in outfit.items}
@@ -343,6 +343,7 @@ def test_official_packs_ship_sealed_and_valid() -> None:
     selections = {selection.category: selection for selection in outfit.ensembles[0].selections}
     assert all(selections[category].item_id == items[category].item_id for category in OFFICIAL_CATEGORIES)
     makeup = inspect_outfit_pack(builtin_makeup_pack_path())
+    assert makeup.license_name == "CC-BY-NC-ND-4.0"
     item = next(item for item in makeup.items if item.category == "makeup")
     assert (makeup.pack_id, item.item_id) == (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID)
     assert len(item.variants) == EXPECTED_MAKEUP_VARIANTS

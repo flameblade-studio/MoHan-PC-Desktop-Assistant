@@ -185,10 +185,10 @@ def test_lock_rejects_a_repository_other_than_the_owner_approved_public_repo(tmp
 def test_repository_lock_uses_the_owner_approved_public_release_identity() -> None:
     lock = verifier.load_character_pack_lock(ROOT / "character-pack.lock.json")
     assert lock.pack_id == "flameblade.mohan"
-    assert lock.pack_version == "1.0.2"
+    assert lock.pack_version == "1.0.3"
     assert lock.source.repository == verifier.SOURCE_REPOSITORY
-    assert lock.source.release_tag == "mohan-pack-v1.0.2"
-    assert lock.archive.asset_name == "flameblade.mohan-1.0.2.zip"
+    assert lock.source.release_tag == "mohan-pack-v1.0.3"
+    assert lock.archive.asset_name == "flameblade.mohan-1.0.3.zip"
     assert lock.files
 
 
@@ -197,10 +197,10 @@ def test_release_lock_loader_accepts_the_lin_keyun_public_release_identity() -> 
         ROOT / "docs" / "character-pack" / "lin-keyun-pack.lock.json"
     )
     assert lock.pack_id == "flameblade.lin-keyun"
-    assert lock.pack_version == "1.0.0"
+    assert lock.pack_version == "1.0.1"
     assert lock.source.repository == verifier.SOURCE_REPOSITORY
-    assert lock.source.release_tag == "lin-keyun-pack-v1.0.0"
-    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.0.zip"
+    assert lock.source.release_tag == "lin-keyun-pack-v1.0.1"
+    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.1.zip"
     assert lock.files
 
 

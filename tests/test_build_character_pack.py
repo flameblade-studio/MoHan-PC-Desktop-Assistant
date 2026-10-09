@@ -335,7 +335,7 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     manifest = _manifest_from_directory(output)
     assert manifest["pack_id"] == "flameblade.mohan"
     assert manifest["character"]["id"] == "mohan"
-    assert manifest["pack_version"] == "1.0.2"
+    assert manifest["pack_version"] == "1.0.3"
     assert manifest["distribution"]["access"] == "public"
     assert manifest["distribution"]["redistribution"] == "allowed"
     assert {entry["status"] for entry in manifest["licenses"].values()} == {

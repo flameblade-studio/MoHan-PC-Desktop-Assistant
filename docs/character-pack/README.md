@@ -2,7 +2,7 @@
 
 ## 繁體中文
 
-角色包是一份可以單獨下載的「角色行李箱」，把角色身分、資料清冊與權利說明放在一起。驗證器會確認行李箱完整、符合引擎版本，並安全拒絕可疑內容。墨寒仍由原產品提供原有體驗；本階段只新增格式與獨立驗證工具。格式仍可表達公開、私有與待決狀態；目前墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材採 CC BY-NC-ND 4.0，DLC 關係仍待擁有者決定。
+角色包是一份可以單獨下載的「角色行李箱」，把角色身分、資料清冊與權利說明放在一起。驗證器會確認行李箱完整、符合引擎版本，並安全拒絕可疑內容。墨寒仍由原產品提供原有體驗；本階段只新增格式與獨立驗證工具。格式仍可表達公開、私有與待決狀態；目前墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材與付費 DLC 均採 CC BY-NC-ND 4.0，DLC 與角色包的關係仍待擁有者決定。
 
 ### 入口與身分
 
@@ -14,7 +14,7 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 
 `engine_compatibility` 恰含 `api_version`、`min_engine_version`、`max_engine_version_exclusive`、`required_features`。API 是正整數；版本範圍下限包含、上限排除，且下限小於上限。必要功能識別碼採相同字元規則、上限 64 字元且唯一；驗證時由呼叫端明確提供目前版本、API 與功能。布林值不當成整數。
 
-可選 `dependencies` 是陣列，每筆恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，種類為 `outfit_pack` 或 `dlc`，版本採同一範圍規則，必要旗標為布林值。這只表達關係；本階段不下載、安裝或解析依賴，DLC 的授權與角色歸屬另行決定。
+可選 `dependencies` 是陣列，每筆恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，種類為 `outfit_pack` 或 `dlc`，版本採同一範圍規則，必要旗標為布林值。這只表達關係；本階段不下載、安裝或解析依賴。付費 DLC 採 CC BY-NC-ND 4.0；DLC 與角色包的依賴、歸屬及封裝關係仍由擁有者另行決定。
 
 ### 權利與散布
 
@@ -88,7 +88,7 @@ with TemporaryDirectory() as temporary:
 
 ## 简体中文
 
-角色包是一份可以单独下载的“角色行李箱”，把角色身份、数据清单与权利说明放在一起。验证器确认行李箱完整、符合引擎版本，并安全拒绝可疑内容。墨寒仍由原产品提供原有体验；本阶段只新增格式与独立验证工具。格式仍可表达公开、私有和待定状态；目前墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材采用 CC BY-NC-ND 4.0，DLC 关系仍待所有者决定。
+角色包是一份可以单独下载的“角色行李箱”，把角色身份、数据清单与权利说明放在一起。验证器确认行李箱完整、符合引擎版本，并安全拒绝可疑内容。墨寒仍由原产品提供原有体验；本阶段只新增格式与独立验证工具。格式仍可表达公开、私有和待定状态；目前墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材与付费 DLC 均采用 CC BY-NC-ND 4.0，DLC 与角色包的关系仍待所有者决定。
 
 ### 入口与身份
 
@@ -100,7 +100,7 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 
 `engine_compatibility` 恰含 `api_version`、`min_engine_version`、`max_engine_version_exclusive`、`required_features`。API 是正整数；版本范围包含下限、排除上限，且下限小于上限。必要功能标识码采用相同字符规则、上限 64 字符且唯一；验证时由调用端明确提供当前版本、API 与功能。布尔值不当作整数。
 
-可选 `dependencies` 是数组，每项恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，种类为 `outfit_pack` 或 `dlc`，版本采用同一范围规则，必要标记为布尔值。这只表达关系；本阶段不下载、安装或解析依赖，DLC 的授权与角色归属另行决定。
+可选 `dependencies` 是数组，每项恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，种类为 `outfit_pack` 或 `dlc`，版本采用同一范围规则，必要标记为布尔值。这只表达关系；本阶段不下载、安装或解析依赖。付费 DLC 采用 CC BY-NC-ND 4.0；DLC 与角色包的依赖、归属及封装关系仍由所有者另行决定。
 
 ### 权利与分发
 
@@ -174,7 +174,7 @@ with TemporaryDirectory() as temporary:
 
 ## English
 
-A character pack is a downloadable suitcase containing a character's identity, file inventory, and rights declarations. The validator checks completeness and engine compatibility and safely rejects suspicious content. MoHan continues to provide its existing experience through the original product; this phase adds a format and a standalone validator. The format still represents public, private, and pending states. The public MoHan release page currently carries the MoHan and Lin Keyun packs under CC BY-NC-ND 4.0; the DLC relationship remains an owner decision.
+A character pack is a downloadable suitcase containing a character's identity, file inventory, and rights declarations. The validator checks completeness and engine compatibility and safely rejects suspicious content. MoHan continues to provide its existing experience through the original product; this phase adds a format and a standalone validator. The format still represents public, private, and pending states. The public MoHan release page currently carries the MoHan and Lin Keyun packs under CC BY-NC-ND 4.0. Paid DLC uses the same license; its relationship to a character pack remains an owner decision.
 
 ### Entry point and identity
 
@@ -186,7 +186,7 @@ v1 uses `flameblade.character-pack.v1`, with `manifest.json` at the directory or
 
 `engine_compatibility` contains exactly `api_version`, `min_engine_version`, `max_engine_version_exclusive`, and `required_features`. The API is a positive integer; version ranges include the lower bound and exclude the upper bound, with a strictly smaller lower bound. Required feature identifiers use the same character rules, are unique, and allow at most 64 characters; callers explicitly supply their engine version, API, and features. Booleans are not treated as integers.
 
-Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, `min_version`, `max_version_exclusive`, and `required`. IDs are unique, kinds are `outfit_pack` or `dlc`, version ranges follow the same rules, and the required flag is boolean. This only declares relationships; this phase does not download, install, or resolve dependencies. DLC licensing and character ownership remain separate decisions.
+Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, `min_version`, `max_version_exclusive`, and `required`. IDs are unique, kinds are `outfit_pack` or `dlc`, version ranges follow the same rules, and the required flag is boolean. This only declares relationships; this phase does not download, install, or resolve dependencies. Paid DLC uses CC BY-NC-ND 4.0; its dependency, ownership, and packaging relationship to a character pack remains a separate owner decision.
 
 ### Rights and distribution
 
@@ -260,7 +260,7 @@ with TemporaryDirectory() as temporary:
 
 ## 日本語
 
-キャラクターパックは、キャラクターの身元、ファイル一覧、権利の宣言をまとめた、単独でダウンロードできる「荷物箱」です。検証器は完全性とエンジンの互換性を確認し、疑わしい内容を安全に拒否します。墨寒の既存体験は元の製品が引き続き提供し、この段階では形式と独立した検証器を追加します。形式は公開、非公開、決定待ちを引き続き表現できます。現在は墨寒と林可芸のパックを墨寒プロジェクトの公開ページで公開し、素材には CC BY-NC-ND 4.0 を適用します。DLC との関係は所有者の決定待ちです。
+キャラクターパックは、キャラクターの身元、ファイル一覧、権利の宣言をまとめた、単独でダウンロードできる「荷物箱」です。検証器は完全性とエンジンの互換性を確認し、疑わしい内容を安全に拒否します。墨寒の既存体験は元の製品が引き続き提供し、この段階では形式と独立した検証器を追加します。形式は公開、非公開、決定待ちを引き続き表現できます。現在は墨寒と林可芸のパックを墨寒プロジェクトの公開ページで公開し、素材と有料 DLC には CC BY-NC-ND 4.0 を適用します。DLC とキャラクターパックの関係は所有者の決定待ちです。
 
 ### 入口と身元
 
@@ -272,7 +272,7 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 
 `engine_compatibility` は `api_version`、`min_engine_version`、`max_engine_version_exclusive`、`required_features` のみを含みます。API は正の整数、バージョン範囲は下限を含み上限を除外し、下限は上限より小さくなります。必須機能の識別子は同じ文字規則を使用し、最大 64 文字で一意です。呼び出し側が現在のバージョン、API、機能を明示します。真偽値は整数として扱いません。
 
-省略可能な `dependencies` は配列で、各項目は `id`、`kind`、`min_version`、`max_version_exclusive`、`required` のみを含みます。ID は一意、種類は `outfit_pack` または `dlc`、バージョン範囲は同じ規則、必須フラグは真偽値です。これは関係を宣言するだけで、この段階では依存先のダウンロード、インストール、解決を行いません。DLC のライセンスとキャラクターへの帰属は別途決定します。
+省略可能な `dependencies` は配列で、各項目は `id`、`kind`、`min_version`、`max_version_exclusive`、`required` のみを含みます。ID は一意、種類は `outfit_pack` または `dlc`、バージョン範囲は同じ規則、必須フラグは真偽値です。これは関係を宣言するだけで、この段階では依存先のダウンロード、インストール、解決を行いません。有料 DLC には CC BY-NC-ND 4.0 を適用し、キャラクターパックとの依存、帰属、同梱関係は所有者が別途決定します。
 
 ### 権利と配布
 

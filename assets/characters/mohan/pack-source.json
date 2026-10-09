@@ -2,7 +2,7 @@
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.2",
+  "pack_version": "1.0.3",
   "character_id": "mohan",
   "identity": {
     "profile": "assets/characters/mohan/persona/profile.json",

@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.lin-keyun-1.0.0.zip",
-    "bytes": 620759321,
-    "sha256": "d4e78b6a21b4dd4e98df11b2e0539955542a78aa38d804e8f4b54cc2db192b02"
+    "asset_name": "flameblade.lin-keyun-1.0.1.zip",
+    "bytes": 620757987,
+    "sha256": "70c25335325359f1c75027c73e7e9592b7b4e7d3d88c4ba1c6fac2b6484c1836"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -3232,14 +3232,14 @@
       "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
     },
     {
-      "bytes": 29635506,
+      "bytes": 29634200,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "fbb10e86f250f1c773f00043125c85eb0a7f95233152e30eeaa811d9404de75f"
+      "sha256": "174a58315109592e8e69bf0b0f231c411930e79c51b8c039063df4d9d56c58c2"
     },
     {
-      "bytes": 29201841,
+      "bytes": 29201813,
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
-      "sha256": "a34ff16f870c53c4fec64a4e91273d2674ca3f75df18a4a644d16dd487accf91"
+      "sha256": "958930db0da15fb382290b8f92ab76b72ae13550441c0690ddd753a2704bdd7b"
     },
     {
       "bytes": 1422107,
@@ -8548,12 +8548,12 @@
     }
   ],
   "pack_id": "flameblade.lin-keyun",
-  "pack_version": "1.0.0",
-  "package_hash": "97a8e25405069f7cdbc1449d4b2d965cf504debcda0ede9a857f36d2be7427b2",
+  "pack_version": "1.0.1",
+  "package_hash": "38a4297f107029c1114dc42580c6b82683a0a4c27aadb099bbc4d7f0fcdc93ff",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "lin-keyun-pack-v1.0.0",
+    "release_tag": "lin-keyun-pack-v1.0.1",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {

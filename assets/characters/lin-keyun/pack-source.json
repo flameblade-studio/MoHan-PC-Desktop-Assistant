@@ -219,7 +219,7 @@
     }
   },
   "pack_id": "flameblade.lin-keyun",
-  "pack_version": "1.0.0",
+  "pack_version": "1.0.1",
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "source_refs": [
