@@ -295,6 +295,7 @@
       "domain.version_info",
       "infrastructure.app_resources",
       "infrastructure.backup_manager",
+      "infrastructure.bundled_character_source",
       "infrastructure.profile_transfer",
       "infrastructure.update_manifest_signature",
       "infrastructure.updater",
@@ -503,12 +504,6 @@
       "imported": "domain.constants",
       "line": 17,
       "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "domain.character_source",
-      "imported": "domain.character_pack.character_data",
-      "line": 9,
-      "reason": "PR #272 合併時既有：角色來源預設仍直接載入墨寒角色資料；待『引擎切換角色』改由組合根注入。"
     },
     {
       "importer": "domain.engine_capabilities",
