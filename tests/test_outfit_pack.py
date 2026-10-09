@@ -235,6 +235,13 @@ def test_source_license_allowlist_accepts_supported_values(tmp_path: Path) -> No
         assert pack.license_name == license_name
 
 
+def test_legacy_generated_outfit_license_still_loads(tmp_path: Path) -> None:
+    manifest, assets = _manifest(_png())
+    manifest["source"]["license"] = "Project License"
+    pack = inspect_outfit_pack(_pack(tmp_path / "legacy.mohan-outfit", manifest, assets))
+    assert pack.license_name == "Project License"
+
+
 def test_source_license_allowlist_rejects_unknown_value(tmp_path: Path) -> None:
     manifest, assets = _manifest(_png())
     manifest["source"]["license"] = "MadeUp-Unknown-9.0"

@@ -47925,7 +47925,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!manifest.json",
       "readers": [
         {
-          "line": 68,
+          "line": 71,
           "path": "domain/outfit_pack_archive.py",
           "text": "manifest = json.loads(archive.read(MANIFEST).decode(\"utf-8\"))"
         }
@@ -50810,7 +50810,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit!manifest.json",
       "readers": [
         {
-          "line": 68,
+          "line": 71,
           "path": "domain/outfit_pack_archive.py",
           "text": "manifest = json.loads(archive.read(MANIFEST).decode(\"utf-8\"))"
         }

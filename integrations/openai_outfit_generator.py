@@ -609,7 +609,7 @@ class OpenAIOutfitDraftGenerator:
             "source": {
                 "kind": "original",
                 "author": f"{_ENGLISH_DISPLAY_NAME} autonomous wardrobe with OpenAI GPT Image 2",
-                "license": "Project License",
+                "license": "CC-BY-NC-ND-4.0",
                 "reference_included": False,
             },
             "authoring": {"template": AUTHORING_TEMPLATE, "version": AUTHORING_VERSION},

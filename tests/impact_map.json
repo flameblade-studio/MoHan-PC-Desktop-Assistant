@@ -7391,6 +7391,15 @@
     },
     {
       "paths": [
+        "domain/outfit_pack_archive.py"
+      ],
+      "tests": [
+        "test_openai_outfit_generator.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "domain/service_status_localization.py"
       ],
       "tests": [

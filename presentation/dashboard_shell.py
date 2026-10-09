@@ -434,10 +434,10 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         if hasattr(self, "wardrobe_generate_button"):
             self.wardrobe_generate_button.setEnabled(status not in {"generating", "generating-with-trend-search"})
         if status == "body-profile-outdated":
-            # The runtime already restored the built-in outfit; keep the saved choice in step so the saved choice keeps the current pack selection.
-            self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)
+            self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)  # runtime already restored the built-in look
         if status in {"installed", "installed-manual-lock", "outfit-selected", "body-profile-outdated"}:
             self._reload_wardrobe_packages()
+            self._refresh_wardrobe_preview()
 
     def _reload_wardrobe_packages(self) -> None:
         reload_wardrobe_packages(self)
