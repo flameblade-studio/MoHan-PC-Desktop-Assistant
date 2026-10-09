@@ -283,7 +283,11 @@ def test_bad_json(tmp_path: Path, content: str) -> None:
 def test_license_options_and_dependencies_preserved(tmp_path: Path) -> None:
     manifest = minimal_manifest()
     manifest["licenses"]["character_art"]["status"] = "all_rights_reserved"
-    manifest["licenses"]["program_data"].update(status="declared_license", license_expression="LicenseRef-Synthetic")
+    manifest["licenses"]["program_data"].update(
+        status="declared_license",
+        license_expression="CC-BY-NC-ND-4.0",
+        notice_path="provenance/source.json",
+    )
     manifest["dependencies"] = [{"id": "example.outfit", "kind": "outfit_pack", "min_version": "1.0.0", "max_version_exclusive": "2.0.0", "required": False}]
     result = validate_character_pack(write_package(tmp_path, manifest, "directory"), engine_version=ENGINE_VERSION)
     assert result.valid
@@ -292,6 +296,29 @@ def test_license_options_and_dependencies_preserved(tmp_path: Path) -> None:
     assert result.manifest.licenses[1].status == "all_rights_reserved"
     manifest["dependencies"][0]["kind"] = []
     assert_rejected(write_package(tmp_path, manifest, "directory"), "invalid_manifest")
+
+
+def test_declared_licenses_fail_closed(tmp_path: Path) -> None:
+    manifest = minimal_manifest()
+    declaration = manifest["licenses"]["program_data"]
+    declaration.update(
+        status="declared_license",
+        license_expression="LicenseRef-Synthetic",
+    )
+    assert_rejected(
+        write_package(tmp_path, manifest, "directory"),
+        "license_incomplete",
+    )
+    declaration["notice_path"] = "provenance/source.json"
+    assert validate_character_pack(
+        write_package(tmp_path, manifest, "directory"),
+        engine_version=ENGINE_VERSION,
+    ).valid
+    declaration["license_expression"] = "Unknown-License-1.0"
+    assert_rejected(
+        write_package(tmp_path, manifest, "directory"),
+        "unsupported_license",
+    )
 
 
 @pytest.mark.parametrize(("kind", "schema", "body_profile"), [

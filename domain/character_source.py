@@ -9,9 +9,10 @@ lazy from typing import Protocol, runtime_checkable
 
 lazy from domain.character_pack.character_data_models import (
     CharacterAppearanceDefaults,
+    CharacterRigManifest,
+    DialogueLocale,
     ExpressionStateCatalog,
     MohanCharacterData,
-    CharacterRigManifest,
     VoiceProfile,
 )
 lazy from domain.character_runtime_bindings import CharacterRuntimeBindings
@@ -53,6 +54,8 @@ class CharacterAssets(Protocol):
 
     def resolve_path(self, relative_path: str) -> Path: ...
 
+    def resolve_optional_path(self, relative_path: str) -> Path | None: ...
+
 
 @runtime_checkable
 class CharacterPersona(Protocol):
@@ -72,6 +75,8 @@ class CharacterPersona(Protocol):
     def default_user_title(self, language: str) -> str: ...
 
     def persona_prompt(self, language: str) -> str: ...
+
+    def dialogue_locale(self, language: str) -> DialogueLocale: ...
 
     def dialogue_line(
         self,

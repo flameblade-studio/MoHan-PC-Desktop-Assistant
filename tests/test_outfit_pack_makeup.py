@@ -70,7 +70,7 @@ BUILTIN_SCAFFOLD_ARGS = (
     "--item-name", "墨寒妝容|墨寒妆容|MoHan face makeup|墨寒メイク",
     "--variant", "classic:原妝|原妆|Classic|基本メイク",
     "--variant", "light:淡雅|淡雅|Light|淡めメイク",
-    "--license", "All Rights Reserved - see ASSETS-LICENSE.md",
+    "--license", "CC-BY-NC-ND-4.0",
 )
 
 Block = tuple[int, int, int, int]

@@ -12,6 +12,7 @@ lazy from domain.character_pack.character_data import (
 )
 lazy from domain.character_pack.character_data_models import (
     CharacterRigManifest,
+    DialogueLocale,
     ExpressionStateCatalog,
     MohanCharacterData,
     VoiceProfile,
@@ -98,6 +99,12 @@ class BundledCharacterSource(
         return self._expressions
 
     @property
+    def rig_manifest(self) -> CharacterRigManifest:
+        """Expose the rig that was validated while this source was built."""
+
+        return self._rig
+
+    @property
     def appearance_defaults(self) -> CharacterAppearanceDefaults:
         return self._data.appearance_defaults
 
@@ -111,6 +118,13 @@ class BundledCharacterSource(
         if not candidate.resolve(strict=True).is_relative_to(self._asset_root):
             raise ValueError("Character asset paths must remain below the asset root.")
         return candidate
+
+    def resolve_optional_path(self, relative_path: str) -> Path | None:
+        normalized = _character_relative_path(relative_path)
+        candidate = self._asset_root.joinpath(*normalized.parts)
+        if not candidate.exists():
+            return None
+        return self.resolve_path(relative_path)
 
     @property
     def canonical_name(self) -> str:
@@ -136,6 +150,10 @@ class BundledCharacterSource(
     def persona_prompt(self, language: str) -> str:
         locale = canonical_character_locale(language)
         return self._data.personas[locale].system_prompt
+
+    def dialogue_locale(self, language: str) -> DialogueLocale:
+        locale = canonical_character_locale(language)
+        return self._data.dialogues[locale]
 
     def dialogue_line(
         self,
@@ -198,10 +216,6 @@ class BundledCharacterSource(
     @property
     def layer_order(self) -> tuple[str, ...]:
         return self._rig.layer_z_order
-
-    @property
-    def rig_manifest(self) -> CharacterRigManifest:
-        return self._rig
 
     @property
     def runtime_bindings(self) -> CharacterRuntimeBindings:

@@ -31,6 +31,7 @@ LIMIT_FIELDS = _core.LIMIT_FIELDS
 MEDIA_TYPES = {
     ".ico": "image/vnd.microsoft.icon",
     ".json": "application/json",
+    ".md": "text/markdown",
     ".mohan-outfit": "application/vnd.flameblade.mohan-outfit+zip",
     ".png": "image/png",
     ".svg": "image/svg+xml",
@@ -45,6 +46,7 @@ CharacterPackBuildSettings = _core.CharacterPackBuildSettings
 
 # Every character-data category maps explicitly; unknown data fails closed.
 CHARACTER_DATA_LICENSE_COMPONENTS = {
+    "character_license_notice": "program_data",
     "character_appearance_defaults": "program_data",
     "character_voice_data": "voice",
     "character_dialogue_data": "persona_dialogue",

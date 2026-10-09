@@ -85,6 +85,49 @@ def installed_character_pack_path(
     return installed_character_pack_root(data_root) / _character_id(character_id)
 
 
+def list_installed_character_packs(
+    *,
+    data_root: str | Path | None = None,
+    engine: EngineCapabilities | None = None,
+    limits: ValidationLimits = DEFAULT_LIMITS,
+    signature_verifier: SignatureVerifier | None = None,
+) -> tuple[CharacterPackReader, ...]:
+    """Return every installed character pack after complete current-engine validation."""
+
+    capabilities = current_engine_capabilities() if engine is None else engine
+    root = installed_character_pack_root(data_root)
+    try:
+        entries = sorted(root.iterdir(), key=lambda entry: entry.name)
+    except FileNotFoundError:
+        return ()
+    except OSError as error:
+        raise CharacterPackInstallError(
+            "Installed character packs could not be enumerated safely."
+        ) from error
+
+    readers: list[CharacterPackReader] = []
+    for entry in entries:
+        if entry.is_symlink() or not entry.is_dir():
+            raise CharacterPackInstallError(
+                f"Installed character-pack entry {entry.name!r} is not a safe directory."
+            )
+        try:
+            readers.append(
+                _read_character_source(
+                    entry,
+                    expected_character_id=entry.name,
+                    engine=capabilities,
+                    limits=limits,
+                    signature_verifier=signature_verifier,
+                )
+            )
+        except CharacterPackInstallError as error:
+            raise CharacterPackInstallError(
+                f"Installed character pack {entry.name!r} failed validation: {error}"
+            ) from error
+    return tuple(readers)
+
+
 def install_character_pack(
     archive: str | Path,
     *,
@@ -96,53 +139,73 @@ def install_character_pack(
     """Validate a downloaded ZIP and publish one non-overwriting installation."""
 
     capabilities = current_engine_capabilities() if engine is None else engine
-    validation = _validated_archive(
-        archive,
-        engine=capabilities,
-        limits=limits,
-        signature_verifier=signature_verifier,
-    )
-    manifest = _manifest(validation)
-    destination = installed_character_pack_path(
-        manifest.character_id,
-        data_root=data_root,
-    )
-    root = destination.parent
-    root.mkdir(parents=True, exist_ok=True)
-    root = root.resolve(strict=True)
-    destination = root / manifest.character_id
-    if destination.exists() or destination.is_symlink():
-        raise CharacterPackInstallError(
-            f"Character pack {manifest.character_id!r} is already installed at {destination}."
-        )
+    archive_path = Path(archive)
     with tempfile.TemporaryDirectory(
-        prefix=f".{manifest.character_id}-install-",
-        dir=root,
-    ) as temporary:
-        staged = Path(temporary) / "pack"
-        _extract_validated_archive(Path(archive), staged, manifest, limits)
-        _read_character_source(
-            staged,
-            expected_character_id=manifest.character_id,
+        prefix="mohan-character-pack-snapshot-"
+    ) as snapshot_temporary:
+        archive_snapshot = Path(snapshot_temporary) / "archive.zip"
+        snapshot_sha256 = _copy_archive_snapshot(
+            archive_path,
+            archive_snapshot,
+            limits.max_archive_bytes,
+        )
+        validation = _validated_archive(
+            archive_snapshot,
             engine=capabilities,
             limits=limits,
             signature_verifier=signature_verifier,
         )
-        try:
-            staged.rename(destination)
-        except OSError as error:
+        manifest = _manifest(validation)
+        destination = installed_character_pack_path(
+            manifest.character_id,
+            data_root=data_root,
+        )
+        root = destination.parent
+        root.mkdir(parents=True, exist_ok=True)
+        root = root.resolve(strict=True)
+        destination = root / manifest.character_id
+        if destination.exists() or destination.is_symlink():
             raise CharacterPackInstallError(
-                "The validated character pack could not be published atomically."
-            ) from error
-    return CharacterPackInstallation(
-        destination,
-        manifest.character_id,
-        manifest.pack_id,
-        manifest.pack_version,
-        manifest.package_hash,
-        validation.checked_files,
-        validation.checked_bytes,
-    )
+                f"Character pack {manifest.character_id!r} is already installed at {destination}."
+            )
+        with tempfile.TemporaryDirectory(
+            prefix=f".{manifest.character_id}-install-",
+            dir=root,
+        ) as temporary:
+            temporary_root = Path(temporary)
+            staged = temporary_root / "pack"
+            _extract_validated_archive(archive_snapshot, staged, manifest, limits)
+            staged_reader = _read_character_source(
+                staged,
+                expected_character_id=manifest.character_id,
+                engine=capabilities,
+                limits=limits,
+                signature_verifier=signature_verifier,
+            )
+            _require_package_hash(
+                staged_reader,
+                manifest.package_hash,
+            )
+            _require_archive_unchanged(
+                archive_path,
+                snapshot_sha256,
+                limits.max_archive_bytes,
+            )
+            try:
+                staged.rename(destination)
+            except OSError as error:
+                raise CharacterPackInstallError(
+                    "The validated character pack could not be published atomically."
+                ) from error
+        return CharacterPackInstallation(
+            destination,
+            manifest.character_id,
+            manifest.pack_id,
+            manifest.pack_version,
+            staged_reader.manifest.package_hash,
+            validation.checked_files,
+            validation.checked_bytes,
+        )
 
 
 def load_installed_character_pack(
@@ -178,21 +241,41 @@ def load_development_character_pack_archive(
 
     capabilities = current_engine_capabilities() if engine is None else engine
     expected = _character_id(expected_character_id)
-    validation = _validated_archive(
-        archive,
-        engine=capabilities,
-        limits=limits,
-        signature_verifier=signature_verifier,
-    )
-    manifest = _manifest(validation)
-    if manifest.character_id != expected:
-        raise CharacterPackInstallError(
-            "The development archive character id does not match the active selection."
-        )
     temporary = tempfile.TemporaryDirectory(prefix=f"mohan-dev-{expected}-")
-    staged = Path(temporary.name) / "pack"
+    temporary_root = Path(temporary.name)
+    archive_snapshot = temporary_root / "archive.zip"
+    staged = temporary_root / "pack"
     try:
-        _extract_validated_archive(Path(archive), staged, manifest, limits)
+        snapshot_sha256 = _copy_archive_snapshot(
+            Path(archive),
+            archive_snapshot,
+            limits.max_archive_bytes,
+        )
+        validation = _validated_archive(
+            archive_snapshot,
+            engine=capabilities,
+            limits=limits,
+            signature_verifier=signature_verifier,
+        )
+        manifest = _manifest(validation)
+        if manifest.character_id != expected:
+            raise CharacterPackInstallError(
+                "The development archive character id does not match the active selection."
+            )
+        _extract_validated_archive(archive_snapshot, staged, manifest, limits)
+        staged_reader = _read_character_source(
+            staged,
+            expected_character_id=expected,
+            engine=capabilities,
+            limits=limits,
+            signature_verifier=signature_verifier,
+        )
+        _require_package_hash(staged_reader, manifest.package_hash)
+        _require_archive_unchanged(
+            Path(archive),
+            snapshot_sha256,
+            limits.max_archive_bytes,
+        )
         source = _DevelopmentCharacterPackReader(
             staged,
             temporary,
@@ -205,6 +288,76 @@ def load_development_character_pack_archive(
         temporary.cleanup()
         raise
     return source
+
+
+def _require_package_hash(
+    reader: CharacterPackReader,
+    expected_package_hash: str,
+) -> None:
+    if reader.manifest.package_hash != expected_package_hash:
+        raise CharacterPackInstallError(
+            "The staged character pack package hash differs from initial validation."
+        )
+
+
+def _copy_archive_snapshot(
+    source_path: Path,
+    snapshot_path: Path,
+    maximum_bytes: int,
+) -> str:
+    """Copy one bounded archive into the private install staging directory."""
+
+    total = 0
+    digest = hashlib.sha256()
+    try:
+        with source_path.open("rb") as source, snapshot_path.open("xb") as snapshot:
+            while chunk := source.read(
+                min(COPY_BUFFER_BYTES, maximum_bytes + 1 - total)
+            ):
+                total += len(chunk)
+                if total > maximum_bytes:
+                    raise CharacterPackInstallError(
+                        "The character-pack archive exceeds its installation size limit."
+                    )
+                snapshot.write(chunk)
+                digest.update(chunk)
+    except CharacterPackInstallError:
+        raise
+    except OSError as error:
+        raise CharacterPackInstallError(
+            "The character-pack ZIP could not be snapshotted safely."
+        ) from error
+    return digest.hexdigest()
+
+
+def _require_archive_unchanged(
+    source_path: Path,
+    snapshot_sha256: str,
+    maximum_bytes: int,
+) -> None:
+    actual_sha256 = hashlib.sha256()
+    total = 0
+    try:
+        with source_path.open("rb") as source:
+            while chunk := source.read(
+                min(COPY_BUFFER_BYTES, maximum_bytes + 1 - total)
+            ):
+                total += len(chunk)
+                if total > maximum_bytes:
+                    raise CharacterPackInstallError(
+                        "The source character-pack ZIP changed during installation."
+                    )
+                actual_sha256.update(chunk)
+    except CharacterPackInstallError:
+        raise
+    except OSError as error:
+        raise CharacterPackInstallError(
+            "The source character-pack ZIP could not be verified after staging."
+        ) from error
+    if actual_sha256.hexdigest() != snapshot_sha256:
+        raise CharacterPackInstallError(
+            "The source character-pack ZIP changed during installation."
+        )
 
 
 def _validated_archive(
@@ -373,6 +526,7 @@ __all__ = (
     "install_character_pack",
     "installed_character_pack_path",
     "installed_character_pack_root",
+    "list_installed_character_packs",
     "load_development_character_pack_archive",
     "load_installed_character_pack",
 )

@@ -14,7 +14,7 @@
 
 既有六個命令／模組保留原名稱、函式簽章、CLI 參數、退出碼與輸出標記，改為薄入口。墨寒預設仍由 adapter 注入，所以現有 CI 與 workflow 不必改。`golden_render.py` 雖已可讀角色設定，仍直接組合墨寒 renderer；capture 工具仍建立產品 widget。它們留在墨寒 adapter／產品殼，直到 headless renderer 可完整覆蓋 352 格、核准與快取語意；本包不以介面雛形冒充完成搬移。
 
-角色素材授權與 DLC 關係仍待擁有者決定。`huapu.licenses` 只執行呼叫端提供的 allowlist；`owner_decision_pending` 不會自動變成可公開或可再散布。墨寒角色包維持私有、可獨立下載的既有裁定。
+墨寒與林可芸角色素材採 CC BY-NC-ND 4.0，兩個角色包公開附於墨寒專案發布頁；DLC 關係仍待擁有者決定。`huapu.licenses` 只執行呼叫端提供的 allowlist，`owner_decision_pending` 不會自動變成額外權利。
 
 ## 简体中文
 
@@ -30,7 +30,7 @@
 
 现有六个命令／模块保留原名称、函数签名、CLI 参数、退出码与输出标记，并改成薄入口。墨寒默认值仍由 adapter 注入，因此现有 CI 与 workflow 无需修改。`golden_render.py` 虽可读取角色设置，仍直接组合墨寒 renderer；capture 工具仍建立产品 widget。它们保留在墨寒 adapter／产品壳，直到 headless renderer 完整覆盖 352 格、批准与缓存语义；本工作包不会把接口雏形描述为已完成搬移。
 
-角色素材授权与 DLC 关系仍待所有者决定。`huapu.licenses` 只执行调用方提供的 allowlist；`owner_decision_pending` 不会自动变成可公开或可再分发。墨寒角色包继续遵循私有、可独立下载的既有决定。
+墨寒与林可芸角色素材采用 CC BY-NC-ND 4.0，两个角色包公开附于墨寒项目发布页；DLC 关系仍待所有者决定。`huapu.licenses` 只执行调用方提供的 allowlist，`owner_decision_pending` 不会自动变成额外权利。
 
 ## English
 
@@ -46,7 +46,7 @@ The public APIs are `SchemaVersion` and `HUAPU_API_VERSION`; `FileDigest`, `dige
 
 Six existing commands or modules retain their names, function signatures, CLI arguments, exit codes, and output markers as thin entries. MoHan defaults are injected by adapters, so current CI and workflows remain unchanged. Although `golden_render.py` reads character settings, it still composes MoHan renderers directly, and capture tools still construct product widgets. They remain MoHan adapters or product shell until the headless renderer covers all 352 cells plus approval and cache semantics. This package does not present a Protocol scaffold as a completed renderer extraction.
 
-Character-asset licensing and the DLC relationship remain owner decisions. `huapu.licenses` enforces only a caller-supplied allowlist; `owner_decision_pending` never becomes permission to publish or redistribute. The existing decision that the independently downloadable MoHan pack lives in a private repository remains unchanged.
+MoHan and Lin Keyun character assets use CC BY-NC-ND 4.0, and both packs are public assets on the MoHan project release page; the DLC relationship remains an owner decision. `huapu.licenses` enforces only a caller-supplied allowlist, and `owner_decision_pending` never becomes an additional right.
 
 ## 日本語
 
@@ -62,4 +62,4 @@ Character-asset licensing and the DLC relationship remain owner decisions. `huap
 
 既存の六つの command／module は、名称、関数 signature、CLI 引数、終了コード、出力 marker を維持した薄い入口です。墨寒の既定値は adapter が注入するため、既存 CI と workflow の変更は不要です。`golden_render.py` は character 設定を読み込めますが、現在も墨寒 renderer を直接構成し、capture tool も製品 widget を生成します。headless renderer が 352 cell、承認、cache の意味をすべて扱えるまでは墨寒 adapter／製品シェルに残します。この作業では Protocol の雛形を renderer 分離完了とは扱いません。
 
-character asset の license と DLC の関係は所有者の決定待ちです。`huapu.licenses` は呼出側が指定した allowlist だけを検査し、`owner_decision_pending` を公開や再配布の許可へ変更しません。独立 download 可能な墨寒 pack を private repository に置く既存決定も維持します。
+墨寒と林可芸のキャラクター素材には CC BY-NC-ND 4.0 を適用し、両パックを墨寒プロジェクトの公開ページで公開します。DLC との関係は所有者の決定待ちです。`huapu.licenses` は呼出側が指定した allowlist だけを検査し、`owner_decision_pending` を追加の権利へ変更しません。

@@ -297,6 +297,23 @@
       "work_package": null
     },
     {
+      "bytes": 6979,
+      "category": "character_license_notice",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/lin-keyun/LICENSE.md",
+      "readers": [
+        {
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "cde3158a0a822fda1ea14f7114adfdbb9e25cd7f8395a138023d37ba2828e7e6"
+    },
+    {
       "bytes": 2808,
       "category": "archive_or_support",
       "manifest_references": [],
@@ -332,7 +349,7 @@
       "path": "assets/characters/lin-keyun/dialogue/en.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -349,7 +366,7 @@
       "path": "assets/characters/lin-keyun/dialogue/events.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -366,7 +383,7 @@
       "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -393,38 +410,38 @@
       "sha256": "0b58f924804991466ab8de724f90629903209b14ec939cb7b467ab8ea534cf86"
     },
     {
-      "bytes": 11678,
+      "bytes": 11684,
       "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "ead11cdb9eaf934f9f6e67f17891f84e2ae7766e67b9954ba0d57e7ed71d05df"
+      "sha256": "0fe13afafc1eaf464775a8d3e8ef7584dc56464d1cb95aa8553d1892f908192c"
     },
     {
-      "bytes": 11682,
+      "bytes": 11688,
       "category": "character_dialogue_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "559894e6c1731e7bdf950ead0238a8cb611b2fa308450035b5de464d4b12cf09"
+      "sha256": "f459a1a6984eb61c711a62c2313d76e11a617c96b4e9bae9793264eed9cc9274"
     },
     {
       "bytes": 13892,
@@ -434,7 +451,7 @@
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 132,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -444,7 +461,7 @@
       "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
     },
     {
-      "bytes": 7438,
+      "bytes": 7775,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -452,7 +469,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "f79b74cbe5a25dfa090143d00220b64675a75dc074883a989bdab560be348497"
+      "sha256": "c1fab2627fe698e54d48e69c88e1e0ba11dc223a36d4624b2f57d22c73251f0c"
     },
     {
       "bytes": 2163,
@@ -462,7 +479,7 @@
       "path": "assets/characters/lin-keyun/persona/en.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -479,7 +496,7 @@
       "path": "assets/characters/lin-keyun/persona/ja-JP.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -496,7 +513,7 @@
       "path": "assets/characters/lin-keyun/persona/profile.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -530,7 +547,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-CN.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -547,7 +564,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-TW.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -564,7 +581,7 @@
       "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 131,
+          "line": 132,
           "path": "infrastructure/character_source_pack.py",
           "text": "rig = _load_rig(root, rig_component)"
         }
@@ -598,7 +615,7 @@
       "path": "assets/characters/lin-keyun/voice/profile.json",
       "readers": [
         {
-          "line": 127,
+          "line": 128,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data("
         }
@@ -608,7 +625,24 @@
       "sha256": "f6d8ac9d84834852a4481fca73f7a0ffbed7c1c912e2667be77314d7e9fec3ff"
     },
     {
-      "bytes": 2561,
+      "bytes": 6910,
+      "category": "character_license_notice",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/LICENSE.md",
+      "readers": [
+        {
+          "line": 260,
+          "path": "huapu/character_pack_builder.py",
+          "text": "source = _repository_payload(root, relative)"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "8655f87ca7f39be6abc5430f7bfad423c02dce57e350294702cdf8e01893951e"
+    },
+    {
+      "bytes": 2097,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -616,7 +650,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "4544c76d0e94021a456ecb9c87b05e275e511f395aa1f6dac22911af1bebffdd"
+      "sha256": "9871a9c6b3063268b561f167d814463b34e35b0fb21ccd6a834a52b3a7fb918c"
     },
     {
       "bytes": 698,
@@ -755,7 +789,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 7422,
+      "bytes": 7742,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -763,7 +797,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "17276688a4fc1bd025018d0b911ab91db299079c84a644ed896e51407e7454ae"
+      "sha256": "18d6d689c4c02739c8c67e7730a38072e76f4f331edf1463420a37efff95ea1e"
     },
     {
       "bytes": 3149,
@@ -892,7 +926,7 @@
       "path": "assets/characters/mohan/rig/runtime-bindings.json",
       "readers": [
         {
-          "line": 56,
+          "line": 57,
           "path": "infrastructure/bundled_character_source.py",
           "text": "self._character_root / \"rig\" / \"runtime-bindings.json\""
         }
@@ -20080,7 +20114,7 @@
       "sha256": "6bc40b7ea882984f474d4d4abdd88212035e274a6c0927cc8c7151557e6502fd"
     },
     {
-      "bytes": 72528,
+      "bytes": 72499,
       "category": "makeup_authoring_mirror",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -20088,7 +20122,7 @@
       "readers": [],
       "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
       "scope": "excluded_authoring_mirror",
-      "sha256": "394f06ab06d83bf9190ef086eaf5b21fdf8042dc617441179ace3508f3c3ac88"
+      "sha256": "aeb2278c271cd6fdb1d39bf9b46c7f68178fa6a3de9514889bfa0fe607230699"
     },
     {
       "bytes": 419110,
@@ -20129,21 +20163,21 @@
       "sha256": "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
     },
     {
-      "bytes": 29635506,
+      "bytes": 29634200,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 324,
+          "line": 378,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "fbb10e86f250f1c773f00043125c85eb0a7f95233152e30eeaa811d9404de75f"
+      "sha256": "174a58315109592e8e69bf0b0f231c411930e79c51b8c039063df4d9d56c58c2"
     },
     {
       "appearance_categories": [
@@ -47885,36 +47919,36 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 568376,
+      "bytes": 568348,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!manifest.json",
       "readers": [
         {
-          "line": 56,
+          "line": 68,
           "path": "domain/outfit_pack_archive.py",
           "text": "manifest = json.loads(archive.read(MANIFEST).decode(\"utf-8\"))"
         }
       ],
       "scope": "runtime_data",
-      "sha256": "d98b212901af1bd561b18a990e88061667311421cd321a7652df79d1e54cdcef"
+      "sha256": "e9630e9896f3cce622420a900099ea6b9bef9a6baa42b3a2e4133c18c9f52773"
     },
     {
-      "bytes": 29201841,
+      "bytes": 29201813,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 324,
+          "line": 378,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "a34ff16f870c53c4fec64a4e91273d2674ca3f75df18a4a644d16dd487accf91"
+      "sha256": "958930db0da15fb382290b8f92ab76b72ae13550441c0690ddd753a2704bdd7b"
     },
     {
       "appearance_categories": [
@@ -50770,19 +50804,19 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 76701,
+      "bytes": 76672,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit!manifest.json",
       "readers": [
         {
-          "line": 56,
+          "line": 68,
           "path": "domain/outfit_pack_archive.py",
           "text": "manifest = json.loads(archive.read(MANIFEST).decode(\"utf-8\"))"
         }
       ],
       "scope": "runtime_data",
-      "sha256": "cf781348ac3fbc8ee5c52405f3eb3860eab7bf12466af8adf6a101a208da8659"
+      "sha256": "a22e154413bdb3b22f9e65db656db045a9239be583c2b61bde0d32720d62277d"
     },
     {
       "bytes": 1422107,
@@ -89071,7 +89105,7 @@
       "sha256": "a35ebf52fd3ce5f1469b2a36158dba761bc47b973ea3382b3186ca15b1f5af28"
     },
     {
-      "bytes": 8038,
+      "bytes": 11422,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -89079,7 +89113,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "50130936609185fa642ec57e9b4927719bc6516b7bc070904b371a0a52749ff6"
+      "sha256": "0eed260bf247e1c444d6e62b8d425f28b2bbdaa239200c618fb8436f15b293ac"
     },
     {
       "bytes": 99871,
@@ -89581,7 +89615,7 @@
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 61,
+          "line": 65,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import ("
         },
@@ -90001,7 +90035,7 @@
       "work_package": null
     },
     {
-      "bytes": 10252,
+      "bytes": 11557,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -90033,7 +90067,7 @@
         {
           "line": 33,
           "path": "domain/outfit_pack.py",
-          "text": "lazy from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_ids, resolve_builtin_sentinel"
+          "text": "from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations"
         },
         {
           "line": 12,
@@ -90057,7 +90091,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "4cb50d3ebe3ae8e8766dfd980d85f5719aa8adcc4d18121331888da8fce00011",
+      "sha256": "1e3269a86262aa1fb401a93b38366ce2a8c250000fe8900a39f86711f9a2f997",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
@@ -90145,96 +90179,126 @@
         {
           "end_line": 88,
           "line": 88,
-          "name": "BARE_SELECTION"
+          "name": "_PACK_IDENTIFIER"
+        },
+        {
+          "end_line": 89,
+          "line": 89,
+          "name": "_RESERVED_OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 90,
           "line": 90,
-          "name": "Identity"
+          "name": "_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE"
         },
         {
           "end_line": 91,
           "line": 91,
+          "name": "BARE_SELECTION"
+        },
+        {
+          "end_line": 93,
+          "line": 93,
+          "name": "Identity"
+        },
+        {
+          "end_line": 94,
+          "line": 94,
           "name": "Resolution"
         },
         {
-          "end_line": 95,
-          "line": 94,
+          "end_line": 98,
+          "line": 97,
           "name": "official_outfit_pack_id"
         },
         {
-          "end_line": 99,
-          "line": 98,
+          "end_line": 102,
+          "line": 101,
           "name": "official_outfit_ensemble_id"
         },
         {
-          "end_line": 103,
-          "line": 102,
+          "end_line": 106,
+          "line": 105,
           "name": "builtin_makeup_pack_id"
         },
         {
-          "end_line": 108,
-          "line": 106,
+          "end_line": 111,
+          "line": 109,
           "name": "official_pack_ids"
         },
         {
-          "end_line": 119,
-          "line": 111,
+          "end_line": 128,
+          "line": 114,
+          "name": "set_official_pack_id_reservations"
+        },
+        {
+          "end_line": 134,
+          "line": 131,
+          "name": "official_pack_id_reservations_complete"
+        },
+        {
+          "end_line": 142,
+          "line": 137,
+          "name": "reserved_official_pack_ids"
+        },
+        {
+          "end_line": 153,
+          "line": 145,
           "name": "official_native_hair_alias"
         },
         {
-          "end_line": 129,
-          "line": 122,
+          "end_line": 163,
+          "line": 156,
           "name": "official_native_headwear_alias"
         },
         {
-          "end_line": 139,
-          "line": 132,
+          "end_line": 173,
+          "line": 166,
           "name": "is_official_native_alias"
         },
         {
-          "end_line": 150,
-          "line": 142,
+          "end_line": 184,
+          "line": 176,
           "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
         },
         {
-          "end_line": 166,
-          "line": 153,
+          "end_line": 200,
+          "line": 187,
           "name": "native_overlay_is_redundant"
         },
         {
-          "end_line": 172,
-          "line": 169,
+          "end_line": 206,
+          "line": 203,
           "name": "SelectionLike"
         },
         {
-          "end_line": 178,
-          "line": 175,
+          "end_line": 212,
+          "line": 209,
           "name": "EnsembleSelectionLike"
         },
         {
-          "end_line": 184,
-          "line": 181,
+          "end_line": 218,
+          "line": 215,
           "name": "EnsembleLike"
         },
         {
-          "end_line": 204,
-          "line": 187,
+          "end_line": 238,
+          "line": 221,
           "name": "official_outfit_ensemble"
         },
         {
-          "end_line": 214,
-          "line": 207,
+          "end_line": 248,
+          "line": 241,
           "name": "builtin_makeup_resolution"
         },
         {
-          "end_line": 238,
-          "line": 217,
+          "end_line": 272,
+          "line": 251,
           "name": "builtin_outfit_resolution"
         },
         {
-          "end_line": 256,
-          "line": 241,
+          "end_line": 290,
+          "line": 275,
           "name": "resolve_builtin_sentinel"
         }
       ],
@@ -90423,7 +90487,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 78,
+          "line": 84,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -90520,7 +90584,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 107,
+          "line": 120,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -90690,7 +90754,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 109,
+          "line": 122,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -92975,10 +93039,11 @@
   ],
   "owner_decisions": {
     "art_tool_license": "MIT",
-    "character_asset_license": "owner_decision_pending",
+    "character_asset_license": "CC-BY-NC-ND-4.0",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
-    "pack_visibility": "private_repository",
+    "pack_visibility": "public_mohan_release_page",
+    "paid_dlc_license": "CC-BY-NC-ND-4.0",
     "standalone_download_design": true
   },
   "product_shell_allowlist": [
@@ -93032,6 +93097,7 @@
     "character_appearance_defaults": 2,
     "character_dialogue_data": 10,
     "character_expression_catalog": 2,
+    "character_license_notice": 2,
     "character_persona_data": 10,
     "character_rig_data": 2,
     "character_runtime_binding_data": 2,
@@ -93075,7 +93141,7 @@
     "excluded_review_source": 39,
     "excluded_support": 21,
     "product_validation_data": 48,
-    "runtime_data": 3007
+    "runtime_data": 3009
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

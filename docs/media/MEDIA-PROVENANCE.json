@@ -3,6 +3,34 @@
     "readme_reference_pattern": "docs/media/<filename>",
     "generation_source": "domain/constants.py:POSE_ATLAS_GENERATION",
     "entries": {
+        "docs/media/conversation.png": {
+            "generator": "historical tools/capture_readme_media.py output (2026-08); current tool no longer reproduces this file",
+            "generation": 1,
+            "sha256": "2987cd5fb15aa3812b058dcb49cabd06750308699cdf4c918a9d135173c36447",
+            "auto_regenerable": false,
+            "reason": "2026-08 的提交紀錄顯示由 README 截圖流程產出；現行工具已切換二代素材且不再輸出此檔，generation 1 僅依提交時間線推定。"
+        },
+        "docs/media/creation-frame-by-frame-qa.webp": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "f7faaec58c3a6fe022bdb703990a17be63459aaabd72a5d7afa7d13bfb3bdb3f",
+            "auto_regenerable": false,
+            "reason": "來源待查；2026-08-07 首次加入，未找到來源檔、生成工具或生成紀錄；generation 1 僅依提交時間線推定。"
+        },
+        "docs/media/creation-viseme-development.webp": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "0102252b73f72ea46839a7d4cd6d501309880b8abd6fb44084b5951b6f4b2302",
+            "auto_regenerable": false,
+            "reason": "來源待查；2026-08-07 首次加入，未找到來源檔、生成工具或生成紀錄；generation 1 僅依提交時間線推定。"
+        },
+        "docs/media/desktop-character.png": {
+            "generator": "historical tools/capture_readme_media.py output (2026-08); current tool no longer reproduces this file",
+            "generation": 1,
+            "sha256": "e58d1bd7fca01baf3d834f167bf301650bc1711d7ddba9851ff35798dd8f5098",
+            "auto_regenerable": false,
+            "reason": "2026-08 的提交紀錄顯示由 README 截圖流程產出；現行工具已切換二代素材且不再輸出此檔，generation 1 僅依提交時間線推定。"
+        },
         "docs/media/expressions.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab all",
             "generation": 2,
@@ -14,6 +42,13 @@
             "generation": 2,
             "sha256": "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927",
             "auto_regenerable": true
+        },
+        "docs/media/github-social-preview.png": {
+            "generator": "historical tools/capture_readme_media.py compose_github_social_preview output (2026-08)",
+            "generation": 1,
+            "sha256": "8592519da6ac23592304511746b7cbad4042e3163f7d6773375181b32b5cedf3",
+            "auto_regenerable": false,
+            "reason": "歷史提交記錄顯示由 README 媒體工具的社群預覽合成流程更新；現行工具已變更，generation 1 僅依提交時間線推定。"
         },
         "docs/media/long-term-memory.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab memory",
@@ -49,6 +84,20 @@
             "auto_regenerable": false,
             "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
         },
+        "docs/media/mohan-chibi-theatre.png": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "0f000305ebe191ab53cbbc39bb18d29cdb80216180086ae3c9a7507c19eaeb64",
+            "auto_regenerable": false,
+            "reason": "來源待查；同批 Q 版檔案的紀錄不足以證明本檔來源，未找到本檔的直接來源或生成紀錄。"
+        },
+        "docs/media/mohan-demo.gif": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "65bed11a9413313cdbae9f880c7f5cbd0b53dc4ea801118b4d5883533445d3aa",
+            "auto_regenerable": false,
+            "reason": "來源待查；歷史提交未找到 GIF 生成工具或生成紀錄，現行 MP4 工具不足以證明本檔來源。"
+        },
         "docs/media/mohan-demo.mp4": {
             "generator": "tools/record_demo_video.py",
             "generation": 2,
@@ -71,6 +120,12 @@
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
             "sha256": "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/idle_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869",
             "auto_regenerable": true
         },
         "docs/media/portraits/mock_hit_front.png": {

@@ -10,6 +10,7 @@ lazy from pathlib import Path, PurePosixPath
 lazy from domain.character_pack.character_data_models import (
     EXPRESSION_SCHEMA as CHARACTER_EXPRESSION_SCHEMA,
     RIG_SCHEMA as CHARACTER_RIG_SCHEMA,
+    DialogueLocale,
     CharacterRigManifest,
     ExpressionStateCatalog,
     MohanCharacterData,
@@ -298,6 +299,16 @@ class CharacterPackReader(
             _read_verified_file(self._root, record)
         return candidate
 
+    def resolve_optional_path(self, relative_path: str) -> Path | None:
+        path = _relative_path(relative_path)
+        name = path.as_posix()
+        directory_prefix = f"{name}/"
+        if name not in self._records and not any(
+            declared.startswith(directory_prefix) for declared in self._records
+        ):
+            return None
+        return self.resolve_path(relative_path)
+
     @property
     def canonical_name(self) -> str:
         return self._canonical_name
@@ -320,6 +331,9 @@ class CharacterPackReader(
 
     def persona_prompt(self, language: str) -> str:
         return self._persona_prompts[canonical_ui_language(language)]
+
+    def dialogue_locale(self, language: str) -> DialogueLocale:
+        return self._dialogue[canonical_ui_language(language)]
 
     def dialogue_line(
         self,

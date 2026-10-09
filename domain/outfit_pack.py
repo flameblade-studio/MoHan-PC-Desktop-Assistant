@@ -30,7 +30,7 @@ lazy from domain.makeup_mouth_states import parse_mouth_states
 lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES, character_rig_manifest
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
-lazy from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_ids, resolve_builtin_sentinel
+from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations
 # Eager on purpose: these names are re-exported (``from domain.outfit_pack import
 # OutfitPackError`` is used across the layers) and a lazy import of a lazily
 # imported name exposes the lazy module proxy to the caller; import the class directly for the class API.
@@ -635,7 +635,7 @@ def installed_pack_path(
     *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
 ) -> Path:
     """Locate one installed or official pack archive by id; fails closed on an Use a recognized id."""
-    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=official_pack_ids())
+    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     path = next((path for path in paths if path.stem == pack_id), None)
     if path is None:
         raise OutfitPackError("The selected appearance pack is not installed.")
@@ -645,7 +645,7 @@ def installed_pack_path(
 def list_installed_outfits(
     store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
 ) -> tuple[OutfitPack, ...]:
-    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=official_pack_ids())
+    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     return tuple(pack for pack in map(inspect_installed_outfit_pack, paths) if pack is not None)
 
 
@@ -653,7 +653,7 @@ def list_stale_body_profile_packs(
     store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
 ) -> tuple[str, ...]:
     """Ids of installed packs made for another body-profile generation; they are listed for reference and stay outside rendering."""
-    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=official_pack_ids())
+    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     return tuple(path.stem for path in paths if inspect_installed_outfit_pack(path) is None)
 
 
@@ -684,7 +684,7 @@ def list_installed_ensembles(
 
 def install_outfit_pack(source: Path, store: Path) -> OutfitPack:
     pack = inspect_outfit_pack(source)
-    if pack.pack_id in official_pack_ids():
+    if not official_pack_id_reservations_complete() or pack.pack_id in official_pack_ids():
         raise OutfitPackError("Official pack ids are reserved for the archives shipped with the app.")
     copy_pack_archive(source, store, pack.pack_id)
     return pack

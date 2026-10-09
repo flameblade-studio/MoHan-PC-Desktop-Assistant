@@ -335,7 +335,18 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     manifest = _manifest_from_directory(output)
     assert manifest["pack_id"] == "flameblade.mohan"
     assert manifest["character"]["id"] == "mohan"
-    assert manifest["distribution"]["access"] == "private"
+    assert manifest["pack_version"] == "1.0.3"
+    assert manifest["distribution"]["access"] == "public"
+    assert manifest["distribution"]["redistribution"] == "allowed"
+    assert {entry["status"] for entry in manifest["licenses"].values()} == {
+        "declared_license"
+    }
+    assert {
+        entry["license_expression"] for entry in manifest["licenses"].values()
+    } == {"CC-BY-NC-ND-4.0"}
+    assert {entry["notice_path"] for entry in manifest["licenses"].values()} == {
+        "assets/characters/mohan/LICENSE.md"
+    }
     appearance_record = next(
         entry
         for entry in manifest["files"]
@@ -375,6 +386,7 @@ def _repository_payload_totals(character_id: str = "mohan") -> tuple[int, int]:
 
 
 def test_character_data_categories_map_to_explicit_license_components() -> None:
+    assert builder._license_component("assets/characters/mohan/LICENSE.md", "character_license_notice") == "program_data"
     assert builder._license_component("assets/characters/mohan/appearance/defaults.json", "character_appearance_defaults") == "program_data"
     assert builder._license_component("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data") == "persona_dialogue"
     assert builder._license_component("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data") == "persona_dialogue"

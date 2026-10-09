@@ -43,6 +43,7 @@ EXPECTED_FILES = frozenset(
     {
         *RUNTIME_JSON_FILES,
         APPEARANCE_DEFAULTS_PATH,
+        "LICENSE.md",
         "pack-source.json",
         "README.md",
     }
@@ -164,7 +165,7 @@ def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
         assert len(dialogue["templates"]) == EXPECTED_TEMPLATE_COUNT
 
 
-def test_linkeyun_dialogue_placeholders_match_mohan_in_every_language() -> None:
+def test_linkeyun_dialogue_placeholders_match_in_every_language() -> None:
     for language in LANGUAGES:
         mohan = dict(
             _string_leaves(_load(MOHAN_ROOT, f"dialogue/{language}.json"))
@@ -174,7 +175,10 @@ def test_linkeyun_dialogue_placeholders_match_mohan_in_every_language() -> None:
         )
         assert linkeyun.keys() == mohan.keys()
         for path, mohan_value in mohan.items():
-            assert _placeholders(linkeyun[path]) == _placeholders(mohan_value), (
+            expected = _placeholders(mohan_value)
+            if path == "$.templates.background.app_launched":
+                expected |= frozenset({"user_title"})
+            assert _placeholders(linkeyun[path]) == expected, (
                 language,
                 path,
             )
@@ -292,9 +296,31 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     mohan_source = _load(MOHAN_ROOT, "pack-source.json")
     assert source["pack_id"] == "flameblade.lin-keyun"
     assert source["character_id"] == "lin-keyun"
-    assert source["pack_version"] == "1.0.0"
+    assert source["pack_version"] == "1.0.1"
+    lock = json.loads(
+        (ROOT / "docs/character-pack/lin-keyun-pack.lock.json").read_text(encoding="utf-8")
+    )
+    assert lock["pack_version"] == source["pack_version"]
     assert source["distribution"]["access"] == "public"
-    assert source["licenses"] == mohan_source["licenses"]
+    assert source["distribution"]["redistribution"] == "allowed"
+    assert source["licenses"].keys() == mohan_source["licenses"].keys()
+    for component, declaration in source["licenses"].items():
+        mohan_declaration = mohan_source["licenses"][component]
+        assert {
+            key: value
+            for key, value in declaration.items()
+            if key != "notice_path"
+        } == {
+            key: value
+            for key, value in mohan_declaration.items()
+            if key != "notice_path"
+        }
+        assert declaration["notice_path"] == (
+            "assets/characters/lin-keyun/LICENSE.md"
+        )
+        assert mohan_declaration["notice_path"] == (
+            "assets/characters/mohan/LICENSE.md"
+        )
     assert source["dependencies"] == [
         {
             "id": "linkeyun.official.modern-office",

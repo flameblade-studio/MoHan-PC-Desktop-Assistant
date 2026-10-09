@@ -107,7 +107,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--item-name", required=True, help="zh-TW|zh-CN|en|ja-JP")
     parser.add_argument("--variant", action="append", required=True, help="id:zh-TW|zh-CN|en|ja-JP (repeatable)")
     parser.add_argument("--author", default="Flameblade Studio")
-    parser.add_argument("--license", default="CC BY 4.0")
+    parser.add_argument("--license", default="CC-BY-4.0")
     parser.add_argument("--pack-version", default="1.0.0")
     parser.add_argument("--app-range", default=">=4.0.0,<5.0.0")
     arguments = parser.parse_args(argv)

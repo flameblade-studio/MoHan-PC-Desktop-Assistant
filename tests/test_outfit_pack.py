@@ -4,6 +4,7 @@ lazy import binascii
 lazy import copy
 lazy import hashlib
 lazy import json
+lazy import pytest
 lazy import struct
 lazy import sys
 lazy import zipfile
@@ -210,6 +211,37 @@ def _pack(path: Path, manifest: dict, assets: dict[str, bytes]) -> Path:
         for name, data in assets.items():
             archive.writestr(name, data)
     return path
+
+
+def test_source_license_allowlist_accepts_supported_values(tmp_path: Path) -> None:
+    supported = (
+        "All Rights Reserved",
+        "All Rights Reserved - see ASSETS-LICENSE.md",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "CC BY 4.0",
+        "CC-BY-4.0",
+        "CC-BY-NC-ND-4.0",
+        "CC0-1.0",
+        "MIT",
+    )
+    for index, license_name in enumerate(supported):
+        manifest, assets = _manifest(_png())
+        manifest["source"]["license"] = license_name
+        pack = inspect_outfit_pack(
+            _pack(tmp_path / f"supported-{index}.mohan-outfit", manifest, assets)
+        )
+        assert pack.license_name == license_name
+
+
+def test_source_license_allowlist_rejects_unknown_value(tmp_path: Path) -> None:
+    manifest, assets = _manifest(_png())
+    manifest["source"]["license"] = "MadeUp-Unknown-9.0"
+    archive = _pack(tmp_path / "unknown-license.mohan-outfit", manifest, assets)
+
+    with pytest.raises(OutfitPackError, match="supported source declaration"):
+        inspect_outfit_pack(archive)
 
 
 def _assert_authoring_builder(

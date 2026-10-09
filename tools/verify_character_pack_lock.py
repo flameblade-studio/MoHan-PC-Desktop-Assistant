@@ -1,10 +1,11 @@
-"""Build the repository MoHan pack and verify its version lock."""
+"""Build repository character packs and verify their public release locks."""
 
 from __future__ import annotations
 
 lazy import argparse
 lazy import sys
 lazy from collections.abc import Callable, Mapping, Sequence
+lazy from functools import partial
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,8 +18,10 @@ lazy from tools import build_character_pack as builder
 LOCK_SCHEMA = _core.LOCK_SCHEMA
 LOCK_SCHEMA_VERSION = _core.LOCK_SCHEMA_VERSION
 DEFAULT_LOCK = _core.DEFAULT_LOCK
-SOURCE_REPOSITORY = "flameblade-studio/mohan-character-pack"
+SOURCE_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 RELEASE_TAG_PREFIX = "mohan-pack-v"
+LIN_KEYUN_LOCK = Path("docs/character-pack/lin-keyun-pack.lock.json")
+LIN_KEYUN_RELEASE_TAG_PREFIX = "lin-keyun-pack-v"
 
 CharacterPackLockError = _core.CharacterPackLockError
 CharacterPackLockSettings = _core.CharacterPackLockSettings
@@ -28,19 +31,42 @@ LockedEngineCompatibility = _core.LockedEngineCompatibility
 LockedFile = _core.LockedFile
 CharacterPackLock = _core.CharacterPackLock
 CharacterPackLockResult = _core.CharacterPackLockResult
+CharacterPackReleaseProfile = _core.CharacterPackReleaseProfile
 
-DEFAULT_LOCK_SETTINGS = CharacterPackLockSettings(
-    schema=LOCK_SCHEMA,
-    schema_version=LOCK_SCHEMA_VERSION,
-    source_repository=SOURCE_REPOSITORY,
-    release_tag_prefix=RELEASE_TAG_PREFIX,
-    pack_source_path=builder.DEFAULT_SOURCE,
-)
+
+RELEASE_PROFILES = {
+    "mohan": CharacterPackReleaseProfile(
+        "flameblade.mohan",
+        DEFAULT_LOCK,
+        builder.DEFAULT_SOURCE,
+        SOURCE_REPOSITORY,
+        RELEASE_TAG_PREFIX,
+    ),
+    "lin-keyun": CharacterPackReleaseProfile(
+        "flameblade.lin-keyun",
+        LIN_KEYUN_LOCK,
+        Path("assets/characters/lin-keyun/pack-source.json"),
+        SOURCE_REPOSITORY,
+        LIN_KEYUN_RELEASE_TAG_PREFIX,
+    ),
+}
+RELEASE_SETTINGS_BY_PACK_ID = {
+    profile.pack_id: profile.settings() for profile in RELEASE_PROFILES.values()
+}
+DEFAULT_LOCK_SETTINGS = RELEASE_PROFILES["mohan"].settings()
 
 
 def load_character_pack_lock(path: str | Path) -> CharacterPackLock:
     """Load the MoHan lock through the product-neutral Huapu parser."""
     return _core.load_character_pack_lock(path, settings=DEFAULT_LOCK_SETTINGS)
+
+
+def load_release_character_pack_lock(path: str | Path) -> CharacterPackLock:
+    """Load a lock for one explicitly supported public character-pack series."""
+    return _core.load_profiled_character_pack_lock(
+        path,
+        settings_by_pack_id=RELEASE_SETTINGS_BY_PACK_ID,
+    )
 
 
 def verify_character_pack_lock(
@@ -88,30 +114,35 @@ render_character_pack_lock = _core.render_character_pack_lock
 
 def main(arguments: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--lock", type=Path, default=DEFAULT_LOCK)
+    parser.add_argument("--profile", choices=tuple(RELEASE_PROFILES), default="mohan")
+    parser.add_argument("--lock", type=Path)
     parser.add_argument("--repo-root", type=Path, default=ROOT)
     parser.add_argument("--update", action="store_true")
-    parser.add_argument(
-        "--archive-output",
-        type=Path,
-        help="Keep the exact release ZIP produced during --update; the path must not exist.",
-    )
+    parser.add_argument("--archive-output", type=Path, help="Keep the exact release ZIP during --update.")
     parsed = parser.parse_args(arguments)
     if parsed.archive_output is not None and not parsed.update:
         parser.error("--archive-output requires --update")
+    profile = RELEASE_PROFILES[parsed.profile]
+    lock_path = profile.lock_path if parsed.lock is None else parsed.lock
+    settings = profile.settings()
+    build = partial(builder.build_character_pack, source_path=profile.source_path)
     try:
+        operation = (
+            partial(_core.update_character_pack_lock, archive_output=parsed.archive_output)
+            if parsed.update
+            else _core.verify_character_pack_lock
+        )
+        result = operation(
+            lock_path,
+            repo_root=parsed.repo_root,
+            build=build,
+            settings=settings,
+        )
         if parsed.update:
-            result = update_character_pack_lock(
-                parsed.lock,
-                repo_root=parsed.repo_root,
-                archive_output=parsed.archive_output,
-            )
             print(
                 "CHARACTER_PACK_LOCK_UPDATED="
-                f"{_core._resolve_lock_path(parsed.repo_root.resolve(), parsed.lock)}"
+                f"{_core._resolve_lock_path(parsed.repo_root.resolve(), lock_path)}"
             )
-        else:
-            result = verify_character_pack_lock(parsed.lock, repo_root=parsed.repo_root)
     except (CharacterPackLockError, builder.CharacterPackBuildError, OSError) as error:
         print(f"CHARACTER_PACK_LOCK_ERROR={error}", file=sys.stderr)
         return 1
