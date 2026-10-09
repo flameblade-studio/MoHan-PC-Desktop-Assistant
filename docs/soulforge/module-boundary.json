@@ -219,7 +219,6 @@
       "presentation.autonomous_outfit_generation_controller",
       "presentation.companion_blink_composite",
       "presentation.companion_blink_runtime",
-      "presentation.companion_core",
       "presentation.companion_face_animation_logic",
       "presentation.companion_legacy_frame",
       "presentation.companion_proactive",
@@ -233,11 +232,8 @@
       "presentation.corrupt_data_ui",
       "presentation.dashboard_dialogs",
       "presentation.dashboard_platforms",
-      "presentation.dashboard_settings_persistence",
       "presentation.dashboard_shared",
       "presentation.dashboard_today_memory",
-      "presentation.dashboard_voice",
-      "presentation.dashboard_voice_runtime",
       "presentation.dashboard_wardrobe_categories",
       "presentation.dashboard_wardrobe_makeup",
       "presentation.dashboard_wardrobe_packages",
@@ -267,7 +263,6 @@
       "presentation.flagship.workflow_editor",
       "presentation.flagship.workflows",
       "presentation.performance_composition",
-      "presentation.profile_transfer_ui",
       "presentation.qt_parent",
       "presentation.service_status_localization",
       "presentation.settings_ui_localization",
@@ -303,13 +298,17 @@
       "infrastructure.update_manifest_signature",
       "infrastructure.updater",
       "presentation.auxiliary_ui_localization",
+      "presentation.companion_core",
       "presentation.companion_window",
       "presentation.dashboard_artwork",
       "presentation.dashboard_composition",
       "presentation.dashboard_control_style",
       "presentation.dashboard_settings",
+      "presentation.dashboard_settings_persistence",
       "presentation.dashboard_shell",
       "presentation.dashboard_theme_materials",
+      "presentation.dashboard_voice",
+      "presentation.dashboard_voice_runtime",
       "presentation.dashboard_window",
       "presentation.first_run_wizard",
       "presentation.flagship",
@@ -329,6 +328,7 @@
       "presentation.lingxiao_widgets",
       "presentation.presentation_resources",
       "presentation.preview_app",
+      "presentation.profile_transfer_ui",
       "presentation.updater_ui"
     ],
     "huapu": [
@@ -469,15 +469,198 @@
       "line_before": 19,
       "replacement": "domain.core_constants",
       "reason": "只使用角色中立的通用常數，已改由引擎模組提供並保留舊公開匯出。"
-    }
-  ],
-  "violation_baseline": [
+    },
     {
       "importer": "domain.engine_capabilities",
       "imported": "domain.version_info",
-      "line": 7,
-      "reason": "引擎模組仍直接讀取墨寒產品版本或既有使用者資料目錄識別。"
+      "line_before": 7,
+      "replacement": "domain.engine_capabilities._runtime_engine_version",
+      "reason": "引擎能力改讀當前執行物的中立建置中繼資料，不再把墨寒產品版本模組當作引擎版本來源。"
     },
+    {
+      "importer": "presentation._dashboard_wardrobe_tab",
+      "imported": "presentation.flagship_theme",
+      "line_before": 17,
+      "replacement": "presentation.dashboard_shared",
+      "reason": "角色中立的卡片語意標記移入共用 presentation helper，產品主題保留舊公開包裝。"
+    },
+    {
+      "importer": "presentation.autonomous_outfit_generation_controller",
+      "imported": "application.presentation_ports",
+      "line_before": 46,
+      "replacement": "domain.core_constants",
+      "reason": "預設文字模型是引擎設定，已移入中立常數模組並由舊產品介面相容匯出。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "application.presentation_ports",
+      "line_before": 30,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此模組建立 Dashboard、首次啟動精靈及平台 fallback，是最外層產品組裝而非可獨立搬移的引擎元件。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.presentation_resources",
+      "line_before": 100,
+      "replacement": "presentation.dashboard_shared",
+      "reason": "封裝資源解析是中立路徑能力，產品資源模組保留同名相容函式。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "domain.constants",
+      "line_before": 40,
+      "replacement": "mohan_product_shell classification",
+      "reason": "最外層產品組裝依既有墨寒角色 binding 與素材位置啟動，責任屬產品殼。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.dashboard_composition",
+      "line_before": 93,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此模組直接組裝產品 Dashboard，與其實際最外層產品組裝責任一致。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.dashboard_window",
+      "line_before": 94,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此模組直接建立墨寒產品視窗，與其實際最外層產品組裝責任一致。"
+    },
+    {
+      "importer": "presentation.companion_core",
+      "imported": "presentation.first_run_wizard",
+      "line_before": 96,
+      "replacement": "mohan_product_shell classification",
+      "reason": "首次啟動精靈由最外層產品組裝啟動，兩者同屬產品殼。"
+    },
+    {
+      "importer": "presentation.companion_proactive",
+      "imported": "application.presentation_ports",
+      "line_before": 12,
+      "replacement": "application.service_contracts",
+      "reason": "presentation 所需資料庫介面已縮成引擎側 Protocol，產品殼以結構型別實作。"
+    },
+    {
+      "importer": "presentation.companion_proactive",
+      "imported": "domain.app_profile",
+      "line_before": 28,
+      "replacement": "domain.character_source",
+      "reason": "設定預設與文字個人化改由已注入的活動角色來源提供，不再讀取墨寒相容 facade。"
+    },
+    {
+      "importer": "presentation.companion_voice_phase",
+      "imported": "domain.app_profile",
+      "line_before": 5,
+      "replacement": "domain.character_source",
+      "reason": "語言設定透過活動角色來源的設定介面取得，保留既有角色預設。"
+    },
+    {
+      "importer": "presentation.dashboard_dialogs",
+      "imported": "application.presentation_ports",
+      "line_before": 25,
+      "replacement": "application.service_contracts",
+      "reason": "對話框只需要中立資料庫 Protocol，不再依賴產品 presentation 聚合。"
+    },
+    {
+      "importer": "presentation.dashboard_dialogs",
+      "imported": "domain.app_profile",
+      "line_before": 26,
+      "replacement": "domain.character_source",
+      "reason": "聊天角色標籤從活動角色設定介面取得，保留資料庫設定優先順序。"
+    },
+    {
+      "importer": "presentation.dashboard_platforms",
+      "imported": "application.presentation_ports",
+      "line_before": 24,
+      "replacement": "application.service_contracts",
+      "reason": "平台進度資料物件已移入引擎側服務合約，舊產品介面保留相容匯出。"
+    },
+    {
+      "importer": "presentation.dashboard_settings_persistence",
+      "imported": "domain.app_profile",
+      "line_before": 8,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此模組直接負責墨寒 persona、稱謂與提醒預設遷移，且唯一產品設定呼叫端本就位於產品殼。"
+    },
+    {
+      "importer": "presentation.dashboard_voice",
+      "imported": "application.presentation_ports",
+      "line_before": 19,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此模組是產品語音設定畫面，直接維護墨寒既有 provider 預設、地區選項與資料庫設定，責任屬產品殼。"
+    },
+    {
+      "importer": "presentation.dashboard_voice",
+      "imported": "domain.app_profile",
+      "line_before": 31,
+      "replacement": "mohan_product_shell classification",
+      "reason": "產品語音設定畫面以墨寒 persona 喚醒詞建立既有轉錄提示，責任與資料來源都屬產品殼。"
+    },
+    {
+      "importer": "presentation.dashboard_voice_runtime",
+      "imported": "application.presentation_ports",
+      "line_before": 6,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此 helper 僅服務產品語音設定畫面並維護其 provider 選項，與呼叫端一併歸產品殼。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_categories",
+      "imported": "application.presentation_ports",
+      "line_before": 9,
+      "replacement": "application.service_contracts",
+      "reason": "衣裝分類只需要中立資料庫 Protocol。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_categories",
+      "imported": "presentation.flagship_theme",
+      "line_before": 15,
+      "replacement": "presentation.dashboard_shared",
+      "reason": "卡片只標記中立語意，由產品主題決定實際外觀。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_makeup",
+      "imported": "presentation.flagship_theme",
+      "line_before": 25,
+      "replacement": "presentation.dashboard_shared",
+      "reason": "卡片只標記中立語意，由產品主題決定實際外觀。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_packages",
+      "imported": "application.presentation_ports",
+      "line_before": 8,
+      "replacement": "application.service_contracts",
+      "reason": "衣裝套件清單只需要中立資料庫 Protocol。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_preferences",
+      "imported": "presentation.flagship_theme",
+      "line_before": 18,
+      "replacement": "presentation.dashboard_shared",
+      "reason": "卡片只標記中立語意，由產品主題決定實際外觀。"
+    },
+    {
+      "importer": "presentation.dashboard_wardrobe_preview",
+      "imported": "presentation.presentation_resources",
+      "line_before": 37,
+      "replacement": "presentation.dashboard_shared",
+      "reason": "衣裝預覽只需要中立的封裝資源路徑解析。"
+    },
+    {
+      "importer": "presentation.profile_transfer_ui",
+      "imported": "application.presentation_ports",
+      "line_before": 27,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此 UI 直接解析墨寒攜帶檔、副檔名、manifest 與敏感資料封裝，依既定備份格式邊界歸產品殼。"
+    },
+    {
+      "importer": "presentation.profile_transfer_ui",
+      "imported": "presentation.auxiliary_ui_localization",
+      "line_before": 42,
+      "replacement": "mohan_product_shell classification",
+      "reason": "此 UI 的墨寒攜帶檔文案與格式同屬產品殼，分類與實際責任一致。"
+    }
+  ],
+  "violation_baseline": [
     {
       "importer": "infrastructure.active_outfit_overlay",
       "imported": "domain.version_info",
@@ -509,76 +692,16 @@
       "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
     },
     {
-      "importer": "presentation._dashboard_wardrobe_tab",
-      "imported": "presentation.flagship_theme",
-      "line": 17,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.autonomous_outfit_generation_controller",
-      "imported": "application.presentation_ports",
-      "line": 46,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
       "importer": "presentation.autonomous_outfit_generation_controller",
       "imported": "domain.constants",
       "line": 27,
       "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
     },
     {
-      "importer": "presentation.companion_core",
-      "imported": "application.presentation_ports",
-      "line": 30,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.companion_core",
-      "imported": "domain.constants",
-      "line": 40,
-      "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
-    },
-    {
-      "importer": "presentation.companion_core",
-      "imported": "presentation.dashboard_composition",
-      "line": 93,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.companion_core",
-      "imported": "presentation.dashboard_window",
-      "line": 94,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.companion_core",
-      "imported": "presentation.first_run_wizard",
-      "line": 96,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.companion_core",
-      "imported": "presentation.presentation_resources",
-      "line": 100,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
       "importer": "presentation.companion_proactive",
       "imported": "application.desktop_presence",
       "line": 7,
       "reason": "引擎 presentation 仍直接依賴墨寒產品 UI 組合橋接。"
-    },
-    {
-      "importer": "presentation.companion_proactive",
-      "imported": "application.presentation_ports",
-      "line": 12,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.companion_proactive",
-      "imported": "domain.app_profile",
-      "line": 28,
-      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
     },
     {
       "importer": "presentation.companion_proactive",
@@ -593,87 +716,9 @@
       "reason": "引擎模組仍直接讀取同時含墨寒角色 binding、素材路徑或校準值的產品常數模組。"
     },
     {
-      "importer": "presentation.companion_voice_phase",
-      "imported": "domain.app_profile",
-      "line": 5,
-      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
-    },
-    {
-      "importer": "presentation.dashboard_dialogs",
-      "imported": "application.presentation_ports",
-      "line": 25,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.dashboard_dialogs",
-      "imported": "domain.app_profile",
-      "line": 26,
-      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
-    },
-    {
       "importer": "presentation.dashboard_dialogs",
       "imported": "presentation.presentation_resources",
       "line": 33,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.dashboard_platforms",
-      "imported": "application.presentation_ports",
-      "line": 24,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.dashboard_settings_persistence",
-      "imported": "domain.app_profile",
-      "line": 8,
-      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
-    },
-    {
-      "importer": "presentation.dashboard_voice",
-      "imported": "application.presentation_ports",
-      "line": 19,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.dashboard_voice",
-      "imported": "domain.app_profile",
-      "line": 31,
-      "reason": "引擎 presentation 仍直接讀取墨寒 identity 與 persona 相容層。"
-    },
-    {
-      "importer": "presentation.dashboard_voice_runtime",
-      "imported": "application.presentation_ports",
-      "line": 6,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.dashboard_wardrobe_categories",
-      "imported": "application.presentation_ports",
-      "line": 9,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.dashboard_wardrobe_categories",
-      "imported": "presentation.flagship_theme",
-      "line": 15,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.dashboard_wardrobe_makeup",
-      "imported": "presentation.flagship_theme",
-      "line": 25,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.dashboard_wardrobe_packages",
-      "imported": "application.presentation_ports",
-      "line": 8,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.dashboard_wardrobe_preferences",
-      "imported": "presentation.flagship_theme",
-      "line": 18,
       "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
     },
     {
@@ -686,12 +731,6 @@
       "importer": "presentation.dashboard_wardrobe_preview",
       "imported": "presentation.dashboard_artwork",
       "line": 38,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.dashboard_wardrobe_preview",
-      "imported": "presentation.presentation_resources",
-      "line": 37,
       "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
     },
     {
@@ -728,18 +767,6 @@
       "importer": "presentation.flagship.workflow_editor",
       "imported": "presentation.flagship_ui_localization",
       "line": 21,
-      "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
-    },
-    {
-      "importer": "presentation.profile_transfer_ui",
-      "imported": "application.presentation_ports",
-      "line": 27,
-      "reason": "引擎 presentation 仍直接依賴含墨寒 profile、語音預設與攜帶檔格式的產品介面聚合。"
-    },
-    {
-      "importer": "presentation.profile_transfer_ui",
-      "imported": "presentation.auxiliary_ui_localization",
-      "line": 42,
       "reason": "可重用 presentation 模組仍直接依賴墨寒產品殼的視覺資源、文案或組合模組。"
     }
   ]

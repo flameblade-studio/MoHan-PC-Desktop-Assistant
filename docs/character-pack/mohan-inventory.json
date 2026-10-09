@@ -892,7 +892,7 @@
       "path": "assets/characters/mohan/rig/runtime-bindings.json",
       "readers": [
         {
-          "line": 50,
+          "line": 51,
           "path": "infrastructure/bundled_character_source.py",
           "text": "self._character_root / \"rig\" / \"runtime-bindings.json\""
         }
@@ -88951,7 +88951,7 @@
       "path": "assets/ui/mohan-cloud.svg",
       "readers": [
         {
-          "line": 75,
+          "line": 76,
           "path": "presentation/flagship_theme.py",
           "text": "_THEME_ASSET = resource_path(CHARACTER_ASSET_PATHS[\"theme_artwork\"])"
         }
@@ -89686,7 +89686,7 @@
           "text": "lazy from domain.constants import POSE_ATLAS_GENERATION"
         },
         {
-          "line": 14,
+          "line": 13,
           "path": "presentation/presentation_resources.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         }
@@ -90311,18 +90311,13 @@
       "path": "domain/version_info.py",
       "readers": [
         {
-          "line": 30,
+          "line": 34,
           "path": "application/presentation_ports.py",
           "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
         },
         {
           "line": 11,
           "path": "application/preview_app.py",
-          "text": "lazy from domain.version_info import APP_VERSION"
-        },
-        {
-          "line": 7,
-          "path": "domain/engine_capabilities.py",
           "text": "lazy from domain.version_info import APP_VERSION"
         },
         {
@@ -92152,7 +92147,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 3,
+          "line": 8,
           "path": "presentation/dashboard_shared.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -92337,7 +92332,7 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS"
         },
         {
-          "line": 8,
+          "line": 13,
           "path": "presentation/dashboard_shared.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MEMORY_CATEGORY_LABELS"
         },

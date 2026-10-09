@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy from collections.abc import Mapping
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
 lazy from typing import Protocol, runtime_checkable
@@ -61,6 +62,9 @@ class CharacterPersona(Protocol):
     @property
     def aliases(self) -> tuple[str, ...]: ...
 
+    @property
+    def profile_defaults(self) -> Mapping[str, str]: ...
+
     def display_name(self, language: str) -> str: ...
 
     def default_user_title(self, language: str) -> str: ...
@@ -73,6 +77,15 @@ class CharacterPersona(Protocol):
         key: str,
         *,
         variation_index: int = 0,
+    ) -> str: ...
+
+    def personalize_text(
+        self,
+        text: str,
+        *,
+        assistant_name: str,
+        user_title: str,
+        organization_name: str,
     ) -> str: ...
 
 
@@ -128,6 +141,12 @@ class CharacterSource(Protocol):
 
     @property
     def voice(self) -> CharacterVoice: ...
+
+
+class ProfileSettingsPort(Protocol):
+    """Saved product settings consumed by character-neutral presentation code."""
+
+    def setting(self, key: str, default: object = None) -> object: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,6 +213,25 @@ def character_voice_profile(source: CharacterSource | None = None) -> VoiceProfi
     return active_character_source(source).voice.voice_profile
 
 
+def profile_setting(settings: ProfileSettingsPort, key: str) -> str:
+    """Read one saved profile value with the active character's injected default."""
+
+    default = active_character_source().persona.profile_defaults[key]
+    return str(settings.setting(key, default)).strip()
+
+
+def personalize_text(settings: ProfileSettingsPort, text: str) -> str:
+    """Apply saved identity values through the active character adapter."""
+
+    persona = active_character_source().persona
+    return persona.personalize_text(
+        text,
+        assistant_name=profile_setting(settings, "assistant_name"),
+        user_title=profile_setting(settings, "user_title"),
+        organization_name=profile_setting(settings, "organization_name"),
+    )
+
+
 def active_character_source(source: CharacterSource | None = None) -> CharacterSource:
     """Return the selected source or fail before character-specific work starts."""
 
@@ -224,10 +262,13 @@ __all__ = (
     "CharacterPersona",
     "CharacterSource",
     "CharacterVoice",
+    "ProfileSettingsPort",
     "activate_character_engine_profile",
     "activate_character_source",
     "active_character_engine_profile",
     "active_character_source",
     "character_appearance_defaults",
     "character_voice_profile",
+    "personalize_text",
+    "profile_setting",
 )

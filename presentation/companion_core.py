@@ -97,7 +97,7 @@ lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from presentation.performance_composition import create_performance_app_bridge
 lazy from presentation.companion_legacy_frame import current_legacy_character_frame
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
-lazy from presentation.presentation_resources import resource_path
+lazy from presentation.dashboard_shared import resource_path
 
 __all__ = ("CompanionCoreMixin",)
 _LOGGER = logging.getLogger(__name__)

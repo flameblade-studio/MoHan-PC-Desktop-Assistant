@@ -2,7 +2,6 @@ from __future__ import annotations
 
 """Qt-owned resource helpers shared by desktop presentation modules."""
 
-lazy import sys
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
@@ -12,6 +11,7 @@ lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from presentation.dashboard_shared import resource_path as _resource_path
 
 APP_ICON_PATH = CHARACTER_ASSET_PATHS["application_icon"]
 _ENGLISH_DISPLAY_NAME = load_mohan_character_data().personas["en"].identity.display_name
@@ -116,6 +116,12 @@ QToolTip { background: #ffffff; color: #24364a; border: 1px solid #9eb5c7; paddi
 """
 
 
+def resource_path(relative: str) -> Path:
+    """Preserve the product resource API over the neutral resolver."""
+
+    return _resource_path(relative)
+
+
 def application_ui_font() -> QFont:
     font = QFont()
     font.setFamilies(
@@ -128,15 +134,6 @@ def application_ui_font() -> QFont:
     )
     font.setPointSize(10)
     return font
-
-
-RESOURCE_BASE = Path(
-    getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1])
-)
-
-
-def resource_path(relative: str) -> Path:
-    return RESOURCE_BASE / relative
 
 
 def application_icon() -> QIcon:

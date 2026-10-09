@@ -44,3 +44,6 @@ HOURS_PER_DAY: Final = 24
 SECONDS_PER_DAY: Final = 86_400
 
 FLOAT_COMPARISON_EPSILON: Final = 1e-9
+
+DEFAULT_TEXT_MODEL: Final = "gpt-5.6-luna"
+DEFAULT_TRANSCRIPTION_MODEL: Final = "gpt-4o-mini-transcribe"

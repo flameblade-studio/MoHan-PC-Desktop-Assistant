@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy from collections.abc import Mapping
 lazy from pathlib import Path, PurePosixPath
 
 lazy from domain.character_expression_data import load_expression_catalog
@@ -103,6 +104,10 @@ class BundledCharacterSource(
         wake_word = str(self._data.identity.defaults["wake_word"])
         return () if wake_word == self.canonical_name else (wake_word,)
 
+    @property
+    def profile_defaults(self) -> Mapping[str, str]:
+        return self._data.identity.defaults
+
     def display_name(self, language: str) -> str:
         locale = canonical_character_locale(language)
         return self._data.personas[locale].identity.display_name
@@ -130,6 +135,27 @@ class BundledCharacterSource(
         if not lines and key in dialogue.templates:
             lines = (dialogue.templates[key],)
         return lines[variation_index % len(lines)] if lines else ""
+
+    def personalize_text(
+        self,
+        text: str,
+        *,
+        assistant_name: str,
+        user_title: str,
+        organization_name: str,
+    ) -> str:
+        identity = self._data.identity
+        replacements = {
+            **dict.fromkeys(identity.assistant_tokens, assistant_name),
+            **dict.fromkeys(identity.user_title_tokens, user_title),
+        }
+        if organization_name:
+            replacements[identity.organization_token] = organization_name
+        result = text
+        for source, target in replacements.items():
+            if target:
+                result = result.replace(source, target)
+        return result
 
     @property
     def body_profile(self) -> CharacterBodyProfileReference:

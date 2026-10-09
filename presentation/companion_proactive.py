@@ -9,7 +9,7 @@ lazy from application.multisensory_interaction import (
     MultisensoryInteractionArbiter,
     WelcomeTimingRules,
 )
-lazy from application.presentation_ports import PresentationDatabasePort
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.proactive_companion_app_bridge import (
     ProactiveAppEvent,
     ProactiveAppState,
@@ -25,7 +25,7 @@ lazy from application.visual_perception import (
 )
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
-lazy from domain.app_profile import personalize_text, profile_setting
+lazy from domain.character_source import personalize_text, profile_setting
 lazy from domain.constants import (
     CHARACTER_EXPRESSION_ROLES,
     DEFAULT_WEATHER_CONDITION,

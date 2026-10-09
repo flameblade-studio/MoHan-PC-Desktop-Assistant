@@ -195,6 +195,7 @@ class CharacterPackReader(
         self._root = root
         self._records = records
         self._canonical_name = canonical_name
+        self._identity = character_data.identity
         wake_word = str(character_data.identity.defaults["wake_word"])
         self._aliases = () if wake_word == canonical_name else (wake_word,)
         self._default_user_title = str(character_data.identity.defaults["user_title"])
@@ -290,6 +291,10 @@ class CharacterPackReader(
     def aliases(self) -> tuple[str, ...]:
         return self._aliases
 
+    @property
+    def profile_defaults(self) -> Mapping[str, str]:
+        return self._identity.defaults
+
     def display_name(self, language: str) -> str:
         canonical_ui_language(language)
         return self._canonical_name
@@ -315,6 +320,26 @@ class CharacterPackReader(
         if not lines and key in dialogue.templates:
             lines = (dialogue.templates[key],)
         return lines[variation_index % len(lines)] if lines else ""
+
+    def personalize_text(
+        self,
+        text: str,
+        *,
+        assistant_name: str,
+        user_title: str,
+        organization_name: str,
+    ) -> str:
+        replacements = {
+            **dict.fromkeys(self._identity.assistant_tokens, assistant_name),
+            **dict.fromkeys(self._identity.user_title_tokens, user_title),
+        }
+        if organization_name:
+            replacements[self._identity.organization_token] = organization_name
+        result = text
+        for source, target in replacements.items():
+            if target:
+                result = result.replace(source, target)
+        return result
 
     @property
     def body_profile(self) -> CharacterBodyProfileReference:
