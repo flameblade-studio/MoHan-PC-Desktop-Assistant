@@ -51,10 +51,23 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
         ("from", "domain.python315_concurrency", ("Future", "ThreadPoolExecutor")),
     }),
     # ``domain.outfit_pack`` re-exports the archive/format primitives and the
-    # error classes it moved into ``domain.outfit_pack_assets``; a lazy import
-    # of a lazily imported name hands other modules the unresolved proxy, so
-    # this single re-export stays eager on purpose.
+    # error classes it moved into ``domain.outfit_pack_assets``.  It also
+    # re-exports active-character official-ID callables.  A lazy import of a
+    # lazily imported name hands other modules the unresolved proxy, so these
+    # exact facade imports stay eager on purpose.
     "domain/outfit_pack.py": frozenset({
+        (
+            "from",
+            "domain.outfit_pack_official",
+            (
+                "builtin_makeup_resolution",
+                "official_pack_id_reservations_complete",
+                "official_pack_ids",
+                "reserved_official_pack_ids",
+                "resolve_builtin_sentinel",
+                "set_official_pack_id_reservations",
+            ),
+        ),
         (
             "from",
             "domain.outfit_pack_assets",

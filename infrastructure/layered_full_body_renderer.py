@@ -32,7 +32,7 @@ lazy from infrastructure.layered_full_body_assets import (
     LayeredFullBodyManifest,
     LayeredFullBodyView,
     VIEW_IDS,
-    load_layered_full_body_assets,
+    load_layered_full_body_assets as _load_layered_full_body_assets,
     snapshot_complete_expression_frames,
     snapshot_speech_frames,
 )
@@ -99,6 +99,12 @@ REGISTERED_COMPOSITE_LAYERS = _RIG_MANIFEST.registered_composite_layers
 FACE_AUTHORITY_REGION_LAYERS = _RIG_MANIFEST.face_authority_layers
 _DEFAULT_MANIFEST: LayeredFullBodyManifest | None = None
 _DEFAULT_BOUND_PNG_BYTES: dict[str, bytes] | None = None
+
+
+def load_layered_full_body_assets(root: Path) -> LayeredFullBodyManifest:
+    """Expose a concrete composition callable across the lazy-import boundary."""
+
+    return _load_layered_full_body_assets(root)
 
 
 class LayeredFullBodyRenderer(CompleteExpressionRendering):

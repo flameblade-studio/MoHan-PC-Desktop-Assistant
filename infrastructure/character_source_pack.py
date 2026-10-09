@@ -10,9 +10,11 @@ lazy from pathlib import Path, PurePosixPath
 lazy from domain.character_pack.character_data_models import (
     EXPRESSION_SCHEMA as CHARACTER_EXPRESSION_SCHEMA,
     RIG_SCHEMA as CHARACTER_RIG_SCHEMA,
+    DialogueLocale,
     CharacterRigManifest,
     ExpressionStateCatalog,
     MohanCharacterData,
+    VoiceProfile,
 )
 lazy from domain.character_pack.appearance_data import APPEARANCE_DEFAULTS_SCHEMA
 lazy from domain.character_expression_data import load_expression_catalog
@@ -35,6 +37,7 @@ lazy from domain.character_source import (
     CharacterBodyProfileReference,
     CharacterCanvas,
     CharacterPersona,
+    CharacterVoice,
 )
 lazy from domain.language_support import canonical_ui_language
 
@@ -72,6 +75,7 @@ class CharacterPackReader(
     CharacterAssets,
     CharacterPersona,
     CharacterAppearanceContract,
+    CharacterVoice,
 ):
     """Validate a complete data directory before exposing any character value."""
 
@@ -189,10 +193,12 @@ class CharacterPackReader(
             for language in LANGUAGES
         }
         self._dialogue = {
-            language: character_data.dialogues[language].phrasebook
+            language: character_data.dialogues[language]
             for language in LANGUAGES
         }
         self._appearance_defaults = character_data.appearance_defaults
+        self._voice_profile = character_data.voice
+        self._rig_manifest = rig
         self._body_profile = CharacterBodyProfileReference(profile_id, profile_version)
         self._fullbody_canvas = fullbody_canvas
         self._halfbody_canvas = halfbody_canvas
@@ -208,6 +214,10 @@ class CharacterPackReader(
         return self._manifest
 
     @property
+    def character_id(self) -> str:
+        return self._manifest.character_id
+
+    @property
     def assets(self) -> CharacterAssets:
         return self
 
@@ -220,8 +230,20 @@ class CharacterPackReader(
         return self
 
     @property
+    def voice(self) -> CharacterVoice:
+        return self
+
+    @property
+    def voice_profile(self) -> VoiceProfile:
+        return self._voice_profile
+
+    @property
     def appearance_defaults(self) -> CharacterAppearanceDefaults:
         return self._appearance_defaults
+
+    @property
+    def rig_manifest(self) -> CharacterRigManifest:
+        return self._rig_manifest
 
     @property
     def asset_root(self) -> Path:
@@ -253,6 +275,16 @@ class CharacterPackReader(
             _read_verified_file(self._root, record)
         return candidate
 
+    def resolve_optional_path(self, relative_path: str) -> Path | None:
+        path = _relative_path(relative_path)
+        name = path.as_posix()
+        directory_prefix = f"{name}/"
+        if name not in self._records and not any(
+            declared.startswith(directory_prefix) for declared in self._records
+        ):
+            return None
+        return self.resolve_path(relative_path)
+
     @property
     def canonical_name(self) -> str:
         return self._canonical_name
@@ -272,6 +304,9 @@ class CharacterPackReader(
     def persona_prompt(self, language: str) -> str:
         return self._persona_prompts[canonical_ui_language(language)]
 
+    def dialogue_locale(self, language: str) -> DialogueLocale:
+        return self._dialogue[canonical_ui_language(language)]
+
     def dialogue_line(
         self,
         language: str,
@@ -279,7 +314,12 @@ class CharacterPackReader(
         *,
         variation_index: int = 0,
     ) -> str:
-        lines = self._dialogue[canonical_ui_language(language)].get(key, ())
+        dialogue = self._dialogue[canonical_ui_language(language)]
+        lines = dialogue.phrasebook.get(key, ())
+        if not lines:
+            lines = dialogue.line_sets.get(key, ())
+        if not lines and key in dialogue.templates:
+            lines = (dialogue.templates[key],)
         return lines[variation_index % len(lines)] if lines else ""
 
     @property
