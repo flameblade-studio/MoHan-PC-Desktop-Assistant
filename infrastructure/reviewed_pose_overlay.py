@@ -113,7 +113,10 @@ class ReviewedPoseOverlayMixin:
         selected = self._resolve_base_clear_selection("makeup")
         if selected.effective_pack_id == "builtin":
             return dict.fromkeys(slots, 0.0)
-        if selected.effective_pack_id != BUILTIN_MAKEUP_PACK_ID:
+        if (
+            selected.effective_pack_id
+            != outfit_pack_official.builtin_makeup_pack_id()
+        ):
             return None
         # Keep installed archive/profile verification authoritative.
         self._selected_variant("makeup", selected)
@@ -138,7 +141,10 @@ class ReviewedPoseOverlayMixin:
         selected = self._resolve_base_clear_selection("makeup")
         if selected.effective_pack_id == "builtin":
             return None
-        if selected.effective_pack_id != BUILTIN_MAKEUP_PACK_ID:
+        if (
+            selected.effective_pack_id
+            != outfit_pack_official.builtin_makeup_pack_id()
+        ):
             return None
         self._selected_variant("makeup", selected)
         variant = selected.effective_variant_id

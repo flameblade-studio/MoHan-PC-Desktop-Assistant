@@ -25,15 +25,12 @@ lazy from threading import RLock
 lazy from PySide6.QtGui import QImage
 
 lazy from domain import outfit_pack
+lazy from domain import outfit_pack_official
 lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack import (
-    BUILTIN_MAKEUP_ITEM_ID,
-    BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS,
-    BUILTIN_MAKEUP_PACK_ID,
     FOUNDATION_SLOT,
-    BUILTIN_MAKEUP_VARIANTS,
     OPTIONAL_MAKEUP_SILHOUETTES,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
@@ -674,15 +671,16 @@ def select_builtin_makeup(
     official_pack_root: Path = outfit_pack.OFFICIAL_PACK_ROOT,
 ) -> None:
     """Choose a built-in variant, requiring optional material before persisting it."""
-    if variant_id not in BUILTIN_MAKEUP_VARIANTS:
+    appearance = outfit_pack_official._load_official_appearance()
+    if variant_id not in appearance.makeup_variants:
         raise OutfitPackError("Use a recognized built-in makeup variant.")
-    if variant_id not in BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS:
+    if variant_id not in appearance.makeup_always_visible_variants:
         installed = outfit_pack.list_installed_selections(
             Path(store), "makeup", official_pack_root=official_pack_root,
         )
         if not any(
-            selection.pack_id == BUILTIN_MAKEUP_PACK_ID
-            and selection.item_id == BUILTIN_MAKEUP_ITEM_ID
+            selection.pack_id == appearance.makeup_pack_id
+            and selection.item_id == appearance.makeup_item_id
             and selection.variant_id == variant_id
             for selection in installed
         ):
@@ -703,10 +701,12 @@ def builtin_makeup_pack_path(
     official_pack_root: Path = outfit_pack.OFFICIAL_PACK_ROOT,
 ) -> Path:
     """The official built-in makeup pack and its classic, light, and glamorous variants."""
-    return Path(official_pack_root) / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit"
+    pack_id = outfit_pack_official.builtin_makeup_pack_id()
+    return Path(official_pack_root) / f"{pack_id}.mohan-outfit"
 
 
 def builtin_makeup_identity(variant_id: str) -> tuple[str, str, str]:
-    if variant_id not in BUILTIN_MAKEUP_VARIANTS:
+    appearance = outfit_pack_official._load_official_appearance()
+    if variant_id not in appearance.makeup_variants:
         raise OutfitPackError("Use a recognized built-in makeup variant.")
-    return (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, variant_id)
+    return (appearance.makeup_pack_id, appearance.makeup_item_id, variant_id)

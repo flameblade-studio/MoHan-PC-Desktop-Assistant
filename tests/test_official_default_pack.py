@@ -262,6 +262,7 @@ def test_character_without_headwear_has_no_native_headwear_alias() -> None:
         assets=legacy.assets,
         persona=legacy.persona,
         appearance=SimpleNamespace(appearance_defaults=changed),
+        voice=legacy.voice,
     )
     activate_character_source(changed_source)
     try:
@@ -298,6 +299,7 @@ def test_changed_default_ensemble_keeps_the_persisted_builtin_sentinel(
         assets=legacy.assets,
         persona=legacy.persona,
         appearance=SimpleNamespace(appearance_defaults=changed),
+        voice=legacy.voice,
     )
     activate_character_source(changed_source)
     restores: list[Path] = []

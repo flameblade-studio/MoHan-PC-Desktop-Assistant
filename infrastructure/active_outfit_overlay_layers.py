@@ -29,7 +29,7 @@ lazy from domain.outfit_pack_makeup import (
     read_makeup_intensity,
     read_makeup_slot_intensities,
 )
-lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID
+lazy from domain.outfit_pack_official import official_outfit_pack_id
 lazy from domain.makeup_mouth_states import VISEME_TO_MOUTH_SHAPE
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
@@ -74,7 +74,7 @@ class ActiveOutfitLayerMixin:
         path = (
             self._asset_root
             / CHARACTER_ASSET_PATHS["appearance_masks"]
-            / OFFICIAL_OUTFIT_PACK_ID
+            / official_outfit_pack_id()
             / f"{view_id}.png"
         )
         if not path.exists():
@@ -137,7 +137,7 @@ class ActiveOutfitLayerMixin:
         path = (
             self._asset_root
             / CHARACTER_ASSET_PATHS["appearance_silhouettes"]
-            / OFFICIAL_OUTFIT_PACK_ID
+            / official_outfit_pack_id()
             / f"{view_id}.png"
         )
         if not path.exists():

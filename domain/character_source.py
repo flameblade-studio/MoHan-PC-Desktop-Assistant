@@ -6,8 +6,12 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from typing import Protocol, runtime_checkable
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
+lazy from domain.character_pack.character_data_models import (
+    CharacterAppearanceDefaults,
+    CharacterRigManifest,
+    DialogueLocale,
+    VoiceProfile,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -46,6 +50,8 @@ class CharacterAssets(Protocol):
 
     def resolve_path(self, relative_path: str) -> Path: ...
 
+    def resolve_optional_path(self, relative_path: str) -> Path | None: ...
+
 
 @runtime_checkable
 class CharacterPersona(Protocol):
@@ -62,6 +68,8 @@ class CharacterPersona(Protocol):
     def default_user_title(self, language: str) -> str: ...
 
     def persona_prompt(self, language: str) -> str: ...
+
+    def dialogue_locale(self, language: str) -> DialogueLocale: ...
 
     def dialogue_line(
         self,
@@ -80,6 +88,9 @@ class CharacterAppearanceContract(Protocol):
     def appearance_defaults(self) -> CharacterAppearanceDefaults: ...
 
     @property
+    def rig_manifest(self) -> CharacterRigManifest: ...
+
+    @property
     def body_profile(self) -> CharacterBodyProfileReference: ...
 
     @property
@@ -96,6 +107,14 @@ class CharacterAppearanceContract(Protocol):
 
 
 @runtime_checkable
+class CharacterVoice(Protocol):
+    """Read the selected character's validated voice preferences."""
+
+    @property
+    def voice_profile(self) -> VoiceProfile: ...
+
+
+@runtime_checkable
 class CharacterSource(Protocol):
     """Composition boundary for one complete character data source."""
 
@@ -107,6 +126,9 @@ class CharacterSource(Protocol):
 
     @property
     def appearance(self) -> CharacterAppearanceContract: ...
+
+    @property
+    def voice(self) -> CharacterVoice: ...
 
 
 _active_character_source: CharacterSource | None = None
@@ -124,12 +146,24 @@ def activate_character_source(source: CharacterSource | None) -> None:
 def character_appearance_defaults(
     source: CharacterSource | None = None,
 ) -> CharacterAppearanceDefaults:
-    """Read appearance defaults from a source or the strict bundled data loader."""
+    """Read appearance defaults from an injected or active character source."""
+
+    return active_character_source(source).appearance.appearance_defaults
+
+
+def character_voice_profile(source: CharacterSource | None = None) -> VoiceProfile:
+    """Read voice preferences from an injected or active character source."""
+
+    return active_character_source(source).voice.voice_profile
+
+
+def active_character_source(source: CharacterSource | None = None) -> CharacterSource:
+    """Return the selected source or fail before character-specific work starts."""
 
     selected = source if source is not None else _active_character_source
-    if selected is not None:
-        return selected.appearance.appearance_defaults
-    return load_mohan_character_data().appearance_defaults
+    if selected is None:
+        raise RuntimeError("The composition root must activate a character source first.")
+    return selected
 
 
 __all__ = (
@@ -140,6 +174,9 @@ __all__ = (
     "CharacterCanvas",
     "CharacterPersona",
     "CharacterSource",
+    "CharacterVoice",
     "activate_character_source",
+    "active_character_source",
     "character_appearance_defaults",
+    "character_voice_profile",
 )

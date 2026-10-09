@@ -477,6 +477,47 @@ def test_packaged_dashboard_artwork_is_loadable(
         assert image.mode == expected.mode
 
 
+def test_preview_package_contains_only_the_bundled_mohan_character(
+    tmp_path: Path,
+    monkeypatch: Any,
+) -> None:
+    from tools import build_preview_package as builder
+
+    bundle = tmp_path / "bundle"
+    observed: list[tuple[Path, str]] = []
+
+    def package(command: list[str]) -> None:
+        for index, argument in enumerate(command[:-1]):
+            if argument != "--add-data":
+                continue
+            source_text, destination = command[index + 1].rsplit(os.pathsep, 1)
+            source = Path(source_text)
+            observed.append((source, destination))
+            if destination != "assets/characters/mohan":
+                continue
+            shutil.copytree(source, bundle / destination)
+
+    monkeypatch.setattr(builder, "_run", package)
+    monkeypatch.setattr(builder, "_write_build_info", lambda *_args: None)
+    monkeypatch.setattr(builder, "verify_policy", lambda *_args: [])
+    monkeypatch.setattr(builder, "verify_environment", lambda *_args: [])
+    builder._pyinstaller(
+        name="MoHanPreview",
+        version="1.0.0",
+        target="linux",
+        icon=tmp_path / "icon.png",
+        temp_root=tmp_path,
+        pose_atlas_root=None,
+    )
+
+    expected_source = ROOT / "assets" / "characters" / "mohan"
+    assert (expected_source, "assets/characters/mohan") in observed
+    assert (bundle / "assets/characters/mohan/persona/profile.json").is_file()
+    packaged_characters = bundle / "assets/characters"
+    assert tuple(path.name for path in packaged_characters.iterdir()) == ("mohan",)
+    assert not (bundle / "assets/characters/lin-keyun").exists()
+
+
 def main() -> None:
     test_preview_ui_contract()
     test_preview_owners_and_compatibility_identity()
