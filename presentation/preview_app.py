@@ -380,7 +380,7 @@ def validate_preview_contract(window: PreviewWindow) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    activate_product_character_runtime(_SOURCE_ROOT)
+    activate_product_character_runtime()
     values = sys.argv[1:] if argv is None else argv
     args = parse_preview_arguments(values)
     if args.jit_status_output:
