@@ -1,3 +1,0 @@
-### 未發布 — Tachyon 證據擷取重試／未发布 — Tachyon 证据采集重试／Unreleased — Tachyon evidence capture retries／未リリース — Tachyon 証拠キャプチャの再試行
-
-* 對 runtime evidence 缺失或 sample-read error 超過既有門檻的單一 target，最多重新取樣兩次並記錄各次結果；所有樣本、漏採樣、JIT 與效能門檻維持不變／对于 runtime evidence 缺失或 sample-read error 超过既有门槛的单个 target，最多重新采样两次并记录各次结果；所有样本、漏采样、JIT 与性能门槛保持不变／A single target with missing runtime evidence or a sample-read error above the existing threshold is freshly captured up to two more times with every result recorded; all sample, missed-sample, JIT, and performance thresholds remain unchanged／runtime evidence が欠落した、または既存の閾値を超える sample-read error の単一 target は最大二回まで新しく再取得し、各結果を記録します。サンプル、欠落サンプル、JIT、パフォーマンスの閾値は変更しません。

@@ -1,3 +1,0 @@
-### 妝容包啟動驗證最佳化／妆容包启动验证优化／Optimize makeup-pack startup validation／メイクパック起動検証を最適化
-
-* 已安裝外觀包以 canonical path 共用程序內快取，並將完整 PNG 解碼延後至圖層首次使用前；SHA-256、尺寸、幾何、安全區與執行期解碼拒絕語意維持不變／已安装外观包以 canonical path 共用进程内缓存，并将完整 PNG 解码延后至图层首次使用前；SHA-256、尺寸、几何、安全区与运行时解码拒绝语义保持不变／Installed appearance packs now share a canonical-path process cache and defer complete PNG decoding until immediately before a layer is first used; SHA-256, dimensions, geometry, safe-region, and runtime decode rejection semantics remain unchanged／インストール済み外観パックは canonical path のプロセス内キャッシュを共有し、完全な PNG デコードをレイヤー初回使用直前まで遅延します。SHA-256、寸法、ジオメトリ、安全領域、実行時デコード拒否の意味は維持します。
