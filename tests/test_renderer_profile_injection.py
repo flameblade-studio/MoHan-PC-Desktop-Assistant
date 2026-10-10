@@ -247,10 +247,10 @@ def restore_character_runtime():
         )
 
 
+@pytest.mark.usefixtures("restore_character_runtime")
 def test_new_profile_and_renderer_startup_use_selected_character_source(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    restore_character_runtime: None,
 ) -> None:
     archive = _fake_character_archive(tmp_path)
     _stub_service_adapters(monkeypatch)
@@ -295,10 +295,10 @@ def test_new_profile_and_renderer_startup_use_selected_character_source(
         services.db.close()
 
 
+@pytest.mark.usefixtures("restore_character_runtime")
 def test_saved_profile_overrides_survive_source_default_seeding(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
-    restore_character_runtime: None,
 ) -> None:
     archive = _fake_character_archive(tmp_path)
     _stub_service_adapters(monkeypatch)
