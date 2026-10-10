@@ -25157,7 +25157,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 347,
+          "line": 344,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -52928,7 +52928,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 347,
+          "line": 344,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -95816,7 +95816,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 125,
+          "line": 123,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -95986,7 +95986,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 127,
+          "line": 125,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }

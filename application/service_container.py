@@ -90,8 +90,6 @@ lazy from infrastructure.bundled_character_source import (
 )
 lazy from infrastructure.installed_character_packs import (
     CharacterPackInstallError,
-    load_development_character_pack_archive,
-    load_installed_character_pack,
     list_installed_character_packs,
 )
 lazy from infrastructure.db import StudioDB
@@ -153,11 +151,10 @@ def create_character_source(character_id: str) -> CharacterSource:
 
     root = resource_path(".")
     try:
+        # The bootstrap's default loaders apply the official 768 MiB pack limits.
         source = activate_product_character_runtime(
             root,
             character_id=character_id,
-            development_archive_loader=load_development_character_pack_archive,
-            installed_loader=load_installed_character_pack,
         )
     except RuntimeError as error:
         if error.__cause__ is not None:
