@@ -92122,7 +92122,7 @@
       "work_package": null
     },
     {
-      "bytes": 17072,
+      "bytes": 17060,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
@@ -92284,7 +92284,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "96ebe9903ebaacc4e559c8323d6d46949bf50d008d38371cef66861c19be0235",
+      "sha256": "c0b654b234449aba585a3ec54ee029d4f579b64a13e7644a3b62dbcf86afffa3",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json",
         "infrastructure/app_resources.py"
