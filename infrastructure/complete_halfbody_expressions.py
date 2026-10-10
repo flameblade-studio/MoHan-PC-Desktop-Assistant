@@ -2,15 +2,16 @@
 from __future__ import annotations
 
 lazy import hashlib
+lazy import io
 lazy import json
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 
-lazy from PySide6.QtGui import QImage
+lazy from PIL import Image
 
-lazy from domain.qt_image_io import image_from_png
 lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.character_source import active_expression_catalog
+lazy from domain.python315_concurrency import ThreadPoolExecutor
 lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"
@@ -32,6 +33,9 @@ COMPLETE_FRONT_POSES = frozenset(
 )
 COMPLETE_POSES = POSES | COMPLETE_CHEEK_POSES | COMPLETE_FRONT_POSES
 PNG_HEADER_LENGTH = 26
+# Pillow releases the GIL while decoding, so canvas checks run in parallel;
+# Qt's decoder holds it and made startup grow linearly with the frame count.
+IMAGE_CHECK_WORKERS = 8
 
 
 @dataclass(frozen=True)
@@ -44,7 +48,9 @@ class CompleteHalfbodyFrames:
     whole_frame_blinks: frozenset[str]
 
 
-def _read_image_record(root: Path, record: object, label: str) -> bytes:
+def _read_image_record(
+    root: Path, record: object, label: str, pending: list[tuple[bytes, str, str]],
+) -> bytes:
     if not isinstance(record, dict):
         raise ValueError(f"Complete half-body {label} requires a path and SHA-256")
     value, expected = record.get("path"), record.get("sha256")
@@ -64,25 +70,37 @@ def _read_image_record(root: Path, record: object, label: str) -> bytes:
         raise ValueError(f"Complete half-body {label} digest mismatch: {value}")
     if len(data) < PNG_HEADER_LENGTH or data[:8] != b"\x89PNG\r\n\x1a\n" or data[24:26] != b"\x08\x06":
         raise ValueError(f"Complete half-body {label} must be 8-bit RGBA PNG: {value}")
-    image = image_from_png(data)
-    if image.isNull() or image.size().toTuple() != (DIMENSION, DIMENSION):
+    pending.append((data, label, value))
+    return data
+
+
+def _check_image(data: bytes, label: str, value: str) -> None:
+    """Require the full canvas plus both transparent and visible pixels."""
+
+    try:
+        with Image.open(io.BytesIO(data)) as image:
+            image.load()
+            size, mode = image.size, image.mode
+            low, high = image.getchannel("A").getextrema() if mode == "RGBA" else (0, 0)
+    except (OSError, ValueError) as error:
+        raise ValueError(f"Complete half-body {label} is not a readable PNG: {value}") from error
+    if size != (DIMENSION, DIMENSION):
         raise ValueError(
             f"Complete half-body {label} canvas must be "
             f"{DIMENSION}x{DIMENSION}: {value}"
         )
-    rgba = image.convertToFormat(QImage.Format_RGBA8888)
-    alpha = bytes(rgba.constBits())[3::4]
-    if 0 not in alpha or not any(alpha):
+    if mode != "RGBA" or low != 0 or high == 0:
         raise ValueError(f"Complete half-body {label} must contain content and transparency: {value}")
-    return data
 
 
-def _read_frame(root: Path, record: object) -> bytes:
-    return _read_image_record(root, record, "frame")
+def _check_images(pending: list[tuple[bytes, str, str]]) -> None:
+    with ThreadPoolExecutor(max_workers=IMAGE_CHECK_WORKERS) as executor:
+        for check in [executor.submit(_check_image, *item) for item in pending]:
+            check.result()
 
 
 def _read_pose(
-    root: Path, record: object,
+    root: Path, record: object, pending: list[tuple[bytes, str, str]],
 ) -> tuple[frozendict[str, frozendict[str, bytes]], frozendict[str, bytes], bool]:
     if not isinstance(record, dict) or not isinstance(record.get("source_lineage"), dict):
         raise ValueError("Complete half-body pose requires source lineage")
@@ -96,14 +114,15 @@ def _read_pose(
         if not isinstance(states, dict) or set(states) != EYES:
             raise ValueError("Complete half-body family requires rest/half/closed")
         result[family] = frozendict(
-            (eye, _read_frame(root, frame)) for eye, frame in states.items()
+            (eye, _read_image_record(root, frame, "frame", pending))
+            for eye, frame in states.items()
         )
     oral_payload = record.get("oral_masks", {})
     if oral_payload:
         if not isinstance(oral_payload, dict) or set(oral_payload) != MOUTH_SHAPES:
             raise ValueError("Complete half-body oral masks require small/a/o shapes")
         oral_masks = frozendict(
-            (shape, _read_image_record(root, mask, "oral mask"))
+            (shape, _read_image_record(root, mask, "oral mask", pending))
             for shape, mask in oral_payload.items()
         )
     else:
@@ -132,8 +151,9 @@ def load_complete_halfbody_frames(root: Path) -> CompleteHalfbodyFrames | None:
     pose_frames = {}
     oral_masks = {}
     whole_frame_blinks = set()
+    pending: list[tuple[bytes, str, str]] = []
     for pose, record in poses.items():
-        frame_group, oral_group, whole_frame_blink = _read_pose(root, record)
+        frame_group, oral_group, whole_frame_blink = _read_pose(root, record, pending)
         if pose in COMPLETE_FRONT_POSES and not whole_frame_blink:
             raise ValueError(
                 f"Complete front expression requires whole-frame blinks: {pose}"
@@ -143,6 +163,7 @@ def load_complete_halfbody_frames(root: Path) -> CompleteHalfbodyFrames | None:
             oral_masks[pose] = oral_group
         if whole_frame_blink:
             whole_frame_blinks.add(pose)
+    _check_images(pending)
     frames = frozendict(pose_frames)
     expressions = {}
     for expression, binding in bindings.items():
