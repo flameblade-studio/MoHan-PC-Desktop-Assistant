@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import ctypes
 lazy import os
 lazy import sys
+lazy import traceback
 lazy from contextlib import suppress
 lazy from pathlib import Path
 
@@ -122,35 +123,43 @@ def _run_smoke_event_loop(
 
 
 def run_application() -> int:
-    activate_product_character_runtime()
     self_test = "--self-test" in sys.argv
-    smoke_auto_exit = "--smoke-auto-exit" in sys.argv
-    _write_jit_status()
-    _prepare_platform(offscreen=self_test or smoke_auto_exit)
-    app = _create_application()
-    window = CompanionWindow(
-        startup_speech=not self_test,
-        defer_visual_startup=not self_test,
-        fashion_trend_scout_factory=create_openai_fashion_trend_scout,
-    )
-    app.setApplicationName(profile_window_title(window.db))
-    if self_test:
-        exit_code = run_packaged_self_test(
-            app,
-            window,
-            output_path=_argument_value("--self-test-output="),
+    try:
+        activate_product_character_runtime()
+        smoke_auto_exit = "--smoke-auto-exit" in sys.argv
+        _write_jit_status()
+        _prepare_platform(offscreen=self_test or smoke_auto_exit)
+        app = _create_application()
+        window = CompanionWindow(
+            startup_speech=not self_test,
+            defer_visual_startup=not self_test,
+            fashion_trend_scout_factory=create_openai_fashion_trend_scout,
         )
-    else:
-        window.show()
-        QTimer.singleShot(75, window.complete_deferred_startup)
-        exit_code = (
-            _run_smoke_event_loop(app, window)
-            if smoke_auto_exit
-            else app.exec()
-        )
-    # Keep app.py a pure composition root while still cutting off the one
-    # frozen-JIT interpreter-finalization tail after Qt has shut down remains isolated.
-    return finalize_process_exit(exit_code)
+        app.setApplicationName(profile_window_title(window.db))
+        if self_test:
+            exit_code = run_packaged_self_test(
+                app,
+                window,
+                output_path=_argument_value("--self-test-output="),
+            )
+        else:
+            window.show()
+            QTimer.singleShot(75, window.complete_deferred_startup)
+            exit_code = (
+                _run_smoke_event_loop(app, window)
+                if smoke_auto_exit
+                else app.exec()
+            )
+        # Keep app.py a pure composition root while still cutting off the one
+        # frozen-JIT interpreter-finalization tail after Qt has shut down remains isolated.
+        return finalize_process_exit(exit_code)
+    except Exception:
+        # A frozen windowed build blocks on its crash dialog, so the installer
+        # harness only sees a timeout; leave the traceback in its marker file.
+        target = _harness_output_path("--self-test-output=") if self_test else None
+        if target is not None:
+            target.write_text("PACKAGED_SELFTEST_FAILED\n" + traceback.format_exc(), encoding="utf-8")
+        raise
 
 
 __all__ = ("run_application",)

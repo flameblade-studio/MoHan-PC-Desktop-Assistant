@@ -102,7 +102,7 @@
       "path": "application/runtime_bootstrap.py",
       "readers": [
         {
-          "line": 16,
+          "line": 17,
           "path": "application/application_bootstrap.py",
           "text": "lazy from application.runtime_bootstrap import ("
         },
@@ -90722,7 +90722,7 @@
       "path": "infrastructure/app_resources.py",
       "readers": [
         {
-          "line": 22,
+          "line": 23,
           "path": "application/application_bootstrap.py",
           "text": "lazy from infrastructure.app_resources import ("
         },
