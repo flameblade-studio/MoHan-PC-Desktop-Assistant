@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from domain.theme_pack import ThemePack
 lazy from presentation.dashboard_theme_materials import (
+    MINIMUM_FOCUS_CONTRAST_RATIO,
     MaterialPalette,
     external_theme_accent_stylesheet,
     resolve_material_palette,
@@ -43,6 +44,7 @@ def _theme(*, primary: str = "#F0603A", background: str | None = None) -> ThemeP
                 "muted": "#C4A99D",
                 "border": "#5C4038",
                 "primary": primary,
+                "focus": "#7BB8D8",
             }
         ),
         font_family="Microsoft JhengHei UI",
@@ -153,3 +155,20 @@ def test_pack_background_asset_does_not_change_color_material_contract() -> None
     materials = resolve_material_palette(PALETTE, _theme(background="assets/background.png"))
 
     assert materials.background_tint == "#1A1214"
+
+
+def test_external_accent_focus_ring_stays_visible_on_primary_fill() -> None:
+    theme = _theme()
+    materials = resolve_material_palette(PALETTE, theme)
+
+    stylesheet = external_theme_accent_stylesheet(
+        materials,
+        focus=materials.primary,
+    )
+
+    assert f"border:2px solid {materials.on_primary}" in stylesheet
+    assert f"border:2px solid {materials.primary}" not in stylesheet
+    assert (
+        contrast_ratio(materials.on_primary, materials.primary)
+        >= MINIMUM_FOCUS_CONTRAST_RATIO
+    )
