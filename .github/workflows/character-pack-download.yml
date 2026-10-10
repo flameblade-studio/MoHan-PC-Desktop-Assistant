@@ -7,6 +7,8 @@ env:
 
 # Fetches the published release assets over the network, so it stays out of
 # the offline lock-consistency workflow and runs only on demand or on release.
+# Pack releases published with a maintainer token trigger `release`; Release
+# Please releases use GITHUB_TOKEN and dispatch this workflow explicitly.
 on:
   workflow_dispatch:
   release:
