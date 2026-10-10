@@ -36,7 +36,6 @@ lazy from application.native_acceleration import NativeAcceleration
 lazy from application.presentation_ports import (
     AIWorkerPort,
     PresentationPorts,
-    VoiceCatalogPort,
     bind_dashboard_portable_secrets,
 )
 lazy from domain.contracts import (
@@ -197,11 +196,6 @@ def _activate_product_character_source(
 ) -> None:
     """Inject one validated character and product-owned PoseAtlas layout."""
 
-    _reserve_official_pack_id_reservations(
-        source,
-        bundled_source=bundled_source,
-        data_root=data_root,
-    )
     profile = CharacterEngineProfile(
         assets=source.assets,
         runtime_bindings=source.appearance.runtime_bindings,
@@ -212,6 +206,11 @@ def _activate_product_character_source(
     )
     activate_character_source(source)
     activate_character_engine_profile(profile)
+    _reserve_official_pack_id_reservations(
+        source,
+        bundled_source=bundled_source,
+        data_root=data_root,
+    )
 
 
 def create_default_character_source() -> CharacterSource:
@@ -248,34 +247,46 @@ def _reserve_official_pack_id_reservations(
 
 @dataclass
 class CompanionServices:
-    """Explicit dependencies owned by one companion-window runtime."""
+    """Explicit dependencies owned by one companion-window runtime.
 
-    db: StudioDB
-    secret_store: SecretStorePort = field(repr=False)
-    local_tts: LocalSpeechEnginePort
-    cloud_tts: CloudSpeechEnginePort
-    realtime: RealtimeVoicePort
-    listener: SpeechListenerPort
-    presentation_ports: PresentationPorts
-    realtime_speech_output: RealtimeSpeechOutput | None = None
-    backup_manager: BackupManager | None = None
-    speech_providers: SpeechProviderRegistryPort | None = None
-    azure_speech: AzureSpeechEnginePort | None = None
-    azure_hd_speech: AzureSpeechEnginePort | None = None
-    azure_secret_store: SecretStorePort | None = field(
+    String annotations keep Python 3.15 dataclass inspection from resolving
+    lazy adapter imports before the composition root activates a character.
+    """
+
+    db: "StudioDB"  # ruff: ignore[quoted-annotation]
+    secret_store: "SecretStorePort" = field(  # ruff: ignore[quoted-annotation]
+        repr=False,
+    )
+    local_tts: "LocalSpeechEnginePort"  # ruff: ignore[quoted-annotation]
+    cloud_tts: "CloudSpeechEnginePort"  # ruff: ignore[quoted-annotation]
+    realtime: "RealtimeVoicePort"  # ruff: ignore[quoted-annotation]
+    listener: "SpeechListenerPort"  # ruff: ignore[quoted-annotation]
+    presentation_ports: "PresentationPorts"  # ruff: ignore[quoted-annotation]
+    realtime_speech_output: "RealtimeSpeechOutput | None" = (  # ruff: ignore[quoted-annotation]
+        None
+    )
+    backup_manager: "BackupManager | None" = None  # ruff: ignore[quoted-annotation]
+    speech_providers: "SpeechProviderRegistryPort | None" = (  # ruff: ignore[quoted-annotation]
+        None
+    )
+    azure_speech: "AzureSpeechEnginePort | None" = None  # ruff: ignore[quoted-annotation]
+    azure_hd_speech: "AzureSpeechEnginePort | None" = (  # ruff: ignore[quoted-annotation]
+        None
+    )
+    azure_secret_store: "SecretStorePort | None" = field(  # ruff: ignore[quoted-annotation]
         default=None,
         repr=False,
     )
-    azure_hd_secret_store: SecretStorePort | None = field(
+    azure_hd_secret_store: "SecretStorePort | None" = field(  # ruff: ignore[quoted-annotation]
         default=None,
         repr=False,
     )
-    secret_store_factory: SecretStoreFactoryPort | None = field(
+    secret_store_factory: "SecretStoreFactoryPort | None" = field(  # ruff: ignore[quoted-annotation]
         default=None,
         repr=False,
     )
-    platform_services: PlatformServicePort | None = None
-    cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = field(
+    platform_services: "PlatformServicePort | None" = None  # ruff: ignore[quoted-annotation]
+    cloud_vision_service_factory: "CloudVisionServiceFactoryPort | None" = field(  # ruff: ignore[quoted-annotation]
         default=None,
         repr=False,
     )
@@ -285,7 +296,7 @@ class CompanionServices:
     )
 
 
-class _ProductionVoiceCatalog(VoiceCatalogPort):
+class _ProductionVoiceCatalog:
     """Expose the production voice adapters through one presentation port."""
 
     @staticmethod

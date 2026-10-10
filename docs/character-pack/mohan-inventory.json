@@ -20170,7 +20170,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 380,
+          "line": 391,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47941,7 +47941,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 380,
+          "line": 391,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -89615,7 +89615,7 @@
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 65,
+          "line": 64,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import ("
         },
@@ -90487,7 +90487,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 84,
+          "line": 83,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -90584,7 +90584,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 120,
+          "line": 119,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -90754,7 +90754,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 122,
+          "line": 121,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }

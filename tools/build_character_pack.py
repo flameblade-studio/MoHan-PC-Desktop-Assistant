@@ -21,6 +21,9 @@ lazy from domain.character_pack.character_data_models import CharacterDataError
 lazy from domain.outfit_pack import inspect_outfit_pack
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from huapu import character_pack_builder as _core
+lazy from tools.character_runtime_support import (
+    activate_bundled_mohan_character_runtime,
+)
 
 DEFAULT_INVENTORY = Path("docs/character-pack/mohan-inventory.json")
 DEFAULT_SOURCE = Path("assets/characters/mohan/pack-source.json")
@@ -125,6 +128,7 @@ def build_character_pack(
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
+    activate_bundled_mohan_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--format", choices=("directory", "zip"), required=True, dest="output_format")

@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import ast
 lazy import importlib
 lazy import os
+lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
@@ -41,6 +42,9 @@ lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.flagship_ui import (
     ControlCenterDependencies,
     FlagshipControlCenter,
+)
+lazy from tools.character_runtime_support import (
+    activate_bundled_mohan_character_runtime,
 )
 
 
@@ -276,6 +280,18 @@ def _assert_core_modules_import() -> None:
         importlib.import_module(module_name)
 
 
+def _assert_activation_independent_imports() -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import domain.speech_providers; import application.service_container",
+        ],
+        cwd=PROJECT,
+        check=True,
+    )
+
+
 def _assert_non_windows_composition_fails_closed(
     linux: PlatformServicePort,
 ) -> None:
@@ -411,6 +427,8 @@ def _assert_qt_widget_smoke(qt: QApplication) -> None:
 
 
 def run() -> None:
+    _assert_activation_independent_imports()
+    activate_bundled_mohan_character_runtime(PROJECT)
     # Windows keeps the exact public-build profile location.
     _assert_windows_platform_contract()
     linux = _create_linux_platform()

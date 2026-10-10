@@ -14,6 +14,9 @@ if str(ROOT) not in sys.path:
 
 lazy from huapu import character_pack_lock as _core
 lazy from tools import build_character_pack as builder
+lazy from tools.character_runtime_support import (
+    activate_bundled_mohan_character_runtime,
+)
 
 LOCK_SCHEMA = _core.LOCK_SCHEMA
 LOCK_SCHEMA_VERSION = _core.LOCK_SCHEMA_VERSION
@@ -113,6 +116,7 @@ render_character_pack_lock = _core.render_character_pack_lock
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
+    activate_bundled_mohan_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=tuple(RELEASE_PROFILES), default="mohan")
     parser.add_argument("--lock", type=Path)
