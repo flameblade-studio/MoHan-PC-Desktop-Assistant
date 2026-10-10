@@ -14,7 +14,8 @@ lazy from presentation.flagship.control_center import (
     ControlCenterDependencies,
     FlagshipControlCenter,
 )
-lazy from presentation.flagship.oauth import OAuthPKCEFlow, OAuthSignals, OAuthWorker
+lazy from presentation.flagship.oauth import OAuthSignals, OAuthWorker
+lazy from integrations.cloud_connectors import OAuthPKCEFlow
 lazy from presentation.flagship.shared import (
     ASSIST_INTENT_MARKERS,
     CALENDAR_MARKERS,

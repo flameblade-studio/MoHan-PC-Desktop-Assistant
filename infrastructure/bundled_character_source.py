@@ -6,10 +6,8 @@ lazy from collections.abc import Mapping
 lazy from pathlib import Path, PurePosixPath
 
 lazy from domain.character_expression_data_loader import load_expression_catalog
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import canonical_character_locale
 lazy from domain.character_pack.character_data_models import (
     CharacterRigManifest,
     DialogueLocale,
@@ -25,13 +23,13 @@ lazy from domain.character_runtime_bindings import (
 )
 lazy from domain.character_source import (
     CharacterAppearanceContract,
-    CharacterAppearanceDefaults,
     CharacterAssets,
     CharacterBodyProfileReference,
     CharacterCanvas,
     CharacterPersona,
     CharacterVoice,
 )
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 
 
 class BundledCharacterSource(

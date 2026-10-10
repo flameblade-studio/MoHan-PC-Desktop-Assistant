@@ -27,11 +27,8 @@ lazy from PySide6.QtWidgets import (
     QWidget,
 )
 lazy from presentation.qt_parent import require_qwidget
-lazy from application.presentation_ports import (
-    DEFAULT_TEXT_MODEL,
-    TEXT_MODELS,
-    PlatformCapabilities,
-)
+lazy from application.presentation_ports import TEXT_MODELS, PlatformCapabilities
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.companion_animation_contract import (
     CHARACTER_SCALE_DEFAULT,

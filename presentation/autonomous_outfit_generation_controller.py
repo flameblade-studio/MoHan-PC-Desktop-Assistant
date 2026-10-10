@@ -41,8 +41,8 @@ lazy from integrations.openai_outfit_generator import (
     OpenAIImageEditOptions,
     OpenAIImageEditTransport,
     OpenAIOutfitDraftGenerator,
-    OutfitImageGenerationError,
 )
+lazy from domain.outfit_generation import OutfitImageGenerationError
 lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy import threading
 lazy from domain.outfit_generation import OutfitGenerationCancelled

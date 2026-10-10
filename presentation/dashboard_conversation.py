@@ -16,16 +16,13 @@ lazy from application.companion_phrasebook import (
 lazy from application.outfit_reveal import (
     LAST_REVEALED_OUTFIT_KEY, is_outfit_origin_question, outfit_origin_reply,
 )
-lazy from application.presentation_ports import (
-    DEFAULT_TEXT_MODEL, AIWorkerRequest, format_duration,
-)
+lazy from application.presentation_ports import AIWorkerRequest, format_duration
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy from domain.app_profile import (
     persona_for_profile, personalize_text, profile_setting,
 )
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import canonical_character_locale
 lazy from domain.character_source import active_expression_catalog
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions

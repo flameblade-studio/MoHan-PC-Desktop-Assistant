@@ -36,13 +36,13 @@ lazy from domain.character_runtime_bindings import (
 )
 lazy from domain.character_source import (
     CharacterAppearanceContract,
-    CharacterAppearanceDefaults,
     CharacterAssets,
     CharacterBodyProfileReference,
     CharacterCanvas,
     CharacterPersona,
     CharacterVoice,
 )
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 lazy from domain.language_support import canonical_ui_language
 
 IDENTITY_SCHEMA = "flameblade.character-identity-profile.v1"

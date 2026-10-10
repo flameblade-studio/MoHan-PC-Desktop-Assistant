@@ -187,7 +187,7 @@
           "text": "lazy from application.wardrobe_service import WardrobeService"
         },
         {
-          "line": 16,
+          "line": 15,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID"
         },
@@ -926,7 +926,7 @@
       "path": "assets/characters/mohan/rig/runtime-bindings.json",
       "readers": [
         {
-          "line": 57,
+          "line": 55,
           "path": "infrastructure/bundled_character_source.py",
           "text": "self._character_root / \"rig\" / \"runtime-bindings.json\""
         }
@@ -50831,7 +50831,7 @@
       "path": "assets/onboarding/first-run-ink-tech.png",
       "readers": [
         {
-          "line": 118,
+          "line": 115,
           "path": "presentation/first_run_wizard.py",
           "text": "CHARACTER_ASSET_PATHS[\"onboarding_artwork\"]"
         }
@@ -89650,7 +89650,7 @@
           "text": "lazy from domain.constants import DEFAULT_WEATHER_TEMPERATURE_C"
         },
         {
-          "line": 38,
+          "line": 36,
           "path": "presentation/companion_speech_runtime.py",
           "text": "lazy from domain.constants import CHARACTER_POSE_ROLES"
         },
@@ -89670,7 +89670,7 @@
           "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
         },
         {
-          "line": 26,
+          "line": 23,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
@@ -90110,7 +90110,7 @@
           "text": "lazy from domain.contracts import default_character_display_name"
         },
         {
-          "line": 9,
+          "line": 7,
           "path": "domain/app_profile.py",
           "text": "lazy from domain.contracts import ProfileDatabasePort"
         },
@@ -90280,7 +90280,7 @@
       "work_package": null
     },
     {
-      "bytes": 11557,
+      "bytes": 11613,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -90336,7 +90336,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "1e3269a86262aa1fb401a93b38366ce2a8c250000fe8900a39f86711f9a2f997",
+      "sha256": "43718591747593eb75db4e853cd5e1364fa028d165cd4fcec6b6da2eab3fc0d7",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
@@ -90615,7 +90615,7 @@
           "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
         },
         {
-          "line": 41,
+          "line": 38,
           "path": "presentation/dashboard_settings.py",
           "text": "lazy from domain.version_info import APP_VERSION"
         },
@@ -91122,6 +91122,11 @@
           "line": 9,
           "path": "presentation/flagship/oauth.py",
           "text": "lazy from integrations.cloud_connectors import PROVIDERS, OAuthPKCEFlow"
+        },
+        {
+          "line": 18,
+          "path": "presentation/flagship_ui.py",
+          "text": "lazy from integrations.cloud_connectors import OAuthPKCEFlow"
         }
       ],
       "scope": "embedded_code",
@@ -91884,7 +91889,7 @@
       "work_package": null
     },
     {
-      "bytes": 35350,
+      "bytes": 35371,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -91895,7 +91900,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 877,
+          "line": 874,
           "matched": "墨寒",
           "path": "presentation/dashboard_settings.py",
           "rule": "product_identity_literal",
@@ -91905,7 +91910,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 881,
+          "line": 878,
           "matched": "墨寒",
           "path": "presentation/dashboard_settings.py",
           "rule": "product_identity_literal",
@@ -91915,7 +91920,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 882,
+          "line": 879,
           "matched": "MoHan",
           "path": "presentation/dashboard_settings.py",
           "rule": "product_identity_literal",
@@ -91935,24 +91940,24 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "bb9430dc2ae40c7ea771ef9bcca952439c908db05e975f53bde7fd0071befc0e",
+      "sha256": "084cb17eb2612f2251012a0e383ac4531fc52e59a18ed350b0819755b80559d0",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
-          "end_line": 71,
-          "line": 71,
+          "end_line": 68,
+          "line": 68,
           "name": "__all__"
         },
         {
-          "end_line": 80,
-          "line": 74,
+          "end_line": 77,
+          "line": 71,
           "name": "_configure_form"
         },
         {
-          "end_line": 911,
-          "line": 82,
+          "end_line": 908,
+          "line": 79,
           "name": "DashboardSettingsMixin"
         }
       ],
@@ -92386,7 +92391,7 @@
           "text": "lazy from presentation.ui_localization import ui_text"
         },
         {
-          "line": 73,
+          "line": 71,
           "path": "presentation/companion_speech_runtime.py",
           "text": "lazy from presentation.ui_localization import ui_text"
         },
@@ -92411,7 +92416,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 63,
+          "line": 60,
           "path": "presentation/dashboard_settings.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -92421,7 +92426,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 55,
+          "line": 54,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -92431,7 +92436,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 47,
+          "line": 44,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -92596,7 +92601,7 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_PLATFORM_STATUS_LABELS"
         },
         {
-          "line": 68,
+          "line": 65,
           "path": "presentation/dashboard_settings.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS"
         },
@@ -92606,7 +92611,7 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MEMORY_CATEGORY_LABELS"
         },
         {
-          "line": 61,
+          "line": 60,
           "path": "presentation/dashboard_shell.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS"
         },
@@ -92616,7 +92621,7 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS"
         },
         {
-          "line": 53,
+          "line": 50,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS"
         },

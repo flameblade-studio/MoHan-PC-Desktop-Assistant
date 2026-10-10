@@ -679,17 +679,17 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 877,
+              "line": 874,
               "matched": "墨寒",
               "text": "form.addRow(QLabel(self._t(\"about_heading\", \"<b>關於墨寒</b>\")))"
             },
             {
-              "line": 881,
+              "line": 878,
               "matched": "墨寒",
               "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
             },
             {
-              "line": 882,
+              "line": 879,
               "matched": "MoHan",
               "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
             }

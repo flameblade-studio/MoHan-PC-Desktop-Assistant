@@ -32,7 +32,8 @@ lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS, character_rig_manifest, pose_atlas_layered_relative_root, pose_atlas_relative_root,
 )
 lazy from domain.character_source import active_character_data, active_expression_catalog
-lazy from domain.outfit_pack import AUTHORING_TEMPLATE, AUTHORING_VERSION, BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
+lazy from domain.outfit_pack import BODY_PROFILE_ID, BODY_PROFILE_VERSION, POSE_ATLAS_SILHOUETTES
+lazy from domain.outfit_pack_archive import AUTHORING_TEMPLATE, AUTHORING_VERSION
 lazy from domain.outfit_generation import (
     OutfitGenerationCancelled,
     OutfitImageGenerationError,

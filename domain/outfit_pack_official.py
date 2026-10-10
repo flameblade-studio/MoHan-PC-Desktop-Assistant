@@ -22,12 +22,12 @@ lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from domain.character_source import (
-    CharacterAppearanceDefaults,
     CharacterSource,
     active_character_data,
     active_character_source,
     character_appearance_defaults,
 )
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 _LOGGER = logging.getLogger("mohan.character_appearance")
 
 

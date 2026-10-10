@@ -6,7 +6,7 @@ lazy from PySide6.QtCore import Signal
 lazy from PySide6.QtWidgets import QDialog, QLayout, QVBoxLayout
 
 lazy from application.gesture_controller import GestureController
-lazy from application.presentation_ports import PresentationDatabasePort
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.theme_pack_service import ThemePackService
 lazy from domain.theme_retint import retint_stylesheet
 lazy from domain.theme_pack import ThemePack
