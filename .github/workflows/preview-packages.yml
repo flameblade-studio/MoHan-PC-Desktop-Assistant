@@ -36,17 +36,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0-rc.1"
-          allow-prereleases: true
+          python-version: "3.15.0"
           cache: pip
           cache-dependency-path: requirements-preview.txt
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
-      - name: Install pinned Preview dependencies
+      - name: Install pinned Preview dependencies from official wheels
         run: >-
-          python tools/install_python315_dependencies.py
+          python -m pip install --only-binary=:all:
+          --report qt-install-report.json
+          -r requirements-preview.txt
+      - name: Verify official Qt runtime and wheel provenance
+        run: >-
+          python tools/check_official_qt_runtime.py
           --requirements requirements-preview.txt
-          --qt-compat-wheelhouse qt315-wheelhouse
+          --pip-report qt-install-report.json
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
       - name: Check out pinned CPython 3.15.0rc1 source
@@ -68,9 +70,14 @@ jobs:
           echo "DYLD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
       - name: Install dependencies into JIT-default Python
         run: >-
-          "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
+          "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
+          --report qt-jit-install-report.json
+          -r requirements-preview.txt
+      - name: Verify JIT-default official Qt runtime and wheel provenance
+        run: >-
+          "$MOHAN_JIT_PYTHON" tools/check_official_qt_runtime.py
           --requirements requirements-preview.txt
-          --qt-compat-wheelhouse qt315-wheelhouse
+          --pip-report qt-jit-install-report.json
       - name: Build and smoke-test DMG
         shell: bash
         run: |
@@ -99,8 +106,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0-rc.1"
-          allow-prereleases: true
+          python-version: "3.15.0"
           cache: pip
           cache-dependency-path: requirements-preview.txt
       - name: Install Ubuntu Qt runtime
@@ -120,13 +126,16 @@ jobs:
             -o Acquire::https::Timeout=20 || echo "apt-get update reached its time bound; continuing with the available runtime"
           timeout 120 sudo apt-get install --yes --no-install-recommends libegl1 \
             || echo "libegl1 installation status recorded; continuing with the available runtime"
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse --requirements requirements-preview.txt
-      - name: Install pinned Preview dependencies
+      - name: Install pinned Preview dependencies from official wheels
         run: >-
-          python tools/install_python315_dependencies.py
+          python -m pip install --only-binary=:all:
+          --report qt-install-report.json
+          -r requirements-preview.txt
+      - name: Verify official Qt runtime and wheel provenance
+        run: >-
+          python tools/check_official_qt_runtime.py
           --requirements requirements-preview.txt
-          --qt-compat-wheelhouse qt315-wheelhouse
+          --pip-report qt-install-report.json
       - name: Verify source Preview contract
         run: python tests/test_preview_packaging.py
       - name: Check out pinned CPython 3.15.0rc1 source
@@ -148,9 +157,14 @@ jobs:
           echo "LD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
       - name: Install dependencies into JIT-default Python
         run: >-
-          "$MOHAN_JIT_PYTHON" tools/install_python315_dependencies.py
+          "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
+          --report qt-jit-install-report.json
+          -r requirements-preview.txt
+      - name: Verify JIT-default official Qt runtime and wheel provenance
+        run: >-
+          "$MOHAN_JIT_PYTHON" tools/check_official_qt_runtime.py
           --requirements requirements-preview.txt
-          --qt-compat-wheelhouse qt315-wheelhouse
+          --pip-report qt-jit-install-report.json
       - name: Fetch checksum-locked official appimagetool
         shell: bash
         run: |

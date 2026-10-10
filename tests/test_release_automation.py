@@ -112,8 +112,8 @@ def test_version_runtime_and_evidence_policy() -> None:
             '--collect-all "opencc"',
             '$env:PYTHON_JIT = "1"',
             "tools/build_pyinstaller_jit_bootloader.py",
-            '.qt315-compat-full\\Lib\\site-packages',
-            "6.11.1+mohan.py315.",
+            "tools/check_official_qt_runtime.py",
+            "PySide6 6.12.0",
             "tools\\jit_launcher.py",
             "Move-Item -LiteralPath $PublicExecutable",
             '$env:PYTHON_JIT = "0"',
@@ -124,7 +124,7 @@ def test_version_runtime_and_evidence_policy() -> None:
     assert "RUNTIME_SUFFIX = \"-runtime.exe\"" in launcher
     for workflow_name in ("windows-ci.yml", "release.yml"):
         workflow = read(f".github/workflows/{workflow_name}")
-        assert 'python-version: "3.15.0-rc.1"' in workflow
+        assert 'python-version: "3.15.0"' in workflow
         assert 'python-version: "3.12"' not in workflow
         assert 'FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"' in workflow
         assert "rustup toolchain install 1.97.1" in workflow

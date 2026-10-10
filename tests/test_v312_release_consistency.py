@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VERSION = "3.1.2"
 TAG = f"v{VERSION}"
 RELEASE_DATE = "2026-08-13"
-PYTHON_VERSION = "3.15.0-rc.1"
+PYTHON_VERSION = "3.15.0"
 LANGUAGE_HEADINGS = (
     "## 繁體中文",
     "## 简体中文",

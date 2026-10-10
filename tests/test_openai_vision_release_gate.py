@@ -77,9 +77,9 @@ scope = "runtime"
 profiles = ["windows"]
 '''
     (root / "sbom" / "components.toml").write_text(components, encoding="utf-8")
-    (root / "requirements-preview.txt").write_text("PySide6==6.11.1\n", encoding="utf-8")
+    (root / "requirements-preview.txt").write_text("PySide6==6.12.0\n", encoding="utf-8")
     (root / "requirements-preview-runtime.txt").write_text(
-        "PySide6==6.11.1\n", encoding="utf-8"
+        "PySide6==6.12.0\n", encoding="utf-8"
     )
     (root / "sbom" / "preview.pyproject.toml").write_text(
         '[project]\nname = "preview"\nversion = "4.0.0"\ndependencies = []\n',
@@ -125,7 +125,7 @@ def test_v4_rejects_sdk_dependency_and_preview_leak() -> None:
             "opencv-python==5.0.0.93\nopenai==3.0.0\n", encoding="utf-8"
         )
         (root / "requirements-preview.txt").write_text(
-            "PySide6==6.11.1\nopenai==1.2.3\n", encoding="utf-8"
+            "PySide6==6.12.0\nopenai==1.2.3\n", encoding="utf-8"
         )
         result = evaluate(root, "4.0.0")
     assert "openai:third-party-sdk-must-not-be-required" in result.issues

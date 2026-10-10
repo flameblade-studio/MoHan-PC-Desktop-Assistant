@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import ast
 lazy import json
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 lazy import run_all
 lazy from tools import generate_test_impact_map as generator
@@ -12,6 +13,18 @@ def _write(root: Path, relative: str, content: str) -> None:
     path = root / relative
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def test_tracked_paths_excludes_indexed_deletions(tmp_path: Path, monkeypatch) -> None:
+    _write(tmp_path, "present.py", "VALUE = 1\n")
+    completed = SimpleNamespace(
+        returncode=0,
+        stdout=b"present.py\0deleted.py\0",
+        stderr=b"",
+    )
+    monkeypatch.setattr(generator.subprocess, "run", lambda *args, **kwargs: completed)
+
+    assert generator.tracked_paths(tmp_path) == ("present.py",)
 
 
 def test_derives_direct_lazy_imports_and_literal_paths(tmp_path: Path) -> None:

@@ -56,11 +56,16 @@ def tracked_paths(root: Path = ROOT) -> tuple[str, ...]:
     if completed.returncode != 0:
         detail = completed.stderr.decode("utf-8", errors="replace").strip()
         raise RuntimeError(f"git ls-files failed with exit {completed.returncode}: {detail}")
+    candidates = (
+        _normalise_repo_path(path.decode("utf-8"))
+        for path in completed.stdout.split(b"\0")
+        if path
+    )
     return tuple(
         sorted(
-            _normalise_repo_path(path.decode("utf-8"))
-            for path in completed.stdout.split(b"\0")
-            if path
+            path
+            for path in candidates
+            if (root / PurePosixPath(path)).is_file()
         )
     )
 

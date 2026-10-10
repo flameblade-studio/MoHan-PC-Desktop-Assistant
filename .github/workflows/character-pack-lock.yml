@@ -31,8 +31,7 @@ jobs:
       - name: Set up Python 3.15
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0-rc.1"
-          allow-prereleases: true
+          python-version: "3.15.0"
           cache: pip
 
       - name: Install the Qt runtime library used to decode pack images
@@ -40,13 +39,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libegl1
 
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
-
-      - name: Install pinned runtime dependencies
+      - name: Install pinned runtime dependencies from official wheels
         run: >-
-          python tools/install_python315_dependencies.py
-          --qt-compat-wheelhouse qt315-wheelhouse
+          python -m pip install --only-binary=:all:
+          --report qt-install-report.json
+          -r requirements.txt
+
+      - name: Verify official Qt runtime and wheel provenance
+        run: >-
+          python tools/check_official_qt_runtime.py
+          --pip-report qt-install-report.json
 
       - name: Rebuild and verify the locked MoHan character pack
         run: python tools/verify_character_pack_lock.py

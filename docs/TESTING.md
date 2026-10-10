@@ -22,7 +22,7 @@
 
 ### 目前待完成的發布先決條件
 
-- Python 3.15／Qt 的正式發布條件仍待完成：目前固定的 PySide6 6.11.1 官方 metadata 排除 Python 3.15。Qt 官方提供完整且一致的 Python 3.15 相容套件，並在乾淨環境通過標準 resolver 驗證後，即具備解除條件。
+- PySide6 6.12.0 已提供宣告 Python `>=3.10,<3.16` 的完整官方 wheel 組合。CI 以正常 resolver、固定 SHA-256、pip 安裝報告、`Requires-Python`、`pip check` 與 Qt smoke 驗證；正式發布仍須等本次雲端工作流程與其餘發布門檻通過。
 - PoseAtlas 的正式發布條件仍待完成：具可驗證來源與再散布權的 24 個完整全身旋轉視角、landmarks、hands 與真實 `release-audits.json` 仍在齊備中。
 - 完整回歸 gate 已通過；v4 的可發布與已發布狀態，會在上述其他先決條件全數完成後成立。
 
@@ -72,7 +72,7 @@
 
 ### 当前待完成的发布先决条件
 
-- Python 3.15／Qt 的正式发布条件仍待完成：当前固定的 PySide6 6.11.1 官方 metadata 排除 Python 3.15。Qt 官方提供完整且一致的 Python 3.15 兼容软件包，并在干净环境中通过标准 resolver 验证后，即具备解除条件。
+- PySide6 6.12.0 已提供声明 Python `>=3.10,<3.16` 的完整官方 wheel 组合。CI 使用正常 resolver、固定 SHA-256、pip 安装报告、`Requires-Python`、`pip check` 与 Qt smoke 验证；正式发布仍须等待本次云端工作流与其余发布关卡通过。
 - PoseAtlas 的正式发布条件仍待完成：具有可验证来源与再分发权的 24 个完整全身旋转视角、landmarks、hands 与真实 `release-audits.json` 仍在齐备中。
 - 完整回归 gate 已通过；v4 的可发布与已发布状态，会在上述其他先决条件全部完成后成立。
 
@@ -122,7 +122,7 @@
 
 ### Current release prerequisites awaiting completion
 
-- The Python 3.15／Qt formal-release prerequisite remains pending: the currently pinned official PySide6 6.11.1 metadata excludes Python 3.15. The prerequisite becomes clearable after Qt publishes a complete, consistent Python 3.15-compatible set and the standard resolver verifies it in clean environments.
+- PySide6 6.12.0 provides a complete official wheel set declaring Python `>=3.10,<3.16`. CI verifies it with the normal resolver, fixed SHA-256 digests, the pip installation report, `Requires-Python`, `pip check`, and a Qt smoke test. Formal release still requires this cloud workflow and every other release gate to pass.
 - The PoseAtlas formal-release prerequisite remains pending: the 24 complete full-body rotational views with verifiable provenance and redistribution rights, their landmarks and hands, and genuine `release-audits.json` remain in preparation.
 - The complete regression gate now passes; v4 gains releasable and released status after the remaining prerequisites are complete.
 
@@ -172,7 +172,7 @@ The following lists the corresponding automated evidence already established; al
 
 ### 現在完了待ちの公開前提条件
 
-- Python 3.15／Qt の正式公開条件は完了待ちです。現在固定している公式 PySide6 6.11.1 metadata は Python 3.15 を除外しています。Qt が完全で整合した Python 3.15 対応一式を公開し、新規環境の標準 resolver で検証を終えた後に解除条件が成立します。
+- PySide6 6.12.0 は Python `>=3.10,<3.16` 対応を宣言する完全な公式 wheel 一式を提供しています。CI は通常の resolver、固定 SHA-256、pip 導入レポート、`Requires-Python`、`pip check`、Qt smoke で検証します。正式公開には今回のクラウド workflow と他のすべての公開ゲートの合格が必要です。
 - PoseAtlas の正式公開条件は完了待ちです。出典と再配布権を検証できる完全全身回転 24 視角、landmarks、hands、真正な `release-audits.json` は現在準備中です。
 - 完全回帰 gate は合格しました。残る前提条件をすべて完了した後、v4 の公開可能・公開済み状態が成立します。
 

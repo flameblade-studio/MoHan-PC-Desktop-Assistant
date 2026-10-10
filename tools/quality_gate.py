@@ -179,8 +179,8 @@ def _stages() -> tuple[Stage, ...]:
             "cargo-audit",
         ),
         Stage(
-            "Qt wheel parity",
-            (python, "tools/qt315_wheel_lock.py"),
+            "official Qt runtime",
+            (python, "tools/check_official_qt_runtime.py"),
         ),
         Stage(
             "full regression suite (aggregate)",

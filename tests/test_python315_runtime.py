@@ -243,8 +243,7 @@ def _run_governance_audits() -> None:
     dependencies = subprocess.run(
         [
             sys.executable,
-            str(ROOT / "tools" / "install_python315_dependencies.py"),
-            "--verify-only",
+            str(ROOT / "tools" / "check_official_qt_runtime.py"),
         ],
         cwd=ROOT,
         check=False,
@@ -252,7 +251,7 @@ def _run_governance_audits() -> None:
         text=True,
     )
     assert dependencies.returncode == 0, dependencies.stdout + dependencies.stderr
-    assert "QT_STABLE_ABI_OK" in dependencies.stdout
+    assert "OFFICIAL_QT_RUNTIME_OK" in dependencies.stdout
 
 
 def main() -> None:

@@ -32,23 +32,6 @@ if ($LASTEXITCODE -ne 0) { throw "Cannot locate packaging site-packages for MPL 
 & $Python tools/mpl_compliance.py --require-allowlist --site-packages $MplSitePackages
 if ($LASTEXITCODE -ne 0) { throw "MPL license/source evidence is incomplete; packaging stopped." }
 
-# The studio-maintained PySide6 6.11.1 build is installed in a dedicated
-# Python 3.15 compatibility environment.  The packaging interpreter owns all
-# other dependencies; prepend the rebuilt Qt site-packages when the selected
-# interpreter requires the compatibility import path.
-$QtCompatSitePackages = Join-Path $ProjectRoot ".qt315-compat-full\Lib\site-packages"
-& $Python -c "import PySide6" 2>$null
-if ($LASTEXITCODE -ne 0) {
-    if (-not (Test-Path -LiteralPath (Join-Path $QtCompatSitePackages "PySide6"))) {
-        throw "MoHan $Version packaging requires the rebuilt PySide6 6.11.1 Python 3.15 runtime; expected $QtCompatSitePackages."
-    }
-    $env:PYTHONPATH = if ($env:PYTHONPATH) {
-        "$QtCompatSitePackages;$env:PYTHONPATH"
-    } else {
-        $QtCompatSitePackages
-    }
-}
-
 # CPython 3.15's JIT is selected before interpreter initialization.  The
 # 0xC0000409 mid-session crash on a user machine (2026-08-29) joined the CI
 # JIT/Qt incident record, so every build-time child and the frozen runtime
@@ -67,11 +50,11 @@ if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:False") {
 
 & $Python -c "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket; import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets"
 if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging dependencies are incomplete; install requirements.txt and the rebuilt Python 3.15-compatible PySide6 runtime."
+    throw "MoHan $Version packaging dependencies are incomplete; install requirements.txt with official PySide6 6.12.0 wheels."
 }
-& $Python -c "import importlib.metadata as m; v=m.version('PySide6'); assert v.startswith('6.11.1+mohan.py315.'), v"
+& $Python tools/check_official_qt_runtime.py
 if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging requires the studio-rebuilt PySide6 6.11.1+mohan.py315 runtime."
+    throw "MoHan $Version packaging requires the verified official PySide6 6.12.0 runtime."
 }
 
 # Exercise the provider-neutral local speech path before packaging: synthetic

@@ -40,7 +40,7 @@
 
 JIT 的歷史預設已由 [PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) 因實機穩定性問題改為關閉；現行 [啟動器](../tools/jit_launcher.py) 只有在 `MOHAN_ENABLE_JIT=1` 時開啟。目前行為以現行啟動器與測試證據為準。
 
-原始文件中舊版本號、測試數量與「尚未發布」屬歷史狀態；舊 Qt 官方 metadata 阻擋已由架構契約中的相容層政策取代。舊美術限定代理不可寫程式、保留舊臉及上衣款式，已由本次擁有者整合授權、V4 外觀標準及細肩帶短版運動素體裁決取代。一般自主作業依既有授權持續完成；重大事項與美術正式接入仍保留確認。
+原始文件中舊版本號、測試數量與「尚未發布」屬歷史狀態；舊 Qt 官方 metadata 阻擋與自製相容層已由 PySide6 6.12.0 官方 wheel 政策取代。舊美術限定代理不可寫程式、保留舊臉及上衣款式，已由本次擁有者整合授權、V4 外觀標準及細肩帶短版運動素體裁決取代。一般自主作業依既有授權持續完成；重大事項與美術正式接入仍保留確認。
 
 Tachyon 存在待核實差異：本次交接稱讀取錯誤率門檻為百分之一，但本工作樹 CI 與 Release 明示百分之十五，命令列預設百分之八十。這是規則與設定落差，目前明確標示為待裁決差異，本索引逐字保留各來源門檻。舊語音文件稱不安裝 Azure SDK，但目前需求清單包含 SDK；需區分各供應器實作與歷史描述。目前全專案合規狀態只由現行完整驗證決定。
 
@@ -84,7 +84,7 @@ Tachyon 存在待核實差異：本次交接稱讀取錯誤率門檻為百分之
 
 JIT 的历史默认值已由 [PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) 因实机稳定性问题改为关闭；现行 [启动器](../tools/jit_launcher.py) 仅在 `MOHAN_ENABLE_JIT=1` 时开启。较早迁移文档中默认开启的描述当前行为以现行启动器与测试证据为准。
 
-原始文档的旧版本号、测试数量及“尚未发布”属于历史状态；旧 Qt 官方 metadata 阻挡已由架构契约的兼容层政策取代。旧美术限定代理不可写程序、保留旧脸及上衣款式，已由本次所有者整合授权、V4 外观标准及细肩带短版运动素体裁决取代。一般自主工作依据现有授权持续完成；重大事项与美术正式接入仍保留确认。
+原始文档的旧版本号、测试数量及“尚未发布”属于历史状态；旧 Qt 官方 metadata 阻挡与自制兼容层已由 PySide6 6.12.0 官方 wheel 政策取代。旧美术限定代理不可写程序、保留旧脸及上衣款式，已由本次所有者整合授权、V4 外观标准及细肩带短版运动素体裁决取代。一般自主工作依据现有授权持续完成；重大事项与美术正式接入仍保留确认。
 
 Tachyon 存在待核实差异：本次交接称读取错误率门槛为百分之一，但本工作树 CI 与 Release 明示百分之十五，命令行默认为百分之八十。这是规则与配置落差，当前明确标示为待裁决差异，本索引逐字保留各来源门槛。旧语音文档称不安装 Azure SDK，但当前需求清单包含 SDK；需区分各提供商实现与历史描述。当前全项目合规状态只由现行完整验证决定。
 
@@ -128,7 +128,7 @@ Art must respect normal anatomy, natural poses and physical plausibility, includ
 
 [PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) changed the historical JIT default to off after stability failures on a user machine. The current [launcher](../tools/jit_launcher.py) enables it only with `MOHAN_ENABLE_JIT=1`. Earlier migration documentation describing an enabled default is superseded by the current launcher and test evidence.
 
-Old version numbers, test counts, and unreleased statements in source documents are historical status. The old Qt metadata blocker was replaced by the architecture compatibility-layer policy. Earlier art-only delegation, old-face preservation, and top design were superseded by the current integration authorization, V4 appearance standard, and thin-strap cropped sports base. Routine autonomous work proceeds under the existing authorization; major matters and formal artwork integration retain confirmation.
+Old version numbers, test counts, and unreleased statements in source documents are historical status. The old Qt metadata blocker and project-built compatibility layer were replaced by the official PySide6 6.12.0 wheel policy. Earlier art-only delegation, old-face preservation, and top design were superseded by the current integration authorization, V4 appearance standard, and thin-strap cropped sports base. Routine autonomous work proceeds under the existing authorization; major matters and formal artwork integration retain confirmation.
 
 Tachyon has an unresolved discrepancy: the supplied handoff states a one-percent read-error threshold, while this worktree explicitly passes fifteen percent in CI and Release and defaults to eighty percent in the CLI. These are inconsistent rules and settings, an explicitly unresolved decision; this index preserves every source threshold verbatim. Older speech documentation says no Azure SDK installation, while current requirements include it; provider implementation and historical description must be distinguished. Current project-wide compliance comes only from current full validation.
 
@@ -172,6 +172,6 @@ Tachyon has an unresolved discrepancy: the supplied handoff states a one-percent
 
 実機の安定性問題を受け、[PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) は JIT の既定値を無効に変更した。現行の [起動ツール](../tools/jit_launcher.py) は `MOHAN_ENABLE_JIT=1` の場合のみ有効化する。以前の移行文書にある既定で有効という記述は、現行動作は現在の起動ツールと試験証拠で判定する。
 
-原文書の旧版番号、試験件数、未公開記述は過去の状態である。旧 Qt metadata 阻害条件は構造契約の互換層政策に置き換わった。旧来の美術専任制限、旧顔維持、上着形状は今回の統合許可、V4 外観基準、細肩紐の短丈スポーツ素体裁定に置き換わった。通常の自律作業は既存許可に従って継続し、重大事項と美術の正式接続は確認を維持する。
+原文書の旧版番号、試験件数、未公開記述は過去の状態である。旧 Qt metadata 阻害条件とプロジェクト独自の互換レイヤーは、公式 PySide6 6.12.0 wheel 方針に置き換わった。旧来の美術専任制限、旧顔維持、上着形状は今回の統合許可、V4 外観基準、細肩紐の短丈スポーツ素体裁定に置き換わった。通常の自律作業は既存許可に従って継続し、重大事項と美術の正式接続は確認を維持する。
 
 Tachyon には未解決の差異がある。引継ぎの読取エラー上限は一パーセントだが、この作業ツリーの CI と Release は十五パーセント、CLI 既定値は八十パーセントである。規則と設定の不一致であり、未決定差異として明示し、本索引では各資料の上限をそのまま保持する。旧音声文書は Azure SDK 不要とするが、現在の依存一覧には SDK がある。供給元実装と歴史記述を区別する必要がある。現在の全プロジェクト適合状態は現行の完全検証だけで判定する。

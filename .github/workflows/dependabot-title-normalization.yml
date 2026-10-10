@@ -32,8 +32,7 @@ jobs:
       - name: Set up Python 3.15
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0-rc.1"
-          allow-prereleases: true
+          python-version: "3.15.0"
 
       - name: Normalize Dependabot title when it matches the safe grammar
         shell: bash
