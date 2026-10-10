@@ -177,13 +177,13 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 付費代表贊助支持與搶先取得，不是排他散布權。由 CHOU MING HUA（炎劍文化工作室 Flameblade Studio）擁有的第一方 DLC 內容採 [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/)：合法取得者可保留授權資訊與姓名標示，非商用原樣分享；不得商用或分享改作後內容，也不得暗示官方背書。建議標示：「赤焰劍光 © 2026 CHOU MING HUA（炎劍文化工作室 Flameblade Studio），CC BY-NC-ND 4.0」。第三方項目仍依各自條款；完整內容見 `DLC-LICENSE.md` 與主專案 `ASSETS-LICENSE.md`。
 
-> #### ❤️⚔️ 支持墨寒：Ko-fi 自由贊助
+> #### ❤️⚔️ 支持墨寒：Ko-fi 贊助＆裝飾 DLC 下載
 >
 > Ko-fi 贊助完全自願，不解鎖、不限制，也不改變任何功能。付費 DLC 是純裝飾的贊助謝禮，與角色包同採 CC BY-NC-ND 4.0，詳見上方赤焰劍光說明與 `ASSETS-LICENSE.md`。
 
 ### 支持墨寒 / Support MoHan：支持方式與授權
 
-歡迎前往 [Ko-fi](https://ko-fi.com/flamebladestudio) 自由選擇單次或每月贊助；是否贊助不影響任何功能。企業導入、合作或顧問需求請透過 [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 洽詢。
+請使用儲存庫上方由 GitHub 顯示的 Sponsor 按鈕，或直接前往 [Ko-fi](https://ko-fi.com/flamebladestudio)，自由選擇單次或每月贊助；是否贊助不影響任何功能。企業導入、合作或顧問需求請透過 [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 洽詢。
 
 <table>
   <tr>
@@ -405,13 +405,13 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 付费代表赞助支持与抢先获取，不是排他分发权。由 CHOU MING HUA（炎剑文化工作室 Flameblade Studio）拥有的第一方 DLC 内容采用 [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/)：合法取得者可以保留许可信息与署名，非商业原样分享；不得商用或分享改作后的内容，也不得暗示官方背书。建议标注：“赤焰剑光 © 2026 CHOU MING HUA（炎剑文化工作室 Flameblade Studio），CC BY-NC-ND 4.0”。第三方项目仍按各自条款执行；完整内容见 `DLC-LICENSE.md` 与主项目 `ASSETS-LICENSE.md`。
 
-> #### ❤️⚔️ 支持墨寒：Ko-fi 自由赞助
+> #### ❤️⚔️ 支持墨寒：Ko-fi 赞助＆装饰 DLC 下载
 >
 > Ko-fi 赞助完全自愿，不解锁、不限制，也不改变任何功能。付费 DLC 是纯装饰的赞助谢礼，与角色包同样采用 CC BY-NC-ND 4.0，详见上方赤焰剑光说明与 `ASSETS-LICENSE.md`。
 
 ### 支持墨寒：支持方式与许可证
 
-欢迎前往 [Ko-fi](https://ko-fi.com/flamebladestudio) 自由选择单次或每月赞助；是否赞助不影响任何功能。企业部署、合作或顾问需求请通过 [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 咨询。
+请使用仓库上方由 GitHub 显示的 Sponsor 按钮，或直接前往 [Ko-fi](https://ko-fi.com/flamebladestudio)，自由选择单次或每月赞助；是否赞助不影响任何功能。企业部署、合作或顾问需求请通过 [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) 咨询。
 
 <table>
   <tr>
@@ -633,13 +633,13 @@ To return to the default, select “Restore theme” to preview the built-in the
 
 Payment represents sponsorship and early access, not an exclusive distribution right. First-party DLC content owned by CHOU MING HUA (炎劍文化工作室 Flameblade Studio) uses [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/): lawful recipients may share it unchanged and non-commercially while preserving the license information and attribution. Commercial use and distribution of adapted material are not permitted, and official endorsement may not be implied. Suggested credit: “Flame Sword Radiance © 2026 CHOU MING HUA (炎劍文化工作室 Flameblade Studio), CC BY-NC-ND 4.0.” Third-party items remain under their own terms; see `DLC-LICENSE.md` and the main project's `ASSETS-LICENSE.md` for the complete notices.
 
-> #### ❤️⚔️ Support MoHan: voluntary Ko-fi contributions
+> #### ❤️⚔️ Support MoHan: Ko-fi sponsorship & cosmetic DLC downloads
 >
 > Ko-fi contributions are entirely voluntary: they unlock, restrict, and change no features. Paid DLC is a purely cosmetic thank-you for supporters and, like the character packs, uses CC BY-NC-ND 4.0; see the Flame Sword Radiance section above and `ASSETS-LICENSE.md`.
 
 ### Support MoHan: support and licensing
 
-Visit [Ko-fi](https://ko-fi.com/flamebladestudio) for an optional one-time or monthly contribution; contributing does not affect any feature. For enterprise adoption, partnerships, or consulting, contact Flameblade Studio through [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues).
+Use the Sponsor button displayed by GitHub above this repository, or visit [Ko-fi](https://ko-fi.com/flamebladestudio) for an optional one-time or monthly contribution; contributing does not affect any feature. For enterprise adoption, partnerships, or consulting, contact Flameblade Studio through [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues).
 
 <table>
   <tr>
@@ -861,13 +861,13 @@ Dashboard を開き、「システム」→「設定」→「コントロール�
 
 支払いは支援と先行入手を意味し、排他的な配布権ではありません。CHOU MING HUA（炎劍文化工作室 Flameblade Studio）が所有する第一者 DLC 内容には [`CC-BY-NC-ND-4.0`](https://creativecommons.org/licenses/by-nc-nd/4.0/) を適用します。適法な取得者はライセンス情報と表示を保持し、非営利かつ無改変で共有できます。商用利用および改変物の配布はできず、公式の推奨・承認を示唆してはなりません。推奨表示：「赤焔剣光 © 2026 CHOU MING HUA（炎劍文化工作室 Flameblade Studio）、CC BY-NC-ND 4.0」。第三者項目には各自の条項が適用されます。完全な通知は `DLC-LICENSE.md` と本体プロジェクトの `ASSETS-LICENSE.md` を参照してください。
 
-> #### ❤️⚔️ 墨寒を応援：Ko-fi での自由な支援
+> #### ❤️⚔️ 墨寒を支援：Ko-fi スポンサー＆装飾 DLC ダウンロード
 >
 > Ko-fi での支援はあくまで任意であり、機能の解放、制限、変更には一切関係しません。有料 DLC は支援への純粋な装飾的お礼で、キャラクターパックと同じく CC BY-NC-ND 4.0 です。詳しくは上の赤焔剣光の説明と `ASSETS-LICENSE.md` をご覧ください。
 
 ### 墨寒を応援：支援方法とライセンス
 
-[Ko-fi](https://ko-fi.com/flamebladestudio) では、一度限りまたは毎月の支援を自由に選べます。支援の有無で機能が変わることはありません。企業導入、協業、コンサルティングのご相談は [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) からお寄せください。
+このリポジトリ上部に GitHub が表示する Sponsor ボタンをご利用いただくか、[Ko-fi](https://ko-fi.com/flamebladestudio) で一度限りまたは毎月の支援を自由に選べます。支援の有無で機能が変わることはありません。企業導入、協業、コンサルティングのご相談は [GitHub Issues](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/issues) からお寄せください。
 
 <table>
   <tr>
