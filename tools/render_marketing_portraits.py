@@ -36,6 +36,7 @@ lazy from PySide6.QtCore import QSize, Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from domain.companion_animation_contract import EXPRESSION_POSES, outfit_silhouette
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 
@@ -263,6 +264,7 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     arguments = _arguments(argv)
     for target, digest in render_all(
         tuple(arguments.expressions),

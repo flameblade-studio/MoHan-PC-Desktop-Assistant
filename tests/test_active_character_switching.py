@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import logging
+lazy import importlib
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
@@ -8,9 +9,17 @@ lazy import pytest
 
 lazy from application import service_container
 lazy from application import wardrobe_service as wardrobe_module
+lazy from application.character_runtime_bootstrap import ACTIVE_CHARACTER_ENV
 lazy from application.wardrobe_appearance_service import WardrobeAppearanceService
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
-lazy from domain.character_source import active_character_source
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    CHARACTER_LAYER_ROLES,
+    CHARACTER_POSE_ROLES,
+    character_rig_manifest,
+)
+lazy from domain.character_source import active_character_engine_profile, active_character_source
 lazy from domain.outfit_pack import resolve_active_selection
 lazy from domain.outfit_pack_official import (
     BUILTIN_MAKEUP_PACK_ID,
@@ -47,7 +56,7 @@ DATA_DIR_ENV = "MOHAN_DATA_DIR"
 
 @pytest.fixture(autouse=True)
 def _restore_default_character(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.delenv(service_container.ACTIVE_CHARACTER_ENV, raising=False)
+    monkeypatch.delenv(ACTIVE_CHARACTER_ENV, raising=False)
     monkeypatch.delenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, raising=False)
     monkeypatch.delenv(DATA_DIR_ENV, raising=False)
     service_container.create_character_source("mohan")
@@ -81,7 +90,7 @@ def test_installs_and_selects_a_valid_standalone_character_pack(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     _archive, data_root = _install_fake_character(tmp_path, monkeypatch)
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
 
     selected = service_container.create_default_character_source()
 
@@ -101,6 +110,16 @@ def test_installs_and_selects_a_valid_standalone_character_pack(
         FAKE_CHARACTER_ID,
         data_root=data_root,
     ).resolve()
+    profile = active_character_engine_profile()
+    assert profile.assets is selected.assets
+    assert profile.rig_manifest is selected.appearance.rig_manifest
+    assert character_rig_manifest() is selected.appearance.rig_manifest
+    assert CHARACTER_ASSET_PATHS["halfbody_root"] == "assets/test-sentinel/expressions"
+    assert CHARACTER_POSE_ROLES["front_idle"] == "test-sentinel-front"
+    assert CHARACTER_EXPRESSION_ROLES["gentle"] == "test-sentinel-gentle"
+    assert CHARACTER_LAYER_ROLES["rear_hair"] == "test-sentinel-rear-hair"
+    face_motion = importlib.import_module("domain.face_motion")
+    assert "test-sentinel-gentle" in face_motion.HAPPY_EXPRESSIONS
 
 
 def test_missing_installed_character_fails_closed_to_mohan(
@@ -173,7 +192,7 @@ def test_development_archive_is_explicit_and_not_persistently_installed(
     archive = build_fake_character_pack(tmp_path)
     data_root = tmp_path / "profile"
     monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(archive))
 
     selected = service_container.create_default_character_source()
@@ -205,7 +224,7 @@ def test_incompatible_development_archive_fails_closed_to_mohan(
         tmp_path / "incompatible-character.zip",
         make_incompatible,
     )
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(incompatible))
 
     with (

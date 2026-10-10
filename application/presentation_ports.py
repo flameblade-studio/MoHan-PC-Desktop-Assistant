@@ -16,11 +16,15 @@ lazy from difflib import SequenceMatcher
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
 lazy from application.appearance_ports import OutfitOverlayFactory, no_outfit_overlay_factory
+lazy from application.service_contracts import (
+    PlatformProgressUpdate,
+    PresentationDatabasePort,
+)
 
 lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL, DEFAULT_TRANSCRIPTION_MODEL
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
-    ProfileDatabasePort,
     SecretStoreFactoryPort,
     SecretStorePort,
     SignalPort,
@@ -47,13 +51,11 @@ MIN_COMPARISON_LENGTH = 16
 MIN_SUBSTRING_LENGTH = 20
 SIMILARITY_THRESHOLD = 0.82
 
-DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 TEXT_MODELS = (
     "gpt-5.6-luna",
     "gpt-5.6-sol",
     "gpt-5.6-terra",
 )
-DEFAULT_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"
 DEFAULT_TRANSCRIPTION_PROMPT = (
     "請將使用者語音準確轉寫為文字，保留專有名詞、數字與其他語言，"
     "不要翻譯或改寫原意。"
@@ -67,18 +69,6 @@ PROFILE_EXTENSION = ".mohan-profile"
 MANIFEST_FILENAME = "manifest.json"
 SENSITIVE_FILENAME = "sensitive.enc"
 SENSITIVE_MANIFEST_KEY = "sensitive"
-
-
-class PresentationDatabasePort(ProfileDatabasePort, Protocol):
-    """Database operations consumed by the desktop presentation."""
-
-    def close(self) -> None: ...
-
-    def settings_snapshot(self) -> object: ...
-
-    def restore_settings_snapshot(self, snapshot: object) -> None: ...
-
-    def __getattr__(self, name: str) -> Callable[..., Any]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -189,29 +179,6 @@ def default_data_dir(platform: PlatformServicePort | None = None) -> Path:
     ).paths.data
     root.mkdir(parents=True, exist_ok=True)
     return root
-
-
-@dataclass(frozen=True, slots=True)
-class PlatformProgressUpdate:
-    platform: str
-    status: str
-    missing: str
-    item_name: str = ""
-    next_action: str = ""
-    notes: str = ""
-    url: str = ""
-
-    def database_row(self, updated_at: str) -> tuple[str, ...]:
-        return (
-            self.platform.strip(),
-            self.status.strip() or "尚未開始",
-            self.missing.strip(),
-            self.item_name.strip(),
-            self.next_action.strip(),
-            self.notes.strip(),
-            self.url.strip(),
-            updated_at,
-        )
 
 
 _DURATION_FORMATS = frozendict(

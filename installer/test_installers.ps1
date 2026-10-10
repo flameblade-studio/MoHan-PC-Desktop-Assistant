@@ -148,6 +148,10 @@ function Invoke-PackagedSelfTest {
             )
             return
         }
+        if (Test-Path -LiteralPath $OutputPath) {
+            Write-Host "$Label self-test marker contents:"
+            Get-Content -Raw $OutputPath | Write-Host
+        }
         throw "$Label application self-test requires a completion marker within $TimeoutSeconds seconds"
     }
     if (

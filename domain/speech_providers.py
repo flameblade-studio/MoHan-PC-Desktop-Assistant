@@ -9,9 +9,7 @@ lazy from domain.contracts import (
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
-
-_VOICE_PROFILE = load_mohan_character_data().voice
+lazy from domain.character_source import character_voice_profile
 
 SYSTEM_LOCAL_PROVIDER = "system-local"
 # Compatibility name retained for third-party imports. Its value is the new
@@ -22,6 +20,7 @@ OPENAI_SPEECH_PROVIDER = "openai-speech"
 OPENAI_REALTIME_PROVIDER = "openai-realtime"
 AZURE_SPEECH_PROVIDER = "azure-speech"
 AZURE_HD_SPEECH_PROVIDER = "azure-speech-hd"
+DEFAULT_SPEECH_RATE = -1
 
 
 _LEGACY_PROVIDER_IDS = {
@@ -80,7 +79,7 @@ class SpeechProviderCapabilities:
 class SpeechRequest:
     text: str
     voice: str = ""
-    rate: int = _VOICE_PROFILE.default_rate
+    rate: int = DEFAULT_SPEECH_RATE
     api_key: str = field(default="", repr=False)
     instructions: str = ""
     options: Mapping[str, str] = field(default_factory=dict)
@@ -295,7 +294,8 @@ class SpeechProviderRegistry:
 
     def fallback_provider_id(self, failed_provider_id: object) -> str | None:
         failed = normalize_speech_provider_id(failed_provider_id)
-        for candidate in _VOICE_PROFILE.fallback_provider_order[failed]:
+        fallback_order = character_voice_profile().fallback_provider_order
+        for candidate in fallback_order[failed]:
             provider = self._providers.get(candidate)
             if provider is None:
                 continue

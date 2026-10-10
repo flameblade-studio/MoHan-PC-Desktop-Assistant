@@ -5,9 +5,9 @@ lazy from application.presentation_ports import (
     female_windows_voices_for_language,
     preferred_windows_voice,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 
-_SYSTEM_LOCAL = load_mohan_character_data().voice.system_local
+_SYSTEM_LOCAL = active_character_data().voice.system_local
 
 __all__ = ("DashboardVoiceCatalogMethods",)
 

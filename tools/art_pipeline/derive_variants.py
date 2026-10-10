@@ -7,6 +7,7 @@ lazy from pathlib import Path
 
 lazy import numpy as np
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from .constants import (
     BLINK_RECTS,
     CANVAS_SIZE,
@@ -157,6 +158,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[2])
     args = build_parser().parse_args(argv)
     if args.mode == "speech":
         return _speech(

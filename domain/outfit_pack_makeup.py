@@ -26,8 +26,11 @@ lazy from PySide6.QtGui import QImage
 
 lazy from domain import outfit_pack
 lazy from domain import outfit_pack_official
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_LAYER_ROLES,
+    character_rig_manifest,
+)
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack import (
     FOUNDATION_SLOT,
@@ -58,7 +61,7 @@ SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 NATIVE_VISIBILITY_FIELDS = frozenset({"foundation_coverage", "eye_aperture"})
 NATIVE_VISIBILITY_RECORD_FIELDS = frozenset({"nonvisible", "evidence"})
 VISIBILITY_EVIDENCE_MARKERS = ("manifest.json", "receipt.json", "stage.json")
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 # Rig cut-outs whose alpha bounding boxes define each slot, grouped per side so a
 # profile view with one visible eye keeps one tight rectangle instead of a band.
 SLOT_RIG_LAYERS = frozendict({

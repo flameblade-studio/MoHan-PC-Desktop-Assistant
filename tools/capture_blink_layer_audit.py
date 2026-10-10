@@ -13,6 +13,7 @@ lazy from PySide6.QtCore import QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from presentation.companion_window import CompanionWindow
 
 FACE_RECTS = {
@@ -120,6 +121,7 @@ def render(output: Path) -> None:
 
 
 if __name__ == "__main__":
+    activate_product_character_runtime(ROOT)
     target = (
         Path(sys.argv[1])
         if len(sys.argv) > 1

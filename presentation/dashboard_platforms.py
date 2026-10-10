@@ -21,7 +21,7 @@ lazy from PySide6.QtWidgets import (
 )
 lazy from presentation.qt_parent import require_qwidget
 
-lazy from application.presentation_ports import PlatformProgressUpdate
+lazy from application.service_contracts import PlatformProgressUpdate
 lazy from domain.time_utils import local_wall_time
 lazy from presentation.ui_localization import (
     PLATFORM_STATUS_LABELS,

@@ -133,6 +133,9 @@ class TargetSpec:
     arguments: tuple[str, ...]
     repetitions: int
     minimum_seconds: float = 0.0
+    # Test targets need the product character that the app composition root
+    # would otherwise activate; activation runs once before the workload.
+    activate_character: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -322,6 +325,7 @@ def _target_spec(
                 duration_seconds * EXPRESSION_WORKLOAD_DURATION_FRACTION
                 if target == "expression" else 0.0
             ),
+            activate_character=True,
         )
     if full_session:
         return TargetSpec(TARGET_SCRIPTS[target], (), 1)
@@ -341,6 +345,8 @@ def _runner_source(spec: TargetSpec, runtime_path: Path) -> str:
     script_arguments = json.dumps(spec.arguments, ensure_ascii=False)
     repetitions = spec.repetitions
     runtime = json.dumps(str(runtime_path))
+    activate_character = spec.activate_character
+    project_root = json.dumps(str(ROOT))
     return f"""from __future__ import annotations
 import gc
 import json
@@ -366,6 +372,10 @@ completed_repetitions = 0
 minimum_seconds = {spec.minimum_seconds!r}
 minimum_repetitions = {repetitions}
 try:
+    if {activate_character!r}:
+        sys.path.insert(0, {project_root})
+        from tests.character_runtime_support import activate_bundled_character_runtime
+        activate_bundled_character_runtime()
     while (
         completed_repetitions < minimum_repetitions
         or time.perf_counter() - started_wall < minimum_seconds

@@ -118,12 +118,12 @@ GROUPS = (
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
     Group("assets/characters/mohan/appearance/", "character_appearance_defaults", "domain/character_pack/appearance_data.py", 'Path(path).read_text(encoding="utf-8")'),
-    Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / "persona/ui-identifiers.json"'),
-    Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data.py", 'root / "persona"'),
-    Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"'),
-    Group("assets/characters/mohan/dialogue/", "character_dialogue_data", "domain/character_pack/character_data.py", 'root / "dialogue"'),
-    Group("assets/characters/mohan/voice/", "character_voice_data", "domain/character_pack/character_data.py", 'root / "voice" / "profile.json"'),
-    Group("assets/characters/mohan/rig/runtime-bindings.json", "character_runtime_binding_data", "domain/constants.py", '"assets", "characters", "mohan", "rig", "runtime-bindings.json"'),
+    Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = active_character_data_path("persona/ui-identifiers.json")'),
+    Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data_loader.py", 'root / "persona"'),
+    Group("assets/characters/mohan/dialogue/runtime.json", "character_runtime_dialogue_data", "domain/sensory_synesthesia.py", '_RUNTIME_DIALOGUE_PATH = active_character_data_path("dialogue/runtime.json")'),
+    Group("assets/characters/mohan/dialogue/", "character_dialogue_data", "domain/character_pack/character_data_loader.py", 'root / "dialogue"'),
+    Group("assets/characters/mohan/voice/", "character_voice_data", "domain/character_pack/character_data_loader.py", 'root / "voice" / "profile.json"'),
+    Group("assets/characters/mohan/rig/runtime-bindings.json", "character_runtime_binding_data", "infrastructure/bundled_character_source.py", 'self._character_root / "rig" / "runtime-bindings.json"'),
     Group("assets/characters/mohan/rig/", "character_rig_data", "domain/character_rig_data.py", "load_rig_manifest(DEFAULT_RIG_MANIFEST_PATH)"),
     Group("assets/characters/mohan/expressions/", "character_expression_catalog", "domain/character_expression_data.py", "load_expression_catalog(DEFAULT_EXPRESSION_CATALOG_PATH)"),
     Group("assets/official-packs/", "appearance_pack", "application/service_container.py", 'official_pack_root = asset_root / "assets" / "official-packs"'),
@@ -154,7 +154,7 @@ CHARACTER_DATA_READERS = {
     ),
     "character_persona_data": (
         "infrastructure/character_source_pack.py",
-        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        "character_data = _load_character_data(",
     ),
     "character_runtime_dialogue_data": (
         "huapu/character_pack_builder.py",
@@ -162,11 +162,11 @@ CHARACTER_DATA_READERS = {
     ),
     "character_dialogue_data": (
         "infrastructure/character_source_pack.py",
-        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        "character_data = _load_character_data(",
     ),
     "character_voice_data": (
         "infrastructure/character_source_pack.py",
-        "character_data = _load_character_data(character_root_path, character_root.as_posix())",
+        "character_data = _load_character_data(",
     ),
     "character_runtime_binding_data": (
         "huapu/character_pack_builder.py",
@@ -364,7 +364,7 @@ PRODUCT_IDENTITY_LITERAL = re.compile(
     r"|關於墨寒|关于墨寒|About MoHan|墨寒について"
     r"|MoHan-Desktop-Assistant/"
     r"|MoHan (?:\{provider_id\} OAuth token|Home Assistant token|OpenAI API key"
-    r"|local face identity templates|local gesture skeleton templates)"
+    r"|local face identity templates|local gesture skeleton templates|protected secret)"
 )
 PRODUCT_IDENTITY_RULE = ContentRule(
     "product_identity_literal",

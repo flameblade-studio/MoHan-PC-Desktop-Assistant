@@ -10,9 +10,8 @@ lazy from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QSizePolicy,
     QScrollArea, QSplitter, QTabWidget, QVBoxLayout, QWidget,
 )
-lazy from application.presentation_ports import (
-    PlatformServicePort, PresentationDatabasePort, format_duration,
-)
+lazy from application.presentation_ports import PlatformServicePort, format_duration
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID
 lazy from domain.app_profile import (
     personalize_text, profile_setting, profile_window_title,

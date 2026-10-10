@@ -28,6 +28,9 @@ lazy from PySide6.QtGui import (
 )
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from infrastructure.app_resources import STYLE
 lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.first_run_wizard import FirstRunWizard
@@ -654,6 +657,7 @@ def capture_media(
     ffmpeg: str | None,
     selected_tab: str = "all",
 ) -> float | None:
+    activate_product_character_runtime(ROOT)
     output_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mohan-readme-profile-") as temp_dir:
         os.environ["MOHAN_DATA_DIR"] = temp_dir
@@ -686,6 +690,7 @@ def capture_media(
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--output",

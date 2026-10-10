@@ -29,6 +29,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from presentation.dashboard_shared import mark_flagship_card as _mark_flagship_card
 lazy from presentation.lingxiao_tokens import (
     TYPE_SCALE,
     LingxiaoPalette,
@@ -721,8 +722,6 @@ def create_flagship_ornament(
 
 
 def mark_flagship_card(frame: QFrame) -> None:
-    """Opt a semantic section frame into card styling."""
+    """Preserve the product-theme API over the neutral card marker."""
 
-    frame.setProperty("mohanRole", "card")
-    frame.style().unpolish(frame)
-    frame.style().polish(frame)
+    _mark_flagship_card(frame)

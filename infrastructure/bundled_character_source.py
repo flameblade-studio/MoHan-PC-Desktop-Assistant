@@ -2,29 +2,34 @@
 
 from __future__ import annotations
 
+lazy from collections.abc import Mapping
 lazy from pathlib import Path, PurePosixPath
 
-lazy from domain.character_expression_data import load_expression_catalog
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_expression_data_loader import load_expression_catalog
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import canonical_character_locale
 lazy from domain.character_pack.character_data_models import (
     CharacterRigManifest,
     DialogueLocale,
+    ExpressionStateCatalog,
+    MohanCharacterData,
     VoiceProfile,
 )
 lazy from domain.character_pose import canonical_view_id
-lazy from domain.character_rig_data import load_rig_manifest
+lazy from domain.character_rig_data_loader import load_rig_manifest
+lazy from domain.character_runtime_bindings import (
+    CharacterRuntimeBindings,
+    load_character_runtime_bindings,
+)
 lazy from domain.character_source import (
     CharacterAppearanceContract,
-    CharacterAppearanceDefaults,
     CharacterAssets,
     CharacterBodyProfileReference,
     CharacterCanvas,
     CharacterPersona,
     CharacterVoice,
 )
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 
 
 class BundledCharacterSource(
@@ -46,10 +51,13 @@ class BundledCharacterSource(
             raise ValueError("Bundled character data must remain below the asset root.")
         self._data = load_mohan_character_data(self._character_root)
         self._rig = load_rig_manifest(self._character_root / "rig" / "rig-manifest.json")
-        expressions = load_expression_catalog(
+        self._runtime_bindings = load_character_runtime_bindings(
+            self._character_root / "rig" / "runtime-bindings.json"
+        )
+        self._expressions = load_expression_catalog(
             self._character_root / "expressions" / "state-catalog.json"
         )
-        if expressions.character_id != self._rig.character_id:
+        if self._expressions.character_id != self._rig.character_id:
             raise ValueError("Bundled character rig and expressions must identify the same character.")
 
     @property
@@ -75,6 +83,18 @@ class BundledCharacterSource(
     @property
     def voice_profile(self) -> VoiceProfile:
         return self._data.voice
+
+    @property
+    def character_data(self) -> MohanCharacterData:
+        return self._data
+
+    @property
+    def character_data_root(self) -> Path:
+        return self._character_root
+
+    @property
+    def expression_catalog(self) -> ExpressionStateCatalog:
+        return self._expressions
 
     @property
     def rig_manifest(self) -> CharacterRigManifest:
@@ -113,6 +133,10 @@ class BundledCharacterSource(
         wake_word = str(self._data.identity.defaults["wake_word"])
         return () if wake_word == self.canonical_name else (wake_word,)
 
+    @property
+    def profile_defaults(self) -> Mapping[str, str]:
+        return self._data.identity.defaults
+
     def display_name(self, language: str) -> str:
         locale = canonical_character_locale(language)
         return self._data.personas[locale].identity.display_name
@@ -145,6 +169,27 @@ class BundledCharacterSource(
             lines = (dialogue.templates[key],)
         return lines[variation_index % len(lines)] if lines else ""
 
+    def personalize_text(
+        self,
+        text: str,
+        *,
+        assistant_name: str,
+        user_title: str,
+        organization_name: str,
+    ) -> str:
+        identity = self._data.identity
+        replacements = {
+            **dict.fromkeys(identity.assistant_tokens, assistant_name),
+            **dict.fromkeys(identity.user_title_tokens, user_title),
+        }
+        if organization_name:
+            replacements[identity.organization_token] = organization_name
+        result = text
+        for source, target in replacements.items():
+            if target:
+                result = result.replace(source, target)
+        return result
+
     @property
     def body_profile(self) -> CharacterBodyProfileReference:
         return CharacterBodyProfileReference(
@@ -169,6 +214,10 @@ class BundledCharacterSource(
     @property
     def layer_order(self) -> tuple[str, ...]:
         return self._rig.layer_z_order
+
+    @property
+    def runtime_bindings(self) -> CharacterRuntimeBindings:
+        return self._runtime_bindings
 
 
 class LegacyMohanCharacterSource(BundledCharacterSource):

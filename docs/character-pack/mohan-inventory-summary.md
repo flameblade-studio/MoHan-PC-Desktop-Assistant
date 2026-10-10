@@ -4,7 +4,7 @@
 
 這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。
 
-產品資料合計 1725 個實體檔案：執行期 1677 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1332 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1109 個排除檔案與 17 個程式定位檔。下表只計執行期實體檔案。
+產品資料合計 1725 個實體檔案：執行期 1677 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1332 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1109 個排除檔案與 18 個程式定位檔。下表只計執行期實體檔案。
 
 | 類別 | 檔案數 |
 |---|---:|
@@ -49,7 +49,7 @@
 
 正式包內點名：服裝項目 1、髮型項目 1、髮飾項目 1、妝容項目 1。變體與四語名稱見清冊 appearance_catalog。
 
-實際內容規則找到 17 個程式檔；其中真正待搬或參數化 0 個，產品殼允許保留 17 個。舊名單另有 65 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。
+實際內容規則找到 18 個程式檔；其中真正待搬或參數化 0 個，產品殼允許保留 18 個。舊名單另有 65 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。
 
 圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。
 
@@ -63,7 +63,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。
 
-产品数据合计 1725 个实体文件：运行时 1677 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1332 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1109 个排除文件和 17 个程序定位文件。下表只计运行时实体文件。
+产品数据合计 1725 个实体文件：运行时 1677 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1332 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1109 个排除文件和 18 个程序定位文件。下表只计运行时实体文件。
 
 | 类别 | 文件数 |
 |---|---:|
@@ -108,7 +108,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 正式包内列明：服装项目 1、发型项目 1、发饰项目 1、妆容项目 1。变体与四语名称见清册 appearance_catalog。
 
-实际内容规则找到 17 个程序文件；其中真正待迁移或参数化 0 个，产品壳允许保留 17 个。旧名单另有 65 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。
+实际内容规则找到 18 个程序文件；其中真正待迁移或参数化 0 个，产品壳允许保留 18 个。旧名单另有 65 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。
 
 图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。
 
@@ -122,7 +122,7 @@ v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence
 
 This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.
 
-Product data totals 1725 physical files: 1677 runtime files and 48 required self-test sidecars (landmarks and hands). The 1332 members inside two appearance archives are indexed separately and already included in those archives. There are also 1109 excluded files and 17 source-location files. The table counts runtime physical files only.
+Product data totals 1725 physical files: 1677 runtime files and 48 required self-test sidecars (landmarks and hands). The 1332 members inside two appearance archives are indexed separately and already included in those archives. There are also 1109 excluded files and 18 source-location files. The table counts runtime physical files only.
 
 | Category | Files |
 |---|---:|
@@ -167,7 +167,7 @@ Product data totals 1725 physical files: 1677 runtime files and 48 required self
 
 Official archives declare 1 garment, 1 hairstyle, 1 headwear and 1 makeup item. Variants and names are indexed in appearance_catalog.
 
-Actual-content rules find 17 source files: 0 require extraction or parameterization and 17 are allowed product-shell files. Another 65 files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.
+Actual-content rules find 18 source files: 0 require extraction or parameterization and 18 are allowed product-shell files. Another 65 files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.
 
 Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.
 
@@ -181,7 +181,7 @@ Independent download is a design requirement from inception. The public MoHan re
 
 この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。
 
-製品データは実ファイル 1725 個です。実行時に 1677 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1332 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1109 個とコード位置ファイル 17 個も記録します。下表は実行時の実ファイルのみを数えます。
+製品データは実ファイル 1725 個です。実行時に 1677 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1332 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1109 個とコード位置ファイル 18 個も記録します。下表は実行時の実ファイルのみを数えます。
 
 | 分類 | ファイル数 |
 |---|---:|
@@ -226,7 +226,7 @@ Independent download is a design requirement from inception. The public MoHan re
 
 正式パック内には衣装 1、髪型 1、髪飾り 1、メイク 1 項目があります。差分と四言語の名称は appearance_catalog に記録します。
 
-実内容の規則により 17 ソースファイルを検出しました。抽出またはパラメータ化が必要なのは 0、製品シェルで保持可能なのは 17 ファイルです。旧一覧のうち 65 ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。
+実内容の規則により 18 ソースファイルを検出しました。抽出またはパラメータ化が必要なのは 0、製品シェルで保持可能なのは 18 ファイルです。旧一覧のうち 65 ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。
 
 画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。
 

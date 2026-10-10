@@ -21,12 +21,12 @@ lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.qt_image_pixels import rgba8888_image
 
 SCHEMA = "mohan.reviewed-native-garments.v1"
-DIMENSION = default_rig_manifest().half_body_asset_canvas.width
+DIMENSION = character_rig_manifest().half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 _PNG_HEADER_LENGTH = 26

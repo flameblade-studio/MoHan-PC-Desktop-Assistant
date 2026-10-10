@@ -43,6 +43,8 @@ archive member path.
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import copy
 lazy import hashlib
@@ -653,6 +655,7 @@ def build_four_look_pack(
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[2])
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("project_root", type=Path)
     parser.add_argument("stage_manifest", type=Path)

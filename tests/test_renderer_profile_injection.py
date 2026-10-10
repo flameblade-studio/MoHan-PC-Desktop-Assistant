@@ -14,12 +14,25 @@ lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING,
 )
 lazy from application import service_container
+lazy from application.character_runtime_bootstrap import ACTIVE_CHARACTER_ENV
 lazy from domain.character_pack.validation import compute_package_hash
+lazy from domain.character_source import (
+    activate_character_engine_profile,
+    activate_character_source,
+    active_character_engine_profile,
+    active_character_source,
+)
 lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain.constants import (
     CHARACTER_ASSET_PATHS,
     POSE_ATLAS_LAYERED_RELATIVE_ROOT,
     POSE_ATLAS_RELATIVE_ROOT,
+)
+lazy from domain.outfit_pack_official import (
+    official_pack_id_reservations_complete,
+    official_pack_ids,
+    reserved_official_pack_ids,
+    set_official_pack_id_reservations,
 )
 lazy from infrastructure.character_source_pack import CharacterPackReadError
 lazy from infrastructure.db import StudioDB
@@ -202,20 +215,47 @@ def _select_fake_character(
     monkeypatch: pytest.MonkeyPatch,
     archive: Path,
 ) -> None:
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(
         "MOHAN_DEV_CHARACTER_PACK_ARCHIVE",
         str(archive),
     )
 
 
+def _activate_selected_character_from_environment() -> None:
+    source = service_container.create_default_character_source()
+    assert source.character_id == FAKE_CHARACTER_ID
+
+
+@pytest.fixture
+def restore_character_runtime():
+    previous_source = active_character_source()
+    previous_engine_profile = active_character_engine_profile()
+    previous_pack_reservations = (
+        reserved_official_pack_ids(previous_source)
+        - official_pack_ids(previous_source)
+    )
+    previous_reservations_complete = official_pack_id_reservations_complete()
+    try:
+        yield
+    finally:
+        activate_character_source(previous_source)
+        activate_character_engine_profile(previous_engine_profile)
+        set_official_pack_id_reservations(
+            previous_pack_reservations,
+            complete=previous_reservations_complete,
+        )
+
+
+@pytest.mark.usefixtures("restore_character_runtime")
 def test_new_profile_and_renderer_startup_use_selected_character_source(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     archive = _fake_character_archive(tmp_path)
-    _select_fake_character(monkeypatch, archive)
     _stub_service_adapters(monkeypatch)
+    _select_fake_character(monkeypatch, archive)
+    _activate_selected_character_from_environment()
 
     services = service_container.create_default_services(
         tmp_path / "data",
@@ -255,13 +295,15 @@ def test_new_profile_and_renderer_startup_use_selected_character_source(
         services.db.close()
 
 
+@pytest.mark.usefixtures("restore_character_runtime")
 def test_saved_profile_overrides_survive_source_default_seeding(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     archive = _fake_character_archive(tmp_path)
-    _select_fake_character(monkeypatch, archive)
     _stub_service_adapters(monkeypatch)
+    _select_fake_character(monkeypatch, archive)
+    _activate_selected_character_from_environment()
     data_path = tmp_path / "data"
     db = StudioDB(data_path / "mohan.db")
     saved = {

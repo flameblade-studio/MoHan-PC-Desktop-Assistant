@@ -82,7 +82,7 @@ jobs:
         run: python tests/test_cross_platform_core.py
 
       - name: Verify provider registry migration
-        run: python tests/test_speech_provider_registry.py
+        run: python -m tests.character_runtime_support tests/test_speech_provider_registry.py
 
       - name: Verify architecture boundaries
         run: python tests/test_architecture_contracts.py
@@ -91,6 +91,6 @@ jobs:
       - name: Verify platform-neutral PCM audio core
         run: python tests/test_pcm_audio.py
       - name: Verify platform-neutral audio buffer core
-        run: python tests/test_audio_buffer.py
+        run: python -m tests.character_runtime_support tests/test_audio_buffer.py
       - name: Verify platform-neutral memory vector core
         run: python tests/test_memory_vector_index.py

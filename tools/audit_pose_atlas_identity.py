@@ -16,12 +16,19 @@ lazy from typing import Any
 lazy import cv2
 lazy import numpy as np
 
+ROOT = Path(__file__).resolve().parents[1]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
+
 lazy from domain.constants import POSE_ATLAS_ROOT_NAME
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 lazy import itertools
 
 
-ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_DETECTOR_MODEL = (
     ROOT / "assets" / "vision-models" / "face_detection_yunet_2023mar.onnx"

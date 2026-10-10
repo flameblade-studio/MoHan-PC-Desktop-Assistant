@@ -8,8 +8,11 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QBitmap, QColor, QImage, QPainter, QPixmap, QRegion
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_ASSET_PATHS, POSE_ATLAS_LAYERED_ROOT_NAME
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    character_rig_manifest,
+    pose_atlas_layered_relative_root,
+)
 lazy from domain.outfit_pack import (
     FOUNDATION_SLOT,
     MAKEUP_SLOTS,
@@ -33,7 +36,7 @@ lazy from domain.outfit_pack_official import official_outfit_pack_id
 lazy from domain.makeup_mouth_states import VISEME_TO_MOUTH_SHAPE
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 HALF_BODY_CANVAS = (
     _RIG_MANIFEST.half_body_asset_canvas.width,
     _RIG_MANIFEST.half_body_asset_canvas.height,
@@ -578,7 +581,7 @@ class ActiveOutfitLayerMixin:
         root = (
             self._asset_root / "assets" / "expressions" / "layered"
             if view_id in HALF_BODY_RIGS
-            else self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+            else self._asset_root / pose_atlas_layered_relative_root()
         )
         prefix = HALF_BODY_RIGS.get(view_id, view_id)
         region = QRegion()
@@ -609,7 +612,7 @@ class ActiveOutfitLayerMixin:
         rig = HALF_BODY_RIGS.get(view_id)
         if rig is not None:
             return self._asset_root / "assets" / "expressions" / "layered" / f"{rig}_base.png"
-        return self._asset_root / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME / f"{view_id}_base.png"
+        return self._asset_root / pose_atlas_layered_relative_root() / f"{view_id}_base.png"
 
     @staticmethod
     def _canvas_size(view_id: str) -> tuple[int, int]:

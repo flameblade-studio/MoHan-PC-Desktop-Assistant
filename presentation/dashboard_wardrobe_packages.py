@@ -5,7 +5,7 @@ from __future__ import annotations
 lazy from typing import Protocol
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import QLabel, QListWidget, QListWidgetItem, QTabWidget
-lazy from application.presentation_ports import PresentationDatabasePort
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.outfit_pack import OutfitPackError
 

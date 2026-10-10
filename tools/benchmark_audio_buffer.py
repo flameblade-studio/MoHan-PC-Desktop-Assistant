@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import statistics
 lazy import sys
 lazy import time
@@ -14,6 +16,7 @@ lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
 def main() -> None:
+    activate_product_character_runtime(ROOT)
     queue = BoundedAudioQueue[bytes](
         RealtimeVoiceClient.INPUT_QUEUE_CHUNKS
     )

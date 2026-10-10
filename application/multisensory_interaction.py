@@ -12,12 +12,10 @@ lazy from application.visual_perception import (
     PresenceState,
     VisualObservation,
 )
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 
-_DIALOGUES = load_mohan_character_data().dialogues
+_DIALOGUES = active_character_data().dialogues
 
 LATE_NIGHT_HOUR = 23
 LATE_NIGHT_END_HOUR = 5

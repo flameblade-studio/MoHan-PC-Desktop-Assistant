@@ -22,8 +22,8 @@ lazy from domain.character_pose import (
     canonical_view_id,
     normalize_view_id,
 )
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_POSE_ROLES, FLOAT_COMPARISON_EPSILON
+lazy from domain.character_runtime import CHARACTER_POSE_ROLES, character_rig_manifest
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.performance_preferences import PerformancePreferences
 
 BACK_DEPTH_TWO_THIRDS = 2
@@ -94,7 +94,7 @@ _AUDIO_EVENTS = frozenset({
     SpeechEventKind.PAUSE,
     SpeechEventKind.FINAL_AUDIO,
 })
-_BACK_DEPTH = default_rig_manifest().back_depth
+_BACK_DEPTH = character_rig_manifest().back_depth
 _FRONT_POSE = CHARACTER_POSE_ROLES["front_idle"]
 _RIGHT_POSE = CHARACTER_POSE_ROLES["right_idle"]
 

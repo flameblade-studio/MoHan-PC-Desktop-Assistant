@@ -37,6 +37,7 @@ lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt
 lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter, QPen
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from domain.constants import POSE_ATLAS_GENERATION
 
 DEFAULT_PANEL_BORDER = QColor("#b6c8d6")
@@ -892,6 +893,7 @@ def _arguments(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     arguments = _arguments(argv)
     ffmpeg = ffmpeg_binary(arguments.ffmpeg)
     narration, frame_count = record_demo_video(arguments.output, ffmpeg)

@@ -11,6 +11,7 @@ lazy from pathlib import Path
 
 lazy import numpy as np
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from .constants import CANVAS_SIZE, MOUTH_CLIPS
 lazy from .derive_variants import blink_rects, outside_difference, paste_rect, rgba
 lazy from .image_ops import chroma_key, load_image, save_png
@@ -201,6 +202,7 @@ def assemble(
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[2])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("destination", type=Path)
     parser.add_argument("--input-dir", type=Path, required=True)
