@@ -7,12 +7,12 @@ lazy import zipfile
 lazy from pathlib import Path
 
 lazy from domain.outfit_pack import (
-    OFFICIAL_PACK_ROOT,
     OutfitPackError,
     inspect_installed_outfit_pack,
     installed_pack_path,
     resolve_active_selection,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from infrastructure.exasperated_candidate_assets import (
     ExasperatedCandidateAssets,

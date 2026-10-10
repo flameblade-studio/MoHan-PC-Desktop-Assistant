@@ -13,7 +13,6 @@ lazy from domain.outfit_pack import (
     InstalledSelection,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
-    OFFICIAL_PACK_ROOT,
     OutfitPack,
     OutfitPackError,
     REQUIRED_SILHOUETTES,
@@ -30,6 +29,7 @@ lazy from domain.outfit_pack import (
     resolve_active_selection,
     restore_builtin_outfit,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_makeup import (
     ACTIVE_STATE_FILE,
     MAKEUP_STATE_FILE,

@@ -13,7 +13,6 @@ lazy from pathlib import Path
 lazy from domain.language_support import canonical_ui_language
 
 lazy from domain.outfit_pack import (
-    OFFICIAL_PACK_ROOT,
     InstalledSelection,
     OutfitPackError,
     SelectionResolution,
@@ -22,6 +21,7 @@ lazy from domain.outfit_pack import (
     list_installed_selections,
     resolve_active_selection,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_store import OfficialPackRoots
 
 BUILTIN_SELECTION_ID = "builtin"

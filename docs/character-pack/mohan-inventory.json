@@ -187,7 +187,7 @@
       "work_package": null
     },
     {
-      "bytes": 21331,
+      "bytes": 21368,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -248,7 +248,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "00212bad8ed7d65ec87ae91d83bf6e9732d3509c3c7fda4796aedfc109384788",
+      "sha256": "1a6078540820013531cb0fdd6052bac6f5930e1cfdebd133c2c95bb92a63ddd1",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],

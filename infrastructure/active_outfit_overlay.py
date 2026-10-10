@@ -13,7 +13,6 @@ lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 lazy from application.appearance_ports import AppearanceRenderOptions
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
-    OFFICIAL_PACK_ROOT,
     POSE_ATLAS_SILHOUETTES,
     SELECTION_CATEGORIES,
     AppearanceItem,
@@ -27,6 +26,7 @@ lazy from domain.outfit_pack import (
     resolve_variant_for_view,
     restore_builtin_outfit,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
 lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain.qt_image_io import image_from_png
