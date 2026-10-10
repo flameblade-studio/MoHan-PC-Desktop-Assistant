@@ -44,7 +44,8 @@ def _theme(*, primary: str = "#F0603A", background: str | None = None) -> ThemeP
                 "muted": "#C4A99D",
                 "border": "#5C4038",
                 "primary": primary,
-                "focus": "#7BB8D8",
+                # Clears 3:1 against the default primary so it passes through unchanged.
+                "focus": "#1A1214",
             }
         ),
         font_family="Microsoft JhengHei UI",
