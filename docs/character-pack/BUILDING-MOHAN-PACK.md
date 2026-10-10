@@ -8,7 +8,7 @@
 
 ### 大小政策
 
-本建置採用做法 (a)：只在墨寒建置與驗證呼叫明確傳入 768 MiB 的 ZIP 容器與合計上限；角色包格式的 256 MiB／512 MiB 預設完全不變。做法 (b) 若只拆出兩個外觀包，本體仍約 535 MiB，超過預設合計上限；若再拆成多個包，則必須先決定 DLC 歸屬、相依下載與安裝生命週期。這些事項仍待擁有者決定，因此本步不建立 `dependencies` 或多包語意。
+本建置採用做法 (a)：只在墨寒建置與驗證呼叫明確傳入 768 MiB 的 ZIP 容器與合計上限；角色包格式的 256 MiB／512 MiB 預設完全不變。產品執行期載入已安裝或開發用的官方角色包時，`application/character_runtime_bootstrap.py` 同樣明確傳入這組 768 MiB 上限，與角色包 `pack-source.json` 宣告一致。做法 (b) 若只拆出兩個外觀包，本體仍約 535 MiB，超過預設合計上限；若再拆成多個包，則必須先決定 DLC 歸屬、相依下載與安裝生命週期。這些事項仍待擁有者決定，因此本步不建立 `dependencies` 或多包語意。
 
 ### 建置與驗證
 
@@ -31,7 +31,7 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 ### 大小策略
 
-本构建采用做法 (a)：只在墨寒构建与验证调用中明确传入 768 MiB 的 ZIP 容器与合计上限；角色包格式的 256 MiB／512 MiB 默认值完全不变。做法 (b) 若只拆出两个外观包，本体仍约 535 MiB，超过默认合计上限；若再拆成多个包，则必须先决定 DLC 归属、依赖下载与安装生命周期。这些事项仍待所有者决定，因此本步不建立 `dependencies` 或多包语义。
+本构建采用做法 (a)：只在墨寒构建与验证调用中明确传入 768 MiB 的 ZIP 容器与合计上限；角色包格式的 256 MiB／512 MiB 默认值完全不变。产品运行时加载已安装或开发用的官方角色包时，`application/character_runtime_bootstrap.py` 同样明确传入这组 768 MiB 上限，与角色包 `pack-source.json` 声明一致。做法 (b) 若只拆出两个外观包，本体仍约 535 MiB，超过默认合计上限；若再拆成多个包，则必须先决定 DLC 归属、依赖下载与安装生命周期。这些事项仍待所有者决定，因此本步不建立 `dependencies` 或多包语义。
 
 ### 构建与验证
 
@@ -54,7 +54,7 @@ Physical payloads are the formal inventory's runtime files plus product self-tes
 
 ### Size policy
 
-The build uses option (a): only MoHan build and validation calls explicitly pass 768 MiB ZIP-container and aggregate limits. The character-pack format defaults remain unchanged at 256 MiB and 512 MiB. Under option (b), removing only the two appearance archives still leaves an approximately 535 MiB core, above the default aggregate limit. Splitting further would first require decisions about DLC ownership, dependency downloads, and installation lifecycle. Those decisions remain with the owner, so this step does not introduce `dependencies` or multi-package semantics.
+The build uses option (a): only MoHan build and validation calls explicitly pass 768 MiB ZIP-container and aggregate limits. The character-pack format defaults remain unchanged at 256 MiB and 512 MiB. When the product runtime loads an installed or development official pack, `application/character_runtime_bootstrap.py` passes the same explicit 768 MiB limits, matching the pack's `pack-source.json` declaration. Under option (b), removing only the two appearance archives still leaves an approximately 535 MiB core, above the default aggregate limit. Splitting further would first require decisions about DLC ownership, dependency downloads, and installation lifecycle. Those decisions remain with the owner, so this step does not introduce `dependencies` or multi-package semantics.
 
 ### Build and validation
 
@@ -77,7 +77,7 @@ This step does not change product read paths, installation, updates, or runtime 
 
 ### サイズ方針
 
-このビルドは方法 (a) を採用します。墨寒のビルドと検証呼び出しだけが、ZIP コンテナと合計サイズに 768 MiB を明示指定します。キャラクターパック形式の既定値 256 MiB／512 MiB は変更しません。方法 (b) で二つの外観パックだけを分離しても、本体は約 535 MiB あり、既定の合計上限を超えます。さらに分割するには、DLC の帰属、依存ダウンロード、インストールのライフサイクルを先に決定する必要があります。これらは所有者の決定待ちなので、本段階では `dependencies` や複数パックの意味を導入しません。
+このビルドは方法 (a) を採用します。墨寒のビルドと検証呼び出しだけが、ZIP コンテナと合計サイズに 768 MiB を明示指定します。キャラクターパック形式の既定値 256 MiB／512 MiB は変更しません。製品の実行時にインストール済みまたは開発用の公式パックを読み込む際も、`application/character_runtime_bootstrap.py` が同じ 768 MiB の上限を明示的に渡し、パックの `pack-source.json` の宣言と一致させます。方法 (b) で二つの外観パックだけを分離しても、本体は約 535 MiB あり、既定の合計上限を超えます。さらに分割するには、DLC の帰属、依存ダウンロード、インストールのライフサイクルを先に決定する必要があります。これらは所有者の決定待ちなので、本段階では `dependencies` や複数パックの意味を導入しません。
 
 ### ビルドと検証
 

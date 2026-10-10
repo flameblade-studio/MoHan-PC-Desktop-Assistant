@@ -94597,7 +94597,7 @@
       "path": "domain/constants.py",
       "readers": [
         {
-          "line": 19,
+          "line": 23,
           "path": "application/character_runtime_bootstrap.py",
           "text": "lazy from domain.constants import ("
         },
