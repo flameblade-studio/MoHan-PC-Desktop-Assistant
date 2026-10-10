@@ -90040,7 +90040,7 @@
       "work_package": null
     },
     {
-      "bytes": 5414,
+      "bytes": 5195,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -90211,7 +90211,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "c33c74e5590e332ead2ee2a986fb221154649c6c9b57bcee610f87e5b8878b80",
+      "sha256": "99ff131483e24faed3289ac72f89840c689f3d8c47431ca9e01819a9dd65237d",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
