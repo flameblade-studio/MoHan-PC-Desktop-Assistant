@@ -1,7 +1,7 @@
 {
   "approval": {
-    "path": "docs/release-evidence/ticket-212-cheek-rest-collar-hands-approval.json",
-    "sha256": "f394ca25a679cd97b642599e2f217f6a99dbc929583709ddedd4baf51fff230e"
+    "path": "docs/release-evidence/front-expressions-v5-approval.json",
+    "sha256": "5d19973aac642eb7bfb0e04ee1bd4c98a45cd2c0fd18221dd24e8a324a0aa666"
   },
   "cells": [
     {
@@ -744,7 +744,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "762d94753ee7173e492dffce046dca435146dc7166f833b47cbbd436bf87b0d5",
       "width": 465
     },
     {
@@ -759,7 +759,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "57567e6e22cf6da51b7ab3c2d6ecfb9cdbadf43fa1f0b9326824ee7345cf359e",
       "width": 465
     },
     {
@@ -774,7 +774,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "3ce74416ccdc83fea0feeb5f0bca3ca5f7c1696fb958673972bbf58d833a09a5",
       "width": 465
     },
     {
@@ -789,7 +789,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "20f830c8476618224ed4db2fc0634e2bed91ad8b4792f0187f0292dab3bbadb4",
       "width": 465
     },
     {
@@ -804,7 +804,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "1b3dc44d324677a5aec192d1987f32d0a9a6818ca3f83bd9eeacece43167adc9",
       "width": 465
     },
     {
@@ -819,7 +819,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "b1f6f39214d03b0d5e0145d04be3231d9e88f1eb9e88e1aa857f4a261924fc7d",
       "width": 465
     },
     {
@@ -834,7 +834,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "8d9268b53afa4c845bec0d5f95b3f1a72950cc43cc3abb2aeecc92e465c338ee",
       "width": 465
     },
     {
@@ -849,7 +849,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "375abcce1af1a598dbddf8b065aebea6090fbe6acf4d5e66014b4fbd0dade41e",
       "width": 465
     },
     {
@@ -864,7 +864,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "b74b5cd801639b00884405ed1d5e5d82fffb9fa88e6e6fd44c25a89d593e3f0b",
       "width": 465
     },
     {
@@ -879,7 +879,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "dec16a39084b8e6a0d7d5cd309aa7880963834340c54f026a9fb7474666591b6",
       "width": 465
     },
     {
@@ -894,7 +894,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "1d3938174df1fa46355808b48269ee0fee6ef81d951ddbbbf16117e98f15a3bf",
       "width": 465
     },
     {
@@ -909,7 +909,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "a2c468c0238ee08b0a3d8f11e5570a7f0bcd1d3abd8d2750e158ad3a87fa0a5a",
       "width": 465
     },
     {
@@ -1104,7 +1104,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "d5b25619a2a464dfc4488a6953cb97e7105aa947a0ef120050b91c058ac901c6",
       "width": 465
     },
     {
@@ -1119,7 +1119,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "151524a6a894e00f1d986f50dc47f191cecd10058766aff9e2d8d2a2cf821e90",
       "width": 465
     },
     {
@@ -1134,7 +1134,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "29c844a4828054fca5d1e0d61f388a6f04468732f748f0d9fcb2e173c42f310d",
       "width": 465
     },
     {
@@ -1149,7 +1149,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "e8c83409aa9a595948087cb1d796a34a4943928cee2cf83a4ad06c66ae4849b1",
       "width": 465
     },
     {
@@ -1164,7 +1164,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "69f42e597f69bb8306731107cc7926b0d3278589aef5350837b6213db5c8ea28",
       "width": 465
     },
     {
@@ -1179,7 +1179,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "0c6ef3ff6c663d1ce63ea566daabd64d335a415117808520620ead02b26f3d04",
       "width": 465
     },
     {
@@ -1194,7 +1194,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "db3e70c067f237317645a6491a0517f4cf1f446c45c47908055bc13e1b1f342a",
       "width": 465
     },
     {
@@ -1209,7 +1209,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "815074452790325dc13187e6189acf472a38a43a8361d23c153c1d32a59862c6",
       "width": 465
     },
     {
@@ -1224,7 +1224,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "907d7e816a3394cbd90ea18d5adaeb0e0d3108e467d869495a8b5c28ad1548a1",
       "width": 465
     },
     {
@@ -1239,7 +1239,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "0ccbad1f96bd293494db9a6e31f98b1637a349a93de0878998b7a744880ead21",
       "width": 465
     },
     {
@@ -1254,7 +1254,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "c9c6f9528b2283c486f2ecfbd69e6e2e4c815abef88510c81cb106d5f24f1abc",
       "width": 465
     },
     {
@@ -1269,7 +1269,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "55dc18e4f3b474a42c8e3779fa97e5ebd9f76fc6d3fbc1c40ae20fc22c963a86",
       "width": 465
     },
     {
@@ -1644,7 +1644,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "a17cba5fa3d96a57b8a6d7a7ad8d5ebd649d14616a93463dcd5b56089e318e8b",
       "width": 465
     },
     {
@@ -1659,7 +1659,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "ac85f68a66023b8bee1f8a472be1f550c37f1b53f30f473f28628b7e07f47446",
       "width": 465
     },
     {
@@ -1674,7 +1674,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "675dea8d8dec5a9468c06eeb029f7ad7bc0eb418fe8f29c6b5e2a671b10b6595",
       "width": 465
     },
     {
@@ -1689,7 +1689,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "c2195e785aa695eede6459b76afc279002dbe26a88ce9f817e1b4a07bd171fc3",
       "width": 465
     },
     {
@@ -1704,7 +1704,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "f3e239e4fc4d7da43ce8d91cdb3294232823f22c6e999060c7b7e64ea71062f1",
       "width": 465
     },
     {
@@ -1719,7 +1719,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "470de6c2bbd3f4ed309270002f7012b655ffac5dbcfb4670cd8a96e978311700",
       "width": 465
     },
     {
@@ -1734,7 +1734,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "198b24e506b9c859ecd71346ed0cb612bfebc80f6fa752650c068a18a97842a6",
       "width": 465
     },
     {
@@ -1749,7 +1749,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "5b8d40b5670c3e4b9c20bf5fbd3472aa4d126ece0d860227ef267f5d1bb18807",
       "width": 465
     },
     {
@@ -1764,7 +1764,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "22d42aca400c60119f01f1e84677f6f9fbc4940338affa549a0f015fa9abc4c4",
       "width": 465
     },
     {
@@ -1779,7 +1779,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "663330a068965baf791b8c2bee27f694aee12f1410a59cce7b2d9d179a941177",
       "width": 465
     },
     {
@@ -1794,7 +1794,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "e28308ef25d9d086d58e9d4034843c9ea158ed79a36e4d2fbf40fead63d292f6",
       "width": 465
     },
     {
@@ -1809,7 +1809,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "7141d89172d2ea3fe0450b8b7323cffe082f3f9bf246ff23a20563bd9c4ee6df",
       "width": 465
     },
     {
@@ -3084,7 +3084,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "e7bba74641c6a34c6adab1ee235acfd24f515be1cdaf9e6d580fef4cab35236b",
       "width": 465
     },
     {
@@ -3099,7 +3099,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "3778505b03df2f379161b2ee77e5c2fba5b3e1007ca36edd74a4e95e45f0379f",
       "width": 465
     },
     {
@@ -3114,7 +3114,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "a461c73cee414405691cf8f7c4c08dc03f1d251562abbbdc26b1b3beb7944f85",
       "width": 465
     },
     {
@@ -3129,7 +3129,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "5566c664dd56b8d33198186ade3cb48374fa6939c0f1f945e0a7dba1c0c2c7ec",
       "width": 465
     },
     {
@@ -3144,7 +3144,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "04b9456e9677d31df1e9380afbdf7bdc952fc3942b375a32811e0bb8066b9fa5",
       "width": 465
     },
     {
@@ -3159,7 +3159,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "0721b50c636bc31dd83234d0e13b9bfbd2caf7f1d1c1be3e4a03926a96f14218",
       "width": 465
     },
     {
@@ -3174,7 +3174,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "d760d9ba1beb48aaacc0e5e4ddcb52cbfa9ac1d43a6e0829e6d28389e213bff8",
       "width": 465
     },
     {
@@ -3189,7 +3189,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "d1f86ace32b3b57cc66d13a5a929a39707de294fcd498813c226ce539fa4cf89",
       "width": 465
     },
     {
@@ -3204,7 +3204,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "59bb73346deb59c7ef168afe9fbc340e9fec8198e655ae2c9cdd0a464749fcca",
       "width": 465
     },
     {
@@ -3219,7 +3219,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "df1005d3d21d94fd579bcf8c1680a8c1ed145fd257cd6324eb18e13812aa04a5",
       "width": 465
     },
     {
@@ -3234,7 +3234,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "99e7d60cf0be541e06fc431a82692e7095e9f55d3fbaafcdda60648ad1644036",
       "width": 465
     },
     {
@@ -3249,7 +3249,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "5b09d1ffe02c6f894b7bf5321a1a46061eadc6336fa50bbfe7bfa9bc6ead7472",
       "width": 465
     },
     {
@@ -3264,7 +3264,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "bd625ca10e3fcb06e9a06f77e8af3dab6b6b3ec2519b96bbbd41c7736dab8a3a",
       "width": 465
     },
     {
@@ -3279,7 +3279,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "7647e49a9870347ac09ec18fdcd57fe35a7c22536fc8f43c844a24c234b7a2a4",
       "width": 465
     },
     {
@@ -3294,7 +3294,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "9f97a9d7e485c652c66bfe9b64a3258434c7d4e5bffd35dd85fb5fd98b4e1a40",
       "width": 465
     },
     {
@@ -3309,7 +3309,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "646e06e3c2ff49b095f0ee86bc03e2fa20d7e8e545058cf04fc7488730a07ad4",
       "width": 465
     },
     {
@@ -3324,7 +3324,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "5ab90d75f9bfe5eb1e3c4865be094d69b1c79943bc80ada552cd7db2b7e7cbd1",
       "width": 465
     },
     {
@@ -3339,7 +3339,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "5cb5b6a05d0c536c3e8e066849940a23c02cd9499383ae2a0786901226a6ab72",
       "width": 465
     },
     {
@@ -3354,7 +3354,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "ad1259eb5fb4b86efebbc14dbb109f794d702507a9a5d5c037139444abe2a1d3",
       "width": 465
     },
     {
@@ -3369,7 +3369,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "6bd9d04d921ef120b8e9f4ddfecb164ac809d6dd143c41b1e6820b628395635a",
       "width": 465
     },
     {
@@ -3384,7 +3384,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "5ec5dbb573c16321743d252f8e427499881b0971fe78d36fa6c24f1f672aa961",
       "width": 465
     },
     {
@@ -3399,7 +3399,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "6fb5d63bd72a5740360cec2c6060d5121f45ec4d9d29d53271afa13d94c85ff8",
       "width": 465
     },
     {
@@ -3414,7 +3414,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "8c7a263289222f997b5a1392ed095715300292e5fdf3eb04f28669b12b179609",
       "width": 465
     },
     {
@@ -3429,7 +3429,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "ca8aa7745ce1cb6bbefeb7b9e00e4fb81be76be93c3f25c7cfa97f87f7248982",
       "width": 465
     },
     {
@@ -3444,7 +3444,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "4cfe862a607e444adf3d748d1d702db6eae9fb1b740f9a762f76d3ebf3d93fe5",
       "width": 465
     },
     {
@@ -3459,7 +3459,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "cc05774dfb21278c7e761e867e5bccd6e031b8e4b86dca8dde209f4f542046cf",
       "width": 465
     },
     {
@@ -3474,7 +3474,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "8af0c1641cb059bd322963ffdc860f10e5a45223ea828a086bf0ef77827c65e4",
       "width": 465
     },
     {
@@ -3489,7 +3489,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "1388605b3f6a20f944582e8a26f524bc22c0330148aafd438829d1f2ddf99f4a",
       "width": 465
     },
     {
@@ -3504,7 +3504,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "1a282cf5d0391dcf093da677ab56d8810b9065eec3309fb788af3438fe80e248",
       "width": 465
     },
     {
@@ -3519,7 +3519,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "10fecc86f30ff39bd424bc37106ebb3704bbcdae980fc76cdcf19f80bb4b6968",
       "width": 465
     },
     {
@@ -3534,7 +3534,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "3ec9534516f930c3303712c6bed9b20901447eb877c224aac34b06936281078b",
       "width": 465
     },
     {
@@ -3549,7 +3549,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "f1ba424195b050e6f9c4232a226802d049851c3308d9a1f2362e99391788027b",
       "width": 465
     },
     {
@@ -3564,7 +3564,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "63e61ed502ed5e881cd40fbc4566446954cedc3d5856f7ae380dae7ab4ccc64a",
       "width": 465
     },
     {
@@ -3579,7 +3579,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "58b87439440b8abb777332895652489e4eff71705ac9e0270abbab22ccd16c22",
       "width": 465
     },
     {
@@ -3594,7 +3594,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "1bd8c9bf870e2f2e3c1bdc46a91f0ce7feba9f4922bbc826a2950e455c2750a5",
       "width": 465
     },
     {
@@ -3609,7 +3609,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "588e436f0c66f1436a7048dd783a70df16525c8c0fa9f2b127bc485cb6cb82be",
       "width": 465
     },
     {
@@ -3804,7 +3804,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "c2a65b0e301b1f791191a32565daf9f417f21228549daa9ad9aa5aff53f3af71",
       "width": 465
     },
     {
@@ -3819,7 +3819,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "19e9dc5076406e2ee6e5f3f892f57ea18530ea140f55ef4342c00592da863911",
       "width": 465
     },
     {
@@ -3834,7 +3834,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "07e423c1ff243779c29d0c6a04211f3455993cf23ef6d5ec5dc49e6875584572",
       "width": 465
     },
     {
@@ -3849,7 +3849,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "ed39dcd8a28b5aefc253d2e29110311a114b40edd6ef869885e44d1af1093bbb",
       "width": 465
     },
     {
@@ -3864,7 +3864,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "e28669d453eb0ab21942a83ee84f402fd21e91fb05176bfd1d33a508019a55e0",
       "width": 465
     },
     {
@@ -3879,7 +3879,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "ab2ed3492674e0801965e8eac8b32863cda7ff7bdb5b9c6c4a44aee4760f8fd1",
       "width": 465
     },
     {
@@ -3894,7 +3894,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "3adda64c7248d54fbea80bb07d9ade103e69b2fbdaf2cacc151560b623512878",
       "width": 465
     },
     {
@@ -3909,7 +3909,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "b28848c2babec4d0383a31a2c7b7ec137e5b067d86a36eaa69b572719d0f1355",
       "width": 465
     },
     {
@@ -3924,7 +3924,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "6711b9d18b4fa771bd4f3727953c917b31c2a50f5c58b3214f359fea85cddf25",
       "width": 465
     },
     {
@@ -3939,7 +3939,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "7133b23b682c48c4b5c1969abc02f8d9b79b62fa99e17f8a047eb7f1853bb723",
       "width": 465
     },
     {
@@ -3954,7 +3954,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "a6a1b088253e4df508fd9cfac62314d1f3744d4bc1449b9ce236e90146a34fb4",
       "width": 465
     },
     {
@@ -3969,7 +3969,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "ddb9d7a2b14db86ec3824a9993fe3f4f7ef0b37d0c27ea69faa2cb0a039bce70",
       "width": 465
     },
     {
@@ -3984,7 +3984,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "e8bf2c044172bd7214bf7d1a77fb3f888c29fe41615a2e266ab11e5dc8407182",
       "width": 465
     },
     {
@@ -3999,7 +3999,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "cd4760bf3cd853c80f524d8395468003ecd6751c767afc5d87b659cada44f5ec",
       "width": 465
     },
     {
@@ -4014,7 +4014,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "0d041ad079f4fa1d1d664d1ed56720d104603fa0a4e8d3585b52258c652c1f03",
       "width": 465
     },
     {
@@ -4029,7 +4029,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "43aa4eb1941bc3c67d23bdc352357cdf081579bf059ee907a8722d2e6ec7092b",
       "width": 465
     },
     {
@@ -4044,7 +4044,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "ccf9b733d6de91668446890743a5a0acec3dbfe73636f6bea09ff26617ec5cda",
       "width": 465
     },
     {
@@ -4059,7 +4059,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "22d231f8a08caecbc843af3b71e09213ceda5f745d4f1e911b5dc7fc4ba9efcf",
       "width": 465
     },
     {
@@ -4074,7 +4074,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "8263674c47f8dc36d50481eef8dbf00058209d33fec6728a85d65c11b37dba88",
       "width": 465
     },
     {
@@ -4089,7 +4089,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "d0ace7a20c6087c51e700e15707a3ce25fbd60e8250f7c9ff3486e8565bc2a4a",
       "width": 465
     },
     {
@@ -4104,7 +4104,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "7e4f6f4f3c7228c76c068eb0b49035b3631db871fb089cd75adf7617d3ffde59",
       "width": 465
     },
     {
@@ -4119,7 +4119,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "f89b7b1e4ba59fde0d7e458ffc87e93893e5d6490f937f1916b0c30741cb1f5b",
       "width": 465
     },
     {
@@ -4134,7 +4134,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "81354febf39108710149eea1422f8aa885f59f6c415903aeed671e0362528128",
       "width": 465
     },
     {
@@ -4149,7 +4149,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "762380b6a1402e3fff9604004cad64f65acd5527287470a5338844b3ae82ffab",
       "width": 465
     },
     {
@@ -4164,7 +4164,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "c62d52939fa5366f4ca1c289f20d5836d0dafb1e1becd61dea2db09ed85d4ac3",
       "width": 465
     },
     {
@@ -4179,7 +4179,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "fe7f94015cf5798e820bc48153dafdcc65e325aee245d66ce67ba11b9a1f205a",
       "width": 465
     },
     {
@@ -4194,7 +4194,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "6c5815ac8b69d75a63a0bb181b550945aa967e6faf99e483bb9c7f8fb435f603",
       "width": 465
     },
     {
@@ -4209,7 +4209,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "5466d5cbb7b8dd2b349365b420879e3996361fbba7451f12f67cd05604906a26",
       "width": 465
     },
     {
@@ -4224,7 +4224,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "aa9a453ae5bcd5d9a60ecbe102e6f8a4a3ddbae2e06490652655c709b850c173",
       "width": 465
     },
     {
@@ -4239,7 +4239,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "706bddc0da74d2e81cbca464d62dc85d0ee550522adda13dafa080faa240dbe9",
       "width": 465
     },
     {
@@ -4254,7 +4254,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "9ea2c5ac39c5da93e6d9d0e250de925232b75f7142ec7aa3a41002b3b3f449b8",
       "width": 465
     },
     {
@@ -4269,7 +4269,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "86af0730a437b8ce7a4deb2b7b006d22e4eef88835f3102740dea30ee93a84f3",
       "width": 465
     },
     {
@@ -4284,7 +4284,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "8fc7cd364fc06deaa35e875658253692356ff09012af0181ddbb85979f3c06d1",
       "width": 465
     },
     {
@@ -4299,7 +4299,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "43d110e3ebf0984f2b38ff2849eb2ba242d8c9472568857f58bffba86a6eda7c",
       "width": 465
     },
     {
@@ -4314,7 +4314,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "acf9b70e0bdc2bc699cc408423ecd8dc2cd64296499e743f4eafe0db16cffcf5",
       "width": 465
     },
     {
@@ -4329,7 +4329,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "799b93f74dc674729360011ab1ec3863a6153acc8814ce6541feae8b41c941fa",
       "width": 465
     },
     {
@@ -4344,7 +4344,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "7e4ef1aec18d2cd4c2a39e3b35debe19463fccc7172a04713b6d70d7433a8e37",
       "width": 465
     },
     {
@@ -4359,7 +4359,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "107daa03bbdc53b712f440cbc062ad0b5e168081bb3eabc86462c474042c529e",
       "width": 465
     },
     {
@@ -4374,7 +4374,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "77e3d4919727a343474af46844b839fd37128162537a453b73f0927b39336347",
       "width": 465
     },
     {
@@ -4389,7 +4389,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "4e79a28b10b3fb1358739ae7db9ca2a4d953c673dd76075ba236fe42675df596",
       "width": 465
     },
     {
@@ -4404,7 +4404,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "48e0c5e1292caa1120d58ccf2d4dbffb2afcd5b58474f04cda84a47a88c2a29b",
       "width": 465
     },
     {
@@ -4419,7 +4419,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "14cb9f52408abcc68f4976b55ab1d39f368e612c9c68687567516de714747d82",
       "width": 465
     },
     {
@@ -4434,7 +4434,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "73a381ae0d709480e0d3c7ebf07fad55e8a8cebad59c161b87a744089a8e393b",
       "width": 465
     },
     {
@@ -4449,7 +4449,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "e59be48c0d51616cd7610c9a0e9ce014bbdebb34990d86dfa9ddbc5189dedd9b",
       "width": 465
     },
     {
@@ -4464,7 +4464,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "1d12fa65e1f2d2c3a14e5fcca5257c01007437d6c5a2f0a83ec67f11c0ddb490",
       "width": 465
     },
     {
@@ -4479,7 +4479,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "1c5f07f7944fc923b68aeb1f00091231286dadac0afaf837d42df7a6b4dc28f3",
       "width": 465
     },
     {
@@ -4494,7 +4494,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "f35e327351c25eb142a2a2b4adec71af4c14d613bbc94b0fe37ac98e18eade14",
       "width": 465
     },
     {
@@ -4509,7 +4509,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "6189197a94ae609058ef42f6d794e3fdf65a0757cf74b2e1a6541471eb1d9163",
       "width": 465
     },
     {
@@ -4524,7 +4524,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "637014349e6cb1c8b0edf8ce45ada0b666e5e25ea7069e7ac7000c92e1456213",
+      "pixel_sha256": "9204e2d25131239aea6224562e0c5b8cf154fa6854150317134818dc7606cc87",
       "width": 465
     },
     {
@@ -4539,7 +4539,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "c889df9ede2fbed056c058258993da0ecc1f5822026e1a29e25278d089d36163",
       "width": 465
     },
     {
@@ -4554,7 +4554,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "503e139bd8b3d09b974dfd14ca01ec916e65fdcd3e6ce8df5f54a4b72e3c198d",
       "width": 465
     },
     {
@@ -4569,7 +4569,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "0fa18ee6be139c68c4d561cf6a0a56e398bfa8e94fb83141d6fb4af17c6c395c",
+      "pixel_sha256": "c91915841c577f0b7cb4504ea8768d9eb26d145902c0973fce3b7cba95b054e0",
       "width": 465
     },
     {
@@ -4584,7 +4584,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "f4b9cd5c229e7ea6ec20b0703ebc8087e0a74090b9a8dfd2c0fb26f60fbfa142",
       "width": 465
     },
     {
@@ -4599,7 +4599,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "51bbf262d203062db702d28be378943d47d5bf7ec5e273b190e4dfef91f1b8be",
       "width": 465
     },
     {
@@ -4614,7 +4614,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4f5e3b55a1f170df79bf69081aa3b3142903c5c44ba7d906326010d05397eade",
+      "pixel_sha256": "e91c96bbb3a5584aad529b670b9497cd35f0d37278b9b0e8f3f03441ed5883a0",
       "width": 465
     },
     {
@@ -4629,7 +4629,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "43d7267924389e1d454165f5b27a27c5812ca85a084558a07ef0fa4999bacd08",
       "width": 465
     },
     {
@@ -4644,7 +4644,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "a8f10ea52021ba393366cbccddfa4c2c5364e652a656d4db3b82522dbefa7325",
       "width": 465
     },
     {
@@ -4659,7 +4659,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "e899fd83c78a70f5c2b0cacf52b5b7454c34c72de8e7370e14173d57f72ae19e",
+      "pixel_sha256": "3de72f69cbfed88f2dccaa015b46091b6e30f9660f651d1fafa76426f90cc1ba",
       "width": 465
     },
     {
@@ -4674,7 +4674,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "7e97419eed64c42bf6b825fe19964ca2d79e397b165e63ba665379d98bddf86d",
       "width": 465
     },
     {
@@ -4689,7 +4689,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "ce371f2a6de9358bc487f20ac3412027b5868f7297bf61ab3ee731dbad2b31ed",
       "width": 465
     },
     {
@@ -4704,7 +4704,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "9a0065ab1f89d3effba0cdd750a9f519ef897e1eeba8bf62358c8b1b7c8bd008",
       "width": 465
     },
     {
@@ -4719,7 +4719,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "4df08531a462ddda19dff24771da463cf1105289af104091faaa44b65a05fc4e",
       "width": 465
     },
     {
@@ -4734,7 +4734,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "5089e81c7ce1a5b7acd0559ff603c9eeb0821521336a7945626a2e3c6584a35a",
       "width": 465
     },
     {
@@ -4749,7 +4749,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "6e4ce184c214679bcc31eceacd0036aa63d46d13dff9c04afb91e983a903f9f6",
       "width": 465
     },
     {
@@ -4764,7 +4764,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "b646e50de59970f40c425f3d8e34b73cbb5902d879d550966c7e176d15896f3a",
       "width": 465
     },
     {
@@ -4779,7 +4779,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "0f07f2021592abcf2c298d0e852c6ca43e6d499d0924cc0a899790dd3c411cb3",
       "width": 465
     },
     {
@@ -4794,7 +4794,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "272fce191e9fb28ffd43972ed9a3970b4971daef6a2093ff98855ed2cb6cf5b5",
       "width": 465
     },
     {
@@ -4809,7 +4809,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "16aa19f1498ff46f87802655eed2588876938e31cce3ea6bcca3c73448410136",
       "width": 465
     },
     {
@@ -4824,7 +4824,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "365c48b1603f13caa4b5a823db68e0b8df5f27f3aaf8c1cbd343f79bf670daab",
       "width": 465
     },
     {
@@ -4839,7 +4839,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "eeefb1d772cf83a8eff1db91db4ce5f96fc843a33f8340c098947749e022aa8e",
       "width": 465
     },
     {
@@ -4854,7 +4854,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "2312cac6b1629957af11cb3173f4e268ae92641d21efd0085934317cc7ff534c",
       "width": 465
     },
     {
@@ -4869,7 +4869,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "6815717412b6c547011e2ebd63d1cc2c7b94aa7ee711b181601b21e4e2e31d92",
       "width": 465
     },
     {
@@ -5064,7 +5064,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "625e4cd118c98e0158b62070c9f3519b84f5a7a2896d97ebbc36df9f93c146cd",
       "width": 465
     },
     {
@@ -5079,7 +5079,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "f355d56a960d61c13b432b3eea6f7e1bd2e853f7175d04a1f1182f77606b8c80",
       "width": 465
     },
     {
@@ -5094,7 +5094,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "16976461944f2072a41519779a9f1bf9cede46ad0199803dc7bec4c1277b0637",
+      "pixel_sha256": "eed0edd28680186831a36bbaf495b82ee652f9be0690e9ce9a1b002ab62392c8",
       "width": 465
     },
     {
@@ -5109,7 +5109,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "8dda2dfe2cc403dd4f0987e6c423a1630363f250d1cf978140e3f21f2a1e0cd4",
       "width": 465
     },
     {
@@ -5124,7 +5124,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "893665069ba359700e449ce8f3441154f9cac0b34d1ad78033a7df0ef839eaa4",
       "width": 465
     },
     {
@@ -5139,7 +5139,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4daff3b6a789df1897e4497cd4fdd3c1a85cd99f90d11536473f83a662597212",
+      "pixel_sha256": "96404a753773e59a3342d5e22f1c817a3e892e3c9b956b586a29f7c6ba3aaddb",
       "width": 465
     },
     {
@@ -5154,7 +5154,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "828350823ababd87802594403402a66792baf6ba9b53830cb518a199d1048b75",
       "width": 465
     },
     {
@@ -5169,7 +5169,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "3f506c4485374a1d90572aa679f0462eb7b24d6ffdeb0e5d082b0355701bb4fc",
       "width": 465
     },
     {
@@ -5184,7 +5184,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1d5dab91a8f1fa0e438e5be05bcbab2db1dacd590178abbed22bb3c61fc3ee44",
+      "pixel_sha256": "9ebc9f0e2c12bd6fdd36521b885b843a52f369b433ec3d20f5b29d32cf356ed6",
       "width": 465
     },
     {
@@ -5199,7 +5199,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "4e69d6c9cdcb0b7508df432b21e3e26e115eaef2175333acab329d451858a25d",
       "width": 465
     },
     {
@@ -5214,7 +5214,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "01d9033a6a9761b0ee4e1db488b9d875b00d3aa0fcabc2c21b28e8015b1f2c19",
       "width": 465
     },
     {
@@ -5229,7 +5229,7 @@
         "pose": "front"
       },
       "mode": "RGBA",
-      "pixel_sha256": "540665e342ee877bad86893d20f3512c6a3a3204d0a0b612e8cfe7f9110c7736",
+      "pixel_sha256": "055a1244a1ad9b00c474f4fc4415dc7f1b4264291940537827be9a97387d9369",
       "width": 465
     }
   ],
@@ -5240,8 +5240,8 @@
     "store_policy": "isolated-fixed-per-makeup"
   },
   "harness": {
-    "sha256": "922647177bd769aa02b221d117cd83f55c93a0b65c3cf444cda9667b7fe3ae77",
-    "source": "\"\"\"Render and verify the deterministic MoHan appearance golden matrix.\"\"\"\n\nfrom __future__ import annotations\n\nlazy import argparse\nlazy import hashlib\nlazy import json\nlazy import os\nlazy import shutil\nlazy import socket\nlazy import struct\nlazy import subprocess\nlazy import sys\nlazy import time\nlazy import uuid\nlazy import zipfile\nlazy from collections.abc import Iterable\nlazy from contextlib import contextmanager\nlazy from dataclasses import dataclass\nlazy from datetime import date\nlazy from pathlib import Path\n\nos.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n\nROOT = Path(__file__).resolve().parents[1]\nif str(ROOT) not in sys.path:\n    sys.path.insert(0, str(ROOT))\n\nlazy import numpy as np\nlazy from PIL import Image, ImageChops\nlazy from PySide6.QtCore import Qt\nlazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache\nlazy from PySide6.QtWidgets import QApplication\n\nlazy from domain.companion_animation_contract import (\n    EXPRESSION_IMAGE_ASSETS,\n    EXPRESSION_POSES,\n)\nlazy from domain.face_rig import (\n    ExpressionShape,\n    FaceMotionFrame,\n    FacePose,\n    MouthShape,\n    Viseme,\n    blink_for_eye_state,\n)\nlazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME, POSE_ATLAS_ROOT_NAME\nlazy from domain.outfit_pack import clear_appearance_selection, restore_builtin_outfit\nlazy from domain.outfit_pack_makeup import (\n    DEFAULT_MAKEUP_INTENSITY,\n    DEFAULT_SLOT_INTENSITIES_V2,\n    select_builtin_makeup,\n    write_makeup_intensity,\n    write_makeup_slot_intensity,\n)\nlazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay\nlazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer\nlazy from infrastructure.layered_face_assets import load_layered_face_assets\nlazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets\nlazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer\nlazy from presentation.companion_face_assets import CompanionFaceAssetMethods\n\nSCHEMA = \"mohan.golden-render.v1\"\nAPPROVAL_SCHEMA = \"mohan.golden-render-approval.v1\"\nMANIFEST_PATH = ROOT / \"tests\" / \"golden\" / \"golden-manifest.json\"\nDEFAULT_OUTPUT = ROOT / \".quality-tmp\" / \"golden-render\" / \"current\"\nDEFAULT_BASELINE = ROOT / \".quality-tmp\" / \"golden-render\" / \"baseline\"\nDEFAULT_DIFF = ROOT / \".quality-tmp\" / \"golden-diff\"\nMAKEUPS = (\"none\", \"light\", \"classic\", \"glamorous\")\nEYE_STATES = (\"rest\", \"half\", \"closed\")\nHALF_EXPRESSIONS = (\"idle\", \"idle_lean\", \"idle_front\", *EXPRESSION_POSES)\nFULL_BODY_VIEWS = (\n    \"yaw+000-pitch+00\",\n    \"yaw+015-pitch+00\", \"yaw-015-pitch+00\",\n    \"yaw+030-pitch+00\", \"yaw-030-pitch+00\",\n    \"yaw+045-pitch+00\", \"yaw-045-pitch+00\",\n    \"yaw+060-pitch+00\", \"yaw-060-pitch+00\",\n    \"yaw+075-pitch+00\", \"yaw-075-pitch+00\",\n    \"yaw+090-pitch+00\", \"yaw-090-pitch+00\",\n)\nHALF_SIZE = (465, 465)\nFULL_SIZE = (1024, 1536)\nGIT_REVISION_LENGTH = 40\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCell:\n    cell_id: str\n    kind: str\n    makeup: str\n    eye_state: str\n    expression: str | None = None\n    pose: str | None = None\n    view_id: str | None = None\n\n    @property\n    def filename(self) -> str:\n        return f\"{self.cell_id}.png\"\n\n    def inputs(self) -> dict[str, str]:\n        values = {\"kind\": self.kind, \"makeup\": self.makeup, \"eye_state\": self.eye_state}\n        for key in (\"expression\", \"pose\", \"view_id\"):\n            value = getattr(self, key)\n            if value is not None:\n                values[key] = value\n        return values\n\n\ndef matrix_cells() -> tuple[GoldenCell, ...]:\n    cells: list[GoldenCell] = []\n    for expression in HALF_EXPRESSIONS:\n        pose = EXPRESSION_POSES.get(\n            expression,\n            \"lean\" if expression == \"idle_lean\" else \"front\" if expression == \"idle_front\" else \"cheek\",\n        )\n        cells.extend(\n            GoldenCell(\n                    f\"half__{expression}__{makeup}__{eye_state}\",\n                    \"half-body\", makeup, eye_state, expression=expression, pose=pose,\n            )\n            for makeup in MAKEUPS\n            for eye_state in EYE_STATES\n        )\n    for view_id in FULL_BODY_VIEWS:\n        cells.extend(\n            GoldenCell(\n                f\"full__{view_id}__{makeup}__rest\",\n                \"full-body\", makeup, \"rest\", view_id=view_id,\n            )\n            for makeup in MAKEUPS\n        )\n    return tuple(cells)\n\n\ndef _rgba_bytes(image: QImage) -> bytes:\n    \"\"\"Return straight RGBA8888 bytes with an exact, CPU-independent conversion.\n\n    Qt's SIMD unpremultiply uses the approximate reciprocal instruction, whose\n    result differs between Intel and AMD processors, so the golden contract\n    never asks Qt to leave premultiplied alpha.  Rounding is exact integer\n    arithmetic: channel = round(premultiplied * 255 / alpha).\n    \"\"\"\n    source_format = image.format()\n    if source_format not in {\n        QImage.Format_ARGB32,\n        QImage.Format_ARGB32_Premultiplied,\n        QImage.Format_RGB32,\n    }:\n        image = image.convertToFormat(QImage.Format_ARGB32_Premultiplied)\n        source_format = QImage.Format_ARGB32_Premultiplied\n    width, height = image.width(), image.height()\n    rows = np.frombuffer(bytes(image.constBits()), dtype=np.uint8)\n    bgra = rows.reshape(height, image.bytesPerLine())[:, : width * 4].reshape(height, width, 4)\n    alpha = bgra[:, :, 3].astype(np.uint32)\n    color = bgra[:, :, 2::-1].astype(np.uint32)\n    if source_format == QImage.Format_RGB32:\n        alpha = np.full_like(alpha, 255)\n    elif source_format == QImage.Format_ARGB32_Premultiplied:\n        safe_alpha = np.maximum(alpha, 1)[:, :, None]\n        color = np.where(\n            alpha[:, :, None] > 0,\n            (color * 255 + safe_alpha // 2) // safe_alpha,\n            0,\n        )\n    rgba = np.dstack((np.minimum(color, 255), alpha)).astype(np.uint8)\n    return rgba.tobytes()\n\n\ndef pixel_sha256(image: QImage) -> str:\n    payload = struct.pack(\">II\", image.width(), image.height()) + _rgba_bytes(image)\n    return hashlib.sha256(payload).hexdigest()\n\n\ndef _save_pixmap(pixmap: QPixmap, path: Path) -> dict[str, object]:\n    image = pixmap.toImage()\n    path.parent.mkdir(parents=True, exist_ok=True)\n    Image.frombytes(\"RGBA\", (image.width(), image.height()), _rgba_bytes(image)).save(path, \"PNG\")\n    # Reload the persisted PNG before hashing so the manifest describes the\n    # decoded RGBA pixels a reviewer sees, not an in-memory paint buffer.\n    decoded = QImage(str(path))\n    return {\n        \"width\": decoded.width(),\n        \"height\": decoded.height(),\n        \"mode\": \"RGBA\",\n        \"pixel_sha256\": pixel_sha256(decoded),\n        \"png_sha256\": hashlib.sha256(path.read_bytes()).hexdigest(),\n    }\n\n\n@contextmanager\ndef _network_disabled():\n    original_connect = socket.socket.connect\n    original_create_connection = socket.create_connection\n\n    def blocked(*_args, **_kwargs):\n        raise RuntimeError(\"golden render 已停用網路連線\")\n\n    socket.socket.connect = blocked\n    socket.create_connection = blocked\n    try:\n        yield\n    finally:\n        socket.socket.connect = original_connect\n        socket.create_connection = original_create_connection\n\n\n@contextmanager\ndef _official_pack_root(asset_root: Path):\n    from domain import outfit_pack\n\n    previous = outfit_pack.OFFICIAL_PACK_ROOT\n    outfit_pack.OFFICIAL_PACK_ROOT = asset_root / \"assets\" / \"official-packs\"\n    try:\n        yield\n    finally:\n        outfit_pack.OFFICIAL_PACK_ROOT = previous\n\n\ndef _prepare_store(store: Path, makeup: str) -> None:\n    store.mkdir(parents=True, exist_ok=True)\n    restore_builtin_outfit(store)\n    write_makeup_intensity(store, DEFAULT_MAKEUP_INTENSITY)\n    for slot, intensity in DEFAULT_SLOT_INTENSITIES_V2.items():\n        write_makeup_slot_intensity(store, slot, intensity)\n    if makeup == \"none\":\n        clear_appearance_selection(store, \"makeup\")\n    else:\n        select_builtin_makeup(store, makeup)\n\n\n@contextmanager\ndef _render_environment(local_appdata: Path):\n    previous = {key: os.environ.get(key) for key in (\"QT_QPA_PLATFORM\", \"LOCALAPPDATA\")}\n    os.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n    os.environ[\"LOCALAPPDATA\"] = str(local_appdata)\n    try:\n        yield\n    finally:\n        for key, value in previous.items():\n            if value is None:\n                os.environ.pop(key, None)\n            else:\n                os.environ[key] = value\n\n\ndef _motion(expression: str, pose: str, eye_state: str = \"rest\") -> FaceMotionFrame:\n    return FaceMotionFrame(\n        FacePose(pose), expression, Viseme.CLOSED, MouthShape(),\n        ExpressionShape(blink=blink_for_eye_state(eye_state)),\n        breath=0.0,\n    )\n\n\ndef _scaled_expression(asset_root: Path, stem: str) -> QPixmap:\n    pixmap = QPixmap(str(asset_root / \"assets\" / \"expressions\" / f\"{stem}.png\"))\n    if pixmap.isNull():\n        raise FileNotFoundError(f\"缺少表情素材：{stem}\")\n    return pixmap.scaled(*HALF_SIZE, Qt.KeepAspectRatio, Qt.SmoothTransformation)\n\n\nclass _BlinkHarness(CompanionFaceAssetMethods):\n    \"\"\"Small runtime-equivalent host for the real companion blink compositor.\"\"\"\n\n    def __init__(self, asset_root: Path, renderer: LayeredParametricFaceRenderer) -> None:\n        self.state = \"idle\"\n        self.face_renderer = renderer\n        self.active_physics_pose = \"front\"\n        self.physics_expression_poses = {\n            \"idle\": \"cheek\", \"idle_lean\": \"lean\", \"idle_front\": \"front\",\n            **EXPRESSION_POSES,\n        }\n        self.expression_anchor_profiles = {}\n        self.expression_pixmaps = {\n            stem: _scaled_expression(asset_root, stem)\n            for stem in EXPRESSION_IMAGE_ASSETS\n            if (asset_root / \"assets\" / \"expressions\" / f\"{stem}.png\").is_file()\n        }\n        self._build_expression_anchor_profiles()\n        self._build_blink_masks(self._blink_regions())\n\n\ndef _render_half_cell(\n    cell: GoldenCell,\n    renderer: LayeredParametricFaceRenderer,\n    harness: _BlinkHarness,\n) -> QPixmap:\n    base = QPixmap(*HALF_SIZE)\n    base.fill(Qt.transparent)\n    rest = renderer.render(base, _motion(cell.expression or \"idle\", cell.pose or \"front\"), None)\n    if rest.isNull() or (rest.width(), rest.height()) != HALF_SIZE:\n        raise RuntimeError(f\"半身渲染尺寸錯誤：{cell.cell_id}\")\n    if cell.eye_state == \"rest\":\n        return rest\n    # Complete emotional portraits expose their expression-bound eye endpoints\n    # through the speaking/blink route.  The compositor still preserves an\n    # expression unchanged when no endpoint is bound to that exact portrait.\n    harness.state = \"speaking\"\n    return harness._blink_composite(\n        rest,\n        cell.expression or \"idle\",\n        blink_for_eye_state(cell.eye_state),\n    )\n\n\ndef _render_full_cell(cell: GoldenCell, renderer: LayeredFullBodyRenderer) -> QPixmap:\n    rendered = renderer.render_view(\n        cell.view_id or FULL_BODY_VIEWS[0],\n        _motion(\"idle_front\", \"front\"),\n    )\n    if rendered.isNull() or (rendered.width(), rendered.height()) != FULL_SIZE:\n        raise RuntimeError(f\"全身渲染尺寸錯誤：{cell.cell_id}\")\n    return rendered\n\n\ndef render_matrix(\n    output: Path,\n    *,\n    asset_root: Path = ROOT,\n    cells: Iterable[GoldenCell] | None = None,\n) -> dict[str, object]:\n    selected = tuple(matrix_cells() if cells is None else cells)\n    output = Path(output).resolve()\n    asset_root = Path(asset_root).resolve()\n    runtime_root = output / \"runtime\"\n    local_appdata = runtime_root / \"localappdata\"\n    local_appdata.mkdir(parents=True, exist_ok=True)\n    QApplication.instance() or QApplication([])\n    # Each standard capture starts with the same Qt file-pixmap cache state,\n    # including when a test renders twice in one interpreter.\n    QPixmapCache.clear()\n    started = time.perf_counter()\n    entries: list[dict[str, object]] = []\n\n    with _render_environment(local_appdata), _network_disabled(), _official_pack_root(asset_root):\n        for makeup in MAKEUPS:\n            makeup_cells = tuple(cell for cell in selected if cell.makeup == makeup)\n            if not makeup_cells:\n                continue\n            store = runtime_root / \"stores\" / makeup\n            _prepare_store(store, makeup)\n            overlay = ActiveOutfitOverlay(store, asset_root)\n            half_renderer = LayeredParametricFaceRenderer(\n                manifest=load_layered_face_assets(asset_root / \"assets\" / \"expressions\" / \"layered\"),\n                outfit_overlay=overlay,\n                authority_dir=asset_root / \"assets\" / \"expressions\",\n                detachable_dir=asset_root / \"assets\" / \"expressions\" / \"detachable\",\n            ) if any(cell.kind == \"half-body\" for cell in makeup_cells) else None\n            harness = _BlinkHarness(asset_root, half_renderer) if half_renderer is not None else None\n            full_manifest = load_layered_full_body_assets(\n                asset_root / \"assets\" / \"pose-atlas\" / POSE_ATLAS_LAYERED_ROOT_NAME\n            ) if any(cell.kind == \"full-body\" for cell in makeup_cells) else None\n            full_renderer = LayeredFullBodyRenderer(\n                full_manifest,\n                outfit_overlay=overlay,\n                authority_root=asset_root / \"assets\" / \"pose-atlas\" / POSE_ATLAS_ROOT_NAME,\n            ) if full_manifest is not None else None\n            for cell in makeup_cells:\n                frame = (\n                    _render_half_cell(cell, half_renderer, harness)\n                    if cell.kind == \"half-body\"\n                    else _render_full_cell(cell, full_renderer)\n                )\n                path = output / cell.filename\n                measurements = _save_pixmap(frame, path)\n                entries.append({\n                    \"id\": cell.cell_id,\n                    \"file\": cell.filename,\n                    \"inputs\": cell.inputs(),\n                    **measurements,\n                })\n\n    entries.sort(key=lambda item: str(item[\"id\"]))\n    return {\n        \"schema\": SCHEMA,\n        \"hash_contract\": \"sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)\",\n        \"pixel_tolerance\": 0,\n        \"matrix\": {\n            \"half_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"half-body\" for item in entries),\n            \"full_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"full-body\" for item in entries),\n            \"total_cells\": len(entries),\n        },\n        \"environment\": {\n            \"qt_qpa_platform\": \"offscreen\",\n            \"network\": \"disabled\",\n            \"store_policy\": \"isolated-fixed-per-makeup\",\n            \"localappdata_policy\": \"isolated-fixed\",\n        },\n        \"elapsed_seconds\": round(time.perf_counter() - started, 3),\n        \"cells\": entries,\n    }\n\n\ndef _load_json(path: Path) -> dict[str, object]:\n    value = json.loads(path.read_text(encoding=\"utf-8\"))\n    if not isinstance(value, dict):\n        raise ValueError(f\"JSON 根節點必須是物件：{path}\")\n    return value\n\n\ndef validate_approval(\n    path: Path, cell_ids: frozenset[str], *, known_ids: frozenset[str] | None = None,\n) -> dict[str, object]:\n    approval = _load_json(path)\n    required = {\"schema\", \"owner\", \"date\", \"quote\", \"cells\"}\n    if set(approval) != required or approval.get(\"schema\") != APPROVAL_SCHEMA:\n        raise ValueError(\"核准紀錄必須符合 mohan.golden-render-approval.v1。\")\n    for key in (\"owner\", \"date\", \"quote\"):\n        if not isinstance(approval[key], str) or not approval[key].strip():\n            raise ValueError(f\"核准紀錄欄位 {key} 必須是非空字串。\")\n    date.fromisoformat(str(approval[\"date\"]))\n    covered = approval[\"cells\"]\n    if covered == \"*\":\n        return approval\n    if not isinstance(covered, list) or not all(isinstance(item, str) for item in covered):\n        raise ValueError(\"核准紀錄 cells 必須是 '*' 或格子 ID 陣列。\")\n    missing = cell_ids - frozenset(covered)\n    unknown = frozenset(covered) - (known_ids if known_ids is not None else cell_ids)\n    if missing or unknown:\n        raise ValueError(\n            f\"核准涵蓋不完整：missing={sorted(missing)} unknown={sorted(unknown)}\"\n        )\n    return approval\n\n\ndef _manifest_for_commit(rendered: dict[str, object], approval_path: Path) -> dict[str, object]:\n    manifest = dict(rendered)\n    manifest.pop(\"elapsed_seconds\", None)\n    manifest[\"source_revision\"] = subprocess.check_output(\n        [\"git\", \"rev-parse\", \"HEAD\"], cwd=ROOT, text=True,\n    ).strip()\n    harness_source = Path(__file__).read_bytes()\n    manifest[\"harness\"] = {\n        \"source\": harness_source.decode(\"utf-8\"),\n        \"sha256\": hashlib.sha256(harness_source).hexdigest(),\n    }\n    manifest[\"approval\"] = {\n        \"path\": approval_path.relative_to(ROOT).as_posix(),\n        \"sha256\": hashlib.sha256(approval_path.read_bytes()).hexdigest(),\n    }\n    for cell in manifest[\"cells\"]:\n        cell.pop(\"png_sha256\", None)\n    return manifest\n\n\ndef _recover_originals(expected: dict[str, object], cells: list[dict], baseline_dir: Path) -> None:\n    \"\"\"Reconstruct absent originals from the recorded Git revision, then verify pixels.\"\"\"\n    revision = expected.get(\"source_revision\")\n    if not isinstance(revision, str) or len(revision) != GIT_REVISION_LENGTH or any(\n        char not in \"0123456789abcdef\" for char in revision\n    ):\n        raise ValueError(\"原圖快取缺失；清單需要有效 source_revision 才能重建核准原圖。\")\n    staging = ROOT / \".quality-tmp\" / \"golden-reference\" / uuid.uuid4().hex\n    staging.mkdir(parents=True)\n    archive_path = staging / \"source.zip\"\n    subprocess.run(\n        [\"git\", \"archive\", \"--format=zip\", f\"--output={archive_path}\", revision],\n        cwd=ROOT, check=True,\n    )\n    reference_root = staging / \"source\"\n    with zipfile.ZipFile(archive_path) as archive:\n        archive.extractall(reference_root)\n    # Freeze the capture driver too: future harness changes must not alter\n    # reconstruction of the approved production modules and assets.\n    harness = expected.get(\"harness\")\n    harness_path = reference_root / \"tools\" / \"golden_render.py\"\n    if isinstance(harness, dict) and isinstance(harness.get(\"source\"), str):\n        payload = harness[\"source\"].encode(\"utf-8\")\n        if hashlib.sha256(payload).hexdigest() != harness.get(\"sha256\"):\n            raise ValueError(\"基準渲染 harness 的 SHA-256 不符。\")\n        harness_path.write_bytes(payload)\n    else:\n        shutil.copy2(Path(__file__), harness_path)\n    request_path = staging / \"cells.json\"\n    request_path.write_text(json.dumps([cell[\"id\"] for cell in cells]), encoding=\"utf-8\")\n    output = staging / \"images\"\n    script = (\n        \"import json,sys; from pathlib import Path; \"\n        \"from tools.golden_render import matrix_cells,render_matrix; \"\n        \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n        \"render_matrix(Path(sys.argv[2]),cells=[c for c in matrix_cells() if c.cell_id in ids])\"\n    )\n    environment = dict(os.environ)\n    environment[\"PYTHONPATH\"] = str(reference_root)\n    subprocess.run(\n        [sys.executable, \"-c\", script, str(request_path), str(output)],\n        cwd=reference_root, env=environment, check=True,\n    )\n    baseline_dir.mkdir(parents=True, exist_ok=True)\n    # Keep every unmatched rebuild so CI can upload it for a pixel-level review.\n    unrecoverable = ROOT / \".quality-tmp\" / \"golden-diff\" / \"unrecoverable\"\n    mismatched: list[str] = []\n    for cell in cells:\n        original = output / str(cell[\"file\"])\n        actual = pixel_sha256(QImage(str(original)))\n        if actual != cell[\"pixel_sha256\"]:\n            unrecoverable.mkdir(parents=True, exist_ok=True)\n            shutil.copy2(original, unrecoverable / str(cell[\"file\"]))\n            mismatched.append(f\"{cell['id']}={actual}\")\n            continue\n        shutil.copy2(original, baseline_dir / str(cell[\"file\"]))\n    if mismatched:\n        raise ValueError(\n            f\"歷史重建像素與核准雜湊不同（{len(mismatched)} 格）：{', '.join(mismatched)}；\"\n            f\"重建影像保存在 {unrecoverable.relative_to(ROOT).as_posix()}。\"\n        )\n\n\ndef _write_diff(expected: Path | None, actual: Path, target: Path) -> None:\n    target.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(actual, target / \"new.png\")\n    if expected is None or not expected.is_file():\n        (target / \"original-unavailable.txt\").write_text(\n            \"本機尚無基準 PNG；先以核准紀錄執行 --update 產生本機基準影像。\\n\",\n            encoding=\"utf-8\",\n        )\n        return\n    shutil.copy2(expected, target / \"original.png\")\n    original = Image.open(expected).convert(\"RGBA\")\n    new = Image.open(actual).convert(\"RGBA\")\n    # RGB makes equal-alpha colour changes visible; an RGBA difference would\n    # carry alpha=0 for those pixels and appear fully transparent.\n    if original.size != new.size:\n        canvas_size = (max(original.width, new.width), max(original.height, new.height))\n        old_canvas = Image.new(\"RGBA\", canvas_size)\n        new_canvas = Image.new(\"RGBA\", canvas_size)\n        old_canvas.paste(original, (0, 0))\n        new_canvas.paste(new, (0, 0))\n        original, new = old_canvas, new_canvas\n    channels = ImageChops.difference(original, new).split()\n    intensity = channels[0]\n    for channel in channels[1:]:\n        intensity = ImageChops.lighter(intensity, channel)\n    intensity.convert(\"RGB\").save(target / \"difference.png\")\n\n\ndef compare_manifest(\n    rendered: dict[str, object],\n    expected: dict[str, object],\n    *,\n    output: Path,\n    baseline_dir: Path = DEFAULT_BASELINE,\n    diff_dir: Path = DEFAULT_DIFF,\n) -> list[str]:\n    expected_by_id = {str(cell[\"id\"]): cell for cell in expected.get(\"cells\", [])}\n    actual_by_id = {str(cell[\"id\"]): cell for cell in rendered.get(\"cells\", [])}\n    changed: list[str] = []\n    originals_needed: list[dict] = []\n    for cell_id in sorted(set(expected_by_id) | set(actual_by_id)):\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        compared_fields = (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n        if old is not None and new is not None and all(\n            old.get(field) == new.get(field) for field in compared_fields\n        ):\n            continue\n        changed.append(cell_id)\n        if old is not None and new is not None:\n            original = baseline_dir / str(old[\"file\"])\n            if not original.is_file() or pixel_sha256(QImage(str(original))) != old[\"pixel_sha256\"]:\n                originals_needed.append(old)\n    if originals_needed:\n        _recover_originals(expected, originals_needed, baseline_dir)\n    for cell_id in changed:\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        if new is not None:\n            _write_diff(\n                baseline_dir / str(old[\"file\"]) if old is not None else None,\n                output / str(new[\"file\"]),\n                diff_dir / cell_id,\n            )\n    return changed\n\n\ndef _write_manifest(path: Path, manifest: dict[str, object]) -> None:\n    path.parent.mkdir(parents=True, exist_ok=True)\n    path.write_text(\n        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + \"\\n\",\n        encoding=\"utf-8\",\n    )\n\n\ndef _require_committed_render_sources() -> None:\n    changed = subprocess.check_output(\n        [\"git\", \"status\", \"--porcelain\", \"--\", \"assets\", \"domain\", \"infrastructure\", \"presentation\"],\n        cwd=ROOT, text=True,\n    ).strip()\n    if changed:\n        raise ValueError(\"請先提交渲染程式與素材，再核准更新；source_revision 必須可重建基準。\")\n\n\ndef main(argv: Iterable[str] | None = None) -> int:\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument(\"--output\", type=Path, default=DEFAULT_OUTPUT)\n    parser.add_argument(\"--manifest\", type=Path, default=MANIFEST_PATH)\n    parser.add_argument(\"--update\", action=\"store_true\")\n    parser.add_argument(\"--approval\", type=Path)\n    args = parser.parse_args(tuple(argv) if argv is not None else None)\n    if args.update != (args.approval is not None):\n        parser.error(\"--update 必須與 --approval <核准紀錄 JSON> 同時使用\")\n    if args.update:\n        validate_approval(\n            args.approval, frozenset(),\n            known_ids=frozenset(cell.cell_id for cell in matrix_cells()),\n        )\n        _require_committed_render_sources()\n\n    rendered = render_matrix(args.output)\n    output_manifest = dict(rendered)\n    output_manifest.pop(\"elapsed_seconds\", None)\n    _write_manifest(args.output / \"render-manifest.json\", output_manifest)\n    print(\n        f\"GOLDEN_RENDER cells={rendered['matrix']['total_cells']} \"\n        f\"seconds={rendered['elapsed_seconds']:.3f} output={args.output}\"\n    )\n    if args.update:\n        cell_ids = frozenset(str(cell[\"id\"]) for cell in rendered[\"cells\"])\n        approval_path = args.approval.resolve()\n        old_cells = (\n            {cell[\"id\"]: cell for cell in _load_json(args.manifest)[\"cells\"]}\n            if args.manifest.is_file() else {}\n        )\n        changed_ids = frozenset(\n            str(cell[\"id\"]) for cell in rendered[\"cells\"]\n            if any(\n                old_cells.get(cell[\"id\"], {}).get(field) != cell.get(field)\n                for field in (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n            )\n        ) | (frozenset(old_cells) - cell_ids)\n        validate_approval(approval_path, changed_ids, known_ids=cell_ids | frozenset(old_cells))\n        manifest = _manifest_for_commit(rendered, approval_path)\n        _write_manifest(args.manifest, manifest)\n        DEFAULT_BASELINE.mkdir(parents=True, exist_ok=True)\n        for cell in rendered[\"cells\"]:\n            shutil.copy2(args.output / str(cell[\"file\"]), DEFAULT_BASELINE / str(cell[\"file\"]))\n        print(f\"GOLDEN_UPDATED manifest={args.manifest} approval={approval_path}\")\n        return 0\n\n    if not args.manifest.is_file():\n        print(f\"缺少 golden 清單：{args.manifest}\", file=sys.stderr)\n        return 2\n    changed = compare_manifest(rendered, _load_json(args.manifest), output=args.output)\n    if changed:\n        print(\"GOLDEN_CHANGED \" + \" \".join(changed), file=sys.stderr)\n        return 1\n    print(\"GOLDEN_MATCH\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n"
+    "sha256": "601287d441b4974a5ce81887760c602bb9dbf21441a6d1234c227274b8810447",
+    "source": "\"\"\"Render and verify the deterministic MoHan appearance golden matrix.\"\"\"\n\nfrom __future__ import annotations\n\nlazy import argparse\nlazy import hashlib\nlazy import json\nlazy import os\nlazy import re\nlazy import shutil\nlazy import socket\nlazy import struct\nlazy import subprocess\nlazy import sys\nlazy import time\nlazy import uuid\nlazy import zipfile\nlazy from collections.abc import Iterable\nlazy from contextlib import contextmanager\nlazy from dataclasses import asdict, dataclass, fields, replace\nlazy from datetime import date\nlazy from pathlib import Path, PurePosixPath, PureWindowsPath\n\nos.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n\nROOT = Path(__file__).resolve().parents[1]\nif str(ROOT) not in sys.path:\n    sys.path.insert(0, str(ROOT))\n\nlazy import numpy as np\nlazy from PIL import Image, ImageChops\nlazy from PySide6.QtCore import Qt\nlazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache\nlazy from PySide6.QtWidgets import QApplication\n\nlazy from application.character_runtime_bootstrap import (\n    activate_product_character_runtime,\n)\nlazy from domain.face_motion import FaceMotionController\nlazy from domain.face_rig import (\n    ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme, blink_for_eye_state,\n)\nlazy from domain.outfit_pack import clear_appearance_selection, restore_builtin_outfit\nlazy from domain.outfit_pack_makeup import (\n    DEFAULT_MAKEUP_INTENSITY,\n    DEFAULT_SLOT_INTENSITIES_V2,\n    select_builtin_makeup,\n    write_makeup_intensity,\n    write_makeup_slot_intensity,\n)\nlazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay\nlazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer\nlazy from infrastructure.layered_face_assets import load_layered_face_assets\nlazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets\nlazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer\nlazy from presentation.companion_face_assets import CompanionFaceAssetMethods\n\nDEFAULT_OUTPUT = ROOT / \".quality-tmp\" / \"golden-render\" / \"current\"\nDEFAULT_BASELINE = ROOT / \".quality-tmp\" / \"golden-render\" / \"baseline\"\nDEFAULT_DIFF = ROOT / \".quality-tmp\" / \"golden-diff\"\nGIT_REVISION_LENGTH = 40\nPAIR_LENGTH = 2\n\n_MOHAN_EXPRESSION_POSES = (\n    (\"glance\", \"cheek\"), (\"caught\", \"cheek\"), (\"happy\", \"cheek\"),\n    (\"worried\", \"cheek\"), (\"reminder\", \"cheek\"), (\"thinking_front\", \"front\"),\n    (\"gentle_smile_front\", \"front\"), (\"worried_front\", \"front\"),\n    (\"shy_front\", \"front\"), (\"mock_scold\", \"front\"),\n    (\"surprised_front\", \"front\"), (\"relieved_front\", \"front\"),\n    (\"tired_front\", \"front\"), (\"proud_front\", \"front\"),\n    (\"shy_cute_front\", \"front\"), (\"mock_hit_front\", \"front\"),\n    (\"attentive_front\", \"front\"), (\"determined_front\", \"front\"),\n    (\"restrained_amused_front\", \"front\"), (\"exasperated_front\", \"front\"),\n    (\"eureka_front\", \"front\"), (\"protective_front\", \"front\"),\n)\n_MOHAN_EXPRESSION_ASSETS = (\n    \"idle\", \"idle_lean\", \"idle_front\", \"blink\", \"blink_lean\", \"blink_front\",\n    \"glance\", \"caught\", \"speaking\", \"speaking_lean\", \"speaking_front\",\n    \"happy\", \"worried\", \"reminder\", \"thinking_front\", \"gentle_smile_front\",\n    \"worried_front\", \"shy_front\", \"mock_scold\", \"surprised_front\",\n    \"relieved_front\", \"tired_front\", \"proud_front\", \"shy_cute_front\",\n    \"mock_hit_front\", \"attentive_front\", \"determined_front\",\n    \"restrained_amused_front\", \"exasperated_front\", \"eureka_front\",\n    \"protective_front\",\n    *(\n        f\"{expression}_speech_{frame}\"\n        for expression, _pose in _MOHAN_EXPRESSION_POSES\n        for frame in (\"mid\", \"open\", \"round\")\n    ),\n    \"thinking_front_speech_blink\",\n    \"idle_front_half\", \"idle_lean_half\", \"eureka_front_half\",\n    \"mock_hit_front_half\", \"mock_scold_half\", \"idle_lean_closed\",\n    \"idle_front_closed\", \"eureka_front_closed\", \"mock_hit_front_closed\",\n    \"mock_scold_closed\", \"viseme_mid_front\", \"viseme_wide_front\",\n    \"viseme_round\", \"viseme_round_lean\", \"viseme_round_front\", \"viseme_i\",\n    \"viseme_i_lean\", \"viseme_i_front\", \"viseme_o\", \"viseme_o_lean\",\n    \"viseme_o_front\",\n)\n_MOHAN_FULL_BODY_VIEWS = (\n    \"yaw+000-pitch+00\",\n    \"yaw+015-pitch+00\", \"yaw-015-pitch+00\",\n    \"yaw+030-pitch+00\", \"yaw-030-pitch+00\",\n    \"yaw+045-pitch+00\", \"yaw-045-pitch+00\",\n    \"yaw+060-pitch+00\", \"yaw-060-pitch+00\",\n    \"yaw+075-pitch+00\", \"yaw-075-pitch+00\",\n    \"yaw+090-pitch+00\", \"yaw-090-pitch+00\",\n)\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCharacterSettings:\n    \"\"\"Character-owned catalogs and paths consumed by the golden harness.\"\"\"\n\n    character_id: str\n    manifest_schema: str\n    approval_schema: str\n    makeups: tuple[str, ...]\n    eye_states: tuple[str, ...]\n    half_expressions: tuple[str, ...]\n    expression_poses: tuple[tuple[str, str], ...]\n    expression_assets: tuple[str, ...]\n    full_body_views: tuple[str, ...]\n    half_size: tuple[int, int]\n    full_size: tuple[int, int]\n    official_pack_root: str\n    half_expression_root: str\n    half_layered_root: str\n    half_detachable_root: str\n    full_layered_root: str\n    full_authority_root: str\n    bare_makeup: str = \"none\"\n    full_eye_state: str = \"rest\"\n    neutral_expression: str = \"idle_front\"\n    neutral_pose: str = \"front\"\n\n    def __post_init__(self) -> None:\n        text_fields = (\n            self.character_id,\n            self.manifest_schema,\n            self.approval_schema,\n            *self.makeups,\n            *self.eye_states,\n            *self.half_expressions,\n            *self.expression_assets,\n            *self.full_body_views,\n            self.bare_makeup,\n            self.full_eye_state,\n            self.neutral_expression,\n            self.neutral_pose,\n        )\n        if not all(isinstance(value, str) and value for value in text_fields):\n            raise ValueError(\"角色設定的識別碼、schema 與清單項目必須是非空字串。\")\n        for value in (*self.makeups, *self.eye_states, *self.half_expressions,\n                      *self.expression_assets, *self.full_body_views):\n            if re.fullmatch(r\"[A-Za-z0-9_+.-]+\", value) is None or value in {\".\", \"..\"}:\n                raise ValueError(\"角色清單項目必須是安全的檔名識別碼。\")\n        if len(set(self.makeups)) != len(self.makeups):\n            raise ValueError(\"角色設定的妝容清單不得重複。\")\n        if len(set(self.eye_states)) != len(self.eye_states):\n            raise ValueError(\"角色設定的眼態清單不得重複。\")\n        if len(set(self.half_expressions)) != len(self.half_expressions):\n            raise ValueError(\"角色設定的表情清單不得重複。\")\n        if len(set(self.full_body_views)) != len(self.full_body_views):\n            raise ValueError(\"角色設定的全身視角清單不得重複。\")\n        pose_names = [expression for expression, _pose in self.expression_poses]\n        if any(not isinstance(value, str) or not value for pair in self.expression_poses for value in pair):\n            raise ValueError(\"角色設定的表情姿勢映射必須是非空字串。\")\n        if len(set(pose_names)) != len(pose_names):\n            raise ValueError(\"角色設定的表情姿勢映射不得重複。\")\n        if set(self.half_expressions) - set(pose_names):\n            raise ValueError(\"每個半身表情必須提供姿勢映射。\")\n        if any(len(size) != PAIR_LENGTH or any(type(value) is not int or value <= 0 for value in size)\n               for size in (self.half_size, self.full_size)):\n            raise ValueError(\"角色設定的畫布尺寸必須是正整數。\")\n        for value in self.asset_paths():\n            if not isinstance(value, str):\n                raise ValueError(\"角色素材路徑必須是字串。\")\n            path = PurePosixPath(value)\n            if PureWindowsPath(value).drive or \"\\\\\" in value or path.is_absolute() or \"..\" in path.parts or not path.parts:\n                raise ValueError(f\"角色素材路徑必須是安全的相對路徑：{value}\")\n\n    def asset_paths(self) -> tuple[str, ...]:\n        return (\n            self.official_pack_root,\n            self.half_expression_root,\n            self.half_layered_root,\n            self.half_detachable_root,\n            self.full_layered_root,\n            self.full_authority_root,\n        )\n\n    def expression_pose_map(self) -> dict[str, str]:\n        return dict(self.expression_poses)\n\n    def resolve_asset_path(self, asset_root: Path, relative: str) -> Path:\n        root = Path(asset_root).resolve()\n        resolved = (root / relative).resolve()\n        if not resolved.is_relative_to(root):\n            raise ValueError(f\"角色素材路徑逸出素材根目錄：{relative}\")\n        return resolved\n\n\nDEFAULT_CHARACTER_SETTINGS = GoldenCharacterSettings(\n    character_id=\"flameblade.mohan\",\n    manifest_schema=\"mohan.golden-render.v1\",\n    approval_schema=\"mohan.golden-render-approval.v1\",\n    makeups=(\"none\", \"light\", \"classic\", \"glamorous\"),\n    eye_states=(\"rest\", \"half\", \"closed\"),\n    half_expressions=(\n        \"idle\", \"idle_lean\", \"idle_front\",\n        *(expression for expression, _pose in _MOHAN_EXPRESSION_POSES),\n    ),\n    expression_poses=((\"idle\", \"cheek\"), (\"idle_lean\", \"lean\"), (\"idle_front\", \"front\"),\n                      *_MOHAN_EXPRESSION_POSES),\n    expression_assets=_MOHAN_EXPRESSION_ASSETS,\n    full_body_views=_MOHAN_FULL_BODY_VIEWS,\n    half_size=(465, 465),\n    full_size=(1024, 1536),\n    official_pack_root=\"assets/official-packs\",\n    half_expression_root=\"assets/expressions\",\n    half_layered_root=\"assets/expressions/layered\",\n    half_detachable_root=\"assets/expressions/detachable\",\n    full_layered_root=\"assets/pose-atlas/v5-base-layered\",\n    full_authority_root=\"assets/pose-atlas/v5-base\",\n)\n\n# Public compatibility aliases keep existing callers and the approved manifest stable.\nSCHEMA = DEFAULT_CHARACTER_SETTINGS.manifest_schema\nAPPROVAL_SCHEMA = DEFAULT_CHARACTER_SETTINGS.approval_schema\nMANIFEST_PATH = ROOT / \"tests\" / \"golden\" / \"golden-manifest.json\"\nMAKEUPS = DEFAULT_CHARACTER_SETTINGS.makeups\nEYE_STATES = DEFAULT_CHARACTER_SETTINGS.eye_states\nHALF_EXPRESSIONS = DEFAULT_CHARACTER_SETTINGS.half_expressions\nFULL_BODY_VIEWS = DEFAULT_CHARACTER_SETTINGS.full_body_views\nHALF_SIZE = DEFAULT_CHARACTER_SETTINGS.half_size\nFULL_SIZE = DEFAULT_CHARACTER_SETTINGS.full_size\n\n\ndef load_character_settings(path: Path) -> GoldenCharacterSettings:\n    \"\"\"Read a complete data-only character configuration without path fallback.\"\"\"\n    payload = _load_json(path)\n    required = {field.name for field in fields(GoldenCharacterSettings)}\n    if set(payload) != required:\n        raise ValueError(\"角色設定必須完整提供 GoldenCharacterSettings 的欄位。\")\n    for key in (\"makeups\", \"eye_states\", \"half_expressions\", \"expression_assets\",\n                \"full_body_views\", \"half_size\", \"full_size\", \"expression_poses\"):\n        if not isinstance(payload[key], list):\n            raise ValueError(f\"角色設定欄位 {key} 必須是陣列。\")\n        if key == \"expression_poses\":\n            if any(not isinstance(pair, list) or len(pair) != PAIR_LENGTH for pair in payload[key]):\n                raise ValueError(\"表情姿勢映射必須是兩元素陣列。\")\n            payload[key] = tuple(tuple(pair) for pair in payload[key])\n        else:\n            payload[key] = tuple(payload[key])\n    return GoldenCharacterSettings(**payload)\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCell:\n    cell_id: str\n    kind: str\n    makeup: str\n    eye_state: str\n    expression: str | None = None\n    pose: str | None = None\n    view_id: str | None = None\n\n    @property\n    def filename(self) -> str:\n        return f\"{self.cell_id}.png\"\n\n    def inputs(self) -> dict[str, str]:\n        values = {\"kind\": self.kind, \"makeup\": self.makeup, \"eye_state\": self.eye_state}\n        for key in (\"expression\", \"pose\", \"view_id\"):\n            value = getattr(self, key)\n            if value is not None:\n                values[key] = value\n        return values\n\n\ndef matrix_cells(\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> tuple[GoldenCell, ...]:\n    cells: list[GoldenCell] = []\n    expression_poses = settings.expression_pose_map()\n    for expression in settings.half_expressions:\n        pose = expression_poses[expression]\n        cells.extend(\n            GoldenCell(\n                    f\"half__{expression}__{makeup}__{eye_state}\",\n                    \"half-body\", makeup, eye_state, expression=expression, pose=pose,\n            )\n            for makeup in settings.makeups\n            for eye_state in settings.eye_states\n        )\n    for view_id in settings.full_body_views:\n        cells.extend(\n            GoldenCell(\n                f\"full__{view_id}__{makeup}__{settings.full_eye_state}\",\n                \"full-body\", makeup, settings.full_eye_state, view_id=view_id,\n            )\n            for makeup in settings.makeups\n        )\n    return tuple(cells)\n\n\ndef _rgba_bytes(image: QImage) -> bytes:\n    \"\"\"Return straight RGBA8888 bytes with an exact, CPU-independent conversion.\n\n    Qt's SIMD unpremultiply uses the approximate reciprocal instruction, whose\n    result differs between Intel and AMD processors, so the golden contract\n    never asks Qt to leave premultiplied alpha.  Rounding is exact integer\n    arithmetic: channel = round(premultiplied * 255 / alpha).\n    \"\"\"\n    source_format = image.format()\n    if source_format not in {\n        QImage.Format_ARGB32,\n        QImage.Format_ARGB32_Premultiplied,\n        QImage.Format_RGB32,\n    }:\n        image = image.convertToFormat(QImage.Format_ARGB32_Premultiplied)\n        source_format = QImage.Format_ARGB32_Premultiplied\n    width, height = image.width(), image.height()\n    rows = np.frombuffer(bytes(image.constBits()), dtype=np.uint8)\n    bgra = rows.reshape(height, image.bytesPerLine())[:, : width * 4].reshape(height, width, 4)\n    alpha = bgra[:, :, 3].astype(np.uint32)\n    color = bgra[:, :, 2::-1].astype(np.uint32)\n    if source_format == QImage.Format_RGB32:\n        alpha = np.full_like(alpha, 255)\n    elif source_format == QImage.Format_ARGB32_Premultiplied:\n        safe_alpha = np.maximum(alpha, 1)[:, :, None]\n        color = np.where(\n            alpha[:, :, None] > 0,\n            (color * 255 + safe_alpha // 2) // safe_alpha,\n            0,\n        )\n    rgba = np.dstack((np.minimum(color, 255), alpha)).astype(np.uint8)\n    return rgba.tobytes()\n\n\ndef pixel_sha256(image: QImage) -> str:\n    payload = struct.pack(\">II\", image.width(), image.height()) + _rgba_bytes(image)\n    return hashlib.sha256(payload).hexdigest()\n\n\ndef _save_pixmap(pixmap: QPixmap, path: Path) -> dict[str, object]:\n    image = pixmap.toImage()\n    path.parent.mkdir(parents=True, exist_ok=True)\n    Image.frombytes(\"RGBA\", (image.width(), image.height()), _rgba_bytes(image)).save(path, \"PNG\")\n    # Reload the persisted PNG before hashing so the manifest describes the\n    # decoded RGBA pixels a reviewer sees, not an in-memory paint buffer.\n    decoded = QImage(str(path))\n    return {\n        \"width\": decoded.width(),\n        \"height\": decoded.height(),\n        \"mode\": \"RGBA\",\n        \"pixel_sha256\": pixel_sha256(decoded),\n        \"png_sha256\": hashlib.sha256(path.read_bytes()).hexdigest(),\n    }\n\n\n@contextmanager\ndef _network_disabled():\n    original_connect = socket.socket.connect\n    original_create_connection = socket.create_connection\n\n    def blocked(*_args, **_kwargs):\n        raise RuntimeError(\"golden render 已停用網路連線\")\n\n    socket.socket.connect = blocked\n    socket.create_connection = blocked\n    try:\n        yield\n    finally:\n        socket.socket.connect = original_connect\n        socket.create_connection = original_create_connection\n\n\n@contextmanager\ndef _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):\n    from domain import outfit_pack, outfit_pack_store\n\n    # outfit_pack_store defines the root and outfit_pack re-exports it; consumers\n    # import it from the defining module, so both bindings must point here.\n    modules = (outfit_pack_store, outfit_pack)\n    previous = tuple(module.OFFICIAL_PACK_ROOT for module in modules)\n    root = settings.resolve_asset_path(asset_root, settings.official_pack_root)\n    for module in modules:\n        module.OFFICIAL_PACK_ROOT = root\n    try:\n        yield\n    finally:\n        for module, value in zip(modules, previous, strict=True):\n            module.OFFICIAL_PACK_ROOT = value\n\n\ndef _prepare_store(\n    store: Path, makeup: str,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> None:\n    store.mkdir(parents=True, exist_ok=True)\n    restore_builtin_outfit(store)\n    write_makeup_intensity(store, DEFAULT_MAKEUP_INTENSITY)\n    for slot, intensity in DEFAULT_SLOT_INTENSITIES_V2.items():\n        write_makeup_slot_intensity(store, slot, intensity)\n    if makeup == settings.bare_makeup:\n        clear_appearance_selection(store, \"makeup\")\n    else:\n        select_builtin_makeup(store, makeup)\n\n\n@contextmanager\ndef _render_environment(local_appdata: Path):\n    previous = {key: os.environ.get(key) for key in (\"QT_QPA_PLATFORM\", \"LOCALAPPDATA\")}\n    os.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n    os.environ[\"LOCALAPPDATA\"] = str(local_appdata)\n    try:\n        yield\n    finally:\n        for key, value in previous.items():\n            if value is None:\n                os.environ.pop(key, None)\n            else:\n                os.environ[key] = value\n\n\ndef _motion(expression: str, pose: str, eye_state: str = \"rest\") -> FaceMotionFrame:\n    if pose != \"front\":\n        return FaceMotionFrame(\n            FacePose(pose), expression, Viseme.CLOSED, MouthShape(),\n            ExpressionShape(blink=blink_for_eye_state(eye_state)), breath=0.0,\n        )\n    motion = FaceMotionController().close(pose=pose, expression=expression)\n    return replace(\n        motion,\n        expression_shape=replace(motion.expression_shape, blink=blink_for_eye_state(eye_state)),\n        breath=0.0,\n    )\n\n\ndef _scaled_expression(\n    asset_root: Path,\n    stem: str,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)\n    pixmap = QPixmap(str(expression_root / f\"{stem}.png\"))\n    if pixmap.isNull():\n        raise FileNotFoundError(f\"缺少表情素材：{stem}\")\n    return pixmap.scaled(*settings.half_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)\n\n\nclass _BlinkHarness(CompanionFaceAssetMethods):\n    \"\"\"Small runtime-equivalent host for the real companion blink compositor.\"\"\"\n\n    def __init__(\n        self,\n        asset_root: Path,\n        renderer: LayeredParametricFaceRenderer,\n        settings: GoldenCharacterSettings,\n    ) -> None:\n        self.state = \"idle\"\n        self.face_renderer = renderer\n        self.active_physics_pose = \"front\"\n        self.physics_expression_poses = settings.expression_pose_map()\n        self.expression_anchor_profiles = {}\n        expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)\n        self.expression_pixmaps = {\n            stem: _scaled_expression(asset_root, stem, settings)\n            for stem in settings.expression_assets\n            if (expression_root / f\"{stem}.png\").is_file()\n        }\n        self._build_expression_anchor_profiles()\n        self._build_blink_masks(self._blink_regions())\n\n\ndef _render_half_cell(\n    cell: GoldenCell,\n    renderer: LayeredParametricFaceRenderer,\n    harness: _BlinkHarness,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    base = QPixmap(*settings.half_size)\n    base.fill(Qt.transparent)\n    rest = renderer.render(base, _motion(cell.expression or \"idle\", cell.pose or \"front\"), None)\n    if rest.isNull() or (rest.width(), rest.height()) != settings.half_size:\n        raise RuntimeError(f\"半身渲染尺寸錯誤：{cell.cell_id}\")\n    if cell.eye_state == \"rest\":\n        return rest\n    # Complete emotional portraits expose their expression-bound eye endpoints\n    # through the speaking/blink route.  The compositor still preserves an\n    # expression unchanged when no endpoint is bound to that exact portrait.\n    harness.state = \"speaking\"\n    return harness._blink_composite(\n        rest,\n        cell.expression or \"idle\",\n        blink_for_eye_state(cell.eye_state),\n    )\n\n\ndef _render_full_cell(\n    cell: GoldenCell,\n    renderer: LayeredFullBodyRenderer,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    rendered = renderer.render_view(\n        cell.view_id or settings.full_body_views[0],\n        _motion(settings.neutral_expression, settings.neutral_pose, settings.full_eye_state),\n    )\n    if rendered.isNull() or (rendered.width(), rendered.height()) != settings.full_size:\n        raise RuntimeError(f\"全身渲染尺寸錯誤：{cell.cell_id}\")\n    return rendered\n\n\ndef render_matrix(\n    output: Path,\n    *,\n    asset_root: Path = ROOT,\n    cells: Iterable[GoldenCell] | None = None,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    activate_product_character_runtime(ROOT)\n    selected = tuple(matrix_cells(settings) if cells is None else cells)\n    output = Path(output).resolve()\n    asset_root = Path(asset_root).resolve()\n    runtime_root = output / \"runtime\"\n    local_appdata = runtime_root / \"localappdata\"\n    local_appdata.mkdir(parents=True, exist_ok=True)\n    QApplication.instance() or QApplication([])\n    # Each standard capture starts with the same Qt file-pixmap cache state,\n    # including when a test renders twice in one interpreter.\n    QPixmapCache.clear()\n    started = time.perf_counter()\n    entries: list[dict[str, object]] = []\n\n    with _render_environment(local_appdata), _network_disabled(), _official_pack_root(\n        asset_root, settings,\n    ):\n        for makeup in settings.makeups:\n            makeup_cells = tuple(cell for cell in selected if cell.makeup == makeup)\n            if not makeup_cells:\n                continue\n            store = runtime_root / \"stores\" / makeup\n            _prepare_store(store, makeup, settings)\n            overlay = ActiveOutfitOverlay(store, asset_root)\n            half_renderer = LayeredParametricFaceRenderer(\n                manifest=load_layered_face_assets(settings.resolve_asset_path(\n                    asset_root, settings.half_layered_root,\n                )),\n                outfit_overlay=overlay,\n                authority_dir=settings.resolve_asset_path(\n                    asset_root, settings.half_expression_root,\n                ),\n                detachable_dir=settings.resolve_asset_path(\n                    asset_root, settings.half_detachable_root,\n                ),\n            ) if any(cell.kind == \"half-body\" for cell in makeup_cells) else None\n            harness = (\n                _BlinkHarness(asset_root, half_renderer, settings)\n                if half_renderer is not None else None\n            )\n            full_manifest = load_layered_full_body_assets(\n                settings.resolve_asset_path(asset_root, settings.full_layered_root)\n            ) if any(cell.kind == \"full-body\" for cell in makeup_cells) else None\n            full_renderer = LayeredFullBodyRenderer(\n                full_manifest,\n                outfit_overlay=overlay,\n                authority_root=settings.resolve_asset_path(\n                    asset_root, settings.full_authority_root,\n                ),\n            ) if full_manifest is not None else None\n            for cell in makeup_cells:\n                frame = (\n                    _render_half_cell(cell, half_renderer, harness, settings)\n                    if cell.kind == \"half-body\"\n                    else _render_full_cell(cell, full_renderer, settings)\n                )\n                path = output / cell.filename\n                measurements = _save_pixmap(frame, path)\n                entries.append({\n                    \"id\": cell.cell_id,\n                    \"file\": cell.filename,\n                    \"inputs\": cell.inputs(),\n                    **measurements,\n                })\n\n    entries.sort(key=lambda item: str(item[\"id\"]))\n    return {\n        \"schema\": settings.manifest_schema,\n        \"hash_contract\": \"sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)\",\n        \"pixel_tolerance\": 0,\n        \"matrix\": {\n            \"half_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"half-body\" for item in entries),\n            \"full_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"full-body\" for item in entries),\n            \"total_cells\": len(entries),\n        },\n        \"environment\": {\n            \"qt_qpa_platform\": \"offscreen\",\n            \"network\": \"disabled\",\n            \"store_policy\": \"isolated-fixed-per-makeup\",\n            \"localappdata_policy\": \"isolated-fixed\",\n        },\n        \"elapsed_seconds\": round(time.perf_counter() - started, 3),\n        \"cells\": entries,\n    }\n\n\ndef _load_json(path: Path) -> dict[str, object]:\n    value = json.loads(path.read_text(encoding=\"utf-8\"))\n    if not isinstance(value, dict):\n        raise ValueError(f\"JSON 根節點必須是物件：{path}\")\n    return value\n\n\ndef validate_approval(\n    path: Path,\n    cell_ids: frozenset[str],\n    *,\n    known_ids: frozenset[str] | None = None,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    approval = _load_json(path)\n    required = {\"schema\", \"owner\", \"date\", \"quote\", \"cells\"}\n    if set(approval) != required or approval.get(\"schema\") != settings.approval_schema:\n        raise ValueError(f\"核准紀錄必須符合 {settings.approval_schema}。\")\n    for key in (\"owner\", \"date\", \"quote\"):\n        if not isinstance(approval[key], str) or not approval[key].strip():\n            raise ValueError(f\"核准紀錄欄位 {key} 必須是非空字串。\")\n    date.fromisoformat(str(approval[\"date\"]))\n    covered = approval[\"cells\"]\n    if covered == \"*\":\n        return approval\n    if not isinstance(covered, list) or not all(isinstance(item, str) for item in covered):\n        raise ValueError(\"核准紀錄 cells 必須是 '*' 或格子 ID 陣列。\")\n    missing = cell_ids - frozenset(covered)\n    unknown = frozenset(covered) - (known_ids if known_ids is not None else cell_ids)\n    if missing or unknown:\n        raise ValueError(\n            f\"核准涵蓋不完整：missing={sorted(missing)} unknown={sorted(unknown)}\"\n        )\n    return approval\n\n\ndef _manifest_for_commit(\n    rendered: dict[str, object], approval_path: Path,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    manifest = dict(rendered)\n    manifest.pop(\"elapsed_seconds\", None)\n    manifest[\"source_revision\"] = subprocess.check_output(\n        [\"git\", \"rev-parse\", \"HEAD\"], cwd=ROOT, text=True,\n    ).strip()\n    harness_source = Path(__file__).read_bytes()\n    manifest[\"harness\"] = {\n        \"source\": harness_source.decode(\"utf-8\"),\n        \"sha256\": hashlib.sha256(harness_source).hexdigest(),\n    }\n    manifest[\"approval\"] = {\n        \"path\": approval_path.relative_to(ROOT).as_posix(),\n        \"sha256\": hashlib.sha256(approval_path.read_bytes()).hexdigest(),\n    }\n    if settings != DEFAULT_CHARACTER_SETTINGS:\n        manifest[\"character_settings\"] = asdict(settings)\n    for cell in manifest[\"cells\"]:\n        cell.pop(\"png_sha256\", None)\n    return manifest\n\n\ndef _recover_originals(expected: dict[str, object], cells: list[dict], baseline_dir: Path) -> None:\n    \"\"\"Reconstruct absent originals from the recorded Git revision, then verify pixels.\"\"\"\n    revision = expected.get(\"source_revision\")\n    if not isinstance(revision, str) or len(revision) != GIT_REVISION_LENGTH or any(\n        char not in \"0123456789abcdef\" for char in revision\n    ):\n        raise ValueError(\"原圖快取缺失；清單需要有效 source_revision 才能重建核准原圖。\")\n    staging = ROOT / \".quality-tmp\" / \"golden-reference\" / uuid.uuid4().hex\n    staging.mkdir(parents=True)\n    archive_path = staging / \"source.zip\"\n    subprocess.run(\n        [\"git\", \"archive\", \"--format=zip\", f\"--output={archive_path}\", revision],\n        cwd=ROOT, check=True,\n    )\n    reference_root = staging / \"source\"\n    with zipfile.ZipFile(archive_path) as archive:\n        archive.extractall(reference_root)\n    # Freeze the capture driver too: future harness changes must not alter\n    # reconstruction of the approved production modules and assets.\n    harness = expected.get(\"harness\")\n    harness_path = reference_root / \"tools\" / \"golden_render.py\"\n    if isinstance(harness, dict) and isinstance(harness.get(\"source\"), str):\n        payload = harness[\"source\"].encode(\"utf-8\")\n        if hashlib.sha256(payload).hexdigest() != harness.get(\"sha256\"):\n            raise ValueError(\"基準渲染 harness 的 SHA-256 不符。\")\n        harness_path.write_bytes(payload)\n    else:\n        shutil.copy2(Path(__file__), harness_path)\n    request_path = staging / \"cells.json\"\n    request_path.write_text(json.dumps([cell[\"id\"] for cell in cells]), encoding=\"utf-8\")\n    output = staging / \"images\"\n    script = (\n        \"import json,sys; from pathlib import Path; \"\n        \"from tools.golden_render import matrix_cells,render_matrix; \"\n        \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n        \"render_matrix(Path(sys.argv[2]),cells=[c for c in matrix_cells() if c.cell_id in ids])\"\n    )\n    arguments = [sys.executable, \"-c\", script, str(request_path), str(output)]\n    if \"character_settings\" in expected:\n        settings_path = staging / \"character-settings.json\"\n        _write_manifest(settings_path, expected[\"character_settings\"])\n        script = (\n            \"import json,sys; from pathlib import Path; \"\n            \"from tools.golden_render import matrix_cells,render_matrix,load_character_settings; \"\n            \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n            \"settings=load_character_settings(Path(sys.argv[3])); \"\n            \"render_matrix(Path(sys.argv[2]),settings=settings,\"\n            \"cells=[c for c in matrix_cells(settings) if c.cell_id in ids])\"\n        )\n        arguments = [sys.executable, \"-c\", script, str(request_path), str(output), str(settings_path)]\n    environment = dict(os.environ)\n    environment[\"PYTHONPATH\"] = str(reference_root)\n    subprocess.run(\n        arguments,\n        cwd=reference_root, env=environment, check=True,\n    )\n    baseline_dir.mkdir(parents=True, exist_ok=True)\n    # Keep every unmatched rebuild so CI can upload it for a pixel-level review.\n    unrecoverable = ROOT / \".quality-tmp\" / \"golden-diff\" / \"unrecoverable\"\n    mismatched: list[str] = []\n    for cell in cells:\n        original = output / str(cell[\"file\"])\n        actual = pixel_sha256(QImage(str(original)))\n        if actual != cell[\"pixel_sha256\"]:\n            unrecoverable.mkdir(parents=True, exist_ok=True)\n            shutil.copy2(original, unrecoverable / str(cell[\"file\"]))\n            mismatched.append(f\"{cell['id']}={actual}\")\n            continue\n        shutil.copy2(original, baseline_dir / str(cell[\"file\"]))\n    if mismatched:\n        raise ValueError(\n            f\"歷史重建像素與核准雜湊不同（{len(mismatched)} 格）：{', '.join(mismatched)}；\"\n            f\"重建影像保存在 {unrecoverable.relative_to(ROOT).as_posix()}。\"\n        )\n\n\ndef _write_diff(expected: Path | None, actual: Path, target: Path) -> None:\n    target.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(actual, target / \"new.png\")\n    if expected is None or not expected.is_file():\n        (target / \"original-unavailable.txt\").write_text(\n            \"本機尚無基準 PNG；先以核准紀錄執行 --update 產生本機基準影像。\\n\",\n            encoding=\"utf-8\",\n        )\n        return\n    shutil.copy2(expected, target / \"original.png\")\n    original = Image.open(expected).convert(\"RGBA\")\n    new = Image.open(actual).convert(\"RGBA\")\n    # RGB makes equal-alpha colour changes visible; an RGBA difference would\n    # carry alpha=0 for those pixels and appear fully transparent.\n    if original.size != new.size:\n        canvas_size = (max(original.width, new.width), max(original.height, new.height))\n        old_canvas = Image.new(\"RGBA\", canvas_size)\n        new_canvas = Image.new(\"RGBA\", canvas_size)\n        old_canvas.paste(original, (0, 0))\n        new_canvas.paste(new, (0, 0))\n        original, new = old_canvas, new_canvas\n    channels = ImageChops.difference(original, new).split()\n    intensity = channels[0]\n    for channel in channels[1:]:\n        intensity = ImageChops.lighter(intensity, channel)\n    intensity.convert(\"RGB\").save(target / \"difference.png\")\n\n\ndef compare_manifest(\n    rendered: dict[str, object],\n    expected: dict[str, object],\n    *,\n    output: Path,\n    baseline_dir: Path = DEFAULT_BASELINE,\n    diff_dir: Path = DEFAULT_DIFF,\n) -> list[str]:\n    expected_by_id = {str(cell[\"id\"]): cell for cell in expected.get(\"cells\", [])}\n    actual_by_id = {str(cell[\"id\"]): cell for cell in rendered.get(\"cells\", [])}\n    changed: list[str] = []\n    originals_needed: list[dict] = []\n    for cell_id in sorted(set(expected_by_id) | set(actual_by_id)):\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        compared_fields = (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n        if old is not None and new is not None and all(\n            old.get(field) == new.get(field) for field in compared_fields\n        ):\n            continue\n        changed.append(cell_id)\n        if old is not None and new is not None:\n            original = baseline_dir / str(old[\"file\"])\n            if not original.is_file() or pixel_sha256(QImage(str(original))) != old[\"pixel_sha256\"]:\n                originals_needed.append(old)\n    if originals_needed:\n        _recover_originals(expected, originals_needed, baseline_dir)\n    for cell_id in changed:\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        if new is not None:\n            _write_diff(\n                baseline_dir / str(old[\"file\"]) if old is not None else None,\n                output / str(new[\"file\"]),\n                diff_dir / cell_id,\n            )\n    return changed\n\n\ndef _write_manifest(path: Path, manifest: dict[str, object]) -> None:\n    path.parent.mkdir(parents=True, exist_ok=True)\n    path.write_text(\n        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + \"\\n\",\n        encoding=\"utf-8\",\n    )\n\n\ndef _require_committed_render_sources(\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> None:\n    changed = subprocess.check_output(\n        [\"git\", \"status\", \"--porcelain\", \"--\", \"assets\", \"domain\", \"infrastructure\", \"presentation\",\n         *settings.asset_paths()],\n        cwd=ROOT, text=True,\n    ).strip()\n    if changed:\n        raise ValueError(\"請先提交渲染程式與素材，再核准更新；source_revision 必須可重建基準。\")\n\n\ndef main(argv: Iterable[str] | None = None) -> int:\n    activate_product_character_runtime(ROOT)\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument(\"--output\", type=Path, default=DEFAULT_OUTPUT)\n    parser.add_argument(\"--manifest\", type=Path, default=MANIFEST_PATH)\n    parser.add_argument(\"--update\", action=\"store_true\")\n    parser.add_argument(\"--approval\", type=Path)\n    parser.add_argument(\"--character-settings\", type=Path)\n    parser.add_argument(\"--asset-root\", type=Path, default=ROOT)\n    args = parser.parse_args(tuple(argv) if argv is not None else None)\n    if args.update != (args.approval is not None):\n        parser.error(\"--update 必須與 --approval <核准紀錄 JSON> 同時使用\")\n    settings = load_character_settings(args.character_settings) if args.character_settings else DEFAULT_CHARACTER_SETTINGS\n    if args.character_settings and args.manifest.resolve() == MANIFEST_PATH.resolve():\n        parser.error(\"自訂角色設定必須指定獨立的 --manifest 路徑。\")\n    if args.update:\n        if args.asset_root.resolve() != ROOT:\n            parser.error(\"--update 的素材根目錄必須是目前儲存庫，才能由 Git 重建核准基準。\")\n        validate_approval(\n            args.approval, frozenset(),\n            known_ids=frozenset(cell.cell_id for cell in matrix_cells(settings)), settings=settings,\n        )\n        _require_committed_render_sources(settings)\n\n    rendered = render_matrix(args.output, asset_root=args.asset_root, settings=settings)\n    output_manifest = dict(rendered)\n    output_manifest.pop(\"elapsed_seconds\", None)\n    _write_manifest(args.output / \"render-manifest.json\", output_manifest)\n    print(\n        f\"GOLDEN_RENDER cells={rendered['matrix']['total_cells']} \"\n        f\"seconds={rendered['elapsed_seconds']:.3f} output={args.output}\"\n    )\n    if args.update:\n        cell_ids = frozenset(str(cell[\"id\"]) for cell in rendered[\"cells\"])\n        approval_path = args.approval.resolve()\n        old_cells = (\n            {cell[\"id\"]: cell for cell in _load_json(args.manifest)[\"cells\"]}\n            if args.manifest.is_file() else {}\n        )\n        changed_ids = frozenset(\n            str(cell[\"id\"]) for cell in rendered[\"cells\"]\n            if any(\n                old_cells.get(cell[\"id\"], {}).get(field) != cell.get(field)\n                for field in (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n            )\n        ) | (frozenset(old_cells) - cell_ids)\n        validate_approval(approval_path, changed_ids, known_ids=cell_ids | frozenset(old_cells), settings=settings)\n        manifest = _manifest_for_commit(rendered, approval_path, settings)\n        _write_manifest(args.manifest, manifest)\n        baseline = args.output / \"baseline\" if args.character_settings else DEFAULT_BASELINE\n        baseline.mkdir(parents=True, exist_ok=True)\n        for cell in rendered[\"cells\"]:\n            shutil.copy2(args.output / str(cell[\"file\"]), baseline / str(cell[\"file\"]))\n        print(f\"GOLDEN_UPDATED manifest={args.manifest} approval={approval_path}\")\n        return 0\n\n    if not args.manifest.is_file():\n        print(f\"缺少 golden 清單：{args.manifest}\", file=sys.stderr)\n        return 2\n    changed = compare_manifest(\n        rendered, _load_json(args.manifest), output=args.output,\n        baseline_dir=args.output / \"baseline\" if args.character_settings else DEFAULT_BASELINE,\n        diff_dir=args.output / \"diff\" if args.character_settings else DEFAULT_DIFF,\n    )\n    if changed:\n        print(\"GOLDEN_CHANGED \" + \" \".join(changed), file=sys.stderr)\n        return 1\n    print(\"GOLDEN_MATCH\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n"
   },
   "hash_contract": "sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)",
   "matrix": {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "03c787475d546f3a602179655f6fc0aa305f893b"
+  "source_revision": "02ccc74dba1e30f4f260329cb2e165cbcbe92d46"
 }
