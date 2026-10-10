@@ -91879,7 +91879,7 @@
       "path": "presentation/dashboard_settings.py",
       "readers": [
         {
-          "line": 18,
+          "line": 22,
           "path": "presentation/dashboard_window.py",
           "text": "lazy from presentation.dashboard_settings import DashboardSettingsMixin"
         }
