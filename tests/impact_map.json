@@ -4164,7 +4164,6 @@
       "paths": [
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
-        "assets/expressions/complete-expressions/manifest.json",
         "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
         "assets/expressions/reviewed-garments/manifest.json",
         "assets/expressions/source-bound-exasperated/receipt.json",
@@ -4393,6 +4392,16 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_integrations_audit2_gaps.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/expressions/complete-expressions/manifest.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_outfit_pack_makeup.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7668,6 +7677,7 @@
     {
       "paths": [
         "assets/makeup/builtin/manifest.json",
+        "domain/outfit_pack_pose_assets.py",
         "tools/scaffold_makeup_pack_manifest.py"
       ],
       "tests": [

@@ -24,11 +24,14 @@ lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice
 lazy from PySide6.QtGui import QColor, QImage
 
 lazy from application.outfit_pack_builder import build_outfit_pack
+lazy from domain.outfit_pack_pose_assets import (
+    COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES,
+    FRONT_MAKEUP_SILHOUETTES,
+)
 lazy from application.wardrobe_service import WardrobeService
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
     BUILTIN_MAKEUP_PACK_ID,
-    COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES,
     MAKEUP_CANVASES,
     POSE_ATLAS_SILHOUETTES,
     REQUIRED_SILHOUETTES,
@@ -369,7 +372,12 @@ def test_pixel_gate_blocks_layers_outside_the_safe_region(tmp_path: Path) -> Non
 def test_safe_region_document_matches_the_rigs() -> None:
     document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
     regions = load_makeup_safe_regions()
-    assert set(regions) == set(REQUIRED_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES)
+    complete = json.loads(
+        (ROOT / "assets" / "expressions" / "complete-expressions" / "manifest.json").read_text(encoding="utf-8")
+    )
+    # Rest-state front regions exist exactly for the installed complete front poses.
+    front_poses = {pose for pose in complete["poses"] if pose in FRONT_MAKEUP_SILHOUETTES}
+    assert set(regions) == set(REQUIRED_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES) | front_poses
     for silhouette, region in regions.items():
         assert region.canvas == canvas_for(silhouette)
         for slot in ("eyes", "cheeks", "lips"):

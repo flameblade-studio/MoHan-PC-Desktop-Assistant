@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy import json
 lazy import os
 lazy from itertools import combinations
 lazy from pathlib import Path
@@ -47,6 +48,15 @@ def _forbid_legacy_portraits(monkeypatch: pytest.MonkeyPatch, root: Path) -> Non
     legacy_root = (root / "assets" / "expressions").resolve()
     original_open = Path.open
     original_pixmap = QPixmap
+    # Reviewed garments re-verify the native source they were fitted to; that
+    # provenance hash read is not a face, so only those exact files are exempt.
+    garment_manifest = json.loads(
+        (legacy_root / "reviewed-garments" / "manifest.json").read_text(encoding="utf-8")
+    )
+    provenance_sources = frozenset(
+        (legacy_root / record["native_source_file"]).resolve()
+        for record in garment_manifest["poses"].values()
+    )
 
     def check_path(value: object) -> None:
         if not isinstance(value, (str, os.PathLike)):
@@ -57,7 +67,8 @@ def _forbid_legacy_portraits(monkeypatch: pytest.MonkeyPatch, root: Path) -> Non
         )
 
     def checked_open(path: Path, *args, **kwargs):
-        check_path(path)
+        if Path(path).resolve() not in provenance_sources:
+            check_path(path)
         return original_open(path, *args, **kwargs)
 
     def checked_pixmap(*args, **kwargs):

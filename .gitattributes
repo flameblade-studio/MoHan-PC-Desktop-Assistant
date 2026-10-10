@@ -36,3 +36,4 @@ docs/release-evidence/ticket-211-*.json -text
 # 日本語：キャラクターパック仕様の例と一覧はバイトハッシュで相互検証するため、どのプラットフォームでもチェックアウト時に改行を変換してはいけません。
 docs/character-pack/*.json -text
 docs/media/*.json -text
+docs/release-evidence/front-expressions-*.json -text

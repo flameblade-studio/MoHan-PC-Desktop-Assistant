@@ -115,15 +115,27 @@ def alpha_bounds(pixmap: QPixmap) -> QRect:
     return QRect(left, top, right - left + 1, bottom - top + 1)
 
 
+def _complete_blink_pose(expression: str) -> str | None:
+    """Return the installed complete pose whose whole-frame blinks this expression owns."""
+    complete = load_complete_halfbody_frames(
+        PROJECT_ROOT / "assets" / "expressions" / "complete-expressions"
+    )
+    if complete is None or expression not in complete.expressions:
+        return None
+    pose = complete.expressions[expression][0]
+    return pose if pose in complete.whole_frame_blinks else None
+
+
 def complete_expression_eye_authority_rect(expression: str) -> QRect | None:
     """Use the approved blink change region plus the registered eye-makeup region."""
-    if expression not in COMPLETE_EXPRESSION_EYE_EXPRESSIONS or expression == "glance":
+    pose = _complete_blink_pose(expression)
+    if pose is None or expression == "glance":
         return None
     frames = PROJECT_ROOT / "assets" / "expressions" / "complete-expressions" / "frames"
-    rest = np.asarray(Image.open(frames / f"cheek-{expression}-neutral-rest.rgba.png").convert("RGBA"))
+    rest = np.asarray(Image.open(frames / f"{pose}-neutral-rest.rgba.png").convert("RGBA"))
     changed = np.zeros(rest.shape[:2], dtype=bool)
     for state in ("half", "closed"):
-        frame = np.asarray(Image.open(frames / f"cheek-{expression}-neutral-{state}.rgba.png").convert("RGBA"))
+        frame = np.asarray(Image.open(frames / f"{pose}-neutral-{state}.rgba.png").convert("RGBA"))
         changed |= (frame != rest).any(axis=2)
     rows = np.flatnonzero(changed.any(axis=1))
     columns = np.flatnonzero(changed.any(axis=0))
@@ -135,7 +147,7 @@ def complete_expression_eye_authority_rect(expression: str) -> QRect | None:
     bottom = math.ceil((rows[-1] + 1) * scale)
     authority = QRect(left, top, right - left, bottom - top)
     # Eye makeup changes with the eye state, so its safe region is eye authority too.
-    for x, y, width, height in load_makeup_safe_regions()[f"cheek-{expression}"].rects("eyes"):
+    for x, y, width, height in load_makeup_safe_regions()[pose].rects("eyes"):
         authority = authority.united(
             QRect(int(x * scale), int(y * scale), math.ceil(width * scale), math.ceil(height * scale)),
         )
@@ -446,15 +458,10 @@ def _has_bound_blink_source(expression: str) -> bool:
     authority over another expression's features, so those do not count.
     """
 
+    if _complete_blink_pose(expression) is not None:
+        return True
     if expression in COMPLETE_EXPRESSION_EYE_EXPRESSIONS:
-        complete = load_complete_halfbody_frames(
-            PROJECT_ROOT / "assets" / "expressions" / "complete-expressions"
-        )
-        return (
-            complete is not None
-            and expression in complete.expressions
-            and complete.expressions[expression][0] in complete.whole_frame_blinks
-        )
+        return False
     return (
         expression in EXPRESSION_BLINK_FRAMES
         or EXPRESSION_HALF_BLINK_FRAME_SOURCES.get(expression) is not None
