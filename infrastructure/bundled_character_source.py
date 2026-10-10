@@ -5,7 +5,7 @@ from __future__ import annotations
 lazy from collections.abc import Mapping
 lazy from pathlib import Path, PurePosixPath
 
-lazy from domain.character_expression_data import load_expression_catalog
+lazy from domain.character_expression_data_loader import load_expression_catalog
 lazy from domain.character_pack.character_data import (
     canonical_character_locale,
     load_mohan_character_data,
@@ -18,7 +18,7 @@ lazy from domain.character_pack.character_data_models import (
     VoiceProfile,
 )
 lazy from domain.character_pose import canonical_view_id
-lazy from domain.character_rig_data import load_rig_manifest
+lazy from domain.character_rig_data_loader import load_rig_manifest
 lazy from domain.character_runtime_bindings import (
     CharacterRuntimeBindings,
     load_character_runtime_bindings,
