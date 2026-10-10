@@ -42,7 +42,7 @@ _CharacterLoader = Callable[..., CharacterSource]
 _OFFICIAL_PACK_CEILING_BYTES = 768 * 1024 * 1024
 
 
-def _official_character_pack_limits() -> ValidationLimits:
+def official_character_pack_limits() -> ValidationLimits:
     """Match the 768 MiB ceiling official packs declare in pack-source.json."""
 
     return replace(
@@ -109,7 +109,7 @@ def activate_product_character_runtime(
         _activate(bundled_source)
         return bundled_source
 
-    limits = _official_character_pack_limits()
+    limits = official_character_pack_limits()
     load_development = (
         partial(load_development_character_pack_archive, limits=limits)
         if development_archive_loader is None
@@ -151,4 +151,5 @@ __all__ = (
     "DEFAULT_CHARACTER_ID",
     "SUPPORTED_CHARACTER_IDS",
     "activate_product_character_runtime",
+    "official_character_pack_limits",
 )
