@@ -284,14 +284,18 @@ def test_linkeyun_source_resolves_its_official_pack_and_builtin_sentinel(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    archive = tmp_path / "flameblade.lin-keyun-1.0.2.zip"
+    data_root = tmp_path / "profile"
+    character_pack = installed_character_pack_path(
+        "lin-keyun",
+        data_root=data_root,
+    )
     character_pack_builder.build_character_pack(
-        archive,
-        output_format="zip",
+        character_pack,
+        output_format="directory",
         source_path="assets/characters/lin-keyun/pack-source.json",
     )
+    monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
     monkeypatch.setenv(ACTIVE_CHARACTER_ENV, "lin-keyun")
-    monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(archive))
 
     source = service_container.create_default_character_source()
     ports = service_container.create_presentation_ports()

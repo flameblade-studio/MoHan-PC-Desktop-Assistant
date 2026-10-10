@@ -25159,7 +25159,7 @@
         {
           "line": 347,
           "path": "application/service_container.py",
-          "text": "official_pack_roots = character_source.assets.official_pack_roots"
+          "text": "official_pack_roots = getattr("
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -52930,7 +52930,7 @@
         {
           "line": 347,
           "path": "application/service_container.py",
-          "text": "official_pack_roots = character_source.assets.official_pack_roots"
+          "text": "official_pack_roots = getattr("
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",

@@ -7,7 +7,7 @@ lazy import struct
 lazy import zipfile
 lazy from pathlib import Path
 lazy from domain.outfit_pack_store import (
-    OfficialPackRoots, _atomic_json, _installed_pack_paths, _state_references_pack,
+    OFFICIAL_PACK_ROOT, OfficialPackRoots, _atomic_json, _installed_pack_paths, _state_references_pack,
     copy_pack_archive, inspect_cached_pack,
 )
 lazy from domain import _outfit_pack_models
@@ -115,7 +115,6 @@ BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
 BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
 BUILTIN_MAKEUP_MENU_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_MENU_VARIANTS
 BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS
-OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "official-packs"
 OPTIONAL_ENSEMBLE_CATEGORIES = frozenset({"makeup"})
 WEAPON_PLACEMENTS = frozenset({"back", "waist-left", "waist-right", "hand-left", "hand-right"})
 HANDHELD_PLACEMENTS = frozenset({"hand-left", "hand-right"})

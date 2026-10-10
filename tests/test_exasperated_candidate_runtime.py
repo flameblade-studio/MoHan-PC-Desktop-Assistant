@@ -23,6 +23,7 @@ lazy from application.service_container import create_presentation_ports
 lazy from infrastructure.app_resources import resource_path
 lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
 lazy from domain.outfit_pack_assets import OutfitPackError
+lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain.outfit_pack_source_bound import parse_source_bound_expressions
 lazy from infrastructure.exasperated_candidate_assets import (
     APPROVED_SOURCE_SHA256,
@@ -259,7 +260,7 @@ def test_product_factory_requires_explicit_absolute_candidate_path(
     (tmp_path / "appearance").mkdir()
     appearance = SimpleNamespace(store=None)
 
-    def load_appearance(root: Path, *, official_pack_root: Path):
+    def load_appearance(root: Path, *, official_pack_root: OfficialPackRoots):
         assert root == tmp_path / "appearance"
         appearance.official_pack_root = official_pack_root
         return appearance
@@ -271,7 +272,9 @@ def test_product_factory_requires_explicit_absolute_candidate_path(
     )
     create_presentation_ports().face_renderer_factory()
     assert appearance.store == default_data_dir() / "outfits"
-    assert appearance.official_pack_root == resource_path(".") / "assets/official-packs"
+    assert appearance.official_pack_root == (
+        resource_path(".") / "assets/official-packs",
+    )
     monkeypatch.setenv("MOHAN_EXASPERATED_CANDIDATE_DIR", "relative/candidate")
     with pytest.raises(ValueError, match="must be absolute"):
         create_presentation_ports().face_renderer_factory()

@@ -344,7 +344,11 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
     """Build presentation adapters from the already selected character source."""
 
     asset_root = character_source.assets.asset_root
-    official_pack_roots = character_source.assets.official_pack_roots
+    official_pack_roots = getattr(
+        character_source.assets,
+        "official_pack_roots",
+        (asset_root / "assets" / "official-packs",),
+    )
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 

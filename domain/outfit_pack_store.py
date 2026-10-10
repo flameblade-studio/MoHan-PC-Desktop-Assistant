@@ -15,6 +15,7 @@ lazy from domain.outfit_pack_assets import (
 )
 
 type OfficialPackRoots = str | Path | tuple[str | Path, ...]
+OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "official-packs"
 
 
 def official_pack_roots(value: OfficialPackRoots) -> tuple[Path, ...]:

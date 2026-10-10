@@ -32,8 +32,7 @@ lazy from domain.language_support import canonical_ui_language
 lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from domain.prompt_cache import PromptCacheTelemetry, PromptCacheTokenEvidence
 lazy from domain.safe_error import SafeError
-lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT
-lazy from domain.outfit_pack_store import OfficialPackRoots
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT, OfficialPackRoots
 lazy from domain.speech_providers import (
     AZURE_HD_SPEECH_PROVIDER,
     AZURE_SPEECH_PROVIDER,

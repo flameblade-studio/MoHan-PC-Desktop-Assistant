@@ -6075,7 +6075,8 @@
     {
       "paths": [
         "assets/expressions/source-bound-exasperated/mouths/open.rgba.png",
-        "domain/outfit_pack_source_bound.py"
+        "domain/outfit_pack_source_bound.py",
+        "domain/outfit_pack_store.py"
       ],
       "tests": [
         "test_exasperated_candidate_runtime.py"

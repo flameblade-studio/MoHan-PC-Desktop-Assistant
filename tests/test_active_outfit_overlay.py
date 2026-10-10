@@ -154,8 +154,10 @@ def _configure(
 
 @pytest.mark.parametrize(
     ("poses", "expected"),
-    (("cheek-rest", "cheek-glance"), True),
-    (("cheek-rest",), False),
+    (
+        (("cheek-rest", "cheek-glance"), True),
+        (("cheek-rest",), False),
+    ),
 )
 def test_appearance_declares_view_checks_active_pack_variants(
     tmp_path: Path,
