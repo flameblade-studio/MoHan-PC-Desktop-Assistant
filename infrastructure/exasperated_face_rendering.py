@@ -7,7 +7,9 @@ lazy from domain.companion_animation_contract import outfit_silhouette
 lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.face_rig import FaceMotionFrame
 lazy from infrastructure.exasperated_candidate_assets import (
-    DIMENSION as EXASPERATED_DIMENSION, load_exasperated_candidate_assets,
+    DIMENSION as EXASPERATED_DIMENSION,
+    ExasperatedCandidateAssets,
+    load_exasperated_candidate_assets,
 )
 
 MOUTH_APERTURE_THRESHOLD = 0.01
@@ -26,14 +28,20 @@ class ExasperatedFaceRenderingMixin:
         motion: FaceMotionFrame,
         layers: object,
         aperture: float | None,
+        assets_override: ExasperatedCandidateAssets | None = None,
     ) -> QPixmap:
         """Compose native parts and their own mouth before optional matching appearance."""
-        if self._exasperated_candidate_assets is None:
+        if assets_override is None and self._exasperated_candidate_assets is None:
             assert self._exasperated_candidate_dir is not None
             self._exasperated_candidate_assets = load_exasperated_candidate_assets(
                 self._exasperated_candidate_dir
             )
-        assets = self._exasperated_candidate_assets
+        assets = assets_override or self._exasperated_candidate_assets
+        assert assets is not None
+        if self._exasperated_candidate_key != assets.cache_key:
+            self._exasperated_candidate_rest = None
+            self._exasperated_candidate_patches.clear()
+            self._exasperated_candidate_key = assets.cache_key
         if self._exasperated_candidate_rest is None:
             self._exasperated_candidate_rest = assets.compose()
         frame = QPixmap(self._exasperated_candidate_rest)
@@ -64,7 +72,7 @@ class ExasperatedFaceRenderingMixin:
                     painter.drawPixmap(0, 0, patch)
                 finally:
                     painter.end()
-        if self._candidate_appearance_overlay is not None:
+        if assets_override is None and self._candidate_appearance_overlay is not None:
             frame = self._candidate_appearance_overlay.apply(
                 frame,
                 _EXASPERATED_SILHOUETTE,

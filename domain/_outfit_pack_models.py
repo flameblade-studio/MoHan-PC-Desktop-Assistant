@@ -15,6 +15,7 @@ class AppearanceAsset:
     anchor_y: int
     z_order: int
     occludes_makeup: bool = False
+    clears_base: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,6 +35,7 @@ class AppearanceVariant:
     eye_states: frozendict[str, frozendict[str, tuple[AppearanceAsset, ...]]] = frozendict()
     foundation_silhouettes: frozenset[str] = frozenset()
     mouth_states: frozendict[str, frozendict[str, tuple[AppearanceAsset, ...]]] = frozendict()
+    source_bound_silhouettes: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,6 +46,30 @@ class AppearanceItem:
     variants: tuple[AppearanceVariant, ...]
     attachment_point: str | None = None
     safe_mask: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class SourceBoundSelection:
+    item_id: str
+    variant_id: str
+
+
+@dataclass(frozen=True, slots=True)
+class SourceBoundExpression:
+    expression_id: str
+    silhouette: str
+    approved_source_sha256: str
+    mouth_bounds: tuple[int, int, int, int]
+    selections: frozendict[str, SourceBoundSelection]
+    portrait: AppearanceAsset
+    mouths: frozendict[str, AppearanceAsset]
+    mouth_source_sha256: frozendict[str, str]
+    blink: str
+
+    @property
+    def cache_key(self) -> str:
+        digests = (self.portrait.sha256, *(self.mouths[key].sha256 for key in sorted(self.mouths)))
+        return ":".join(digests)
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,6 +84,7 @@ class OutfitPack:
     compatible_body_profile: str
     items: tuple[AppearanceItem, ...]
     ensembles: tuple[AppearanceEnsemble, ...]
+    source_bound_expressions: frozendict[str, SourceBoundExpression] = frozendict()
 
     @property
     def looks(self) -> tuple[AppearanceItem, ...]:

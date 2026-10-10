@@ -61,6 +61,18 @@ def _sealed_manifest(
         entry["sha256"] = hashlib.sha256(data).hexdigest()
         entry["width"] = width
         entry["height"] = height
+    for expression in manifest.get("source_bound_expressions", []):
+        receipt = expression.get("receipt")
+        if isinstance(receipt, dict):
+            records = (
+                expression.get("parts", {}).get("portrait"),
+                *expression.get("mouths", {}).values(),
+            )
+            receipt["installed_files_sha256"] = {
+                record["path"]: record["sha256"]
+                for record in records
+                if isinstance(record, dict)
+            }
     return manifest, assets
 
 

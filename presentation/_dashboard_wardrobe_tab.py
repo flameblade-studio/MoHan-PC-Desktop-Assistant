@@ -9,7 +9,6 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from application.wardrobe_service import WardrobeService
-lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT
 lazy from presentation.dashboard_artwork import CelestialFrame
 lazy from presentation.dashboard_wardrobe_categories import (
     build_appearance_card, reload_appearance_controls,
@@ -61,7 +60,7 @@ def _build_package_library(shell: _DashboardWardrobeHost) -> QFrame:
     library.addWidget(library_title)
     shell.wardrobe_service = WardrobeService(
         shell.db.path.parent / "outfits",
-        official_pack_root=OFFICIAL_PACK_ROOT,
+        official_pack_root=shell.presentation_ports.official_pack_roots,
     )
     shell.wardrobe_packages = QListWidget()
     shell.wardrobe_packages.setMinimumHeight(130)

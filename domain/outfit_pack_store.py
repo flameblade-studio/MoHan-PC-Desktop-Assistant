@@ -14,11 +14,21 @@ lazy from domain.outfit_pack_assets import (
     deferred_png_content_validation,
 )
 
+type OfficialPackRoots = str | Path | tuple[str | Path, ...]
+OFFICIAL_PACK_ROOT = Path(__file__).resolve().parents[1] / "assets" / "official-packs"
+
+
+def official_pack_roots(value: OfficialPackRoots) -> tuple[Path, ...]:
+    """Normalize one legacy root or an ordered set of character-owned roots."""
+
+    roots = (value,) if isinstance(value, (str, Path)) else value
+    return tuple(dict.fromkeys(Path(root) for root in roots))
+
 
 def _installed_pack_paths(
     store: Path,
     *,
-    official_pack_root: Path,
+    official_pack_root: OfficialPackRoots,
     official_pack_ids: frozenset[str] | None = None,
 ) -> tuple[Path, ...]:
     """User-installed packs first, then the official packs shipped with the app (always restorable)."""
@@ -26,26 +36,27 @@ def _installed_pack_paths(
     installed_root = Path(store) / "packages"
     if installed_root.is_dir():
         paths.extend(sorted(installed_root.glob("*.mohan-outfit")))
-    official_root = Path(official_pack_root)
-    if official_root.is_dir():
-        official_paths = sorted(official_root.glob("*.mohan-outfit"))
-        installed_ids = {path.stem for path in paths}
-        duplicate = next(
-            (path for path in official_paths if path.stem in installed_ids),
-            None,
-        )
-        if duplicate is not None:
-            raise OutfitPackError(
-                "Appearance pack identifiers must be unique.",
-                reason="duplicate_pack_id",
-                pack_id=duplicate.stem,
-                asset_path=duplicate.name,
+    installed_ids = {path.stem for path in paths}
+    for official_root in official_pack_roots(official_pack_root):
+        if official_root.is_dir():
+            official_paths = sorted(official_root.glob("*.mohan-outfit"))
+            duplicate = next(
+                (path for path in official_paths if path.stem in installed_ids),
+                None,
             )
-        paths.extend(
-            official_paths
-            if official_pack_ids is None
-            else (path for path in official_paths if path.stem in official_pack_ids)
-        )
+            if duplicate is not None:
+                raise OutfitPackError(
+                    "Appearance pack identifiers must be unique.",
+                    reason="duplicate_pack_id",
+                    pack_id=duplicate.stem,
+                    asset_path=duplicate.name,
+                )
+            paths.extend(
+                official_paths
+                if official_pack_ids is None
+                else (path for path in official_paths if path.stem in official_pack_ids)
+            )
+            installed_ids.update(path.stem for path in official_paths)
     pack_ids: dict[str, Path] = {}
     for path in paths:
         previous = pack_ids.setdefault(path.stem, path)

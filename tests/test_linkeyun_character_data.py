@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import json
 lazy import re
 lazy import string
+lazy import zipfile
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path
 lazy from typing import Any
@@ -20,6 +21,10 @@ LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 APPEARANCE_DEFAULTS_PATH = "appearance/defaults.json"
 APPEARANCE_DEFAULTS_REPOSITORY_PATH = (
     "assets/characters/lin-keyun/appearance/defaults.json"
+)
+OFFICIAL_OUTFIT_REPOSITORY_PATH = (
+    "assets/characters/lin-keyun/official-packs/"
+    "linkeyun.official.modern-office.mohan-outfit"
 )
 RUNTIME_JSON_FILES = (
     "dialogue/en.json",
@@ -44,11 +49,15 @@ EXPECTED_FILES = frozenset(
         *RUNTIME_JSON_FILES,
         APPEARANCE_DEFAULTS_PATH,
         "LICENSE.md",
+        "official-packs/linkeyun.official.modern-office.mohan-outfit",
         "pack-source.json",
         "README.md",
     }
 )
 EXPECTED_FILE_COUNT = len(EXPECTED_FILES)
+HUMAN_READABLE_SUFFIXES = frozenset({".json", ".md"})
+BINARY_SUFFIXES = frozenset({".mohan-outfit"})
+ARCHIVE_BINARY_SUFFIXES = frozenset({".png"})
 EXPECTED_DIALOGUE_LABEL_COUNT = 33
 EXPECTED_LINE_SET_LINE_COUNT = 37
 EXPECTED_PHRASEBOOK_COUNT = 20
@@ -135,7 +144,9 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
     }
     assert files == EXPECTED_FILES
     assert len(files) == EXPECTED_FILE_COUNT
-    for relative in EXPECTED_FILES:
+    for relative in EXPECTED_FILES - {
+        "official-packs/linkeyun.official.modern-office.mohan-outfit"
+    }:
         data = (LIN_KEYUN_ROOT / relative).read_bytes()
         assert data.endswith(b"\n"), relative
         assert b"\r\n" not in data, relative
@@ -208,9 +219,25 @@ def test_linkeyun_four_languages_are_complete_and_character_specific() -> None:
 
 
 def test_linkeyun_human_facing_content_has_no_legacy_identity_leak() -> None:
-    for path in LIN_KEYUN_ROOT.rglob("*"):
-        if path.is_file():
+    files = tuple(path for path in LIN_KEYUN_ROOT.rglob("*") if path.is_file())
+    assert {path.suffix for path in files} <= (
+        HUMAN_READABLE_SUFFIXES | BINARY_SUFFIXES
+    )
+    for path in files:
+        if path.suffix in HUMAN_READABLE_SUFFIXES:
             assert "墨寒" not in path.read_text(encoding="utf-8"), path
+            continue
+        with zipfile.ZipFile(path) as archive:
+            members = tuple(name for name in archive.namelist() if not name.endswith("/"))
+            assert {Path(name).suffix for name in members} <= (
+                HUMAN_READABLE_SUFFIXES | ARCHIVE_BINARY_SUFFIXES
+            )
+            for name in members:
+                if Path(name).suffix in HUMAN_READABLE_SUFFIXES:
+                    assert "墨寒" not in archive.read(name).decode("utf-8"), (
+                        path,
+                        name,
+                    )
 
     inspected = (
         *(f"persona/{language}.json" for language in LANGUAGES),
@@ -296,11 +323,14 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     mohan_source = _load(MOHAN_ROOT, "pack-source.json")
     assert source["pack_id"] == "flameblade.lin-keyun"
     assert source["character_id"] == "lin-keyun"
-    assert source["pack_version"] == "1.0.1"
+    assert source["pack_version"] == "1.0.2"
     lock = json.loads(
         (ROOT / "docs/character-pack/lin-keyun-pack.lock.json").read_text(encoding="utf-8")
     )
     assert lock["pack_version"] == source["pack_version"]
+    assert lock["package_hash"] == (
+        "ffdcac28de9d1b4700476fbac53802b5216ce1eb33a1c4966a7d878928d3067a"
+    )
     assert source["distribution"]["access"] == "public"
     assert source["distribution"]["redistribution"] == "allowed"
     assert source["licenses"].keys() == mohan_source["licenses"].keys()
@@ -321,19 +351,15 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
         assert mohan_declaration["notice_path"] == (
             "assets/characters/mohan/LICENSE.md"
         )
-    assert source["dependencies"] == [
-        {
-            "id": "linkeyun.official.modern-office",
-            "kind": "outfit_pack",
-            "min_version": "1.0.0",
-            "max_version_exclusive": "2.0.0",
-            "required": True,
-        }
-    ]
+    assert "dependencies" not in source
     component_ids = {component["id"] for component in source["components"]}
     assert "linkeyun.appearance-defaults" in component_ids
+    assert "linkeyun.official.modern-office" in component_ids
     assert "mohan.makeup.builtin" in component_ids
     assert "mohan.official.blue-white-hanfu" not in component_ids
+    with zipfile.ZipFile(ROOT / OFFICIAL_OUTFIT_REPOSITORY_PATH) as archive:
+        outfit_manifest = json.loads(archive.read("manifest.json"))
+    assert outfit_manifest["source"]["license"] == "CC BY-NC-ND 4.0"
 
     readme = (LIN_KEYUN_ROOT / "README.md").read_text(encoding="utf-8")
     for identifier in (
@@ -362,18 +388,22 @@ def test_linkeyun_pack_builds_validates_and_reads_without_mohan_data(
     assert reader.manifest.pack_id == "flameblade.lin-keyun"
     assert reader.manifest.character_id == "lin-keyun"
     assert reader.manifest.access == "public"
-    assert reader.manifest.dependencies[0].dependency_id == (
-        "linkeyun.official.modern-office"
-    )
+    assert reader.manifest.dependencies == ()
     declared = {record.path for record in reader.manifest.files}
     assert any(path.startswith("assets/characters/lin-keyun/") for path in declared)
     assert not any(path.startswith("assets/characters/mohan/") for path in declared)
     assert APPEARANCE_DEFAULTS_REPOSITORY_PATH in declared
+    assert OFFICIAL_OUTFIT_REPOSITORY_PATH in declared
     appearance_record = next(
         record for record in reader.manifest.files
         if record.path == APPEARANCE_DEFAULTS_REPOSITORY_PATH
     )
     assert appearance_record.license_component == "program_data"
+    outfit_record = next(
+        record for record in reader.manifest.files
+        if record.path == OFFICIAL_OUTFIT_REPOSITORY_PATH
+    )
+    assert outfit_record.license_component == "character_art"
     for relative in RUNTIME_JSON_FILES:
         assert f"assets/characters/lin-keyun/{relative}" in declared
     assert reader.appearance_defaults.native_headwear is None

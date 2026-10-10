@@ -35,6 +35,7 @@ lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack import (
     FOUNDATION_SLOT,
     OPTIONAL_MAKEUP_SILHOUETTES,
+    OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
     REQUIRED_SILHOUETTES,
@@ -87,12 +88,14 @@ EXCLUSION_RIG_LAYERS = (
         tuple(CHARACTER_LAYER_ROLES[key] for key in ("upper_lip", "lower_lip")),
     ),
 )
-# Half-body silhouettes share the three authored expression rigs; the four
-# gesture silhouettes are front-pose performances of the same head.
+# Half-body silhouettes share the three authored expression rigs.  Gesture
+# performances use the front rig, while optional complete-expression views use
+# the cheek canvas and provide their own source-bound identity at runtime.
 HALF_BODY_RIGS = frozendict(
     {
         **{value: key for key, value in _RIG_MANIFEST.pose_silhouettes.items()},
         **dict.fromkeys(outfit_pack.GESTURE_SILHOUETTES, "front"),
+        **dict.fromkeys(OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES, "cheek"),
     }
 )
 HALF_BODY_RIG_ROOT = CHARACTER_ASSET_PATHS["halfbody_layers"]

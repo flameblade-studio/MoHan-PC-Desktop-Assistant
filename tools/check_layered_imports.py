@@ -76,6 +76,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.layered_face_renderer",
         "infrastructure.layered_full_body_renderer",
         "infrastructure.multimodal_model_provider",
+        "infrastructure.outfit_source_bound_expressions",
         "infrastructure.platform_contracts",
         "infrastructure.platform_services",
         "infrastructure.profile_transfer",

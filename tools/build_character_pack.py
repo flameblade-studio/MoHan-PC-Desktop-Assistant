@@ -48,6 +48,7 @@ CharacterPackBuildSettings = _core.CharacterPackBuildSettings
 
 # Every character-data category maps explicitly; unknown data fails closed.
 CHARACTER_DATA_LICENSE_COMPONENTS = {
+    "appearance_pack": "character_art",
     "character_license_notice": "program_data",
     "character_appearance_defaults": "program_data",
     "character_voice_data": "voice",

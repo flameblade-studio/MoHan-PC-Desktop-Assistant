@@ -20,6 +20,7 @@ lazy from domain.outfit_pack_archive import SUPPORTED_SOURCE_LICENSES
 lazy from domain.outfit_pack import (
     EXPRESSION_SILHOUETTE_ALIASES,
     GESTURE_SILHOUETTES,
+    OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
     POSE_ATLAS_SILHOUETTES,
     REQUIRED_SILHOUETTES,
     OutfitPackError,
@@ -222,6 +223,7 @@ def test_source_license_allowlist_accepts_supported_values(tmp_path: Path) -> No
         "BSD-2-Clause",
         "BSD-3-Clause",
         "CC BY 4.0",
+        "CC BY-NC-ND 4.0",
         "CC-BY-4.0",
         "CC-BY-NC-ND-4.0",
         "CC0-1.0",
@@ -525,6 +527,107 @@ def _assert_pose_rejections(
     _reject(_pack(root / "missing-hair-layer.zip", invalid, assets))
 
 
+def _assert_full_body_candidate_scope(
+    root: Path,
+    manifest: dict,
+    assets: dict[str, bytes],
+) -> None:
+    candidate = copy.deepcopy(manifest)
+    candidate["headwear"] = []
+    candidate["accessories"] = []
+    selections = candidate["ensembles"][0]["selections"]
+    selections.update({
+        "headwear": None,
+        "weapon": None,
+        "handheld": None,
+        "jewelry": None,
+        "foreground-effect": None,
+    })
+    for group in ("looks", "hairstyles"):
+        variant = candidate[group][0]["variants"][0]
+        variant["silhouette_scope"] = "full-body"
+        variant["poses"] = {
+            silhouette: entries
+            for silhouette, entries in variant["poses"].items()
+            if silhouette in POSE_ATLAS_SILHOUETTES
+        }
+        for field in (
+            "body_visibility",
+            "face_occlusion_masks",
+            "hand_occlusion",
+            "garment_occlusion",
+        ):
+            if field in variant:
+                variant[field] = {
+                    silhouette: rule
+                    for silhouette, rule in variant[field].items()
+                    if silhouette in POSE_ATLAS_SILHOUETTES
+                }
+    candidate_assets = _referenced_assets(candidate, assets)
+    archive = _pack(root / "full-body-candidate.zip", candidate, candidate_assets)
+    parsed = inspect_outfit_pack(archive)
+    garment = next(item for item in parsed.items if item.category == "garment")
+    resolution = resolve_variant_for_view(garment.variants[0], GESTURE_SILHOUETTES[0])
+    assert resolution.resolved_silhouette is None
+    assert resolution.assets == ()
+    assert not resolution.exact_pose_atlas_match
+
+    invalid = copy.deepcopy(candidate)
+    del invalid["looks"][0]["variants"][0]["poses"][POSE_ATLAS_SILHOUETTES[0]]
+    _reject(_pack(root / "full-body-candidate-missing-view.zip", invalid, candidate_assets))
+
+    invalid = copy.deepcopy(candidate)
+    invalid["hairstyles"][0]["variants"][0]["silhouette_scope"] = "pose-atlas"
+    _reject(_pack(root / "full-body-candidate-invalid-scope.zip", invalid, candidate_assets))
+
+
+def _assert_optional_expression_appearance_views(
+    root: Path,
+    data: bytes,
+    manifest: dict,
+    assets: dict[str, bytes],
+) -> None:
+    candidate = copy.deepcopy(manifest)
+    candidate_assets = dict(assets)
+    garment = candidate["looks"][0]["variants"][0]
+    hairstyle = candidate["hairstyles"][0]["variants"][0]
+    for silhouette in OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES:
+        garment_path = f"assets/robe-{silhouette}-outerwear.png"
+        hair_paths = {
+            slot: f"assets/hair-{silhouette}-{slot}.png"
+            for slot in ("back", "front", "bangs")
+        }
+        candidate_assets[garment_path] = data
+        garment["poses"][silhouette] = [
+            _asset(garment_path, data, "outerwear")
+        ]
+        garment["body_visibility"][silhouette] = dict(
+            garment["body_visibility"]["cheek-rest"]
+        )
+        hairstyle["poses"][silhouette] = []
+        for slot, path in hair_paths.items():
+            candidate_assets[path] = data
+            hairstyle["poses"][silhouette].append(_asset(path, data, slot))
+        hairstyle["face_occlusion_masks"][silhouette] = "bangs-safe"
+        hairstyle["hand_occlusion"][silhouette] = "behind-hands"
+        hairstyle["garment_occlusion"][silhouette] = "behind-collar"
+    parsed = inspect_outfit_pack(
+        _pack(root / "optional-expression-appearance.zip", candidate, candidate_assets)
+    )
+    for category in ("garment", "hairstyle"):
+        item = next(item for item in parsed.items if item.category == category)
+        for silhouette in OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES:
+            resolution = resolve_variant_for_view(item.variants[0], silhouette)
+            assert resolution.resolved_silhouette == silhouette
+            assert resolution.assets
+
+    invalid = copy.deepcopy(candidate)
+    invalid["looks"][0]["variants"][0]["poses"]["cheek-unknown"] = list(
+        invalid["looks"][0]["variants"][0]["poses"]["cheek-glance"]
+    )
+    _reject(_pack(root / "optional-expression-unknown.zip", invalid, candidate_assets))
+
+
 def _assert_visual_contract_rejections(
     root: Path,
     manifest: dict,
@@ -541,6 +644,68 @@ def _assert_visual_contract_rejections(
     hair_pose = invalid["hairstyles"][0]["variants"][0]["poses"]
     hair_pose["front-crossed"][0]["slot"] = "face"
     _reject(_pack(root / "core.zip", invalid, assets))
+
+
+def _assert_base_clear_contract(
+    root: Path,
+    data: bytes,
+    manifest: dict,
+    assets: dict[str, bytes],
+) -> None:
+    candidate = copy.deepcopy(manifest)
+    candidate_assets = dict(assets)
+    poses = candidate["looks"][0]["variants"][0]["poses"]
+    for silhouette, entries in poses.items():
+        path = f"assets/base-clear-{silhouette}.png"
+        declaration = _asset(path, data, "garment-occluder")
+        declaration["clears_base"] = True
+        entries.append(declaration)
+        candidate_assets[path] = data
+    parsed = inspect_outfit_pack(
+        _pack(root / "base-clear-valid.zip", candidate, candidate_assets)
+    )
+    garment = next(item for item in parsed.items if item.category == "garment")
+    assert all(
+        sum(asset.clears_base for asset in declarations) == 1
+        for declarations in garment.variants[0].poses.values()
+    )
+
+    invalid = copy.deepcopy(manifest)
+    invalid["looks"][0]["variants"][0]["poses"]["front-crossed"][0][
+        "clears_base"
+    ] = True
+    _reject(_pack(root / "base-clear-wrong-slot.zip", invalid, assets))
+
+    invalid = copy.deepcopy(manifest)
+    invalid["looks"][0]["variants"][0]["poses"]["front-crossed"][0][
+        "slot"
+    ] = "garment-occluder"
+    _reject(_pack(root / "base-clear-missing-flag.zip", invalid, assets))
+
+    invalid = copy.deepcopy(candidate)
+    next(
+        entry
+        for entry in invalid["looks"][0]["variants"][0]["poses"][
+            "front-crossed"
+        ]
+        if entry["slot"] == "garment-occluder"
+    )["clears_base"] = False
+    _reject(_pack(root / "base-clear-disabled.zip", invalid, candidate_assets))
+
+    invalid = copy.deepcopy(candidate)
+    duplicate_path = "assets/base-clear-duplicate.png"
+    declaration = _asset(duplicate_path, data, "garment-occluder")
+    declaration["clears_base"] = True
+    invalid["looks"][0]["variants"][0]["poses"]["front-crossed"].append(
+        declaration
+    )
+    _reject(
+        _pack(
+            root / "base-clear-duplicate.zip",
+            invalid,
+            {**candidate_assets, duplicate_path: data},
+        )
+    )
 
 
 def _assert_accessory_rejections(
@@ -630,8 +795,13 @@ def run() -> None:
             _assert_removal_guards(root, store, manifest, assets)
             _assert_removal_fails_closed(store, valid, official_pack_root)
             _assert_single_category_packs(root, manifest, assets)
+            _assert_full_body_candidate_scope(root, manifest, assets)
+            _assert_optional_expression_appearance_views(
+                root, data, manifest, assets,
+            )
             _assert_pose_rejections(root, manifest, assets)
             _assert_visual_contract_rejections(root, manifest, assets)
+            _assert_base_clear_contract(root, data, manifest, assets)
             _assert_accessory_rejections(root, manifest, assets)
             _assert_asset_rejections(root, data, manifest, assets)
             _assert_invalid_update_is_atomic(root, store, manifest, assets)

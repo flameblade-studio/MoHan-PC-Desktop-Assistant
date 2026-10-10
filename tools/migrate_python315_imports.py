@@ -68,12 +68,16 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             "from",
             "domain.outfit_pack_assets",
             (
-                "ASSET_PATH",
+                "FOUNDATION_SLOT",
+                "GARMENT_SLOTS",
                 "MANIFEST",
-                "MAX_IMAGE_DIMENSION",
+                "MAKEUP_SLOTS",
+                "MAKEUP_SLOTS_V2",
+                "MAX_Z_ORDER",
+                "MIN_Z_ORDER",
                 "IncompatibleBodyProfileError",
                 "OutfitPackError",
-                "_dimensions",
+                "parse_appearance_asset",
             ),
         ),
         (
@@ -93,6 +97,13 @@ EAGER_IMPORT_EXCEPTIONS = frozendict({
             "from",
             "infrastructure.layered_face_painting",
             ("MAX_CACHED_MASK_BOUNDS",),
+        ),
+        # A lazy consumer of a lazy re-export receives an uncallable proxy on
+        # Python 3.15rc1; the presentation factory requires the actual class.
+        (
+            "from",
+            "infrastructure.outfit_source_bound_expressions",
+            ("OutfitSourceBoundExpressionProvider",),
         ),
     }),
     # ``infrastructure.layered_full_body_renderer`` re-exports the speech

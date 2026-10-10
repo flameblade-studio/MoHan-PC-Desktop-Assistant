@@ -75,6 +75,17 @@
       "schema": "mohan-outfit-pack.v2"
     },
     {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "linkeyun.official.modern-office",
+      "kind": "outfit_pack",
+      "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit",
+      "required": true,
+      "schema": "mohan-outfit-pack.v2"
+    },
+    {
       "body_profile": null,
       "id": "linkeyun.identity",
       "kind": "persona",
@@ -163,15 +174,6 @@
       "schema": "flameblade.character-voice-profile.v1"
     }
   ],
-  "dependencies": [
-    {
-      "id": "linkeyun.official.modern-office",
-      "kind": "outfit_pack",
-      "max_version_exclusive": "2.0.0",
-      "min_version": "1.0.0",
-      "required": true
-    }
-  ],
   "distribution": {
     "access": "public",
     "redistribution": "allowed",
@@ -219,7 +221,7 @@
     }
   },
   "pack_id": "flameblade.lin-keyun",
-  "pack_version": "1.0.1",
+  "pack_version": "1.0.2",
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "source_refs": [

@@ -382,16 +382,20 @@ def _network_disabled():
 
 @contextmanager
 def _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):
-    from domain import outfit_pack
+    from domain import outfit_pack, outfit_pack_store
 
-    previous = outfit_pack.OFFICIAL_PACK_ROOT
-    outfit_pack.OFFICIAL_PACK_ROOT = settings.resolve_asset_path(
-        asset_root, settings.official_pack_root,
-    )
+    # outfit_pack_store defines the root and outfit_pack re-exports it; consumers
+    # import it from the defining module, so both bindings must point here.
+    modules = (outfit_pack_store, outfit_pack)
+    previous = tuple(module.OFFICIAL_PACK_ROOT for module in modules)
+    root = settings.resolve_asset_path(asset_root, settings.official_pack_root)
+    for module in modules:
+        module.OFFICIAL_PACK_ROOT = root
     try:
         yield
     finally:
-        outfit_pack.OFFICIAL_PACK_ROOT = previous
+        for module, value in zip(modules, previous, strict=True):
+            module.OFFICIAL_PACK_ROOT = value
 
 
 def _prepare_store(

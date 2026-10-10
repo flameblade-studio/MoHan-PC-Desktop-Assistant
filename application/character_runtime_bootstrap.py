@@ -6,8 +6,12 @@ lazy import logging
 lazy import os
 lazy import sys
 lazy from collections.abc import Callable
+lazy from dataclasses import replace
+lazy from functools import partial
 lazy from pathlib import Path
 
+lazy from domain.character_pack.models import ValidationLimits
+lazy from domain.character_pack.validation import DEFAULT_LIMITS
 lazy from domain.character_source import (
     CharacterEngineProfile,
     CharacterSource,
@@ -35,6 +39,17 @@ SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID})
 _CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
 
 _CharacterLoader = Callable[..., CharacterSource]
+_OFFICIAL_PACK_CEILING_BYTES = 768 * 1024 * 1024
+
+
+def _official_character_pack_limits() -> ValidationLimits:
+    """Match the 768 MiB ceiling official packs declare in pack-source.json."""
+
+    return replace(
+        DEFAULT_LIMITS,
+        max_archive_bytes=_OFFICIAL_PACK_CEILING_BYTES,
+        max_total_bytes=_OFFICIAL_PACK_CEILING_BYTES,
+    )
 
 
 def _product_root() -> Path:
@@ -94,12 +109,17 @@ def activate_product_character_runtime(
         _activate(bundled_source)
         return bundled_source
 
+    limits = _official_character_pack_limits()
     load_development = (
-        load_development_character_pack_archive
+        partial(load_development_character_pack_archive, limits=limits)
         if development_archive_loader is None
         else development_archive_loader
     )
-    load_installed = load_installed_character_pack if installed_loader is None else installed_loader
+    load_installed = (
+        partial(load_installed_character_pack, limits=limits)
+        if installed_loader is None
+        else installed_loader
+    )
     try:
         development_archive = os.environ.get(
             DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,

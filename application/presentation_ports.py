@@ -2,8 +2,7 @@ from __future__ import annotations
 
 """Presentation-facing contracts and immutable request data.
 
-This module is the inward-facing seam used by Qt presentation code.  It keeps GUI objects and adapter implementations outside this boundary; infrastructure and
-integration implementations are supplied only by the composition root.
+This module is the inward-facing seam used by Qt presentation code. It keeps GUI objects and adapter implementations outside this boundary; infrastructure and integration implementations are supplied only by the composition root.
 """
 
 lazy import os
@@ -20,7 +19,6 @@ lazy from application.service_contracts import (
     PlatformProgressUpdate,
     PresentationDatabasePort,
 )
-
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.core_constants import DEFAULT_TEXT_MODEL, DEFAULT_TRANSCRIPTION_MODEL
 lazy from domain.contracts import (
@@ -34,12 +32,12 @@ lazy from domain.language_support import canonical_ui_language
 lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from domain.prompt_cache import PromptCacheTelemetry, PromptCacheTokenEvidence
 lazy from domain.safe_error import SafeError
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT, OfficialPackRoots
 lazy from domain.speech_providers import (
     AZURE_HD_SPEECH_PROVIDER,
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
 )
-
 _CHARACTER_DATA = load_mohan_character_data()
 _VOICE_PROFILE = _CHARACTER_DATA.voice
 _VOICE_PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
@@ -762,6 +760,7 @@ class PresentationPorts:
     validate_face_assets: FaceAssetValidator
     face_renderer_factory: FaceRendererFactory
     visible_windows: VisibleWindowsProvider
+    official_pack_roots: OfficialPackRoots = OFFICIAL_PACK_ROOT
     realtime_output_config_factory: RealtimeSpeechOutputConfigFactory = (
         create_realtime_output_config
     )

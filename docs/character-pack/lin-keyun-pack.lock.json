@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.lin-keyun-1.0.1.zip",
-    "bytes": 620757987,
-    "sha256": "70c25335325359f1c75027c73e7e9592b7b4e7d3d88c4ba1c6fac2b6484c1836"
+    "asset_name": "flameblade.lin-keyun-1.0.2.zip",
+    "bytes": 645000613,
+    "sha256": "ecd8c0743d588807f0bd53094110131d81fe51f7aec69a871f6821e545f3f5be"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -55,6 +55,11 @@
       "bytes": 13892,
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
+    },
+    {
+      "bytes": 24241819,
+      "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit",
+      "sha256": "8b5f3a64edcc9a469c9c64a7696fd06d431986d53d6c94a3f1baa1fbe260964b"
     },
     {
       "bytes": 2163,
@@ -8548,12 +8553,12 @@
     }
   ],
   "pack_id": "flameblade.lin-keyun",
-  "pack_version": "1.0.1",
-  "package_hash": "38a4297f107029c1114dc42580c6b82683a0a4c27aadb099bbc4d7f0fcdc93ff",
+  "pack_version": "1.0.2",
+  "package_hash": "ffdcac28de9d1b4700476fbac53802b5216ce1eb33a1c4966a7d878928d3067a",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "lin-keyun-pack-v1.0.1",
+    "release_tag": "lin-keyun-pack-v1.0.2",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {

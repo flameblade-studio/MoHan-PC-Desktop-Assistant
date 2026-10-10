@@ -278,6 +278,49 @@ def test_glance_uses_complete_expression_frames_for_speech_and_whole_frame_blink
             assert rgba_bytes(blink.toImage()) == rgba_bytes(expected.toImage())
 
 
+@pytest.mark.parametrize(
+    ("declares_exact_view", "expected_view"),
+    ((True, "cheek-glance"), (False, "cheek-rest")),
+)
+def test_complete_cheek_appearance_uses_exact_view_with_legacy_fallback(
+    declares_exact_view: bool,
+    expected_view: str,
+) -> None:
+    root = Path(__file__).resolve().parents[1] / "assets" / "expressions" / "complete-expressions"
+    composed_views = []
+
+    class Appearance:
+        @staticmethod
+        def appearance_declares_view(view_id):
+            assert view_id == "cheek-glance"
+            return declares_exact_view
+
+        @staticmethod
+        def apply_animated(frame, view_id, paint_motion, **_options):
+            composed_views.append(view_id)
+            paint_motion(frame)
+            return frame
+
+    renderer = LayeredParametricFaceRenderer(
+        authority_dir=root.parent,
+        outfit_overlay=Appearance(),
+        use_detachable=False,
+    )
+    motion = FaceMotionFrame(
+        pose=FacePose.CHEEK,
+        expression="glance",
+        viseme=Viseme.I,
+        mouth=MouthShape(aperture=0.18),
+        expression_shape=ExpressionShape(),
+    )
+
+    renderer.render(
+        QPixmap(), motion, SimpleNamespace(mouth_expression="glance_speech_mid"),
+    )
+
+    assert composed_views[-1] == expected_view
+
+
 @pytest.mark.parametrize("expression", ("caught", "happy", "worried", "reminder"))
 def test_batch2_cheek_expressions_use_complete_frames_for_speech_and_blink(expression):
     root = Path(__file__).resolve().parents[1] / "assets" / "expressions" / "complete-expressions"

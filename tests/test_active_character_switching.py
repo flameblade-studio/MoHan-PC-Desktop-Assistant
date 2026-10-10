@@ -20,7 +20,11 @@ lazy from domain.character_runtime import (
     character_rig_manifest,
 )
 lazy from domain.character_source import active_character_engine_profile, active_character_source
-lazy from domain.outfit_pack import resolve_active_selection
+lazy from domain.outfit_pack import (
+    installed_pack_path,
+    list_installed_outfits,
+    resolve_active_selection,
+)
 lazy from domain.outfit_pack_official import (
     BUILTIN_MAKEUP_PACK_ID,
     OFFICIAL_NATIVE_HAIR_ALIAS,
@@ -49,6 +53,7 @@ lazy from tests.character_pack_fixtures import (
     rewrite_character_pack_manifest,
     tamper_character_pack_payload,
 )
+lazy from tools import build_character_pack as character_pack_builder
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR_ENV = "MOHAN_DATA_DIR"
@@ -275,6 +280,65 @@ def test_missing_external_outfit_falls_back_to_bare_base_with_diagnostic(
     assert tuple(option.option_id for option in headwear) == ("none",)
 
 
+def test_linkeyun_source_resolves_its_official_pack_and_builtin_sentinel(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data_root = tmp_path / "profile"
+    character_pack = installed_character_pack_path(
+        "lin-keyun",
+        data_root=data_root,
+    )
+    character_pack_builder.build_character_pack(
+        character_pack,
+        output_format="directory",
+        source_path="assets/characters/lin-keyun/pack-source.json",
+    )
+    monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, "lin-keyun")
+
+    source = service_container.create_default_character_source()
+    ports = service_container.create_presentation_ports()
+    shared_root = source.assets.asset_root / "assets" / "official-packs"
+    character_root = (
+        source.assets.asset_root
+        / "assets"
+        / "characters"
+        / "lin-keyun"
+        / "official-packs"
+    )
+    assert ports.official_pack_roots == (shared_root, character_root)
+
+    store = tmp_path / "outfits"
+    packs = list_installed_outfits(
+        store,
+        official_pack_root=ports.official_pack_roots,
+    )
+    assert {pack.pack_id for pack in packs} == {
+        BUILTIN_MAKEUP_PACK_ID,
+        "linkeyun.official.modern-office",
+    }
+    assert installed_pack_path(
+        store,
+        "linkeyun.official.modern-office",
+        official_pack_root=ports.official_pack_roots,
+    ) == character_root / "linkeyun.official.modern-office.mohan-outfit"
+
+    built_in = WardrobeService(
+        store,
+        official_pack_root=ports.official_pack_roots,
+    ).outfits("en")[0]
+    assert built_in.ensemble is not None
+    assert built_in.ensemble.pack_id == "linkeyun.official.modern-office"
+    garment = resolve_active_selection(
+        store,
+        "garment",
+        official_pack_root=ports.official_pack_roots,
+    )
+    assert garment.status == "installed"
+    assert garment.effective_pack_id == "linkeyun.official.modern-office"
+
+
 def test_external_official_ensemble_is_only_the_builtin_entry(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -357,3 +421,6 @@ def test_switching_back_to_mohan_restores_compatibility_defaults(
     assert builtin_makeup_pack_id() == BUILTIN_MAKEUP_PACK_ID
     assert official_native_hair_alias() == OFFICIAL_NATIVE_HAIR_ALIAS
     assert official_native_headwear_alias() == OFFICIAL_NATIVE_HEADWEAR_ALIAS
+    assert service_container.create_presentation_ports().official_pack_roots == (
+        ROOT / "assets" / "official-packs",
+    )

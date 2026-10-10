@@ -11,10 +11,8 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 lazy from application.appearance_ports import AppearanceRenderOptions
-
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
-    OFFICIAL_PACK_ROOT,
     POSE_ATLAS_SILHOUETTES,
     SELECTION_CATEGORIES,
     AppearanceItem,
@@ -28,7 +26,9 @@ lazy from domain.outfit_pack import (
     resolve_variant_for_view,
     restore_builtin_outfit,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
+lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.engine_capabilities import current_engine_capabilities
@@ -80,14 +80,13 @@ class ActiveOutfitOverlay(
         on_stale_body_profile: Callable[[], None] | None = None,
         *,
         visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
-        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+        official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
     ) -> None:
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
-        self._official_pack_root = Path(official_pack_root)
+        self._official_pack_root = official_pack_root
         # Core-owned, pose-specific visible skin only; supplied by the core authority.
-        # The provider remains immutable for this overlay's lifetime, like rig assets.
         # The sentinel is the composition root's frozen mask result.
         self._visible_hand_region = (
             load_core_hand_regions(self._asset_root)
@@ -103,12 +102,16 @@ class ActiveOutfitOverlay(
         self._phase_layers_by_view: dict[OutfitLayerCacheKey, Sequence[Layer]] = {}
         self._protected_by_view: dict[str, QRegion] = {}
         self._feature_by_view: dict[str, QRegion] = {}
+        self._gesture_expression_feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
         self._makeup_exclusion_by_view: dict[tuple[str, str], QRegion] = {}
         self._core_hand_overlays_by_view: dict[str, Sequence[Layer]] = {}
         self._core_body_overlays_by_view: dict[str, Sequence[Layer]] = {}
         self._official_silhouettes_by_view: dict[str, QRegion | None] = {}
         self._official_replacement_masks_by_view: dict[str, QRegion | None] = {}
+        self._native_head_regions_by_view: dict[str, QRegion] = {}
+        self._native_identity_regions_by_view: dict[str, QRegion] = {}
+        self._generic_base_clear_by_view: dict[str, tuple[QRegion | None, bool]] = {}
         self._garment_active_cache: bool | None = None
         self._official_outfit_active_cache: bool | None = None
         self._safe_regions = None
@@ -556,6 +559,7 @@ class ActiveOutfitOverlay(
         self._layers_by_view.clear()
         self._layers_by_view_without_makeup_slots.clear()
         self._phase_layers_by_view.clear()
+        self._generic_base_clear_by_view.clear()
         getattr(self, "_reviewed_layer_counts", {}).clear()
         getattr(self, "_reviewed_native_frames", {}).clear()
         getattr(self, "_reviewed_native_eyes", {}).clear()
@@ -742,6 +746,8 @@ class ActiveOutfitOverlay(
         allowed = self._hand_allowed_region(allowed, category, variant, view_id)
         layers: list[tuple[int, Layer]] = []
         for declaration in declarations:
+            if declaration.clears_base:
+                continue
             _encoded, image = self._decoded_layer(archive, declaration)
             if (
                 declaration.anchor_x < 0
@@ -755,7 +761,7 @@ class ActiveOutfitOverlay(
                 pixmap,
                 declaration.anchor_x,
                 declaration.anchor_y,
-                forbidden,
+                QRegion() if category == "hairstyle" else forbidden,
                 allow_empty=category != "garment",
             )
             if not has_content:

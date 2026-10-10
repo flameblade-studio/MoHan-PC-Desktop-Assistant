@@ -1920,7 +1920,6 @@
         "test_hairstyle_face_clip.py",
         "test_installed_outfit_blink_roundtrip.py",
         "test_installed_outfit_cache.py",
-        "test_layered_facade_cycles.py",
         "test_makeup_blink_states.py",
         "test_makeup_safe_region_v2.py",
         "test_makeup_safe_region_visibility.py",
@@ -2245,6 +2244,25 @@
     },
     {
       "paths": [
+        "tools/build_character_pack.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_build_character_inventory.py",
+        "test_build_character_pack.py",
+        "test_character_pack_zip_snapshot.py",
+        "test_character_runtime_entrypoints.py",
+        "test_character_source.py",
+        "test_huapu.py",
+        "test_linkeyun_character_data.py",
+        "test_official_pack_ids_reservation.py",
+        "test_renderer_profile_injection.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/wardrobe_service.py"
       ],
       "tests": [
@@ -2263,19 +2281,12 @@
     },
     {
       "paths": [
-        "tools/build_character_pack.py"
+        "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit"
       ],
       "tests": [
         "test_active_character_switching.py",
-        "test_build_character_pack.py",
-        "test_character_pack_zip_snapshot.py",
-        "test_character_runtime_entrypoints.py",
-        "test_character_source.py",
-        "test_huapu.py",
-        "test_linkeyun_character_data.py",
-        "test_official_pack_ids_reservation.py",
-        "test_renderer_profile_injection.py",
-        "test_verify_character_pack_lock.py"
+        "test_build_character_inventory.py",
+        "test_linkeyun_character_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2377,11 +2388,32 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/pack-source.json"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_linkeyun_character_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/wardrobe_appearance_service.py"
       ],
       "tests": [
         "test_active_character_switching.py",
         "test_wardrobe_appearance_service.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/expressions/complete-expressions/frames/front-eureka-neutral-rest.rgba.png",
+        "assets/expressions/complete-expressions/frames/front-exasperated-neutral-rest.rgba.png",
+        "assets/expressions/layered/front_body.png"
+      ],
+      "tests": [
+        "test_active_outfit_overlay.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2538,6 +2570,16 @@
         "test_active_outfit_overlay.py",
         "test_outfit_hand_occlusion.py",
         "test_outfit_overlay_hardening.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/active_outfit_base_clear.py"
+      ],
+      "tests": [
+        "test_active_outfit_overlay.py",
+        "test_source_bound_garment_visibility.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6028,7 +6070,9 @@
     },
     {
       "paths": [
-        "assets/expressions/source-bound-exasperated/mouths/open.rgba.png"
+        "assets/expressions/source-bound-exasperated/mouths/open.rgba.png",
+        "domain/outfit_pack_source_bound.py",
+        "domain/outfit_pack_store.py"
       ],
       "tests": [
         "test_exasperated_candidate_runtime.py"
@@ -6042,6 +6086,16 @@
       "tests": [
         "test_exasperated_candidate_runtime.py",
         "test_gesture_outfit_silhouettes.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/outfit_pack_assets.py"
+      ],
+      "tests": [
+        "test_exasperated_candidate_runtime.py",
+        "test_makeup_mouth_states.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7131,8 +7185,7 @@
     {
       "paths": [
         "assets/characters/lin-keyun/LICENSE.md",
-        "assets/characters/lin-keyun/appearance/defaults.json",
-        "assets/characters/lin-keyun/pack-source.json"
+        "assets/characters/lin-keyun/appearance/defaults.json"
       ],
       "tests": [
         "test_linkeyun_character_data.py"
@@ -7182,8 +7235,7 @@
     },
     {
       "paths": [
-        "domain/makeup_mouth_states.py",
-        "domain/outfit_pack_assets.py"
+        "domain/makeup_mouth_states.py"
       ],
       "tests": [
         "test_makeup_mouth_states.py"
@@ -8079,6 +8131,15 @@
     },
     {
       "paths": [
+        "infrastructure/outfit_source_bound_expressions.py"
+      ],
+      "tests": [
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "presentation/companion_speech_queue.py"
       ],
       "tests": [
@@ -8241,7 +8302,6 @@
     },
     {
       "paths": [
-        "infrastructure/active_outfit_base_clear.py",
         "infrastructure/source_bound_garment_visibility.py"
       ],
       "tests": [

@@ -4,7 +4,7 @@
 
 ### 發布位置與版本
 
-墨寒與林可芸角色包都公開附於 `flameblade-studio/MoHan-PC-Desktop-Assistant` 的 GitHub 發布頁，不使用另一個角色包倉庫，也不需要任何下載金鑰。角色包標籤與墨寒程式版本分開：墨寒使用 `mohan-pack-v1.0.3`，附件為 `flameblade.mohan-1.0.3.zip`；林可芸使用 `lin-keyun-pack-v1.0.1`，附件為 `flameblade.lin-keyun-1.0.1.zip`。
+墨寒與林可芸角色包都公開附於 `flameblade-studio/MoHan-PC-Desktop-Assistant` 的 GitHub 發布頁，不使用另一個角色包倉庫，也不需要任何下載金鑰。角色包標籤與墨寒程式版本分開：墨寒使用 `mohan-pack-v1.0.3`，附件為 `flameblade.mohan-1.0.3.zip`；林可芸使用 `lin-keyun-pack-v1.0.2`，附件為 `flameblade.lin-keyun-1.0.2.zip`。
 
 兩個角色包的素材與付費 DLC 均採 CC BY-NC-ND 4.0；完整條款以各包內的 `LICENSE.md` 與儲存庫 `ASSETS-LICENSE.md` 為準。公開下載不改變個別來源與核准紀錄的既有範圍，也不替擁有者決定尚未裁定的 DLC 與角色包關係。
 
@@ -27,7 +27,7 @@ python tools/build_character_inventory.py
 python tools/build_character_inventory.py --check
 python tools/verify_character_pack_lock.py --profile mohan --update --archive-output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 python tools/verify_character_pack_lock.py --profile mohan
-python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.1.zip
+python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.2.zip
 python tools/verify_character_pack_lock.py --profile lin-keyun
 ```
 
@@ -35,7 +35,7 @@ python tools/verify_character_pack_lock.py --profile lin-keyun
 
 ### 发布位置与版本
 
-墨寒与林可芸角色包都公开附于 `flameblade-studio/MoHan-PC-Desktop-Assistant` 的 GitHub 发布页，不使用另一个角色包仓库，也不需要任何下载密钥。角色包标签与墨寒程序版本分开：墨寒使用 `mohan-pack-v1.0.3`，附件为 `flameblade.mohan-1.0.3.zip`；林可芸使用 `lin-keyun-pack-v1.0.1`，附件为 `flameblade.lin-keyun-1.0.1.zip`。
+墨寒与林可芸角色包都公开附于 `flameblade-studio/MoHan-PC-Desktop-Assistant` 的 GitHub 发布页，不使用另一个角色包仓库，也不需要任何下载密钥。角色包标签与墨寒程序版本分开：墨寒使用 `mohan-pack-v1.0.3`，附件为 `flameblade.mohan-1.0.3.zip`；林可芸使用 `lin-keyun-pack-v1.0.2`，附件为 `flameblade.lin-keyun-1.0.2.zip`。
 
 两个角色包的素材与付费 DLC 均采用 CC BY-NC-ND 4.0；完整条款以各包内的 `LICENSE.md` 与仓库 `ASSETS-LICENSE.md` 为准。公开下载不改变单独来源与批准记录的现有范围，也不替所有者决定尚未裁定的 DLC 与角色包关系。
 
@@ -58,7 +58,7 @@ python tools/build_character_inventory.py
 python tools/build_character_inventory.py --check
 python tools/verify_character_pack_lock.py --profile mohan --update --archive-output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 python tools/verify_character_pack_lock.py --profile mohan
-python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.1.zip
+python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.2.zip
 python tools/verify_character_pack_lock.py --profile lin-keyun
 ```
 
@@ -66,7 +66,7 @@ python tools/verify_character_pack_lock.py --profile lin-keyun
 
 ### Release location and versions
 
-The MoHan and Lin Keyun character packs are public assets on GitHub Releases in `flameblade-studio/MoHan-PC-Desktop-Assistant`. They use no separate character-pack repository and require no download credential. Character-pack tags are separate from MoHan application versions: MoHan uses `mohan-pack-v1.0.3` with `flameblade.mohan-1.0.3.zip`; Lin Keyun uses `lin-keyun-pack-v1.0.1` with `flameblade.lin-keyun-1.0.1.zip`.
+The MoHan and Lin Keyun character packs are public assets on GitHub Releases in `flameblade-studio/MoHan-PC-Desktop-Assistant`. They use no separate character-pack repository and require no download credential. Character-pack tags are separate from MoHan application versions: MoHan uses `mohan-pack-v1.0.3` with `flameblade.mohan-1.0.3.zip`; Lin Keyun uses `lin-keyun-pack-v1.0.2` with `flameblade.lin-keyun-1.0.2.zip`.
 
 Both character packs and paid DLC use CC BY-NC-ND 4.0; the embedded `LICENSE.md` files and the repository's `ASSETS-LICENSE.md` carry the complete terms. Public download does not expand the recorded scope of individual source or approval records and does not decide the still-pending relationship between DLC and a character pack.
 
@@ -89,7 +89,7 @@ python tools/build_character_inventory.py
 python tools/build_character_inventory.py --check
 python tools/verify_character_pack_lock.py --profile mohan --update --archive-output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 python tools/verify_character_pack_lock.py --profile mohan
-python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.1.zip
+python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.2.zip
 python tools/verify_character_pack_lock.py --profile lin-keyun
 ```
 
@@ -97,7 +97,7 @@ python tools/verify_character_pack_lock.py --profile lin-keyun
 
 ### 公開場所とバージョン
 
-墨寒と林可芸のキャラクターパックは、`flameblade-studio/MoHan-PC-Desktop-Assistant` の GitHub Releases で公開します。別のキャラクターパックリポジトリや取得用資格情報は使いません。キャラクターパックのタグは墨寒アプリのバージョンと分離します。墨寒は `mohan-pack-v1.0.3` と `flameblade.mohan-1.0.3.zip`、林可芸は `lin-keyun-pack-v1.0.1` と `flameblade.lin-keyun-1.0.1.zip` を使用します。
+墨寒と林可芸のキャラクターパックは、`flameblade-studio/MoHan-PC-Desktop-Assistant` の GitHub Releases で公開します。別のキャラクターパックリポジトリや取得用資格情報は使いません。キャラクターパックのタグは墨寒アプリのバージョンと分離します。墨寒は `mohan-pack-v1.0.3` と `flameblade.mohan-1.0.3.zip`、林可芸は `lin-keyun-pack-v1.0.2` と `flameblade.lin-keyun-1.0.2.zip` を使用します。
 
 両キャラクターパックの素材と有料 DLC には CC BY-NC-ND 4.0 を適用し、完全な条件は各パックの `LICENSE.md` とリポジトリの `ASSETS-LICENSE.md` に記載します。公開取得によって個別の出典や承認記録の範囲は拡大せず、未決定の DLC とキャラクターパックの関係も変更しません。
 
@@ -120,6 +120,6 @@ python tools/build_character_inventory.py
 python tools/build_character_inventory.py --check
 python tools/verify_character_pack_lock.py --profile mohan --update --archive-output .quality-tmp/split/flameblade.mohan-1.0.3.zip
 python tools/verify_character_pack_lock.py --profile mohan
-python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.1.zip
+python tools/verify_character_pack_lock.py --profile lin-keyun --update --archive-output .quality-tmp/split/flameblade.lin-keyun-1.0.2.zip
 python tools/verify_character_pack_lock.py --profile lin-keyun
 ```

@@ -197,10 +197,10 @@ def test_release_lock_loader_accepts_the_lin_keyun_public_release_identity() -> 
         ROOT / "docs" / "character-pack" / "lin-keyun-pack.lock.json"
     )
     assert lock.pack_id == "flameblade.lin-keyun"
-    assert lock.pack_version == "1.0.1"
+    assert lock.pack_version == "1.0.2"
     assert lock.source.repository == verifier.SOURCE_REPOSITORY
-    assert lock.source.release_tag == "lin-keyun-pack-v1.0.1"
-    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.1.zip"
+    assert lock.source.release_tag == "lin-keyun-pack-v1.0.2"
+    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.2.zip"
     assert lock.files
 
 

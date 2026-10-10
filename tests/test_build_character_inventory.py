@@ -20,7 +20,7 @@ lazy from tools.check_four_language_docs import audit_fragment, audit_text
 ROOT = Path(__file__).resolve().parents[1]
 MASTER_COUNT = 24
 CORE_COUNT = 600
-PACK_COUNT = 2
+PACK_COUNT = 3
 DERIVATIVE_COUNT = 234
 PERSISTED_IDENTIFIER_FILE_COUNT = 2
 DERIVATIVE_COUNTS = {
@@ -138,6 +138,12 @@ def test_formal_counts_and_archive_separation(inventory: dict[str, Any]) -> None
     assert taskbar["category"] == "ui_character_icon_build_output"
     assert "mohan-halfbody.ico" in taskbar["reason"]
     assert counts["appearance_pack"] == PACK_COUNT
+    linkeyun_pack = by_path[
+        "assets/characters/lin-keyun/official-packs/"
+        "linkeyun.official.modern-office.mohan-outfit"
+    ]
+    assert linkeyun_pack["scope"] == "runtime_data"
+    assert linkeyun_pack["readers"][0]["path"] == "tools/build_character_pack.py"
     assert any("hairstyles" in row.get("appearance_categories", []) for row in inventory["files"])
     assert any("headwear" in row.get("appearance_categories", []) for row in inventory["files"])
     assert {p.relative_to(ROOT).as_posix() for p in (ROOT / "assets").rglob("*") if p.is_file()} <= set(by_path)
@@ -155,7 +161,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 files plus validated appearance defaults.
+CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 loose files plus appearance defaults.
 
 
 @pytest.mark.parametrize("character_id", ("mohan", "lin-keyun"))
@@ -170,7 +176,11 @@ def test_character_data_files_are_runtime_data(
         if row["path"].startswith(prefix)
     }
     build_only = {f"{prefix}README.md", f"{prefix}pack-source.json"}
-    data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
+    data_rows = {
+        path: row
+        for path, row in rows.items()
+        if "!" not in path and path.endswith(".json") and path not in build_only
+    }
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
     assert rows[f"{prefix}rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"

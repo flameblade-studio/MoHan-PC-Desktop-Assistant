@@ -1,0 +1,3 @@
+### 支援服裝包攜帶來源綁定扶額肖像／支持服装包携带来源绑定扶额肖像／Support source-bound exasperated portraits in outfit packs／衣装パックのソース固定・額押さえ肖像に対応
+
+- 服裝包可封存擁有者核准的整張扶額肖像、V5 動態口型與收據，並在服裝與髮型綁定同時命中時取代分層合成；未提供眨眼素材時維持核准原圖。／服装包可封存所有者批准的整张扶额肖像、V5 动态口型与收据，并在服装与发型绑定同时命中时取代分层合成；未提供眨眼素材时维持批准原图。／Outfit packs can seal an owner-approved whole exasperated portrait, V5 dynamic mouths, and a receipt, replacing layered composition only when both garment and hairstyle bindings match; without blink assets, the approved portrait remains unchanged.／衣装パックはオーナー承認済みの額押さえ全体肖像、V5 動的口形、レシートを封印でき、衣装と髪型の両方が一致した場合だけレイヤー合成を置き換えます。まばたき素材がない場合は承認済み肖像を維持します。

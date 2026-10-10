@@ -90,20 +90,22 @@ lazy from infrastructure.bundled_character_source import (
 )
 lazy from infrastructure.installed_character_packs import (
     CharacterPackInstallError,
-    load_development_character_pack_archive,
-    load_installed_character_pack,
     list_installed_character_packs,
 )
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import (
+    ExasperatedSourceBindings,
     LayeredParametricFaceRenderer,
     load_layered_face_assets,
 )
 lazy from infrastructure.layered_full_body_renderer import (
     LayeredFullBodyRenderer,
     load_layered_full_body_assets,
+)
+lazy from infrastructure.outfit_source_bound_expressions import (
+    OutfitSourceBoundExpressionProvider,
 )
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
@@ -149,11 +151,10 @@ def create_character_source(character_id: str) -> CharacterSource:
 
     root = resource_path(".")
     try:
+        # The bootstrap's default loaders apply the official 768 MiB pack limits.
         source = activate_product_character_runtime(
             root,
             character_id=character_id,
-            development_archive_loader=load_development_character_pack_archive,
-            installed_loader=load_installed_character_pack,
         )
     except RuntimeError as error:
         if error.__cause__ is not None:
@@ -340,7 +341,11 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
     """Build presentation adapters from the already selected character source."""
 
     asset_root = character_source.assets.asset_root
-    official_pack_root = asset_root / "assets" / "official-packs"
+    official_pack_roots = getattr(
+        character_source.assets,
+        "official_pack_roots",
+        (asset_root / "assets" / "official-packs",),
+    )
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 
@@ -357,7 +362,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             asset_root,
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
-            official_pack_root=official_pack_root,
+            official_pack_root=official_pack_roots,
         )
 
     def face_renderer_factory() -> LayeredParametricFaceRenderer:
@@ -409,7 +414,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             and appearance_dir.exists()
         ):
             candidate_appearance = ExasperatedCandidateAppearance.load(
-                appearance_dir, official_pack_root=official_pack_root,
+                appearance_dir, official_pack_root=official_pack_roots,
             )
             candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
@@ -421,7 +426,13 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             detachable_dir=detachable_dir,
             use_detachable=detachable_dir is not None,
             exasperated_candidate_dir=candidate_dir,
-            candidate_appearance_overlay=candidate_appearance,
+            exasperated_source_bindings=ExasperatedSourceBindings(
+                appearance_overlay=candidate_appearance,
+                expression_provider=OutfitSourceBoundExpressionProvider(
+                    presentation_contracts.default_data_dir() / "outfits",
+                    official_pack_root=official_pack_roots,
+                ),
+            ),
         )
 
     def full_body_renderer_factory(outfit_overlay=None):
@@ -457,6 +468,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         validate_face_assets=validate_face_assets,
         face_renderer_factory=face_renderer_factory,
         visible_windows=visible_windows,
+        official_pack_roots=official_pack_roots,
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=full_body_renderer_factory,
     )
