@@ -10,6 +10,7 @@ lazy from PySide6.QtGui import QImage
 
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime_data import default_expression_catalog
 lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"
@@ -24,7 +25,12 @@ COMPLETE_CHEEK_POSES = frozenset({
     f"cheek-{CHARACTER_EXPRESSION_ROLES['worry']}",
     f"cheek-{CHARACTER_EXPRESSION_ROLES['reminder']}",
 })
-COMPLETE_POSES = POSES | COMPLETE_CHEEK_POSES
+COMPLETE_FRONT_POSES = frozenset(
+    f"front-{expression}"
+    for expression, pose in default_expression_catalog().state_to_pose.items()
+    if pose == "front"
+)
+COMPLETE_POSES = POSES | COMPLETE_CHEEK_POSES | COMPLETE_FRONT_POSES
 PNG_HEADER_LENGTH = 26
 
 
@@ -128,6 +134,10 @@ def load_complete_halfbody_frames(root: Path) -> CompleteHalfbodyFrames | None:
     whole_frame_blinks = set()
     for pose, record in poses.items():
         frame_group, oral_group, whole_frame_blink = _read_pose(root, record)
+        if pose in COMPLETE_FRONT_POSES and not whole_frame_blink:
+            raise ValueError(
+                f"Complete front expression requires whole-frame blinks: {pose}"
+            )
         pose_frames[pose] = frame_group
         if oral_group:
             oral_masks[pose] = oral_group
@@ -146,6 +156,13 @@ def load_complete_halfbody_frames(root: Path) -> CompleteHalfbodyFrames | None:
         bound_families = {family for target, family in expressions.values() if target == pose}
         if bound_families != FAMILIES:
             raise ValueError(f"Complete half-body pose requires bindings for every mouth family: {pose}")
+        if (
+            pose in COMPLETE_FRONT_POSES
+            and expressions.get(pose.removeprefix("front-")) != (pose, "neutral")
+        ):
+            raise ValueError(
+                f"Complete front expression requires its own neutral binding: {pose}"
+            )
     return CompleteHalfbodyFrames(
         frames,
         frozendict(expressions),

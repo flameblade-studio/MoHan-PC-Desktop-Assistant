@@ -1271,7 +1271,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1298,7 +1298,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1325,7 +1325,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1352,7 +1352,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1379,7 +1379,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1406,7 +1406,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1433,7 +1433,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1460,7 +1460,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1487,7 +1487,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1514,7 +1514,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1541,7 +1541,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1568,7 +1568,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-caught-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1595,7 +1595,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1622,7 +1622,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1649,7 +1649,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1676,7 +1676,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1703,7 +1703,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1730,7 +1730,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1757,7 +1757,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1784,7 +1784,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1811,7 +1811,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1838,7 +1838,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1865,7 +1865,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1892,7 +1892,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-glance-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1919,7 +1919,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1946,7 +1946,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -1973,7 +1973,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2000,7 +2000,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2027,7 +2027,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2054,7 +2054,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2081,7 +2081,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2108,7 +2108,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2135,7 +2135,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2162,7 +2162,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2189,7 +2189,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2216,7 +2216,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-happy-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2243,7 +2243,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2270,7 +2270,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2297,7 +2297,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2324,7 +2324,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2351,7 +2351,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2378,7 +2378,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2405,7 +2405,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2432,7 +2432,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2459,7 +2459,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2486,7 +2486,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2513,7 +2513,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2540,7 +2540,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-reminder-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2759,7 +2759,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2786,7 +2786,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2813,7 +2813,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2840,7 +2840,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2867,7 +2867,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2894,7 +2894,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2921,7 +2921,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2948,7 +2948,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -2975,7 +2975,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3002,7 +3002,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3029,7 +3029,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3056,7 +3056,7 @@
       "path": "assets/expressions/complete-expressions/frames/cheek-worried-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3083,7 +3083,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3110,7 +3110,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3137,7 +3137,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3164,7 +3164,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3191,7 +3191,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3218,7 +3218,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3245,7 +3245,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3272,7 +3272,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3299,7 +3299,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3326,7 +3326,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3353,7 +3353,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3380,7 +3380,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3407,7 +3407,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3434,7 +3434,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3461,7 +3461,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3488,7 +3488,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3515,7 +3515,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3542,7 +3542,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3569,7 +3569,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3596,7 +3596,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3623,7 +3623,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3650,7 +3650,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3677,7 +3677,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3704,7 +3704,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-eureka-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3731,7 +3731,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3758,7 +3758,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3785,7 +3785,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3812,7 +3812,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3839,7 +3839,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3866,7 +3866,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3893,7 +3893,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3920,7 +3920,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3947,7 +3947,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -3974,7 +3974,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4001,7 +4001,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4028,7 +4028,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-exasperated-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4055,7 +4055,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4082,7 +4082,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4109,7 +4109,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4136,7 +4136,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4163,7 +4163,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4190,7 +4190,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4217,7 +4217,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4244,7 +4244,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4271,7 +4271,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4298,7 +4298,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4325,7 +4325,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4352,7 +4352,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4379,7 +4379,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4406,7 +4406,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4433,7 +4433,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4460,7 +4460,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4487,7 +4487,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4514,7 +4514,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4541,7 +4541,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4568,7 +4568,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4595,7 +4595,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4622,7 +4622,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4649,7 +4649,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4676,7 +4676,7 @@
       "path": "assets/expressions/complete-expressions/frames/front-mock-scold-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4703,7 +4703,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-a-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4730,7 +4730,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-a-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4757,7 +4757,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-a-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4784,7 +4784,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4811,7 +4811,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4838,7 +4838,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4865,7 +4865,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-o-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4892,7 +4892,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-o-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4919,7 +4919,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-o-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4946,7 +4946,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-small-closed.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -4973,7 +4973,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-small-half.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5000,7 +5000,7 @@
       "path": "assets/expressions/complete-expressions/frames/left-neutral-small-rest.rgba.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5017,7 +5017,7 @@
       "path": "assets/expressions/complete-expressions/manifest.json",
       "readers": [
         {
-          "line": 118,
+          "line": 124,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = json.loads(path.read_text(encoding=\"utf-8\"))"
         }
@@ -5044,7 +5044,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-caught-oral-a.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5071,7 +5071,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-caught-oral-o.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5098,7 +5098,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-caught-oral-small.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5125,7 +5125,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-glance-oral-a.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5152,7 +5152,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-glance-oral-o.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5179,7 +5179,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-glance-oral-small.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5206,7 +5206,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-happy-oral-a.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5233,7 +5233,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-happy-oral-o.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5260,7 +5260,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-happy-oral-small.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5287,7 +5287,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-reminder-oral-a.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5314,7 +5314,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-reminder-oral-o.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5341,7 +5341,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-reminder-oral-small.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5368,7 +5368,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-worried-oral-a.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5395,7 +5395,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-worried-oral-o.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -5422,7 +5422,7 @@
       "path": "assets/expressions/complete-expressions/masks/cheek-worried-oral-small.png",
       "readers": [
         {
-          "line": 56,
+          "line": 62,
           "path": "infrastructure/complete_halfbody_expressions.py",
           "text": "data = path.read_bytes()"
         }
@@ -89670,7 +89670,7 @@
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 31,
+          "line": 32,
           "path": "domain/outfit_pack.py",
           "text": "lazy from domain.constants import CHARACTER_EXPRESSION_ROLES"
         },
@@ -90250,7 +90250,7 @@
           "text": "lazy from domain.outfit_pack_official import ("
         },
         {
-          "line": 34,
+          "line": 35,
           "path": "domain/outfit_pack.py",
           "text": "from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations"
         },

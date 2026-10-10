@@ -1,0 +1,5 @@
+### 正面表情來源與防護／正面表情来源与防护／Front expression sources and safeguards／正面表情のソースと保護
+
+- 支援從角色狀態目錄綁定獨立正面完整表情，沿用正面衣裝並保留說話和眨眼狀態；新美術候選另待核准安裝。／支持从角色状态目录绑定独立正面完整表情，沿用正面服装并保留说话和眨眼状态；新美术候选另待批准安装。／Support distinct complete front expressions from the character state catalog while retaining front outfits, speech and blink state; new artwork candidates await approval and installation.／キャラクター状態カタログから個別の正面表情を結び付け、正面衣装と発話・まばたき状態を維持します。新しい画像候補は承認と導入を待ちます。
+- 新增全部正面表情的可見像素差異及舊臉讀取防護，標準截圖使用實際表情控制參數。／新增全部正面表情的可见像素差异及旧脸读取防护，标准截图使用实际表情控制参数。／Add visible pixel distinctness and legacy portrait guards for every front expression, and use runtime expression controls for golden captures.／全正面表情の可視画素差分と旧顔画像の読み込みを検査し、基準撮影に実行時の表情制御値を使用します。
+- 正面表情以單一妝容視圖搭配眼態圖層，保留托腮既有視圖路由，讓逐表情妝容候選沿用封裝成員上限與唯一資產宣告。／正面表情以单一妆容视图搭配眼态图层，保留托腮现有视图路由，让逐表情妆容候选沿用封装成员上限与唯一资源声明。／Use one makeup view per front expression with eye-state layers, retaining cheek routing, the archive member limit and unique asset declarations.／正面表情ごとに単一メイク視点と眼状態レイヤーを使い、頬杖の既存経路、アーカイブ数制限、一意の画像宣言を維持します。

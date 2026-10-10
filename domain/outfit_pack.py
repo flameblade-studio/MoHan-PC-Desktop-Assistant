@@ -7,6 +7,7 @@ lazy import re
 lazy import struct
 lazy import zipfile
 lazy from pathlib import Path
+lazy from itertools import product
 lazy from domain.outfit_pack_store import (
     _atomic_json, _installed_pack_paths, _state_references_pack,
     copy_pack_archive, inspect_cached_pack,
@@ -27,7 +28,7 @@ RemovalResult = _outfit_pack_models.RemovalResult
 SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.makeup_mouth_states import parse_mouth_states
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
 lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
@@ -69,11 +70,10 @@ GESTURE_SILHOUETTES = tuple(_RIG_MANIFEST.gesture_silhouettes.values())
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)
 REQUIRED_SILHOUETTES = BASE_SILHOUETTES + GESTURE_SILHOUETTES + POSE_ATLAS_SILHOUETTES
 SUPPORTED_SILHOUETTES = REQUIRED_SILHOUETTES
-# Optional makeup-only silhouettes share the cheek canvas but never become required garment/body views.
 GLANCE_MAKEUP_SILHOUETTES = tuple(f"cheek-{CHARACTER_EXPRESSION_ROLES['side_gaze']}{suffix}" for suffix in ("", "-half", "-closed"))
 BATCH2_MAKEUP_SILHOUETTES = tuple(f"cheek-{CHARACTER_EXPRESSION_ROLES[role]}{suffix}" for role in ("noticed", "happiness", "worry", "reminder") for suffix in ("", "-half", "-closed"))
 COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = GLANCE_MAKEUP_SILHOUETTES + BATCH2_MAKEUP_SILHOUETTES
-OPTIONAL_MAKEUP_SILHOUETTES = COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
+OPTIONAL_MAKEUP_SILHOUETTES = COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES + tuple(f"front-{expression}{suffix}" for (expression, pose), suffix in product(default_expression_catalog().state_to_pose.items(), ("", "-half", "-closed")) if pose == "front")
 EXPRESSION_SILHOUETTE_ALIASES = frozendict({**_RIG_MANIFEST.pose_silhouettes, CHARACTER_EXPRESSION_ROLES["protection"]: _RIG_MANIFEST.pose_silhouettes["front"]})
 OFFICIAL_BODY_SPEC = frozendict({
     "adult": True, "height_cm": 168, "weight_kg": 54, "bust_cm": 86, "underbust_cm": 71, "waist_cm": 62, "hips_cm": 90,
