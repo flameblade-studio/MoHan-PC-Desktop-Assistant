@@ -1,0 +1,3 @@
+### 角色包發布下載驗證／角色包发布下载验证／Character-pack release download check／キャラクターパック公開版のダウンロード検証
+
+- 新增 `tools/verify_character_pack_download.py` 與獨立工作流程，於手動觸發或發布時從 GitHub Releases 下載墨寒與林可芸角色包，安裝到隔離設定檔後以產品的官方 768 MiB 上限載入。／新增 `tools/verify_character_pack_download.py` 与独立工作流程，在手动触发或发布时从 GitHub Releases 下载墨寒与林可芸角色包，安装到隔离配置后以产品的官方 768 MiB 上限加载。／Adds `tools/verify_character_pack_download.py` and a separate workflow that, on demand or on release, downloads the MoHan and Lin Keyun packs from GitHub Releases, installs them into an isolated profile, and loads them with the product's official 768 MiB limits.／`tools/verify_character_pack_download.py` と独立したワークフローを追加し、手動実行または公開時に GitHub Releases から墨寒と林可芸のパックをダウンロードして隔離プロファイルにインストールし、製品の公式 768 MiB 上限で読み込みます。
