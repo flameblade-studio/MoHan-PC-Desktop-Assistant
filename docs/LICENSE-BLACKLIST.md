@@ -44,7 +44,7 @@
 
 | 項目 | 授權 | 理由 |
 |---|---|---|
-| PySide6 | LGPL-3.0 | App 執行期 UI 框架；onedir 動態連結＋About 聲明＋授權全文隨包 |
+| PySide6_Essentials／PySide6_Addons／shiboken6 | LGPL-3.0 | App 執行期 UI 框架；onedir 動態連結＋About 聲明＋授權全文隨包 |
 | PyInstaller | GPL-2.0＋bootloader exception | 例外條款明文保證打包產物位於 GPL 適用範圍之外；建置工具留在建置環境 |
 | Azure Speech SDK | Microsoft 專有（可商用可再散布） | 平台 SDK；允許商用並維持授權邊界 |
 
@@ -92,7 +92,7 @@
 
 | 项目 | 授权 | 理由 |
 |---|---|---|
-| PySide6 | LGPL-3.0 | App 运行期 UI 框架；onedir 动态链接＋About 声明＋授权全文随包 |
+| PySide6_Essentials／PySide6_Addons／shiboken6 | LGPL-3.0 | App 运行期 UI 框架；onedir 动态链接＋About 声明＋授权全文随包 |
 | PyInstaller | GPL-2.0＋bootloader exception | 例外条款明文保证打包产物位于 GPL 适用范围之外；构建工具留在构建环境 |
 | Azure Speech SDK | Microsoft 专有（可商用可再分发） | 平台 SDK；允许商业使用并维持授权边界 |
 
@@ -140,7 +140,7 @@ Additional owner ruling, 2026-09-07: licensing evidence is verified before downl
 
 | Item | License | Reason |
 |---|---|---|
-| PySide6 | LGPL-3.0 | Runtime UI framework; onedir dynamic linking, About notice, full license texts shipped |
+| PySide6_Essentials / PySide6_Addons / shiboken6 | LGPL-3.0 | Runtime UI framework; onedir dynamic linking, About notice, full license texts shipped |
 | PyInstaller | GPL-2.0 with bootloader exception | The exception explicitly keeps packaged output free of GPL; the tool remains confined to the build environment |
 | Azure Speech SDK | Microsoft proprietary (commercial use and redistribution allowed) | Platform SDK; permits commercial use and preserves licensing boundaries |
 
@@ -188,6 +188,6 @@ Additional owner ruling, 2026-09-07: licensing evidence is verified before downl
 
 | 項目 | ライセンス | 理由 |
 |---|---|---|
-| PySide6 | LGPL-3.0 | 実行時 UI フレームワーク；onedir 動的リンク＋About 表示＋ライセンス全文同梱 |
+| PySide6_Essentials／PySide6_Addons／shiboken6 | LGPL-3.0 | 実行時 UI フレームワーク；onedir 動的リンク＋About 表示＋ライセンス全文同梱 |
 | PyInstaller | GPL-2.0＋bootloader exception | 例外条項によりパッケージ産物は GPL の適用外；ビルドツールは産物に入らない |
 | Azure Speech SDK | Microsoft プロプライエタリ（商用・再配布可） | プラットフォーム SDK；商用利用を許可し、ライセンス境界を維持 |

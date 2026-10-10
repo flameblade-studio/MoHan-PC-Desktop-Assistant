@@ -73,8 +73,10 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
         "tools/build_pyinstaller_jit_bootloader.py",
         '$FontRoot = Join-Path $ProjectRoot "assets\\fonts"',
         '--add-data "$FontRoot;assets/fonts"',
-        '.qt315-compat-full\\Lib\\site-packages',
-        "6.11.1+mohan.py315.",
+        "tools/check_official_qt_runtime.py",
+        "--pip-report $QtPipReportPath",
+        "QtPipReport",
+        "Qt for Python 6.12.0 three-distribution",
         'Move-Item -LiteralPath $PublicExecutable',
         'tools\\jit_launcher.py',
         '$env:PYTHON_JIT = "0"',
@@ -86,6 +88,9 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
     ):
         assert required in script
     assert script.index(build_call) < script.index(pyinstaller_call)
+    assert script.index("tools/check_official_qt_runtime.py") < script.index(
+        "import azure.cognitiveservices.speech"
+    )
     assert "native-wheels/" in read(".gitignore")
     assert "native-wheels-*/" in read(".gitignore")
     assert '"native-wheels-$NativeBuildId"' in script
@@ -135,6 +140,9 @@ def test_ci_and_release_share_the_native_build_gate() -> None:
     release = read(".github/workflows/release.yml")
     for workflow in (windows, release):
         assert ".\\build.ps1" in workflow
+        assert "-QtPipReport qt-jit-install-report.json" in workflow
+        assert "--require-hashes" in workflow
+        assert "requirements-qt.txt" in workflow
         assert "tools/verify_packaged_native_acceleration.py" in workflow
     verifier = read("tools/verify_packaged_native_acceleration.py")
     assert "spec_from_file_location" in verifier

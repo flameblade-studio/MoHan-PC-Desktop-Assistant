@@ -47,13 +47,22 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libegl1 libportaudio2
 
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
-
-      - name: Install dependencies
+      - name: Install hash-locked official Qt wheels
         run: >-
-          python tools/install_python315_dependencies.py
-          --qt-compat-wheelhouse qt315-wheelhouse
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
+      - name: Install pinned dependencies from official wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          -r requirements.txt
+
+      - name: Verify official Qt runtime and wheel provenance
+        run: >-
+          python tools/check_official_qt_runtime.py
+          --pip-report qt-install-report.json
 
       # Split for the same Windows pwsh exit-code reason as the native steps.
       - name: Install pinned Rust toolchain

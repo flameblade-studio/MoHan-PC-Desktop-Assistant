@@ -75,7 +75,7 @@
     "test_post_speech_motion_performance.py",
     "test_post_speech_motion_provider_matrix.py",
     "test_preview_packaging.py",
-    "test_python315_qt_release.py",
+    "test_official_qt_runtime.py",
     "test_python315_runtime.py",
     "test_release_automation.py",
     "test_release_notes_generation.py",
@@ -208,7 +208,7 @@
       "tests": [
         "test_cross_platform_core.py",
         "test_development_dependency_governance.py",
-        "test_python315_qt_release.py",
+        "test_official_qt_runtime.py",
         "test_python315_runtime.py"
       ]
     },
@@ -443,17 +443,14 @@
     },
     {
       "paths": [
-        "tools/build_python315_qt_compat.py",
-        "tools/install_python315_dependencies.py",
-        "tools/qt315_wheel_lock.py",
-        "tools/qt315/wheel-hashes.json",
+        "tools/check_official_qt_runtime.py",
+        "tools/qt/official-wheel-lock.json",
         "tools/build_python315_jit_runtime.py"
       ],
       "tests": [
         "test_cross_platform_core.py",
-        "test_python315_qt_release.py",
+        "test_official_qt_runtime.py",
         "test_python315_runtime.py",
-        "test_qt315_wheel_lock.py",
         "test_quality_gate.py"
       ]
     },
@@ -1068,6 +1065,7 @@
         "test_official_default_pack.py",
         "test_official_native_headwear.py",
         "test_official_pack_ids_reservation.py",
+        "test_official_qt_runtime.py",
         "test_openai_fashion_trend_scout.py",
         "test_openai_outfit_generator.py",
         "test_openai_tts_cancellation.py",
@@ -1142,11 +1140,9 @@
         "test_public_profile_persona.py",
         "test_public_release_audit.py",
         "test_pytest_collection_contract.py",
-        "test_python315_qt_release.py",
         "test_python315_runtime.py",
         "test_python_license_gate.py",
         "test_qc_drift.py",
-        "test_qt315_wheel_lock.py",
         "test_quality_gate.py",
         "test_readme_media.py",
         "test_realtime_echo_final_transcript.py",
@@ -5788,24 +5784,24 @@
     },
     {
       "paths": [
-        "requirements-preview.txt"
+        "requirements.txt"
       ],
       "tests": [
         "test_development_dependency_governance.py",
-        "test_openai_vision_release_gate.py"
+        "test_official_qt_runtime.py",
+        "test_openai_vision_release_gate.py",
+        "test_quality_gate.py",
+        "test_v4_vision_architecture_contracts.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
     {
       "paths": [
-        "requirements.txt"
+        "requirements-preview.txt"
       ],
       "tests": [
         "test_development_dependency_governance.py",
-        "test_openai_vision_release_gate.py",
-        "test_python315_qt_release.py",
-        "test_quality_gate.py",
-        "test_v4_vision_architecture_contracts.py"
+        "test_openai_vision_release_gate.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6801,6 +6797,32 @@
     },
     {
       "paths": [
+        "tools/check_official_qt_runtime.py"
+      ],
+      "tests": [
+        "test_github_governance.py",
+        "test_native_packaging_contract.py",
+        "test_official_qt_runtime.py",
+        "test_python315_runtime.py",
+        "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "requirements-qt.txt"
+      ],
+      "tests": [
+        "test_github_governance.py",
+        "test_native_packaging_contract.py",
+        "test_official_qt_runtime.py",
+        "test_quality_gate.py",
+        "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "installer/test_installers.ps1"
       ],
       "tests": [
@@ -6830,17 +6852,6 @@
         "test_release_automation.py",
         "test_sbom_validation.py",
         "test_vision_sbom.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "tools/install_python315_dependencies.py"
-      ],
-      "tests": [
-        "test_github_governance.py",
-        "test_python315_qt_release.py",
-        "test_python315_runtime.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7951,25 +7962,6 @@
     },
     {
       "paths": [
-        "tools/check_python315_qt_release.py"
-      ],
-      "tests": [
-        "test_python315_qt_release.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "docs/release-evidence/V4-PYTHON315-QT-BLOCKER.md"
-      ],
-      "tests": [
-        "test_python315_qt_release.py",
-        "test_v4_release_document_integrity.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "application/runtime_bootstrap.py",
         "tools/audit_python315_compatibility.py",
         "tools/audit_python315_idioms.py"
@@ -7994,15 +7986,6 @@
       ],
       "tests": [
         "test_qc_drift.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "tools/qt315_wheel_lock.py"
-      ],
-      "tests": [
-        "test_qt315_wheel_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -8428,6 +8411,7 @@
     },
     {
       "paths": [
+        "docs/release-evidence/V4-PYTHON315-QT-BLOCKER.md",
         "docs/release-evidence/V4-PYTHON315-QT-COMPATIBILITY.md",
         "docs/release-evidence/V4-RELEASE-READINESS.md"
       ],
