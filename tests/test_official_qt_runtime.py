@@ -21,7 +21,7 @@ lazy from tools.check_official_qt_runtime import (
     inspect_pip_report,
     load_official_wheel_lock,
     main,
-    pinned_pyside_version,
+    pinned_qt_distribution_versions,
     validate_hashed_requirements,
 )
 
@@ -73,14 +73,14 @@ def test_hash_requirements_fail_closed_on_drift(tmp_path: Path) -> None:
     lock = load_official_wheel_lock()
     requirements = tmp_path / "requirements-qt.txt"
     requirements.write_text(
-        hashed_requirements_text(lock).replace("efea4c2f", "0fea4c2f", 1),
+        hashed_requirements_text(lock).replace("0867b709", "1867b709", 1),
         encoding="utf-8",
     )
     with pytest.raises(RuntimeError, match="do not match"):
         validate_hashed_requirements(requirements, lock)
 
 
-def test_pip_report_requires_locked_hashes_for_all_four_distributions(
+def test_pip_report_requires_locked_hashes_for_all_three_distributions(
     tmp_path: Path,
 ) -> None:
     lock = load_official_wheel_lock()
@@ -134,11 +134,36 @@ def test_invalid_report_stops_before_runtime_import(
 
 def test_requirements_must_pin_official_release(tmp_path: Path) -> None:
     requirements = tmp_path / "requirements.txt"
-    requirements.write_text(f"PySide6=={QT_VERSION}\n", encoding="utf-8")
-    assert pinned_pyside_version(requirements) == QT_VERSION
-    requirements.write_text("PySide6==6.11.1\n", encoding="utf-8")
+    requirements.write_text(
+        "\n".join(
+            (
+                f"PySide6_Essentials=={QT_VERSION}",
+                f"PySide6_Addons=={QT_VERSION}",
+                f"shiboken6=={QT_VERSION}",
+                "",
+            )
+        ),
+        encoding="utf-8",
+    )
+    assert pinned_qt_distribution_versions(requirements) == {
+        "pyside6-essentials": QT_VERSION,
+        "pyside6-addons": QT_VERSION,
+        "shiboken6": QT_VERSION,
+    }
+
+    requirements.write_text(
+        requirements.read_text(encoding="utf-8") + f"PySide6=={QT_VERSION}\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(RuntimeError, match="direct Qt distribution pins"):
+        pinned_qt_distribution_versions(requirements)
+
+    requirements.write_text(
+        f"PySide6_Essentials=={QT_VERSION}\nPySide6_Addons=={QT_VERSION}\n",
+        encoding="utf-8",
+    )
     with pytest.raises(RuntimeError, match=QT_VERSION):
-        pinned_pyside_version(requirements)
+        pinned_qt_distribution_versions(requirements)
 
 
 def test_ci_runtime_uses_supported_official_wheels() -> None:

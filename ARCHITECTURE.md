@@ -138,7 +138,7 @@
 
 ### v4.0.0 平台與官方 Qt for Python 政策
 
-- PySide6 6.12.0 官方 wheel 宣告支援 Python `>=3.10,<3.16`。CI 直接透過正常 resolver 安裝官方 `cp310-abi3` wheel，並以固定檔名與 SHA-256、pip 安裝報告、四套件 `Requires-Python`、`pip check` 與 Qt 6.12.0 smoke 驗證；不再重寫 metadata 或建置專案自製相容套件。
+- `PySide6_Essentials`、`PySide6_Addons` 與 `shiboken6` 6.12.0 官方 wheel 宣告支援 Python `>=3.10,<3.16`。CI 不安裝會帶入未使用 WebEngine／Pdf 的 `PySide6` 總套件，而是透過正常 resolver 直接安裝三項官方 `cp310-abi3` 發行套件，並以固定檔名與 SHA-256、pip 安裝報告、三套件 `Requires-Python`、`pip check` 與 Qt 6.12.0 smoke 驗證；不再重寫 metadata 或建置專案自製相容套件。
 - Windows 是正式支援平台；macOS／Linux 是功能受限 Preview。CI runner 證據不等於開發者本人實機認證，也不宣稱 Windows 功能同等。
 - 安全、秘密、回歸、包內內容、SBOM、SHA-256、artifact 完整性與回退行為仍是永久適用的必要門檻。
 
@@ -280,7 +280,7 @@
 
 ### v4.0.0 平台与官方 Qt for Python 政策
 
-- PySide6 6.12.0 官方 wheel 声明支持 Python `>=3.10,<3.16`。CI 直接通过正常 resolver 安装官方 `cp310-abi3` wheel，并使用固定文件名与 SHA-256、pip 安装报告、四个软件包的 `Requires-Python`、`pip check` 与 Qt 6.12.0 smoke 验证；不再重写 metadata 或构建项目自制兼容包。
+- `PySide6_Essentials`、`PySide6_Addons` 与 `shiboken6` 6.12.0 官方 wheel 声明支持 Python `>=3.10,<3.16`。CI 不安装会带入未使用 WebEngine／Pdf 的 `PySide6` 总包，而是通过正常 resolver 直接安装三个官方 `cp310-abi3` 发行包，并使用固定文件名与 SHA-256、pip 安装报告、三个软件包的 `Requires-Python`、`pip check` 与 Qt 6.12.0 smoke 验证；不再重写 metadata 或构建项目自制兼容包。
 - Windows 是正式支持平台；macOS／Linux 是功能受限 Preview。CI runner 证据不等于开发者本人实机认证，也不声明 Windows 功能同等。
 - 安全、秘密、回归、包内内容、SBOM、SHA-256、artifact 完整性与回退行为仍是永久适用的必要门槛。
 
@@ -427,7 +427,7 @@ The architecture gate reports physical five-layer package modules, root compatib
 
 ### v4.0.0 platform and official Qt for Python policy
 
-- Official PySide6 6.12.0 wheels declare support for Python `>=3.10,<3.16`. CI installs the official `cp310-abi3` wheels directly through the normal resolver and verifies fixed filenames and SHA-256 digests, the pip installation report, all four distributions' `Requires-Python`, `pip check`, and a Qt 6.12.0 smoke test. The project no longer rewrites metadata or builds its own compatibility package.
+- The official `PySide6_Essentials`, `PySide6_Addons`, and `shiboken6` 6.12.0 wheels declare support for Python `>=3.10,<3.16`. CI does not install the `PySide6` metapackage, which would pull in the unused WebEngine and Pdf distributions; it installs the three official `cp310-abi3` distributions directly through the normal resolver and verifies fixed filenames and SHA-256 digests, the pip installation report, all three distributions' `Requires-Python`, `pip check`, and a Qt 6.12.0 smoke test. The project no longer rewrites metadata or builds its own compatibility package.
 - Windows is formal support; macOS/Linux are limited Previews. CI-runner evidence covers CI-runner validation; developer physical-device certification and Windows feature parity use their own evidence.
 - Security, secrets, regression, packaged contents, SBOM, SHA-256, artifact integrity, and fallback behavior remain mandatory non-waivable gates.
 
@@ -569,6 +569,6 @@ The architecture gate reports physical five-layer package modules, root compatib
 
 ### v4.0.0 プラットフォームと公式 Qt for Python のポリシー
 
-- PySide6 6.12.0 の公式 wheel は Python `>=3.10,<3.16` 対応を宣言しています。CI は通常の resolver で公式 `cp310-abi3` wheel を直接導入し、固定ファイル名と SHA-256、pip 導入レポート、4 パッケージの `Requires-Python`、`pip check`、Qt 6.12.0 smoke で検証します。metadata の書き換えとプロジェクト独自の互換パッケージ作成は廃止します。
+- 公式 `PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 6.12.0 wheel は Python `>=3.10,<3.16` 対応を宣言しています。CI は未使用の WebEngine／Pdf を導入する `PySide6` メタパッケージを使用せず、通常の resolver で三つの公式 `cp310-abi3` ディストリビューションを直接導入し、固定ファイル名と SHA-256、pip 導入レポート、3 パッケージの `Requires-Python`、`pip check`、Qt 6.12.0 smoke で検証します。metadata の書き換えとプロジェクト独自の互換パッケージ作成は廃止します。
 - Windows を正式対応とし、macOS/Linux は機能限定 Preview とします。CI runner の証拠はCI runner 検証を対象とし、開発者本人の実機認証と Windows 機能同等性は各専用証拠で判定します。
 - セキュリティ、秘密、回帰、パッケージ内容、SBOM、SHA-256、artifact 整合性、フォールバック動作は恒久的に適用する必須ゲートです。

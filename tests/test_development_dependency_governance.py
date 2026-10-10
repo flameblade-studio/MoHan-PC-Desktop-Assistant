@@ -207,14 +207,19 @@ def test_deptry_covers_all_runtime_profiles_and_development_requirements() -> No
     ]
     assert configuration["requirements_files_dev"] == ["requirements-dev.txt"]
     assert configuration.get("ignore", []) == []
-    assert configuration["per_rule_ignores"] == {"DEP002": ["certifi"]}
+    assert configuration["per_rule_ignores"] == {
+        "DEP002": ["certifi", "shiboken6"]
+    }
     assert "certifi is pinned for the Azure Speech TLS dependency chain" in _read(
         "pyproject.toml"
     )
+    assert "shiboken6 is directly pinned" in _read("pyproject.toml")
     assert configuration["package_module_name_map"] == {
         "azure-cognitiveservices-speech": "azure",
         "opencc-python-reimplemented": "opencc",
         "opencv-python": "cv2",
+        "PySide6_Addons": "PySide6",
+        "PySide6_Essentials": "PySide6",
         "websocket-client": "websocket",
     }
 

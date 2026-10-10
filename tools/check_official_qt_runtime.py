@@ -6,6 +6,7 @@ lazy import argparse
 lazy import importlib
 lazy import json
 lazy import platform
+lazy import re
 lazy import subprocess
 lazy import sys
 lazy from collections import Counter
@@ -22,30 +23,46 @@ DEFAULT_LOCK: Final = ROOT / "tools" / "qt" / "official-wheel-lock.json"
 DEFAULT_HASH_REQUIREMENTS: Final = ROOT / "requirements-qt.txt"
 QT_VERSION: Final = "6.12.0"
 QT_DISTRIBUTIONS: Final = (
-    "PySide6",
-    "PySide6_Addons",
     "PySide6_Essentials",
+    "PySide6_Addons",
     "shiboken6",
 )
 QT_CANONICAL_NAMES: Final = frozenset(
     canonicalize_name(name) for name in QT_DISTRIBUTIONS
 )
-EXPECTED_WHEEL_COUNT: Final = 20
+EXPECTED_WHEEL_COUNT: Final = 15
 EXPECTED_WHEELS_PER_DISTRIBUTION: Final = 5
 SHA256_HEXDIGEST_LENGTH: Final = 64
+QT_REQUIREMENT_NAME: Final = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*")
 
 
-def pinned_pyside_version(requirements: Path) -> str:
-    pins = [
-        line.partition("==")[2].strip()
-        for line in requirements.read_text(encoding="utf-8").splitlines()
-        if line.strip().casefold().startswith("pyside6==")
-    ]
-    if pins != [QT_VERSION]:
+def pinned_qt_distribution_versions(requirements: Path) -> dict[str, str]:
+    pins: list[tuple[str, str]] = []
+    for raw_line in requirements.read_text(encoding="utf-8").splitlines():
+        line = raw_line.partition("#")[0].strip()
+        name_match = QT_REQUIREMENT_NAME.match(line)
+        if name_match is None:
+            continue
+        name = name_match.group()
+        canonical_name = canonicalize_name(name)
+        if (
+            canonical_name == "pyside6"
+            or canonical_name.startswith(("pyside6-", "shiboken6"))
+        ):
+            remainder = line[len(name) :]
+            version = remainder.removeprefix("==") if remainder.startswith("==") else line
+            pins.append((canonical_name, version.strip()))
+
+    expected = {
+        canonicalize_name(distribution_name): QT_VERSION
+        for distribution_name in QT_DISTRIBUTIONS
+    }
+    if sorted(pins) != sorted(expected.items()):
         raise RuntimeError(
-            f"{requirements} must contain exactly PySide6=={QT_VERSION}; found {pins}"
+            f"{requirements} must contain exactly the direct Qt distribution pins "
+            f"{expected}; found {pins}"
         )
-    return pins[0]
+    return dict(pins)
 
 
 def _valid_sha256(value: object) -> bool:
@@ -340,7 +357,7 @@ def main(argv: list[str] | None = None) -> int:
     args = arguments(argv)
     issues: list[str] = []
     try:
-        pinned_pyside_version(args.requirements.resolve())
+        pinned_qt_distribution_versions(args.requirements.resolve())
         lock = load_official_wheel_lock(args.lock.resolve())
         validate_hashed_requirements(args.hash_requirements.resolve(), lock)
     except RuntimeError as error:

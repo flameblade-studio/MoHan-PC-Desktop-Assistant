@@ -62,7 +62,7 @@ if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:False") {
 
 & $Python tools/check_official_qt_runtime.py --pip-report $QtPipReportPath
 if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging requires the hash-verified official PySide6 6.12.0 installation report."
+    throw "MoHan $Version packaging requires the hash-verified official Qt for Python 6.12.0 three-distribution installation report."
 }
 & $Python -c "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket; import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets"
 if ($LASTEXITCODE -ne 0) {

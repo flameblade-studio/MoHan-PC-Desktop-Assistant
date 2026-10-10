@@ -115,7 +115,7 @@ def test_version_runtime_and_evidence_policy() -> None:
             "tools/check_official_qt_runtime.py",
             "--pip-report $QtPipReportPath",
             "QtPipReport",
-            "PySide6 6.12.0",
+            "Qt for Python 6.12.0 three-distribution",
             "tools\\jit_launcher.py",
             "Move-Item -LiteralPath $PublicExecutable",
             '$env:PYTHON_JIT = "0"',

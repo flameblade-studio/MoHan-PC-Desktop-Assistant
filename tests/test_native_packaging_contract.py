@@ -76,7 +76,7 @@ def test_windows_package_builds_installs_and_collects_native_module() -> None:
         "tools/check_official_qt_runtime.py",
         "--pip-report $QtPipReportPath",
         "QtPipReport",
-        "PySide6 6.12.0",
+        "Qt for Python 6.12.0 three-distribution",
         'Move-Item -LiteralPath $PublicExecutable',
         'tools\\jit_launcher.py',
         '$env:PYTHON_JIT = "0"',

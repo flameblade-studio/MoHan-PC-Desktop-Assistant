@@ -70,7 +70,7 @@ git diff --check
 
 ### v4.0.0 平台與官方 Qt for Python 政策
 
-- PySide6 6.12.0 官方 wheel 宣告支援 Python `>=3.10,<3.16`。發行流程直接透過正常 resolver 安裝官方 `cp310-abi3` wheel，並驗證固定檔名與 SHA-256、pip 安裝報告、四套件 `Requires-Python`、`pip check` 與 Qt 6.12.0 smoke；不得重寫 metadata 或回退到專案自製相容套件。
+- `PySide6_Essentials`、`PySide6_Addons` 與 `shiboken6` 6.12.0 官方 wheel 宣告支援 Python `>=3.10,<3.16`。發行流程不得安裝會帶入未使用 WebEngine／Pdf 的 `PySide6` 總套件；須透過正常 resolver 直接安裝三項官方 `cp310-abi3` 發行套件，並驗證固定檔名與 SHA-256、pip 安裝報告、三套件 `Requires-Python`、`pip check` 與 Qt 6.12.0 smoke；不得重寫 metadata 或回退到專案自製相容套件。
 - Windows 是正式支援平台。macOS／Linux 為功能受限 Preview；CI runner 的建置與 smoke 不等於開發者本人實機認證，也不宣稱 Windows 功能同等。
 - 安全、秘密隔離、完整回歸、包內內容、SBOM、SHA-256、artifact 完整性、四語說明與可回退行為仍是永久適用的必要門檻。PoseAtlas 只在具備完整授權、sidecar 及正式稽核證據時納入。
 
@@ -249,7 +249,7 @@ git diff --check
 
 ### v4.0.0 平台与官方 Qt for Python 政策
 
-- PySide6 6.12.0 官方 wheel 声明支持 Python `>=3.10,<3.16`。发布流程直接通过正常 resolver 安装官方 `cp310-abi3` wheel，并验证固定文件名与 SHA-256、pip 安装报告、四个软件包的 `Requires-Python`、`pip check` 与 Qt 6.12.0 smoke；不得重写 metadata 或回退到项目自制兼容包。
+- `PySide6_Essentials`、`PySide6_Addons` 与 `shiboken6` 6.12.0 官方 wheel 声明支持 Python `>=3.10,<3.16`。发布流程不得安装会带入未使用 WebEngine／Pdf 的 `PySide6` 总包；须通过正常 resolver 直接安装三个官方 `cp310-abi3` 发行包，并验证固定文件名与 SHA-256、pip 安装报告、三个软件包的 `Requires-Python`、`pip check` 与 Qt 6.12.0 smoke；不得重写 metadata 或回退到项目自制兼容包。
 - Windows 是正式支持平台。macOS／Linux 为功能受限 Preview；CI runner 的构建与 smoke 不等于开发者本人实机认证，也不声明 Windows 功能同等。
 - 安全、秘密隔离、完整回归、包内内容、SBOM、SHA-256、artifact 完整性、四语说明与可回退行为仍是永久適用的必要門檻。PoseAtlas 只在具备完整授权、sidecar 与正式审计证据时纳入。
 
@@ -428,7 +428,7 @@ git diff --check
 
 ### v4.0.0 platform and official Qt for Python policy
 
-- Official PySide6 6.12.0 wheels declare support for Python `>=3.10,<3.16`. Release workflows install the official `cp310-abi3` wheels directly through the normal resolver and verify fixed filenames and SHA-256 digests, the pip installation report, all four distributions' `Requires-Python`, `pip check`, and a Qt 6.12.0 smoke test. They must not rewrite metadata or fall back to a project-built compatibility package.
+- The official `PySide6_Essentials`, `PySide6_Addons`, and `shiboken6` 6.12.0 wheels declare support for Python `>=3.10,<3.16`. Release workflows must not install the `PySide6` metapackage, which would pull in the unused WebEngine and Pdf distributions; they install the three official `cp310-abi3` distributions directly through the normal resolver and verify fixed filenames and SHA-256 digests, the pip installation report, all three distributions' `Requires-Python`, `pip check`, and a Qt 6.12.0 smoke test. They must not rewrite metadata or fall back to a project-built compatibility package.
 - Windows is formal support. macOS/Linux are limited Previews; CI-runner builds and smoke tests cover CI-runner validation; developer physical-device certification and Windows feature parity use their dedicated evidence.
 - Security, secret isolation, full regression, packaged contents, SBOM, SHA-256, artifact integrity, four-language notes, and fallback behavior remain mandatory. PoseAtlas enters the release only with complete authorization, sidecars, and formal audit evidence.
 
@@ -607,7 +607,7 @@ git diff --check
 
 ### v4.0.0 プラットフォームと公式 Qt for Python のポリシー
 
-- PySide6 6.12.0 の公式 wheel は Python `>=3.10,<3.16` 対応を宣言しています。公開 workflow は通常の resolver で公式 `cp310-abi3` wheel を直接導入し、固定ファイル名と SHA-256、pip 導入レポート、4 パッケージの `Requires-Python`、`pip check`、Qt 6.12.0 smoke で検証します。metadata を書き換えたり、プロジェクト独自の互換パッケージへ戻したりしてはいけません。
+- 公式 `PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 6.12.0 wheel は Python `>=3.10,<3.16` 対応を宣言しています。公開 workflow は未使用の WebEngine／Pdf を導入する `PySide6` メタパッケージを使用せず、通常の resolver で三つの公式 `cp310-abi3` ディストリビューションを直接導入し、固定ファイル名と SHA-256、pip 導入レポート、3 パッケージの `Requires-Python`、`pip check`、Qt 6.12.0 smoke で検証します。metadata を書き換えたり、プロジェクト独自の互換パッケージへ戻したりしてはいけません。
 - Windows を正式対応とし、macOS/Linux は機能限定 Preview とします。CI runner の build と smoke は CI 検証を対象とし、開発者本人の実機認証と Windows 機能同等性は各専用証拠で判定します。
 - セキュリティ、秘密分離、完全回帰、パッケージ内容、SBOM、SHA-256、artifact 整合性、四言語説明、フォールバック動作は必須です。完全な許諾と sidecar がない PoseAtlas は除外し、PoseAtlas は完全な許諾、sidecar、正式監査証拠が揃った場合だけ含めます。
 

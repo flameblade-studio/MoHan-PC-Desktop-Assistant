@@ -80,6 +80,22 @@ def test_pin_check_rejects_unpinned_requirement(tmp_path: Path) -> None:
     assert quality_gate._check_pins(tmp_path) == 0
 
 
+def test_pin_check_accepts_complete_hash_pins_and_rejects_incomplete_hashes(
+    tmp_path: Path,
+) -> None:
+    requirements = tmp_path / "requirements-qt.txt"
+    requirements.write_text(
+        "example==1.0 \\\n"
+        f"    --hash=sha256:{'1' * 64} \\\n"
+        f"    --hash=sha256:{'2' * 64}\n",
+        encoding="utf-8",
+    )
+    assert quality_gate._check_pins(tmp_path) == 0
+
+    requirements.write_text("example==1.0 \\\n", encoding="utf-8")
+    assert quality_gate._check_pins(tmp_path) == 1
+
+
 def test_pyright_copy_normalizes_only_lazy_import_syntax(tmp_path: Path) -> None:
     source = tmp_path / "domain" / "sample.py"
     source.parent.mkdir()

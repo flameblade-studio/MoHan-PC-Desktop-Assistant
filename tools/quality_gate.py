@@ -47,6 +47,10 @@ VULTURE_EXCLUDE_PATTERN = (
 PINNED_REQUIREMENT = re.compile(
     r"^[A-Za-z0-9][A-Za-z0-9_.-]*==[^\s;]+(?:\s*;\s*[^\s].*)?$"
 )
+HASHED_PINNED_REQUIREMENT = re.compile(
+    r"^[A-Za-z0-9][A-Za-z0-9_.-]*==[^\s;]+\s+\\$"
+)
+SHA256_REQUIREMENT_HASH = re.compile(r"^--hash=sha256:[0-9a-f]{64}(?:\s+\\)?$")
 CARGO_AUDIT_VERSION = "0.22.2"
 
 
@@ -229,13 +233,26 @@ def _check_pins(root: Path = ROOT) -> int:
         return 1
 
     for path in requirement_files:
+        expecting_hash = False
         for number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
             line = raw_line.split("#", maxsplit=1)[0].strip()
+            if expecting_hash:
+                if SHA256_REQUIREMENT_HASH.fullmatch(line):
+                    expecting_hash = line.endswith("\\")
+                    continue
+                failures.append(f"{path.relative_to(root)}:{number}: {raw_line.strip()}")
+                expecting_hash = False
+                continue
             if not line or line.startswith(("-r ", "--requirement ", "--")):
                 continue
             if PINNED_REQUIREMENT.fullmatch(line):
                 continue
+            if HASHED_PINNED_REQUIREMENT.fullmatch(line):
+                expecting_hash = True
+                continue
             failures.append(f"{path.relative_to(root)}:{number}: {raw_line.strip()}")
+        if expecting_hash:
+            failures.append(f"{path.relative_to(root)}:<eof>: missing SHA-256 hash")
 
     if failures:
         print("Unpinned or unsupported requirement entries:", file=sys.stderr)

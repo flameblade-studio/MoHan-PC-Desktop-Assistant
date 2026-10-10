@@ -8,7 +8,9 @@ authors = [
   { name = "Flameblade Studio" },
 ]
 dependencies = [
-  "PySide6==6.12.0",
+  "PySide6_Essentials==6.12.0",
+  "PySide6_Addons==6.12.0",
+  "shiboken6==6.12.0",
 ]
 
 [project.urls]
