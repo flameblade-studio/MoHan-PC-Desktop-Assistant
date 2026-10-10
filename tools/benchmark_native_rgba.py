@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import importlib
 lazy import json
@@ -142,6 +144,7 @@ def run(width: int, height: int, iterations: int) -> dict[str, object]:
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     parser = argparse.ArgumentParser()
     parser.add_argument("--width", type=int, default=256)
     parser.add_argument("--height", type=int, default=256)

@@ -4,15 +4,13 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
-lazy from domain.character_runtime_data import (
-    default_expression_catalog,
-    default_rig_manifest,
-)
+lazy from domain.character_runtime import character_rig_manifest
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.face_rig import FacePose
 
 PNG_HEADER_LENGTH = 24
-_EXPRESSION_CATALOG = default_expression_catalog()
-_RIG_MANIFEST = default_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
+_RIG_MANIFEST = character_rig_manifest()
 
 
 @dataclass(frozen=True, slots=True)

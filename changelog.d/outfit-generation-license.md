@@ -1,0 +1,3 @@
+### 一鍵製衣授權修正／一键制衣授权修正／One-click outfit license fix／ワンクリック衣装のライセンス修正
+
+- 雲裳閣一鍵製衣產生的服裝包改以 CC BY-NC-ND 4.0 宣告來源授權，修正授權白名單上線後無法打包安裝的問題；既有一鍵製衣服裝仍可載入，且生成完成後立即刷新衣櫥預覽。／云裳阁一键制衣生成的服装包改以 CC BY-NC-ND 4.0 声明来源授权，修复授权白名单上线后无法打包安装的问题；既有一键制衣服装仍可加载，且生成完成后立即刷新衣橱预览。／One-click outfits from the wardrobe now declare CC BY-NC-ND 4.0, fixing packaging and installation after the license allowlist; previously generated outfits still load, and the wardrobe preview refreshes as soon as generation finishes.／衣装室のワンクリック衣装は出典ライセンスを CC BY-NC-ND 4.0 と宣言するようになり、ライセンス許可リスト導入後にパッケージ化とインストールができなかった問題を修正しました。既存のワンクリック衣装も引き続き読み込め、生成完了後すぐに衣装プレビューを更新します。

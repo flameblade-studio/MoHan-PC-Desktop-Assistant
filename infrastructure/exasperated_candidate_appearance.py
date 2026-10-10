@@ -11,7 +11,7 @@ lazy from pathlib import Path
 lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from domain.companion_animation_contract import outfit_silhouette
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, FOUNDATION_SLOT, resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
 lazy from domain import outfit_pack_official

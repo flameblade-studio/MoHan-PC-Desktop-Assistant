@@ -13,10 +13,10 @@ from __future__ import annotations
 
 lazy from collections.abc import Callable
 lazy from typing import Protocol
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.outfit_pack_assets import OutfitPackError
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 _FULL_BODY_CANVAS = (
     _RIG_MANIFEST.full_body_canvas.width,
     _RIG_MANIFEST.full_body_canvas.height,

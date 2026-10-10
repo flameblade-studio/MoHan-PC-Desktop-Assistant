@@ -7,15 +7,12 @@ lazy import cv2
 lazy import numpy as np
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
-lazy from domain.character_runtime_data import (
-    default_expression_catalog,
-    default_rig_manifest,
-)
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES, character_rig_manifest
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.qt_image_pixels import rgba8888_image
 
-NATIVE_SIZE = default_rig_manifest().half_body_asset_canvas.width
-_BROW_GUARD = default_expression_catalog().brow_guard
+NATIVE_SIZE = character_rig_manifest().half_body_asset_canvas.width
+_BROW_GUARD = active_expression_catalog().brow_guard
 _EUREKA_EXPRESSION = CHARACTER_EXPRESSION_ROLES["insight"]
 BROW_REGIONS = tuple(
     (x, y, x + width, y + height)

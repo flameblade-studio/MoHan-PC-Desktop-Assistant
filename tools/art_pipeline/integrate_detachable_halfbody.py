@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import hashlib
 lazy import json
@@ -165,6 +167,7 @@ def integrate_detachable_halfbody(
 
 
 def main() -> None:
+    activate_product_character_runtime(Path(__file__).resolve().parents[2])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("candidate", type=Path)
     parser.add_argument("destination", type=Path)

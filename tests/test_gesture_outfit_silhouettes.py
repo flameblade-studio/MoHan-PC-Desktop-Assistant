@@ -38,7 +38,7 @@ lazy from domain.outfit_pack import BASE_SILHOUETTES, GESTURE_SILHOUETTES, OFFIC
 lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-lazy from presentation.presentation_resources import FaceRenderLayers
+lazy from presentation.render_contracts import FaceRenderLayers
 
 CANVAS = 465
 # Upper chest of the bare portraits on the 465px canvas: grey tank top in every gesture,

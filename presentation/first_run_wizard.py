@@ -17,11 +17,8 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-lazy from application.presentation_ports import (
-    PlatformServicePort,
-    PresentationDatabasePort,
-    fallback_platform_services,
-)
+lazy from application.presentation_ports import PlatformServicePort, fallback_platform_services
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.app_profile import default_persona_for_language, profile_setting

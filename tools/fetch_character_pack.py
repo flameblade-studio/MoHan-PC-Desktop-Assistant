@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import hashlib
 lazy import sys
@@ -340,6 +342,7 @@ def _require_success_status(response: object) -> None:
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--lock", type=Path, default=DEFAULT_LOCK)

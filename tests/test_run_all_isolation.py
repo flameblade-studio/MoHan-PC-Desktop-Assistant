@@ -36,6 +36,12 @@ def _command_test_name(command: list[str]) -> str:
     return Path(test_argument.partition("::")[0]).name
 
 
+def _direct_command(test: Path) -> list[str]:
+    """Direct ``main()`` modules run through the bundled-character fixture launcher."""
+
+    return [sys.executable, "-m", "tests.character_runtime_support", str(test)]
+
+
 def test_each_child_receives_an_independent_sanitized_environment() -> None:
     calls: list[dict[str, object]] = []
 
@@ -81,6 +87,8 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
     ]
     assert calls[0]["command"] == [
         sys.executable,
+        "-m",
+        "tests.character_runtime_support",
         str(tests_dir / "test_alpha.py"),
     ]
     assert calls[1]["command"] == [
@@ -243,7 +251,7 @@ def test_mixed_module_uses_one_process_when_main_covers_pytest_nodes() -> None:
             "    print('partial manual runner')\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_mixed_module_only_collects_nodes_missing_from_main() -> None:
@@ -261,7 +269,7 @@ def test_mixed_module_only_collects_nodes_missing_from_main() -> None:
         )
 
         assert run_all._test_commands(test) == (
-            [sys.executable, str(test)],
+            _direct_command(test),
             [
                 sys.executable,
                 "-m",
@@ -292,7 +300,7 @@ def test_mixed_module_combines_missing_pytest_nodes_in_one_process() -> None:
         )
 
         assert run_all._test_commands(test) == (
-            [sys.executable, str(test)],
+            _direct_command(test),
             [
                 sys.executable,
                 "-m",
@@ -322,7 +330,7 @@ def test_unittest_main_does_not_duplicate_wrapped_pytest_functions() -> None:
             "    unittest.main()\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_pure_pytest_delegate_to_main_runner_is_not_duplicated() -> None:
@@ -339,7 +347,7 @@ def test_pure_pytest_delegate_to_main_runner_is_not_duplicated() -> None:
             "    run()\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_bare_function_reference_does_not_count_as_execution() -> None:
@@ -379,7 +387,7 @@ def test_explicit_function_collection_loop_counts_as_execution() -> None:
             "    run()\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_parametrized_delegate_is_not_assumed_to_be_covered() -> None:
@@ -412,7 +420,7 @@ def test_pure_main_script_still_runs_as_a_script() -> None:
             "    raise SystemExit(main())\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_shards_are_complete_disjoint_deterministic_and_balanced() -> None:
@@ -575,8 +583,8 @@ def test_aggregate_mode_runs_follow_up_command_after_a_failure() -> None:
             )
 
     assert len(commands) == EXPECTED_AGGREGATE_COMMAND_RUNS
-    assert Path(commands[0][1]).name == "test_mixed.py"
-    assert Path(commands[1][1]).name == "test_mixed.py"
+    assert Path(commands[0][-1]).name == "test_mixed.py"
+    assert Path(commands[1][-1]).name == "test_mixed.py"
     assert any(
         argument.endswith("test_mixed.py::test_missing")
         for argument in commands[2]
@@ -628,7 +636,7 @@ def test_github_governance_helpers_are_safe_for_pytest_collection() -> None:
     }
     assert "test_release_workflow" in main_calls
     assert run_all._test_commands(governance_path) == (
-        [sys.executable, str(governance_path)],
+        _direct_command(governance_path),
     )
 
 

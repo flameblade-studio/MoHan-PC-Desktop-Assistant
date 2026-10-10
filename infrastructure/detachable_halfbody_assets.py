@@ -10,11 +10,11 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap
 
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.detachable-halfbody.v1"
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 DIMENSION = _RIG_MANIFEST.half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
 PART_ORDER = (

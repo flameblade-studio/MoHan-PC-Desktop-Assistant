@@ -5,7 +5,7 @@ lazy from dataclasses import dataclass
 lazy from dataclasses import field as dataclass_field
 lazy from typing import Protocol
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.language_support import localized_voice_instructions
 lazy from domain.speech_providers import (
     AZURE_HD_SPEECH_PROVIDER,
@@ -95,7 +95,7 @@ AZURE_HD_SECRET_POLICY = SecretInputPolicy(
 )
 
 
-_VOICE_PROFILE = load_mohan_character_data().voice
+_VOICE_PROFILE = active_character_data().voice
 MOHAN_VOICE_DEFAULTS = _VOICE_PROFILE
 VOICE_GENERATION_PROMPT = _VOICE_PROFILE.instructions["zh-TW"]
 DEFAULT_TTS_VOICE = _VOICE_PROFILE.default_tts_voice

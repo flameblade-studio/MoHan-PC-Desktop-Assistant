@@ -31,7 +31,7 @@ lazy from domain.outfit_pack import (
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import native_overlay_is_redundant
-lazy from domain.version_info import APP_VERSION
+lazy from domain.engine_capabilities import current_engine_capabilities
 lazy from infrastructure.active_outfit_base_clear import ActiveOutfitBaseClearMixin
 lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin, FULL_BODY_CANVAS
 lazy from infrastructure.reviewed_garment_overlay import ReviewedGarmentOverlayMixin
@@ -53,6 +53,7 @@ lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
 lazy from infrastructure.outfit_layer_cache import OutfitLayerCacheMixin
 
 SEMVER_COMPONENT_COUNT = 3
+APP_VERSION = current_engine_capabilities().version
 _AUTO_HAND_REGIONS = sentinel("_AUTO_HAND_REGIONS")
 _RANGE = re.compile(r">=(\d+)\.(\d+)\.(\d+),<(\d+)\.(\d+)\.(\d+)\Z")
 # One composited layer: pixmap, anchor x/y, the region it may paint, opacity.

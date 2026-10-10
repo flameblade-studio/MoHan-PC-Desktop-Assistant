@@ -8,7 +8,7 @@ lazy import zipfile
 lazy from collections.abc import Callable
 
 lazy from domain._outfit_pack_models import AppearanceItem
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.outfit_pack_assets import (
     MANIFEST,
     IncompatibleBodyProfileError,
@@ -19,7 +19,7 @@ lazy from domain.outfit_pack_assets import (
 
 FORMAT = "mohan-outfit-pack"
 VERSION = 2
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 BODY_PROFILE_ID = _RIG_MANIFEST.body_profile_id
 BODY_PROFILE_VERSION = _RIG_MANIFEST.body_profile_version
 AUTHORING_TEMPLATE = "mohan-official-poses"
@@ -45,6 +45,9 @@ SUPPORTED_SOURCE_LICENSES = frozenset({
     "CC-BY-NC-ND-4.0",
     "CC0-1.0",
     "MIT",
+    # Legacy value written by the self-generating wardrobe before 2026-10-10;
+    # kept so outfits users already generated and installed keep loading.
+    "Project License",
 })
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")

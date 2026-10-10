@@ -33,6 +33,9 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -510,6 +513,7 @@ def render_matrix(
     cells: Iterable[GoldenCell] | None = None,
     settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
 ) -> dict[str, object]:
+    activate_product_character_runtime(ROOT)
     selected = tuple(matrix_cells(settings) if cells is None else cells)
     output = Path(output).resolve()
     asset_root = Path(asset_root).resolve()
@@ -820,6 +824,7 @@ def _require_committed_render_sources(
 
 
 def main(argv: Iterable[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--manifest", type=Path, default=MANIFEST_PATH)

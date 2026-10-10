@@ -5,9 +5,9 @@ lazy import os
 lazy import winreg
 lazy from dataclasses import dataclass
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 
-_SYSTEM_LOCAL = load_mohan_character_data().voice.system_local
+_SYSTEM_LOCAL = active_character_data().voice.system_local
 
 
 @dataclass(frozen=True)

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy from pathlib import Path
 
@@ -7,6 +9,7 @@ lazy from application.outfit_pack_builder import build_outfit_pack
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     parser = argparse.ArgumentParser(
         description="Build one validated MoHan v2 outfit package.",
     )

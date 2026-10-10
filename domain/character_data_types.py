@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 lazy from domain.character_pack.character_data_models import (
-    DEFAULT_EXPRESSION_CATALOG_PATH,
-    DEFAULT_RIG_MANIFEST_PATH,
     EXPRESSION_SCHEMA,
     FULL_BODY_LAYER_COUNT,
     FULL_VIEW_COUNT,
@@ -35,6 +33,10 @@ lazy from domain.character_pack.character_data_models import (
     SourceBoundExasperatedSpec,
     ViewportSpec,
     ViewRingSpec,
+)
+lazy from domain.character_default_paths import (
+    DEFAULT_EXPRESSION_CATALOG_PATH,
+    DEFAULT_RIG_MANIFEST_PATH,
 )
 
 __all__ = (

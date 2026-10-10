@@ -6,13 +6,13 @@ lazy from typing import Protocol
 
 lazy from PySide6.QtWidgets import QComboBox, QFrame, QLabel, QPushButton, QVBoxLayout
 
-lazy from application.presentation_ports import PresentationDatabasePort
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.wardrobe_appearance_service import WardrobeAppearanceService
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID
 lazy from domain.outfit_pack import OutfitPackError
 lazy from domain.outfit_pack_official import official_native_hair_alias
-lazy from presentation.flagship_theme import mark_flagship_card
+lazy from presentation.dashboard_shared import mark_flagship_card
 
 __all__ = ("build_appearance_card", "reload_appearance_controls")
 

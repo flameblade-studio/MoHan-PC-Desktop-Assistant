@@ -27,8 +27,7 @@ RemovalResult = _outfit_pack_models.RemovalResult
 SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.makeup_mouth_states import parse_mouth_states
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES, character_rig_manifest
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain import outfit_pack_official
 from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations
@@ -63,7 +62,7 @@ from domain.outfit_pack_archive import (
     declared_asset_paths as _archive_declared_asset_paths,
 )
 _declared_asset_paths = _archive_declared_asset_paths
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 BASE_SILHOUETTES = tuple(_RIG_MANIFEST.pose_silhouettes.values())
 GESTURE_SILHOUETTES = tuple(_RIG_MANIFEST.gesture_silhouettes.values())
 POSE_ATLAS_SILHOUETTES = tuple(canonical_view_id(yaw) for yaw in CANONICAL_YAWS)

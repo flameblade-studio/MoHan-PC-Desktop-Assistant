@@ -3,7 +3,7 @@ from __future__ import annotations
 lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 
 
 class FacePose(StrEnum):
@@ -36,7 +36,7 @@ EYE_STATE_BLINK = frozendict({
     EyeState.CLOSED: 1.0,
 })
 EYE_CLOSED_THRESHOLD = 0.75
-VISEME_U_INWARD_LERP = default_rig_manifest().face_calibration.viseme_u_inward_lerp
+VISEME_U_INWARD_LERP = character_rig_manifest().face_calibration.viseme_u_inward_lerp
 
 
 def eye_state_for_blink(value: float) -> EyeState:

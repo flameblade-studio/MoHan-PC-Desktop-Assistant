@@ -9,7 +9,7 @@ lazy from PySide6.QtGui import QPainter, QPixmap
 
 lazy from application.appearance_ports import AppearanceRenderOptions
 lazy from application.appearance_ports import MakeupOverlayPort
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.face_rig import FaceMotionFrame
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 lazy from infrastructure.animated_appearance import AnimatedAppearance
@@ -24,7 +24,7 @@ lazy from infrastructure.complete_halfbody_expressions import (
 MAX_FRAME_CONTEXTS = 2 * len(COMPLETE_POSES) * len(FAMILIES) * len(EYES)
 MAX_DECODED_FRAMES = 24
 CLOSED_APERTURE = 0.01
-_CHEEK_SILHOUETTE = default_rig_manifest().pose_silhouettes["cheek"]
+_CHEEK_SILHOUETTE = character_rig_manifest().pose_silhouettes["cheek"]
 
 
 class CompleteHalfbodyRenderer:

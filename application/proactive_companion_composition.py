@@ -20,7 +20,7 @@ lazy from application.special_occasion import OccasionCue, OccasionExpression
 lazy from application.wellbeing_app_bridge import SpeakRequest, WellbeingAppBridge
 lazy from application.wellbeing_reminder import ReminderExpression, WellbeingCue
 lazy from application.wellbeing_runtime import WellbeingRuntime
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.time_utils import local_aware_time
 lazy from infrastructure.companion_proactivity_preferences_store import (
     CompanionProactivityPreferencesStore,

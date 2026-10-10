@@ -47,19 +47,19 @@ MAX_NEW_LAYER_MODULE_LINES = 800
 # the gate's own counting rule
 # (utf-8-sig decode + str.splitlines()).
 LAYER_MODULE_LINE_BASELINE = {
-    "application.presentation_ports": 992,
-    "domain.outfit_pack": 845,
+    "application.presentation_ports": 959,
+    "domain.outfit_pack": 844,
     "infrastructure.db": 1_188,
     "infrastructure.profile_transfer": 1_070,
     "integrations.azure_speech": 833,
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,
     "presentation.companion_core": 1_084,
-    "presentation.companion_face_animation": 1_148,
-    "presentation.companion_speech_runtime": 1_165,
+    "presentation.companion_face_animation": 1_145,
+    "presentation.companion_speech_runtime": 1_163,
     "presentation.companion_visual_dynamics": 965,
-    "presentation.dashboard_settings": 911,
-    "presentation.dashboard_shell": 886,
+    "presentation.dashboard_settings": 908,
+    "presentation.dashboard_shell": 885,
     "presentation.dashboard_voice": 1_067,
 }
 MAX_ROOT_APP_LINES = 50

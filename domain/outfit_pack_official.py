@@ -22,13 +22,12 @@ lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from domain.character_source import (
-    CharacterAppearanceDefaults,
     CharacterSource,
+    active_character_data,
     active_character_source,
     character_appearance_defaults,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
-
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 _LOGGER = logging.getLogger("mohan.character_appearance")
 
 
@@ -49,7 +48,7 @@ def _load_official_appearance(
 # Legacy constant exports remain byte-compatible for extensions and build tools,
 # but their values come from the same validated character data rather than a
 # second set of source literals. Runtime consumers use the active-source helpers.
-_COMPATIBILITY_APPEARANCE = load_mohan_character_data().appearance_defaults
+_COMPATIBILITY_APPEARANCE = active_character_data().appearance_defaults
 # Compatibility alias for callers introduced with character-pack 1.0.1.  This
 # value is a persisted product-shell sentinel, not character appearance data.
 DEFAULT_OUTFIT_SELECTION_ID = "mohan.default.blue-silver"

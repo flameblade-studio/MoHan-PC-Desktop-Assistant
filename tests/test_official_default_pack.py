@@ -248,6 +248,20 @@ def test_official_appearance_data_fails_closed(tmp_path: Path, mutate) -> None:
         load_character_appearance_defaults(invalid)
 
 
+def _with_appearance_defaults(legacy: object, changed: object) -> SimpleNamespace:
+    """Copy every CharacterSource member while replacing only the appearance defaults."""
+
+    return SimpleNamespace(
+        character_data=legacy.character_data,
+        character_data_root=legacy.character_data_root,
+        expression_catalog=legacy.expression_catalog,
+        assets=legacy.assets,
+        persona=legacy.persona,
+        appearance=SimpleNamespace(appearance_defaults=changed),
+        voice=legacy.voice,
+    )
+
+
 def test_official_appearance_reads_through_character_source() -> None:
     character_source = service_container.create_default_character_source()
     assert _load_official_appearance(character_source) == (
@@ -258,12 +272,7 @@ def test_official_appearance_reads_through_character_source() -> None:
 def test_character_without_headwear_has_no_native_headwear_alias() -> None:
     legacy = service_container.create_default_character_source()
     changed = replace(legacy.appearance_defaults, native_headwear=None)
-    changed_source = SimpleNamespace(
-        assets=legacy.assets,
-        persona=legacy.persona,
-        appearance=SimpleNamespace(appearance_defaults=changed),
-        voice=legacy.voice,
-    )
+    changed_source = _with_appearance_defaults(legacy, changed)
     activate_character_source(changed_source)
     try:
         assert is_official_native_alias(
@@ -295,12 +304,7 @@ def test_changed_default_ensemble_keeps_the_persisted_builtin_sentinel(
         pack_id=changed.outfit_pack_id,
         ensemble_id=legacy.appearance_defaults.outfit_ensemble_id,
     )
-    changed_source = SimpleNamespace(
-        assets=legacy.assets,
-        persona=legacy.persona,
-        appearance=SimpleNamespace(appearance_defaults=changed),
-        voice=legacy.voice,
-    )
+    changed_source = _with_appearance_defaults(legacy, changed)
     activate_character_source(changed_source)
     restores: list[Path] = []
     monkeypatch.setattr(

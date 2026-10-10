@@ -14,7 +14,7 @@ lazy from presentation.dashboard_artwork import CelestialFrame
 lazy from presentation.dashboard_wardrobe_categories import (
     build_appearance_card, reload_appearance_controls,
 )
-lazy from presentation.flagship_theme import mark_flagship_card
+lazy from presentation.dashboard_shared import mark_flagship_card
 lazy from presentation.wardrobe_layout import WardrobeScrollArea
 
 

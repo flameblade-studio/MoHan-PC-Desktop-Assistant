@@ -10,6 +10,13 @@ lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+ROOT = Path(__file__).resolve().parents[2]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
 
 lazy from PIL import Image, ImageDraw
 lazy from PySide6.QtCore import Qt
@@ -25,7 +32,6 @@ lazy from presentation.companion_face_assets import CompanionFaceAssetMethods
 lazy from presentation.companion_visual_physics import CompanionVisualPhysicsMethods
 
 
-ROOT = Path(__file__).resolve().parents[2]
 EXPRESSION_ROOT = ROOT / "assets" / "expressions"
 PREVIEW_SIZE = 465
 POSE_CASES = (
