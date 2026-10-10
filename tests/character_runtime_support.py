@@ -23,12 +23,12 @@ def main(arguments: list[str] | None = None) -> int:
     """Run one legacy direct test after installing its product fixture."""
 
     selected = sys.argv[1:] if arguments is None else arguments
-    if len(selected) != 1:
-        raise SystemExit("usage: python -m tests.character_runtime_support TEST_FILE")
+    if not selected:
+        raise SystemExit("usage: python -m tests.character_runtime_support TEST_FILE [ARGS...]")
     activate_bundled_character_runtime()
     previous_arguments = sys.argv
     try:
-        sys.argv = [selected[0]]
+        sys.argv = list(selected)
         # Match direct script execution, where the script directory is sys.path[0].
         sys.path.insert(0, str(Path(selected[0]).resolve().parent))
         runpy.run_path(selected[0], run_name="__main__")

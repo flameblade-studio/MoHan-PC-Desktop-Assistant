@@ -4252,6 +4252,7 @@
         "test_build_character_inventory.py",
         "test_character_source.py",
         "test_cross_platform_core.py",
+        "test_exasperated_candidate_runtime.py",
         "test_shared_hand_region_provider.py",
         "test_ui_smoke.py"
       ],
@@ -7792,6 +7793,17 @@
     },
     {
       "paths": [
+        "tests/character_runtime_support.py"
+      ],
+      "tests": [
+        "test_post_speech_motion_performance.py",
+        "test_pytest_collection_contract.py",
+        "test_run_all_isolation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/active_outfit_overlay_layers.py",
         "presentation/companion_legacy_frame.py"
       ],
@@ -7899,16 +7911,6 @@
       ],
       "tests": [
         "test_pytest_collection_contract.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "tests/character_runtime_support.py"
-      ],
-      "tests": [
-        "test_pytest_collection_contract.py",
-        "test_run_all_isolation.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
