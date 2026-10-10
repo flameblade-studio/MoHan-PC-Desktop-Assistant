@@ -22,6 +22,7 @@ lazy from domain.outfit_pack import (
     list_installed_selections,
     resolve_active_selection,
 )
+lazy from domain.outfit_pack_store import OfficialPackRoots
 
 BUILTIN_SELECTION_ID = "builtin"
 DEFAULT_LANGUAGE = "zh-TW"
@@ -94,7 +95,7 @@ def _headwear_none_name(language: str) -> str:
 def _resolve_active(
     install_root: Path,
     category: str,
-    official_pack_root: Path,
+    official_pack_root: OfficialPackRoots,
 ) -> SelectionResolution:
     try:
         return resolve_active_selection(
@@ -124,10 +125,10 @@ class WardrobeAppearanceService:
         self,
         install_root: Path,
         *,
-        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+        official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
     ) -> None:
         self.install_root = Path(install_root)
-        self.official_pack_root = Path(official_pack_root)
+        self.official_pack_root = official_pack_root
 
     def options(
         self,

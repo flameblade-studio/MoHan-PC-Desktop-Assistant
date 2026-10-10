@@ -13,6 +13,7 @@ lazy from domain.outfit_pack import (
     installed_pack_path,
     resolve_active_selection,
 )
+lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from infrastructure.exasperated_candidate_assets import (
     ExasperatedCandidateAssets,
 )
@@ -25,10 +26,10 @@ class OutfitSourceBoundExpressionProvider:
         self,
         store: Path,
         *,
-        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+        official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
     ) -> None:
         self._store = Path(store)
-        self._official_pack_root = Path(official_pack_root)
+        self._official_pack_root = official_pack_root
 
     def assets_for(
         self,

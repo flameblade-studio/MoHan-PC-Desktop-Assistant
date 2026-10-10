@@ -7,7 +7,7 @@ lazy import struct
 lazy import zipfile
 lazy from pathlib import Path
 lazy from domain.outfit_pack_store import (
-    _atomic_json, _installed_pack_paths, _state_references_pack,
+    OfficialPackRoots, _atomic_json, _installed_pack_paths, _state_references_pack,
     copy_pack_archive, inspect_cached_pack,
 )
 lazy from domain import _outfit_pack_models
@@ -585,7 +585,7 @@ def inspect_installed_outfit_pack(path: Path) -> OutfitPack | None:
 
 def installed_pack_path(
     store: Path, pack_id: str,
-    *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> Path:
     """Locate one installed or official pack archive by id; fails closed on an Use a recognized id."""
     paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
@@ -596,14 +596,14 @@ def installed_pack_path(
 
 
 def list_installed_outfits(
-    store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    store: Path, *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> tuple[OutfitPack, ...]:
     paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     return tuple(pack for pack in map(inspect_installed_outfit_pack, paths) if pack is not None)
 
 
 def list_stale_body_profile_packs(
-    store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    store: Path, *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> tuple[str, ...]:
     """Ids of installed packs made for another body-profile generation; they are listed for reference and stay outside rendering."""
     paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
@@ -613,7 +613,7 @@ def list_stale_body_profile_packs(
 def list_installed_selections(
     store: Path,
     category: str | None = None,
-    *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> tuple[InstalledSelection, ...]:
     if category is not None and category not in SELECTION_CATEGORIES:
         raise OutfitPackError("Use a recognized selection category.")
@@ -626,7 +626,7 @@ def list_installed_selections(
 
 
 def list_installed_ensembles(
-    store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    store: Path, *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> tuple[InstalledEnsemble, ...]:
     return tuple(
         InstalledEnsemble(pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names, ensemble.selections, ensemble.autonomous_profile)
@@ -645,7 +645,7 @@ def install_outfit_pack(source: Path, store: Path) -> OutfitPack:
 
 def apply_appearance_selection(
     store: Path, selection: InstalledSelection,
-    *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> None:
     installed = {
         (item.category, item.pack_id, item.item_id, item.variant_id)
@@ -676,7 +676,7 @@ def clear_appearance_selection(store: Path, category: str) -> None:
 def apply_ensemble(
     store: Path, pack_id: str,
     ensemble_id: str,
-    *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> None:
     ensemble = next((
         item
@@ -738,7 +738,7 @@ def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
 def resolve_active_selection(
     store: Path,
     category: str,
-    *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+    *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> SelectionResolution:
     if category not in SELECTION_CATEGORIES:
         raise OutfitPackError("Use a recognized selection category.")

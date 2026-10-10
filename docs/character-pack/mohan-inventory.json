@@ -187,7 +187,7 @@
       "work_package": null
     },
     {
-      "bytes": 21265,
+      "bytes": 21331,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -248,7 +248,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "bc463b6d3501a7cf9e1948c439e8954af6aa616d16cd6b4be19a6d55a8475848",
+      "sha256": "00212bad8ed7d65ec87ae91d83bf6e9732d3509c3c7fda4796aedfc109384788",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
@@ -25159,7 +25159,7 @@
         {
           "line": 347,
           "path": "application/service_container.py",
-          "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
+          "text": "official_pack_roots = character_source.assets.official_pack_roots"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -52930,7 +52930,7 @@
         {
           "line": 347,
           "path": "application/service_container.py",
-          "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
+          "text": "official_pack_roots = character_source.assets.official_pack_roots"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -95072,7 +95072,7 @@
           "text": "lazy from domain.contracts import default_character_display_name"
         },
         {
-          "line": 26,
+          "line": 24,
           "path": "application/presentation_ports.py",
           "text": "lazy from domain.contracts import ("
         },
@@ -95092,7 +95092,7 @@
           "text": "lazy from domain.contracts import default_character_display_name"
         },
         {
-          "line": 8,
+          "line": 7,
           "path": "application/wardrobe_service.py",
           "text": "lazy from domain.contracts import default_character_display_name"
         },
@@ -95302,7 +95302,7 @@
           "text": "from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations"
         },
         {
-          "line": 17,
+          "line": 18,
           "path": "infrastructure/active_outfit_base_clear.py",
           "text": "lazy from domain.outfit_pack_official import ("
         },
@@ -95572,7 +95572,7 @@
       "path": "domain/version_info.py",
       "readers": [
         {
-          "line": 34,
+          "line": 32,
           "path": "application/presentation_ports.py",
           "text": "lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY"
         },

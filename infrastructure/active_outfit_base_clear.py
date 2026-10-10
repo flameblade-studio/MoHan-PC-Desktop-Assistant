@@ -11,6 +11,7 @@ lazy from domain.outfit_pack import (
     GESTURE_SILHOUETTES,
     OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
     POSE_ATLAS_SILHOUETTES,
+    SELECTION_CATEGORIES,
     OutfitPackError,
     resolve_variant_for_view,
 )
@@ -647,6 +648,25 @@ class ActiveOutfitBaseClearMixin:
             break
         self._official_outfit_active_cache = result
         return result
+
+    def appearance_declares_view(self, view_id: str) -> bool:
+        """Whether every active non-makeup variant owns the exact view."""
+
+        found = False
+        try:
+            for category in SELECTION_CATEGORIES:
+                if category == "makeup":
+                    continue
+                selected = self._resolve_base_clear_selection(category)
+                if selected.status == "builtin":
+                    continue
+                _archive, _item, variant = self._selected_variant(category, selected)
+                found = True
+                if view_id not in variant.poses:
+                    return False
+        except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile):
+            return False
+        return found
 
     def _garment_is_active(self) -> bool:
         """Resolve the active garment once per appearance-state token."""

@@ -175,16 +175,8 @@ class CharacterPackReader(
                 rig_component.path,
             )
 
-        fullbody_canvas = CharacterCanvas(
-            rig.full_body_canvas.width,
-            rig.full_body_canvas.height,
-            rig.full_body_canvas.mode,
-        )
-        halfbody_canvas = CharacterCanvas(
-            rig.half_body_asset_canvas.width,
-            rig.half_body_asset_canvas.height,
-            rig.half_body_asset_canvas.mode,
-        )
+        fullbody_canvas = CharacterCanvas(rig.full_body_canvas.width, rig.full_body_canvas.height, rig.full_body_canvas.mode)
+        halfbody_canvas = CharacterCanvas(rig.half_body_asset_canvas.width, rig.half_body_asset_canvas.height, rig.half_body_asset_canvas.mode)
 
         # Assign only after every outer and child contract has passed. A rejected
         # package therefore cannot leak a partially initialized source.
@@ -269,6 +261,15 @@ class CharacterPackReader(
     @property
     def asset_root(self) -> Path:
         return self._root
+
+    @property
+    def official_pack_roots(self) -> tuple[Path, ...]:
+        parents = (
+            PurePosixPath(component.path).parent
+            for component in self._manifest.components
+            if component.kind == "outfit_pack"
+        )
+        return tuple(dict.fromkeys(self._root.joinpath(*path.parts) for path in parents))
 
     def resolve_path(self, relative_path: str) -> Path:
         path = _relative_path(relative_path)

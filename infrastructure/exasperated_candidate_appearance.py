@@ -14,6 +14,7 @@ lazy from domain.companion_animation_contract import outfit_silhouette
 lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.outfit_pack import OFFICIAL_PACK_ROOT, FOUNDATION_SLOT, resolve_active_selection
 lazy from domain.outfit_pack_makeup import read_makeup_intensity, read_makeup_slot_intensities
+lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain import outfit_pack_official
 lazy from domain.qt_image_io import load_pixmap_png
 lazy from infrastructure.exasperated_candidate_assets import (
@@ -51,7 +52,7 @@ class ExasperatedCandidateAppearance:
     garment_enabled: bool = True
     makeup_intensities: dict[str, float] = field(default_factory=dict)
     store: Path | None = None
-    official_pack_root: Path = OFFICIAL_PACK_ROOT
+    official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT
     schema: str = SCHEMA
     cosmetic_slots: tuple[str, ...] = SLOTS
     look_variants: tuple[str, ...] = LOOK_VARIANTS
@@ -66,7 +67,7 @@ class ExasperatedCandidateAppearance:
 
     @classmethod
     def load(
-        cls, root: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
+        cls, root: Path, *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
     ) -> ExasperatedCandidateAppearance:
         root = Path(root)
         manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))

@@ -11,7 +11,6 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 lazy from application.appearance_ports import AppearanceRenderOptions
-
 lazy from domain.outfit_pack import (
     BODY_PROFILE_ID,
     OFFICIAL_PACK_ROOT,
@@ -29,6 +28,7 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
+lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.engine_capabilities import current_engine_capabilities
@@ -80,12 +80,12 @@ class ActiveOutfitOverlay(
         on_stale_body_profile: Callable[[], None] | None = None,
         *,
         visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
-        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+        official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
     ) -> None:
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
-        self._official_pack_root = Path(official_pack_root)
+        self._official_pack_root = official_pack_root
         # Core-owned, pose-specific visible skin only; supplied by the core authority.
         # The sentinel is the composition root's frozen mask result.
         self._visible_hand_region = (

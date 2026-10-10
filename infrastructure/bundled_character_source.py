@@ -110,6 +110,10 @@ class BundledCharacterSource(
     def asset_root(self) -> Path:
         return self._asset_root
 
+    @property
+    def official_pack_roots(self) -> tuple[Path, ...]:
+        return (self._asset_root / "assets" / "official-packs",)
+
     def resolve_path(self, relative_path: str) -> Path:
         normalized = _character_relative_path(relative_path)
         candidate = self._asset_root.joinpath(*normalized.parts)

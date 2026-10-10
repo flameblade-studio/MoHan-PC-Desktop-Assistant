@@ -2285,6 +2285,17 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_build_character_inventory.py",
+        "test_linkeyun_character_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/installed_character_packs.py"
       ],
       "tests": [
@@ -2376,6 +2387,16 @@
         "test_face_motion.py",
         "test_face_motion_interpolation.py",
         "test_shyness.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/lin-keyun/pack-source.json"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_linkeyun_character_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4363,16 +4384,6 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_integrations_audit2_gaps.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_linkeyun_character_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7162,8 +7173,7 @@
     {
       "paths": [
         "assets/characters/lin-keyun/LICENSE.md",
-        "assets/characters/lin-keyun/appearance/defaults.json",
-        "assets/characters/lin-keyun/pack-source.json"
+        "assets/characters/lin-keyun/appearance/defaults.json"
       ],
       "tests": [
         "test_linkeyun_character_data.py"

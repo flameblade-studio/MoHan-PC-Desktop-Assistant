@@ -152,6 +152,44 @@ def _configure(
     monkeypatch.setattr(adapter_module, "inspect_installed_outfit_pack", lambda _: pack)
 
 
+@pytest.mark.parametrize(
+    ("poses", "expected"),
+    (("cheek-rest", "cheek-glance"), True),
+    (("cheek-rest",), False),
+)
+def test_appearance_declares_view_checks_active_pack_variants(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    poses: tuple[str, ...],
+    expected: bool,
+) -> None:
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", tmp_path, visible_hand_region=None,
+    )
+    selected = SimpleNamespace(status="installed")
+    monkeypatch.setattr(
+        overlay,
+        "_resolve_base_clear_selection",
+        lambda category: selected if category == "garment" else SimpleNamespace(status="builtin"),
+    )
+    declaration = AppearanceAsset(
+        "outerwear", "assets/garment.png", "0" * 64,
+        96, 96, 0, 0, 10,
+    )
+    variant = AppearanceVariant(
+        "navy",
+        frozendict(),
+        frozendict(dict.fromkeys(poses, (declaration,))),
+    )
+    monkeypatch.setattr(
+        overlay,
+        "_selected_variant",
+        lambda _category, _selected: (tmp_path / "pack.zip", object(), variant),
+    )
+
+    assert overlay.appearance_declares_view("cheek-glance") is expected
+
+
 def _selection_resolution(
     category: str,
     status: str,
