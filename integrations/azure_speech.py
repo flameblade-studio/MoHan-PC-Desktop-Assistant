@@ -15,7 +15,7 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.speech_boundary import SpeechTimingCollector, SpeechTimingEvent
@@ -31,7 +31,7 @@ VOICE_LOCALE_PREFIX_LENGTH = 5
 RATE_LIMIT_STATUS = 429
 SERVER_ERROR_BOUNDARY = 500
 
-_AZURE_VOICES = load_mohan_character_data().voice.azure
+_AZURE_VOICES = active_character_data().voice.azure
 AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict(
     {
         "zh-TW": tuple(

@@ -394,6 +394,8 @@ def _run_mode(mode: str) -> dict[str, object]:
     completed = subprocess.run(
         [
             sys.executable,
+            "-m",
+            "tests.character_runtime_support",
             str(Path(__file__).resolve()),
             "--worker",
             "--expected-jit",

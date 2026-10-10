@@ -43,6 +43,14 @@ lazy from pathlib import Path
 
 lazy from PIL import Image
 
+ROOT = Path(__file__).resolve().parents[2]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
+
 lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_PACK_ID,

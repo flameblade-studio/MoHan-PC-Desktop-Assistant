@@ -7,6 +7,7 @@ Split out of ``domain.outfit_pack`` so that module stays within its line ratchet
 
 from __future__ import annotations
 
+lazy import hashlib
 lazy import re
 lazy import struct
 lazy import zipfile
@@ -17,6 +18,7 @@ lazy from typing import Protocol
 lazy from PySide6.QtGui import QImage
 lazy from xml.etree import ElementTree
 
+lazy from domain._outfit_pack_models import AppearanceAsset
 lazy from domain.qt_image_io import image_from_png
 
 MANIFEST = "manifest.json"
@@ -28,10 +30,30 @@ MIN_PNG_HEADER_LENGTH = 24
 MIN_WEBP_HEADER_LENGTH = 30
 SYMLINK_FILE_TYPE = 0o120000
 ASSET_PATH = re.compile(r"assets/[a-z0-9][a-z0-9_.+-]{0,127}\.(?:png|webp|svg)\Z")
+SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 SVG_ELEMENTS = frozenset({
     "svg", "g", "defs", "linearGradient", "radialGradient", "stop", "path",
     "rect", "circle", "ellipse", "line", "polyline", "polygon",
 })
+GARMENT_SLOTS = frozenset({
+    "bodice", "outerwear", "sleeve-left", "sleeve-right", "skirt", "trousers",
+    "legwear-left", "legwear-right", "swimwear", "garment-occluder",
+})
+MAKEUP_OCCLUDER_SLOTS = GARMENT_SLOTS | {"headwear"}
+MAKEUP_SLOTS = frozenset({"eyes", "cheeks", "lips"})
+FOUNDATION_SLOT = "foundation"
+MAKEUP_SLOTS_V2 = frozenset((*MAKEUP_SLOTS, FOUNDATION_SLOT))
+FULL_BODY_SILHOUETTE_SCOPE = "full-body"
+MIN_ANCHOR_COORDINATE = -4096
+MAX_ANCHOR_COORDINATE = 4096
+MIN_Z_ORDER = -100
+MAX_Z_ORDER = 100
+ANCHOR_DIMENSIONS = 2
+PROTECTED_TERMS = frozenset({
+    "face", "eye", "eyes", "mouth", "lip", "skin", "identity", "skull",
+    "body-skin", "core-body", "body-contour", "bust-geometry", "torso-geometry",
+})
+MAKEUP_PATH_TERMS = PROTECTED_TERMS - frozenset({"eye", "eyes", "lip"})
 
 _PNG_CONTENT_VALIDATION = ContextVar(
     "mohan_png_content_validation",
@@ -73,6 +95,104 @@ class OutfitPackError(RuntimeError):
 
 class IncompatibleBodyProfileError(OutfitPackError):
     """The pack was authored for another body-profile generation and uses its own generation contract."""
+
+
+def parse_appearance_asset(
+    entry: object,
+    allowed_slots: frozenset[str],
+    archive: zipfile.ZipFile,
+    names: set[str],
+) -> AppearanceAsset:
+    """Parse one sealed appearance declaration under the shared slot policy."""
+
+    required = {"slot", "path", "sha256", "width", "height", "anchor", "z_order"}
+    optional = {"occludes_makeup", "clears_base"}
+    if not isinstance(entry, dict) or not required <= set(entry) or set(entry) - required - optional:
+        raise OutfitPackError("Provide a supported asset declaration.")
+    slot, path = entry["slot"], entry["path"]
+    if not isinstance(slot, str) or slot not in allowed_slots or not isinstance(path, str) or not ASSET_PATH.fullmatch(path) or path not in names:
+        raise OutfitPackError("Use a recognized slot or asset path.")
+    occludes_makeup = entry.get("occludes_makeup", False)
+    if not isinstance(occludes_makeup, bool) or ("occludes_makeup" in entry and slot not in MAKEUP_OCCLUDER_SLOTS):
+        raise OutfitPackError("Makeup occlusion must be a boolean on a garment asset or headwear asset.")
+    clears_base = entry.get("clears_base", False)
+    if (
+        not isinstance(clears_base, bool)
+        or ("clears_base" in entry and slot != "garment-occluder")
+        or (slot == "garment-occluder" and clears_base is not True)
+    ):
+        raise OutfitPackError(
+            "Base clearing requires a garment-occluder asset with clears_base enabled."
+        )
+    screened, terms = (path, MAKEUP_PATH_TERMS) if slot in MAKEUP_SLOTS_V2 else (f"{slot}/{path}", PROTECTED_TERMS)
+    if any(term in screened.lower() for term in terms):
+        raise OutfitPackError("Core identity, skin and geometry remain protected.")
+    anchor = entry["anchor"]
+    values = (entry["width"], entry["height"], entry["z_order"])
+    if not isinstance(entry["sha256"], str) or not SHA256.fullmatch(entry["sha256"]) or not isinstance(anchor, list) or len(anchor) != ANCHOR_DIMENSIONS:
+        raise OutfitPackError("Provide a supported hash or anchor.")
+    if any(not isinstance(value, int) or isinstance(value, bool) for value in (*values, *anchor)):
+        raise OutfitPackError("Provide a supported asset geometry.")
+    width, height, z_order = values
+    if not (1 <= width <= MAX_IMAGE_DIMENSION and 1 <= height <= MAX_IMAGE_DIMENSION and MIN_ANCHOR_COORDINATE <= anchor[0] <= MAX_ANCHOR_COORDINATE and MIN_ANCHOR_COORDINATE <= anchor[1] <= MAX_ANCHOR_COORDINATE and MIN_Z_ORDER <= z_order <= MAX_Z_ORDER):
+        raise OutfitPackError("Asset geometry is outside the allowed range.")
+    data = archive.read(path)
+    if hashlib.sha256(data).hexdigest() != entry["sha256"] or _dimensions(data, Path(path).suffix) != (width, height):
+        raise OutfitPackError(
+            "Asset integrity check requires attention; retry the operation.",
+            reason="manifest_asset_hash_mismatch",
+            asset_path=path,
+        )
+    return AppearanceAsset(
+        slot, path, entry["sha256"], width, height, anchor[0], anchor[1],
+        z_order, occludes_makeup, clears_base,
+    )
+
+
+def required_pose_keys(
+    poses: object,
+    silhouette_scope: object,
+    required_silhouettes: tuple[str, ...],
+    pose_atlas_silhouettes: tuple[str, ...],
+    supported_silhouettes: tuple[str, ...],
+    source_bound_silhouettes: frozenset[str] = frozenset(),
+) -> tuple[str, ...]:
+    """Validate either the complete runtime set or an explicit full-body set."""
+
+    if not isinstance(poses, dict):
+        raise OutfitPackError("Every required silhouette must be declared.")
+    keys = set(poses)
+    if silhouette_scope is None:
+        required = set(required_silhouettes) - set(source_bound_silhouettes)
+    elif silhouette_scope == FULL_BODY_SILHOUETTE_SCOPE:
+        if source_bound_silhouettes:
+            raise OutfitPackError(
+                "Full-body appearance variants cannot omit source-bound views."
+            )
+        required = set(pose_atlas_silhouettes)
+    else:
+        raise OutfitPackError("Provide a supported silhouette scope.")
+    if keys != required:
+        missing = sorted(required - keys)
+        unexpected = sorted(keys - required)
+        details = []
+        if missing:
+            details.append(f"missing: {', '.join(missing)}")
+        if unexpected:
+            details.append(f"unexpected: {', '.join(unexpected)}")
+        contract = (
+            "the complete v2 view set"
+            if silhouette_scope is None
+            else "its complete declared view set"
+        )
+        raise OutfitPackError(
+            f"Every appearance variant requires {contract} ("
+            + "; ".join(details)
+            + ")."
+        )
+    return tuple(
+        silhouette for silhouette in supported_silhouettes if silhouette in required
+    )
 
 
 def _safe_member(info: zipfile.ZipInfo) -> None:

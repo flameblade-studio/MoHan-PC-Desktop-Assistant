@@ -26,6 +26,10 @@ FORBIDDEN_LAYER_IMPORTS: Final = {
 # are scoped to specific edges, so an unrelated reverse dependency still
 # fails closed.
 FEATURE_COMPOSITION_IMPORTS: Final = {
+    "application.character_runtime_bootstrap": frozenset({
+        "infrastructure.bundled_character_source",
+        "infrastructure.installed_character_packs",
+    }),
     "presentation.autonomous_outfit_generation_controller": frozenset({
         "infrastructure.db",
         "integrations.openai_outfit_generator",
@@ -72,6 +76,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.layered_face_renderer",
         "infrastructure.layered_full_body_renderer",
         "infrastructure.multimodal_model_provider",
+        "infrastructure.outfit_source_bound_expressions",
         "infrastructure.platform_contracts",
         "infrastructure.platform_services",
         "infrastructure.profile_transfer",

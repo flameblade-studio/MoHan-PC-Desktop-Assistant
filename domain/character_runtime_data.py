@@ -5,10 +5,11 @@ from __future__ import annotations
 lazy from domain import character_expression_data as _expression_data
 lazy from domain import character_rig_data as _rig_data
 lazy from domain.character_pack import character_data_models as _data_models
+lazy from domain import character_default_paths as _default_paths
 
 # Resolve the public facade once so consumers never receive nested lazy proxies.
-DEFAULT_EXPRESSION_CATALOG_PATH = _data_models.DEFAULT_EXPRESSION_CATALOG_PATH
-DEFAULT_RIG_MANIFEST_PATH = _data_models.DEFAULT_RIG_MANIFEST_PATH
+DEFAULT_EXPRESSION_CATALOG_PATH = _default_paths.DEFAULT_EXPRESSION_CATALOG_PATH
+DEFAULT_RIG_MANIFEST_PATH = _default_paths.DEFAULT_RIG_MANIFEST_PATH
 EXPRESSION_SCHEMA = _data_models.EXPRESSION_SCHEMA
 RIG_SCHEMA = _data_models.RIG_SCHEMA
 SCHEMA_VERSION = _data_models.SCHEMA_VERSION

@@ -9,7 +9,7 @@ composed; source approval and formal installation are independent gates.
 from __future__ import annotations
 
 lazy from collections import OrderedDict
-lazy from dataclasses import replace
+lazy from dataclasses import dataclass, replace
 lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
@@ -20,12 +20,13 @@ lazy from domain.companion_animation_contract import (
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS,
     CHARACTER_EXPRESSION_ROLES,
     CHARACTER_LAYER_ROLES,
+    character_rig_manifest,
 )
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from domain.qt_image_io import optional_pixmap, require_pixmap
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
@@ -34,6 +35,11 @@ lazy from infrastructure.detachable_halfbody_assets import load_detachable_halfb
 lazy from infrastructure.exasperated_candidate_assets import (
     ExasperatedAppearanceOverlay,
     ExasperatedCandidateAssets,
+    ExasperatedCandidateProvider,
+)
+# Resolve this public re-export before consumers lazily import the class.
+from infrastructure.outfit_source_bound_expressions import (
+    OutfitSourceBoundExpressionProvider as OutfitSourceBoundExpressionProvider,
 )
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
@@ -55,9 +61,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
 SEAM_HEAL_RADIUS = 7
-_RIG_MANIFEST = default_rig_manifest()
-_EXPRESSION_CATALOG = default_expression_catalog()
+_RIG_MANIFEST = character_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
 _EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
+_EXASPERATED_SOURCE_ID = _EXASPERATED_EXPRESSION
 _CHEEK_SILHOUETTE = _RIG_MANIFEST.pose_silhouettes["cheek"]
 FACE_AUTHORITY_FILES = frozendict({
     pose: specification.base
@@ -91,6 +98,14 @@ def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
     return _load_layered_face_assets(root)
 
 
+@dataclass(frozen=True)
+class ExasperatedSourceBindings:
+    """Construction-time dependencies for the source-bound expression route."""
+
+    appearance_overlay: ExasperatedAppearanceOverlay | None = None
+    expression_provider: ExasperatedCandidateProvider | None = None
+
+
 class LayeredParametricFaceRenderer(
     ExasperatedFaceRenderingMixin,
     LayeredFacePaintingMixin,
@@ -111,7 +126,7 @@ class LayeredParametricFaceRenderer(
         detachable_dir: Path | None = None,
         use_detachable: bool = True,
         exasperated_candidate_dir: Path | None = None,
-        candidate_appearance_overlay: ExasperatedAppearanceOverlay | None = None,
+        exasperated_source_bindings: ExasperatedSourceBindings | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
@@ -135,7 +150,9 @@ class LayeredParametricFaceRenderer(
             if exasperated_candidate_dir is not None
             else None
         )
-        self._candidate_appearance_overlay = candidate_appearance_overlay
+        source_bindings = exasperated_source_bindings or ExasperatedSourceBindings()
+        self._candidate_appearance_overlay = source_bindings.appearance_overlay
+        self._source_bound_expression_provider = source_bindings.expression_provider
         # An explicitly injected detachable candidate must not be shadowed by
         # the repository's installed complete-expression pack. Callers that
         # want both sources can bind both directories explicitly.
@@ -146,6 +163,7 @@ class LayeredParametricFaceRenderer(
         )
         self._complete_halfbody = CompleteHalfbodyRenderer(complete_root, outfit_overlay)
         self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
+        self._exasperated_candidate_key: str | None = None
         self._exasperated_candidate_rest: QPixmap | None = None
         self._exasperated_candidate_patches: dict[str, QPixmap] = {}
         self._detachable_assets = None
@@ -229,8 +247,29 @@ class LayeredParametricFaceRenderer(
         # the layers cut on that very portrait (its gesture silhouette).
         gesture = gesture_portrait_expression(motion.expression)
         silhouette = outfit_silhouette(motion.expression, motion.pose.value)
-        if gesture == _EXASPERATED_EXPRESSION and self._exasperated_candidate_dir is not None:
-            return self._render_exasperated_candidate(base, motion, layers, aperture)
+        if gesture == _EXASPERATED_EXPRESSION:
+            portable = (
+                self._source_bound_expression_provider.assets_for(
+                    _EXASPERATED_SOURCE_ID
+                )
+                if self._source_bound_expression_provider is not None
+                else None
+            )
+            if portable is not None:
+                return self._render_exasperated_candidate(
+                    base,
+                    motion,
+                    layers,
+                    aperture,
+                    portable,
+                )
+            if self._exasperated_candidate_dir is not None:
+                return self._render_exasperated_candidate(
+                    base,
+                    motion,
+                    layers,
+                    aperture,
+                )
         complete = self._complete_halfbody.render(base, motion, layers)
         if complete is not None:
             return complete
@@ -311,7 +350,15 @@ class LayeredParametricFaceRenderer(
             capability = getattr(self._outfit_overlay, "has_native_motion", None)
             return bool(callable(capability) and capability(_CHEEK_SILHOUETTE))
         return (
-            self._exasperated_candidate_dir is not None
+            (
+                self._exasperated_candidate_dir is not None
+                or (
+                    self._source_bound_expression_provider is not None
+                    and self._source_bound_expression_provider.assets_for(
+                        _EXASPERATED_SOURCE_ID
+                    ) is not None
+                )
+            )
             and gesture_portrait_expression(expression) == _EXASPERATED_EXPRESSION
         )
 

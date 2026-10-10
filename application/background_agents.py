@@ -11,15 +11,14 @@ lazy from pathlib import Path
 lazy from typing import Protocol
 
 from domain.python315_concurrency import Future, ThreadPoolExecutor
-lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_character_data, active_expression_catalog
 lazy from domain.sensory_synesthesia import runtime_dialogue_locale
 
-_BACKGROUND_APP_TEMPLATE = load_mohan_character_data().dialogues[
+_BACKGROUND_APP_TEMPLATE = active_character_data().dialogues[
     "zh-TW"
 ].templates["background.app_launched"]
 _RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
-_EXPRESSIONS = default_expression_catalog().emotion_to_expression
+_EXPRESSIONS = active_expression_catalog().emotion_to_expression
 
 
 @dataclass(frozen=True)

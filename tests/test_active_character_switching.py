@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import logging
+lazy import importlib
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
@@ -8,10 +9,22 @@ lazy import pytest
 
 lazy from application import service_container
 lazy from application import wardrobe_service as wardrobe_module
+lazy from application.character_runtime_bootstrap import ACTIVE_CHARACTER_ENV
 lazy from application.wardrobe_appearance_service import WardrobeAppearanceService
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
-lazy from domain.character_source import active_character_source
-lazy from domain.outfit_pack import resolve_active_selection
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    CHARACTER_LAYER_ROLES,
+    CHARACTER_POSE_ROLES,
+    character_rig_manifest,
+)
+lazy from domain.character_source import active_character_engine_profile, active_character_source
+lazy from domain.outfit_pack import (
+    installed_pack_path,
+    list_installed_outfits,
+    resolve_active_selection,
+)
 lazy from domain.outfit_pack_official import (
     BUILTIN_MAKEUP_PACK_ID,
     OFFICIAL_NATIVE_HAIR_ALIAS,
@@ -40,6 +53,7 @@ lazy from tests.character_pack_fixtures import (
     rewrite_character_pack_manifest,
     tamper_character_pack_payload,
 )
+lazy from tools import build_character_pack as character_pack_builder
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR_ENV = "MOHAN_DATA_DIR"
@@ -47,7 +61,7 @@ DATA_DIR_ENV = "MOHAN_DATA_DIR"
 
 @pytest.fixture(autouse=True)
 def _restore_default_character(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.delenv(service_container.ACTIVE_CHARACTER_ENV, raising=False)
+    monkeypatch.delenv(ACTIVE_CHARACTER_ENV, raising=False)
     monkeypatch.delenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, raising=False)
     monkeypatch.delenv(DATA_DIR_ENV, raising=False)
     service_container.create_character_source("mohan")
@@ -81,7 +95,7 @@ def test_installs_and_selects_a_valid_standalone_character_pack(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     _archive, data_root = _install_fake_character(tmp_path, monkeypatch)
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
 
     selected = service_container.create_default_character_source()
 
@@ -101,6 +115,16 @@ def test_installs_and_selects_a_valid_standalone_character_pack(
         FAKE_CHARACTER_ID,
         data_root=data_root,
     ).resolve()
+    profile = active_character_engine_profile()
+    assert profile.assets is selected.assets
+    assert profile.rig_manifest is selected.appearance.rig_manifest
+    assert character_rig_manifest() is selected.appearance.rig_manifest
+    assert CHARACTER_ASSET_PATHS["halfbody_root"] == "assets/test-sentinel/expressions"
+    assert CHARACTER_POSE_ROLES["front_idle"] == "test-sentinel-front"
+    assert CHARACTER_EXPRESSION_ROLES["gentle"] == "test-sentinel-gentle"
+    assert CHARACTER_LAYER_ROLES["rear_hair"] == "test-sentinel-rear-hair"
+    face_motion = importlib.import_module("domain.face_motion")
+    assert "test-sentinel-gentle" in face_motion.HAPPY_EXPRESSIONS
 
 
 def test_missing_installed_character_fails_closed_to_mohan(
@@ -173,7 +197,7 @@ def test_development_archive_is_explicit_and_not_persistently_installed(
     archive = build_fake_character_pack(tmp_path)
     data_root = tmp_path / "profile"
     monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(archive))
 
     selected = service_container.create_default_character_source()
@@ -205,7 +229,7 @@ def test_incompatible_development_archive_fails_closed_to_mohan(
         tmp_path / "incompatible-character.zip",
         make_incompatible,
     )
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(incompatible))
 
     with (
@@ -254,6 +278,65 @@ def test_missing_external_outfit_falls_back_to_bare_base_with_diagnostic(
         official_pack_root=official_root,
     ).options("headwear", "en")
     assert tuple(option.option_id for option in headwear) == ("none",)
+
+
+def test_linkeyun_source_resolves_its_official_pack_and_builtin_sentinel(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data_root = tmp_path / "profile"
+    character_pack = installed_character_pack_path(
+        "lin-keyun",
+        data_root=data_root,
+    )
+    character_pack_builder.build_character_pack(
+        character_pack,
+        output_format="directory",
+        source_path="assets/characters/lin-keyun/pack-source.json",
+    )
+    monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, "lin-keyun")
+
+    source = service_container.create_default_character_source()
+    ports = service_container.create_presentation_ports()
+    shared_root = source.assets.asset_root / "assets" / "official-packs"
+    character_root = (
+        source.assets.asset_root
+        / "assets"
+        / "characters"
+        / "lin-keyun"
+        / "official-packs"
+    )
+    assert ports.official_pack_roots == (shared_root, character_root)
+
+    store = tmp_path / "outfits"
+    packs = list_installed_outfits(
+        store,
+        official_pack_root=ports.official_pack_roots,
+    )
+    assert {pack.pack_id for pack in packs} == {
+        BUILTIN_MAKEUP_PACK_ID,
+        "linkeyun.official.modern-office",
+    }
+    assert installed_pack_path(
+        store,
+        "linkeyun.official.modern-office",
+        official_pack_root=ports.official_pack_roots,
+    ) == character_root / "linkeyun.official.modern-office.mohan-outfit"
+
+    built_in = WardrobeService(
+        store,
+        official_pack_root=ports.official_pack_roots,
+    ).outfits("en")[0]
+    assert built_in.ensemble is not None
+    assert built_in.ensemble.pack_id == "linkeyun.official.modern-office"
+    garment = resolve_active_selection(
+        store,
+        "garment",
+        official_pack_root=ports.official_pack_roots,
+    )
+    assert garment.status == "installed"
+    assert garment.effective_pack_id == "linkeyun.official.modern-office"
 
 
 def test_external_official_ensemble_is_only_the_builtin_entry(
@@ -338,3 +421,6 @@ def test_switching_back_to_mohan_restores_compatibility_defaults(
     assert builtin_makeup_pack_id() == BUILTIN_MAKEUP_PACK_ID
     assert official_native_hair_alias() == OFFICIAL_NATIVE_HAIR_ALIAS
     assert official_native_headwear_alias() == OFFICIAL_NATIVE_HEADWEAR_ALIAS
+    assert service_container.create_presentation_ports().official_pack_roots == (
+        ROOT / "assets" / "official-packs",
+    )

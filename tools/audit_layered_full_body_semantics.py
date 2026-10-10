@@ -26,6 +26,14 @@ lazy from typing import Any
 lazy import cv2
 lazy import numpy as np
 
+ROOT = Path(__file__).resolve().parents[1]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
+
 lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
@@ -33,7 +41,6 @@ lazy from domain.constants import (
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 
 
-ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
 DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_DETECTOR_MODEL = (

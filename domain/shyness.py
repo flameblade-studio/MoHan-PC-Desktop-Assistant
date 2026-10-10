@@ -17,7 +17,7 @@ The level eases toward its target with a bounded lerp so it eases smoothly, and 
 decays back to zero when the drivers relax. This is pure domain logic with Qt outside the domain boundary.
 """
 
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 
 # How strongly each driver contributes to the shyness target.
 GAZE_WEIGHT = 0.5

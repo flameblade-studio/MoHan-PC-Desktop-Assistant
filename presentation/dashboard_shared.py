@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+lazy import sys
+lazy from pathlib import Path
+
+lazy from PySide6.QtWidgets import QFrame
+
 lazy from presentation.ui_localization import (
     MEMORY_CATEGORY_LABELS,
     SIMPLIFIED_MEMORY_CATEGORY_LABELS,
@@ -7,7 +12,17 @@ lazy from presentation.ui_localization import (
 )
 lazy from presentation.ui_localization_ja import JAPANESE_MEMORY_CATEGORY_LABELS
 
-__all__ = ("MEMORY_CATEGORIES", "TODO_CATEGORIES", "memory_category_label")
+__all__ = (
+    "MEMORY_CATEGORIES",
+    "TODO_CATEGORIES",
+    "mark_flagship_card",
+    "memory_category_label",
+    "resource_path",
+)
+
+RESOURCE_BASE = Path(
+    getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1])
+)
 
 MEMORY_CATEGORIES = (
     "人物",
@@ -37,3 +52,17 @@ def memory_category_label(language: str, value: str) -> str:
         SIMPLIFIED_MEMORY_CATEGORY_LABELS,
         JAPANESE_MEMORY_CATEGORY_LABELS,
     )
+
+
+def mark_flagship_card(frame: QFrame) -> None:
+    """Opt a semantic section frame into the product theme's card styling."""
+
+    frame.setProperty("mohanRole", "card")
+    frame.style().unpolish(frame)
+    frame.style().polish(frame)
+
+
+def resource_path(relative: str) -> Path:
+    """Resolve one packaged resource without selecting product-owned content."""
+
+    return RESOURCE_BASE / relative

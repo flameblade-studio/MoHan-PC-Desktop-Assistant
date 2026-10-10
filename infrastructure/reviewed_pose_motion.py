@@ -18,8 +18,7 @@ lazy from collections.abc import Mapping
 
 lazy from PySide6.QtGui import QImage, QPixmap
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_LAYER_ROLES
+lazy from domain.character_runtime import CHARACTER_LAYER_ROLES, character_rig_manifest
 lazy from domain.qt_image_io import image_from_png
 
 SCHEMA = "mohan.reviewed-pose-motion.v1"
@@ -28,7 +27,7 @@ VARIANT_SCHEMA = "mohan.reviewed-pose-motion.v3"
 APPROVED_SOURCE_SHA256 = (
     "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe"
 )
-DIMENSION = default_rig_manifest().half_body_asset_canvas.width
+DIMENSION = character_rig_manifest().half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
 PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 RGBA_COLOR_TYPE = 6

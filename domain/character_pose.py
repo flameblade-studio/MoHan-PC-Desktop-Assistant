@@ -7,10 +7,11 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
-lazy from domain.character_runtime_data import ArmSpec, default_rig_manifest
+lazy from domain.character_pack.character_data_models import ArmSpec
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 if (
     _RIG_MANIFEST.body_profile_id != MOHAN_BODY_PROFILE.profile_id
     or _RIG_MANIFEST.body_profile_version != MOHAN_BODY_PROFILE.version

@@ -32,6 +32,7 @@ lazy from domain.constants import (
 lazy from domain.outfit_pack import MAKEUP_CANVASES
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.app_resources import resource_path
+lazy from infrastructure.bundled_character_source import LegacyMohanCharacterSource
 lazy from infrastructure.character_source_pack import (
     APPEARANCE_DEFAULTS_SCHEMA,
     CharacterPackReadError,
@@ -415,7 +416,7 @@ def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
 
 def test_default_source_matches_every_existing_public_contract_field() -> None:
     source = service_container.create_default_character_source()
-    assert isinstance(source, service_container.LegacyMohanCharacterSource)
+    assert isinstance(source, LegacyMohanCharacterSource)
     assert isinstance(source, CharacterSource)
     assert source.asset_root == resource_path(".")
     assert source.resolve_path(POSE_ATLAS_RELATIVE_ROOT) == resource_path(
@@ -471,7 +472,7 @@ def test_presentation_composition_uses_injected_character_asset_root(
     )
     monkeypatch.setattr(
         service_container,
-        "create_default_character_source",
+        "active_character_source",
         lambda: source,
     )
     monkeypatch.setattr(

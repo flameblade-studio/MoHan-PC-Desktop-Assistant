@@ -2,9 +2,9 @@ from __future__ import annotations
 
 lazy import re
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 
-_COMMAND_PHRASES = load_mohan_character_data().identity
+_COMMAND_PHRASES = active_character_data().identity
 
 
 def _normalize_command(text: str) -> str:

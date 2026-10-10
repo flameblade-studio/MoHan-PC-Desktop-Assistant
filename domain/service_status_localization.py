@@ -6,10 +6,7 @@ lazy import json
 lazy from functools import cache
 lazy from string import Formatter
 
-lazy from domain.character_pack.character_data import (
-    MOHAN_CHARACTER_DATA_ROOT,
-    load_mohan_character_data,
-)
+lazy from domain.character_source import active_character_data, active_character_data_path
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.safe_error import SafeError, sanitize_error
 
@@ -72,7 +69,7 @@ SUPPORTED_SERVICE_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 _UI_IDENTIFIER_KEYS = frozenset(
     {"self_reference", "signature_weapon_theme_label"}
 )
-_UI_IDENTIFIERS_PATH = MOHAN_CHARACTER_DATA_ROOT / "persona/ui-identifiers.json"
+_UI_IDENTIFIERS_PATH = active_character_data_path("persona/ui-identifiers.json")
 
 
 @cache
@@ -122,7 +119,7 @@ def character_ui_values(language: str) -> dict[str, str]:
     """Return localized character-owned values for generic UI templates."""
 
     locale = canonical_ui_language(language)
-    identity = load_mohan_character_data().personas[locale].identity
+    identity = active_character_data().personas[locale].identity
     return {
         "character_name": identity.display_name,
         "user_title": identity.default_user_title,

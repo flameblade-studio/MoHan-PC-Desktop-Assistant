@@ -4,7 +4,6 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 lazy from dataclasses import dataclass
-lazy from pathlib import Path
 
 
 RIG_SCHEMA = "flameblade.character-rig.v1"
@@ -20,13 +19,6 @@ MIN_PITCH_DEGREES = -45
 MAX_PITCH_DEGREES = 45
 MAX_YAW_DEGREES = 180
 MAX_CHANNEL_VALUE = 255
-
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]
-_DEFAULT_CHARACTER_ROOT = _PROJECT_ROOT / "assets" / "characters" / "mohan"
-DEFAULT_RIG_MANIFEST_PATH = _DEFAULT_CHARACTER_ROOT / "rig" / "rig-manifest.json"
-DEFAULT_EXPRESSION_CATALOG_PATH = (
-    _DEFAULT_CHARACTER_ROOT / "expressions" / "state-catalog.json"
-)
 
 
 class CharacterDataError(ValueError):
@@ -418,8 +410,6 @@ class MohanCharacterData:
 
 
 __all__ = (
-    "DEFAULT_EXPRESSION_CATALOG_PATH",
-    "DEFAULT_RIG_MANIFEST_PATH",
     "EXPRESSION_SCHEMA",
     "FULL_BODY_LAYER_COUNT",
     "FULL_VIEW_COUNT",

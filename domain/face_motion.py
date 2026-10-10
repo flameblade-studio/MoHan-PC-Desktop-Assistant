@@ -2,13 +2,11 @@ from __future__ import annotations
 
 lazy from dataclasses import dataclass, replace
 
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_EXPRESSION_ROLES,
-    FLOAT_COMPARISON_EPSILON,
-    SHYNESS_BLUSH_WEIGHT,
-    SHYNESS_GAZE_WEIGHT,
-    SHYNESS_LIP_WEIGHT,
+    character_face_calibration,
 )
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -186,12 +184,13 @@ def shyness_expression(shyness_level: float) -> ExpressionShape:
     """Map a shyness level onto a cascading micro-expression. The cascade layers the subtle cues of a blush: 1. blush rises (``SHYNESS_BLUSH_WEIGHT``), 2. the eyes soften into a shy squint (``SHYNESS_GAZE_WEIGHT`` drives ``eye_smile``; the owner-accepted look keeps the gaze itself steady), 3. the lips purse (``SHYNESS_LIP_WEIGHT``, via ``shyness_mouth``). ``shyness_level`` is clamped to ``[0, 1]``. """
 
     level = max(0.0, min(1.0, float(shyness_level)))
+    calibration = character_face_calibration()
     return ExpressionShape(
         blink=0.0,
-        eye_smile=level * SHYNESS_GAZE_WEIGHT,
+        eye_smile=level * calibration.shyness_gaze_weight,
         brow_lift=0.0,
         brow_tension=0.0,
-        blush=level * SHYNESS_BLUSH_WEIGHT,
+        blush=level * calibration.shyness_blush_weight,
     )
 
 
@@ -199,12 +198,13 @@ def shyness_mouth(shyness_level: float) -> MouthShape:
     """Return the lip-purse component of the shyness cascade."""
 
     level = max(0.0, min(1.0, float(shyness_level)))
+    calibration = character_face_calibration()
     return MouthShape(
         aperture=0.0,
         width=0.5,
         rounding=0.0,
         jaw=0.0,
-        corner_smile=level * SHYNESS_LIP_WEIGHT,
+        corner_smile=level * calibration.shyness_lip_weight,
         u_inward=0.0,
     )
 

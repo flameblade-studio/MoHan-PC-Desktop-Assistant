@@ -9,17 +9,12 @@ lazy from urllib.request import Request, urlopen
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
 
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import INTERNAL_EMOTION_INSTRUCTION
 lazy from domain.language_support import (
     response_language_instruction,
-)
-lazy from domain.persona_defaults import (
-    PERSONA,
 )
 lazy from domain.prompt_cache import (
     PromptCacheTelemetry,
@@ -32,10 +27,11 @@ lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from types import MappingProxyType
 
-_CHARACTER_DATA = load_mohan_character_data()
+_CHARACTER_DATA = active_character_data()
 _PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
 _ASSISTANT_TOKEN = _CHARACTER_DATA.identity.assistant_tokens[0]
 _USER_TITLE_TOKEN = _CHARACTER_DATA.identity.user_title_tokens[0]
+_DEFAULT_PERSONA = _CHARACTER_DATA.personas["zh-TW"].system_prompt
 
 DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 STABLE_PROMPT_CACHE_BREAKPOINT = (
@@ -372,7 +368,7 @@ class AIWorkerRequest:
     api_key: str = field(default="", repr=False)
     memories: str = ""
     model: str = DEFAULT_TEXT_MODEL
-    persona: str = PERSONA
+    persona: str = _DEFAULT_PERSONA
     assistant_name: str = _PROFILE_DEFAULTS["assistant_name"]
     user_title: str = _PROFILE_DEFAULTS["user_title"]
     response_language: str = "zh-TW"

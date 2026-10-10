@@ -20,6 +20,9 @@ lazy from domain.character_pack.character_data_models import CharacterDataError
 lazy from domain.outfit_pack import inspect_outfit_pack
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from huapu import character_pack_builder as _core
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 
 DEFAULT_INVENTORY = Path("docs/character-pack/mohan-inventory.json")
 DEFAULT_SOURCE = Path("assets/characters/mohan/pack-source.json")
@@ -45,6 +48,7 @@ CharacterPackBuildSettings = _core.CharacterPackBuildSettings
 
 # Every character-data category maps explicitly; unknown data fails closed.
 CHARACTER_DATA_LICENSE_COMPONENTS = {
+    "appearance_pack": "character_art",
     "character_license_notice": "program_data",
     "character_appearance_defaults": "program_data",
     "character_voice_data": "voice",
@@ -112,6 +116,7 @@ def build_character_pack(
     source_path: str | Path = DEFAULT_SOURCE,
 ) -> CharacterPackBuildResult:
     """Build through Huapu while retaining the historical MoHan API."""
+    activate_product_character_runtime(Path(repo_root))
     return _core.build_character_pack(
         output,
         output_format=output_format,
@@ -123,6 +128,7 @@ def build_character_pack(
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--format", choices=("directory", "zip"), required=True, dest="output_format")

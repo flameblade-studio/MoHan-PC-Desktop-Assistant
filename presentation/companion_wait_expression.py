@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_expression_catalog
 
-_EXPRESSION_CATALOG = default_expression_catalog()
+_EXPRESSION_CATALOG = active_expression_catalog()
 
 
 def start_ai_wait_expression(

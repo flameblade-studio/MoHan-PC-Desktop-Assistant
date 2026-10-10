@@ -2,7 +2,7 @@
   "schema": "flameblade.character-pack-build-source.v1",
   "schema_version": 1,
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.3",
+  "pack_version": "1.0.4",
   "character_id": "mohan",
   "identity": {
     "profile": "assets/characters/mohan/persona/profile.json",
@@ -58,6 +58,10 @@
     {
       "path": "assets/expressions/source-bound-exasperated/receipt.json",
       "scope": "Installed source-bound front-exasperated file hashes and recorded source hash only; release remains false."
+    },
+    {
+      "path": "assets/expressions/front-expression-install/receipt.json",
+      "scope": "Owner-approved 2026-10-11 front-expression complete frames, oral masks, makeup alignment support and measured surprised-half alpha adjustment."
     }
   ],
   "approval_refs": [
@@ -68,6 +72,10 @@
     {
       "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
       "scope": "Four detachable makeup looks and existing native expression states only."
+    },
+    {
+      "path": "assets/expressions/front-expression-install/receipt.json",
+      "scope": "Owner approval dated 2026-10-11 applies to the 13 front expressions, classic/light hand-painted eye layers and final lips; glamorous remains unchanged."
     }
   ],
   "components": [
@@ -235,11 +243,11 @@
     }
   ],
   "validation_limits": {
-    "max_archive_bytes": 805306368,
+    "max_archive_bytes": 1073741824,
     "max_zip_directory_bytes": 8388608,
     "max_manifest_bytes": 1048576,
     "max_file_bytes": 67108864,
-    "max_total_bytes": 805306368,
+    "max_total_bytes": 1073741824,
     "max_files": 4096,
     "max_compression_ratio": 100
   }

@@ -26,7 +26,7 @@
 - 感知與手勢：依 [手勢規格](GESTURE-INTERACTION.md) 與架構契約預設關閉、保存授權、配額及撤銷；原始影像不落地，骨架敏感樣本獨立加密。過期、低信心或缺模型不猜測、不派送，保留其他功能。
 - 背景工作：依 [背景工作者](BACKGROUND-MANAGER-WORKERS.md) 保持唯讀觀察、主線仲裁、冷卻及專注保護；背景工作者只產生唯讀觀察候選，語音、表情、工具及權限由主線仲裁。
 - 語音：依 [供應器契約](PLUGGABLE-SPEECH-PROVIDERS.md) 保留單一嘴型與播放生命週期、女性本機備援及供應器隔離；播放開始後若中止，保留已播放內容並結束該句。擁有者指定的本機墨寒語音使用 Yating、OneCore 與正常語速。
-- 授權：依 [白名單](LICENSE-PURITY.md)、[黑名單](LICENSE-BLACKLIST.md) 與 [角色授權](../ASSETS-LICENSE.md) 分別檢查程式、權重及角色資產。三項既有例外為 PySide6、PyInstaller、Azure Speech SDK；例外範圍固定為這三項。字型 OFL 原文逐字保留，角色美術依角色授權管理，程式碼則依 MIT 管理。
+- 授權：依 [白名單](LICENSE-PURITY.md)、[黑名單](LICENSE-BLACKLIST.md) 與 [角色授權](../ASSETS-LICENSE.md) 分別檢查程式、權重及角色資產。三類既有例外為 Qt for Python 的實際發行套件（`PySide6_Essentials`、`PySide6_Addons`、`shiboken6`）、PyInstaller、Azure Speech SDK；例外範圍固定為這三類。字型 OFL 原文逐字保留，角色美術依角色授權管理，程式碼則依 MIT 管理。
 - 角色身份與分層：依 [半身](../DLC_ART_ASSET_SPEC.md)、[身體](../DLC_ART_ASSET_SPEC_BODY.md)、[全身](../DLC_ART_ASSET_SPEC_FULLBODY.md) 及外觀包契約維持權威身份、畫布、錨點、深度與透明邊緣。頭髮、衣裝、髮飾、妝容與手部可拆，正式素材採可拆分、自然對齊且缺陷可見的分層方式。
 - 解剖與美術：每手五指、每腳五趾是既有 [製圖條件](../tools/second_gen_body/chroma_mass_produce_v9.py)，並有 [手部稽核](../domain/hand_asset_audit.py) 與 [證據契約](../domain/hand_asset_evidence.py)。骨架點數與實際指數分別驗收；遮擋須有證據，增指、缺指、黏連及接縫均須在正式接入前修正。
 - 外觀 DLC：依 [外觀包](OUTFIT-PACKS.md) 保留完整三十一視角、各槽混搭、原子安裝、保存與取消、官方包永久保留、來源授權及執行期世代拒絕。妝容三槽、安全區、虹膜與口腔排除、持久濃淡與同一路徑預覽都須成立。
@@ -40,7 +40,7 @@
 
 JIT 的歷史預設已由 [PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) 因實機穩定性問題改為關閉；現行 [啟動器](../tools/jit_launcher.py) 只有在 `MOHAN_ENABLE_JIT=1` 時開啟。目前行為以現行啟動器與測試證據為準。
 
-原始文件中舊版本號、測試數量與「尚未發布」屬歷史狀態；舊 Qt 官方 metadata 阻擋已由架構契約中的相容層政策取代。舊美術限定代理不可寫程式、保留舊臉及上衣款式，已由本次擁有者整合授權、V4 外觀標準及細肩帶短版運動素體裁決取代。一般自主作業依既有授權持續完成；重大事項與美術正式接入仍保留確認。
+原始文件中舊版本號、測試數量與「尚未發布」屬歷史狀態；舊 Qt 官方 metadata 阻擋與自製相容層已由 `PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 6.12.0 官方 wheel 直接釘選政策取代，且不得安裝會帶入未使用 WebEngine／Pdf 的 `PySide6` 總套件。舊美術限定代理不可寫程式、保留舊臉及上衣款式，已由本次擁有者整合授權、V4 外觀標準及細肩帶短版運動素體裁決取代。一般自主作業依既有授權持續完成；重大事項與美術正式接入仍保留確認。
 
 Tachyon 存在待核實差異：本次交接稱讀取錯誤率門檻為百分之一，但本工作樹 CI 與 Release 明示百分之十五，命令列預設百分之八十。這是規則與設定落差，目前明確標示為待裁決差異，本索引逐字保留各來源門檻。舊語音文件稱不安裝 Azure SDK，但目前需求清單包含 SDK；需區分各供應器實作與歷史描述。目前全專案合規狀態只由現行完整驗證決定。
 
@@ -70,7 +70,7 @@ Tachyon 存在待核實差異：本次交接稱讀取錯誤率門檻為百分之
 - 感知与手势：依 [手势规格](GESTURE-INTERACTION.md) 与架构契约默认关闭、保存授权、配额及撤销；原始图像不落地，骨架敏感样本独立加密。过期、低置信或缺模型不猜测、不派发，保留其他功能。
 - 后台工作：依 [后台工作者](BACKGROUND-MANAGER-WORKERS.md) 保持只读观察、主线程仲裁、冷却及专注保护；后台工作者只生成只读观察候选，语音、表情、工具与权限由主线程仲裁。
 - 语音：依 [提供商契约](PLUGGABLE-SPEECH-PROVIDERS.md) 保留单一口型与播放生命周期、女性本地备用语音及提供商隔离；播放开始后若中止，保留已播放内容并结束该句。所有者指定的本地墨寒语音使用 Yating、OneCore 与正常语速。
-- 授权：依 [白名单](LICENSE-PURITY.md)、[黑名单](LICENSE-BLACKLIST.md) 与 [角色授权](../ASSETS-LICENSE.md) 分别检查程序、权重及角色资产。三项既有例外为 PySide6、PyInstaller、Azure Speech SDK；例外范围固定为这三项。字体 OFL 原文逐字保留，角色美术按角色授权管理，程序代码则按 MIT 管理。
+- 授权：依 [白名单](LICENSE-PURITY.md)、[黑名单](LICENSE-BLACKLIST.md) 与 [角色授权](../ASSETS-LICENSE.md) 分别检查程序、权重及角色资产。三类既有例外为 Qt for Python 的实际发行包（`PySide6_Essentials`、`PySide6_Addons`、`shiboken6`）、PyInstaller、Azure Speech SDK；例外范围固定为这三类。字体 OFL 原文逐字保留，角色美术按角色授权管理，程序代码则按 MIT 管理。
 - 角色身份与分层：依 [半身](../DLC_ART_ASSET_SPEC.md)、[身体](../DLC_ART_ASSET_SPEC_BODY.md)、[全身](../DLC_ART_ASSET_SPEC_FULLBODY.md) 及外观包契约保持权威身份、画布、锚点、深度与透明边缘。头发、服装、头饰、妆容与手部可拆，正式素材采用可拆分、自然对齐且缺陷可见的分层方式。
 - 解剖与美术：每手五指、每脚五趾是既有 [制图条件](../tools/second_gen_body/chroma_mass_produce_v9.py)，并有 [手部审计](../domain/hand_asset_audit.py) 与 [证据契约](../domain/hand_asset_evidence.py)。骨架点数与实际指数分别验收；遮挡须有证据，增指、缺指、粘连及接缝均须在正式接入前修正。
 - 外观 DLC：依 [外观包](OUTFIT-PACKS.md) 保留完整三十一视角、各槽混搭、原子安装、保存与取消、官方包永久保留、来源授权及执行期世代拒绝。妆容三槽、安全区、虹膜与口腔排除、持久浓淡与同一路径预览都须成立。
@@ -84,7 +84,7 @@ Tachyon 存在待核實差異：本次交接稱讀取錯誤率門檻為百分之
 
 JIT 的历史默认值已由 [PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) 因实机稳定性问题改为关闭；现行 [启动器](../tools/jit_launcher.py) 仅在 `MOHAN_ENABLE_JIT=1` 时开启。较早迁移文档中默认开启的描述当前行为以现行启动器与测试证据为准。
 
-原始文档的旧版本号、测试数量及“尚未发布”属于历史状态；旧 Qt 官方 metadata 阻挡已由架构契约的兼容层政策取代。旧美术限定代理不可写程序、保留旧脸及上衣款式，已由本次所有者整合授权、V4 外观标准及细肩带短版运动素体裁决取代。一般自主工作依据现有授权持续完成；重大事项与美术正式接入仍保留确认。
+原始文档的旧版本号、测试数量及“尚未发布”属于历史状态；旧 Qt 官方 metadata 阻挡与自制兼容层已由 `PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 6.12.0 官方 wheel 直接固定政策取代，且不得安装会带入未使用 WebEngine／Pdf 的 `PySide6` 总包。旧美术限定代理不可写程序、保留旧脸及上衣款式，已由本次所有者整合授权、V4 外观标准及细肩带短版运动素体裁决取代。一般自主工作依据现有授权持续完成；重大事项与美术正式接入仍保留确认。
 
 Tachyon 存在待核实差异：本次交接称读取错误率门槛为百分之一，但本工作树 CI 与 Release 明示百分之十五，命令行默认为百分之八十。这是规则与配置落差，当前明确标示为待裁决差异，本索引逐字保留各来源门槛。旧语音文档称不安装 Azure SDK，但当前需求清单包含 SDK；需区分各提供商实现与历史描述。当前全项目合规状态只由现行完整验证决定。
 
@@ -114,7 +114,7 @@ Art must respect normal anatomy, natural poses and physical plausibility, includ
 - Perception and gestures: follow the [gesture specification](GESTURE-INTERACTION.md) and architecture for default-off operation, persisted consent, quotas, and revocation. Raw images remain transient and are released after processing; sensitive skeleton samples are separately encrypted. Expired, uncertain, or model-less observations resolve to unknown while other features remain operational.
 - Background work: follow [worker rules](BACKGROUND-MANAGER-WORKERS.md) for read-only observations, main-thread arbitration, cooldowns, and focus protection. Workers produce read-only observations; main-thread arbitration controls speech, expressions, tools, and permissions.
 - Speech: follow [provider contracts](PLUGGABLE-SPEECH-PROVIDERS.md) for one lip-sync and playback lifecycle, female local fallback, and provider isolation. If playback ends early, already played content remains a single playback and the sentence ends. The owner-selected local MoHan voice uses Yating, OneCore, and normal speed.
-- Licensing: consult the [allowlist](LICENSE-PURITY.md), [denylist](LICENSE-BLACKLIST.md), and [character license](../ASSETS-LICENSE.md) separately for code, weights, and character assets. Existing exceptions are PySide6, PyInstaller, and Azure Speech SDK; keep the exception scope fixed to those three items. Preserve original font OFL text; character art follows its character license while code follows MIT.
+- Licensing: consult the [allowlist](LICENSE-PURITY.md), [denylist](LICENSE-BLACKLIST.md), and [character license](../ASSETS-LICENSE.md) separately for code, weights, and character assets. The three existing exception categories are the actual Qt for Python distributions (`PySide6_Essentials`, `PySide6_Addons`, and `shiboken6`), PyInstaller, and Azure Speech SDK; keep the exception scope fixed to those three categories. Preserve original font OFL text; character art follows its character license while code follows MIT.
 - Identity and layers: follow [half-body](../DLC_ART_ASSET_SPEC.md), [body](../DLC_ART_ASSET_SPEC_BODY.md), [full-body](../DLC_ART_ASSET_SPEC_FULLBODY.md), and appearance contracts for authoritative identity, canvases, anchors, depth, and alpha edges. Hair, clothes, ornaments, makeup, and hands remain detachable; production assets use detachable, naturally aligned layers with defects fully visible for review.
 - Anatomy and art: five fingers per hand and five toes per foot are existing [generation requirements](../tools/second_gen_body/chroma_mass_produce_v9.py), supported by [hand auditing](../domain/hand_asset_audit.py) and [evidence contracts](../domain/hand_asset_evidence.py). Landmark counts and actual digit acceptance are verified separately. Occlusion requires evidence; extra, missing, fused digits and seams are corrected before formal integration.
 - Appearance DLC: follow [appearance packs](OUTFIT-PACKS.md) for all thirty-one views, independent mixed slots, atomic installation, Save/Cancel, protected official packs, provenance, and runtime generation rejection. Preserve three makeup slots, safe regions, iris and oral exclusions, persistent intensity, and the shared runtime preview path.
@@ -128,7 +128,7 @@ Art must respect normal anatomy, natural poses and physical plausibility, includ
 
 [PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) changed the historical JIT default to off after stability failures on a user machine. The current [launcher](../tools/jit_launcher.py) enables it only with `MOHAN_ENABLE_JIT=1`. Earlier migration documentation describing an enabled default is superseded by the current launcher and test evidence.
 
-Old version numbers, test counts, and unreleased statements in source documents are historical status. The old Qt metadata blocker was replaced by the architecture compatibility-layer policy. Earlier art-only delegation, old-face preservation, and top design were superseded by the current integration authorization, V4 appearance standard, and thin-strap cropped sports base. Routine autonomous work proceeds under the existing authorization; major matters and formal artwork integration retain confirmation.
+Old version numbers, test counts, and unreleased statements in source documents are historical status. The old Qt metadata blocker and project-built compatibility layer were replaced by direct pins to the official `PySide6_Essentials`, `PySide6_Addons`, and `shiboken6` 6.12.0 wheels; the `PySide6` metapackage that would pull in unused WebEngine and Pdf distributions must not be installed. Earlier art-only delegation, old-face preservation, and top design were superseded by the current integration authorization, V4 appearance standard, and thin-strap cropped sports base. Routine autonomous work proceeds under the existing authorization; major matters and formal artwork integration retain confirmation.
 
 Tachyon has an unresolved discrepancy: the supplied handoff states a one-percent read-error threshold, while this worktree explicitly passes fifteen percent in CI and Release and defaults to eighty percent in the CLI. These are inconsistent rules and settings, an explicitly unresolved decision; this index preserves every source threshold verbatim. Older speech documentation says no Azure SDK installation, while current requirements include it; provider implementation and historical description must be distinguished. Current project-wide compliance comes only from current full validation.
 
@@ -158,7 +158,7 @@ Tachyon has an unresolved discrepancy: the supplied handoff states a one-percent
 - 感知とジェスチャー：[ジェスチャー仕様](GESTURE-INTERACTION.md) と構造契約に従い既定無効、保存された同意、上限、取消しを保つ。生画像は一時的に処理して解放し、機密骨格標本は別途暗号化する。期限切れ、低信頼、モデル不在では不明として扱い、他機能を維持する。
 - 背景処理：[ワーカー規則](BACKGROUND-MANAGER-WORKERS.md) に従い読取専用観察、主スレッド調停、冷却、集中保護を維持する。ワーカーは音声、表情、ツール、権限を直接制御しない。
 - 音声：[供給元契約](PLUGGABLE-SPEECH-PROVIDERS.md) に従い単一の口形同期と再生周期、女性ローカル代替、供給元分離を保つ。再生開始後の失敗で文全体を再生し直さない。オーナー指定のローカル音声は Yating、OneCore、通常速度を使う。
-- ライセンス：[許可リスト](LICENSE-PURITY.md)、[禁止リスト](LICENSE-BLACKLIST.md)、[キャラクター権利](../ASSETS-LICENSE.md) を用いコード、重み、キャラクター資産を別々に確認する。既存例外の範囲は PySide6、PyInstaller、Azure Speech SDK の三件に固定する。フォント OFL 原文を保持し、コードは MIT、美術はキャラクター権利に従う。
+- ライセンス：[許可リスト](LICENSE-PURITY.md)、[禁止リスト](LICENSE-BLACKLIST.md)、[キャラクター権利](../ASSETS-LICENSE.md) を用いコード、重み、キャラクター資産を別々に確認する。既存の三つの例外分類は、Qt for Python の実際のディストリビューション（`PySide6_Essentials`、`PySide6_Addons`、`shiboken6`）、PyInstaller、Azure Speech SDK に固定する。フォント OFL 原文を保持し、コードは MIT、美術はキャラクター権利に従う。
 - 同一性とレイヤー：[半身](../DLC_ART_ASSET_SPEC.md)、[身体](../DLC_ART_ASSET_SPEC_BODY.md)、[全身](../DLC_ART_ASSET_SPEC_FULLBODY.md) と外観契約に従い権威ある同一性、画布、基準点、深度、透明縁を保つ。髪、衣装、飾り、化粧、手を分離可能にし、貼り合わせや焼込み、位置ずれで欠陥を隠さない。
 - 解剖と美術：各手五指、各足五趾は既存の [生成条件](../tools/second_gen_body/chroma_mass_produce_v9.py) であり、[手の監査](../domain/hand_asset_audit.py) と [証拠契約](../domain/hand_asset_evidence.py) がある。骨格点数は指の検収証明ではない。遮蔽には証拠が必要で、増指、欠指、融合、継ぎ目を隠してはならない。
 - 外観 DLC：[外観パック](OUTFIT-PACKS.md) に従い全三十一視点、独立スロット混用、原子的導入、保存と取消し、公式パック保護、由来、実行時世代拒否を保つ。化粧三スロット、安全領域、虹彩と口腔の除外、濃度保存、同一実行経路のプレビューを維持する。
@@ -172,6 +172,6 @@ Tachyon has an unresolved discrepancy: the supplied handoff states a one-percent
 
 実機の安定性問題を受け、[PR #109](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/pull/109) は JIT の既定値を無効に変更した。現行の [起動ツール](../tools/jit_launcher.py) は `MOHAN_ENABLE_JIT=1` の場合のみ有効化する。以前の移行文書にある既定で有効という記述は、現行動作は現在の起動ツールと試験証拠で判定する。
 
-原文書の旧版番号、試験件数、未公開記述は過去の状態である。旧 Qt metadata 阻害条件は構造契約の互換層政策に置き換わった。旧来の美術専任制限、旧顔維持、上着形状は今回の統合許可、V4 外観基準、細肩紐の短丈スポーツ素体裁定に置き換わった。通常の自律作業は既存許可に従って継続し、重大事項と美術の正式接続は確認を維持する。
+原文書の旧版番号、試験件数、未公開記述は過去の状態である。旧 Qt metadata 阻害条件とプロジェクト独自の互換レイヤーは、公式 `PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 6.12.0 wheel の直接固定方針に置き換わり、未使用の WebEngine／Pdf を導入する `PySide6` メタパッケージを使用してはならない。旧来の美術専任制限、旧顔維持、上着形状は今回の統合許可、V4 外観基準、細肩紐の短丈スポーツ素体裁定に置き換わった。通常の自律作業は既存許可に従って継続し、重大事項と美術の正式接続は確認を維持する。
 
 Tachyon には未解決の差異がある。引継ぎの読取エラー上限は一パーセントだが、この作業ツリーの CI と Release は十五パーセント、CLI 既定値は八十パーセントである。規則と設定の不一致であり、未決定差異として明示し、本索引では各資料の上限をそのまま保持する。旧音声文書は Azure SDK 不要とするが、現在の依存一覧には SDK がある。供給元実装と歴史記述を区別する必要がある。現在の全プロジェクト適合状態は現行の完全検証だけで判定する。

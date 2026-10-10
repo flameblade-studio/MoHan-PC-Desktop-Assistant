@@ -6,10 +6,10 @@ lazy from collections import deque
 lazy from collections.abc import Callable, Collection
 lazy from dataclasses import dataclass
 
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.contracts import default_character_display_name
 
-_EXPRESSION_CATALOG = default_expression_catalog()
+_EXPRESSION_CATALOG = active_expression_catalog()
 
 # Complex-prompt length thresholds (characters) for wait-expression scoring.
 COMPLEX_PROMPT_LENGTH = 56

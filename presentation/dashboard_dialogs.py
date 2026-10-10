@@ -22,8 +22,8 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-lazy from application.presentation_ports import PresentationDatabasePort
-lazy from domain.app_profile import profile_setting
+lazy from application.service_contracts import PresentationDatabasePort
+lazy from domain.character_source import profile_setting
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from presentation.dashboard_shared import (
     MEMORY_CATEGORIES,

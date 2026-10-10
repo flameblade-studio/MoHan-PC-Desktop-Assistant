@@ -289,11 +289,14 @@ def _assert_release_runtime_and_packages(release: str) -> None:
     for required in (
         "tools/audit_public_release.py",
         "tests/run_all.py",
-        "tools/install_python315_dependencies.py",
+        "tools/check_official_qt_runtime.py",
         "tools/build_python315_jit_runtime.py",
         "37e98da7c19a9e5892ee756d6dee08225422cd49",
         "repository: python/cpython",
         'python-version: "3.15.0-rc.1"',
+        "--require-hashes",
+        "requirements-qt.txt",
+        "-QtPipReport qt-jit-install-report.json",
         "PACKAGED_SELFTEST_OK",
         "PACKAGED_JIT_DEFAULT_OK",
         "MOHAN_DISABLE_JIT",
@@ -352,8 +355,8 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
         'python-version: "3.15.0-rc.1"',
         "Enforce thin app composition root before packaging",
         '"$PREFLIGHT_PYTHON" tools/check_app_composition_root.py app.py',
-        "Validate MoHan Qt 3.15 compatibility policy before packaging",
-        '"$PREFLIGHT_PYTHON" tools/check_python315_qt_compatibility.py',
+        "Validate official Qt for Python policy before packaging",
+        '"$PREFLIGHT_PYTHON" tools/check_official_qt_runtime.py --policy-only',
         "Require curated four-language Release notes before packaging",
         "PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}",
         '"$PREFLIGHT_PYTHON" tools/check_four_language_docs.py',
@@ -372,7 +375,7 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
         "Enforce thin app composition root before packaging"
     )
     qt_preflight = resolve_job.index(
-        "Validate MoHan Qt 3.15 compatibility policy before packaging"
+        "Validate official Qt for Python policy before packaging"
     )
     assert resolve_job.index("Set up Python 3.15 release preflight runtime") < (
         app_preflight

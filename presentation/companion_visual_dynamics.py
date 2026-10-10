@@ -23,7 +23,7 @@ lazy from application.background_agents import (
 lazy from application.multisensory_interaction import MultisensoryInteractionArbiter
 lazy from domain.app_profile import profile_setting, profile_window_title
 lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
@@ -50,7 +50,7 @@ __all__ = ("CompanionVisualDynamicsMixin",)
 MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
-_EXPRESSION_CATALOG = default_expression_catalog()
+_EXPRESSION_CATALOG = active_expression_catalog()
 _EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
 _STARTUP_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates
 

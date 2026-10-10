@@ -3,22 +3,25 @@ from __future__ import annotations
 lazy import random
 lazy import time
 lazy from collections import deque
-lazy from collections.abc import Callable
+lazy from collections.abc import Callable, Mapping
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_POSE_ROLES
-
-_RIG_MANIFEST = default_rig_manifest()
-_FRONT_POSE = CHARACTER_POSE_ROLES["front_idle"]
-_LEFT_POSE = CHARACTER_POSE_ROLES["left_idle"]
-_RIGHT_POSE = CHARACTER_POSE_ROLES["right_idle"]
-_CHEEK_POSE = CHARACTER_POSE_ROLES["left_cheek"]
-_FULL_BACK_POSE = CHARACTER_POSE_ROLES["rear_full"]
-_SPEECH_SAFE_POSES = frozenset({_FRONT_POSE, _LEFT_POSE, _RIGHT_POSE})
+lazy from domain.character_runtime import CHARACTER_POSE_ROLES, character_rig_manifest
 
 BACK_DEPTH_TWO_THIRDS = 2
+
+
+def _pose(role: str) -> str:
+    return CHARACTER_POSE_ROLES[role]
+
+
+def _back_depth() -> Mapping[str, int]:
+    return character_rig_manifest().back_depth
+
+
+def _pose_views() -> Mapping[str, str]:
+    return character_rig_manifest().behavior_pose_views
 
 
 class SpeechLifecycle(StrEnum):
@@ -117,7 +120,7 @@ class BodyPerformancePlan:
             )
         ):
             raise ValueError("Every atomic performance layer must be explicit.")
-        if self.pose == _FULL_BACK_POSE and self.gaze is not GazeTarget.AWAY:
+        if self.pose == _pose("rear_full") and self.gaze is not GazeTarget.AWAY:
             raise ValueError("A full back view keeps its gaze forward.")
         if self.pose.startswith("back-") and (
             self.left_hand != "relaxed" or self.right_hand != "relaxed"
@@ -154,11 +157,9 @@ class _Candidate:
 
 
 _SPEECH_ACTIVE = frozenset({SpeechLifecycle.STARTING, SpeechLifecycle.SPEAKING})
-_BACK_DEPTH = _RIG_MANIFEST.back_depth
 # The canonical view for each pose, mirroring the candidate constructors.
 # _disabled_plan previously hard-coded "left-030" for every non-front pose,
 # rendering e.g. right-neutral from the opposite side's camera.
-_POSE_VIEWS = _RIG_MANIFEST.behavior_pose_views
 
 
 class BehaviorDirector:
@@ -235,7 +236,7 @@ class BehaviorDirector:
             plan = candidate.plan(hold_ms)
         self._remember(plan, candidate.action, priority, now)
         if candidate.action.startswith(("anger-", "recover-")):
-            self._back_depth = _BACK_DEPTH.get(plan.pose, 0)
+            self._back_depth = _back_depth().get(plan.pose, 0)
         elif context.speech in _SPEECH_ACTIVE:
             # A speech-safe replacement does not mean she actually turned
             # around: the coordinator refuses deep pose jumps and keeps the
@@ -246,13 +247,13 @@ class BehaviorDirector:
             pass
         else:
             self._back_depth = 0
-        if plan.pose.endswith("-right") or plan.pose == _RIGHT_POSE:
+        if plan.pose.endswith("-right") or plan.pose == _pose("right_idle"):
             # "right-neutral" uses a distinct name; its own
             # case the side memory stayed "left" and an anger escalation
             # that began on her right side swept across the front to the
             # left rear mid-sequence.
             self._back_side = "right"
-        elif plan.pose.endswith("-left") or plan.pose == _LEFT_POSE:
+        elif plan.pose.endswith("-left") or plan.pose == _pose("left_idle"):
             self._back_side = "left"
         return plan
 
@@ -323,7 +324,7 @@ class BehaviorDirector:
                 "anger-two-thirds",
             )
         return _Candidate(
-            _FULL_BACK_POSE,
+            _pose("rear_full"),
             "back-180",
             "hidden",
             "relaxed",
@@ -375,10 +376,10 @@ class BehaviorDirector:
             )
         # The final step must actually face front.  Echoing current_pose here
         # returned the previous recover-side pose (depth 1, still in
-        # _BACK_DEPTH), which wrote the debt back and locked the recovery
+        # the rig back-depth map, which wrote the debt back and locked the recovery
         # gradient into an endless side-neutral loop.
         return _Candidate(
-            _FRONT_POSE,
+            _pose("front_idle"),
             "front-000",
             "neutral",
             "relaxed",
@@ -394,17 +395,17 @@ class BehaviorDirector:
     def _speech_safe_candidate(self, context: BehaviorInput) -> _Candidate:
         choices = (
             _Candidate(
-                _FRONT_POSE, "front-000", "speaking", "relaxed", "relaxed",
+                _pose("front_idle"), "front-000", "speaking", "relaxed", "relaxed",
                 GazeTarget.USER, BreathStyle.SPEAKING, TransitionStyle.SOFT,
                 1_400, True, "speech-front",
             ),
             _Candidate(
-                _LEFT_POSE, "left-030", "speaking", "relaxed", "relaxed",
+                _pose("left_idle"), "left-030", "speaking", "relaxed", "relaxed",
                 GazeTarget.NEAR_USER, BreathStyle.SPEAKING, TransitionStyle.SOFT,
                 1_400, True, "speech-left",
             ),
             _Candidate(
-                _RIGHT_POSE, "right-030", "speaking", "relaxed", "relaxed",
+                _pose("right_idle"), "right-030", "speaking", "relaxed", "relaxed",
                 GazeTarget.NEAR_USER, BreathStyle.SPEAKING, TransitionStyle.SOFT,
                 1_400, True, "speech-right",
             ),
@@ -415,7 +416,7 @@ class BehaviorDirector:
         del now
         if not context.user_present or context.away_seconds >= AWAY_SECONDS_THRESHOLD:
             return _Candidate(
-                _FRONT_POSE, "front-000", "idle", "relaxed", "relaxed",
+                _pose("front_idle"), "front-000", "idle", "relaxed", "relaxed",
                 GazeTarget.DOWN, BreathStyle.CALM, TransitionStyle.SOFT,
                 2_600, True, "ambient-wait",
             )
@@ -429,17 +430,17 @@ class BehaviorDirector:
         gaze = GazeTarget.USER if context.user_in_gaze else GazeTarget.NEAR_USER
         choices = (
             _Candidate(
-                _FRONT_POSE, "front-000", face, "relaxed", "relaxed",
+                _pose("front_idle"), "front-000", face, "relaxed", "relaxed",
                 gaze, BreathStyle.CALM, TransitionStyle.SOFT,
                 2_200, True, "ambient-front",
             ),
             _Candidate(
-                _LEFT_POSE, "left-030", face, "relaxed", "relaxed",
+                _pose("left_idle"), "left-030", face, "relaxed", "relaxed",
                 gaze, BreathStyle.CALM, TransitionStyle.SOFT,
                 2_200, True, "ambient-left",
             ),
             _Candidate(
-                _RIGHT_POSE, "right-030", face, "relaxed", "relaxed",
+                _pose("right_idle"), "right-030", face, "relaxed", "relaxed",
                 gaze, BreathStyle.CALM, TransitionStyle.SOFT,
                 2_200, True, "ambient-right",
             ),
@@ -447,11 +448,11 @@ class BehaviorDirector:
             # time.  It is not speech-safe, so the director will substitute a
             # safe pose the moment speech begins.
             _Candidate(
-                _CHEEK_POSE, "left-030", "cheek", "relaxed", "relaxed",
+                _pose("left_cheek"), "left-030", "cheek", "relaxed", "relaxed",
                 GazeTarget.NEAR_USER, BreathStyle.CALM, TransitionStyle.SOFT,
                 2_600,
                 False,
-                "ambient-" + _RIG_MANIFEST.pose_silhouettes["cheek"],
+                "ambient-" + character_rig_manifest().pose_silhouettes["cheek"],
             ),
         )
         return self._choose(choices, offset=context.conversation_turn)
@@ -459,7 +460,7 @@ class BehaviorDirector:
     @staticmethod
     def _safety_candidate(context: BehaviorInput) -> _Candidate:
         return _Candidate(
-            _FRONT_POSE, "front-000",
+            _pose("front_idle"), "front-000",
             "protective-speaking" if context.speech in _SPEECH_ACTIVE else "protective",
             "open", "open", GazeTarget.USER,
             BreathStyle.SPEAKING if context.speech in _SPEECH_ACTIVE else BreathStyle.CALM,
@@ -469,7 +470,7 @@ class BehaviorDirector:
     @staticmethod
     def _reminder_candidate(context: BehaviorInput) -> _Candidate:
         return _Candidate(
-            _FRONT_POSE, "front-000",
+            _pose("front_idle"), "front-000",
             "reminder-speaking" if context.speech in _SPEECH_ACTIVE else "reminder",
             "open", "relaxed", GazeTarget.USER,
             BreathStyle.SPEAKING if context.speech in _SPEECH_ACTIVE else BreathStyle.CALM,
@@ -485,7 +486,7 @@ class BehaviorDirector:
         the back-depth bookkeeping truthful.
         """
         active_depth = (
-            _BACK_DEPTH.get(self._active.pose, 0)
+            _back_depth().get(self._active.pose, 0)
             if self._active is not None
             else 0
         )
@@ -513,7 +514,7 @@ class BehaviorDirector:
         if context.speech in _SPEECH_ACTIVE:
             return self._speech_safe_candidate(context)
         return _Candidate(
-            _FRONT_POSE, "front-000", "neutral", "relaxed", "relaxed",
+            _pose("front_idle"), "front-000", "neutral", "relaxed", "relaxed",
             GazeTarget.USER if context.user_present else GazeTarget.DOWN,
             BreathStyle.CALM, TransitionStyle.TURN_BACK, 2_000, True,
             "recover-front",
@@ -527,10 +528,10 @@ class BehaviorDirector:
         # on that combination).  The previous USER/DOWN gaze made direct()
         # throw on every frame while she was turned away with performances
         # disabled, freezing the screen on her back permanently.
-        rear = _BACK_DEPTH.get(pose, 0) >= BACK_DEPTH_TWO_THIRDS
+        rear = _back_depth().get(pose, 0) >= BACK_DEPTH_TWO_THIRDS
         return BodyPerformancePlan(
             pose,
-            _POSE_VIEWS.get(pose, default_view),
+            _pose_views().get(pose, default_view),
             "neutral",
             "relaxed",
             "relaxed",
@@ -564,7 +565,11 @@ class BehaviorDirector:
 
     @staticmethod
     def _is_speech_safe(plan: BodyPerformancePlan) -> bool:
-        return plan.pose in _SPEECH_SAFE_POSES
+        return plan.pose in {
+            _pose("front_idle"),
+            _pose("left_idle"),
+            _pose("right_idle"),
+        }
 
     @staticmethod
     def _transition_is_safe(
@@ -572,9 +577,9 @@ class BehaviorDirector:
         next_plan: BodyPerformancePlan,
     ) -> bool:
         if previous is None:
-            return _BACK_DEPTH.get(next_plan.pose, 0) <= 1
-        previous_depth = _BACK_DEPTH.get(previous.pose, 0)
-        next_depth = _BACK_DEPTH.get(next_plan.pose, 0)
+            return _back_depth().get(next_plan.pose, 0) <= 1
+        previous_depth = _back_depth().get(previous.pose, 0)
+        next_depth = _back_depth().get(next_plan.pose, 0)
         return abs(previous_depth - next_depth) <= 1
 
     @staticmethod

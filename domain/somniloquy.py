@@ -14,9 +14,9 @@ can be unit-tested and reused by the proactive runtime and the visual dynamics.
 lazy import random
 lazy import re
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 
-_DIALOGUES = load_mohan_character_data().dialogues
+_DIALOGUES = active_character_data().dialogues
 
 # A modern-vocabulary blocklist used to guard against anachronistic lines.  If a
 # candidate line contains one of these, it receives an out-of-era status.

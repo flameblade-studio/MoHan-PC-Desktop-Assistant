@@ -17,9 +17,15 @@ lazy from presentation.lingxiao_tokens import (
     font_stack,
 )
 
-__all__ = ("MaterialPalette", "resolve_material_palette")
+__all__ = (
+    "MaterialPalette",
+    "external_theme_accent_stylesheet",
+    "resolve_material_palette",
+)
 
 MINIMUM_CONTRAST_RATIO: Final = 4.5
+# WCAG 2.2 SC 1.4.11 non-text contrast for the focus ring against its fill.
+MINIMUM_FOCUS_CONTRAST_RATIO: Final = 3.0
 _DARK_ON_PRIMARY: Final = "#111827"
 _BLACK_ON_PRIMARY: Final = "#000000"
 _LIGHT_ON_PRIMARY: Final = "#FFFFFF"
@@ -89,6 +95,45 @@ def _materials_from_theme(theme: ThemePack) -> MaterialPalette:
         font=theme.font_family,
         background_tint=token["background"],
     )
+
+
+def external_theme_accent_stylesheet(
+    materials: MaterialPalette,
+    *,
+    focus: str,
+) -> str:
+    """Return narrow external-theme overrides for selected and primary controls."""
+
+    root = "QWidget[mohanFlagshipTheme='true']"
+    selected = (
+        f'{root} QPushButton[mohanAction="navigation"]:checked,'
+        f"{root} QTabWidget#wardrobeCategoryTabs QTabBar::tab:selected"
+    )
+    primary = f'{root} QPushButton[mohanAction="primary"]'
+    focus_selectors = (
+        f'{root} QPushButton[mohanAction="navigation"]:checked:focus,'
+        f"{root} QTabWidget#wardrobeCategoryTabs QTabBar::tab:selected:focus,"
+        f'{root} QPushButton[mohanAction="primary"]:focus'
+    )
+    fill = (
+        f"color:{materials.on_primary};background:{materials.primary};"
+        f"border:1px solid {materials.title};"
+    )
+    focus = _visible_focus(focus, materials)
+    return (
+        f"\n{selected}{{{fill}}}"
+        f"{primary},{primary}:hover,{primary}:pressed{{{fill}}}"
+        f"{focus_selectors}{{border:2px solid {focus};}}"
+    )
+
+
+def _visible_focus(focus: str, materials: MaterialPalette) -> str:
+    """Keep the keyboard focus ring distinguishable from the primary fill."""
+
+    if contrast_ratio(focus, materials.primary) >= MINIMUM_FOCUS_CONTRAST_RATIO:
+        return focus
+    # on_primary already clears the 4.5:1 text contrast against the fill.
+    return materials.on_primary
 
 
 def _readable_on_primary(primary: str, preferred: str) -> str:

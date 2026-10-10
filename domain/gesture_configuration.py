@@ -7,10 +7,10 @@ lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 lazy from typing import Final, Self
 
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.contracts import default_character_display_name
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 
 GESTURE_CONFIGURATION_FORMAT: Final = "mohan-gesture-configuration"
 GESTURE_CONFIGURATION_VERSION: Final = 1

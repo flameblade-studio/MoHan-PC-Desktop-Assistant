@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy import os
@@ -108,6 +110,7 @@ def build_contact_sheet(report: PoseAtlasAuditReport, output: Path) -> None:
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description="Build an offline audited 360-degree pose contact sheet.")
     parser.add_argument("manifest", type=Path)
     parser.add_argument("output", type=Path)

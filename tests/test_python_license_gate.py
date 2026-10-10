@@ -147,10 +147,12 @@ def test_installed_distributions_prefer_active_environment_metadata(
 ) -> None:
     prefix = Path.cwd() / ".venv315"
     active = FakeDistribution(
-        "PySide6", "6.10.2", location=str(prefix / "Lib/site-packages")
+        "PySide6_Essentials", "6.10.2", location=str(prefix / "Lib/site-packages")
     )
     system = FakeDistribution(
-        "PySide6", "6.9.3", location=str(prefix.parent / "system/Lib/site-packages")
+        "PySide6_Essentials",
+        "6.9.3",
+        location=str(prefix.parent / "system/Lib/site-packages"),
     )
     monkeypatch.setattr(license_gate.sys, "prefix", str(prefix))
     monkeypatch.setattr(
@@ -159,4 +161,4 @@ def test_installed_distributions_prefer_active_environment_metadata(
         lambda: [system, active],
     )
 
-    assert license_gate._installed_distributions()["pyside6"] is active
+    assert license_gate._installed_distributions()["pyside6-essentials"] is active

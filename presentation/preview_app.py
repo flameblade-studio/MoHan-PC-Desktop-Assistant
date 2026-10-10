@@ -15,6 +15,9 @@ from application.preview_app import (
     parse_preview_arguments,
     validate_preview_runtime,
 )
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from application.runtime_bootstrap import ensure_default_jit, jit_is_enabled
 
 ensure_default_jit(__name__, __file__)
@@ -377,6 +380,7 @@ def validate_preview_contract(window: PreviewWindow) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime()
     values = sys.argv[1:] if argv is None else argv
     args = parse_preview_arguments(values)
     if args.jit_status_output:

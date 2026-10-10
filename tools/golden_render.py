@@ -33,6 +33,9 @@ lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from domain.face_motion import FaceMotionController
 lazy from domain.face_rig import (
     ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme, blink_for_eye_state,
@@ -375,16 +378,20 @@ def _network_disabled():
 
 @contextmanager
 def _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):
-    from domain import outfit_pack
+    from domain import outfit_pack, outfit_pack_store
 
-    previous = outfit_pack.OFFICIAL_PACK_ROOT
-    outfit_pack.OFFICIAL_PACK_ROOT = settings.resolve_asset_path(
-        asset_root, settings.official_pack_root,
-    )
+    # outfit_pack_store defines the root and outfit_pack re-exports it; consumers
+    # import it from the defining module, so both bindings must point here.
+    modules = (outfit_pack_store, outfit_pack)
+    previous = tuple(module.OFFICIAL_PACK_ROOT for module in modules)
+    root = settings.resolve_asset_path(asset_root, settings.official_pack_root)
+    for module in modules:
+        module.OFFICIAL_PACK_ROOT = root
     try:
         yield
     finally:
-        outfit_pack.OFFICIAL_PACK_ROOT = previous
+        for module, value in zip(modules, previous, strict=True):
+            module.OFFICIAL_PACK_ROOT = value
 
 
 def _prepare_store(
@@ -512,6 +519,7 @@ def render_matrix(
     cells: Iterable[GoldenCell] | None = None,
     settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
 ) -> dict[str, object]:
+    activate_product_character_runtime(ROOT)
     selected = tuple(matrix_cells(settings) if cells is None else cells)
     output = Path(output).resolve()
     asset_root = Path(asset_root).resolve()
@@ -822,6 +830,7 @@ def _require_committed_render_sources(
 
 
 def main(argv: Iterable[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--manifest", type=Path, default=MANIFEST_PATH)

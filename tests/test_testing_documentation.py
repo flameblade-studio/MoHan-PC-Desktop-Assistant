@@ -74,7 +74,9 @@ def test_each_language_records_current_release_truth() -> None:
         assert "app.py" in section
         assert "13" in section
         assert "Python 3.15" in section
-        assert "PySide6 6.11.1" in section
+        assert "PySide6_Essentials" in section
+        assert "PySide6_Addons" in section
+        assert "shiboken6" in section
         assert "PoseAtlas" in section
         assert "66" in section
         assert "v4" in section

@@ -50,7 +50,7 @@
 
 | 項目 | 授權 | 為什麼可以 |
 |---|---|---|
-| PySide6 | LGPL-3.0 | onedir 動態連結、About 內聲明、授權全文隨包；你的程式碼沿用自身授權 |
+| PySide6_Essentials／PySide6_Addons／shiboken6 | LGPL-3.0 | onedir 動態連結、About 內聲明、授權全文隨包；你的程式碼沿用自身授權 |
 | PyInstaller | GPL-2.0＋bootloader exception | 例外條款明文保證打包產物位於 GPL 適用範圍之外；建置工具留在建置環境 |
 | Azure Speech SDK | Microsoft 專有 | 允許商用與再散布，並維持授權邊界 |
 
@@ -110,7 +110,7 @@
 
 | 项目 | 授权 | 为什么可以 |
 |---|---|---|
-| PySide6 | LGPL-3.0 | onedir 动态链接、About 内声明、授权全文随包；你的代码沿用自身授权 |
+| PySide6_Essentials／PySide6_Addons／shiboken6 | LGPL-3.0 | onedir 动态链接、About 内声明、授权全文随包；你的代码沿用自身授权 |
 | PyInstaller | GPL-2.0＋bootloader exception | 例外条款明文保证打包产物位于 GPL 适用范围之外；构建工具留在构建环境 |
 | Azure Speech SDK | Microsoft 专有 | 允许商业使用与再分发，并维持授权边界 |
 
@@ -170,7 +170,7 @@ Each exception records its reasoning and acceptance conditions explicitly:
 
 | Item | License | Why it is acceptable |
 |---|---|---|
-| PySide6 | LGPL-3.0 | Dynamically linked in a onedir layout, declared in About, full license shipped; your own code retains its license |
+| PySide6_Essentials / PySide6_Addons / shiboken6 | LGPL-3.0 | Dynamically linked in a onedir layout, declared in About, full license shipped; your own code retains its license |
 | PyInstaller | GPL-2.0 with bootloader exception | The exception explicitly places packaged output outside GPL terms; the build tool remains in the build environment |
 | Azure Speech SDK | Microsoft proprietary | Commercial use and redistribution permitted while preserving the licensing boundary |
 
@@ -230,7 +230,7 @@ To audit it yourself, the evidence is in the repository: [`ASSETS-LICENSE.md`](.
 
 | 項目 | ライセンス | 許容できる理由 |
 |---|---|---|
-| PySide6 | LGPL-3.0 | onedir 構成で動的リンクし、About に表示、全文を同梱。利用者のコードは自身のライセンスを維持 |
+| PySide6_Essentials／PySide6_Addons／shiboken6 | LGPL-3.0 | onedir 構成で動的リンクし、About に表示、全文を同梱。利用者のコードは自身のライセンスを維持 |
 | PyInstaller | GPL-2.0＋bootloader exception | 例外条項が成果物を GPL の適用外と明記。ビルドツールはビルド環境に保持 |
 | Azure Speech SDK | Microsoft 独自 | 商用利用と再配布が可能で、ライセンス境界を維持 |
 

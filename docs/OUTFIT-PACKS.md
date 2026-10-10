@@ -8,7 +8,11 @@
 
 衣裝以官方二代素體 `mohan-body-v2` 為準；為一代素體 `mohan-body-v1` 製作的套件維持在匯入與執行範圍之外，並須以 `tools/build_outfit_pack.py` 對二代範本重建（雲端一鍵製衣會直接產出二代套件）。官方美術規格為成人女性，168 公分、54 公斤、86/71/62/90 公分，約 C70-equivalent；數值的用途限定為官方美術製作與驗收。真正相容性由版本化 rig anchors、masks 與 geometry 判斷。肩頸線、胸廓、腰胯線、四肢比例、膚色和本體輪廓都由核心掌握。外掛的有效範圍是以 `visible`／`covered` 宣告官方膚色區域，並從 `structured`、`draped`、`stretch`、`loose` 選擇布料行為；臉型、膚色與身材由核心持續掌握。
 
-衣裝必須完整覆蓋 v2 的 31 個精確視角：既有七個演出輪廓 `cheek-rest`、`left-neutral`、`front-crossed`、`front-mock-scold`、`front-mock-hit`、`front-eureka`、`front-exasperated`，以及 PoseAtlas 的 24 個正式視角。每個視角都必須有自己的素材、anchor 與遮擋資料。舊 v1 三姿勢包保留為升級輸入，並以官方範本一次升級為完整 v2 包；完整且名稱精確的 31 視角集合才具備整包允收資格。
+正式完成的衣裝必須完整覆蓋 v2 的 31 個精確視角：既有七個演出輪廓 `cheek-rest`、`left-neutral`、`front-crossed`、`front-mock-scold`、`front-mock-hit`、`front-eureka`、`front-exasperated`，以及 PoseAtlas 的 24 個正式視角。每個視角都必須有自己的素材、anchor 與遮擋資料。尚待半身設計核准的候選衣裝與髮型 variant 可明確宣告 `silhouette_scope: "full-body"`，但必須完整提供 24 個 PoseAtlas 視角；執行期在缺少的七個半身輪廓維持素體，不推造未核准素材。舊 v1 三姿勢包保留為升級輸入，並以官方範本一次升級為完整 v2 包；完整且名稱精確的 31 視角集合才具備正式整包允收資格。
+
+服裝與髮型 variant 也可選擇為 `cheek-glance`、`cheek-caught`、`cheek-happy`、`cheek-worried`、`cheek-reminder` 五個完整表情的基礎幀提供精確素材；未宣告時沿用 `cheek-rest` 外觀。這些選用視角不改變既有套件的 31 視角最低契約，眨眼與說話嘴型仍由同一姿勢的執行期眼口補丁驅動。
+
+若非官方 ID 的全身服裝必須移除素材輪廓外的原生衣物或足部，該視角可附一張 `garment-occluder` RGBA 素材並宣告 `clears_base: true`。它只提供 sealed Alpha 清除區、不會被繪製；執行期仍會從清除區扣除臉、手、原生髮與 ornament，且每個視角最多一張。
 
 每個 ensemble 都必須提供 `autonomous_profile`，明確標示適用溫度帶、天氣、墨寒當下心境、場合與排序權重。自主選裝使用單一決策器，遵守手動鎖定、六小時冷卻與雨雪／特殊節日安全優先；完整匹配待定時維持目前衣裝，衣裝變更保持可見且可追溯。自創新衣與流行趨勢搜尋是分開保存的開關，可能產生雲端費用，在使用者明確啟用後執行。趨勢資料的使用範圍限定為抽象特徵，第三方照片與設計留在包外；生成結果先進隔離區，完成 31 視角、角色身分、手部、遮擋、來源與授權稽核後才可封裝安裝。
 
@@ -34,7 +38,11 @@ Manifest 的 `source` 必須記錄 `kind`（`original`、`concept`、`reference-
 
 服装以官方二代素体 `mohan-body-v2` 为准；为一代素体 `mohan-body-v1` 制作的套件维持在导入与运行范围之外，并须以 `tools/build_outfit_pack.py` 针对二代模板重建（云端一键制衣会直接产出二代套件）。官方美术规格为成年女性，168 厘米、54 公斤、86/71/62/90 厘米，约 C70-equivalent；数字的用途限定为官方美术制作与验收。真正兼容性由版本化 rig anchors、masks 与 geometry 判断。颈肩线、胸廓、腰胯线、四肢比例、肤色和本体轮廓都由核心掌握。插件的有效范围是用 `visible`／`covered` 声明官方肤色区域，并从 `structured`、`draped`、`stretch`、`loose` 选择布料行为；脸型、肤色与身材由核心持续掌握。
 
-服装必须完整覆盖 v2 的 31 个精确视角：既有七个演出轮廓 `cheek-rest`、`left-neutral`、`front-crossed`、`front-mock-scold`、`front-mock-hit`、`front-eureka`、`front-exasperated`，以及 PoseAtlas 的 24 个正式视角。每个视角都必须拥有独立素材、anchor 与遮挡数据。旧 v1 三姿势包保留为升级输入，并通过官方模板一次升级为完整 v2 包；完整且名称精确的 31 视角集合才具备整包接收资格。
+正式完成的服装必须完整覆盖 v2 的 31 个精确视角：既有七个演出轮廓 `cheek-rest`、`left-neutral`、`front-crossed`、`front-mock-scold`、`front-mock-hit`、`front-eureka`、`front-exasperated`，以及 PoseAtlas 的 24 个正式视角。每个视角都必须拥有独立素材、anchor 与遮挡数据。尚待半身设计批准的候选服装与发型 variant 可明确声明 `silhouette_scope: "full-body"`，但必须完整提供 24 个 PoseAtlas 视角；运行时在缺少的七个半身轮廓保留素体，不推造未批准素材。旧 v1 三姿势包保留为升级输入，并通过官方模板一次升级为完整 v2 包；完整且名称精确的 31 视角集合才具备正式整包接收资格。
+
+服装与发型 variant 也可选择为 `cheek-glance`、`cheek-caught`、`cheek-happy`、`cheek-worried`、`cheek-reminder` 五个完整表情的基础帧提供精确素材；未声明时沿用 `cheek-rest` 外观。这些可选视角不改变现有套件的 31 视角最低契约，眨眼与说话嘴型仍由同一姿势的运行时眼口补丁驱动。
+
+如果非官方 ID 的全身服装必须移除素材轮廓外的原生服装或足部，该视角可附一张 `garment-occluder` RGBA 素材并声明 `clears_base: true`。它只提供 sealed Alpha 清除区、不会被绘制；运行时仍会从清除区扣除脸、手、原生头发与 ornament，且每个视角最多一张。
 
 每个 ensemble 都必须提供 `autonomous_profile`，明确标记适用温度带、天气、墨寒当前心境、场合与排序权重。自主选装使用单一决策器，遵守手动锁定、六小时冷却与雨雪／特殊节日安全优先；完整匹配待定时保留当前服装，服装变更保持可见且可追溯。自创新衣与流行趋势搜索是分别保存的开关，可能产生云端费用，在用户明确启用后执行。趋势数据的使用范围限定为抽象特征，第三方照片与设计留在包外；生成结果先进入隔离区，完成 31 视角、角色身份、手部、遮挡、来源与许可审核后才可封装安装。
 
@@ -60,7 +68,11 @@ A package may contain multiple outfits and colorways, hairstyles, headwear, make
 
 Garments target the official second-generation body `mohan-body-v2`; packs made for the generation-1 body `mohan-body-v1` remain outside the import and runtime scope and must be rebuilt with `tools/build_outfit_pack.py` against the generation-2 template (one-click cloud outfit creation produces generation-2 packs directly). The official art specification is an adult woman at 168 cm, 54 kg, and 86/71/62/90 cm—approximately C70-equivalent. Measurements are scoped to official asset production and acceptance. Runtime compatibility uses versioned rig anchors, masks, and geometry. Neck-and-shoulder line, ribcage, waist and hip lines, limb proportions, skin tone, and body contour remain core-owned. A pack's valid scope is marking official skin regions `visible` or `covered` and selecting `structured`, `draped`, `stretch`, or `loose` fabric behavior. The core continues to own identity, skin, and body shape.
 
-Garments cover all 31 exact v2 views: the seven established performance silhouettes `cheek-rest`, `left-neutral`, `front-crossed`, `front-mock-scold`, `front-mock-hit`, `front-eureka`, and `front-exasperated`, plus all 24 formal PoseAtlas views. Every view has its own asset, anchor, and occlusion data. Legacy three-pose v1 packages remain upgrade inputs and are rebuilt once with the official complete v2 template. A complete, precisely named 31-view set qualifies the whole package for acceptance.
+Completed garments cover all 31 exact v2 views: the seven established performance silhouettes `cheek-rest`, `left-neutral`, `front-crossed`, `front-mock-scold`, `front-mock-hit`, `front-eureka`, and `front-exasperated`, plus all 24 formal PoseAtlas views. Every view has its own asset, anchor, and occlusion data. A candidate garment or hairstyle variant awaiting approved half-body designs may explicitly declare `silhouette_scope: "full-body"`, but it must provide all 24 PoseAtlas views; runtime keeps the base for the seven absent half-body silhouettes instead of fabricating unapproved art. Legacy three-pose v1 packages remain upgrade inputs and are rebuilt once with the official complete v2 template. A complete, precisely named 31-view set qualifies the whole package for formal acceptance.
+
+Garment and hairstyle variants may also provide exact base-frame assets for the five complete expressions `cheek-glance`, `cheek-caught`, `cheek-happy`, `cheek-worried`, and `cheek-reminder`; undeclared views retain the `cheek-rest` appearance. These optional views do not change the existing 31-view minimum contract, and runtime eye and mouth patches still drive blinking and speech within the same pose.
+
+When a non-official full-body garment must remove native clothing or feet beyond the painted asset contour, that view may include one `garment-occluder` RGBA asset with `clears_base: true`. It supplies a sealed alpha-only clearing region and is not painted; runtime still subtracts the face, hands, native hair, and ornament from that region, and accepts at most one per view.
 
 Every ensemble supplies an `autonomous_profile` describing suitable thermal bands, weather, MoHan mood, occasions, and priority. One deterministic director handles autonomous choice, manual lock, a six-hour cooldown, and protective weather or special-occasion urgency. While a complete match is pending, the current outfit stays active and every outfit change remains visible and traceable. Self-generation and trend search are separately saved, potentially billable options and run after explicit enablement. Trend sources are scoped to abstract traits; third-party photographs and designs remain outside the package. A generated draft remains quarantined until all 31 views, identity, hands, occlusion, provenance, and licensing pass audit.
 
@@ -86,7 +98,11 @@ Removal uses a typed API. Built-in defaults remain resident. Any item or ensembl
 
 衣装は公式の第二世代素体 `mohan-body-v2` を対象とします。第一世代素体 `mohan-body-v1` 向けに作られたパックはインポートと実行の範囲外に維持し、`tools/build_outfit_pack.py` で第二世代テンプレートに対して再構築する必要があります（クラウドのワンクリック衣装生成は第二世代パックを直接生成します）。公式美術仕様は成人女性、身長 168 cm、体重 54 kg、86/71/62/90 cm、約 C70 相当です。数値の用途は公式素材制作と検収に限定します。実行時互換性はバージョン化された rig anchors、masks、geometry で判断します。首肩線、胸郭、腰・骨盤線、四肢比率、肌色、本体輪郭はコアが所有します。パックの有効範囲は、公式肌領域を `visible`／`covered` と宣言し、布挙動を `structured`、`draped`、`stretch`、`loose` から選ぶことです。顔、肌、体形はコアが継続して所有します。
 
-衣装は v2 の 31 個の正確な視点をすべて備えます。既存の演出輪郭 `cheek-rest`、`left-neutral`、`front-crossed`、`front-mock-scold`、`front-mock-hit`、`front-eureka`、`front-exasperated` と、PoseAtlas の正式 24 視点です。各視点に専用素材、anchor、遮蔽データが必要です。旧 v1 三姿勢パックはアップグレード入力として保持し、公式の完全 v2 テンプレートで一度作り直します。完全かつ正確に命名した 31 視点の集合が、パック全体の受入条件です。
+正式完成した衣装は v2 の 31 個の正確な視点をすべて備えます。既存の演出輪郭 `cheek-rest`、`left-neutral`、`front-crossed`、`front-mock-scold`、`front-mock-hit`、`front-eureka`、`front-exasperated` と、PoseAtlas の正式 24 視点です。各視点に専用素材、anchor、遮蔽データが必要です。承認済みの半身デザインを待つ候補の衣装・髪型 variant は `silhouette_scope: "full-body"` を明示できますが、PoseAtlas の 24 視点をすべて提供しなければなりません。実行時は欠けている半身 7 輪郭で素体を維持し、未承認素材を作りません。旧 v1 三姿勢パックはアップグレード入力として保持し、公式の完全 v2 テンプレートで一度作り直します。完全かつ正確に命名した 31 視点の集合が、正式なパック全体の受入条件です。
+
+衣装と髪型の variant は、完全表情 `cheek-glance`、`cheek-caught`、`cheek-happy`、`cheek-worried`、`cheek-reminder` の五つの基礎フレームに正確な素材を任意で追加できます。宣言しない視点は `cheek-rest` の外観を維持します。これらの任意視点は既存パックの最小 31 視点契約を変更せず、瞬きと発話口形は同じ姿勢の実行時の目・口パッチが引き続き駆動します。
+
+非公式 ID の全身衣装で、描画素材の輪郭外にある元の衣服や足を除去する必要がある場合、その視点には `clears_base: true` を宣言した `garment-occluder` RGBA 素材を一枚だけ追加できます。これは sealed Alpha の消去領域だけを提供し、描画はされません。実行時はその領域から顔、手、元の髪、ornament を引き続き除外します。
 
 各 ensemble は適用温度帯、天候、墨寒の現在の気分、場面、優先度を示す `autonomous_profile` を持ちます。自律選択は一つの決定器が手動ロック、六時間のクールダウン、雨雪や特別な日の緊急性を処理します。完全一致の判定中は現在の衣装を維持し、衣装変更は可視かつ追跡可能な状態を保ちます。自己生成と流行検索は別々に保存する、料金が発生し得る設定で、利用者が明示的に有効化した後に動作します。流行情報の使用範囲は抽象的特徴に限定し、第三者の写真やデザインはパック外に保持します。生成案は 31 視点、同一性、手、遮蔽、出所、ライセンスの監査を通るまで隔離されます。
 

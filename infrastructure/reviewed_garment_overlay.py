@@ -11,6 +11,7 @@ lazy from infrastructure.appearance_layer_stack import (
 lazy from infrastructure.outfit_layer_cache_key import OutfitLayerCacheKey
 lazy from infrastructure.reviewed_garment_assets import DIMENSION, load_reviewed_garment_assets
 lazy from infrastructure.reviewed_pose_overlay import ReviewedPoseOverlayMixin
+lazy from infrastructure.source_bound_garment_visibility import compose_garment_base
 
 
 def _paint_foreground(
@@ -132,6 +133,25 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         result = pose.compose(native) if pose is not None else QPixmap(native)
         if result.size() != frame.size():
             result = result.scaled(frame.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        if pose is None:
+            # A reviewed pose owns the native motion source even when its
+            # exact reviewed garment is not selected.  Custom detachable
+            # appearances still need the same sealed base-clear step as the
+            # ordinary composition route before their layers are painted.
+            silhouette, replacement, binding = self._base_clear_regions(
+                view_id,
+                frame.size().toTuple(),
+                self._garment_is_active(),
+                True,
+            )
+            result, _body_overlays = compose_garment_base(
+                result,
+                (),
+                None,
+                silhouette,
+                replacement,
+                binding is not None,
+            )
         result = _finish_appearance(result, layers, before_front_hair)
         counts[view_id] = len(pose.ordered_layers) if pose is not None else 0
         # Key shapes must match the writer each cache is shared with exactly

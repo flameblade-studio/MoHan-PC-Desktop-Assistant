@@ -20,6 +20,8 @@ plus a declared-versus-measured height block, and it hands the field records to
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import hashlib
 lazy import json
@@ -531,6 +533,7 @@ def _height_record(
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(PROJECT_ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--atlas-root", type=Path, default=PROJECT_ROOT / ATLAS_RELATIVE)
     parser.add_argument("--layers-root", type=Path,

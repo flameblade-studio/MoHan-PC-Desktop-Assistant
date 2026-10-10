@@ -15,7 +15,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.autonomous_wardrobe import DEFAULT_MANUAL_LOCK
-lazy from presentation.flagship_theme import mark_flagship_card
+lazy from presentation.dashboard_shared import mark_flagship_card
 
 __all__ = ("DashboardWardrobePreferencesMixin",)
 

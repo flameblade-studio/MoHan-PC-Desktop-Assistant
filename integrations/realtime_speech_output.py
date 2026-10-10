@@ -32,7 +32,6 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Windows 本機女性聲線發聲中",
         "failed": "Realtime 語音輸出需要重試：{error}",
         "queue_full": "Realtime 回應達到長度上限，本輪語音已安全停止。",
-        "ready": runtime_dialogue_locale("zh-TW")["realtime_ready"],
     },
     "zh-CN": {
         "preparing": "Realtime 已理解，Azure 正在准备发声",
@@ -43,7 +42,6 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Windows 本机女性声线发声中",
         "failed": "Realtime 语音输出需要重试：{error}",
         "queue_full": "Realtime 回复达到长度上限，本轮语音已安全停止。",
-        "ready": runtime_dialogue_locale("zh-CN")["realtime_ready"],
     },
     "en-US": {
         "preparing": "Realtime understood; Azure is preparing speech",
@@ -54,7 +52,6 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Local Windows female voice is speaking",
         "failed": "Realtime speech output needs a retry: {error}",
         "queue_full": "The Realtime response reached its length limit, so this speech response is stopped safely.",
-        "ready": runtime_dialogue_locale("en")["realtime_ready"],
     },
     "ja-JP": {
         "preparing": "Realtime が理解し、Azure が音声を準備しています",
@@ -65,14 +62,20 @@ _MESSAGES = deep_freeze({
         "local_speaking": "Windows 本機女性音声を再生中",
         "failed": "Realtime 音声出力の再試行が必要です：{error}",
         "queue_full": "Realtime の応答が長さの上限に達したため、この音声応答を安全に停止します。",
-        "ready": runtime_dialogue_locale("ja-JP")["realtime_ready"],
     },
 })
+
+
+_READY_DIALOGUE_LOCALES = {"zh-TW": "zh-TW", "zh-CN": "zh-CN", "en-US": "en", "ja-JP": "ja-JP"}
 
 
 def _message(locale: str, key: str, **values: object) -> str:
     normalized = canonical_ui_language(locale)
     catalog_key = "en-US" if normalized == "en" else normalized
+    if key == "ready":
+        # Character dialogue is read on use so importing this adapter never
+        # requires an active character source.
+        return runtime_dialogue_locale(_READY_DIALOGUE_LOCALES[catalog_key])["realtime_ready"]
     catalog = _MESSAGES[catalog_key]
     return catalog[key].format(**values)
 

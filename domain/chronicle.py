@@ -15,12 +15,10 @@ list of milestone records and produces a four-language recollection line.
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 
-_DIALOGUES = load_mohan_character_data().dialogues
+_DIALOGUES = active_character_data().dialogues
 
 
 class MilestoneKind(StrEnum):

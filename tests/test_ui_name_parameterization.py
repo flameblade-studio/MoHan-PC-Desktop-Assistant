@@ -71,7 +71,7 @@ def test_character_name_and_user_title_come_from_character_data(monkeypatch) -> 
     )
     monkeypatch.setattr(
         service_status_localization,
-        "load_mohan_character_data",
+        "active_character_data",
         lambda: character_data,
     )
 

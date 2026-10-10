@@ -13,6 +13,7 @@ lazy from pathlib import Path
 lazy from threading import Lock
 lazy from time import perf_counter
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from tools.art_pipeline.source_bound_stage import digest, pinned_file, read_pinned, stage_preview
 lazy from tools.art_pipeline.source_bound_reference import normalize_makeup_slot_intensities
 
@@ -123,6 +124,7 @@ def run_preview(root: Path, manifest: dict, output: Path) -> dict:
 
 
 def main() -> None:
+    activate_product_character_runtime(Path(__file__).resolve().parents[2])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)

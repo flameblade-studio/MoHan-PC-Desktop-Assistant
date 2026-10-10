@@ -24,7 +24,7 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_storage import WardrobeStorageGuard, WardrobeStoragePolicy
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )
@@ -41,9 +41,9 @@ lazy from integrations.openai_outfit_generator import (
     OpenAIImageEditOptions,
     OpenAIImageEditTransport,
     OpenAIOutfitDraftGenerator,
-    OutfitImageGenerationError,
 )
-lazy from application.presentation_ports import DEFAULT_TEXT_MODEL
+lazy from domain.outfit_generation import OutfitImageGenerationError
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy import threading
 lazy from domain.outfit_generation import OutfitGenerationCancelled
 

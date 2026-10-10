@@ -12,6 +12,8 @@ the generated text with the document.
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy import re
@@ -153,6 +155,7 @@ def _validate_authored_v2(output: Path) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--root", type=Path, default=ROOT, help="project root holding assets/")
     parser.add_argument("--output", type=Path, default=None, help=f"defaults to <root>/assets/{SAFE_REGION_FILE}")

@@ -3,7 +3,6 @@ from __future__ import annotations
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
-
 lazy from domain.autonomous_wardrobe import WardrobeCandidate
 lazy from domain.contracts import default_character_display_name
 lazy from domain.character_source import active_character_source
@@ -14,7 +13,6 @@ lazy from domain.outfit_pack import (
     InstalledSelection,
     MAKEUP_SLOTS,
     MAKEUP_SLOTS_V2,
-    OFFICIAL_PACK_ROOT,
     OutfitPack,
     OutfitPackError,
     REQUIRED_SILHOUETTES,
@@ -31,6 +29,7 @@ lazy from domain.outfit_pack import (
     resolve_active_selection,
     restore_builtin_outfit,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_makeup import (
     ACTIVE_STATE_FILE,
     MAKEUP_STATE_FILE,
@@ -42,6 +41,7 @@ lazy from domain.outfit_pack_makeup import (
     write_makeup_intensity,
     write_makeup_slot_intensity,
 )
+lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_PACK_ID,
     _load_official_appearance,
@@ -167,10 +167,10 @@ class WardrobeService:
         self,
         install_root: Path,
         *,
-        official_pack_root: Path = OFFICIAL_PACK_ROOT,
+        official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
     ) -> None:
         self.install_root = Path(install_root)
-        self.official_pack_root = Path(official_pack_root)
+        self.official_pack_root = official_pack_root
         # An active archive requiring recovery keeps
         # the detail controls flicker back to a four-slot default.  Keep the
         # last validated answer per silhouette, with the legacy three-slot

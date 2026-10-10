@@ -110,6 +110,32 @@ def test_native_identity_survives_garment_removal_or_replacement(reviewed):
     assert overlay.native_neutral("front-crossed") is None
 
 
+def test_custom_garment_clears_reviewed_motion_base(reviewed, monkeypatch):
+    _, overlay, frame, state, _ = reviewed
+    assets = overlay._reviewed_assets
+    pose = replace(assets.poses[VIEW], motion_required=True)
+    overlay._reviewed_assets = ReviewedGarmentAssets(assets.root, {VIEW: pose})
+    state["garment"] = ("custom", "shirt", "white")
+    replacement = QRegion(frame.rect()).intersected(QRegion(10, 10, 1, 1))
+    monkeypatch.setattr(overlay, "_garment_is_active", lambda: True)
+    monkeypatch.setattr(
+        overlay,
+        "_base_clear_regions",
+        lambda *_args: (None, replacement, None),
+    )
+
+    result = overlay._reviewed_frame(
+        frame,
+        VIEW,
+        frozenset(),
+        "rest",
+    )
+
+    assert result is not None
+    assert result.toImage().pixelColor(10, 10).alpha() == 0
+    assert result.toImage().pixelColor(11, 10) == QColor("tan")
+
+
 def test_independent_custom_hair_still_covers_animated_skin(reviewed, monkeypatch):
     _, overlay, frame, state, _ = reviewed
     state["hairstyle"] = ("custom", "hair", "red")

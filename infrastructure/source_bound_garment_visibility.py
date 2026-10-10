@@ -11,12 +11,12 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS,
     CHARACTER_LAYER_ROLES,
-    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
-    POSE_ATLAS_RELATIVE_ROOT,
+    character_rig_manifest,
+    pose_atlas_layered_relative_root,
+    pose_atlas_relative_root,
 )
 lazy from domain.outfit_pack import (
     AppearanceVariant,
@@ -32,7 +32,7 @@ lazy from infrastructure.outfit_core_composition import replace_restored_body
 SCHEMA = "mohan.source-bound-garment-visibility.v1"
 _VISIBILITY_ROOT = Path(CHARACTER_ASSET_PATHS["garment_visibility"])
 MANIFEST = _VISIBILITY_ROOT / "manifest.json"
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 CANVAS = (
     _RIG_MANIFEST.full_body_canvas.width,
     _RIG_MANIFEST.full_body_canvas.height,
@@ -162,7 +162,7 @@ def load_garment_binding(
     _source_bytes(
         root,
         entry["native_source"],
-        f"{POSE_ATLAS_RELATIVE_ROOT}/{view_id}.png",
+        f"{pose_atlas_relative_root()}/{view_id}.png",
     )
     member, digest = _record(entry["garment_member"])
     declarations = resolve_variant_for_view(variant, view_id).assets
@@ -221,7 +221,7 @@ def validate_garment_removal(
 ) -> None:
     """Never erase native face, hair, ornament, or visible hand ownership."""
     protected = QRegion(protected_face)
-    layered = root / POSE_ATLAS_LAYERED_RELATIVE_ROOT
+    layered = root / pose_atlas_layered_relative_root()
     for layer in (
         CHARACTER_LAYER_ROLES["rear_hair"],
         CHARACTER_LAYER_ROLES["left_side_hair"],

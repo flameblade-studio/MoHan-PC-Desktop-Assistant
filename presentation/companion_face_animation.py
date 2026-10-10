@@ -9,11 +9,8 @@ lazy from PySide6.QtCore import (
 )
 lazy from PySide6.QtGui import QPainter, QPixmap
 lazy from presentation.qt_parent import require_qobject
-lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_runtime_data import (
-    default_expression_catalog,
-    default_rig_manifest,
-)
+lazy from domain.character_runtime import character_rig_manifest
+lazy from domain.character_source import active_character_data, active_expression_catalog
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     EXPRESSION_SPEECH_MOUTH_RECTS,
@@ -41,10 +38,10 @@ lazy from presentation.companion_face_animation_logic import (
     needs_pose_transition,
 )
 lazy from presentation.companion_speech_emotion import persist_wardrobe_mood
-POSE_SWITCH_PROBABILITY = default_rig_manifest().physics.pose_switch_probability
-_EXPRESSION_CATALOG = default_expression_catalog()
+POSE_SWITCH_PROBABILITY = character_rig_manifest().physics.pose_switch_probability
+_EXPRESSION_CATALOG = active_expression_catalog()
 _EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
-_CAUGHT_GLANCE_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates[
+_CAUGHT_GLANCE_DIALOGUE = active_character_data().dialogues["zh-TW"].templates[
     "caught_glance"
 ]
 _EXPRESSIVE_STATES = frozenset(_EXPRESSION_CATALOG.state_to_pose) - {
@@ -65,7 +62,7 @@ _LOWER_GESTURE_STATES = _expression_states("thinking", "proud")
 MOUTH_CLOSED_THRESHOLD = 0.01
 MOUTH_OPEN_THRESHOLD = 0.05
 DISCRETE_SPEECH_SWITCH_PROGRESS = 0.5
-lazy from presentation.presentation_resources import FaceRenderLayers
+lazy from presentation.render_contracts import FaceRenderLayers
 
 __all__ = ("CompanionFaceAnimationMixin",)
 

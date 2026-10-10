@@ -6,6 +6,7 @@ lazy from types import SimpleNamespace
 lazy import pytest
 
 lazy from application import service_container
+lazy from application.character_runtime_bootstrap import ACTIVE_CHARACTER_ENV
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.outfit_pack import (
     OFFICIAL_PACK_ROOT,
@@ -30,7 +31,7 @@ def _restore_default_character(
 ):
     clean_profile = tmp_path / "default-profile"
     monkeypatch.setenv("MOHAN_DATA_DIR", str(clean_profile))
-    monkeypatch.delenv(service_container.ACTIVE_CHARACTER_ENV, raising=False)
+    monkeypatch.delenv(ACTIVE_CHARACTER_ENV, raising=False)
     monkeypatch.delenv(
         "MOHAN_DEV_CHARACTER_PACK_ARCHIVE",
         raising=False,
@@ -39,7 +40,7 @@ def _restore_default_character(
     service_container.create_character_source("mohan")
     yield
     monkeypatch.setenv("MOHAN_DATA_DIR", str(clean_profile))
-    monkeypatch.delenv(service_container.ACTIVE_CHARACTER_ENV, raising=False)
+    monkeypatch.delenv(ACTIVE_CHARACTER_ENV, raising=False)
     monkeypatch.delenv(
         "MOHAN_DEV_CHARACTER_PACK_ARCHIVE",
         raising=False,

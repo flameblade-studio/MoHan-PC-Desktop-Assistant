@@ -2,10 +2,8 @@ from __future__ import annotations
 
 lazy from dataclasses import dataclass
 
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import canonical_character_locale
 lazy from domain.contracts import ProfileDatabasePort
 lazy from domain.language_support import is_english, is_japanese, is_simplified_chinese
 lazy from domain.persona_defaults import (

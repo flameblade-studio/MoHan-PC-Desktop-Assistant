@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 # Eager by design: asyncio.to_thread and its concurrent.futures lookup share
 # module state requiring concrete objects under the PEP 810 API contract.
 import asyncio
@@ -739,6 +741,7 @@ def run(
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument("--small-iterations", type=int, default=500)
     parser.add_argument("--large-iterations", type=int, default=3)

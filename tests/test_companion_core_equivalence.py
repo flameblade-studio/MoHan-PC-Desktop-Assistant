@@ -156,6 +156,9 @@ lazy import sys
 assert sys.version_info[:2] == (3, 15), sys.version
 sys.path.insert(0, sys.argv[1])
 assert "app" not in sys.modules
+# The product composition root activates the character before the mixin loads.
+from tests.character_runtime_support import activate_bundled_character_runtime
+activate_bundled_character_runtime()
 from presentation import companion_core
 
 mixin = companion_core.CompanionCoreMixin

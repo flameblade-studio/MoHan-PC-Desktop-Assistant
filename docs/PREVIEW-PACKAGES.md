@@ -30,7 +30,7 @@ Apple Developer ID 簽署與公證目前為待完成狀態。macOS 若阻擋首�
 
 ### 供應鏈與驗證
 
-- Python、PySide6 與 PyInstaller 版本固定於需求檔。
+- Python、`PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 與 PyInstaller 版本固定於需求檔；不依賴 `PySide6` 總套件。
 - GitHub Actions 一律固定到完整提交 SHA。
 - macOS 使用 runner 內建的 `sips`、`iconutil`、`hdiutil`。
 - Linux 使用 AppImage 官方倉庫的 `appimagetool`；來源提交、資產 ID 與
@@ -69,7 +69,7 @@ Apple Developer ID 签名与公证目前处于待完成状态。若 macOS 阻止
 
 ### 供应链与验证
 
-- 固定 Python、PySide6 与 PyInstaller 版本。
+- 在需求文件中固定 Python、`PySide6_Essentials`、`PySide6_Addons`、`shiboken6` 与 PyInstaller 版本；不依赖 `PySide6` 总包。
 - GitHub Actions 固定到完整提交 SHA。
 - macOS 只使用 runner 内置的 `sips`、`iconutil`、`hdiutil`。
 - Linux 的官方 `appimagetool` 同时固定来源提交、资产 ID 与 SHA-256。
@@ -110,7 +110,7 @@ GitHub Release source, SHA256, and Artifact Attestation. Keep Gatekeeper enabled
 
 ### Supply-chain controls
 
-- Python, PySide6, and PyInstaller are version-pinned.
+- Python, `PySide6_Essentials`, `PySide6_Addons`, `shiboken6`, and PyInstaller are version-pinned; the preview does not depend on the `PySide6` metapackage.
 - Every GitHub Action is pinned to a complete commit SHA.
 - macOS uses only runner-native `sips`, `iconutil`, and `hdiutil` tools.
 - Linux `appimagetool` is tied to an official source commit, immutable asset ID,
@@ -152,7 +152,7 @@ Apple Developer ID の署名・公証は現在完了待ちです。macOS が初�
 
 ### サプライチェーン対策
 
-- Python、PySide6、PyInstaller の版を固定します。
+- Python、`PySide6_Essentials`、`PySide6_Addons`、`shiboken6`、PyInstaller の版を要件ファイルで固定し、`PySide6` メタパッケージには依存しません。
 - GitHub Actions は完全なコミット SHA へ固定します。
 - macOS は runner 標準の `sips`、`iconutil`、`hdiutil` だけを使用します。
 - Linux の公式 `appimagetool` は、ソースコミット、資産 ID、SHA-256 を同時に

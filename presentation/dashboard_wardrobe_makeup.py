@@ -22,7 +22,7 @@ lazy from domain.outfit_pack import (
     OutfitPackError,
 )
 lazy from domain.character_pose import canonical_view_id
-lazy from presentation.flagship_theme import mark_flagship_card
+lazy from presentation.dashboard_shared import mark_flagship_card
 
 __all__ = ("DashboardWardrobeMakeupMixin",)
 

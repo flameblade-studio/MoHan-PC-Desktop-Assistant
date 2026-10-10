@@ -56,6 +56,11 @@ def _block_network() -> None:
 
 
 def _worker() -> int:
+    from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
     _block_network()
     start_ns = int(os.environ["MOHAN_STARTUP_T0_NS"])
 

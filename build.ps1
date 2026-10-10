@@ -1,7 +1,8 @@
 param(
     [string]$AppName = "MoHan-Desktop-Assistant",
     [string]$Version = "dev",
-    [string]$Python = ""
+    [string]$Python = "",
+    [string]$QtPipReport = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,29 +26,23 @@ if (-not $Python) {
 if (-not $Python) {
     throw "Python was not found. Activate a virtual environment or pass -Python."
 }
+if (-not $QtPipReport) {
+    throw "MoHan $Version packaging requires -QtPipReport from the hash-locked Qt installation."
+}
+$QtPipReportPath = if ([System.IO.Path]::IsPathRooted($QtPipReport)) {
+    $QtPipReport
+} else {
+    Join-Path $ProjectRoot $QtPipReport
+}
+if (-not (Test-Path -LiteralPath $QtPipReportPath -PathType Leaf)) {
+    throw "MoHan $Version packaging Qt installation report was not found: $QtPipReportPath"
+}
 
 # Retain the exact MPL-covered source and notices before packaging dependencies.
 $MplSitePackages = (& $Python -c "import sysconfig; print(sysconfig.get_paths()['purelib'])").Trim()
 if ($LASTEXITCODE -ne 0) { throw "Cannot locate packaging site-packages for MPL verification." }
 & $Python tools/mpl_compliance.py --require-allowlist --site-packages $MplSitePackages
 if ($LASTEXITCODE -ne 0) { throw "MPL license/source evidence is incomplete; packaging stopped." }
-
-# The studio-maintained PySide6 6.11.1 build is installed in a dedicated
-# Python 3.15 compatibility environment.  The packaging interpreter owns all
-# other dependencies; prepend the rebuilt Qt site-packages when the selected
-# interpreter requires the compatibility import path.
-$QtCompatSitePackages = Join-Path $ProjectRoot ".qt315-compat-full\Lib\site-packages"
-& $Python -c "import PySide6" 2>$null
-if ($LASTEXITCODE -ne 0) {
-    if (-not (Test-Path -LiteralPath (Join-Path $QtCompatSitePackages "PySide6"))) {
-        throw "MoHan $Version packaging requires the rebuilt PySide6 6.11.1 Python 3.15 runtime; expected $QtCompatSitePackages."
-    }
-    $env:PYTHONPATH = if ($env:PYTHONPATH) {
-        "$QtCompatSitePackages;$env:PYTHONPATH"
-    } else {
-        $QtCompatSitePackages
-    }
-}
 
 # CPython 3.15's JIT is selected before interpreter initialization.  The
 # 0xC0000409 mid-session crash on a user machine (2026-08-29) joined the CI
@@ -65,13 +60,13 @@ if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:False") {
     throw "MoHan $Version packages require a JIT-capable Python 3.15.0rc1 runtime running with the JIT off (shipped policy since 2026-08-29); found $JitContract."
 }
 
+& $Python tools/check_official_qt_runtime.py --pip-report $QtPipReportPath
+if ($LASTEXITCODE -ne 0) {
+    throw "MoHan $Version packaging requires the hash-verified official Qt for Python 6.12.0 three-distribution installation report."
+}
 & $Python -c "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket; import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets"
 if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging dependencies are incomplete; install requirements.txt and the rebuilt Python 3.15-compatible PySide6 runtime."
-}
-& $Python -c "import importlib.metadata as m; v=m.version('PySide6'); assert v.startswith('6.11.1+mohan.py315.'), v"
-if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging requires the studio-rebuilt PySide6 6.11.1+mohan.py315 runtime."
+    throw "MoHan $Version packaging dependencies are incomplete; install requirements.txt after the hash-locked official Qt requirements."
 }
 
 # Exercise the provider-neutral local speech path before packaging: synthetic

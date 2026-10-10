@@ -34,7 +34,7 @@ lazy from domain.face_rig import (
     MouthShape,
     Viseme,
 )
-lazy from presentation.presentation_resources import resource_path
+lazy from presentation.dashboard_shared import resource_path
 lazy from presentation.dashboard_artwork import CelestialFrame, SCENE_GROUND_RATIO
 lazy from presentation.wardrobe_turntable import WardrobeTurntableLabel
 

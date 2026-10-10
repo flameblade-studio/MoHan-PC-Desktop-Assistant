@@ -24,7 +24,8 @@ def test_stage_order_ends_with_aggregate_regression_suite() -> None:
     )
     assert len(stages) == EXPECTED_STAGE_COUNT
     assert stages[13].action == "cargo-audit"
-    assert stages[-2].name == "Qt wheel parity"
+    assert stages[-2].name == "official Qt runtime"
+    assert stages[-2].command[-2:] == ("--pip-report", "qt-install-report.json")
     assert stages[-1].command[-2:] == ("tests/run_all.py", "--aggregate")
 
 
@@ -77,6 +78,22 @@ def test_pin_check_rejects_unpinned_requirement(tmp_path: Path) -> None:
 
     (tmp_path / "requirements.txt").write_text("example==1.0\n", encoding="utf-8")
     assert quality_gate._check_pins(tmp_path) == 0
+
+
+def test_pin_check_accepts_complete_hash_pins_and_rejects_incomplete_hashes(
+    tmp_path: Path,
+) -> None:
+    requirements = tmp_path / "requirements-qt.txt"
+    requirements.write_text(
+        "example==1.0 \\\n"
+        f"    --hash=sha256:{'1' * 64} \\\n"
+        f"    --hash=sha256:{'2' * 64}\n",
+        encoding="utf-8",
+    )
+    assert quality_gate._check_pins(tmp_path) == 0
+
+    requirements.write_text("example==1.0 \\\n", encoding="utf-8")
+    assert quality_gate._check_pins(tmp_path) == 1
 
 
 def test_pyright_copy_normalizes_only_lazy_import_syntax(tmp_path: Path) -> None:

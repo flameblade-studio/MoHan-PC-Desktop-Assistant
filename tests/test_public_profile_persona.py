@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from domain.app_profile import persona_for_profile
 lazy from infrastructure.db import StudioDB
-lazy from integrations.ai_client import PERSONA
+lazy from domain.persona_defaults import PERSONA
 
 LEGACY_PERSONA = (
     "你是墨寒。你稱使用者為主上。"

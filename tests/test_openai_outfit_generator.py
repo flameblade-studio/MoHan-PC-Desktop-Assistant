@@ -13,6 +13,7 @@ lazy from urllib.request import Request
 lazy import cv2
 lazy import numpy as np
 lazy import pytest
+lazy from domain.outfit_pack_archive import SUPPORTED_SOURCE_LICENSES
 lazy from integrations import openai_outfit_generator as outfit_generator_module
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -326,6 +327,10 @@ def run() -> None:
         REQUIRED_SILHOUETTES
     )
     assert draft.generation_record["model"] == "gpt-image-2"
+    # The pack builder rejects unknown source licenses; generated outfits must
+    # declare one it accepts so one-click outfits can be packaged and installed.
+    assert draft.manifest["source"]["license"] == "CC-BY-NC-ND-4.0"
+    assert draft.manifest["source"]["license"] in SUPPORTED_SOURCE_LICENSES
     assert any(size == FULL_SIZE for _prompt, size in transport.calls)
     assert all("every other pixel fully transparent" in prompt for prompt, _size in transport.calls)
 

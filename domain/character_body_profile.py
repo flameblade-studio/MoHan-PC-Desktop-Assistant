@@ -2,7 +2,7 @@ from __future__ import annotations
 
 lazy from dataclasses import dataclass
 
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 
 
 @dataclass(frozen=True, slots=True)
@@ -27,7 +27,7 @@ class CharacterBodyProfile:
     art_direction: str
 
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 _MEASUREMENTS = _RIG_MANIFEST.body_measurements
 MOHAN_BODY_PROFILE = CharacterBodyProfile(
     profile_id=_RIG_MANIFEST.body_profile_id,

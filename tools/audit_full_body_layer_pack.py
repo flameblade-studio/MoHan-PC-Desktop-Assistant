@@ -9,6 +9,8 @@ view, and C is an intentional neutral-state exception.
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy import sys
@@ -227,6 +229,7 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def main(argv: Iterable[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     args = _parser().parse_args(argv)
     try:
         audit, manifest = audit_pack(args.asset_root.resolve(), args.semantic_report.resolve())

@@ -7,7 +7,7 @@ lazy from enum import StrEnum
 lazy from itertools import pairwise
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.character_pose import (
     CANONICAL_YAWS,
     ArmRig,
@@ -22,7 +22,7 @@ lazy from domain.character_pose import (
 )
 
 FULL_BODY_RIG_SCHEMA_VERSION = 1
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 _FULL_BODY_CALIBRATION = _RIG_MANIFEST.full_body_calibration
 LEGACY_POSE_IDS = _RIG_MANIFEST.legacy_pose_ids
 SOLE_LANDMARK_NAMES = frozenset(

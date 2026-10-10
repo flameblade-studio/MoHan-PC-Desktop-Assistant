@@ -16,7 +16,8 @@ lazy from application.gesture_action_dispatcher import (
 )
 lazy from application.gesture_runtime import GestureRuntime
 lazy from application.vision_runtime import bundled_model_directory
-lazy from domain.air_interaction import AirHandPoint, AirHandSample, HandSide
+lazy from domain.air_interaction import AirHandPoint, AirHandSample
+lazy from domain.gesture_intent import HandSide
 lazy from domain.gesture_configuration import (
     GestureConfiguration,
     GestureLandmark,

@@ -13,11 +13,11 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_LAYER_ROLES,
     CHARACTER_POSE_ROLES,
-    FLOAT_COMPARISON_EPSILON,
 )
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.face_rig import FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from infrastructure.layered_full_body_assets import (
     COMPLETE_EXPRESSION_PRESERVE_BODY_POLICY,

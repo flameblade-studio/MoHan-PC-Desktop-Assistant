@@ -23,6 +23,12 @@ lazy from integrations.speech import (
     windows_voices,
 )
 lazy from application import presentation_ports as presentation_contracts
+lazy from application.character_runtime_bootstrap import (
+    ACTIVE_CHARACTER_ENV,
+    DEFAULT_CHARACTER_ID,
+    SUPPORTED_CHARACTER_IDS as _SUPPORTED_CHARACTER_IDS,
+    activate_product_character_runtime,
+)
 lazy from application.cloud_vision_runtime import CloudVisionRuntime
 lazy from application.character_profile_defaults import (
     seed_character_profile_settings,
@@ -36,7 +42,6 @@ lazy from application.native_acceleration import NativeAcceleration
 lazy from application.presentation_ports import (
     AIWorkerPort,
     PresentationPorts,
-    VoiceCatalogPort,
     bind_dashboard_portable_secrets,
 )
 lazy from domain.contracts import (
@@ -52,7 +57,7 @@ lazy from domain.contracts import (
 )
 lazy from domain.character_source import (
     CharacterSource,
-    activate_character_source,
+    active_character_source,
 )
 lazy from domain.character_renderer_compatibility import validated_renderer_rig
 lazy from domain.language_support import (
@@ -84,22 +89,23 @@ lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
 )
 lazy from infrastructure.installed_character_packs import (
-    DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,
     CharacterPackInstallError,
-    load_development_character_pack_archive,
-    load_installed_character_pack,
     list_installed_character_packs,
 )
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import (
+    ExasperatedSourceBindings,
     LayeredParametricFaceRenderer,
     load_layered_face_assets,
 )
 lazy from infrastructure.layered_full_body_renderer import (
     LayeredFullBodyRenderer,
     load_layered_full_body_assets,
+)
+lazy from infrastructure.outfit_source_bound_expressions import (
+    OutfitSourceBoundExpressionProvider,
 )
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
@@ -136,44 +142,37 @@ lazy from integrations.realtime_speech_output import RealtimeSpeechOutput
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
-ACTIVE_CHARACTER_ENV = "MOHAN_ACTIVE_CHARACTER"
-DEFAULT_CHARACTER_ID = "mohan"
-SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID})
 _CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
+SUPPORTED_CHARACTER_IDS = _SUPPORTED_CHARACTER_IDS
 
 
 def create_character_source(character_id: str) -> CharacterSource:
     """Build one bundled or installed source and keep MoHan on rejection."""
 
-    selected = str(character_id).strip()
     root = resource_path(".")
-    mohan_source: CharacterSource = LegacyMohanCharacterSource(root)
-    if selected == DEFAULT_CHARACTER_ID:
-        _activate_character_source(mohan_source, bundled_source=mohan_source)
-        return mohan_source
     try:
-        development_archive = os.environ.get(
-            DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,
-            "",
-        ).strip()
-        source: CharacterSource = (
-            load_development_character_pack_archive(
-                development_archive,
-                expected_character_id=selected,
+        # The bootstrap's default loaders apply the official 1 GiB pack limits.
+        source = activate_product_character_runtime(
+            root,
+            character_id=character_id,
+        )
+    except RuntimeError as error:
+        if error.__cause__ is not None:
+            bundled_source = LegacyMohanCharacterSource(root)
+            _reserve_official_pack_id_reservations(
+                bundled_source,
+                bundled_source=bundled_source,
             )
-            if development_archive
-            else load_installed_character_pack(selected)
-        )
-    except (CharacterPackInstallError, OSError, ValueError) as error:
-        _activate_character_source(mohan_source, bundled_source=mohan_source)
-        message = (
-            f"Active character {selected!r} was rejected; "
-            "the bundled default character remains active: "
-            f"{error}"
-        )
-        _CHARACTER_SELECTION_LOGGER.exception(message)
-        raise RuntimeError(message) from error
-    _activate_character_source(source, bundled_source=mohan_source)
+        raise
+    bundled_source = (
+        source
+        if source.character_id == DEFAULT_CHARACTER_ID
+        else LegacyMohanCharacterSource(root)
+    )
+    _reserve_official_pack_id_reservations(
+        source,
+        bundled_source=bundled_source,
+    )
     return source
 
 
@@ -183,22 +182,6 @@ def create_default_character_source() -> CharacterSource:
     return create_character_source(
         os.environ.get(ACTIVE_CHARACTER_ENV, DEFAULT_CHARACTER_ID)
     )
-
-
-def _activate_character_source(
-    source: CharacterSource,
-    *,
-    bundled_source: CharacterSource,
-    data_root: Path | None = None,
-) -> None:
-    """Reserve appearance IDs from the complete installed-source snapshot."""
-
-    _reserve_official_pack_id_reservations(
-        source,
-        bundled_source=bundled_source,
-        data_root=data_root,
-    )
-    activate_character_source(source)
 
 
 def _reserve_official_pack_id_reservations(
@@ -230,7 +213,9 @@ class CompanionServices:
     """Explicit dependencies owned by one companion-window runtime."""
 
     db: StudioDB
-    secret_store: SecretStorePort = field(repr=False)
+    secret_store: SecretStorePort = field(
+        repr=False,
+    )
     local_tts: LocalSpeechEnginePort
     cloud_tts: CloudSpeechEnginePort
     realtime: RealtimeVoicePort
@@ -264,7 +249,7 @@ class CompanionServices:
     )
 
 
-class _ProductionVoiceCatalog(VoiceCatalogPort):
+class _ProductionVoiceCatalog:
     """Expose the production voice adapters through one presentation port."""
 
     @staticmethod
@@ -349,14 +334,18 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
-    return _create_presentation_ports(create_default_character_source())
+    return _create_presentation_ports(active_character_source())
 
 
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
 
     asset_root = character_source.assets.asset_root
-    official_pack_root = asset_root / "assets" / "official-packs"
+    official_pack_roots = getattr(
+        character_source.assets,
+        "official_pack_roots",
+        (asset_root / "assets" / "official-packs",),
+    )
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 
@@ -373,7 +362,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             asset_root,
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
-            official_pack_root=official_pack_root,
+            official_pack_root=official_pack_roots,
         )
 
     def face_renderer_factory() -> LayeredParametricFaceRenderer:
@@ -425,7 +414,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             and appearance_dir.exists()
         ):
             candidate_appearance = ExasperatedCandidateAppearance.load(
-                appearance_dir, official_pack_root=official_pack_root,
+                appearance_dir, official_pack_root=official_pack_roots,
             )
             candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
@@ -437,7 +426,13 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             detachable_dir=detachable_dir,
             use_detachable=detachable_dir is not None,
             exasperated_candidate_dir=candidate_dir,
-            candidate_appearance_overlay=candidate_appearance,
+            exasperated_source_bindings=ExasperatedSourceBindings(
+                appearance_overlay=candidate_appearance,
+                expression_provider=OutfitSourceBoundExpressionProvider(
+                    presentation_contracts.default_data_dir() / "outfits",
+                    official_pack_root=official_pack_roots,
+                ),
+            ),
         )
 
     def full_body_renderer_factory(outfit_overlay=None):
@@ -473,6 +468,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         validate_face_assets=validate_face_assets,
         face_renderer_factory=face_renderer_factory,
         visible_windows=visible_windows,
+        official_pack_roots=official_pack_roots,
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=full_body_renderer_factory,
     )
@@ -654,7 +650,7 @@ def create_default_services(
     ui_language: str | None = None,
 ) -> CompanionServices:
     runtime_platform = platform_services or current_platform_services()
-    character_source = create_default_character_source()
+    character_source = active_character_source()
     data_path.mkdir(parents=True, exist_ok=True)
     _reserve_official_pack_id_reservations(
         character_source,

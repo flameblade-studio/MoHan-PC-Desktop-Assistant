@@ -18,8 +18,7 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_LAYER_ROLES
+lazy from domain.character_runtime import CHARACTER_LAYER_ROLES, character_rig_manifest
 lazy from infrastructure.layered_face_assets import (
     LAYERED_FACE_DIMENSION,
     LayeredFaceManifest,
@@ -36,7 +35,7 @@ MAX_ANCHOR_DRIFT_PIXELS = 1
 # their centers are not checked against the base region.
 FACIAL_LAYERS = frozenset(
     (
-        *default_rig_manifest().face_authority_layers,
+        *character_rig_manifest().face_authority_layers,
         CHARACTER_LAYER_ROLES["mouth_cavity"],
         CHARACTER_LAYER_ROLES["teeth_and_tongue"],
     )

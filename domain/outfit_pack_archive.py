@@ -8,7 +8,7 @@ lazy import zipfile
 lazy from collections.abc import Callable
 
 lazy from domain._outfit_pack_models import AppearanceItem
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.outfit_pack_assets import (
     MANIFEST,
     IncompatibleBodyProfileError,
@@ -19,7 +19,7 @@ lazy from domain.outfit_pack_assets import (
 
 FORMAT = "mohan-outfit-pack"
 VERSION = 2
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 BODY_PROFILE_ID = _RIG_MANIFEST.body_profile_id
 BODY_PROFILE_VERSION = _RIG_MANIFEST.body_profile_version
 AUTHORING_TEMPLATE = "mohan-official-poses"
@@ -27,7 +27,7 @@ AUTHORING_VERSION = 2
 MAX_ARCHIVE_BYTES = 1024 * 1024 * 1024
 MAX_TOTAL_BYTES = 2 * 1024 * 1024 * 1024
 MAX_MEMBERS = 2048
-OPTIONAL_MANIFEST_KEYS = frozenset({"makeup"})
+OPTIONAL_MANIFEST_KEYS = frozenset({"makeup", "source_bound_expressions"})
 MANIFEST_KEYS = frozenset({
     "format", "version", "id", "pack_version", "app_range", "display_names",
     "compatible_body_profile", "source", "authoring", "looks", "hairstyles",
@@ -41,10 +41,14 @@ SUPPORTED_SOURCE_LICENSES = frozenset({
     "BSD-2-Clause",
     "BSD-3-Clause",
     "CC BY 4.0",
+    "CC BY-NC-ND 4.0",
     "CC-BY-4.0",
     "CC-BY-NC-ND-4.0",
     "CC0-1.0",
     "MIT",
+    # Legacy value written by the self-generating wardrobe before 2026-10-10;
+    # kept so outfits users already generated and installed keep loading.
+    "Project License",
 })
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
@@ -142,9 +146,13 @@ def declared_asset_paths(items: list[AppearanceItem]) -> list[str]:
     )]
 
 
-def validate_declared_assets(items: list[AppearanceItem], names: set[str]) -> None:
+def validate_declared_assets(
+    items: list[AppearanceItem],
+    names: set[str],
+    extra_paths: tuple[str, ...] = (),
+) -> None:
     """Require every archive asset to have exactly one manifest declaration."""
-    paths = declared_asset_paths(items)
+    paths = [*declared_asset_paths(items), *extra_paths]
     if len(paths) != len(set(paths)) or names != {MANIFEST, *paths}:
         raise OutfitPackError("Every asset must be declared exactly once.")
 

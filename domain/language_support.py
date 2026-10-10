@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 
-_CHARACTER_DATA = load_mohan_character_data()
+_CHARACTER_DATA = active_character_data()
 
 DEFAULT_UI_LANGUAGE = "zh-TW"
 ENGLISH_UI_LANGUAGES = frozenset({"en", "en-US", "en-GB"})

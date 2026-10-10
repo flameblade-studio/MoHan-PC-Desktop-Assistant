@@ -17,7 +17,6 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from application.presentation_ports import (
-    DEFAULT_TRANSCRIPTION_MODEL,
     REALTIME_OUTPUT_AZURE,
     REALTIME_OUTPUT_AZURE_HD,
     REALTIME_OUTPUT_OPENAI,
@@ -28,6 +27,7 @@ lazy from application.presentation_ports import (
     azure_region_options,
     azure_region_supports_hd_flash,
 )
+lazy from domain.core_constants import DEFAULT_TRANSCRIPTION_MODEL
 lazy from domain.app_profile import profile_setting
 lazy from domain.language_support import localized_transcription_prompt
 lazy from domain.speech_configuration import (

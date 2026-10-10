@@ -17,13 +17,10 @@ lazy from enum import StrEnum
 lazy from functools import cache
 lazy from string import Formatter
 
-lazy from domain.character_pack.character_data import (
-    MOHAN_CHARACTER_DATA_ROOT,
-)
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_source import active_character_data_path, active_expression_catalog
 lazy from domain.immutable_config import deep_freeze
 
-_RUNTIME_DIALOGUE_PATH = MOHAN_CHARACTER_DATA_ROOT / "dialogue" / "runtime.json"
+_RUNTIME_DIALOGUE_PATH = active_character_data_path("dialogue/runtime.json")
 _RUNTIME_TEXT_KEYS = frozenset(
     {
         "background_diagnostic",
@@ -118,7 +115,7 @@ def _runtime_dialogue_payload() -> Mapping[str, object]:
     rules = payload["reply_expression_rules"]
     if not isinstance(rules, list) or not rules:
         raise ValueError("Character reply-expression rules are required.")
-    known_emotions = default_expression_catalog().emotion_to_expression
+    known_emotions = active_expression_catalog().emotion_to_expression
     seen_emotions: set[str] = set()
     seen_phrases: set[str] = set()
     for rule in rules:

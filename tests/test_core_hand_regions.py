@@ -9,7 +9,10 @@ lazy from PySide6.QtCore import QPoint
 lazy from PySide6.QtGui import QColor, QImage
 lazy from PySide6.QtWidgets import QApplication
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
-lazy from domain.outfit_pack import OutfitPackError
+lazy from domain.outfit_pack import (
+    OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
+    OutfitPackError,
+)
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 
 VIEW = "yaw+030-pitch+00"
@@ -151,6 +154,19 @@ def test_half_body_pose_hands_override_shared_front_rig(tmp_path):
     crossed = provider("front-crossed")
     assert crossed.contains(QPoint(500, 1100))
     assert not crossed.contains(QPoint(450, 600))
+    app.processEvents()
+
+
+def test_optional_expression_views_reuse_shared_cheek_hand_authority(tmp_path):
+    app = QApplication.instance() or QApplication([])
+    point = QPoint(430, 720)
+    _half_body_pair(tmp_path, "cheek", point)
+    provider = load_core_hand_regions(tmp_path)
+    assert provider is not None
+    for view_id in OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES:
+        assert provider(view_id).contains(point)
+        assert not provider.has_repaintable_overlay(view_id)
+        assert provider.overlay_images(view_id) is None
     app.processEvents()
 
 

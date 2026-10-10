@@ -14,12 +14,10 @@ surface a suggestion or a complaint while keeping the UI responsive.
 
 lazy from enum import StrEnum
 
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 
-_DIALOGUES = load_mohan_character_data().dialogues
+_DIALOGUES = active_character_data().dialogues
 
 # Temperature thresholds (Celsius) for comfort verdicts.
 HOT_THRESHOLD_C = 28.0

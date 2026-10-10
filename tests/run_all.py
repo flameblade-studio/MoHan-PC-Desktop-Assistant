@@ -762,7 +762,9 @@ def _test_commands(test: Path) -> tuple[list[str], ...]:
     )
     pytest_nodes = _pytest_node_names(tree)
     if main_guards:
-        commands.append([sys.executable, str(test)])
+        commands.append(
+            [sys.executable, "-m", "tests.character_runtime_support", str(test)]
+        )
         missing_nodes = _pytest_nodes_missing_from_main(tree, main_guards)
         if missing_nodes:
             commands.append(
@@ -829,12 +831,6 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
             environment.pop(name, None)
     environment.update({name: str(location) for name, location in locations.items()})
     import_roots = [str(TESTS_DIR.parent)]
-    # The project-owned Python 3.15 runtime keeps its source-built Qt wheel in
-    # this compatibility root.  Preserve test isolation while making that
-    # explicit, repository-scoped dependency visible to child processes.
-    qt_compat = TESTS_DIR.parent / ".qt315-compat-full" / "Lib" / "site-packages"
-    if qt_compat.is_dir():
-        import_roots.append(str(qt_compat))
     environment["PYTHONPATH"] = os.pathsep.join(import_roots)
     environment.pop("PYTEST_ADDOPTS", None)
     environment.update(dict.fromkeys(SENSITIVE_ENVIRONMENT_VARIABLES, ""))

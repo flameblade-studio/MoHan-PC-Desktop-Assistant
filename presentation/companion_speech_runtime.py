@@ -23,10 +23,8 @@ lazy from domain.app_profile import (
     profile_setting,
 )
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
-lazy from domain.character_pack.character_data import (
-    canonical_character_locale,
-    load_mohan_character_data,
-)
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import canonical_character_locale
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     EXPRESSION_POSES,

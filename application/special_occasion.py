@@ -4,10 +4,10 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime
 lazy from enum import StrEnum
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.lunar_calendar import qixi_gregorian
 
-_EVENTS = load_mohan_character_data().events
+_EVENTS = active_character_data().events
 _BIRTHDAY = next(
     occasion
     for occasion in _EVENTS.fixed_occasions

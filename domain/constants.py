@@ -15,6 +15,7 @@ lazy import json
 lazy from pathlib import Path, PurePosixPath
 lazy from typing import Final
 
+lazy from domain.character_runtime_bindings import load_character_runtime_bindings
 lazy from domain.character_runtime_data import default_rig_manifest
 lazy from domain import core_constants as _core_constants
 
@@ -126,108 +127,18 @@ __all__ = (
 
 _RIG_MANIFEST = default_rig_manifest()
 
-_RUNTIME_BINDING_KEYS = frozenset(
-    {"schema", "schema_version", "asset_paths", "pose_roles", "expression_roles", "layer_roles"}
+_RUNTIME_BINDINGS = load_character_runtime_bindings(
+    Path(__file__).resolve().parents[1]
+    / "assets"
+    / "characters"
+    / "mohan"
+    / "rig"
+    / "runtime-bindings.json"
 )
-_RUNTIME_BINDING_SECTIONS = (
-    "asset_paths",
-    "pose_roles",
-    "expression_roles",
-    "layer_roles",
-)
-_RUNTIME_BINDING_SECTION_KEYS = frozendict({
-    "asset_paths": frozenset({
-        "application_icon",
-        "appearance_masks",
-        "appearance_silhouettes",
-        "body_overlays",
-        "dashboard_artwork",
-        "first_run_portrait",
-        "garment_visibility",
-        "halfbody_detachable",
-        "halfbody_layers",
-        "halfbody_root",
-        "hand_overlays",
-        "lobby_backdrop",
-        "onboarding_artwork",
-        "source_bound_expression",
-        "theme_artwork",
-    }),
-    "pose_roles": frozenset({
-        "front_idle", "left_cheek", "left_idle", "rear_full", "rear_left",
-        "rear_right", "right_idle",
-    }),
-    "expression_roles": frozenset({
-        "amusement", "attention", "bashful", "bashful_cute", "concern",
-        "exasperation", "gentle", "gentle_scold", "happiness", "insight",
-        "mock_strike", "noticed", "pride", "protection", "relief", "reminder",
-        "resolve", "side_gaze", "surprise", "thought", "worry",
-    }),
-    "layer_roles": frozenset({
-        "left_blush", "left_brow", "left_eyelid", "left_eyeliner", "left_iris",
-        "left_mouth_corner", "left_side_hair", "left_sleeve", "lower_lip",
-        "mouth_cavity", "rear_hair", "right_blush", "right_brow", "right_eyelid",
-        "right_eyeliner", "right_iris", "right_mouth_corner", "right_side_hair",
-        "right_sleeve", "teeth_and_tongue", "upper_lip",
-    }),
-})
-
-
-def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
-    result: dict[str, object] = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError(f"Duplicate runtime-binding field: {key}")
-        result[key] = value
-    return result
-
-
-def _load_runtime_bindings() -> frozendict[str, frozendict[str, str]]:
-    path = Path(__file__).resolve().parents[1].joinpath(
-        "assets", "characters", "mohan", "rig", "runtime-bindings.json"
-    )
-    try:
-        payload = json.loads(
-            path.read_text(encoding="utf-8"),
-            object_pairs_hook=_unique_json_object,
-        )
-    except (OSError, UnicodeError, ValueError) as error:
-        raise RuntimeError("Bundled character runtime bindings must be valid UTF-8 JSON.") from error
-    if (
-        not isinstance(payload, dict)
-        or set(payload) != _RUNTIME_BINDING_KEYS
-        or payload.get("schema") != "flameblade.character-runtime-bindings.v1"
-        or payload.get("schema_version") != 1
-    ):
-        raise RuntimeError("Bundled character runtime bindings use an unsupported schema.")
-    sections: dict[str, frozendict[str, str]] = {}
-    for section in _RUNTIME_BINDING_SECTIONS:
-        values = payload[section]
-        if (
-            not isinstance(values, dict)
-            or set(values) != _RUNTIME_BINDING_SECTION_KEYS[section]
-            or any(
-                not isinstance(key, str)
-                or not key
-                or not isinstance(value, str)
-                or not value
-                for key, value in values.items()
-            )
-        ):
-            raise RuntimeError("Bundled character runtime bindings require non-empty text maps.")
-        sections[section] = frozendict(values)
-    for value in sections["asset_paths"].values():
-        relative = PurePosixPath(value)
-        if relative.is_absolute() or ".." in relative.parts or not relative.parts:
-            raise RuntimeError("Bundled character asset paths must remain relative.")
-    return frozendict(sections)
-
-
-_RUNTIME_BINDINGS = _load_runtime_bindings()
-CHARACTER_ASSET_PATHS: Final = _RUNTIME_BINDINGS["asset_paths"]
-CHARACTER_POSE_ROLES: Final = _RUNTIME_BINDINGS["pose_roles"]
-CHARACTER_EXPRESSION_ROLES: Final = _RUNTIME_BINDINGS["expression_roles"]
-CHARACTER_LAYER_ROLES: Final = _RUNTIME_BINDINGS["layer_roles"]
+CHARACTER_ASSET_PATHS: Final = _RUNTIME_BINDINGS.asset_paths
+CHARACTER_POSE_ROLES: Final = _RUNTIME_BINDINGS.pose_roles
+CHARACTER_EXPRESSION_ROLES: Final = _RUNTIME_BINDINGS.expression_roles
+CHARACTER_LAYER_ROLES: Final = _RUNTIME_BINDINGS.layer_roles
 
 # ---------------------------------------------------------------------------
 # Parametric 2.5D face gradient parameters.
@@ -305,5 +216,5 @@ POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base-layered"
 # "indoor" fits every outfit profile, so nothing complains or changes clothes
 # based on observed weather data.
 # ---------------------------------------------------------------------------
-DEFAULT_WEATHER_TEMPERATURE_C: Final = 24.0
-DEFAULT_WEATHER_CONDITION: Final = "indoor"
+DEFAULT_WEATHER_TEMPERATURE_C: Final = _core_constants.DEFAULT_WEATHER_TEMPERATURE_C
+DEFAULT_WEATHER_CONDITION: Final = _core_constants.DEFAULT_WEATHER_CONDITION

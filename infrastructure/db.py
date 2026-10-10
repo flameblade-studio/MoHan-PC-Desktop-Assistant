@@ -7,7 +7,7 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime, timedelta
 lazy from pathlib import Path
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.language_support import (
     LEGACY_AUTHOR_ORGANIZATION, LEGACY_TRANSCRIPTION_PROMPT, canonical_ui_language, localized_transcription_prompt,
 )
@@ -98,12 +98,6 @@ MODEL_DEFAULT_MIGRATIONS = (
         "gpt-5.6-luna",
     ),
 )
-LEGACY_PROFILE_DEFAULTS = frozendict({
-    **load_mohan_character_data().identity.legacy_defaults,
-    "onboarding_complete": True,
-    "transcription_language": "zh",
-    "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
-})
 TRANSCRIPTION_PROFILE_KEYS = (
     "ui_language",
     "assistant_name",
@@ -111,6 +105,12 @@ TRANSCRIPTION_PROFILE_KEYS = (
     "organization_name",
     "wake_word",
 )
+
+
+def _legacy_profile_defaults() -> Mapping[str, object]:
+    # Read on use: the composition root activates the character after import.
+    return frozendict({**active_character_data().identity.legacy_defaults, "onboarding_complete": True,
+                       "transcription_language": "zh", "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT})
 
 
 @dataclass(frozen=True, slots=True)
@@ -527,7 +527,7 @@ class StudioDB:
             return
         # Existing users retain identity and workflow choices; only fields
         # needed by older releases are supplied.
-        for key, value in LEGACY_PROFILE_DEFAULTS.items():
+        for key, value in _legacy_profile_defaults().items():
             self.conn.execute(
                 "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",
                 (key, json.dumps(value, ensure_ascii=False)),

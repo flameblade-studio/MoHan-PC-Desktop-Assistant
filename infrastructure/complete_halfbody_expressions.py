@@ -9,8 +9,8 @@ lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 lazy from PySide6.QtGui import QImage
 
 lazy from domain.qt_image_io import image_from_png
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
-lazy from domain.character_runtime_data import default_expression_catalog
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_source import active_expression_catalog
 lazy from infrastructure.detachable_halfbody_assets import DIMENSION, POSES
 
 SCHEMA = "mohan.complete-halfbody-expressions.v1"
@@ -27,7 +27,7 @@ COMPLETE_CHEEK_POSES = frozenset({
 })
 COMPLETE_FRONT_POSES = frozenset(
     f"front-{expression}"
-    for expression, pose in default_expression_catalog().state_to_pose.items()
+    for expression, pose in active_expression_catalog().state_to_pose.items()
     if pose == "front"
 )
 COMPLETE_POSES = POSES | COMPLETE_CHEEK_POSES | COMPLETE_FRONT_POSES

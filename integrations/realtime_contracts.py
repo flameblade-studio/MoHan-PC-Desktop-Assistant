@@ -3,13 +3,13 @@ from __future__ import annotations
 lazy from dataclasses import dataclass, field
 
 lazy from domain.audio_buffer import BoundedAudioQueue
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.service_status_localization import render_character_ui_template
 lazy from integrations.realtime_speech_output import REALTIME_OUTPUT_OPENAI
 
-_VOICE_PROFILE = load_mohan_character_data().voice
+_VOICE_PROFILE = active_character_data().voice
 
 
 @dataclass(frozen=True, slots=True)

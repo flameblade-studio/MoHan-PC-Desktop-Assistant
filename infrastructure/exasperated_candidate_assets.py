@@ -11,20 +11,21 @@ lazy from typing import Protocol
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 
-lazy from domain.character_runtime_data import (
-    default_expression_catalog,
-    default_rig_manifest,
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    character_rig_manifest,
 )
-lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 
 SCHEMA = "mohan.exasperated-runtime-candidate.v1"
 FORMAL_INSTALL_SCHEMA = "mohan.source-bound-exasperated-default-install.v1"
 FORMAL_ASSET_RELATIVE_DIR = CHARACTER_ASSET_PATHS["source_bound_expression"]
 APPROVED_SOURCE_SHA256 = "0bb3d74affef4d2df831cf45d7f6d756b69cb58aee3693aea14f38f5d47996df"
-DIMENSION = default_rig_manifest().half_body_asset_canvas.width
+DIMENSION = character_rig_manifest().half_body_asset_canvas.width
 SHA256_HEX_LENGTH = 64
-_SOURCE_BOUND = default_expression_catalog().source_bound_exasperated
+_SOURCE_BOUND = active_expression_catalog().source_bound_exasperated
 _MOUTH_RECT = _SOURCE_BOUND.mouth_bounds
 MOUTH_BOUNDS = (
     _MOUTH_RECT[0],
@@ -57,14 +58,32 @@ class ExasperatedAppearanceOverlay(Protocol):
     ) -> QPixmap: ...
 
 
+class ExasperatedCandidateProvider(Protocol):
+    """Resolve an active outfit's optional whole-portrait expression."""
+
+    def assets_for(
+        self,
+        expression_id: str,
+    ) -> ExasperatedCandidateAssets | None: ...
+
+
 @dataclass(frozen=True, slots=True)
 class ExasperatedCandidateAssets:
     """Validated PNG bytes stay immutable after loading, even if files drift."""
 
     parts: dict[str, bytes]
     mouths: dict[str, bytes]
+    portrait: bytes | None = None
+    cache_key: str = APPROVED_SOURCE_SHA256
 
     def compose(self, *, hidden: frozenset[str] = frozenset()) -> QPixmap:
+        if self.portrait is not None:
+            if hidden:
+                raise ValueError("Whole source-bound portraits cannot hide parts.")
+            frame = QPixmap()
+            if not load_pixmap_png(frame, self.portrait):
+                raise ValueError("Cannot decode source-bound portrait.")
+            return frame
         if not hidden <= set(PART_ORDER):
             raise ValueError("Unknown exasperated part.")
         frame = QPixmap(DIMENSION, DIMENSION)

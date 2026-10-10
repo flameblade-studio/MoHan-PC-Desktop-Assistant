@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy from dataclasses import asdict, dataclass
@@ -230,6 +232,7 @@ def audit_roots(
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--half-root",

@@ -33,6 +33,7 @@ CHARACTER_FILES = (
     "persona/zh-CN.json",
     "persona/zh-TW.json",
     "rig/rig-manifest.json",
+    "rig/runtime-bindings.json",
     "voice/profile.json",
 )
 CATEGORIES = {
@@ -40,6 +41,7 @@ CATEGORIES = {
     "expressions/state-catalog.json": "character_expression_catalog",
     "persona/profile.json": "character_persona_data",
     "rig/rig-manifest.json": "character_rig_data",
+    "rig/runtime-bindings.json": "character_runtime_binding_data",
     "voice/profile.json": "character_voice_data",
 }
 
@@ -172,6 +174,14 @@ def _rewrite_character_data(character_root: Path) -> None:
     rig = _read_json(rig_path)
     rig["character_id"] = f"flameblade.{FAKE_CHARACTER_ID}"
     _write_json(rig_path, rig)
+
+    bindings_path = character_root / "rig" / "runtime-bindings.json"
+    bindings = _read_json(bindings_path)
+    bindings["asset_paths"]["halfbody_root"] = "assets/test-sentinel/expressions"
+    bindings["pose_roles"]["front_idle"] = "test-sentinel-front"
+    bindings["expression_roles"]["gentle"] = "test-sentinel-gentle"
+    bindings["layer_roles"]["rear_hair"] = "test-sentinel-rear-hair"
+    _write_json(bindings_path, bindings)
 
     expressions_path = character_root / "expressions" / "state-catalog.json"
     expressions = _read_json(expressions_path)

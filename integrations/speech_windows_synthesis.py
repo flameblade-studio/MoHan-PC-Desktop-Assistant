@@ -7,7 +7,7 @@ lazy import tempfile
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech_audio import (
@@ -15,7 +15,7 @@ lazy from integrations.speech_audio import (
 )
 
 CREATE_NO_WINDOW = 0x08000000
-_SYSTEM_LOCAL = load_mohan_character_data().voice.system_local
+_SYSTEM_LOCAL = active_character_data().voice.system_local
 _DEFAULT_ONECORE_VOICE = _SYSTEM_LOCAL.preferred_voice_ids["zh-TW"].removeprefix(
     _SYSTEM_LOCAL.onecore_prefix
 )

@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import io
 lazy import json
+lazy import os
 lazy import shutil
 lazy import subprocess
 lazy import zipfile
@@ -380,7 +381,32 @@ def test_capture_resets_existing_makeup_intensities(tmp_path: Path) -> None:
 def _clone_assets_for_mutation(target_root: Path) -> None:
     # Copies support pytest temporary roots on another volume and keep any
     # fixture mutation isolated from the approved production assets.
-    shutil.copytree(ROOT / "assets", target_root / "assets")
+    def link_or_copy(source: str, destination: str) -> str:
+        try:
+            os.link(source, destination)
+        except OSError:
+            return shutil.copy2(source, destination)
+        return destination
+
+    shutil.copytree(
+        ROOT / "assets",
+        target_root / "assets",
+        copy_function=link_or_copy,
+    )
+    mutable_archive = (
+        target_root
+        / "assets"
+        / "official-packs"
+        / "mohan.makeup.builtin.mohan-outfit"
+    )
+    mutable_archive.unlink()
+    shutil.copy2(
+        ROOT
+        / "assets"
+        / "official-packs"
+        / "mohan.makeup.builtin.mohan-outfit",
+        mutable_archive,
+    )
 
 
 @pytest.fixture
