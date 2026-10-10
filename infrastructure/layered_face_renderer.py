@@ -9,7 +9,7 @@ composed; source approval and formal installation are independent gates.
 from __future__ import annotations
 
 lazy from collections import OrderedDict
-lazy from dataclasses import replace
+lazy from dataclasses import dataclass, replace
 lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
@@ -64,7 +64,7 @@ SEAM_HEAL_RADIUS = 7
 _RIG_MANIFEST = character_rig_manifest()
 _EXPRESSION_CATALOG = active_expression_catalog()
 _EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
-_EXASPERATED_SOURCE_ID = "exasperated_front"
+_EXASPERATED_SOURCE_ID = _EXASPERATED_EXPRESSION
 _CHEEK_SILHOUETTE = _RIG_MANIFEST.pose_silhouettes["cheek"]
 FACE_AUTHORITY_FILES = frozendict({
     pose: specification.base
@@ -98,6 +98,14 @@ def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
     return _load_layered_face_assets(root)
 
 
+@dataclass(frozen=True)
+class ExasperatedSourceBindings:
+    """Construction-time dependencies for the source-bound expression route."""
+
+    appearance_overlay: ExasperatedAppearanceOverlay | None = None
+    expression_provider: ExasperatedCandidateProvider | None = None
+
+
 class LayeredParametricFaceRenderer(
     ExasperatedFaceRenderingMixin,
     LayeredFacePaintingMixin,
@@ -118,7 +126,7 @@ class LayeredParametricFaceRenderer(
         detachable_dir: Path | None = None,
         use_detachable: bool = True,
         exasperated_candidate_dir: Path | None = None,
-        candidate_appearance_overlay: ExasperatedAppearanceOverlay | None = None,
+        exasperated_source_bindings: ExasperatedSourceBindings | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
@@ -142,8 +150,9 @@ class LayeredParametricFaceRenderer(
             if exasperated_candidate_dir is not None
             else None
         )
-        self._candidate_appearance_overlay = candidate_appearance_overlay
-        self._source_bound_expression_provider: ExasperatedCandidateProvider | None = None
+        source_bindings = exasperated_source_bindings or ExasperatedSourceBindings()
+        self._candidate_appearance_overlay = source_bindings.appearance_overlay
+        self._source_bound_expression_provider = source_bindings.expression_provider
         # An explicitly injected detachable candidate must not be shadowed by
         # the repository's installed complete-expression pack. Callers that
         # want both sources can bind both directories explicitly.
@@ -180,13 +189,6 @@ class LayeredParametricFaceRenderer(
         self._seam_region_cache: dict[str, QRegion] = {}
         self._face_region_cache: dict[str, QRegion] = {}
         self._mouth_mask_cache: dict[str, QPixmap] = {}
-
-    def bind_source_bound_expression_provider(
-        self,
-        provider: ExasperatedCandidateProvider,
-    ) -> None:
-        """Bind the wardrobe-backed source after renderer construction."""
-        self._source_bound_expression_provider = provider
 
     def _manifest_or_load(self) -> LayeredFaceManifest:
         """Return the injected manifest, or lazily load the authored assets."""

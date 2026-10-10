@@ -161,7 +161,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 files plus validated appearance defaults.
+CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 loose files plus appearance defaults.
 
 
 @pytest.mark.parametrize("character_id", ("mohan", "lin-keyun"))
@@ -176,7 +176,11 @@ def test_character_data_files_are_runtime_data(
         if row["path"].startswith(prefix)
     }
     build_only = {f"{prefix}README.md", f"{prefix}pack-source.json"}
-    data_rows = {path: row for path, row in rows.items() if path.endswith(".json") and path not in build_only}
+    data_rows = {
+        path: row
+        for path, row in rows.items()
+        if "!" not in path and path.endswith(".json") and path not in build_only
+    }
     assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
     assert rows[f"{prefix}rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"

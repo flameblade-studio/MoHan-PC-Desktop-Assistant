@@ -14,6 +14,7 @@ lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING,
 )
 lazy from application import service_container
+lazy from infrastructure.outfit_source_bound_expressions import OutfitSourceBoundExpressionProvider
 lazy from application.character_runtime_bootstrap import ACTIVE_CHARACTER_ENV
 lazy from domain.character_pack.validation import compute_package_hash
 lazy from domain.character_source import (
@@ -422,6 +423,12 @@ def test_renderer_factories_bind_source_assets_and_validated_rig(
     ]
     assert face["use_detachable"] is True
     assert face["exasperated_candidate_dir"] is None
+    source_bindings = face["exasperated_source_bindings"]
+    assert source_bindings.appearance_overlay is None
+    assert isinstance(
+        source_bindings.expression_provider,
+        OutfitSourceBoundExpressionProvider,
+    )
 
     full = constructors["full"]
     assert full["manifest"] is full_body_manifest

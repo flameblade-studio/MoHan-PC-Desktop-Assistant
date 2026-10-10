@@ -6,14 +6,14 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 22,
-    "engine_extract_files": 4,
-    "manual_review_hint_only_files": 64,
+    "actual_embedded_code_files": 18,
+    "engine_extract_files": 0,
+    "manual_review_hint_only_files": 65,
     "persisted_identifier_files": 2,
     "product_shell_allowed_files": 18,
-    "true_extraction_files": 4,
+    "true_extraction_files": 0,
     "ui_text_reference_files": 0,
-    "work_packages": 1
+    "work_packages": 0
   },
   "declared_product_shell_allowlist": [
     {
@@ -67,122 +67,7 @@
       "status": "allowed_content_present"
     }
   ],
-  "extraction_items": [
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 28,
-              "matched": "exasperated_front",
-              "text": "EXPRESSION_ID = \"exasperated_front\""
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 29,
-              "matched": "front-exasperated",
-              "text": "SILHOUETTE = \"front-exasperated\""
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "domain/outfit_pack_source_bound.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json",
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 288,
-              "matched": "front-exasperated",
-              "text": "if view_id == \"front-exasperated\""
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/active_outfit_base_clear.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "expression",
-          "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 67,
-              "matched": "exasperated_front",
-              "text": "_EXASPERATED_SOURCE_ID = \"exasperated_front\""
-            }
-          ],
-          "rule": "character_expression_state_literal",
-          "suggested_data_target": "assets/characters/mohan/expressions/state-catalog.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/layered_face_renderer.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/expressions/state-catalog.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 74,
-              "matched": "front-exasperated",
-              "text": "if view_id == \"front-exasperated\":"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/source_bound_expression_features.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    }
-  ],
+  "extraction_items": [],
   "owner_decisions": {
     "art_tool_license": "MIT",
     "character_asset_license": "CC-BY-NC-ND-4.0",
@@ -1090,24 +975,5 @@
   "schema": "mohan.character-extraction-worklist.v1",
   "schema_version": 1,
   "source_inventory": "docs/character-pack/mohan-inventory.json",
-  "work_packages": [
-    {
-      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
-      "exclusive_files": [
-        "domain/outfit_pack_source_bound.py",
-        "infrastructure/active_outfit_base_clear.py",
-        "infrastructure/layered_face_renderer.py",
-        "infrastructure/source_bound_expression_features.py"
-      ],
-      "file_count": 4,
-      "id": "rig-and-asset-parameterization",
-      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
-      "titles": [
-        "Rig 與素材路徑參數化",
-        "Rig 与素材路径参数化",
-        "Rig and asset parameterization",
-        "Rig と素材パスのパラメータ化"
-      ]
-    }
-  ]
+  "work_packages": []
 }

@@ -87,7 +87,6 @@ class ActiveOutfitOverlay(
         self._on_stale_body_profile = on_stale_body_profile
         self._official_pack_root = Path(official_pack_root)
         # Core-owned, pose-specific visible skin only; supplied by the core authority.
-        # The provider remains immutable for this overlay's lifetime, like rig assets.
         # The sentinel is the composition root's frozen mask result.
         self._visible_hand_region = (
             load_core_hand_regions(self._asset_root)

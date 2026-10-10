@@ -55,6 +55,9 @@ EXPECTED_FILES = frozenset(
     }
 )
 EXPECTED_FILE_COUNT = len(EXPECTED_FILES)
+HUMAN_READABLE_SUFFIXES = frozenset({".json", ".md"})
+BINARY_SUFFIXES = frozenset({".mohan-outfit"})
+ARCHIVE_BINARY_SUFFIXES = frozenset({".png"})
 EXPECTED_DIALOGUE_LABEL_COUNT = 33
 EXPECTED_LINE_SET_LINE_COUNT = 37
 EXPECTED_PHRASEBOOK_COUNT = 20
@@ -216,9 +219,25 @@ def test_linkeyun_four_languages_are_complete_and_character_specific() -> None:
 
 
 def test_linkeyun_human_facing_content_has_no_legacy_identity_leak() -> None:
-    for path in LIN_KEYUN_ROOT.rglob("*"):
-        if path.is_file():
+    files = tuple(path for path in LIN_KEYUN_ROOT.rglob("*") if path.is_file())
+    assert {path.suffix for path in files} <= (
+        HUMAN_READABLE_SUFFIXES | BINARY_SUFFIXES
+    )
+    for path in files:
+        if path.suffix in HUMAN_READABLE_SUFFIXES:
             assert "墨寒" not in path.read_text(encoding="utf-8"), path
+            continue
+        with zipfile.ZipFile(path) as archive:
+            members = tuple(name for name in archive.namelist() if not name.endswith("/"))
+            assert {Path(name).suffix for name in members} <= (
+                HUMAN_READABLE_SUFFIXES | ARCHIVE_BINARY_SUFFIXES
+            )
+            for name in members:
+                if Path(name).suffix in HUMAN_READABLE_SUFFIXES:
+                    assert "墨寒" not in archive.read(name).decode("utf-8"), (
+                        path,
+                        name,
+                    )
 
     inspected = (
         *(f"persona/{language}.json" for language in LANGUAGES),

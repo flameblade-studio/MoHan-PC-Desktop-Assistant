@@ -19,10 +19,12 @@ lazy from domain.outfit_pack_official import (
     is_official_native_alias,
     official_outfit_pack_id,
 )
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
     CHARACTER_LAYER_ROLES,
-    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    character_rig_manifest,
+    pose_atlas_layered_relative_root,
 )
 lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS
 lazy from domain.qt_image_pixels import rgba8888_image
@@ -75,6 +77,9 @@ SOURCE_BOUND_EXPRESSION_SILHOUETTES = frozenset((
     *GESTURE_SILHOUETTES,
     *OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
 ))
+_EXASPERATED_SILHOUETTE = character_rig_manifest().gesture_silhouettes[
+    CHARACTER_EXPRESSION_ROLES["exasperation"]
+]
 
 
 class ActiveOutfitBaseClearMixin:
@@ -237,7 +242,7 @@ class ActiveOutfitBaseClearMixin:
         half_body = view_id in HALF_BODY_RIGS
         root = self._asset_root / (
             CHARACTER_ASSET_PATHS["halfbody_layers"]
-            if half_body else POSE_ATLAS_LAYERED_RELATIVE_ROOT
+            if half_body else pose_atlas_layered_relative_root()
         )
         prefix = HALF_BODY_RIGS.get(view_id, view_id)
         region = QRegion()
@@ -285,7 +290,7 @@ class ActiveOutfitBaseClearMixin:
                     QRegion(GESTURE_TILTED_EYE_FEATURE_GUARD).united(
                         QRegion(GESTURE_TILTED_MOUTH_FEATURE_GUARD)
                     )
-                    if view_id == "front-exasperated"
+                    if view_id == _EXASPERATED_SILHOUETTE
                     else QRegion(GESTURE_EYE_FEATURE_GUARD).united(
                         QRegion(GESTURE_MOUTH_FEATURE_GUARD)
                     )
@@ -318,7 +323,7 @@ class ActiveOutfitBaseClearMixin:
         half_body = view_id in HALF_BODY_RIGS
         root = self._asset_root / (
             CHARACTER_ASSET_PATHS["halfbody_layers"]
-            if half_body else POSE_ATLAS_LAYERED_RELATIVE_ROOT
+            if half_body else pose_atlas_layered_relative_root()
         )
         prefix = HALF_BODY_RIGS.get(view_id, view_id)
         body = QPixmap(str(root / f"{prefix}_{NATIVE_IDENTITY_LAYER}.png"))

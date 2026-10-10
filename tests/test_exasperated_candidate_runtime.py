@@ -31,7 +31,10 @@ lazy from infrastructure.exasperated_candidate_assets import (
     load_exasperated_candidate_assets,
     validate_formal_exasperated_install,
 )
-lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.layered_face_renderer import (
+    ExasperatedSourceBindings,
+    LayeredParametricFaceRenderer,
+)
 lazy from presentation.companion_face_animation import CompanionFaceAnimationMixin
 lazy from presentation.render_contracts import FaceRenderLayers
 
@@ -175,7 +178,9 @@ def test_candidate_renders_native_parts_and_source_bound_speech_at_product_size(
     appearance = _CandidateAppearance()
     renderer = LayeredParametricFaceRenderer(
         exasperated_candidate_dir=tmp_path,
-        candidate_appearance_overlay=appearance,
+        exasperated_source_bindings=ExasperatedSourceBindings(
+            appearance_overlay=appearance,
+        ),
         outfit_overlay=_ForbiddenOldAppearance(),
     )
     base = QPixmap(PRODUCT_SIZE, PRODUCT_SIZE)

@@ -8,7 +8,11 @@ lazy import numpy as np
 lazy from PySide6.QtCore import QRect
 lazy from PySide6.QtGui import QImage, QRegion
 
-lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    character_rig_manifest,
+)
 lazy from domain.qt_image_pixels import rgba8888_image
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
@@ -18,6 +22,9 @@ SOURCE_EYE_GUARD = QRect(500, 395, 210, 60)
 SOURCE_MOUTH_GUARD = QRect(545, 535, 115, 55)
 TILTED_EYE_GUARD = QRect(480, 470, 210, 50)
 TILTED_MOUTH_GUARD = QRect(560, 600, 100, 50)
+_EXASPERATED_SILHOUETTE = character_rig_manifest().gesture_silhouettes[
+    CHARACTER_EXPRESSION_ROLES["exasperation"]
+]
 
 
 def gesture_expression_feature_region(
@@ -71,7 +78,7 @@ def gesture_expression_feature_region(
         QImage.Format_Alpha8,
     ).copy()
     guard = QRegion(SOURCE_EYE_GUARD).united(QRegion(SOURCE_MOUTH_GUARD))
-    if view_id == "front-exasperated":
+    if view_id == _EXASPERATED_SILHOUETTE:
         guard = QRegion(TILTED_EYE_GUARD).united(QRegion(TILTED_MOUTH_GUARD))
     region = visible_alpha_region(mask).intersected(guard)
     if region.isEmpty():

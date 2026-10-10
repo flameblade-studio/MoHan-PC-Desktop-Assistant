@@ -12,7 +12,10 @@ lazy from domain._outfit_pack_models import (
     SourceBoundExpression,
     SourceBoundSelection,
 )
-lazy from domain.character_runtime import character_rig_manifest
+lazy from domain.character_runtime import (
+    CHARACTER_EXPRESSION_ROLES,
+    character_rig_manifest,
+)
 lazy from domain.character_source import active_expression_catalog
 lazy from domain.outfit_pack_assets import (
     SHA256,
@@ -25,14 +28,14 @@ lazy from domain.qt_image_io import image_from_png
 SCHEMA = "mohan.outfit-source-bound-expression.v1"
 RECEIPT_SCHEMA = "mohan.outfit-source-bound-expression-receipt.v1"
 MANIFEST_KEY = "source_bound_expressions"
-EXPRESSION_ID = "exasperated_front"
-SILHOUETTE = "front-exasperated"
+_RIG = character_rig_manifest()
+EXPRESSION_ID = CHARACTER_EXPRESSION_ROLES["exasperation"]
+SILHOUETTE = _RIG.gesture_silhouettes[EXPRESSION_ID]
 MOUTH_VARIANTS = ("mid", "open", "round")
 SELECTION_CATEGORIES = ("garment", "hairstyle")
 NO_BLINK = "none"
 PNG_BIT_DEPTH = 8
 _IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9.-]{0,62}[a-z0-9])?\Z")
-_RIG = character_rig_manifest()
 CANVAS = (
     _RIG.half_body_asset_canvas.width,
     _RIG.half_body_asset_canvas.height,

@@ -98,6 +98,7 @@ lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import (
+    ExasperatedSourceBindings,
     LayeredParametricFaceRenderer,
     load_layered_face_assets,
 )
@@ -417,22 +418,21 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
-        renderer = LayeredParametricFaceRenderer(
+        return LayeredParametricFaceRenderer(
             manifest=face_manifest,
             outfit_overlay=outfit_overlay_factory(),
             authority_dir=authority_dir,
             detachable_dir=detachable_dir,
             use_detachable=detachable_dir is not None,
             exasperated_candidate_dir=candidate_dir,
-            candidate_appearance_overlay=candidate_appearance,
+            exasperated_source_bindings=ExasperatedSourceBindings(
+                appearance_overlay=candidate_appearance,
+                expression_provider=OutfitSourceBoundExpressionProvider(
+                    presentation_contracts.default_data_dir() / "outfits",
+                    official_pack_root=official_pack_root,
+                ),
+            ),
         )
-        renderer.bind_source_bound_expression_provider(
-            OutfitSourceBoundExpressionProvider(
-                presentation_contracts.default_data_dir() / "outfits",
-                official_pack_root=official_pack_root,
-            )
-        )
-        return renderer
 
     def full_body_renderer_factory(outfit_overlay=None):
         if not hasattr(character_source, "appearance"):
