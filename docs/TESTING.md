@@ -22,7 +22,7 @@
 
 ### 目前待完成的發布先決條件
 
-- PySide6 6.12.0 已提供宣告 Python `>=3.10,<3.16` 的完整官方 wheel 組合。CI 以正常 resolver、固定 SHA-256、pip 安裝報告、`Requires-Python`、`pip check` 與 Qt smoke 驗證；正式發布仍須等本次雲端工作流程與其餘發布門檻通過。
+- PySide6 6.12.0 已提供宣告 Python `>=3.10,<3.16` 的完整官方 wheel 組合。CI 的實際直譯器固定為 Python 3.15.0-rc.1，並以正常 resolver、固定 SHA-256、pip 安裝報告、`Requires-Python`、`pip check` 與 Qt smoke 驗證；正式發布仍須等本次雲端工作流程與其餘發布門檻通過。
 - PoseAtlas 的正式發布條件仍待完成：具可驗證來源與再散布權的 24 個完整全身旋轉視角、landmarks、hands 與真實 `release-audits.json` 仍在齊備中。
 - 完整回歸 gate 已通過；v4 的可發布與已發布狀態，會在上述其他先決條件全數完成後成立。
 
@@ -72,7 +72,7 @@
 
 ### 当前待完成的发布先决条件
 
-- PySide6 6.12.0 已提供声明 Python `>=3.10,<3.16` 的完整官方 wheel 组合。CI 使用正常 resolver、固定 SHA-256、pip 安装报告、`Requires-Python`、`pip check` 与 Qt smoke 验证；正式发布仍须等待本次云端工作流与其余发布关卡通过。
+- PySide6 6.12.0 已提供声明 Python `>=3.10,<3.16` 的完整官方 wheel 组合。CI 的实际解释器固定为 Python 3.15.0-rc.1，并使用正常 resolver、固定 SHA-256、pip 安装报告、`Requires-Python`、`pip check` 与 Qt smoke 验证；正式发布仍须等待本次云端工作流与其余发布关卡通过。
 - PoseAtlas 的正式发布条件仍待完成：具有可验证来源与再分发权的 24 个完整全身旋转视角、landmarks、hands 与真实 `release-audits.json` 仍在齐备中。
 - 完整回归 gate 已通过；v4 的可发布与已发布状态，会在上述其他先决条件全部完成后成立。
 
@@ -122,7 +122,7 @@
 
 ### Current release prerequisites awaiting completion
 
-- PySide6 6.12.0 provides a complete official wheel set declaring Python `>=3.10,<3.16`. CI verifies it with the normal resolver, fixed SHA-256 digests, the pip installation report, `Requires-Python`, `pip check`, and a Qt smoke test. Formal release still requires this cloud workflow and every other release gate to pass.
+- PySide6 6.12.0 provides a complete official wheel set declaring Python `>=3.10,<3.16`. CI pins the actual interpreter to Python 3.15.0-rc.1 and verifies the wheels with the normal resolver, fixed SHA-256 digests, the pip installation report, `Requires-Python`, `pip check`, and a Qt smoke test. Formal release still requires this cloud workflow and every other release gate to pass.
 - The PoseAtlas formal-release prerequisite remains pending: the 24 complete full-body rotational views with verifiable provenance and redistribution rights, their landmarks and hands, and genuine `release-audits.json` remain in preparation.
 - The complete regression gate now passes; v4 gains releasable and released status after the remaining prerequisites are complete.
 
@@ -172,7 +172,7 @@ The following lists the corresponding automated evidence already established; al
 
 ### 現在完了待ちの公開前提条件
 
-- PySide6 6.12.0 は Python `>=3.10,<3.16` 対応を宣言する完全な公式 wheel 一式を提供しています。CI は通常の resolver、固定 SHA-256、pip 導入レポート、`Requires-Python`、`pip check`、Qt smoke で検証します。正式公開には今回のクラウド workflow と他のすべての公開ゲートの合格が必要です。
+- PySide6 6.12.0 は Python `>=3.10,<3.16` 対応を宣言する完全な公式 wheel 一式を提供しています。CI の実行 interpreter は Python 3.15.0-rc.1 に固定し、通常の resolver、固定 SHA-256、pip 導入レポート、`Requires-Python`、`pip check`、Qt smoke で検証します。正式公開には今回のクラウド workflow と他のすべての公開ゲートの合格が必要です。
 - PoseAtlas の正式公開条件は完了待ちです。出典と再配布権を検証できる完全全身回転 24 視角、landmarks、hands、真正な `release-audits.json` は現在準備中です。
 - 完全回帰 gate は合格しました。残る前提条件をすべて完了した後、v4 の公開可能・公開済み状態が成立します。
 

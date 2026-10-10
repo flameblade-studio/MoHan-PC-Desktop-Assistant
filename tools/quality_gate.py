@@ -180,7 +180,12 @@ def _stages() -> tuple[Stage, ...]:
         ),
         Stage(
             "official Qt runtime",
-            (python, "tools/check_official_qt_runtime.py"),
+            (
+                python,
+                "tools/check_official_qt_runtime.py",
+                "--pip-report",
+                "qt-install-report.json",
+            ),
         ),
         Stage(
             "full regression suite (aggregate)",

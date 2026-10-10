@@ -1,7 +1,8 @@
 param(
     [string]$AppName = "MoHan-Desktop-Assistant",
     [string]$Version = "dev",
-    [string]$Python = ""
+    [string]$Python = "",
+    [string]$QtPipReport = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -24,6 +25,17 @@ if (-not $Python) {
 }
 if (-not $Python) {
     throw "Python was not found. Activate a virtual environment or pass -Python."
+}
+if (-not $QtPipReport) {
+    throw "MoHan $Version packaging requires -QtPipReport from the hash-locked Qt installation."
+}
+$QtPipReportPath = if ([System.IO.Path]::IsPathRooted($QtPipReport)) {
+    $QtPipReport
+} else {
+    Join-Path $ProjectRoot $QtPipReport
+}
+if (-not (Test-Path -LiteralPath $QtPipReportPath -PathType Leaf)) {
+    throw "MoHan $Version packaging Qt installation report was not found: $QtPipReportPath"
 }
 
 # Retain the exact MPL-covered source and notices before packaging dependencies.
@@ -48,13 +60,13 @@ if ($LASTEXITCODE -ne 0 -or $JitContract -ne "True:False") {
     throw "MoHan $Version packages require a JIT-capable Python 3.15.0rc1 runtime running with the JIT off (shipped policy since 2026-08-29); found $JitContract."
 }
 
+& $Python tools/check_official_qt_runtime.py --pip-report $QtPipReportPath
+if ($LASTEXITCODE -ne 0) {
+    throw "MoHan $Version packaging requires the hash-verified official PySide6 6.12.0 installation report."
+}
 & $Python -c "import azure.cognitiveservices.speech, cryptography, cv2, numpy, opencc, sounddevice, websocket; import PySide6.QtCore, PySide6.QtGui, PySide6.QtMultimedia, PySide6.QtWidgets"
 if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging dependencies are incomplete; install requirements.txt with official PySide6 6.12.0 wheels."
-}
-& $Python tools/check_official_qt_runtime.py
-if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version packaging requires the verified official PySide6 6.12.0 runtime."
+    throw "MoHan $Version packaging dependencies are incomplete; install requirements.txt after the hash-locked official Qt requirements."
 }
 
 # Exercise the provider-neutral local speech path before packaging: synthetic

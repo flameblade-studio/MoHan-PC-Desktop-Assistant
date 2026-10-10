@@ -49,10 +49,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-rust-
 
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
       - name: Install pinned dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements.txt
 
       - name: Verify official Qt runtime and wheel provenance
@@ -173,10 +179,16 @@ jobs:
           # native-wheels directory that the install step reads.
           path: native-wheels
 
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
       - name: Install pinned dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements.txt
 
       - name: Verify official Qt runtime and wheel provenance
@@ -271,11 +283,17 @@ jobs:
             --source "$PWD\_python315" `
             --prefix "$env:RUNNER_TEMP\mohan-python315-jit"
           "MOHAN_JIT_PYTHON=$PWD\_python315\PCbuild\amd64\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+      - name: Install hash-locked official Qt wheels into JIT-default Python
+        shell: pwsh
+        run: >-
+          & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-jit-install-report.json
+          -r requirements-qt.txt
       - name: Install runtime dependencies into JIT-default Python
         shell: pwsh
         run: >-
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all:
-          --report qt-jit-install-report.json
           -r requirements.txt
       - name: Verify JIT-default official Qt runtime and wheel provenance
         shell: pwsh
@@ -301,7 +319,11 @@ jobs:
           -WixVersion "7.0.0"
       - name: Build packaged application
         shell: pwsh
-        run: .\build.ps1 -Version "4.0.0-rc.1" -Python $env:MOHAN_JIT_PYTHON
+        run: >-
+          .\build.ps1
+          -Version "4.0.0-rc.1"
+          -Python $env:MOHAN_JIT_PYTHON
+          -QtPipReport qt-jit-install-report.json
       - name: Verify native equivalence and packaged operations
         shell: pwsh
         run: |

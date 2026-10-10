@@ -6810,6 +6810,18 @@
     },
     {
       "paths": [
+        "requirements-qt.txt"
+      ],
+      "tests": [
+        "test_github_governance.py",
+        "test_native_packaging_contract.py",
+        "test_official_qt_runtime.py",
+        "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "installer/test_installers.ps1"
       ],
       "tests": [

@@ -211,10 +211,16 @@ jobs:
           allow-prereleases: true
           cache: pip
 
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
       - name: Install pinned runtime dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements.txt
 
       - name: Verify official Qt runtime and wheel provenance
@@ -276,11 +282,18 @@ jobs:
             --prefix "$env:RUNNER_TEMP\mohan-python315-jit"
           "MOHAN_JIT_PYTHON=$PWD\_python315\PCbuild\amd64\python.exe" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
+      - name: Install hash-locked official Qt wheels into JIT-default Python
+        shell: pwsh
+        run: >-
+          & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-jit-install-report.json
+          -r requirements-qt.txt
+
       - name: Install dependencies into JIT-default Python
         shell: pwsh
         run: >-
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all:
-          --report qt-jit-install-report.json
           -r requirements.txt
 
       - name: Verify JIT-default official Qt runtime and wheel provenance
@@ -329,6 +342,7 @@ jobs:
           .\build.ps1
           -Version "${{ needs.resolve-release.outputs.version }}"
           -Python $env:MOHAN_JIT_PYTHON
+          -QtPipReport qt-jit-install-report.json
 
       - name: Verify native equivalence and packaged operations
         shell: pwsh
@@ -480,10 +494,16 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-preview.txt
 
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
       - name: Install pinned Preview dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements-preview.txt
 
       - name: Verify official Qt runtime and wheel provenance
@@ -515,10 +535,16 @@ jobs:
           echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
           echo "DYLD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
 
+      - name: Install hash-locked official Qt wheels into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-jit-install-report.json
+          -r requirements-qt.txt
+
       - name: Install dependencies into JIT-default Python
         run: >-
           "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
-          --report qt-jit-install-report.json
           -r requirements-preview.txt
 
       - name: Verify JIT-default official Qt runtime and wheel provenance
@@ -581,10 +607,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libegl1
 
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
       - name: Install pinned Preview dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements-preview.txt
 
       - name: Verify official Qt runtime and wheel provenance
@@ -616,10 +648,16 @@ jobs:
           echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
           echo "LD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
 
+      - name: Install hash-locked official Qt wheels into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-jit-install-report.json
+          -r requirements-qt.txt
+
       - name: Install dependencies into JIT-default Python
         run: >-
           "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
-          --report qt-jit-install-report.json
           -r requirements-preview.txt
 
       - name: Verify JIT-default official Qt runtime and wheel provenance

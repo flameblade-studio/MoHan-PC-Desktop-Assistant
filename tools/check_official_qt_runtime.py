@@ -19,6 +19,7 @@ lazy from pip._vendor.packaging.version import Version
 
 ROOT: Final = Path(__file__).resolve().parents[1]
 DEFAULT_LOCK: Final = ROOT / "tools" / "qt" / "official-wheel-lock.json"
+DEFAULT_HASH_REQUIREMENTS: Final = ROOT / "requirements-qt.txt"
 QT_VERSION: Final = "6.12.0"
 QT_DISTRIBUTIONS: Final = (
     "PySide6",
@@ -130,6 +131,50 @@ def _locked_wheels(payload: dict[str, object]) -> dict[str, dict[str, object]]:
     }
 
 
+def hashed_requirements_text(lock: dict[str, object]) -> str:
+    """Return pip's complete hash-checking input for the official Qt closure."""
+    wheels = _locked_wheels(lock)
+    hashes_by_distribution: dict[str, list[str]] = {
+        canonicalize_name(name): [] for name in QT_DISTRIBUTIONS
+    }
+    for filename, entry in sorted(wheels.items()):
+        parsed_name, _, _, _ = parse_wheel_filename(filename)
+        canonical_name = canonicalize_name(parsed_name)
+        digest = entry.get("sha256")
+        if canonical_name not in hashes_by_distribution or not _valid_sha256(digest):
+            raise RuntimeError(f"Cannot build hashed requirements from {filename}")
+        hashes_by_distribution[canonical_name].append(str(digest))
+
+    lines = [
+        "# Hash-locked official Qt for Python wheels.",
+        "# Source of truth: tools/qt/official-wheel-lock.json.",
+        "",
+    ]
+    for distribution_name in QT_DISTRIBUTIONS:
+        hashes = hashes_by_distribution[canonicalize_name(distribution_name)]
+        if len(hashes) != EXPECTED_WHEELS_PER_DISTRIBUTION:
+            raise RuntimeError(
+                f"Official Qt hash requirements are incomplete for {distribution_name}"
+            )
+        lines.append(f"{distribution_name}=={QT_VERSION} \\")
+        for index, digest in enumerate(hashes):
+            suffix = " \\" if index < len(hashes) - 1 else ""
+            lines.append(f"    --hash=sha256:{digest}{suffix}")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def validate_hashed_requirements(path: Path, lock: dict[str, object]) -> None:
+    try:
+        actual = path.read_text(encoding="utf-8")
+    except OSError as error:
+        raise RuntimeError(f"Cannot read official Qt hash requirements {path}: {error}") from error
+    if actual != hashed_requirements_text(lock):
+        raise RuntimeError(
+            f"Official Qt hash requirements {path} do not match the wheel lock"
+        )
+
+
 def _report_digest(download_info: dict[str, object]) -> str:
     archive_info = download_info.get("archive_info")
     if not isinstance(archive_info, dict):
@@ -215,7 +260,23 @@ def inspect_installed_runtime() -> tuple[str, ...]:
                 f"{distribution_name} Requires-Python {requires_python!r} "
                 f"excludes Python {target}"
             )
-        wheel_metadata = installed.read_text("WHEEL") or ""
+        wheel_file = next(
+            (
+                file
+                for file in installed.files or ()
+                if file.name == "WHEEL" and file.parent.name.endswith(".dist-info")
+            ),
+            None,
+        )
+        if wheel_file is None:
+            issues.append(f"{distribution_name} has no installed WHEEL metadata")
+            continue
+        wheel_path = Path(installed.locate_file(wheel_file))
+        try:
+            wheel_metadata = wheel_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as error:
+            issues.append(f"Cannot read {distribution_name} WHEEL metadata: {error}")
+            continue
         wheel_tags = tuple(
             line.partition(":")[2].strip()
             for line in wheel_metadata.splitlines()
@@ -261,6 +322,11 @@ def arguments(argv: list[str] | None = None) -> argparse.Namespace:
         default=ROOT / "requirements.txt",
     )
     parser.add_argument("--lock", type=Path, default=DEFAULT_LOCK)
+    parser.add_argument(
+        "--hash-requirements",
+        type=Path,
+        default=DEFAULT_HASH_REQUIREMENTS,
+    )
     parser.add_argument("--pip-report", type=Path)
     parser.add_argument(
         "--policy-only",
@@ -276,12 +342,15 @@ def main(argv: list[str] | None = None) -> int:
     try:
         pinned_pyside_version(args.requirements.resolve())
         lock = load_official_wheel_lock(args.lock.resolve())
+        validate_hashed_requirements(args.hash_requirements.resolve(), lock)
     except RuntimeError as error:
         issues.append(str(error))
         lock = {}
-    if args.pip_report is not None and lock:
+    if not args.policy_only and args.pip_report is None:
+        issues.append("Runtime verification requires a pip installation report")
+    elif args.pip_report is not None and lock:
         issues.extend(inspect_pip_report(args.pip_report.resolve(), lock))
-    if not args.policy_only:
+    if not issues and not args.policy_only:
         issues.extend(inspect_installed_runtime())
         issues.extend(inspect_pip_check())
     payload = {
@@ -289,6 +358,7 @@ def main(argv: list[str] | None = None) -> int:
         "python": platform.python_version(),
         "qt_version": QT_VERSION,
         "official_wheel_lock": str(args.lock.resolve()),
+        "hash_requirements": str(args.hash_requirements.resolve()),
         "pip_report": str(args.pip_report.resolve()) if args.pip_report else None,
         "issues": issues,
     }

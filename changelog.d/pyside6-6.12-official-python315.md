@@ -1,3 +1,4 @@
 ### PySide6 6.12 官方 Python 3.15 支援／PySide6 6.12 官方 Python 3.15 支持／Official Python 3.15 support in PySide6 6.12／PySide6 6.12 の公式 Python 3.15 対応
 
 - 改用官方 PySide6 6.12.0 wheel，並以固定雜湊、安裝報告、版本宣告與 Qt smoke 取代自製相容套件。／改用官方 PySide6 6.12.0 wheel，并以固定哈希、安装报告、版本声明与 Qt smoke 取代自制兼容包。／Use official PySide6 6.12.0 wheels and replace the project-built compatibility package with fixed digests, installation reports, version declarations, and a Qt smoke test.／公式 PySide6 6.12.0 wheel を使用し、固定ハッシュ、導入レポート、バージョン宣言、Qt smoke でプロジェクト独自の互換パッケージを置き換えます。
+- 在安裝前以完整相依雜湊鎖驗證 Qt wheel，並要求直接封裝提供經驗證的 pip 安裝報告。／在安装前以完整依赖哈希锁验证 Qt wheel，并要求直接打包提供经验证的 pip 安装报告。／Verify Qt wheels against a complete dependency hash lock before installation, and require direct packaging to provide a validated pip installation report.／インストール前に完全な依存関係ハッシュロックで Qt wheel を検証し、直接パッケージ化する際は検証済みの pip 導入レポートを必須とします。

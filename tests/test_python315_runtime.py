@@ -244,6 +244,8 @@ def _run_governance_audits() -> None:
         [
             sys.executable,
             str(ROOT / "tools" / "check_official_qt_runtime.py"),
+            "--pip-report",
+            str(ROOT / "qt-install-report.json"),
         ],
         cwd=ROOT,
         check=False,

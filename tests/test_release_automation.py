@@ -113,6 +113,8 @@ def test_version_runtime_and_evidence_policy() -> None:
             '$env:PYTHON_JIT = "1"',
             "tools/build_pyinstaller_jit_bootloader.py",
             "tools/check_official_qt_runtime.py",
+            "--pip-report $QtPipReportPath",
+            "QtPipReport",
             "PySide6 6.12.0",
             "tools\\jit_launcher.py",
             "Move-Item -LiteralPath $PublicExecutable",
@@ -124,7 +126,9 @@ def test_version_runtime_and_evidence_policy() -> None:
     assert "RUNTIME_SUFFIX = \"-runtime.exe\"" in launcher
     for workflow_name in ("windows-ci.yml", "release.yml"):
         workflow = read(f".github/workflows/{workflow_name}")
-        assert 'python-version: "3.15.0"' in workflow
+        assert 'python-version: "3.15.0-rc.1"' in workflow
+        assert "--require-hashes" in workflow
+        assert "requirements-qt.txt" in workflow
         assert 'python-version: "3.12"' not in workflow
         assert 'FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"' in workflow
         assert "rustup toolchain install 1.97.1" in workflow

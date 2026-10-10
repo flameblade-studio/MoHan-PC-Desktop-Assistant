@@ -40,10 +40,15 @@ jobs:
           allow-prereleases: true
           cache: pip
           cache-dependency-path: requirements-preview.txt
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
       - name: Install pinned Preview dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements-preview.txt
       - name: Verify official Qt runtime and wheel provenance
         run: >-
@@ -69,10 +74,15 @@ jobs:
             --prefix "$RUNNER_TEMP/mohan-python315-jit"
           echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
           echo "DYLD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
+      - name: Install hash-locked official Qt wheels into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-jit-install-report.json
+          -r requirements-qt.txt
       - name: Install dependencies into JIT-default Python
         run: >-
           "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
-          --report qt-jit-install-report.json
           -r requirements-preview.txt
       - name: Verify JIT-default official Qt runtime and wheel provenance
         run: >-
@@ -128,10 +138,15 @@ jobs:
             -o Acquire::https::Timeout=20 || echo "apt-get update reached its time bound; continuing with the available runtime"
           timeout 120 sudo apt-get install --yes --no-install-recommends libegl1 \
             || echo "libegl1 installation status recorded; continuing with the available runtime"
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
       - name: Install pinned Preview dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          --report qt-install-report.json
           -r requirements-preview.txt
       - name: Verify official Qt runtime and wheel provenance
         run: >-
@@ -157,10 +172,15 @@ jobs:
             --prefix "$RUNNER_TEMP/mohan-python315-jit"
           echo "MOHAN_JIT_PYTHON=$RUNNER_TEMP/mohan-python315-jit/bin/python3.15" >> "$GITHUB_ENV"
           echo "LD_LIBRARY_PATH=$RUNNER_TEMP/mohan-python315-jit/lib" >> "$GITHUB_ENV"
+      - name: Install hash-locked official Qt wheels into JIT-default Python
+        run: >-
+          "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-jit-install-report.json
+          -r requirements-qt.txt
       - name: Install dependencies into JIT-default Python
         run: >-
           "$MOHAN_JIT_PYTHON" -m pip install --only-binary=:all:
-          --report qt-jit-install-report.json
           -r requirements-preview.txt
       - name: Verify JIT-default official Qt runtime and wheel provenance
         run: >-

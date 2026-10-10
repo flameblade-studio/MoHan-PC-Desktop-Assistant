@@ -293,7 +293,10 @@ def _assert_release_runtime_and_packages(release: str) -> None:
         "tools/build_python315_jit_runtime.py",
         "37e98da7c19a9e5892ee756d6dee08225422cd49",
         "repository: python/cpython",
-        'python-version: "3.15.0"',
+        'python-version: "3.15.0-rc.1"',
+        "--require-hashes",
+        "requirements-qt.txt",
+        "-QtPipReport qt-jit-install-report.json",
         "PACKAGED_SELFTEST_OK",
         "PACKAGED_JIT_DEFAULT_OK",
         "MOHAN_DISABLE_JIT",
@@ -349,7 +352,7 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
         "Release already exists; refusing to rebuild it",
         "Set up Python 3.15 release preflight runtime",
         "id: preflight-python",
-        'python-version: "3.15.0"',
+        'python-version: "3.15.0-rc.1"',
         "Enforce thin app composition root before packaging",
         '"$PREFLIGHT_PYTHON" tools/check_app_composition_root.py app.py',
         "Validate official Qt for Python policy before packaging",
@@ -557,7 +560,7 @@ def test_secret_defense_and_community_files() -> None:
         "FOUR_LANGUAGE_PR_METADATA_MINIMUM_OK",
         "tools/check_four_language_pr.py",
         "tools/check_four_language_docs.py",
-        'python-version: "3.15.0"',
+        'python-version: "3.15.0-rc.1"',
     ):
         assert required in language_guard
     assert "FOUR_LANGUAGE_PR_METADATA_OK" in read(

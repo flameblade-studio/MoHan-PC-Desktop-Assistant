@@ -25,6 +25,7 @@ def test_stage_order_ends_with_aggregate_regression_suite() -> None:
     assert len(stages) == EXPECTED_STAGE_COUNT
     assert stages[13].action == "cargo-audit"
     assert stages[-2].name == "official Qt runtime"
+    assert stages[-2].command[-2:] == ("--pip-report", "qt-install-report.json")
     assert stages[-1].command[-2:] == ("tests/run_all.py", "--aggregate")
 
 
