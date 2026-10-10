@@ -9,6 +9,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from domain.theme_pack import ThemePack
 lazy from presentation.dashboard_theme_materials import (
     MaterialPalette,
+    external_theme_accent_stylesheet,
     resolve_material_palette,
 )
 lazy from presentation.lingxiao_tokens import (
@@ -118,6 +119,30 @@ def test_theme_primary_gets_a_contrast_safe_foreground() -> None:
     materials = resolve_material_palette(PALETTE, theme)
 
     assert materials.on_primary != theme.tokens["surface"]
+    assert (
+        contrast_ratio(materials.on_primary, materials.primary)
+        >= MINIMUM_CONTRAST_RATIO
+    )
+
+
+def test_external_accent_stylesheet_uses_semantic_theme_colors() -> None:
+    theme = _theme()
+    materials = resolve_material_palette(PALETTE, theme)
+
+    stylesheet = external_theme_accent_stylesheet(
+        materials,
+        focus=theme.tokens["focus"],
+    )
+
+    assert 'QPushButton[mohanAction="navigation"]:checked' in stylesheet
+    assert "QTabWidget#wardrobeCategoryTabs QTabBar::tab:selected" in stylesheet
+    assert 'QPushButton[mohanAction="primary"]' in stylesheet
+    assert f"color:{materials.on_primary}" in stylesheet
+    assert f"background:{materials.primary}" in stylesheet
+    assert f"border:1px solid {materials.title}" in stylesheet
+    assert f"border:2px solid {theme.tokens['focus']}" in stylesheet
+    assert PALETTE.jade not in stylesheet
+    assert "danger" not in stylesheet
     assert (
         contrast_ratio(materials.on_primary, materials.primary)
         >= MINIMUM_CONTRAST_RATIO

@@ -14,6 +14,10 @@ lazy from domain.theme_session import ThemeResolution, ThemeSession
 lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_artwork import apply_dashboard_artwork
 lazy from presentation.dashboard_conversation import DashboardConversationMixin
+lazy from presentation.dashboard_theme_materials import (
+    external_theme_accent_stylesheet,
+    resolve_material_palette,
+)
 lazy from presentation.dashboard_platforms import DashboardPlatformMixin
 lazy from presentation.dashboard_settings import DashboardSettingsMixin
 lazy from presentation.dashboard_shell import DashboardShellMixin
@@ -197,6 +201,15 @@ class Dashboard(
         # the pack's font choice is applied directly to the display, caps and
         # body selectors by apply_flagship_theme above.
         stylesheet = retint_stylesheet(self.styleSheet(), theme.tokens)
+        palette = palette_for_theme(
+            self._runtime_lingxiao_theme_id,
+            high_contrast=self._runtime_lingxiao_high_contrast,
+        )
+        materials = resolve_material_palette(palette, theme)
+        stylesheet += external_theme_accent_stylesheet(
+            materials,
+            focus=theme.tokens["focus"],
+        )
         background = self.theme_pack_service.background_path(theme.theme_id)
         if background is not None:
             normalized = background.as_posix().replace("'", "\\'")
