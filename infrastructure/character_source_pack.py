@@ -264,12 +264,12 @@ class CharacterPackReader(
 
     @property
     def official_pack_roots(self) -> tuple[Path, ...]:
-        parents = (
-            PurePosixPath(component.path).parent
-            for component in self._manifest.components
-            if component.kind == "outfit_pack"
-        )
-        return tuple(dict.fromkeys(self._root.joinpath(*path.parts) for path in parents))
+        components = self._manifest.components
+        parents = (PurePosixPath(item.path).parent for item in components if item.kind == "outfit_pack")
+        roots = dict.fromkeys(self._root.joinpath(*path.parts) for path in parents)
+        # Shared official root first, as in the bundled source; manifest order never decides.
+        shared = self._root / "assets" / "official-packs"
+        return tuple(sorted(roots, key=lambda root: root != shared))
 
     def resolve_path(self, relative_path: str) -> Path:
         path = _relative_path(relative_path)
