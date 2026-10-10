@@ -1401,8 +1401,7 @@
     },
     {
       "paths": [
-        "domain/character_runtime.py",
-        "infrastructure/bundled_character_source.py"
+        "domain/character_runtime.py"
       ],
       "tests": [
         "test_active_character_switching.py"
@@ -1967,6 +1966,7 @@
         "test_official_pack_ids_reservation.py",
         "test_outfit_hand_occlusion.py",
         "test_rear_hair_composition.py",
+        "test_renderer_profile_injection.py",
         "test_reviewed_pose_foundation.py",
         "test_reviewed_pose_overlay.py",
         "test_reviewed_pose_variants.py"
@@ -2308,6 +2308,16 @@
     },
     {
       "paths": [
+        "infrastructure/bundled_character_source.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_character_source.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/service_container.py"
       ],
       "tests": [
@@ -2340,7 +2350,20 @@
       "tests": [
         "test_active_character_switching.py",
         "test_character_source.py",
-        "test_official_default_pack.py"
+        "test_official_default_pack.py",
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "application/character_runtime_bootstrap.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_cross_platform_core.py",
+        "test_official_pack_ids_reservation.py",
+        "test_renderer_profile_injection.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4815,6 +4838,7 @@
         "test_dashboard_control_consistency.py",
         "test_dependency_injection.py",
         "test_english_localization.py",
+        "test_exasperated_candidate_runtime.py",
         "test_gesture_app_wiring.py",
         "test_gesture_authorization_contract.py",
         "test_gesture_failure_isolation.py",
@@ -5409,15 +5433,6 @@
     },
     {
       "paths": [
-        "application/character_runtime_bootstrap.py"
-      ],
-      "tests": [
-        "test_cross_platform_core.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "infrastructure/platform_linux.py",
         "infrastructure/platform_macos.py",
         "infrastructure/platform_windows.py"
@@ -5516,8 +5531,6 @@
       "tests": [
         "test_dashboard_artwork.py",
         "test_dashboard_visual_consistency.py",
-        "test_exasperated_candidate_runtime.py",
-        "test_gesture_outfit_silhouettes.py",
         "test_wcag_contrast_governance.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -6023,6 +6036,16 @@
       ],
       "tests": [
         "test_exasperated_candidate_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "presentation/render_contracts.py"
+      ],
+      "tests": [
+        "test_exasperated_candidate_runtime.py",
+        "test_gesture_outfit_silhouettes.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

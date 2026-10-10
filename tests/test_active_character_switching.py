@@ -9,6 +9,7 @@ lazy import pytest
 
 lazy from application import service_container
 lazy from application import wardrobe_service as wardrobe_module
+lazy from application.character_runtime_bootstrap import ACTIVE_CHARACTER_ENV
 lazy from application.wardrobe_appearance_service import WardrobeAppearanceService
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID, WardrobeService
 lazy from domain.character_runtime import (
@@ -55,7 +56,7 @@ DATA_DIR_ENV = "MOHAN_DATA_DIR"
 
 @pytest.fixture(autouse=True)
 def _restore_default_character(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.delenv(service_container.ACTIVE_CHARACTER_ENV, raising=False)
+    monkeypatch.delenv(ACTIVE_CHARACTER_ENV, raising=False)
     monkeypatch.delenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, raising=False)
     monkeypatch.delenv(DATA_DIR_ENV, raising=False)
     service_container.create_character_source("mohan")
@@ -89,7 +90,7 @@ def test_installs_and_selects_a_valid_standalone_character_pack(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     _archive, data_root = _install_fake_character(tmp_path, monkeypatch)
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
 
     selected = service_container.create_default_character_source()
 
@@ -191,7 +192,7 @@ def test_development_archive_is_explicit_and_not_persistently_installed(
     archive = build_fake_character_pack(tmp_path)
     data_root = tmp_path / "profile"
     monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(archive))
 
     selected = service_container.create_default_character_source()
@@ -223,7 +224,7 @@ def test_incompatible_development_archive_fails_closed_to_mohan(
         tmp_path / "incompatible-character.zip",
         make_incompatible,
     )
-    monkeypatch.setenv(service_container.ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
     monkeypatch.setenv(DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV, str(incompatible))
 
     with (

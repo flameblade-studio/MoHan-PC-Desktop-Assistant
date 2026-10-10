@@ -17,6 +17,7 @@ lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application import service_container
+lazy from application.presentation_ports import default_data_dir
 lazy from application.service_container import create_presentation_ports
 lazy from infrastructure.app_resources import resource_path
 lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
@@ -28,8 +29,8 @@ lazy from infrastructure.exasperated_candidate_assets import (
     validate_formal_exasperated_install,
 )
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-lazy from presentation.presentation_resources import FaceRenderLayers
 lazy from presentation.companion_face_animation import CompanionFaceAnimationMixin
+lazy from presentation.render_contracts import FaceRenderLayers
 
 PRODUCT_SIZE = 465
 NATIVE_MOUTH_SAMPLE = 550
@@ -203,7 +204,7 @@ def test_product_factory_requires_explicit_absolute_candidate_path(
         SimpleNamespace(load=load_appearance),
     )
     create_presentation_ports().face_renderer_factory()
-    assert appearance.store == service_container.presentation_contracts.default_data_dir() / "outfits"
+    assert appearance.store == default_data_dir() / "outfits"
     assert appearance.official_pack_root == resource_path(".") / "assets/official-packs"
     monkeypatch.setenv("MOHAN_EXASPERATED_CANDIDATE_DIR", "relative/candidate")
     with pytest.raises(ValueError, match="must be absolute"):

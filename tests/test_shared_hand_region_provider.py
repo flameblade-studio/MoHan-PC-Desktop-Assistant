@@ -53,11 +53,9 @@ def _patch_composition_root(monkeypatch: pytest.MonkeyPatch, root: Path) -> None
             resolve_path=lambda relative: root / relative,
         ),
     )
-    monkeypatch.setattr(
-        service_container,
-        "create_default_character_source",
-        lambda: source,
-    )
+    # The public composition root consumes the already selected source. Override
+    # that lookup within this test instead of mutating domain-global selection.
+    monkeypatch.setattr(service_container, "active_character_source", lambda: source)
     monkeypatch.setattr(
         service_container,
         "resource_path",
