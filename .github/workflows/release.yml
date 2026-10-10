@@ -147,7 +147,7 @@ jobs:
         id: preflight-python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0"
+          python-version: "3.15.0-rc.1"
 
       - name: Enforce thin app composition root before packaging
         shell: bash
@@ -206,7 +206,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0"
+          python-version: "3.15.0-rc.1"
           cache: pip
 
       - name: Install pinned runtime dependencies from official wheels
@@ -473,7 +473,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0"
+          python-version: "3.15.0-rc.1"
           cache: pip
           cache-dependency-path: requirements-preview.txt
 
@@ -568,7 +568,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0"
+          python-version: "3.15.0-rc.1"
           cache: pip
           cache-dependency-path: requirements-preview.txt
 
@@ -682,7 +682,7 @@ jobs:
         id: runtime-python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
-          python-version: "3.15.0"
+          python-version: "3.15.0-rc.1"
           cache: pip
 
       - name: Set up isolated Python 3.14 SBOM tooling runtime
