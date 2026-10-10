@@ -86,3 +86,7 @@ Desktop.ini
 
 # Task-scoped local reports requested by the owner are not submitted.
 /TICKET-*-REPORT.md
+
+# pip install reports written by CI before verifying official Qt wheels
+qt-install-report.json
+qt-jit-install-report.json
