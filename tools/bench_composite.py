@@ -36,7 +36,9 @@ lazy from PySide6.QtGui import QPixmap as REAL_QPIXMAP
 lazy from PySide6.QtGui import QPixmapCache
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from application.service_container import create_character_source
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from domain import outfit_pack_makeup as makeup_module
 lazy from infrastructure import active_outfit_overlay as overlay_module
 lazy from infrastructure import layered_face_renderer as half_module
@@ -904,7 +906,7 @@ def _result(iterations: int, rounds: int) -> dict[str, object]:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    create_character_source("mohan")
+    activate_product_character_runtime(ROOT)
     arguments = _arguments(argv)
     result = _result(arguments.iterations, arguments.rounds)
     if arguments.record:

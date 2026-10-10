@@ -21,6 +21,8 @@ so that contract can be changed deliberately.
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy import sys
@@ -166,6 +168,7 @@ def build(authority_dir: Path, rig_dir: Path, output: Path) -> dict:
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--authority-dir", type=Path, required=True,

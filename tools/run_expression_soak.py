@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from domain.companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
@@ -275,6 +276,7 @@ def run(minutes: float, steps: int, seed: int) -> dict[str, object]:
 
 
 def main() -> None:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--minutes",

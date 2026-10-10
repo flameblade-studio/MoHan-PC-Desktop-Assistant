@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from application.service_container import create_default_character_source
 lazy from domain.character_pack.validation import SCHEMA
 lazy from domain.character_pack.appearance_data import (
     APPEARANCE_DEFAULTS_SCHEMA,
@@ -21,8 +20,8 @@ lazy from domain.character_pack.character_data_models import CharacterDataError
 lazy from domain.outfit_pack import inspect_outfit_pack
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from huapu import character_pack_builder as _core
-lazy from tools.character_runtime_support import (
-    activate_bundled_mohan_character_runtime,
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
 )
 
 DEFAULT_INVENTORY = Path("docs/character-pack/mohan-inventory.json")
@@ -116,7 +115,7 @@ def build_character_pack(
     source_path: str | Path = DEFAULT_SOURCE,
 ) -> CharacterPackBuildResult:
     """Build through Huapu while retaining the historical MoHan API."""
-    create_default_character_source()
+    activate_product_character_runtime(Path(repo_root))
     return _core.build_character_pack(
         output,
         output_format=output_format,
@@ -128,7 +127,7 @@ def build_character_pack(
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
-    activate_bundled_mohan_character_runtime(ROOT)
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--format", choices=("directory", "zip"), required=True, dest="output_format")

@@ -10,12 +10,14 @@ lazy from urllib.request import Request, urlopen
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from infrastructure.secret_store import SecretStore
 lazy from integrations.ai_client import ActionPlannerWorker
 lazy from domain.safe_error import sanitize_error
 
 
 def main(data_path_text: str) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     data_path = Path(data_path_text).resolve()
     key = SecretStore(data_path / "openai-key.dpapi").load().strip()
     if not key:

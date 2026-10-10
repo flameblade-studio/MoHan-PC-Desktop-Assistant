@@ -43,8 +43,8 @@ lazy from presentation.flagship_ui import (
     ControlCenterDependencies,
     FlagshipControlCenter,
 )
-lazy from tools.character_runtime_support import (
-    activate_bundled_mohan_character_runtime,
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
 )
 
 
@@ -427,8 +427,8 @@ def _assert_qt_widget_smoke(qt: QApplication) -> None:
 
 
 def run() -> None:
+    activate_product_character_runtime(PROJECT)
     _assert_activation_independent_imports()
-    activate_bundled_mohan_character_runtime(PROJECT)
     # Windows keeps the exact public-build profile location.
     _assert_windows_platform_contract()
     linux = _create_linux_platform()

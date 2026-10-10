@@ -6,12 +6,14 @@ lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 
 lazy from PySide6.QtCore import QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QFont, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from domain.companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
@@ -125,6 +127,7 @@ def render(output: Path) -> None:
 
 
 if __name__ == "__main__":
+    activate_product_character_runtime(ROOT)
     destination = (
         Path(sys.argv[1])
         if len(sys.argv) > 1

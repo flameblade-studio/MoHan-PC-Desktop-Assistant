@@ -23,6 +23,12 @@ lazy from integrations.speech import (
     windows_voices,
 )
 lazy from application import presentation_ports as presentation_contracts
+lazy from application.character_runtime_bootstrap import (
+    ACTIVE_CHARACTER_ENV,
+    DEFAULT_CHARACTER_ID,
+    SUPPORTED_CHARACTER_IDS as SUPPORTED_CHARACTER_IDS,
+    activate_product_character_runtime,
+)
 lazy from application.cloud_vision_runtime import CloudVisionRuntime
 lazy from application.character_profile_defaults import (
     seed_character_profile_settings,
@@ -50,10 +56,8 @@ lazy from domain.contracts import (
     default_character_display_name,
 )
 lazy from domain.character_source import (
-    CharacterEngineProfile,
     CharacterSource,
-    activate_character_engine_profile,
-    activate_character_source,
+    active_character_source,
 )
 lazy from domain.character_renderer_compatibility import validated_renderer_rig
 lazy from domain.language_support import (
@@ -63,7 +67,6 @@ lazy from domain.language_support import (
 )
 lazy from domain.constants import (
     CHARACTER_ASSET_PATHS,
-    POSE_ATLAS_GENERATION,
     POSE_ATLAS_LAYERED_RELATIVE_ROOT,
     POSE_ATLAS_RELATIVE_ROOT,
 )
@@ -86,7 +89,6 @@ lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
 )
 lazy from infrastructure.installed_character_packs import (
-    DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,
     CharacterPackInstallError,
     load_development_character_pack_archive,
     load_installed_character_pack,
@@ -138,79 +140,38 @@ lazy from integrations.realtime_speech_output import RealtimeSpeechOutput
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
-ACTIVE_CHARACTER_ENV = "MOHAN_ACTIVE_CHARACTER"
-DEFAULT_CHARACTER_ID = "mohan"
-SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID})
 _CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
 
 
 def create_character_source(character_id: str) -> CharacterSource:
     """Build one bundled or installed source and keep MoHan on rejection."""
 
-    selected = str(character_id).strip()
     root = resource_path(".")
-    mohan_source: CharacterSource = LegacyMohanCharacterSource(root)
-    if selected == DEFAULT_CHARACTER_ID:
-        _activate_product_character_source(
-            mohan_source,
-            bundled_source=mohan_source,
-        )
-        return mohan_source
     try:
-        development_archive = os.environ.get(
-            DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV,
-            "",
-        ).strip()
-        source: CharacterSource = (
-            load_development_character_pack_archive(
-                development_archive,
-                expected_character_id=selected,
+        source = activate_product_character_runtime(
+            root,
+            character_id=character_id,
+            development_archive_loader=load_development_character_pack_archive,
+            installed_loader=load_installed_character_pack,
+        )
+    except RuntimeError as error:
+        if error.__cause__ is not None:
+            bundled_source = LegacyMohanCharacterSource(root)
+            _reserve_official_pack_id_reservations(
+                bundled_source,
+                bundled_source=bundled_source,
             )
-            if development_archive
-            else load_installed_character_pack(selected)
-        )
-    except (CharacterPackInstallError, OSError, ValueError) as error:
-        _activate_product_character_source(
-            mohan_source,
-            bundled_source=mohan_source,
-        )
-        message = (
-            f"Active character {selected!r} was rejected; "
-            "the bundled default character remains active: "
-            f"{error}"
-        )
-        _CHARACTER_SELECTION_LOGGER.exception(message)
-        raise RuntimeError(message) from error
-    _activate_product_character_source(
-        source,
-        bundled_source=mohan_source,
+        raise
+    bundled_source = (
+        source
+        if source.character_id == DEFAULT_CHARACTER_ID
+        else LegacyMohanCharacterSource(root)
     )
-    return source
-
-
-def _activate_product_character_source(
-    source: CharacterSource,
-    *,
-    bundled_source: CharacterSource,
-    data_root: Path | None = None,
-) -> None:
-    """Inject one validated character and product-owned PoseAtlas layout."""
-
-    profile = CharacterEngineProfile(
-        assets=source.assets,
-        runtime_bindings=source.appearance.runtime_bindings,
-        rig_manifest=source.appearance.rig_manifest,
-        pose_atlas_generation=POSE_ATLAS_GENERATION,
-        pose_atlas_relative_root=POSE_ATLAS_RELATIVE_ROOT,
-        pose_atlas_layered_relative_root=POSE_ATLAS_LAYERED_RELATIVE_ROOT,
-    )
-    activate_character_source(source)
-    activate_character_engine_profile(profile)
     _reserve_official_pack_id_reservations(
         source,
         bundled_source=bundled_source,
-        data_root=data_root,
     )
+    return source
 
 
 def create_default_character_source() -> CharacterSource:
@@ -381,7 +342,7 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
-    return _create_presentation_ports(create_default_character_source())
+    return _create_presentation_ports(active_character_source())
 
 
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
@@ -686,7 +647,7 @@ def create_default_services(
     ui_language: str | None = None,
 ) -> CompanionServices:
     runtime_platform = platform_services or current_platform_services()
-    character_source = create_default_character_source()
+    character_source = active_character_source()
     data_path.mkdir(parents=True, exist_ok=True)
     _reserve_official_pack_id_reservations(
         character_source,

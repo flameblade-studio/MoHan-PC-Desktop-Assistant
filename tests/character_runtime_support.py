@@ -6,8 +6,8 @@ lazy import runpy
 lazy import sys
 lazy from pathlib import Path
 
-lazy from tools.character_runtime_support import (
-    activate_bundled_mohan_character_runtime,
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def activate_bundled_character_runtime() -> None:
     """Build the same character-engine profile as the product composition root."""
 
-    activate_bundled_mohan_character_runtime(ROOT)
+    activate_product_character_runtime(ROOT)
 
 
 def main(arguments: list[str] | None = None) -> int:

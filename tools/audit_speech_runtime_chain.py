@@ -10,6 +10,8 @@ binary, which catches PyInstaller builds that collected only ``sounddevice.py``.
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import io
 lazy import json
 lazy import math
@@ -335,6 +337,7 @@ def run_audit() -> SpeechRuntimeAudit:
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     result = run_audit()
     print(json.dumps(asdict(result), ensure_ascii=False, indent=2))
     return 0 if result.passed else 1

@@ -102,12 +102,12 @@
       "path": "application/runtime_bootstrap.py",
       "readers": [
         {
-          "line": 13,
+          "line": 16,
           "path": "application/application_bootstrap.py",
           "text": "lazy from application.runtime_bootstrap import ("
         },
         {
-          "line": 18,
+          "line": 21,
           "path": "presentation/preview_app.py",
           "text": "lazy from application.runtime_bootstrap import ensure_default_jit, jit_is_enabled"
         }
@@ -20170,7 +20170,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 391,
+          "line": 352,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47941,7 +47941,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 391,
+          "line": 352,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -89610,12 +89610,17 @@
       "path": "domain/constants.py",
       "readers": [
         {
+          "line": 19,
+          "path": "application/character_runtime_bootstrap.py",
+          "text": "lazy from domain.constants import ("
+        },
+        {
           "line": 15,
           "path": "application/packaged_self_test.py",
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 64,
+          "line": 68,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import ("
         },
@@ -90477,7 +90482,7 @@
       "path": "infrastructure/app_resources.py",
       "readers": [
         {
-          "line": 19,
+          "line": 22,
           "path": "application/application_bootstrap.py",
           "text": "lazy from infrastructure.app_resources import ("
         },
@@ -90487,7 +90492,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 83,
+          "line": 86,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -90584,7 +90589,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 119,
+          "line": 121,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -90754,7 +90759,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 121,
+          "line": 123,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -91864,7 +91869,7 @@
       "work_package": null
     },
     {
-      "bytes": 16918,
+      "bytes": 17072,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
@@ -91876,7 +91881,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 49,
+          "line": 52,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91886,7 +91891,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 51,
+          "line": 54,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91896,7 +91901,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 53,
+          "line": 56,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91906,7 +91911,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 74,
+          "line": 77,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91916,7 +91921,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 79,
+          "line": 82,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91926,7 +91931,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 81,
+          "line": 84,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91936,7 +91941,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 83,
+          "line": 86,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91946,7 +91951,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 104,
+          "line": 107,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91956,7 +91961,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 109,
+          "line": 112,
           "matched": "MoHan",
           "path": "presentation/preview_app.py",
           "rule": "product_identity_literal",
@@ -91966,7 +91971,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 111,
+          "line": 114,
           "matched": "MoHan",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91976,7 +91981,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 136,
+          "line": 139,
           "matched": "MoHan",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -91986,7 +91991,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 142,
+          "line": 145,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "product_identity_literal",
@@ -91996,7 +92001,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 144,
+          "line": 147,
           "matched": "墨寒",
           "path": "presentation/preview_app.py",
           "rule": "character_name_literal",
@@ -92006,7 +92011,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 397,
+          "line": 401,
           "matched": "MoHan",
           "path": "presentation/preview_app.py",
           "rule": "product_identity_literal",
@@ -92026,7 +92031,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "fcd1e2c702c452429ca72e674481c85a2bbdf55dc1208486ab7de625be613e49",
+      "sha256": "96ebe9903ebaacc4e559c8323d6d46949bf50d008d38371cef66861c19be0235",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json",
         "infrastructure/app_resources.py"
@@ -92038,53 +92043,53 @@
           "name": "_SOURCE_ROOT"
         },
         {
-          "end_line": 39,
-          "line": 39,
+          "end_line": 42,
+          "line": 42,
           "name": "SUPPORTED_LANGUAGES"
         },
         {
-          "end_line": 45,
-          "line": 40,
+          "end_line": 48,
+          "line": 43,
           "name": "LANGUAGE_NAMES"
         },
         {
-          "end_line": 174,
-          "line": 47,
+          "end_line": 177,
+          "line": 50,
           "name": "_TEXT"
         },
         {
-          "end_line": 224,
-          "line": 176,
+          "end_line": 227,
+          "line": 179,
           "name": "_STYLE"
         },
         {
-          "end_line": 230,
-          "line": 227,
+          "end_line": 233,
+          "line": 230,
           "name": "resource_path"
         },
         {
-          "end_line": 241,
-          "line": 233,
+          "end_line": 244,
+          "line": 236,
           "name": "default_language"
         },
         {
-          "end_line": 365,
-          "line": 244,
+          "end_line": 368,
+          "line": 247,
           "name": "PreviewWindow"
         },
         {
-          "end_line": 376,
-          "line": 368,
+          "end_line": 379,
+          "line": 371,
           "name": "validate_preview_contract"
         },
         {
-          "end_line": 425,
-          "line": 379,
+          "end_line": 429,
+          "line": 382,
           "name": "main"
         },
         {
-          "end_line": 439,
-          "line": 428,
+          "end_line": 443,
+          "line": 432,
           "name": "__all__"
         }
       ],

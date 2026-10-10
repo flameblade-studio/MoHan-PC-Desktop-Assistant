@@ -82,7 +82,7 @@ jobs:
         run: python tests/test_cross_platform_core.py
 
       - name: Verify provider registry migration
-        run: python tests/test_speech_provider_registry.py
+        run: python -m tests.character_runtime_support tests/test_speech_provider_registry.py
 
       - name: Verify architecture boundaries
         run: python tests/test_architecture_contracts.py

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import hashlib
 lazy import json
@@ -919,6 +921,7 @@ def _write_working_readme(output_root: Path, provenance: dict[str, object]) -> N
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--output-root", type=Path, required=True)

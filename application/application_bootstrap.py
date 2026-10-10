@@ -9,6 +9,9 @@ lazy from pathlib import Path
 lazy from PySide6.QtCore import QTimer
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from application.packaged_self_test import run_packaged_self_test
 lazy from application.runtime_bootstrap import (
     ensure_default_jit,
@@ -119,6 +122,7 @@ def _run_smoke_event_loop(
 
 
 def run_application() -> int:
+    activate_product_character_runtime()
     self_test = "--self-test" in sys.argv
     smoke_auto_exit = "--smoke-auto-exit" in sys.argv
     _write_jit_status()

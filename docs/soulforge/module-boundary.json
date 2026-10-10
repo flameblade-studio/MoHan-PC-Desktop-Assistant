@@ -295,6 +295,7 @@
     "mohan_product_shell": [
       "application.app",
       "application.application_bootstrap",
+      "application.character_runtime_bootstrap",
       "application.cloud_vision_ui_bridge",
       "application.packaged_self_test",
       "application.presentation_ports",

@@ -15,7 +15,9 @@ sys.path.insert(0, str(TESTS))
 
 lazy from PySide6.QtGui import QFont
 lazy from PySide6.QtWidgets import QApplication
-lazy from application.service_container import create_character_source
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from presentation.lingxiao_widgets import set_motion_override
 lazy from test_global_settings_actions import close_dashboard
 lazy from test_wardrobe_ui import build_language_dashboard
@@ -31,7 +33,7 @@ def output_path(output: Path) -> Path:
 
 
 def capture(output: Path, tab_name: str) -> Path:
-    create_character_source("mohan")
+    activate_product_character_runtime(ROOT)
     application = QApplication.instance() or QApplication([])
     application.setFont(QFont(preview_font_family(), 10))
     with TemporaryDirectory(ignore_cleanup_errors=True) as temporary:
@@ -52,6 +54,7 @@ def capture(output: Path, tab_name: str) -> Path:
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--output",
