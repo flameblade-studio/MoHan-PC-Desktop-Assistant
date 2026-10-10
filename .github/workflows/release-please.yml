@@ -45,6 +45,16 @@ jobs:
         run: |
           gh workflow run release.yml --repo "$GITHUB_REPOSITORY" --ref main -f "tag=$RELEASE_TAG" -f "publish=true"
 
+      # The same anti-recursion rule hides this release from the character-pack
+      # download check, so dispatch it explicitly as well.
+      - name: Dispatch the character-pack release download check
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run character-pack-download.yml --repo "$GITHUB_REPOSITORY" --ref main
+
       - name: Check out the release pull request branch
         if: ${{ steps.release.outputs.pr }}
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7

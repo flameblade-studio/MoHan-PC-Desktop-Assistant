@@ -1,0 +1,67 @@
+name: Character pack release download
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  PYTHONUTF8: "1"
+  QT_QPA_PLATFORM: offscreen
+
+# Fetches the published release assets over the network, so it stays out of
+# the offline lock-consistency workflow and runs only on demand or on release.
+# Pack releases published with a maintainer token trigger `release`; Release
+# Please releases use GITHUB_TOKEN and dispatch this workflow explicitly.
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: character-pack-download-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-character-pack-download:
+    name: Download and load published character packs
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: ["mohan", "lin-keyun"]
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up Python 3.15
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.15.0-rc.1"
+          allow-prereleases: true
+          cache: pip
+
+      - name: Install the Qt runtime library used to decode pack images
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libegl1
+
+      - name: Install hash-locked official Qt wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
+      - name: Install pinned runtime dependencies from official wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          -r requirements.txt
+
+      - name: Verify official Qt runtime and wheel provenance
+        run: >-
+          python tools/check_official_qt_runtime.py
+          --pip-report qt-install-report.json
+
+      - name: Download, install, and load the published ${{ matrix.profile }} pack
+        run: python tools/verify_character_pack_download.py --profile ${{ matrix.profile }}
