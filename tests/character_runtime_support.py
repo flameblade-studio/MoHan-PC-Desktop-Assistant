@@ -29,6 +29,8 @@ def main(arguments: list[str] | None = None) -> int:
     previous_arguments = sys.argv
     try:
         sys.argv = [selected[0]]
+        # Match direct script execution, where the script directory is sys.path[0].
+        sys.path.insert(0, str(Path(selected[0]).resolve().parent))
         runpy.run_path(selected[0], run_name="__main__")
     finally:
         sys.argv = previous_arguments

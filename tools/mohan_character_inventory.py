@@ -364,7 +364,7 @@ PRODUCT_IDENTITY_LITERAL = re.compile(
     r"|關於墨寒|关于墨寒|About MoHan|墨寒について"
     r"|MoHan-Desktop-Assistant/"
     r"|MoHan (?:\{provider_id\} OAuth token|Home Assistant token|OpenAI API key"
-    r"|local face identity templates|local gesture skeleton templates)"
+    r"|local face identity templates|local gesture skeleton templates|protected secret)"
 )
 PRODUCT_IDENTITY_RULE = ContentRule(
     "product_identity_literal",

@@ -125,10 +125,7 @@ class CharacterPackReader(
             expression_component,
         )
         _verify_component_files(root, records, loaded_components)
-        character_data = _load_character_data(
-            root.joinpath(*character_root.parts),
-            character_root.as_posix(),
-        )
+        character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())
         rig = _load_rig(root, rig_component)
         expression_catalog = _load_expression_catalog(root, expression_component)
         _verify_component_files(root, records, loaded_components)

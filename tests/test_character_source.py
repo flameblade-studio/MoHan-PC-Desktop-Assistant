@@ -471,7 +471,7 @@ def test_presentation_composition_uses_injected_character_asset_root(
     )
     monkeypatch.setattr(
         service_container,
-        "create_default_character_source",
+        "active_character_source",
         lambda: source,
     )
     monkeypatch.setattr(

@@ -55,7 +55,7 @@ LAYER_MODULE_LINE_BASELINE = {
     "integrations.realtime_voice": 878,
     "integrations.speech": 1_195,
     "presentation.companion_core": 1_084,
-    "presentation.companion_face_animation": 1_148,
+    "presentation.companion_face_animation": 1_145,
     "presentation.companion_speech_runtime": 1_165,
     "presentation.companion_visual_dynamics": 965,
     "presentation.dashboard_settings": 911,

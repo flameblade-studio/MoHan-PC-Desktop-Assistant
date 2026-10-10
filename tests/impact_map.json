@@ -1349,7 +1349,6 @@
         "test_openai_vision_release_gate.py",
         "test_persona_dialogue_voice_extraction.py",
         "test_prompt_cache.py",
-        "test_public_profile_persona.py",
         "test_python315_runtime.py",
         "test_realtime_echo_final_transcript.py",
         "test_realtime_hybrid_transcription.py",
@@ -1392,7 +1391,6 @@
         "test_persona_dialogue_voice_extraction.py",
         "test_preview_packaging.py",
         "test_prompt_cache.py",
-        "test_public_profile_persona.py",
         "test_safe_error_integration.py",
         "test_service_status_localization.py",
         "test_v4_vision_architecture_contracts.py",
@@ -4104,8 +4102,7 @@
         "docs/character-pack/extraction-worklist.json",
         "docs/character-pack/extraction-worklist.md",
         "docs/character-pack/mohan-inventory-summary.md",
-        "docs/character-pack/mohan-inventory.json",
-        "domain/persona_defaults.py"
+        "docs/character-pack/mohan-inventory.json"
       ],
       "tests": [
         "test_build_character_inventory.py"
@@ -4334,6 +4331,16 @@
         "test_wellbeing_app_bridge.py",
         "test_wellbeing_occurrences.py",
         "test_wellbeing_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/persona_defaults.py"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_public_profile_persona.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

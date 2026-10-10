@@ -72,9 +72,8 @@
     }
   ],
   "embedded_code_classification_counts": {
-    "engine_extract": 1,
     "persisted_identifier": 2,
-    "product_shell_allowed": 15
+    "product_shell_allowed": 16
   },
   "files": [
     {
@@ -352,7 +351,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -369,7 +368,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -386,7 +385,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -420,7 +419,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -437,7 +436,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -452,7 +451,7 @@
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 133,
+          "line": 130,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -482,7 +481,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -499,7 +498,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -516,7 +515,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -550,7 +549,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -567,7 +566,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -582,7 +581,7 @@
       "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 132,
+          "line": 129,
           "path": "infrastructure/character_source_pack.py",
           "text": "rig = _load_rig(root, rig_component)"
         }
@@ -618,7 +617,7 @@
         {
           "line": 128,
           "path": "infrastructure/character_source_pack.py",
-          "text": "character_data = _load_character_data("
+          "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
@@ -90041,34 +90040,23 @@
       "work_package": null
     },
     {
-      "bytes": 5200,
+      "bytes": 5414,
       "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
       "content_categories": [
-        "identity",
-        "voice"
+        "product_identity"
       ],
       "content_locations": [
         {
-          "content_kind": "identity",
-          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "line": 18,
           "matched": "MoHan",
           "path": "domain/contracts.py",
-          "rule": "character_name_literal",
-          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py",
           "text": "DEFAULT_PROTECTED_SECRET_DESCRIPTION = \"MoHan protected secret\""
-        },
-        {
-          "content_kind": "voice",
-          "description": "墨寒偏好的聲音識別碼仍寫在原始碼。",
-          "line": 92,
-          "matched": "coral",
-          "path": "domain/contracts.py",
-          "rule": "character_voice_preference_literal",
-          "suggested_data_target": "assets/characters/mohan/voice/profile.json",
-          "text": "voice: str = \"coral\","
         }
       ],
       "estimated_difficulty": "low",
@@ -90223,10 +90211,9 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "8805f21ee64c12e56b17733893de4d6740513c47274dd62e5cabe7c430f01c71",
+      "sha256": "c33c74e5590e332ead2ee2a986fb221154649c6c9b57bcee610f87e5b8878b80",
       "suggested_data_targets": [
-        "assets/characters/mohan/persona/profile.json",
-        "assets/characters/mohan/voice/profile.json"
+        "infrastructure/app_resources.py"
       ],
       "symbols": [
         {
@@ -90290,7 +90277,7 @@
           "name": "SpeechListenerPort"
         }
       ],
-      "work_package": "persona-dialogue-voice-extraction"
+      "work_package": null
     },
     {
       "bytes": 11557,

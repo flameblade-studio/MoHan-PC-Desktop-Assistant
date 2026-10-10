@@ -89,7 +89,7 @@ class CloudSpeechEnginePort(Protocol):
         self,
         text: str,
         api_key: str,
-        voice: str = "coral",
+        voice: str = "",
         instructions: str = "",
     ) -> None: ...
 

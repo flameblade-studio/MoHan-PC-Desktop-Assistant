@@ -108,14 +108,9 @@ TRANSCRIPTION_PROFILE_KEYS = (
 
 
 def _legacy_profile_defaults() -> Mapping[str, object]:
-    """Build upgrade defaults after the composition root activates a character."""
-
-    return frozendict({
-        **active_character_data().identity.legacy_defaults,
-        "onboarding_complete": True,
-        "transcription_language": "zh",
-        "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
-    })
+    # Read on use: the composition root activates the character after import.
+    return frozendict({**active_character_data().identity.legacy_defaults, "onboarding_complete": True,
+                       "transcription_language": "zh", "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT})
 
 
 @dataclass(frozen=True, slots=True)
