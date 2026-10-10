@@ -5,10 +5,10 @@ lazy from pathlib import Path
 lazy from types import MappingProxyType
 
 lazy from PySide6.QtGui import QImage, QRegion
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS,
-    POSE_ATLAS_LAYERED_ROOT_NAME,
+    character_rig_manifest,
+    pose_atlas_layered_relative_root,
 )
 lazy from domain.outfit_pack import (
     OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
@@ -18,7 +18,7 @@ lazy from domain.outfit_pack import (
 lazy from domain.outfit_pack_makeup import HALF_BODY_RIGS
 lazy from infrastructure.image_alpha_regions import visible_alpha_region
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 _HALF_BODY_CANVAS = (
     _RIG_MANIFEST.half_body_asset_canvas.width,
     _RIG_MANIFEST.half_body_asset_canvas.height,
@@ -82,7 +82,7 @@ def load_core_hand_regions(asset_root: Path) -> CoreHandSnapshot | None:
         directory = (
             Path(asset_root) / CHARACTER_ASSET_PATHS["halfbody_layers"]
             if half_body else
-            Path(asset_root) / "assets/pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
+            Path(asset_root) / pose_atlas_layered_relative_root()
         )
         prefix = HALF_BODY_RIGS.get(view_id, view_id)
         paths = tuple(

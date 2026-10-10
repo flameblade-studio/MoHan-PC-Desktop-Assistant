@@ -18,21 +18,21 @@ lazy from PySide6.QtCore import QRect, QRectF, Qt
 lazy from PySide6.QtGui import QPainter, QPixmap, QRegion
 
 lazy from application.appearance_ports import AppearanceRenderOptions
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_LAYER_ROLES,
     CHARACTER_POSE_ROLES,
-    FLOAT_COMPARISON_EPSILON,
-    POSE_ATLAS_LAYERED_ROOT_NAME,
-    POSE_ATLAS_ROOT_NAME,
+    character_rig_manifest,
+    pose_atlas_layered_relative_root,
+    pose_atlas_relative_root,
 )
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from domain.qt_image_io import load_pixmap_png
 lazy from infrastructure.layered_full_body_assets import (
     LayeredFullBodyManifest,
     LayeredFullBodyView,
     VIEW_IDS,
-    load_layered_full_body_assets,
+    load_layered_full_body_assets as _load_layered_full_body_assets,
     snapshot_complete_expression_frames,
     snapshot_speech_frames,
 )
@@ -50,7 +50,7 @@ BLINK_VISIBLE_EPSILON = 1e-6
 AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
 # Breath lift scale: breath is normalized to [0, 1]; this maps the midpoint
 # (0.5) to zero lift and the extremes to a small vertical body rise/fall.
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 _FRONT_POSE = CHARACTER_POSE_ROLES["front_idle"]
 _BACK_HAIR_LAYER = CHARACTER_LAYER_ROLES["rear_hair"]
 _FRONT_HAIR_LAYERS = (
@@ -86,8 +86,8 @@ GESTURE_ENERGY_THRESHOLD = _RIG_MANIFEST.physics.gesture_energy_threshold
 # together: the seam-heal and face-restore passes below repaint authority
 # pixels over the composed layers, so a mismatched pair paints one
 # generation's face over the other's body.
-FULL_BODY_ASSET_DIR = Path("assets") / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
-FULL_BODY_AUTHORITY_DIR = Path("assets") / "pose-atlas" / POSE_ATLAS_ROOT_NAME
+FULL_BODY_ASSET_DIR = Path(pose_atlas_layered_relative_root())
+FULL_BODY_AUTHORITY_DIR = Path(pose_atlas_relative_root())
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 50
 # One static base composite (body..authority face) per recently used view;
@@ -99,6 +99,12 @@ REGISTERED_COMPOSITE_LAYERS = _RIG_MANIFEST.registered_composite_layers
 FACE_AUTHORITY_REGION_LAYERS = _RIG_MANIFEST.face_authority_layers
 _DEFAULT_MANIFEST: LayeredFullBodyManifest | None = None
 _DEFAULT_BOUND_PNG_BYTES: dict[str, bytes] | None = None
+
+
+def load_layered_full_body_assets(root: Path) -> LayeredFullBodyManifest:
+    """Expose a concrete composition callable across the lazy-import boundary."""
+
+    return _load_layered_full_body_assets(root)
 
 
 class LayeredFullBodyRenderer(CompleteExpressionRendering):

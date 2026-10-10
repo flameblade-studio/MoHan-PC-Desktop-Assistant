@@ -1,6 +1,8 @@
 """MoHan hand-evidence adapter for the product-neutral Huapu pose audit."""
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy import sys
@@ -55,6 +57,7 @@ def audit(
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--output", type=Path)

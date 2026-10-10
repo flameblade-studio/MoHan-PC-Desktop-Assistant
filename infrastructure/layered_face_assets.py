@@ -10,11 +10,10 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER
+lazy from domain.character_runtime import FULL_BODY_LAYER_Z_ORDER, character_rig_manifest
 lazy from domain.face_rig import FacePose
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 if (
     _RIG_MANIFEST.half_body_asset_canvas.width
     != _RIG_MANIFEST.half_body_asset_canvas.height

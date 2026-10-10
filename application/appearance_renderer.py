@@ -17,7 +17,7 @@ lazy from domain.appearance_dynamics import (
     MotionTransform,
     motion_group_for_slot,
 )
-lazy from domain.constants import CHARACTER_POSE_ROLES
+lazy from domain.character_runtime import CHARACTER_POSE_ROLES
 
 
 class AppearanceRenderError(RuntimeError):

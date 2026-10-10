@@ -18,6 +18,8 @@ Example (the official built-in item)::
 
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
 lazy import json
 lazy import sys
@@ -99,6 +101,7 @@ def scaffold(arguments: argparse.Namespace) -> dict[str, object]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("output", type=Path)
     parser.add_argument("--pack-id", required=True)
@@ -107,7 +110,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--item-name", required=True, help="zh-TW|zh-CN|en|ja-JP")
     parser.add_argument("--variant", action="append", required=True, help="id:zh-TW|zh-CN|en|ja-JP (repeatable)")
     parser.add_argument("--author", default="Flameblade Studio")
-    parser.add_argument("--license", default="CC BY 4.0")
+    parser.add_argument("--license", default="CC-BY-4.0")
     parser.add_argument("--pack-version", default="1.0.0")
     parser.add_argument("--app-range", default=">=4.0.0,<5.0.0")
     arguments = parser.parse_args(argv)

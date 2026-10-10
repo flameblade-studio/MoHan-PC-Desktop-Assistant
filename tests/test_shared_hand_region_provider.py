@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import sys
 lazy import importlib
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -46,6 +47,15 @@ def _write_front_hand_pair(root: Path) -> None:
 
 def _patch_composition_root(monkeypatch: pytest.MonkeyPatch, root: Path) -> None:
     original_resource_path = importlib.import_module("infrastructure.app_resources").resource_path
+    source = SimpleNamespace(
+        assets=SimpleNamespace(
+            asset_root=root,
+            resolve_path=lambda relative: root / relative,
+        ),
+    )
+    # The public composition root consumes the already selected source. Override
+    # that lookup within this test instead of mutating domain-global selection.
+    monkeypatch.setattr(service_container, "active_character_source", lambda: source)
     monkeypatch.setattr(
         service_container,
         "resource_path",

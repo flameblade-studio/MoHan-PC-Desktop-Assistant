@@ -10,13 +10,15 @@ lazy from pathlib import Path, PurePosixPath
 lazy from domain.character_pack.character_data_models import (
     EXPRESSION_SCHEMA as CHARACTER_EXPRESSION_SCHEMA,
     RIG_SCHEMA as CHARACTER_RIG_SCHEMA,
+    DialogueLocale,
     CharacterRigManifest,
     ExpressionStateCatalog,
     MohanCharacterData,
+    VoiceProfile,
 )
 lazy from domain.character_pack.appearance_data import APPEARANCE_DEFAULTS_SCHEMA
-lazy from domain.character_expression_data import load_expression_catalog
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_expression_data_loader import load_expression_catalog
+lazy from domain.character_pack.character_data_loader import load_character_data
 lazy from domain.character_pack.models import (
     CharacterPackComponent,
     CharacterPackFile,
@@ -27,15 +29,20 @@ lazy from domain.character_pack.models import (
 )
 lazy from domain.character_pack.validation import DEFAULT_LIMITS, validate_character_pack
 lazy from domain.character_pose import canonical_view_id
-lazy from domain.character_rig_data import load_rig_manifest
+lazy from domain.character_rig_data_loader import load_rig_manifest
+lazy from domain.character_runtime_bindings import (
+    CharacterRuntimeBindings,
+    load_character_runtime_bindings,
+)
 lazy from domain.character_source import (
     CharacterAppearanceContract,
-    CharacterAppearanceDefaults,
     CharacterAssets,
     CharacterBodyProfileReference,
     CharacterCanvas,
     CharacterPersona,
+    CharacterVoice,
 )
+lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 lazy from domain.language_support import canonical_ui_language
 
 IDENTITY_SCHEMA = "flameblade.character-identity-profile.v1"
@@ -72,6 +79,7 @@ class CharacterPackReader(
     CharacterAssets,
     CharacterPersona,
     CharacterAppearanceContract,
+    CharacterVoice,
 ):
     """Validate a complete data directory before exposing any character value."""
 
@@ -117,11 +125,15 @@ class CharacterPackReader(
             expression_component,
         )
         _verify_component_files(root, records, loaded_components)
-        character_root_path = root.joinpath(*character_root.parts)
-        character_data = _load_character_data(character_root_path, character_root.as_posix())
+        character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())
         rig = _load_rig(root, rig_component)
         expression_catalog = _load_expression_catalog(root, expression_component)
         _verify_component_files(root, records, loaded_components)
+        runtime_bindings = _load_declared_runtime_bindings(
+            root,
+            records,
+            character_root,
+        )
 
         canonical_name = str(character_data.identity.defaults["assistant_name"])
         if manifest.canonical_name != canonical_name or dict(manifest.display_names) != {
@@ -179,8 +191,12 @@ class CharacterPackReader(
         self._validation_result = result
         self._manifest = manifest
         self._root = root
+        self._character_data_root = root.joinpath(*character_root.parts)
         self._records = records
         self._canonical_name = canonical_name
+        self._character_data = character_data
+        self._expression_catalog = expression_catalog
+        self._identity = character_data.identity
         wake_word = str(character_data.identity.defaults["wake_word"])
         self._aliases = () if wake_word == canonical_name else (wake_word,)
         self._default_user_title = str(character_data.identity.defaults["user_title"])
@@ -189,15 +205,18 @@ class CharacterPackReader(
             for language in LANGUAGES
         }
         self._dialogue = {
-            language: character_data.dialogues[language].phrasebook
+            language: character_data.dialogues[language]
             for language in LANGUAGES
         }
         self._appearance_defaults = character_data.appearance_defaults
+        self._voice_profile = character_data.voice
         self._body_profile = CharacterBodyProfileReference(profile_id, profile_version)
         self._fullbody_canvas = fullbody_canvas
         self._halfbody_canvas = halfbody_canvas
         self._view_ids = tuple(canonical_view_id(yaw) for yaw in rig.view_ring.yaws)
         self._layer_order = rig.layer_z_order
+        self._rig_manifest = rig
+        self._runtime_bindings = runtime_bindings
 
     @property
     def validation_result(self) -> CharacterPackValidationResult:
@@ -206,6 +225,10 @@ class CharacterPackReader(
     @property
     def manifest(self) -> CharacterPackManifest:
         return self._manifest
+
+    @property
+    def character_id(self) -> str:
+        return self._manifest.character_id
 
     @property
     def assets(self) -> CharacterAssets:
@@ -218,6 +241,26 @@ class CharacterPackReader(
     @property
     def appearance(self) -> CharacterAppearanceContract:
         return self
+
+    @property
+    def voice(self) -> CharacterVoice:
+        return self
+
+    @property
+    def voice_profile(self) -> VoiceProfile:
+        return self._voice_profile
+
+    @property
+    def character_data(self) -> MohanCharacterData:
+        return self._character_data
+
+    @property
+    def character_data_root(self) -> Path:
+        return self._character_data_root
+
+    @property
+    def expression_catalog(self) -> ExpressionStateCatalog:
+        return self._expression_catalog
 
     @property
     def appearance_defaults(self) -> CharacterAppearanceDefaults:
@@ -253,6 +296,16 @@ class CharacterPackReader(
             _read_verified_file(self._root, record)
         return candidate
 
+    def resolve_optional_path(self, relative_path: str) -> Path | None:
+        path = _relative_path(relative_path)
+        name = path.as_posix()
+        directory_prefix = f"{name}/"
+        if name not in self._records and not any(
+            declared.startswith(directory_prefix) for declared in self._records
+        ):
+            return None
+        return self.resolve_path(relative_path)
+
     @property
     def canonical_name(self) -> str:
         return self._canonical_name
@@ -260,6 +313,10 @@ class CharacterPackReader(
     @property
     def aliases(self) -> tuple[str, ...]:
         return self._aliases
+
+    @property
+    def profile_defaults(self) -> Mapping[str, str]:
+        return self._identity.defaults
 
     def display_name(self, language: str) -> str:
         canonical_ui_language(language)
@@ -272,6 +329,9 @@ class CharacterPackReader(
     def persona_prompt(self, language: str) -> str:
         return self._persona_prompts[canonical_ui_language(language)]
 
+    def dialogue_locale(self, language: str) -> DialogueLocale:
+        return self._dialogue[canonical_ui_language(language)]
+
     def dialogue_line(
         self,
         language: str,
@@ -279,8 +339,33 @@ class CharacterPackReader(
         *,
         variation_index: int = 0,
     ) -> str:
-        lines = self._dialogue[canonical_ui_language(language)].get(key, ())
+        dialogue = self._dialogue[canonical_ui_language(language)]
+        lines = dialogue.phrasebook.get(key, ())
+        if not lines:
+            lines = dialogue.line_sets.get(key, ())
+        if not lines and key in dialogue.templates:
+            lines = (dialogue.templates[key],)
         return lines[variation_index % len(lines)] if lines else ""
+
+    def personalize_text(
+        self,
+        text: str,
+        *,
+        assistant_name: str,
+        user_title: str,
+        organization_name: str,
+    ) -> str:
+        replacements = {
+            **dict.fromkeys(self._identity.assistant_tokens, assistant_name),
+            **dict.fromkeys(self._identity.user_title_tokens, user_title),
+        }
+        if organization_name:
+            replacements[self._identity.organization_token] = organization_name
+        result = text
+        for source, target in replacements.items():
+            if target:
+                result = result.replace(source, target)
+        return result
 
     @property
     def body_profile(self) -> CharacterBodyProfileReference:
@@ -301,6 +386,14 @@ class CharacterPackReader(
     @property
     def layer_order(self) -> tuple[str, ...]:
         return self._layer_order
+
+    @property
+    def rig_manifest(self) -> CharacterRigManifest:
+        return self._rig_manifest
+
+    @property
+    def runtime_bindings(self) -> CharacterRuntimeBindings:
+        return self._runtime_bindings
 
 
 def _validated_directory_manifest(
@@ -554,7 +647,7 @@ def _verify_component_files(
 
 def _load_character_data(root: Path, relative_root: str) -> MohanCharacterData:
     try:
-        return load_mohan_character_data(root)
+        return load_character_data(root)
     except (OSError, UnicodeError, ValueError) as error:
         raise CharacterPackReadError(
             "invalid_component",
@@ -573,6 +666,38 @@ def _load_rig(root: Path, component: CharacterPackComponent) -> CharacterRigMani
             f"Character rig validation failed: {type(error).__name__}.",
             component.path,
         ) from None
+
+
+def _load_runtime_bindings(
+    root: Path,
+    relative_path: str,
+) -> CharacterRuntimeBindings:
+    path = root.joinpath(*PurePosixPath(relative_path).parts)
+    try:
+        return load_character_runtime_bindings(path)
+    except (OSError, UnicodeError, ValueError, RuntimeError) as error:
+        raise CharacterPackReadError(
+            "invalid_component",
+            f"Character runtime-binding validation failed: {type(error).__name__}.",
+            relative_path,
+        ) from None
+
+
+def _load_declared_runtime_bindings(
+    root: Path,
+    records: Mapping[str, CharacterPackFile],
+    character_root: PurePosixPath,
+) -> CharacterRuntimeBindings:
+    relative_path = _rooted_path(character_root, "rig/runtime-bindings.json")
+    record = records.get(relative_path)
+    if record is None:
+        raise CharacterPackReadError(
+            "missing_component",
+            "Character runtime bindings must be declared in the file inventory.",
+            relative_path,
+        )
+    _read_verified_file(root, record)
+    return _load_runtime_bindings(root, relative_path)
 
 
 def _load_expression_catalog(

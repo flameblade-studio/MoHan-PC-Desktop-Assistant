@@ -18,7 +18,9 @@ lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application import service_container
+lazy from application.presentation_ports import default_data_dir
 lazy from application.service_container import create_presentation_ports
+lazy from infrastructure.app_resources import resource_path
 lazy from domain.face_rig import ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme
 lazy from domain.outfit_pack_assets import OutfitPackError
 lazy from domain.outfit_pack_source_bound import parse_source_bound_expressions
@@ -30,8 +32,8 @@ lazy from infrastructure.exasperated_candidate_assets import (
     validate_formal_exasperated_install,
 )
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
-lazy from presentation.presentation_resources import FaceRenderLayers
 lazy from presentation.companion_face_animation import CompanionFaceAnimationMixin
+lazy from presentation.render_contracts import FaceRenderLayers
 
 PRODUCT_SIZE = 465
 NATIVE_MOUTH_SAMPLE = 550
@@ -263,8 +265,8 @@ def test_product_factory_requires_explicit_absolute_candidate_path(
         SimpleNamespace(load=load_appearance),
     )
     create_presentation_ports().face_renderer_factory()
-    assert appearance.store == service_container.presentation_contracts.default_data_dir() / "outfits"
-    assert appearance.official_pack_root == service_container.resource_path(".") / "assets/official-packs"
+    assert appearance.store == default_data_dir() / "outfits"
+    assert appearance.official_pack_root == resource_path(".") / "assets/official-packs"
     monkeypatch.setenv("MOHAN_EXASPERATED_CANDIDATE_DIR", "relative/candidate")
     with pytest.raises(ValueError, match="must be absolute"):
         create_presentation_ports().face_renderer_factory()
@@ -275,7 +277,7 @@ def test_default_factory_loads_formal_layers_and_preserves_other_pose(
 ) -> None:
     _app()
     monkeypatch.delenv("MOHAN_EXASPERATED_CANDIDATE_DIR", raising=False)
-    formal = service_container.resource_path(FORMAL_ASSET_RELATIVE_DIR).resolve()
+    formal = resource_path(FORMAL_ASSET_RELATIVE_DIR).resolve()
     validate_formal_exasperated_install(formal)
     renderer = create_presentation_ports().face_renderer_factory()
     assert renderer._exasperated_candidate_dir == formal
@@ -305,7 +307,7 @@ def test_default_install_missing_or_drifted_fails_closed(
 ) -> None:
     _app()
     monkeypatch.delenv("MOHAN_EXASPERATED_CANDIDATE_DIR", raising=False)
-    original = service_container.resource_path
+    original = resource_path
     missing = tmp_path / "missing"
     monkeypatch.setattr(
         service_container, "resource_path",
@@ -326,7 +328,7 @@ def test_default_install_missing_or_drifted_fails_closed(
 
 
 def test_formal_cosmetics_cannot_skip_pinned_owner_approval(tmp_path: Path) -> None:
-    formal = service_container.resource_path(FORMAL_ASSET_RELATIVE_DIR)
+    formal = resource_path(FORMAL_ASSET_RELATIVE_DIR)
     copied = tmp_path / "cosmetics-without-approval"
     shutil.copytree(formal, copied)
     manifest_path = copied / "appearance" / "manifest.json"

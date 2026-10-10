@@ -44,3 +44,11 @@ HOURS_PER_DAY: Final = 24
 SECONDS_PER_DAY: Final = 86_400
 
 FLOAT_COMPARISON_EPSILON: Final = 1e-9
+
+DEFAULT_TEXT_MODEL: Final = "gpt-5.6-luna"
+DEFAULT_TRANSCRIPTION_MODEL: Final = "gpt-4o-mini-transcribe"
+
+# Character-neutral observation fallbacks used before any weather source has
+# supplied a reading. Product shells may persist different observed values.
+DEFAULT_WEATHER_TEMPERATURE_C: Final = 24.0
+DEFAULT_WEATHER_CONDITION: Final = "indoor"

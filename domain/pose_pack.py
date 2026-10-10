@@ -11,7 +11,7 @@ lazy from pathlib import Path, PurePosixPath
 lazy from tempfile import NamedTemporaryFile
 
 lazy from domain.character_body_profile import MOHAN_BODY_PROFILE
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.character_full_body_rig import FULL_BODY_RIG_SCHEMA_VERSION
 
 FORMAT = "mohan-pose-pack"
@@ -22,7 +22,7 @@ BODY_PROFILE = frozendict({"id": MOHAN_BODY_PROFILE.profile_id, "version": MOHAN
 FULL_BODY_RIG_ID = "mohan-full-body-v1"
 FULL_BODY_CONTRACT = "full-body-v4"
 LEGACY_CONTRACT = "legacy-v3"
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 CANONICAL_YAWS = _RIG_MANIFEST.view_ring.yaws
 LEGACY_YAWS = (-30, 0, 30)
 BUILTIN_POSES = frozenset(_RIG_MANIFEST.pose_silhouettes.values())

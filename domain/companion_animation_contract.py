@@ -5,14 +5,12 @@ lazy from itertools import product
 
 lazy from PySide6.QtCore import QRect
 
-lazy from domain.character_runtime_data import (
-    default_expression_catalog,
-    default_rig_manifest,
-)
+lazy from domain.character_runtime import character_rig_manifest
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.lip_sync import VISEME_CLOSE_TRANSITION_SECONDS
 
-_RIG_MANIFEST = default_rig_manifest()
-_EXPRESSION_CATALOG = default_expression_catalog()
+_RIG_MANIFEST = character_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
 if _RIG_MANIFEST.character_id != _EXPRESSION_CATALOG.character_id:
     raise ValueError("Bundled expression catalog targets a different character.")
 

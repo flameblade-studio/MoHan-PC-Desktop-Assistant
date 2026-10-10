@@ -29,20 +29,21 @@ SelectionResolution = _outfit_pack_models.SelectionResolution
 lazy from domain.makeup_eye_states import parse_makeup_eye_states, validated_makeup_intensity
 lazy from domain.makeup_mouth_states import parse_mouth_states
 lazy from domain import outfit_pack_official
-lazy from domain.outfit_pack_official import OFFICIAL_PACK_IDS, builtin_makeup_resolution, resolve_builtin_sentinel
-# Resolve facade exports through module attributes so callers receive concrete
-# constants, classes, and functions without adding more eager-import exceptions.
-lazy from domain import outfit_pack_assets as _outfit_pack_assets
-FOUNDATION_SLOT = _outfit_pack_assets.FOUNDATION_SLOT
-GARMENT_SLOTS = _outfit_pack_assets.GARMENT_SLOTS
-MANIFEST = _outfit_pack_assets.MANIFEST
-MAKEUP_SLOTS = _outfit_pack_assets.MAKEUP_SLOTS
-MAKEUP_SLOTS_V2 = _outfit_pack_assets.MAKEUP_SLOTS_V2
-MAX_Z_ORDER = _outfit_pack_assets.MAX_Z_ORDER
-MIN_Z_ORDER = _outfit_pack_assets.MIN_Z_ORDER
-IncompatibleBodyProfileError = _outfit_pack_assets.IncompatibleBodyProfileError
-OutfitPackError = _outfit_pack_assets.OutfitPackError
-_parse_appearance_asset = _outfit_pack_assets.parse_appearance_asset
+from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations
+# Eager because these names are re-exported; a lazy import of a lazily imported
+# name exposes the lazy module proxy, so import the class directly for its API.
+from domain.outfit_pack_assets import (
+    FOUNDATION_SLOT,
+    GARMENT_SLOTS,
+    MANIFEST as MANIFEST,
+    MAKEUP_SLOTS,
+    MAKEUP_SLOTS_V2,
+    MAX_Z_ORDER,
+    MIN_Z_ORDER,
+    IncompatibleBodyProfileError,
+    OutfitPackError,
+    parse_appearance_asset as _parse_appearance_asset,
+)
 _asset = _parse_appearance_asset
 
 lazy from domain import outfit_pack_pose_assets as _outfit_pack_pose_assets
@@ -587,7 +588,7 @@ def installed_pack_path(
     *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
 ) -> Path:
     """Locate one installed or official pack archive by id; fails closed on an Use a recognized id."""
-    paths = _installed_pack_paths(store, official_pack_root=official_pack_root)
+    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     path = next((path for path in paths if path.stem == pack_id), None)
     if path is None:
         raise OutfitPackError("The selected appearance pack is not installed.")
@@ -597,7 +598,7 @@ def installed_pack_path(
 def list_installed_outfits(
     store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
 ) -> tuple[OutfitPack, ...]:
-    paths = _installed_pack_paths(store, official_pack_root=official_pack_root)
+    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     return tuple(pack for pack in map(inspect_installed_outfit_pack, paths) if pack is not None)
 
 
@@ -605,7 +606,7 @@ def list_stale_body_profile_packs(
     store: Path, *, official_pack_root: Path = OFFICIAL_PACK_ROOT,
 ) -> tuple[str, ...]:
     """Ids of installed packs made for another body-profile generation; they are listed for reference and stay outside rendering."""
-    paths = _installed_pack_paths(store, official_pack_root=official_pack_root)
+    paths = _installed_pack_paths(store, official_pack_root=official_pack_root, official_pack_ids=_active_official_pack_ids())
     return tuple(path.stem for path in paths if inspect_installed_outfit_pack(path) is None)
 
 
@@ -636,7 +637,7 @@ def list_installed_ensembles(
 
 def install_outfit_pack(source: Path, store: Path) -> OutfitPack:
     pack = inspect_outfit_pack(source)
-    if pack.pack_id in OFFICIAL_PACK_IDS:
+    if not official_pack_id_reservations_complete() or pack.pack_id in official_pack_ids():
         raise OutfitPackError("Official pack ids are reserved for the archives shipped with the app.")
     copy_pack_archive(source, store, pack.pack_id)
     return pack
@@ -710,7 +711,7 @@ def restore_builtin_outfit(store: Path) -> None:
 
 def remove_outfit_pack(store: Path, pack_id: str) -> RemovalResult:
     validated_id = _identifier(pack_id, "pack")
-    if validated_id == "builtin" or validated_id in OFFICIAL_PACK_IDS:
+    if validated_id == "builtin" or validated_id in official_pack_ids():
         raise OutfitPackError("The built-in appearance stays available.")
     packages = Path(store) / "packages"
     target = packages / f"{validated_id}.mohan-outfit"

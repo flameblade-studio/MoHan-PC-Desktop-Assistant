@@ -3,9 +3,10 @@ from __future__ import annotations
 lazy import sqlite3
 lazy import threading
 lazy import os
+lazy import logging
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
-lazy from pathlib import Path, PurePosixPath
+lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QObject
@@ -22,18 +23,25 @@ lazy from integrations.speech import (
     windows_voices,
 )
 lazy from application import presentation_ports as presentation_contracts
+lazy from application.character_runtime_bootstrap import (
+    ACTIVE_CHARACTER_ENV,
+    DEFAULT_CHARACTER_ID,
+    SUPPORTED_CHARACTER_IDS as _SUPPORTED_CHARACTER_IDS,
+    activate_product_character_runtime,
+)
 lazy from application.cloud_vision_runtime import CloudVisionRuntime
+lazy from application.character_profile_defaults import (
+    seed_character_profile_settings,
+)
 lazy from application.cloud_vision_ui_bridge import (
     CloudVisionRuntimeService,
     CloudVisionServiceFactoryPort,
     StoredVisionAuthorizationSource,
 )
-lazy from application.companion_phrasebook import public_companion_line
 lazy from application.native_acceleration import NativeAcceleration
 lazy from application.presentation_ports import (
     AIWorkerPort,
     PresentationPorts,
-    VoiceCatalogPort,
     bind_dashboard_portable_secrets,
 )
 lazy from domain.contracts import (
@@ -47,28 +55,22 @@ lazy from domain.contracts import (
     SpeechProviderRegistryPort,
     default_character_display_name,
 )
-lazy from domain.app_profile import DEFAULT_PROFILE, default_persona_for_language
-lazy from domain.character_body_profile import body_profile_reference
-lazy from domain.character_full_body_rig import compatible_yaws
-lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_source import (
-    CharacterAppearanceContract,
-    CharacterAppearanceDefaults,
-    CharacterAssets,
-    CharacterBodyProfileReference,
-    CharacterCanvas,
-    CharacterPersona,
     CharacterSource,
-    activate_character_source,
+    active_character_source,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_renderer_compatibility import validated_renderer_rig
 lazy from domain.language_support import (
     DEFAULT_UI_LANGUAGE,
     canonical_ui_language,
     localized_transcription_prompt,
 )
-lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER, POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.outfit_pack import MAKEUP_CANVASES
+lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+    POSE_ATLAS_RELATIVE_ROOT,
+)
+lazy from domain.outfit_pack import set_official_pack_id_reservations
 lazy from domain.openai_vision_preferences import VisionDetail
 lazy from domain.speech_providers import (
     SYSTEM_LOCAL_PROVIDER,
@@ -83,14 +85,29 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
+lazy from infrastructure.bundled_character_source import (
+    LegacyMohanCharacterSource,
+)
+lazy from infrastructure.installed_character_packs import (
+    CharacterPackInstallError,
+    load_development_character_pack_archive,
+    load_installed_character_pack,
+    list_installed_character_packs,
+)
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import (
     LayeredParametricFaceRenderer,
+    load_layered_face_assets,
+)
+lazy from infrastructure.layered_full_body_renderer import (
+    LayeredFullBodyRenderer,
+    load_layered_full_body_assets,
+)
+lazy from infrastructure.outfit_source_bound_expressions import (
     OutfitSourceBoundExpressionProvider,
 )
-lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance
@@ -126,127 +143,71 @@ lazy from integrations.realtime_speech_output import RealtimeSpeechOutput
 lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
-class LegacyMohanCharacterSource(
-    CharacterAssets,
-    CharacterPersona,
-    CharacterAppearanceContract,
-):
-    """Expose current MoHan values without duplicating character data."""
+_CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
+SUPPORTED_CHARACTER_IDS = _SUPPORTED_CHARACTER_IDS
 
-    def __init__(self, asset_root: Path) -> None:
-        self._asset_root = Path(asset_root)
 
-    @property
-    def assets(self) -> CharacterAssets:
-        return self
+def create_character_source(character_id: str) -> CharacterSource:
+    """Build one bundled or installed source and keep MoHan on rejection."""
 
-    @property
-    def persona(self) -> CharacterPersona:
-        return self
-
-    @property
-    def appearance(self) -> CharacterAppearanceContract:
-        return self
-
-    @property
-    def appearance_defaults(self) -> CharacterAppearanceDefaults:
-        return load_mohan_character_data().appearance_defaults
-
-    @property
-    def asset_root(self) -> Path:
-        return self._asset_root
-
-    def resolve_path(self, relative_path: str) -> Path:
-        normalized = _character_relative_path(relative_path)
-        root = self._asset_root.resolve(strict=True)
-        candidate = self._asset_root.joinpath(*normalized.parts)
-        if not candidate.resolve(strict=True).is_relative_to(root):
-            raise ValueError("Character asset paths must remain below the asset root.")
-        return candidate
-
-    @property
-    def canonical_name(self) -> str:
-        return str(DEFAULT_PROFILE["assistant_name"])
-
-    @property
-    def aliases(self) -> tuple[str, ...]:
-        wake_word = str(DEFAULT_PROFILE["wake_word"])
-        return () if wake_word == self.canonical_name else (wake_word,)
-
-    def display_name(self, language: str) -> str:
-        canonical_ui_language(language)
-        return self.canonical_name
-
-    def default_user_title(self, language: str) -> str:
-        canonical_ui_language(language)
-        return str(DEFAULT_PROFILE["user_title"])
-
-    def persona_prompt(self, language: str) -> str:
-        return default_persona_for_language(language)
-
-    def dialogue_line(
-        self,
-        language: str,
-        key: str,
-        *,
-        variation_index: int = 0,
-    ) -> str:
-        return public_companion_line(
-            language,
-            key,
-            variation_index=variation_index,
+    root = resource_path(".")
+    try:
+        source = activate_product_character_runtime(
+            root,
+            character_id=character_id,
+            development_archive_loader=load_development_character_pack_archive,
+            installed_loader=load_installed_character_pack,
         )
-
-    @property
-    def body_profile(self) -> CharacterBodyProfileReference:
-        reference = body_profile_reference()
-        profile_id = reference["id"]
-        version = reference["version"]
-        if (
-            not isinstance(profile_id, str)
-            or not isinstance(version, int)
-            or isinstance(version, bool)
-        ):
-            raise TypeError("The legacy body-profile reference is invalid.")
-        return CharacterBodyProfileReference(
-            profile_id=profile_id,
-            version=version,
-        )
-
-    @property
-    def view_ids(self) -> tuple[str, ...]:
-        return tuple(canonical_view_id(yaw) for yaw in compatible_yaws())
-
-    @property
-    def fullbody_canvas(self) -> CharacterCanvas:
-        width, height = MAKEUP_CANVASES["full-body"]
-        return CharacterCanvas(width, height, "RGBA")
-
-    @property
-    def halfbody_canvas(self) -> CharacterCanvas:
-        width, height = MAKEUP_CANVASES["half-body"]
-        return CharacterCanvas(width, height, "RGBA")
-
-    @property
-    def layer_order(self) -> tuple[str, ...]:
-        return FULL_BODY_LAYER_Z_ORDER
-
-
-def _character_relative_path(value: str) -> PurePosixPath:
-    if not isinstance(value, str) or not value or "\\" in value:
-        raise ValueError("Character asset paths must use relative POSIX syntax.")
-    path = PurePosixPath(value)
-    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
-        raise ValueError("Character asset paths must use canonical relative syntax.")
-    return path
+    except RuntimeError as error:
+        if error.__cause__ is not None:
+            bundled_source = LegacyMohanCharacterSource(root)
+            _reserve_official_pack_id_reservations(
+                bundled_source,
+                bundled_source=bundled_source,
+            )
+        raise
+    bundled_source = (
+        source
+        if source.character_id == DEFAULT_CHARACTER_ID
+        else LegacyMohanCharacterSource(root)
+    )
+    _reserve_official_pack_id_reservations(
+        source,
+        bundled_source=bundled_source,
+    )
+    return source
 
 
 def create_default_character_source() -> CharacterSource:
-    """Compose the compatibility source used by the unchanged MoHan runtime."""
+    """Select the launch-configured character while keeping MoHan as default."""
 
-    source = LegacyMohanCharacterSource(resource_path("."))
-    activate_character_source(source)
-    return source
+    return create_character_source(
+        os.environ.get(ACTIVE_CHARACTER_ENV, DEFAULT_CHARACTER_ID)
+    )
+
+
+def _reserve_official_pack_id_reservations(
+    source: CharacterSource,
+    *,
+    bundled_source: CharacterSource,
+    data_root: Path | None = None,
+) -> None:
+    """Refresh IDs from bundled, installed, and currently active sources."""
+
+    try:
+        installed_sources = list_installed_character_packs(data_root=data_root)
+    except CharacterPackInstallError:
+        installed_sources = ()
+        reservations_complete = False
+        _CHARACTER_SELECTION_LOGGER.exception("Official appearance ID scan failed")
+    else:
+        reservations_complete = True
+    sources = (bundled_source, *installed_sources, source)
+    pack_ids: set[str] = set()
+    for candidate in sources:
+        defaults = candidate.appearance.appearance_defaults
+        pack_ids.update((defaults.outfit_pack_id, defaults.makeup_pack_id))
+    set_official_pack_id_reservations(pack_ids, complete=reservations_complete)
 
 
 @dataclass
@@ -254,7 +215,9 @@ class CompanionServices:
     """Explicit dependencies owned by one companion-window runtime."""
 
     db: StudioDB
-    secret_store: SecretStorePort = field(repr=False)
+    secret_store: SecretStorePort = field(
+        repr=False,
+    )
     local_tts: LocalSpeechEnginePort
     cloud_tts: CloudSpeechEnginePort
     realtime: RealtimeVoicePort
@@ -288,7 +251,7 @@ class CompanionServices:
     )
 
 
-class _ProductionVoiceCatalog(VoiceCatalogPort):
+class _ProductionVoiceCatalog:
     """Expose the production voice adapters through one presentation port."""
 
     @staticmethod
@@ -373,7 +336,12 @@ def _create_ai_worker(
 def create_presentation_ports() -> PresentationPorts:
     """Build every presentation adapter once at the composition boundary."""
 
-    character_source = create_default_character_source()
+    return _create_presentation_ports(active_character_source())
+
+
+def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
+    """Build presentation adapters from the already selected character source."""
+
     asset_root = character_source.assets.asset_root
     official_pack_root = asset_root / "assets" / "official-packs"
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
@@ -396,8 +364,37 @@ def create_presentation_ports() -> PresentationPorts:
         )
 
     def face_renderer_factory() -> LayeredParametricFaceRenderer:
+        source_bound = hasattr(character_source, "appearance")
+        if source_bound:
+            validated_renderer_rig(character_source)
         configured = os.environ.get("MOHAN_EXASPERATED_CANDIDATE_DIR")
-        if configured is None:
+        candidate_dir = None
+        face_manifest = None
+        authority_dir = None
+        detachable_dir = None
+        if source_bound:
+            face_layer_root = character_source.assets.resolve_path(
+                str(CHARACTER_ASSET_PATHS["halfbody_layers"])
+            )
+            authority_dir = character_source.assets.resolve_path(
+                str(CHARACTER_ASSET_PATHS["halfbody_root"])
+            )
+            detachable_dir = character_source.assets.resolve_optional_path(
+                str(CHARACTER_ASSET_PATHS["halfbody_detachable"])
+            )
+            face_manifest = load_layered_face_assets(face_layer_root)
+            if getattr(character_source, "character_id", None) == DEFAULT_CHARACTER_ID:
+                if configured is None:
+                    candidate_dir = resource_path(FORMAL_ASSET_RELATIVE_DIR).resolve()
+                    validate_formal_exasperated_install(candidate_dir)
+                else:
+                    candidate_dir = Path(configured)
+                    if not candidate_dir.is_absolute():
+                        raise ValueError(
+                            "Exasperated candidate directory must be absolute."
+                        )
+                    candidate_dir = candidate_dir.resolve()
+        elif configured is None:
             candidate_dir = resource_path(FORMAL_ASSET_RELATIVE_DIR).resolve()
             validate_formal_exasperated_install(candidate_dir)
         else:
@@ -405,17 +402,27 @@ def create_presentation_ports() -> PresentationPorts:
             if not candidate_dir.is_absolute():
                 raise ValueError("Exasperated candidate directory must be absolute.")
             candidate_dir = candidate_dir.resolve()
-        appearance_dir = candidate_dir / "appearance"
+        appearance_dir = (
+            candidate_dir / "appearance" if candidate_dir is not None else None
+        )
         candidate_appearance = None
-        if appearance_dir.exists():
+        if (
+            candidate_dir is not None
+            and appearance_dir is not None
+            and appearance_dir.exists()
+        ):
             candidate_appearance = ExasperatedCandidateAppearance.load(
                 appearance_dir, official_pack_root=official_pack_root,
             )
             candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
-        elif configured is None:
+        elif candidate_dir is not None and configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
         renderer = LayeredParametricFaceRenderer(
+            manifest=face_manifest,
             outfit_overlay=outfit_overlay_factory(),
+            authority_dir=authority_dir,
+            detachable_dir=detachable_dir,
+            use_detachable=detachable_dir is not None,
             exasperated_candidate_dir=candidate_dir,
             candidate_appearance_overlay=candidate_appearance,
         )
@@ -426,6 +433,29 @@ def create_presentation_ports() -> PresentationPorts:
             )
         )
         return renderer
+
+    def full_body_renderer_factory(outfit_overlay=None):
+        if not hasattr(character_source, "appearance"):
+            # Keep the legacy structural test seam for older callers that pass
+            # a display-placement-only stub rather than a CharacterSource.
+            return LayeredFullBodyRenderer(
+                outfit_overlay=outfit_overlay,
+                display_placement=load_full_body_display_placement(
+                    character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)
+                ),
+            )
+        validated_renderer_rig(character_source)
+        layered_root = character_source.assets.resolve_path(
+            POSE_ATLAS_LAYERED_RELATIVE_ROOT
+        )
+        authority_root = character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)
+        manifest = load_layered_full_body_assets(layered_root)
+        return LayeredFullBodyRenderer(
+            manifest=manifest,
+            outfit_overlay=outfit_overlay,
+            authority_root=authority_root,
+            display_placement=load_full_body_display_placement(authority_root),
+        )
 
     return PresentationPorts(
         ai_worker_factory=_create_ai_worker,
@@ -438,12 +468,7 @@ def create_presentation_ports() -> PresentationPorts:
         face_renderer_factory=face_renderer_factory,
         visible_windows=visible_windows,
         outfit_overlay_factory=outfit_overlay_factory,
-        full_body_renderer_factory=lambda outfit_overlay=None: LayeredFullBodyRenderer(
-            outfit_overlay=outfit_overlay,
-            display_placement=load_full_body_display_placement(
-                character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)
-            ),
-        ),
+        full_body_renderer_factory=full_body_renderer_factory,
     )
 
 
@@ -623,7 +648,13 @@ def create_default_services(
     ui_language: str | None = None,
 ) -> CompanionServices:
     runtime_platform = platform_services or current_platform_services()
+    character_source = active_character_source()
     data_path.mkdir(parents=True, exist_ok=True)
+    _reserve_official_pack_id_reservations(
+        character_source,
+        bundled_source=LegacyMohanCharacterSource(resource_path(".")),
+        data_root=data_path,
+    )
     db = StudioDB(data_path / "mohan.db")
     language_value = (
         ui_language
@@ -631,6 +662,7 @@ def create_default_services(
         else db.setting("ui_language", DEFAULT_UI_LANGUAGE)
     )
     service_language = canonical_ui_language(str(language_value))
+    seed_character_profile_settings(db, character_source, service_language, protect_source_voice=not db.existing_install or character_source.character_id != DEFAULT_CHARACTER_ID)
     pcm_acceleration = NativeAcceleration()
     # Migrate at the composition boundary so headless and UI startup paths
     # share the same canonical provider setting.
@@ -732,7 +764,7 @@ def create_default_services(
             pcm_acceleration=pcm_acceleration,
         ),
         listener=listener,
-        presentation_ports=create_presentation_ports(),
+        presentation_ports=_create_presentation_ports(character_source),
         realtime_speech_output=_realtime_speech_output(
             runtime_platform,
             parent,

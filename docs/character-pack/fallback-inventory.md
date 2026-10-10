@@ -32,7 +32,7 @@
 | ID | 邊界 | 結論 |
 |---|---|---|
 | N-01 | `domain/character_pack/character_data.py:159-197`；`domain/character_rig_data.py:366-683`；`domain/character_expression_data.py:118-422`；`infrastructure/character_source_pack.py:299-573` | Persona、四語 dialogue、events、voice、rig、expression 或必需 pack component 缺漏或損壞時直接拒絕，沒有改讀寫死角色資料；測試見 `tests/test_character_runtime_data.py` 與 `tests/test_character_source.py:237-284`。 |
-| N-02 | `application/service_container.py:123-237,364-365` | `create_default_character_source()` 目前固定建立 `LegacyMohanCharacterSource`；這是第一階段維持既有執行行為的 composition 預設，不是角色 JSON 缺漏後才啟動的 fallback。pack reader 與 legacy adapter 欄位等值測試見 `tests/test_character_source.py:292-348`。 |
+| N-02 | `application/service_container.py` | `create_default_character_source()` 由組合根讀取作用中角色設定，未設定時明確選擇 `LegacyMohanCharacterSource`，指定 `lin-keyun` 時改建 `BundledCharacterSource`，未知值直接拒絕；這是啟動選角，不是角色 JSON 缺漏後才啟動的 fallback。測試見 `tests/test_active_character_switching.py` 與 `tests/test_character_source.py`。 |
 
 ### 後續處置
 
@@ -70,7 +70,7 @@
 | ID | 边界 | 结论 |
 |---|---|---|
 | N-01 | `domain/character_pack/character_data.py:159-197`；`domain/character_rig_data.py:366-683`；`domain/character_expression_data.py:118-422`；`infrastructure/character_source_pack.py:299-573` | 缺失或损坏时直接拒绝，不改读写死角色数据（另见：`tests/test_character_runtime_data.py`、`tests/test_character_source.py:237-284`）。 |
-| N-02 | `application/service_container.py:123-237,364-365` | 这是第一阶段维持既有运行行为的 composition 默认，不是角色 JSON 缺失后才启动的 fallback（另见：`create_default_character_source()`、`LegacyMohanCharacterSource`、`tests/test_character_source.py:292-348`）。 |
+| N-02 | `application/service_container.py` | `create_default_character_source()` 由组合根读取活动角色设置，未设置时明确选择 `LegacyMohanCharacterSource`，指定 `lin-keyun` 时改建 `BundledCharacterSource`，未知值直接拒绝；这是启动选角，不是角色 JSON 缺失后才启动的 fallback（另见：`tests/test_active_character_switching.py`、`tests/test_character_source.py`）。 |
 
 ### 后续处置
 
@@ -108,7 +108,7 @@ This inventory covers places where missing character data, assets, or legacy pro
 | ID | Boundary | Conclusion |
 |---|---|---|
 | N-01 | `domain/character_pack/character_data.py:159-197`；`domain/character_rig_data.py:366-683`；`domain/character_expression_data.py:118-422`；`infrastructure/character_source_pack.py:299-573` | Missing or invalid required data is rejected directly; no hard-coded character data is selected (See also `tests/test_character_runtime_data.py`, `tests/test_character_source.py:237-284`). |
-| N-02 | `application/service_container.py:123-237,364-365` | This is the phase-one composition default that preserves current behavior, not a fallback activated by missing character JSON (See also `create_default_character_source()`, `LegacyMohanCharacterSource`, `tests/test_character_source.py:292-348`). |
+| N-02 | `application/service_container.py` | `create_default_character_source()` reads the active-character setting at the composition root, explicitly selects `LegacyMohanCharacterSource` when unset, builds `BundledCharacterSource` for `lin-keyun`, and rejects unknown values. This is startup selection, not a fallback activated by missing character JSON (See also `tests/test_active_character_switching.py`, `tests/test_character_source.py`). |
 
 ### Follow-up disposition
 
@@ -146,7 +146,7 @@ Every F item remains unchanged until the Lin Keyun test character passes blink, 
 | ID | 境界 | 結論 |
 |---|---|---|
 | N-01 | `domain/character_pack/character_data.py:159-197`；`domain/character_rig_data.py:366-683`；`domain/character_expression_data.py:118-422`；`infrastructure/character_source_pack.py:299-573` | 必要データの欠落・破損は直接拒否し、ハードコードされたキャラクターデータへ切り替えない（参照：`tests/test_character_runtime_data.py`、`tests/test_character_source.py:237-284`）。 |
-| N-02 | `application/service_container.py:123-237,364-365` | これは現行挙動を保つ第一段階の composition 既定であり、character JSON 欠落時に起動する fallback ではない（参照：`create_default_character_source()`、`LegacyMohanCharacterSource`、`tests/test_character_source.py:292-348`）。 |
+| N-02 | `application/service_container.py` | `create_default_character_source()` は composition root で作用中キャラクター設定を読み、未設定時は `LegacyMohanCharacterSource`、`lin-keyun` 指定時は `BundledCharacterSource` を明示的に構築し、不明な値を拒否します。これは起動時の選択であり、character JSON 欠落時の fallback ではありません（参照：`tests/test_active_character_switching.py`、`tests/test_character_source.py`）。 |
 
 ### 後続対応
 

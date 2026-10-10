@@ -267,6 +267,7 @@ def test_fake_character_inventory_and_pack_build_are_product_neutral(tmp_path: P
 
 def test_character_asset_classification_uses_the_injected_root() -> None:
     expected = {
+        "LICENSE.md": "character_license_notice",
         "appearance/defaults.json": "character_appearance_defaults",
         "persona/ui-identifiers.json": "character_ui_identifier_data",
         "persona/en.json": "character_persona_data",

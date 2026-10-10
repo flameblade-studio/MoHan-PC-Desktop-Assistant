@@ -10,9 +10,8 @@ lazy from PySide6.QtWidgets import (
     QLineEdit, QPushButton, QSizePolicy,
     QScrollArea, QSplitter, QTabWidget, QVBoxLayout, QWidget,
 )
-lazy from application.presentation_ports import (
-    PlatformServicePort, PresentationDatabasePort, format_duration,
-)
+lazy from application.presentation_ports import PlatformServicePort, format_duration
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.wardrobe_service import BUILTIN_OUTFIT_ID
 lazy from domain.app_profile import (
     personalize_text, profile_setting, profile_window_title,
@@ -434,10 +433,10 @@ class DashboardShellMixin:  # ruff: ignore[blank-lines-top-level]
         if hasattr(self, "wardrobe_generate_button"):
             self.wardrobe_generate_button.setEnabled(status not in {"generating", "generating-with-trend-search"})
         if status == "body-profile-outdated":
-            # The runtime already restored the built-in outfit; keep the saved choice in step so the saved choice keeps the current pack selection.
-            self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)
+            self.db.set_setting("active_outfit_id", BUILTIN_OUTFIT_ID)  # runtime already restored the built-in look
         if status in {"installed", "installed-manual-lock", "outfit-selected", "body-profile-outdated"}:
             self._reload_wardrobe_packages()
+            self._refresh_wardrobe_preview()
 
     def _reload_wardrobe_packages(self) -> None:
         reload_wardrobe_packages(self)

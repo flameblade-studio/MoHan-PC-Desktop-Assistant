@@ -18,11 +18,11 @@ lazy from domain.companion_animation_contract import (
     SPEAKING_BLINK_PREFIXES,
 )
 lazy from domain.expression_system import FaceAnchorProfile
-lazy from domain.constants import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
+lazy from domain.character_runtime import CHARACTER_ASSET_PATHS, CHARACTER_LAYER_ROLES
 lazy from presentation.companion_speech_mask import recover_speech_mask_edges
 # Eager on purpose: a base class must be the real class, not a lazy proxy.
 lazy from presentation.companion_blink_composite import CompanionBlinkCompositeMethods
-lazy from presentation.presentation_resources import resource_path
+lazy from presentation.resource_paths import resource_path
 
 __all__ = ("CompanionFaceAssetMethods",)
 

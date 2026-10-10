@@ -43,6 +43,7 @@ LICENSE_STATUSES = frozenset({
     "all_rights_reserved",
     "owner_decision_pending",
 })
+SUPPORTED_SPDX_LICENSE_EXPRESSIONS = frozenset({"CC-BY-NC-ND-4.0"})
 DEPENDENCY_KINDS = frozenset({"outfit_pack", "dlc"})
 COMPONENT_KINDS = frozenset({
     "appearance_defaults",
@@ -93,6 +94,9 @@ SHA256 = re.compile(r"[0-9a-f]{64}\Z")
 MEDIA_TYPE = re.compile(r"[a-z0-9][a-z0-9!#$&^_.+-]{0,63}/[a-z0-9][a-z0-9!#$&^_.+-]{0,63}\Z")
 FEATURE = re.compile(r"[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?\Z")
 KEY_ID = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9._:-]{0,126}[A-Za-z0-9])?\Z")
+LICENSE_REFERENCE = re.compile(
+    r"LicenseRef-[A-Za-z0-9](?:[A-Za-z0-9.-]{0,126}[A-Za-z0-9])?\Z"
+)
 MAX_NAME_LENGTH = 160
 MAX_SCOPE_LENGTH = 500
 ED25519_SIGNATURE_BYTES = 64
@@ -386,6 +390,25 @@ def _licenses(value: object) -> tuple[LicenseDeclaration, ...]:
         notice = entry["notice_path"]
         if notice is not None:
             notice = _validate_safe_path(notice)
+        if status_value == "declared_license":
+            if not isinstance(expression, str):
+                raise _ValidationFailure(
+                    "license_incomplete",
+                    "Declared licenses require a license expression.",
+                )
+            if expression in SUPPORTED_SPDX_LICENSE_EXPRESSIONS:
+                pass
+            elif LICENSE_REFERENCE.fullmatch(expression) is not None:
+                if notice is None:
+                    raise _ValidationFailure(
+                        "license_incomplete",
+                        "LicenseRef declarations require a bundled notice.",
+                    )
+            else:
+                raise _ValidationFailure(
+                    "unsupported_license",
+                    f"licenses.{component}.license_expression is not supported.",
+                )
         declarations.append(LicenseDeclaration(component, status_value, holder, expression, notice))
     return tuple(declarations)
 

@@ -8,7 +8,7 @@ lazy import zipfile
 lazy from collections.abc import Callable
 
 lazy from domain._outfit_pack_models import AppearanceItem
-lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain.character_runtime import character_rig_manifest
 lazy from domain.outfit_pack_assets import (
     MANIFEST,
     IncompatibleBodyProfileError,
@@ -19,7 +19,7 @@ lazy from domain.outfit_pack_assets import (
 
 FORMAT = "mohan-outfit-pack"
 VERSION = 2
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 BODY_PROFILE_ID = _RIG_MANIFEST.body_profile_id
 BODY_PROFILE_VERSION = _RIG_MANIFEST.body_profile_version
 AUTHORING_TEMPLATE = "mohan-official-poses"
@@ -34,6 +34,22 @@ MANIFEST_KEYS = frozenset({
     "headwear", "accessories", "ensembles",
 })
 LICENSE = re.compile(r"[A-Za-z0-9 .()+-]{1,120}\Z")
+SUPPORTED_SOURCE_LICENSES = frozenset({
+    "All Rights Reserved",
+    "All Rights Reserved - see ASSETS-LICENSE.md",
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "CC BY 4.0",
+    "CC BY-NC-ND 4.0",
+    "CC-BY-4.0",
+    "CC-BY-NC-ND-4.0",
+    "CC0-1.0",
+    "MIT",
+    # Legacy value written by the self-generating wardrobe before 2026-10-10;
+    # kept so outfits users already generated and installed keep loading.
+    "Project License",
+})
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
 
@@ -84,7 +100,11 @@ def source_declaration(manifest: dict) -> tuple[str, str, str]:
         raise OutfitPackError("Provide a supported source declaration.")
     if source["reference_included"] is not False:
         raise OutfitPackError("Provide a supported source declaration.")
-    if not isinstance(source["license"], str) or not LICENSE.fullmatch(source["license"]):
+    if (
+        not isinstance(source["license"], str)
+        or not LICENSE.fullmatch(source["license"])
+        or source["license"] not in SUPPORTED_SOURCE_LICENSES
+    ):
         raise OutfitPackError("Provide a supported source declaration.")
     return source["kind"], validate_author(source["author"]), source["license"]
 

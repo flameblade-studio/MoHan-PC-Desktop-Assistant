@@ -2,7 +2,7 @@
 
 ## 繁體中文
 
-角色包是一份可以單獨下載的「角色行李箱」，把角色身分、資料清冊與權利說明放在一起。驗證器會確認行李箱完整、符合引擎版本，並安全拒絕可疑內容。墨寒仍由原產品提供原有體驗；本階段只新增格式與獨立驗證工具。可獨立下載是格式能力，公開、私有、素材授權與 DLC 關係依擁有者決定。
+角色包是一份可以單獨下載的「角色行李箱」，把角色身分、資料清冊與權利說明放在一起。驗證器會確認行李箱完整、符合引擎版本，並安全拒絕可疑內容。墨寒仍由原產品提供原有體驗；本階段只新增格式與獨立驗證工具。格式仍可表達公開、私有與待決狀態；目前墨寒與林可芸角色包公開附於墨寒專案發布頁，角色素材與付費 DLC 均採 CC BY-NC-ND 4.0，DLC 與角色包的關係仍待擁有者決定。
 
 ### 入口與身分
 
@@ -14,13 +14,13 @@ v1 使用 `flameblade.character-pack.v1`，資料夾與 ZIP 根目錄都放 `man
 
 `engine_compatibility` 恰含 `api_version`、`min_engine_version`、`max_engine_version_exclusive`、`required_features`。API 是正整數；版本範圍下限包含、上限排除，且下限小於上限。必要功能識別碼採相同字元規則、上限 64 字元且唯一；驗證時由呼叫端明確提供目前版本、API 與功能。布林值不當成整數。
 
-可選 `dependencies` 是陣列，每筆恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，種類為 `outfit_pack` 或 `dlc`，版本採同一範圍規則，必要旗標為布林值。這只表達關係；本階段不下載、安裝或解析依賴，DLC 的授權與角色歸屬另行決定。
+可選 `dependencies` 是陣列，每筆恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，種類為 `outfit_pack` 或 `dlc`，版本採同一範圍規則，必要旗標為布林值。這只表達關係；本階段不下載、安裝或解析依賴。付費 DLC 採 CC BY-NC-ND 4.0；DLC 與角色包的依賴、歸屬及封裝關係仍由擁有者另行決定。
 
 ### 權利與散布
 
 `distribution` 恰含 `standalone_downloadable`、`access`、`redistribution`，首項必須為 true。存取狀態為 `public`、`private`、`owner_decision_pending`；再散布狀態為 `allowed`、`prohibited`、`owner_decision_pending`。這些是宣告，驗證成功不代表發布授權。
 
-`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某類目前無檔案也要完整宣告。每類恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。狀態接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；權利人須為非空文字，上限 500 字元。已宣告授權須附非空授權表達式，上限 500 字元，可使用 SPDX 或 LicenseRef；其餘狀態的表達式為 null。說明文件路徑可為 null，有值時必須列入檔案清冊。工具核對完整性，授權的法律效力與發布資格由擁有者審定。
+`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某類目前無檔案也要完整宣告。每類恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。狀態接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；權利人須為非空文字，上限 500 字元。v1 已知的 SPDX 表達式為 `CC-BY-NC-ND-4.0`；自訂 `LicenseRef-*` 必須附非 null 說明文件路徑。其他未知表達式以 `unsupported_license` 安全拒絕，其餘狀態的表達式為 null。說明文件路徑有值時必須列入檔案清冊。工具核對完整性，授權的法律效力與發布資格由擁有者審定。
 
 ### 檔案、來源與核准
 
@@ -60,9 +60,15 @@ ZIP 大小、預檢與內容讀取使用同一個已開啟檔案，避免預檢�
 
 資料夾逐項串流列舉，項目數超過上限一筆就停止，避免先把大量目錄項目收集到記憶體。
 
+### 安裝與選角
+
+墨寒產品封裝只內建 `assets/characters/mohan`。`install_character_pack()` 把使用者另行取得的 ZIP 以相同驗證器核對格式、逐檔雜湊、權利宣告與目前引擎相容性，再原子安裝到既有使用者資料根目錄的 `character-packs/<character-id>/`。此位置與設定資料共用平台慣例及 `MOHAN_DATA_DIR` 覆寫，避免把可變下載內容寫進唯讀程式安裝目錄。既有安裝不會被覆寫。
+
+`MOHAN_ACTIVE_CHARACTER=mohan` 永遠使用內建墨寒；其他值只查已安裝且再次驗證通過的角色目錄。失敗會拒絕候選、記錄可讀原因並恢復墨寒。開發者可明確設定 `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` 測試本機 ZIP；未設定時此路徑停用，設定後仍執行完整驗證且不建立持久安裝。
+
 ### API 與最小範例
 
-`validate_character_pack` 回傳 `CharacterPackValidationResult`，包含 valid、來源種類、已驗證 manifest、問題碼與路徑、成功檢查檔數與位元組數、邏輯雜湊及簽章狀態。失敗不回傳 manifest，停止於第一個問題；失敗時計數僅保留已完成階段的數據。可搜尋的問題碼包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。工具只讀本機資料，未接入產品執行期。
+`validate_character_pack` 回傳 `CharacterPackValidationResult`，包含 valid、來源種類、已驗證 manifest、問題碼與路徑、成功檢查檔數與位元組數、邏輯雜湊及簽章狀態。失敗不回傳 manifest，停止於第一個問題；失敗時計數僅保留已完成階段的數據。可搜尋的問題碼包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。驗證器只讀本機資料；產品殼的安裝與執行期 reader 共用此契約。
 
 完整有效清單見 [最小清單](minimal-manifest.json)，對應合成資料見 [來源資料](example-source.json)。下例由專案根目錄執行，複製兩份合成資料建立最小包；例中權利與公開決策均保留未決定。
 
@@ -88,7 +94,7 @@ with TemporaryDirectory() as temporary:
 
 ## 简体中文
 
-角色包是一份可以单独下载的“角色行李箱”，把角色身份、数据清单与权利说明放在一起。验证器确认行李箱完整、符合引擎版本，并安全拒绝可疑内容。墨寒仍由原产品提供原有体验；本阶段只新增格式与独立验证工具。可独立下载是格式能力，公开、私有、素材授权与 DLC 关系由所有者决定。
+角色包是一份可以单独下载的“角色行李箱”，把角色身份、数据清单与权利说明放在一起。验证器确认行李箱完整、符合引擎版本，并安全拒绝可疑内容。墨寒仍由原产品提供原有体验；本阶段只新增格式与独立验证工具。格式仍可表达公开、私有和待定状态；目前墨寒与林可芸角色包公开附于墨寒项目发布页，角色素材与付费 DLC 均采用 CC BY-NC-ND 4.0，DLC 与角色包的关系仍待所有者决定。
 
 ### 入口与身份
 
@@ -100,13 +106,13 @@ v1 使用 `flameblade.character-pack.v1`，文件夹与 ZIP 根目录都放 `man
 
 `engine_compatibility` 恰含 `api_version`、`min_engine_version`、`max_engine_version_exclusive`、`required_features`。API 是正整数；版本范围包含下限、排除上限，且下限小于上限。必要功能标识码采用相同字符规则、上限 64 字符且唯一；验证时由调用端明确提供当前版本、API 与功能。布尔值不当作整数。
 
-可选 `dependencies` 是数组，每项恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，种类为 `outfit_pack` 或 `dlc`，版本采用同一范围规则，必要标记为布尔值。这只表达关系；本阶段不下载、安装或解析依赖，DLC 的授权与角色归属另行决定。
+可选 `dependencies` 是数组，每项恰含 `id`、`kind`、`min_version`、`max_version_exclusive`、`required`。ID 唯一，种类为 `outfit_pack` 或 `dlc`，版本采用同一范围规则，必要标记为布尔值。这只表达关系；本阶段不下载、安装或解析依赖。付费 DLC 采用 CC BY-NC-ND 4.0；DLC 与角色包的依赖、归属及封装关系仍由所有者另行决定。
 
 ### 权利与分发
 
 `distribution` 恰含 `standalone_downloadable`、`access`、`redistribution`，首项必须为 true。访问状态为 `public`、`private`、`owner_decision_pending`；再分发状态为 `allowed`、`prohibited`、`owner_decision_pending`。这些是声明，验证成功不代表发布授权。
 
-`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某类目前无文件也要完整声明。每类恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。状态接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；权利人须为非空文本，上限 500 字符。已声明授权须附非空授权表达式，上限 500 字符，可使用 SPDX 或 LicenseRef；其余状态的表达式为 null。说明文件路径可为 null，有值时必须列入文件清单。工具核对完整性，授权的法律效力与发布资格由所有者审定。
+`licenses` 恰含 `program_data`、`character_art`、`persona_dialogue`、`voice`，即使某类目前无文件也要完整声明。每类恰含 `status`、`rights_holder`、`license_expression`、`notice_path`。状态接受 `declared_license`、`all_rights_reserved`、`owner_decision_pending`；权利人须为非空文本，上限 500 字符。v1 已知的 SPDX 表达式为 `CC-BY-NC-ND-4.0`；自定义 `LicenseRef-*` 必须附非 null 说明文件路径。其他未知表达式以 `unsupported_license` 安全拒绝，其余状态的表达式为 null。说明文件路径有值时必须列入文件清单。工具核对完整性，授权的法律效力与发布资格由所有者审定。
 
 ### 文件、来源与批准
 
@@ -146,9 +152,15 @@ ZIP 大小、预检与内容读取使用同一个已打开文件，避免预检�
 
 文件夹逐项流式枚举，项目数超过上限一项就停止，避免先把大量目录项目收集到内存。
 
+### 安装与选角
+
+墨寒产品封装只内置 `assets/characters/mohan`。`install_character_pack()` 使用同一验证器核对用户另行取得的 ZIP 的格式、逐文件哈希、权利声明与当前引擎兼容性，再原子安装到现有用户数据根目录的 `character-packs/<character-id>/`。该位置与设置数据共用平台惯例及 `MOHAN_DATA_DIR` 覆盖，避免把可变下载内容写入只读程序安装目录。现有安装不会被覆盖。
+
+`MOHAN_ACTIVE_CHARACTER=mohan` 始终使用内置墨寒；其他值只查找已安装且再次验证通过的角色目录。失败会拒绝候选、记录可读原因并恢复墨寒。开发者可明确设置 `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` 测试本地 ZIP；未设置时该路径停用，设置后仍执行完整验证且不建立持久安装。
+
 ### API 与最小示例
 
-`validate_character_pack` 返回 `CharacterPackValidationResult`，包含 valid、来源类型、已验证 manifest、问题码与路径、成功检查文件数与字节数、逻辑哈希及签名状态。失败不返回 manifest，停止于首个问题；失败时计数仅保留已完成阶段的数据。可搜索的问题码包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。工具只读本地数据，未接入产品运行时。
+`validate_character_pack` 返回 `CharacterPackValidationResult`，包含 valid、来源类型、已验证 manifest、问题码与路径、成功检查文件数与字节数、逻辑哈希及签名状态。失败不返回 manifest，停止于首个问题；失败时计数仅保留已完成阶段的数据。可搜索的问题码包括 `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine`。验证器只读本地数据；产品壳的安装与运行时 reader 共用该契约。
 
 完整有效清单见 [最小清单](minimal-manifest.json)，对应合成数据见 [来源数据](example-source.json)。下例从项目根目录执行，复制两份合成数据建立最小包；例中权利与公开决策均保留未决定。
 
@@ -174,7 +186,7 @@ with TemporaryDirectory() as temporary:
 
 ## English
 
-A character pack is a downloadable suitcase containing a character's identity, file inventory, and rights declarations. The validator checks completeness and engine compatibility and safely rejects suspicious content. MoHan continues to provide its existing experience through the original product; this phase adds a format and a standalone validator. Standalone download is a format capability; the owner decides public or private access, asset licensing, and DLC relationships.
+A character pack is a downloadable suitcase containing a character's identity, file inventory, and rights declarations. The validator checks completeness and engine compatibility and safely rejects suspicious content. MoHan continues to provide its existing experience through the original product; this phase adds a format and a standalone validator. The format still represents public, private, and pending states. The public MoHan release page currently carries the MoHan and Lin Keyun packs under CC BY-NC-ND 4.0. Paid DLC uses the same license; its relationship to a character pack remains an owner decision.
 
 ### Entry point and identity
 
@@ -186,13 +198,13 @@ v1 uses `flameblade.character-pack.v1`, with `manifest.json` at the directory or
 
 `engine_compatibility` contains exactly `api_version`, `min_engine_version`, `max_engine_version_exclusive`, and `required_features`. The API is a positive integer; version ranges include the lower bound and exclude the upper bound, with a strictly smaller lower bound. Required feature identifiers use the same character rules, are unique, and allow at most 64 characters; callers explicitly supply their engine version, API, and features. Booleans are not treated as integers.
 
-Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, `min_version`, `max_version_exclusive`, and `required`. IDs are unique, kinds are `outfit_pack` or `dlc`, version ranges follow the same rules, and the required flag is boolean. This only declares relationships; this phase does not download, install, or resolve dependencies. DLC licensing and character ownership remain separate decisions.
+Optional `dependencies` is an array whose entries contain exactly `id`, `kind`, `min_version`, `max_version_exclusive`, and `required`. IDs are unique, kinds are `outfit_pack` or `dlc`, version ranges follow the same rules, and the required flag is boolean. This only declares relationships; this phase does not download, install, or resolve dependencies. Paid DLC uses CC BY-NC-ND 4.0; its dependency, ownership, and packaging relationship to a character pack remains a separate owner decision.
 
 ### Rights and distribution
 
 `distribution` contains exactly `standalone_downloadable`, `access`, and `redistribution`, with the first value set to true. Access states are `public`, `private`, and `owner_decision_pending`; redistribution states are `allowed`, `prohibited`, and `owner_decision_pending`. These are declarations; successful validation does not grant publication permission.
 
-`licenses` contains exactly `program_data`, `character_art`, `persona_dialogue`, and `voice`, including categories with no current files. Each category contains exactly `status`, `rights_holder`, `license_expression`, and `notice_path`. States are `declared_license`, `all_rights_reserved`, and `owner_decision_pending`; the rights holder is nonempty text limited to 500 characters. A declared license requires a nonempty expression of at most 500 characters, which can use SPDX or LicenseRef; other states use null expressions. Notice paths may be null and otherwise must appear in the file inventory. The tool checks completeness; the owner reviews legal validity and publication eligibility.
+`licenses` contains exactly `program_data`, `character_art`, `persona_dialogue`, and `voice`, including categories with no current files. Each category contains exactly `status`, `rights_holder`, `license_expression`, and `notice_path`. States are `declared_license`, `all_rights_reserved`, and `owner_decision_pending`; the rights holder is nonempty text limited to 500 characters. The v1 known SPDX expression is `CC-BY-NC-ND-4.0`; a custom `LicenseRef-*` requires a non-null notice path. Other unknown expressions fail closed with `unsupported_license`, and the other states use null expressions. A present notice path must appear in the file inventory. The tool checks completeness; the owner reviews legal validity and publication eligibility.
 
 ### Files, sources, and approvals
 
@@ -232,9 +244,15 @@ ZIP size checks, preflight, and payload reads share one open file so replacing t
 
 Directory enumeration streams entries and stops after one entry beyond the ceiling, avoiding allocation of a complete directory listing before enforcing the limit.
 
+### Installation and character selection
+
+MoHan product packages bundle only `assets/characters/mohan`. `install_character_pack()` applies the same validator to a separately obtained ZIP, checking its format, per-file hashes, rights declarations, and current-engine compatibility before atomically installing it at `character-packs/<character-id>/` below the existing user-data root. This follows the settings platform convention and `MOHAN_DATA_DIR` override while keeping mutable downloads out of the read-only application directory. Existing installations are never overwritten.
+
+`MOHAN_ACTIVE_CHARACTER=mohan` always selects bundled MoHan. Any other value searches only an installed directory that passes validation again. Rejection records a readable reason and restores MoHan. Developers may explicitly set `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` to test a local ZIP; the path is disabled when unset, still performs full validation when enabled, and creates no persistent installation.
+
 ### API and minimal example
 
-`validate_character_pack` returns `CharacterPackValidationResult`, containing valid, source kind, a validated manifest, issue codes and paths, successfully checked file and byte counts, logical hash, and signature status. Failure returns no manifest and stops at the first issue; failure counts retain only completed-stage data. Searchable codes include `unsupported_schema`, `missing_file`, `file_hash_mismatch`, `unsafe_path`, `suspicious_compression_ratio`, `file_too_large`, `license_incomplete`, and `incompatible_engine`. The tool reads local data and is not connected to the product runtime.
+`validate_character_pack` returns `CharacterPackValidationResult`, containing valid, source kind, a validated manifest, issue codes and paths, successfully checked file and byte counts, logical hash, and signature status. Failure returns no manifest and stops at the first issue; failure counts retain only completed-stage data. Searchable codes include `unsupported_schema`, `missing_file`, `file_hash_mismatch`, `unsafe_path`, `suspicious_compression_ratio`, `file_too_large`, `license_incomplete`, and `incompatible_engine`. The validator reads only local data; the product-shell installer and runtime reader share this contract.
 
 See the complete valid [minimal manifest](minimal-manifest.json) and its [synthetic source data](example-source.json). Run the following from the repository root to copy both synthetic files into a minimal pack; rights and publication decisions remain pending in this example.
 
@@ -260,7 +278,7 @@ with TemporaryDirectory() as temporary:
 
 ## 日本語
 
-キャラクターパックは、キャラクターの身元、ファイル一覧、権利の宣言をまとめた、単独でダウンロードできる「荷物箱」です。検証器は完全性とエンジンの互換性を確認し、疑わしい内容を安全に拒否します。墨寒の既存体験は元の製品が引き続き提供し、この段階では形式と独立した検証器を追加します。単独ダウンロードは形式の能力であり、公開・非公開、素材のライセンス、DLC の関係は所有者が決めます。
+キャラクターパックは、キャラクターの身元、ファイル一覧、権利の宣言をまとめた、単独でダウンロードできる「荷物箱」です。検証器は完全性とエンジンの互換性を確認し、疑わしい内容を安全に拒否します。墨寒の既存体験は元の製品が引き続き提供し、この段階では形式と独立した検証器を追加します。形式は公開、非公開、決定待ちを引き続き表現できます。現在は墨寒と林可芸のパックを墨寒プロジェクトの公開ページで公開し、素材と有料 DLC には CC BY-NC-ND 4.0 を適用します。DLC とキャラクターパックの関係は所有者の決定待ちです。
 
 ### 入口と身元
 
@@ -272,13 +290,13 @@ v1 は `flameblade.character-pack.v1` を使用し、フォルダーまたは ZI
 
 `engine_compatibility` は `api_version`、`min_engine_version`、`max_engine_version_exclusive`、`required_features` のみを含みます。API は正の整数、バージョン範囲は下限を含み上限を除外し、下限は上限より小さくなります。必須機能の識別子は同じ文字規則を使用し、最大 64 文字で一意です。呼び出し側が現在のバージョン、API、機能を明示します。真偽値は整数として扱いません。
 
-省略可能な `dependencies` は配列で、各項目は `id`、`kind`、`min_version`、`max_version_exclusive`、`required` のみを含みます。ID は一意、種類は `outfit_pack` または `dlc`、バージョン範囲は同じ規則、必須フラグは真偽値です。これは関係を宣言するだけで、この段階では依存先のダウンロード、インストール、解決を行いません。DLC のライセンスとキャラクターへの帰属は別途決定します。
+省略可能な `dependencies` は配列で、各項目は `id`、`kind`、`min_version`、`max_version_exclusive`、`required` のみを含みます。ID は一意、種類は `outfit_pack` または `dlc`、バージョン範囲は同じ規則、必須フラグは真偽値です。これは関係を宣言するだけで、この段階では依存先のダウンロード、インストール、解決を行いません。有料 DLC には CC BY-NC-ND 4.0 を適用し、キャラクターパックとの依存、帰属、同梱関係は所有者が別途決定します。
 
 ### 権利と配布
 
 `distribution` は `standalone_downloadable`、`access`、`redistribution` のみを含み、最初の値は true です。アクセス状態は `public`、`private`、`owner_decision_pending`、再配布状態は `allowed`、`prohibited`、`owner_decision_pending` です。これらは宣言であり、検証成功によって公開の許可が与えられることはありません。
 
-`licenses` は `program_data`、`character_art`、`persona_dialogue`、`voice` を正確に含み、現時点でファイルがない分類にも完全な宣言が必要です。各分類は `status`、`rights_holder`、`license_expression`、`notice_path` のみを含みます。状態は `declared_license`、`all_rights_reserved`、`owner_decision_pending` を受け入れ、権利者は空でない最大 500 文字のテキストです。宣言済みライセンスには空でない最大 500 文字の式が必要で、SPDX または LicenseRef を使えます。他の状態は null の式を使います。説明文書のパスは null にでき、値がある場合は一覧に記載します。ツールは完全性を確認し、法的有効性と公開資格は所有者が審査します。
+`licenses` は `program_data`、`character_art`、`persona_dialogue`、`voice` を正確に含み、現時点でファイルがない分類にも完全な宣言が必要です。各分類は `status`、`rights_holder`、`license_expression`、`notice_path` のみを含みます。状態は `declared_license`、`all_rights_reserved`、`owner_decision_pending` を受け入れ、権利者は空でない最大 500 文字のテキストです。v1 で既知の SPDX 式は `CC-BY-NC-ND-4.0` です。独自の `LicenseRef-*` には null ではない説明文書のパスが必要です。その他の未知の式は `unsupported_license` で安全側に拒否し、他の状態は null の式を使います。説明文書のパスがある場合は一覧に記載します。ツールは完全性を確認し、法的有効性と公開資格は所有者が審査します。
 
 ### ファイル、出典、承認
 
@@ -318,9 +336,15 @@ ZIP のサイズ確認、事前検査、内容の読み取りには同じ開い�
 
 フォルダーは項目を一つずつ列挙し、上限を一項目超えた時点で停止します。大量の項目を先にメモリーへ集める処理を避けます。
 
+### インストールとキャラクター選択
+
+墨寒の製品パッケージには `assets/characters/mohan` だけを同梱します。`install_character_pack()` は別途取得した ZIP に同じ検証器を適用し、形式、ファイル別ハッシュ、権利宣言、現在のエンジンとの互換性を確認してから、既存のユーザーデータルートにある `character-packs/<character-id>/` へ原子的にインストールします。設定データと同じプラットフォーム慣例および `MOHAN_DATA_DIR` の上書きを使い、変更可能なダウンロードを読み取り専用のアプリケーションディレクトリーへ書き込みません。既存のインストールは上書きしません。
+
+`MOHAN_ACTIVE_CHARACTER=mohan` は常に同梱の墨寒を選択します。他の値は、再検証に合格したインストール済みディレクトリーだけを検索します。拒否時は読みやすい理由を記録し、墨寒へ戻します。開発者は `MOHAN_DEV_CHARACTER_PACK_ARCHIVE` を明示してローカル ZIP をテストできます。未設定時はこの経路を無効にし、有効時も完全な検証を行い、永続インストールは作りません。
+
 ### API と最小例
 
-`validate_character_pack` は `CharacterPackValidationResult` を返し、valid、出典種別、検証済み manifest、問題コードとパス、成功したファイル数とバイト数、論理ハッシュ、署名状態を含みます。失敗時は manifest を返さず最初の問題で停止し、件数は完了済み段階のデータだけを保持します。検索可能なコードには `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine` があります。ツールはローカルデータを読み取り、製品の実行時には接続されていません。
+`validate_character_pack` は `CharacterPackValidationResult` を返し、valid、出典種別、検証済み manifest、問題コードとパス、成功したファイル数とバイト数、論理ハッシュ、署名状態を含みます。失敗時は manifest を返さず最初の問題で停止し、件数は完了済み段階のデータだけを保持します。検索可能なコードには `unsupported_schema`、`missing_file`、`file_hash_mismatch`、`unsafe_path`、`suspicious_compression_ratio`、`file_too_large`、`license_incomplete`、`incompatible_engine` があります。検証器はローカルデータだけを読み取り、製品シェルのインストーラーと実行時 reader が同じ契約を共有します。
 
 有効な完全一覧は [最小一覧](minimal-manifest.json)、対応する合成データは [出典データ](example-source.json) を参照してください。次の例をリポジトリーのルートから実行し、二つの合成ファイルをコピーして最小パックを作成します。この例では権利と公開の決定を保留しています。
 

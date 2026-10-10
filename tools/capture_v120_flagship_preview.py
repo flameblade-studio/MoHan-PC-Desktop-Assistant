@@ -12,6 +12,7 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.app_resources import STYLE
 
@@ -34,6 +35,7 @@ def background(width: int, height: int, kind: str) -> QImage:
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     output = Path(sys.argv[1])
     with TemporaryDirectory() as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir

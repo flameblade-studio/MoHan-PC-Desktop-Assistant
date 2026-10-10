@@ -20,12 +20,13 @@ lazy from domain.companion_animation_contract import (
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.character_runtime_data import default_expression_catalog, default_rig_manifest
-lazy from domain.constants import (
+lazy from domain.character_runtime import (
     CHARACTER_ASSET_PATHS,
     CHARACTER_EXPRESSION_ROLES,
     CHARACTER_LAYER_ROLES,
+    character_rig_manifest,
 )
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.face_rig import FaceMotionFrame, Viseme
 lazy from domain.qt_image_io import optional_pixmap, require_pixmap
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
@@ -43,7 +44,7 @@ from infrastructure.outfit_source_bound_expressions import (
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
     LayeredFacePose,
-    load_layered_face_assets,
+    load_layered_face_assets as _load_layered_face_assets,
 )
 # Public compatibility re-export retained after the painting helper split.
 from infrastructure.layered_face_painting import MAX_CACHED_MASK_BOUNDS as MAX_CACHED_MASK_BOUNDS
@@ -60,8 +61,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
 SEAM_HEAL_RADIUS = 7
-_RIG_MANIFEST = default_rig_manifest()
-_EXPRESSION_CATALOG = default_expression_catalog()
+_RIG_MANIFEST = character_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
 _EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
 _EXASPERATED_SOURCE_ID = "exasperated_front"
 _CHEEK_SILHOUETTE = _RIG_MANIFEST.pose_silhouettes["cheek"]
@@ -89,6 +90,12 @@ _TOP_LAYERS = _RIG_MANIFEST.layer_z_order[20:]
 
 
 lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
+
+
+def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
+    """Expose a concrete composition callable across the lazy-import boundary."""
+
+    return _load_layered_face_assets(root)
 
 
 class LayeredParametricFaceRenderer(

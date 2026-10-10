@@ -16,8 +16,8 @@ lazy from domain.outfit_pack import (
 )
 lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_CATEGORIES,
-    OFFICIAL_OUTFIT_PACK_ID,
     is_official_native_alias,
+    official_outfit_pack_id,
 )
 lazy from domain.constants import (
     CHARACTER_ASSET_PATHS,
@@ -425,7 +425,7 @@ class ActiveOutfitBaseClearMixin:
         garment = self._resolve_base_clear_selection("garment")
         if (
             garment.status == "builtin"
-            or garment.effective_pack_id == OFFICIAL_OUTFIT_PACK_ID
+            or garment.effective_pack_id == official_outfit_pack_id()
         ):
             return QRegion(), False
         archive_path, _item, variant = self._selected_variant("garment", garment)
@@ -601,7 +601,7 @@ class ActiveOutfitBaseClearMixin:
         if not garment_is_active:
             return None
         garment = self._resolve_base_clear_selection("garment")
-        if garment.effective_pack_id != OFFICIAL_OUTFIT_PACK_ID:
+        if garment.effective_pack_id != official_outfit_pack_id():
             return None
         silhouette = self._official_silhouette_region(view_id, canvas_size)
         if silhouette is None:
@@ -619,7 +619,10 @@ class ActiveOutfitBaseClearMixin:
         result = True
         for category in OFFICIAL_OUTFIT_CATEGORIES:
             selected = self._resolve_base_clear_selection(category)
-            if getattr(selected, "effective_pack_id", None) == OFFICIAL_OUTFIT_PACK_ID:
+            if (
+                getattr(selected, "effective_pack_id", None)
+                == official_outfit_pack_id()
+            ):
                 continue
             requested = tuple(
                 getattr(selected, f"requested_{field}", None)

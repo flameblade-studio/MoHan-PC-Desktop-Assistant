@@ -5,8 +5,10 @@ from __future__ import annotations
 lazy import zipfile
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_EXPRESSION_ROLES
+lazy from domain.character_runtime import (
+    CHARACTER_EXPRESSION_ROLES,
+    character_rig_manifest,
+)
 lazy from domain._outfit_pack_models import AppearanceAsset
 lazy from domain.outfit_pack_assets import (
     GARMENT_SLOTS,
@@ -16,7 +18,7 @@ lazy from domain.outfit_pack_assets import (
     validate_pose_assets,
 )
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 BASE_SILHOUETTES = tuple(_RIG_MANIFEST.pose_silhouettes.values())
 GESTURE_SILHOUETTES = tuple(_RIG_MANIFEST.gesture_silhouettes.values())
 POSE_ATLAS_SILHOUETTES = tuple(

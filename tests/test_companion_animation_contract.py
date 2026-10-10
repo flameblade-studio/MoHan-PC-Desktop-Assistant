@@ -213,6 +213,9 @@ def test_module_import_does_not_load_app() -> None:
         script = (
             "import importlib, sys\n"
             "assert 'app' not in sys.modules\n"
+            # The product composition root activates the character first.
+            "from tests.character_runtime_support import activate_bundled_character_runtime\n"
+            "activate_bundled_character_runtime()\n"
             f"importlib.import_module({module!r})\n"
             "assert 'app' not in sys.modules\n"
         )

@@ -47,6 +47,7 @@ lazy from PySide6.QtGui import QGuiApplication, QImage, QPixmap, QRegion
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from domain.constants import POSE_ATLAS_LAYERED_ROOT_NAME
 lazy from domain.outfit_pack import (
@@ -74,7 +75,7 @@ lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_ENSEMBLE_ID, OFFICI
 
 # Character art is studio property; see ASSETS-LICENSE.md (the manifest field only
 # admits letters, digits, spaces and ``.()+-``).
-ASSETS_LICENSE_NAME = "All Rights Reserved - see ASSETS-LICENSE.md"
+ASSETS_LICENSE_NAME = "CC-BY-NC-ND-4.0"
 AUTHOR = "Flameblade Studio"
 PACK_VERSION = "1.0.0"
 APP_VERSION_RANGE = ">=4.0.0,<5.0.0"
@@ -494,6 +495,7 @@ def seal(manifest_path: Path, asset_root: Path, output: Path, replace: bool) -> 
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--layers", type=Path, required=True, help="directory with one <silhouette>/ folder per required silhouette")
     parser.add_argument("--outfit-authoring", type=Path, required=True, help="where manifest.json + assets/ of the outfit pack are written")

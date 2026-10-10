@@ -6,8 +6,7 @@ lazy from PySide6.QtCore import QPoint, QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QLinearGradient, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QLabel, QWidget
 
-lazy from domain.character_runtime_data import default_rig_manifest
-lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from domain.character_runtime import CHARACTER_ASSET_PATHS, character_rig_manifest
 lazy from domain.companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
     EXPRESSION_DERIVED_VISEME_FRAMES,
@@ -17,11 +16,11 @@ lazy from domain.companion_animation_contract import (
     PHYSICS_POSE_SUFFIXES,
     PHYSICS_SPEECH_FRAME_PREFIXES,
 )
-lazy from presentation.presentation_resources import resource_path
+lazy from presentation.resource_paths import resource_path
 
 __all__ = ("CompanionVisualPhysicsMethods",)
 
-_RIG_MANIFEST = default_rig_manifest()
+_RIG_MANIFEST = character_rig_manifest()
 
 # Physics-layer redraw thresholds (radians) for stable repaint cadence.
 SLEEVE_ANGLE_EPSILON = 0.012

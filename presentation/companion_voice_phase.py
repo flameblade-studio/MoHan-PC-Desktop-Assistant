@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-lazy from domain.app_profile import profile_setting
+lazy from domain.character_source import profile_setting
 lazy from domain.safe_error_localization import safe_error_message
 lazy from domain.speech_configuration import VOICE_ENGINE_SYSTEM
 lazy from presentation.ui_localization import ui_text

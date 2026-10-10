@@ -183,6 +183,10 @@ def test_character_data_files_are_runtime_data(
     assert rows[f"{prefix}dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
     assert rows[f"{prefix}persona/ui-identifiers.json"]["category"] == "character_ui_identifier_data"
     assert rows[f"{prefix}appearance/defaults.json"]["category"] == "character_appearance_defaults"
+    license_notice = rows[f"{prefix}LICENSE.md"]
+    assert license_notice["category"] == "character_license_notice"
+    assert license_notice["scope"] == "runtime_data"
+    assert license_notice["readers"]
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
@@ -362,9 +366,10 @@ def test_summary_fragment_and_owner_boundaries(
     assert not audit_fragment(fragment)
     decisions = inventory["owner_decisions"]
     assert decisions["standalone_download_design"] is True
-    assert decisions["pack_visibility"] == "private_repository"
-    for key in ("character_asset_license", "dlc_relationship"):
-        assert decisions[key] == "owner_decision_pending"
+    assert decisions["pack_visibility"] == "public_mohan_release_page"
+    assert decisions["character_asset_license"] == "CC-BY-NC-ND-4.0"
+    assert decisions["paid_dlc_license"] == "CC-BY-NC-ND-4.0"
+    assert decisions["dlc_relationship"] == "owner_decision_pending"
     for row in inventory["files"]:
         if row["scope"] == "embedded_code":
             assert row["migration"] == builder.EMBEDDED

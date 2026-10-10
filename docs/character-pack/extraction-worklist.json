@@ -6,11 +6,11 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 21,
+    "actual_embedded_code_files": 22,
     "engine_extract_files": 4,
     "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
-    "product_shell_allowed_files": 17,
+    "product_shell_allowed_files": 18,
     "true_extraction_files": 4,
     "ui_text_reference_files": 0,
     "work_packages": 1
@@ -76,7 +76,7 @@
           "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 30,
+              "line": 28,
               "matched": "exasperated_front",
               "text": "EXPRESSION_ID = \"exasperated_front\""
             }
@@ -89,7 +89,7 @@
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 31,
+              "line": 29,
               "matched": "front-exasperated",
               "text": "SILHOUETTE = \"front-exasperated\""
             }
@@ -140,7 +140,7 @@
           "description": "角色專屬表情或狀態名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 66,
+              "line": 67,
               "matched": "exasperated_front",
               "text": "_EXASPERATED_SOURCE_ID = \"exasperated_front\""
             }
@@ -185,10 +185,11 @@
   ],
   "owner_decisions": {
     "art_tool_license": "MIT",
-    "character_asset_license": "owner_decision_pending",
+    "character_asset_license": "CC-BY-NC-ND-4.0",
     "dlc_relationship": "owner_decision_pending",
     "engine_license": "MIT",
-    "pack_visibility": "private_repository",
+    "pack_visibility": "public_mohan_release_page",
+    "paid_dlc_license": "CC-BY-NC-ND-4.0",
     "standalone_download_design": true
   },
   "product_shell_allowed": [
@@ -225,7 +226,7 @@
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
           "locations": [
             {
-              "line": 56,
+              "line": 55,
               "matched": "mohan.default.blue-silver",
               "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
             }
@@ -250,12 +251,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 298,
+              "line": 209,
               "matched": "assets/pose-atlas/v5",
               "text": "POSE_ATLAS_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base\""
             },
             {
-              "line": 299,
+              "line": 210,
               "matched": "assets/pose-atlas/v5",
               "text": "POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base-layered\""
             }
@@ -273,6 +274,31 @@
       "work_package": null
     },
     {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 18,
+              "matched": "MoHan",
+              "text": "DEFAULT_PROTECTED_SECRET_DESCRIPTION = \"MoHan protected secret\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "domain/contracts.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
       "classification": "persisted_identifier",
       "content": [
         {
@@ -280,7 +306,7 @@
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
           "locations": [
             {
-              "line": 40,
+              "line": 54,
               "matched": "mohan.default.blue-silver",
               "text": "DEFAULT_OUTFIT_SELECTION_ID = \"mohan.default.blue-silver\""
             }
@@ -768,17 +794,17 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 877,
+              "line": 874,
               "matched": "墨寒",
               "text": "form.addRow(QLabel(self._t(\"about_heading\", \"<b>關於墨寒</b>\")))"
             },
             {
-              "line": 881,
+              "line": 878,
               "matched": "墨寒",
               "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
             },
             {
-              "line": 882,
+              "line": 879,
               "matched": "MoHan",
               "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
             }
@@ -868,57 +894,57 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 49,
+              "line": 52,
               "matched": "墨寒",
               "text": "\"window_title\": \"墨寒桌面陪伴工作助理 — macOS／Linux Preview\","
             },
             {
-              "line": 51,
+              "line": 54,
               "matched": "墨寒",
               "text": "\"heading\": \"墨寒已抵達此平台，但仍在整備中\","
             },
             {
-              "line": 53,
+              "line": 56,
               "matched": "墨寒",
               "text": "\"這個安裝包用來驗證墨寒能在 macOS／Linux 啟動、顯示四語介面，\""
             },
             {
-              "line": 74,
+              "line": 77,
               "matched": "墨寒",
               "text": "\"在原生安全保存完成前，墨寒不會退回明文保存，也不會假裝功能可用。\""
             },
             {
-              "line": 79,
+              "line": 82,
               "matched": "墨寒",
               "text": "\"window_title\": \"墨寒桌面陪伴工作助手 — macOS／Linux Preview\","
             },
             {
-              "line": 81,
+              "line": 84,
               "matched": "墨寒",
               "text": "\"heading\": \"墨寒已抵达此平台，但仍在整备中\","
             },
             {
-              "line": 83,
+              "line": 86,
               "matched": "墨寒",
               "text": "\"此安装包用于验证墨寒能在 macOS／Linux 启动、显示四语界面，\""
             },
             {
-              "line": 104,
+              "line": 107,
               "matched": "墨寒",
               "text": "\"原生安全保存完成前，墨寒不会退回明文保存，也不会假装功能可用。\""
             },
             {
-              "line": 111,
+              "line": 114,
               "matched": "MoHan",
               "text": "\"heading\": \"MoHan has arrived on this platform—carefully\","
             },
             {
-              "line": 136,
+              "line": 139,
               "matched": "MoHan",
               "text": "\"fields. Until native secure storage is verified, MoHan will not \""
             },
             {
-              "line": 144,
+              "line": 147,
               "matched": "墨寒",
               "text": "\"heading\": \"墨寒はこの環境へ到着しました。現在は慎重に整備中です\","
             }
@@ -931,17 +957,17 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 109,
+              "line": 112,
               "matched": "MoHan",
               "text": "\"window_title\": \"MoHan Desktop Assistant — macOS/Linux Preview\","
             },
             {
-              "line": 142,
+              "line": 145,
               "matched": "墨寒",
               "text": "\"window_title\": \"墨寒デスクトップアシスタント — macOS／Linux Preview\","
             },
             {
-              "line": 397,
+              "line": 401,
               "matched": "MoHan",
               "text": "app.setApplicationName(\"MoHan Desktop Assistant Preview\")"
             }

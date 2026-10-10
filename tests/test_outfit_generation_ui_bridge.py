@@ -54,9 +54,13 @@ class _DashboardProbe:
         self.wardrobe_status = _WidgetProbe()
         self.wardrobe_generate_button = _WidgetProbe()
         self.reloads = 0
+        self.preview_refreshes = 0
 
     def _reload_wardrobe_packages(self) -> None:
         self.reloads += 1
+
+    def _refresh_wardrobe_preview(self) -> None:
+        self.preview_refreshes += 1
 
     @staticmethod
     def _t(_key: str, fallback: str, **_values: object) -> str:
@@ -75,6 +79,7 @@ def test_trend_generation_keeps_chargeable_button_disabled() -> None:
     DashboardShellMixin.set_outfit_generation_status(dashboard, "installed")
     assert dashboard.wardrobe_generate_button.enabled
     assert dashboard.reloads == 1
+    assert dashboard.preview_refreshes == 1
 
     DashboardShellMixin.set_outfit_generation_status(
         dashboard,

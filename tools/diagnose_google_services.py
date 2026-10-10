@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import json
 lazy import sys
 lazy import time
@@ -137,6 +139,7 @@ def _run_probes(probes: dict[str, Probe]) -> int:
 
 
 def main(data_path_text: str) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     token, status = _load_access_token(data_path_text)
     if token is None:
         return status

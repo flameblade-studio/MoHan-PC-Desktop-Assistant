@@ -226,6 +226,9 @@ README_AUTO_MEDIA_SHA256 = {
     "docs/media/portraits/gentle_smile_front.png": (
         "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
     ),
+    "docs/media/portraits/idle_front.png": (
+        "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+    ),
     "docs/media/portraits/mock_hit_front.png": (
         "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
     ),
@@ -274,10 +277,17 @@ def _assert_media_provenance(manifest: dict[str, object]) -> None:
     entries = manifest.get("entries")
     assert isinstance(entries, dict)
     references = _readme_media_references()
-    assert set(entries) == references, (
-        f'README media provenance requires alignment: outstanding={sorted(references - set(entries))}, unexpected='
-        f'{sorted(set(entries) - references)}'
+    media_root = MEDIA_PROVENANCE_PATH.parent
+    media_files = {
+        path.relative_to(ROOT).as_posix()
+        for path in media_root.rglob("*")
+        if path.is_file() and path != MEDIA_PROVENANCE_PATH
+    }
+    assert set(entries) == media_files, (
+        f'media provenance requires alignment: outstanding={sorted(media_files - set(entries))}, '
+        f'unexpected={sorted(set(entries) - media_files)}'
     )
+    assert references <= set(entries), sorted(references - set(entries))
 
     stale: list[str] = []
     auto_entries: set[str] = set()
