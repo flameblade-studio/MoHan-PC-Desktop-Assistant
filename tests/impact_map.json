@@ -4176,8 +4176,7 @@
         "docs/character-pack/extraction-worklist.json",
         "docs/character-pack/extraction-worklist.md",
         "docs/character-pack/mohan-inventory-summary.md",
-        "docs/character-pack/mohan-inventory.json",
-        "tests/impact_map.json"
+        "docs/character-pack/mohan-inventory.json"
       ],
       "tests": [
         "test_build_character_inventory.py"
@@ -4417,6 +4416,16 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_public_profile_persona.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tests/impact_map.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_pytest_collection_contract.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
