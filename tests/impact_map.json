@@ -6450,6 +6450,18 @@
     },
     {
       "paths": [
+        "domain/outfit_pack_archive.py"
+      ],
+      "tests": [
+        "test_garment_makeup_occlusion.py",
+        "test_openai_outfit_generator.py",
+        "test_outfit_pack.py",
+        "test_self_generating_wardrobe.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "tests/test_outfit_pack.py"
       ],
       "tests": [

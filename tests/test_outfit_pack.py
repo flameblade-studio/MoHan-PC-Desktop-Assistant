@@ -16,6 +16,7 @@ lazy from tempfile import TemporaryDirectory
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from application.outfit_pack_builder import build_outfit_pack
+lazy from domain.outfit_pack_archive import SUPPORTED_SOURCE_LICENSES
 lazy from domain.outfit_pack import (
     EXPRESSION_SILHOUETTE_ALIASES,
     GESTURE_SILHOUETTES,
@@ -225,7 +226,10 @@ def test_source_license_allowlist_accepts_supported_values(tmp_path: Path) -> No
         "CC-BY-NC-ND-4.0",
         "CC0-1.0",
         "MIT",
+        "Project License",
     )
+    # The archive allowlist is the single source of truth; keep this list in step.
+    assert frozenset(supported) == SUPPORTED_SOURCE_LICENSES
     for index, license_name in enumerate(supported):
         manifest, assets = _manifest(_png())
         manifest["source"]["license"] = license_name
@@ -233,6 +237,13 @@ def test_source_license_allowlist_accepts_supported_values(tmp_path: Path) -> No
             _pack(tmp_path / f"supported-{index}.mohan-outfit", manifest, assets)
         )
         assert pack.license_name == license_name
+
+
+def test_legacy_generated_outfit_license_still_loads(tmp_path: Path) -> None:
+    manifest, assets = _manifest(_png())
+    manifest["source"]["license"] = "Project License"
+    pack = inspect_outfit_pack(_pack(tmp_path / "legacy.mohan-outfit", manifest, assets))
+    assert pack.license_name == "Project License"
 
 
 def test_source_license_allowlist_rejects_unknown_value(tmp_path: Path) -> None:

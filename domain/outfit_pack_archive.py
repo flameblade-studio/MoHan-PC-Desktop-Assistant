@@ -45,6 +45,9 @@ SUPPORTED_SOURCE_LICENSES = frozenset({
     "CC-BY-NC-ND-4.0",
     "CC0-1.0",
     "MIT",
+    # Legacy value written by the self-generating wardrobe before 2026-10-10;
+    # kept so outfits users already generated and installed keep loading.
+    "Project License",
 })
 SEMVER = re.compile(r"\d+\.\d+\.\d+\Z")
 APP_RANGE = re.compile(r">=\d+\.\d+\.\d+,<\d+\.\d+\.\d+\Z")
