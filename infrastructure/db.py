@@ -98,12 +98,6 @@ MODEL_DEFAULT_MIGRATIONS = (
         "gpt-5.6-luna",
     ),
 )
-LEGACY_PROFILE_DEFAULTS = frozendict({
-    **active_character_data().identity.legacy_defaults,
-    "onboarding_complete": True,
-    "transcription_language": "zh",
-    "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
-})
 TRANSCRIPTION_PROFILE_KEYS = (
     "ui_language",
     "assistant_name",
@@ -111,6 +105,17 @@ TRANSCRIPTION_PROFILE_KEYS = (
     "organization_name",
     "wake_word",
 )
+
+
+def _legacy_profile_defaults() -> Mapping[str, object]:
+    """Build upgrade defaults after the composition root activates a character."""
+
+    return frozendict({
+        **active_character_data().identity.legacy_defaults,
+        "onboarding_complete": True,
+        "transcription_language": "zh",
+        "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
+    })
 
 
 @dataclass(frozen=True, slots=True)
@@ -527,7 +532,7 @@ class StudioDB:
             return
         # Existing users retain identity and workflow choices; only fields
         # needed by older releases are supplied.
-        for key, value in LEGACY_PROFILE_DEFAULTS.items():
+        for key, value in _legacy_profile_defaults().items():
             self.conn.execute(
                 "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",
                 (key, json.dumps(value, ensure_ascii=False)),

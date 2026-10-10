@@ -26,7 +26,7 @@ lazy from application import presentation_ports as presentation_contracts
 lazy from application.character_runtime_bootstrap import (
     ACTIVE_CHARACTER_ENV,
     DEFAULT_CHARACTER_ID,
-    SUPPORTED_CHARACTER_IDS as SUPPORTED_CHARACTER_IDS,
+    SUPPORTED_CHARACTER_IDS as _SUPPORTED_CHARACTER_IDS,
     activate_product_character_runtime,
 )
 lazy from application.cloud_vision_runtime import CloudVisionRuntime
@@ -141,6 +141,7 @@ lazy from integrations.realtime_voice import RealtimeVoiceClient
 
 
 _CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
+SUPPORTED_CHARACTER_IDS = _SUPPORTED_CHARACTER_IDS
 
 
 def create_character_source(character_id: str) -> CharacterSource:
@@ -208,46 +209,36 @@ def _reserve_official_pack_id_reservations(
 
 @dataclass
 class CompanionServices:
-    """Explicit dependencies owned by one companion-window runtime.
+    """Explicit dependencies owned by one companion-window runtime."""
 
-    String annotations keep Python 3.15 dataclass inspection from resolving
-    lazy adapter imports before the composition root activates a character.
-    """
-
-    db: "StudioDB"  # ruff: ignore[quoted-annotation]
-    secret_store: "SecretStorePort" = field(  # ruff: ignore[quoted-annotation]
+    db: StudioDB
+    secret_store: SecretStorePort = field(
         repr=False,
     )
-    local_tts: "LocalSpeechEnginePort"  # ruff: ignore[quoted-annotation]
-    cloud_tts: "CloudSpeechEnginePort"  # ruff: ignore[quoted-annotation]
-    realtime: "RealtimeVoicePort"  # ruff: ignore[quoted-annotation]
-    listener: "SpeechListenerPort"  # ruff: ignore[quoted-annotation]
-    presentation_ports: "PresentationPorts"  # ruff: ignore[quoted-annotation]
-    realtime_speech_output: "RealtimeSpeechOutput | None" = (  # ruff: ignore[quoted-annotation]
-        None
-    )
-    backup_manager: "BackupManager | None" = None  # ruff: ignore[quoted-annotation]
-    speech_providers: "SpeechProviderRegistryPort | None" = (  # ruff: ignore[quoted-annotation]
-        None
-    )
-    azure_speech: "AzureSpeechEnginePort | None" = None  # ruff: ignore[quoted-annotation]
-    azure_hd_speech: "AzureSpeechEnginePort | None" = (  # ruff: ignore[quoted-annotation]
-        None
-    )
-    azure_secret_store: "SecretStorePort | None" = field(  # ruff: ignore[quoted-annotation]
+    local_tts: LocalSpeechEnginePort
+    cloud_tts: CloudSpeechEnginePort
+    realtime: RealtimeVoicePort
+    listener: SpeechListenerPort
+    presentation_ports: PresentationPorts
+    realtime_speech_output: RealtimeSpeechOutput | None = None
+    backup_manager: BackupManager | None = None
+    speech_providers: SpeechProviderRegistryPort | None = None
+    azure_speech: AzureSpeechEnginePort | None = None
+    azure_hd_speech: AzureSpeechEnginePort | None = None
+    azure_secret_store: SecretStorePort | None = field(
         default=None,
         repr=False,
     )
-    azure_hd_secret_store: "SecretStorePort | None" = field(  # ruff: ignore[quoted-annotation]
+    azure_hd_secret_store: SecretStorePort | None = field(
         default=None,
         repr=False,
     )
-    secret_store_factory: "SecretStoreFactoryPort | None" = field(  # ruff: ignore[quoted-annotation]
+    secret_store_factory: SecretStoreFactoryPort | None = field(
         default=None,
         repr=False,
     )
-    platform_services: "PlatformServicePort | None" = None  # ruff: ignore[quoted-annotation]
-    cloud_vision_service_factory: "CloudVisionServiceFactoryPort | None" = field(  # ruff: ignore[quoted-annotation]
+    platform_services: PlatformServicePort | None = None
+    cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = field(
         default=None,
         repr=False,
     )

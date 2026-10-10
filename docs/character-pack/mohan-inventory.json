@@ -72,6 +72,7 @@
     }
   ],
   "embedded_code_classification_counts": {
+    "engine_extract": 1,
     "persisted_identifier": 2,
     "product_shell_allowed": 15
   },
@@ -20170,7 +20171,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 352,
+          "line": 343,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -47941,7 +47942,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 352,
+          "line": 343,
           "path": "application/service_container.py",
           "text": "official_pack_root = asset_root / \"assets\" / \"official-packs\""
         }
@@ -90040,6 +90041,258 @@
       "work_package": null
     },
     {
+      "bytes": 5200,
+      "category": "embedded_character_content",
+      "classification": "engine_extract",
+      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "content_categories": [
+        "identity",
+        "voice"
+      ],
+      "content_locations": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "line": 18,
+          "matched": "MoHan",
+          "path": "domain/contracts.py",
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json",
+          "text": "DEFAULT_PROTECTED_SECRET_DESCRIPTION = \"MoHan protected secret\""
+        },
+        {
+          "content_kind": "voice",
+          "description": "墨寒偏好的聲音識別碼仍寫在原始碼。",
+          "line": 92,
+          "matched": "coral",
+          "path": "domain/contracts.py",
+          "rule": "character_voice_preference_literal",
+          "suggested_data_target": "assets/characters/mohan/voice/profile.json",
+          "text": "voice: str = \"coral\","
+        }
+      ],
+      "estimated_difficulty": "low",
+      "migration": "被程式寫死需先改",
+      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
+      "path": "domain/contracts.py",
+      "readers": [
+        {
+          "line": 9,
+          "path": "application/character_profile_defaults.py",
+          "text": "lazy from domain.contracts import ProfileDatabasePort"
+        },
+        {
+          "line": 37,
+          "path": "application/cloud_vision_ui_bridge.py",
+          "text": "lazy from domain.contracts import SecretStorePort"
+        },
+        {
+          "line": 16,
+          "path": "application/native_acceleration.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 13,
+          "path": "application/native_rgba_acceleration.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 26,
+          "path": "application/presentation_ports.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 47,
+          "path": "application/service_container.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 9,
+          "path": "application/service_contracts.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 7,
+          "path": "application/theme_pack_service.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 8,
+          "path": "application/wardrobe_service.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 9,
+          "path": "domain/app_profile.py",
+          "text": "lazy from domain.contracts import ProfileDatabasePort"
+        },
+        {
+          "line": 10,
+          "path": "domain/expression_system.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 11,
+          "path": "domain/gesture_configuration.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 7,
+          "path": "domain/speech_providers.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 9,
+          "path": "infrastructure/face_identity_store.py",
+          "text": "lazy from domain.contracts import SecretStorePort"
+        },
+        {
+          "line": 8,
+          "path": "infrastructure/gesture_template_store.py",
+          "text": "lazy from domain.contracts import SecretStorePort"
+        },
+        {
+          "line": 9,
+          "path": "infrastructure/platform_services.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 9,
+          "path": "infrastructure/portable_secret_binding.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 7,
+          "path": "infrastructure/portable_secrets.py",
+          "text": "lazy from domain.contracts import SecretStorePort"
+        },
+        {
+          "line": 17,
+          "path": "infrastructure/profile_transfer.py",
+          "text": "lazy from domain.contracts import ProfileDatabasePort, SecretStorePort"
+        },
+        {
+          "line": 8,
+          "path": "infrastructure/secret_store.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 9,
+          "path": "integrations/realtime_speech_output.py",
+          "text": "lazy from domain.contracts import AzureSpeechEnginePort, LocalSpeechEnginePort"
+        },
+        {
+          "line": 31,
+          "path": "presentation/autonomous_outfit_generation_controller.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        },
+        {
+          "line": 13,
+          "path": "presentation/dashboard_composition.py",
+          "text": "lazy from domain.contracts import ("
+        },
+        {
+          "line": 11,
+          "path": "presentation/dashboard_voice_runtime.py",
+          "text": "lazy from domain.contracts import SecretStorePort"
+        },
+        {
+          "line": 27,
+          "path": "presentation/flagship/cloud.py",
+          "text": "lazy from domain.contracts import SecretStorePort"
+        },
+        {
+          "line": 25,
+          "path": "presentation/flagship/control_center.py",
+          "text": "lazy from domain.contracts import SecretStoreFactoryPort"
+        },
+        {
+          "line": 22,
+          "path": "presentation/flagship/runtime.py",
+          "text": "lazy from domain.contracts import SecretStoreFactoryPort"
+        },
+        {
+          "line": 39,
+          "path": "presentation/profile_transfer_ui.py",
+          "text": "lazy from domain.contracts import ProfileDatabasePort"
+        },
+        {
+          "line": 21,
+          "path": "presentation/theme_pack_ui.py",
+          "text": "lazy from domain.contracts import default_character_display_name"
+        }
+      ],
+      "scope": "embedded_code",
+      "sha256": "8805f21ee64c12e56b17733893de4d6740513c47274dd62e5cabe7c430f01c71",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json",
+        "assets/characters/mohan/voice/profile.json"
+      ],
+      "symbols": [
+        {
+          "end_line": 15,
+          "line": 11,
+          "name": "default_character_display_name"
+        },
+        {
+          "end_line": 18,
+          "line": 18,
+          "name": "DEFAULT_PROTECTED_SECRET_DESCRIPTION"
+        },
+        {
+          "end_line": 24,
+          "line": 24,
+          "name": "SignalPort"
+        },
+        {
+          "end_line": 32,
+          "line": 27,
+          "name": "SecretStorePort"
+        },
+        {
+          "end_line": 42,
+          "line": 35,
+          "name": "SecretStoreFactoryPort"
+        },
+        {
+          "end_line": 51,
+          "line": 45,
+          "name": "ProfileDatabasePort"
+        },
+        {
+          "end_line": 73,
+          "line": 54,
+          "name": "LocalSpeechEnginePort"
+        },
+        {
+          "end_line": 96,
+          "line": 76,
+          "name": "CloudSpeechEnginePort"
+        },
+        {
+          "end_line": 134,
+          "line": 99,
+          "name": "AzureSpeechEnginePort"
+        },
+        {
+          "end_line": 154,
+          "line": 137,
+          "name": "SpeechProviderRegistryPort"
+        },
+        {
+          "end_line": 195,
+          "line": 157,
+          "name": "RealtimeVoicePort"
+        },
+        {
+          "end_line": 219,
+          "line": 198,
+          "name": "SpeechListenerPort"
+        }
+      ],
+      "work_package": "persona-dialogue-voice-extraction"
+    },
+    {
       "bytes": 11557,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
@@ -93137,7 +93390,7 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 17,
+    "embedded_code": 18,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,

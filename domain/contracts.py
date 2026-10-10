@@ -7,20 +7,15 @@ lazy from typing import Any, Protocol
 lazy from domain.character_pack.character_data_models import canonical_character_locale
 lazy from domain.character_source import active_character_data
 
-_CHARACTER_DATA = active_character_data()
-_VOICE_DEFAULTS = _CHARACTER_DATA.voice
-
 
 def default_character_display_name(language: str = "en") -> str:
-    """Return the bundled character's localized name from character data."""
+    """Return the active character's localized name from character data."""
 
     locale = canonical_character_locale(language)
-    return _CHARACTER_DATA.personas[locale].identity.display_name
+    return active_character_data().personas[locale].identity.display_name
 
 
-DEFAULT_PROTECTED_SECRET_DESCRIPTION = (
-    f"{default_character_display_name('en')} protected secret"
-)
+DEFAULT_PROTECTED_SECRET_DESCRIPTION = "MoHan protected secret"
 
 # PySide exposes class-level ``Signal`` descriptors and instance-level
 # ``SignalInstance`` objects.  Its generated stubs do not preserve that binding
@@ -72,7 +67,7 @@ class LocalSpeechEnginePort(Protocol):
         self,
         text: str,
         voice_name: str = "",
-        rate: int = _VOICE_DEFAULTS.default_rate,
+        rate: int = -1,
     ) -> None: ...
 
     def stop(self) -> None: ...
@@ -94,7 +89,7 @@ class CloudSpeechEnginePort(Protocol):
         self,
         text: str,
         api_key: str,
-        voice: str = _VOICE_DEFAULTS.default_cloud_voice,
+        voice: str = "coral",
         instructions: str = "",
     ) -> None: ...
 
