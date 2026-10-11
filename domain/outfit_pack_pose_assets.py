@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 lazy import zipfile
+lazy from itertools import product
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.character_runtime import (
     CHARACTER_EXPRESSION_ROLES,
     character_rig_manifest,
@@ -40,7 +42,17 @@ BATCH2_MAKEUP_SILHOUETTES = tuple(
 COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES = (
     GLANCE_MAKEUP_SILHOUETTES + BATCH2_MAKEUP_SILHOUETTES
 )
-OPTIONAL_MAKEUP_SILHOUETTES = COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES
+FRONT_MAKEUP_SILHOUETTES = tuple(
+    f"front-{expression}{suffix}"
+    for (expression, pose), suffix in product(
+        active_expression_catalog().state_to_pose.items(),
+        ("", "-half", "-closed"),
+    )
+    if pose == "front"
+)
+OPTIONAL_MAKEUP_SILHOUETTES = (
+    COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES + FRONT_MAKEUP_SILHOUETTES
+)
 OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES = tuple(
     f"cheek-{CHARACTER_EXPRESSION_ROLES[role]}"
     for role in ("side_gaze", "noticed", "happiness", "worry", "reminder")

@@ -4,7 +4,7 @@
 
 這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。
 
-產品資料合計 1726 個實體檔案：執行期 1678 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1547 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1109 個排除檔案與 18 個程式定位檔。下表只計執行期實體檔案。
+產品資料合計 2000 個實體檔案：執行期 1952 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1859 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1161 個排除檔案與 18 個程式定位檔。下表只計執行期實體檔案。
 
 | 類別 | 檔案數 |
 |---|---:|
@@ -32,14 +32,14 @@
 | 全身中繼資料與綁定 (`fullbody_sidecar`) | 14 |
 | 全身可見手部 (`fullbody_visible_hand`) | 8 |
 | 服裝可見區與手部 (`garment_visibility`) | 48 |
-| 半身完整表情與遮罩 (`halfbody_complete_expression`) | 148 |
-| 半身表情與原生來源 (`halfbody_expression`) | 147 |
+| 半身完整表情與遮罩 (`halfbody_complete_expression`) | 343 |
+| 半身表情與原生來源 (`halfbody_expression`) | 148 |
 | 半身分層 (`halfbody_layer`) | 77 |
 | 手部覆蓋圖 (`hand_overlay`) | 40 |
 | 妝容眼睛開口遮罩 (`makeup_eye_aperture`) | 39 |
 | 粉底安全區 (`makeup_foundation_mask`) | 39 |
 | 妝容區域規則 (`makeup_region_rules`) | 1 |
-| 妝容安全遮罩 (`makeup_safe_mask`) | 42 |
+| 妝容安全遮罩 (`makeup_safe_mask`) | 120 |
 | 原生衣裝與動作資料 (`native_garment_motion`) | 55 |
 | 來源綁定表情與妝容 (`source_bound_expression`) | 77 |
 | 介面角色背景 (`ui_background`) | 2 |
@@ -63,7 +63,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。
 
-产品数据合计 1726 个实体文件：运行时 1678 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1547 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1109 个排除文件和 18 个程序定位文件。下表只计运行时实体文件。
+产品数据合计 2000 个实体文件：运行时 1952 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1859 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1161 个排除文件和 18 个程序定位文件。下表只计运行时实体文件。
 
 | 类别 | 文件数 |
 |---|---:|
@@ -91,14 +91,14 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 | 全身元数据与绑定 (`fullbody_sidecar`) | 14 |
 | 全身可见手部 (`fullbody_visible_hand`) | 8 |
 | 服装可见区与手部 (`garment_visibility`) | 48 |
-| 半身完整表情与遮罩 (`halfbody_complete_expression`) | 148 |
-| 半身表情与原生来源 (`halfbody_expression`) | 147 |
+| 半身完整表情与遮罩 (`halfbody_complete_expression`) | 343 |
+| 半身表情与原生来源 (`halfbody_expression`) | 148 |
 | 半身分层 (`halfbody_layer`) | 77 |
 | 手部覆盖图 (`hand_overlay`) | 40 |
 | 妆容眼睛开口遮罩 (`makeup_eye_aperture`) | 39 |
 | 粉底安全区 (`makeup_foundation_mask`) | 39 |
 | 妆容区域规则 (`makeup_region_rules`) | 1 |
-| 妆容安全遮罩 (`makeup_safe_mask`) | 42 |
+| 妆容安全遮罩 (`makeup_safe_mask`) | 120 |
 | 原生衣装与动作数据 (`native_garment_motion`) | 55 |
 | 来源绑定表情与妆容 (`source_bound_expression`) | 77 |
 | 界面角色背景 (`ui_background`) | 2 |
@@ -122,7 +122,7 @@ v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence
 
 This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.
 
-Product data totals 1726 physical files: 1678 runtime files and 48 required self-test sidecars (landmarks and hands). The 1547 members inside two appearance archives are indexed separately and already included in those archives. There are also 1109 excluded files and 18 source-location files. The table counts runtime physical files only.
+Product data totals 2000 physical files: 1952 runtime files and 48 required self-test sidecars (landmarks and hands). The 1859 members inside two appearance archives are indexed separately and already included in those archives. There are also 1161 excluded files and 18 source-location files. The table counts runtime physical files only.
 
 | Category | Files |
 |---|---:|
@@ -150,14 +150,14 @@ Product data totals 1726 physical files: 1678 runtime files and 48 required self
 | Full-body metadata and bindings (`fullbody_sidecar`) | 14 |
 | Full-body visible hands (`fullbody_visible_hand`) | 8 |
 | Garment visibility and hands (`garment_visibility`) | 48 |
-| Complete half-body expressions and masks (`halfbody_complete_expression`) | 148 |
-| Half-body expressions and native sources (`halfbody_expression`) | 147 |
+| Complete half-body expressions and masks (`halfbody_complete_expression`) | 343 |
+| Half-body expressions and native sources (`halfbody_expression`) | 148 |
 | Half-body layers (`halfbody_layer`) | 77 |
 | Hand overlays (`hand_overlay`) | 40 |
 | Makeup eye aperture masks (`makeup_eye_aperture`) | 39 |
 | Foundation safe regions (`makeup_foundation_mask`) | 39 |
 | Makeup region rules (`makeup_region_rules`) | 1 |
-| Makeup safe masks (`makeup_safe_mask`) | 42 |
+| Makeup safe masks (`makeup_safe_mask`) | 120 |
 | Native garment and motion data (`native_garment_motion`) | 55 |
 | Source-bound expressions and makeup (`source_bound_expression`) | 77 |
 | Character UI backgrounds (`ui_background`) | 2 |
@@ -181,7 +181,7 @@ Independent download is a design requirement from inception. The public MoHan re
 
 この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。
 
-製品データは実ファイル 1726 個です。実行時に 1678 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1547 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1109 個とコード位置ファイル 18 個も記録します。下表は実行時の実ファイルのみを数えます。
+製品データは実ファイル 2000 個です。実行時に 1952 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1859 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1161 個とコード位置ファイル 18 個も記録します。下表は実行時の実ファイルのみを数えます。
 
 | 分類 | ファイル数 |
 |---|---:|
@@ -209,14 +209,14 @@ Independent download is a design requirement from inception. The public MoHan re
 | 全身メタデータと紐付け (`fullbody_sidecar`) | 14 |
 | 全身の可視の手 (`fullbody_visible_hand`) | 8 |
 | 衣装の可視領域と手 (`garment_visibility`) | 48 |
-| 半身の完全表情とマスク (`halfbody_complete_expression`) | 148 |
-| 半身表情と元画像 (`halfbody_expression`) | 147 |
+| 半身の完全表情とマスク (`halfbody_complete_expression`) | 343 |
+| 半身表情と元画像 (`halfbody_expression`) | 148 |
 | 半身レイヤー (`halfbody_layer`) | 77 |
 | 手の重ね画像 (`hand_overlay`) | 40 |
 | メイクの眼開口マスク (`makeup_eye_aperture`) | 39 |
 | ファンデーションの安全領域 (`makeup_foundation_mask`) | 39 |
 | メイク領域の規則 (`makeup_region_rules`) | 1 |
-| メイク安全マスク (`makeup_safe_mask`) | 42 |
+| メイク安全マスク (`makeup_safe_mask`) | 120 |
 | 元の衣装と動作データ (`native_garment_motion`) | 55 |
 | 出典に紐付いた表情とメイク (`source_bound_expression`) | 77 |
 | キャラクター背景 (`ui_background`) | 2 |

@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.mohan-1.0.3.zip",
-    "bytes": 620760514,
-    "sha256": "e7b644da9c74a9c51c059e4304df631b9ac6b996d5b45bb498212e2eab6cd201"
+    "asset_name": "flameblade.mohan-1.0.4.zip",
+    "bytes": 956174160,
+    "sha256": "33a077e61d975cd1f535290ce124eb48c88d5ce2fd20eff79f02a28dd540f996"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -462,6 +462,66 @@
       "sha256": "5b3f70982bdf5c038a7657af8f0ac96c0f94f204b3cea12ee057f51eb76389aa"
     },
     {
+      "bytes": 2099018,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-a-closed.rgba.png",
+      "sha256": "642c26405fa2afa9a33ded4df279102d5e917a5c553bfdc435d52af623d00319"
+    },
+    {
+      "bytes": 2101083,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-a-half.rgba.png",
+      "sha256": "c60f69b5094ddc82698ad4f25d16fba9eb2139d628baef2815d2aea606d8e947"
+    },
+    {
+      "bytes": 2102730,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-a-rest.rgba.png",
+      "sha256": "356c121658530aefdec4e59f56d2fcf1f453809d6ad0d2fa6188008b78a3a2cf"
+    },
+    {
+      "bytes": 2098205,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-neutral-closed.rgba.png",
+      "sha256": "fe090b3614754478f901dbd962f47423f8abb4bc284d4015b8b4545f2fa00aec"
+    },
+    {
+      "bytes": 2100230,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-neutral-half.rgba.png",
+      "sha256": "4ab259c689f75a4f996875d110e245c24f2c5d0909aeff41d873289ee815d823"
+    },
+    {
+      "bytes": 2101903,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-neutral-rest.rgba.png",
+      "sha256": "494eb61dff8e6d1cf44ad6e9e57699e00036f69de967903a5c34b9b60e11bcf8"
+    },
+    {
+      "bytes": 2098429,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-o-closed.rgba.png",
+      "sha256": "79897292141b95294992c9679ccddffe0277c97705948c8818c546e29c3fcd54"
+    },
+    {
+      "bytes": 2100470,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-o-half.rgba.png",
+      "sha256": "f47bd77613e90e3caa8504a96b5b78c7d67734030ba8435412554777c9e52743"
+    },
+    {
+      "bytes": 2102138,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-o-rest.rgba.png",
+      "sha256": "118d2a6e6e48b2070cf7be31686d8a05bf558caa968754e1ec02c03de580ed11"
+    },
+    {
+      "bytes": 2098425,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-small-closed.rgba.png",
+      "sha256": "486f40e5d478fce5571c8d8295a0bdccf482a62d6515dc41c6a42364d9be6d44"
+    },
+    {
+      "bytes": 2100505,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-small-half.rgba.png",
+      "sha256": "e2dc3f2300d6902d851d06b4b5e819fd670ffd311a4995e0c4301e63dbcb207e"
+    },
+    {
+      "bytes": 2102182,
+      "path": "assets/expressions/complete-expressions/frames/front-attentive_front-small-rest.rgba.png",
+      "sha256": "ecaed2aadce22e62707cf4271daed909e9a164a769570b1843bcf5511871e6c4"
+    },
+    {
       "bytes": 2098527,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-closed.rgba.png",
       "sha256": "c0abcb3907049970a4e6ec6c0c0a68eb4cf3bea55d70acf6eaa82cd29e322ff6"
@@ -520,6 +580,66 @@
       "bytes": 2101955,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-rest.rgba.png",
       "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
+    },
+    {
+      "bytes": 2098386,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-a-closed.rgba.png",
+      "sha256": "2758fae3a8c6232e38f85a07c333b905f9a26fc5c8ee521cf13edd7f59f2136c"
+    },
+    {
+      "bytes": 2100327,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-a-half.rgba.png",
+      "sha256": "b3c0accdc4bbee3dec5c8f735a38964f78fa976dbb4e63109ecb1a7ecca56486"
+    },
+    {
+      "bytes": 2101595,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-a-rest.rgba.png",
+      "sha256": "07fdef7295263f55b0dbdb64c9474f2728ef3fbb078827d9b3624326e23b9db9"
+    },
+    {
+      "bytes": 2096824,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-neutral-closed.rgba.png",
+      "sha256": "2191bf6ac4a44ebc7639c366dfcfb2193a47e3565adcc8d47b708c17955fd1a3"
+    },
+    {
+      "bytes": 2098817,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-neutral-half.rgba.png",
+      "sha256": "212e0826a8a1c115b672867676728c0bb6179b13cdd22093dfb905f30478fd58"
+    },
+    {
+      "bytes": 2100164,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-neutral-rest.rgba.png",
+      "sha256": "e52d0d6ddb73c920ce5f8428df1cd130148ceb99922bcb260e36a2e810fb4fab"
+    },
+    {
+      "bytes": 2097754,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-o-closed.rgba.png",
+      "sha256": "96a8074e82966503db0f62f3e45ba9734302d48cc0428b85c01cfc7c36f81ebb"
+    },
+    {
+      "bytes": 2099712,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-o-half.rgba.png",
+      "sha256": "6ab80295658a454ac38ba34abe6f91e18284bf0fd7f3fc6995f77f76ee4e9583"
+    },
+    {
+      "bytes": 2101036,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-o-rest.rgba.png",
+      "sha256": "80c9a7ec45be93deff56d3134ed0fdc48bfffe0cdbdb4b884048ad81e425d636"
+    },
+    {
+      "bytes": 2097741,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-small-closed.rgba.png",
+      "sha256": "8c6dd8936da48da96f97e60d64a7bfa47c8ec1a056eedd180e7bb28d63c3f2d2"
+    },
+    {
+      "bytes": 2099722,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-small-half.rgba.png",
+      "sha256": "bc13a351198c0be2e8995fb271ce0e06bfb81cd1bc608921372a5b354dc68efb"
+    },
+    {
+      "bytes": 2101078,
+      "path": "assets/expressions/complete-expressions/frames/front-determined_front-small-rest.rgba.png",
+      "sha256": "57338258d6e80f499a6db1cc74083c71906d0a3b20217bb58948c37da50090f9"
     },
     {
       "bytes": 2118101,
@@ -642,6 +762,66 @@
       "sha256": "b17c3c6533ccc2385bb75131d7cc5a4d0d37ec8e041c2de346b9210e7bac9ac0"
     },
     {
+      "bytes": 2098039,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-a-closed.rgba.png",
+      "sha256": "20141d0696fc2f639ea98dd70fbbee588c62fe4fa2eee8b92526266aabd1dd8e"
+    },
+    {
+      "bytes": 2100044,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-a-half.rgba.png",
+      "sha256": "618e49ce49e8536b03af0e2bc135ce1a91f67aa745976e79428fc47463862eb6"
+    },
+    {
+      "bytes": 2100993,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-a-rest.rgba.png",
+      "sha256": "d7d960001fedd9071ea85a9ba61b51c30be830df8b99df82860fd8e39e501fc1"
+    },
+    {
+      "bytes": 2096624,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-neutral-closed.rgba.png",
+      "sha256": "35c9fa5b8b9b90e309bb80ca9ce7e4c7350756fc832b2d58df5b1b58c1f96a87"
+    },
+    {
+      "bytes": 2098663,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-neutral-half.rgba.png",
+      "sha256": "1f277ddf81dfc0b149e6866d1bc57e90472b1b3071d46ac5eafe59ea2b017f0f"
+    },
+    {
+      "bytes": 2099633,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-neutral-rest.rgba.png",
+      "sha256": "c47963124d1f839f6178160d5e3f2f5bb96ea374ab9e13c72f74b936d7affd2c"
+    },
+    {
+      "bytes": 2097571,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-o-closed.rgba.png",
+      "sha256": "0efbbe81ebd998ee69152470265c6f964df9f91ed866d5562ddc76055f7479f7"
+    },
+    {
+      "bytes": 2099580,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-o-half.rgba.png",
+      "sha256": "b5c09d82470d5cdc551ec6ea14318d88b16c71c374eec6dc46f52cf30c05ea59"
+    },
+    {
+      "bytes": 2100565,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-o-rest.rgba.png",
+      "sha256": "2a6fb26426fba900228bbc93a3f2c43ea036f285eaccb63cfdd82cd9fb148456"
+    },
+    {
+      "bytes": 2097451,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-small-closed.rgba.png",
+      "sha256": "932d393120a569d2b8ae8e33c33d0401f646d7746c4549e8bd0b8f02c797ef69"
+    },
+    {
+      "bytes": 2099443,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-small-half.rgba.png",
+      "sha256": "37cfeb0a6943f91bf3a5dd2b7bfe7cfd24c741237630eee07034101931629fd4"
+    },
+    {
+      "bytes": 2100460,
+      "path": "assets/expressions/complete-expressions/frames/front-gentle_smile_front-small-rest.rgba.png",
+      "sha256": "dd49c84b250fc702d70180962ecdfa4767294bedabc366f7422f4f367dbec632"
+    },
+    {
       "bytes": 2081753,
       "path": "assets/expressions/complete-expressions/frames/front-mock-hit-a-closed.rgba.png",
       "sha256": "a9692e5238201a391a5e989b8069e8a75f7397102733b8bdf384f2b1f4bf1bc4"
@@ -762,6 +942,606 @@
       "sha256": "bf6bf4e7a0e514eec4433d23a36db7bfb20710392207047878be7a15dc4897e5"
     },
     {
+      "bytes": 2098295,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-a-closed.rgba.png",
+      "sha256": "0408c35410274847281f91b48017f22a4d47392bc81e227018f760bd33541c7b"
+    },
+    {
+      "bytes": 2100313,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-a-half.rgba.png",
+      "sha256": "57fb8213143599c1e8e4bcfef364066a9ed8a9aa13881c05e6d14a90e5cf5008"
+    },
+    {
+      "bytes": 2101765,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-a-rest.rgba.png",
+      "sha256": "fdace50579c286e46106977dd0d419f4d80ce2f56b70f01e27583767fba68ffa"
+    },
+    {
+      "bytes": 2096856,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-neutral-closed.rgba.png",
+      "sha256": "b559f0bf9d18d1eb5ec94ec8a49e9607d4969d78c4d1a966789a21088f366fe4"
+    },
+    {
+      "bytes": 2098932,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-neutral-half.rgba.png",
+      "sha256": "fc2586bb3f6f584dfd045c914c0e2fe76105847f9234a9972ac6d060df81d9bf"
+    },
+    {
+      "bytes": 2100466,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-neutral-rest.rgba.png",
+      "sha256": "07b5141178402b8aded6d9fc7f6a2b3c12e893d23f045036977e62d9a2a2cfcd"
+    },
+    {
+      "bytes": 2097635,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-o-closed.rgba.png",
+      "sha256": "d770f4abd3741c79f03efd4e1ba6735f1c59f5c069490ec34fe9dbeb8d2e6f69"
+    },
+    {
+      "bytes": 2099667,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-o-half.rgba.png",
+      "sha256": "8905d5d23327958a3a390fe8293e1e77dac1b001465f862de8815df3ffcb7236"
+    },
+    {
+      "bytes": 2101162,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-o-rest.rgba.png",
+      "sha256": "957c51993595546996a3af0a2f824aa2f81bc913e9269aab8aa206c2b1830c62"
+    },
+    {
+      "bytes": 2097631,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-small-closed.rgba.png",
+      "sha256": "67a7b07a48da2577573e0745414811d8079f7111c5bf3f693510d4c37d641787"
+    },
+    {
+      "bytes": 2099686,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-small-half.rgba.png",
+      "sha256": "990e1a3ab5d61a46bff094afc9705d7b6b1de149ba67fd392e08ebd18b32dd99"
+    },
+    {
+      "bytes": 2101202,
+      "path": "assets/expressions/complete-expressions/frames/front-protective_front-small-rest.rgba.png",
+      "sha256": "205828181fbf8b52a6bbc7e9ea02b552347e24139f15139aa2ff423d56c88c8f"
+    },
+    {
+      "bytes": 2098213,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-a-closed.rgba.png",
+      "sha256": "6a9b44ccc92d4ce56a7e88dded48d6fc38d22003a125b3a2875d75a3cabfd86a"
+    },
+    {
+      "bytes": 2100127,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-a-half.rgba.png",
+      "sha256": "b70ab5a22f7d87c40df6ea93e4677f8c3fb31cb4f1d10c92bb2aee45ad229931"
+    },
+    {
+      "bytes": 2101518,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-a-rest.rgba.png",
+      "sha256": "0eb4ae22c7f5aea505c3267e049f7a84edb1afabcec7101307059dc8a877024d"
+    },
+    {
+      "bytes": 2097022,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-neutral-closed.rgba.png",
+      "sha256": "5b98207911f0e84833eebc2dd696342e582770ba7593b66802f4597fc827d383"
+    },
+    {
+      "bytes": 2098954,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-neutral-half.rgba.png",
+      "sha256": "f826592789b5560ab0ad6562819a0a22b1115c53418c27f93966f7c220f63f91"
+    },
+    {
+      "bytes": 2100414,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-neutral-rest.rgba.png",
+      "sha256": "257e3cc1ea7a2295b965baa3d62173ded7fafbc6e7c1c845dffefcba0c1817b5"
+    },
+    {
+      "bytes": 2097651,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-o-closed.rgba.png",
+      "sha256": "5652a018d3d7009d165d5bb1fe4b27db72e69d830e44758384587c27715a277f"
+    },
+    {
+      "bytes": 2099574,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-o-half.rgba.png",
+      "sha256": "12c03b2f7dc2f547596d6bd78434a8ff2f5390026a1108e73144c8e7f47632df"
+    },
+    {
+      "bytes": 2101027,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-o-rest.rgba.png",
+      "sha256": "c737a5d473656f924b930c2618989415c7ae78f3abecfd1e7441b22545b78c50"
+    },
+    {
+      "bytes": 2097614,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-small-closed.rgba.png",
+      "sha256": "b2736972c9242657ca34baa8bda601cc5640bb717f155812e478c0a3ecffee99"
+    },
+    {
+      "bytes": 2099535,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-small-half.rgba.png",
+      "sha256": "fea5555dcfb4b83a7b6a90cd58e42a0feda365bf2a2aa9f89953ac467835deee"
+    },
+    {
+      "bytes": 2100999,
+      "path": "assets/expressions/complete-expressions/frames/front-proud_front-small-rest.rgba.png",
+      "sha256": "374b53c7556a99228129c345f961072fbe66fb473057abf895e6480c25921ad0"
+    },
+    {
+      "bytes": 2098367,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-a-closed.rgba.png",
+      "sha256": "60f749aae5b6075a53f62f2e91ba2126631adc4b0e326f1466942e86d7c27dea"
+    },
+    {
+      "bytes": 2100306,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-a-half.rgba.png",
+      "sha256": "6e682384bc0bcdeacf5d717f22a77cc44bb2bc006b6cd28c1060da9cd7b2ad16"
+    },
+    {
+      "bytes": 2101510,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-a-rest.rgba.png",
+      "sha256": "da1371980292acfbb7c8950e1415d5c564f8fcdee1870f21dfaf77c51a312bf3"
+    },
+    {
+      "bytes": 2097188,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-neutral-closed.rgba.png",
+      "sha256": "0e80c04ef52da17bc3291caf8f536141704f5e12b5a7aba8185633a2ea326413"
+    },
+    {
+      "bytes": 2099108,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-neutral-half.rgba.png",
+      "sha256": "45b8f93c388e83c94bbc67ca756930102557a22826c6daf84647779fadd802d9"
+    },
+    {
+      "bytes": 2100407,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-neutral-rest.rgba.png",
+      "sha256": "5804f9572c86acc4a0bf22b0b00329c3957a2060bbbe1a882709bce83949c28f"
+    },
+    {
+      "bytes": 2097916,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-o-closed.rgba.png",
+      "sha256": "7f79af6003a71c7d43496dddab0b7cde6c36104a120902d09b65d257b6921bed"
+    },
+    {
+      "bytes": 2099842,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-o-half.rgba.png",
+      "sha256": "a6382799969efef6e6e6309d4690cc40b16f63b708bdbeacadf78b4727ea881b"
+    },
+    {
+      "bytes": 2101085,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-o-rest.rgba.png",
+      "sha256": "ce4a7a9093631112cd4fb78df743ccc11a9041c811b2ce6d87c0f319dc7e4193"
+    },
+    {
+      "bytes": 2097787,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-small-closed.rgba.png",
+      "sha256": "93420d491cf36f82601e391dc510c04105653e7f95dd359ab378f40e42a849f3"
+    },
+    {
+      "bytes": 2099722,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-small-half.rgba.png",
+      "sha256": "a5a727da527e6e6a2a5955ab2956c42af1fa20925a2f03a4ad06966f6f8f2dc6"
+    },
+    {
+      "bytes": 2101004,
+      "path": "assets/expressions/complete-expressions/frames/front-relieved_front-small-rest.rgba.png",
+      "sha256": "3388901c6741af8005a2ee208a6b77d445efeb28207083f7968f32f6040ab3d2"
+    },
+    {
+      "bytes": 2098495,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-a-closed.rgba.png",
+      "sha256": "1e6b0e06dda168d0b99ad969fe741c4a07db43ee0f9fba85f09c2582610187aa"
+    },
+    {
+      "bytes": 2100422,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-a-half.rgba.png",
+      "sha256": "035e21a8cc735897cadde1717030c3e9bfc020493738f01e0990bcf109667074"
+    },
+    {
+      "bytes": 2101838,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-a-rest.rgba.png",
+      "sha256": "1ef0b89ffb1afe08bc0883745f3fa5a248a73f6875dbe1d6ea6e618884b59ad8"
+    },
+    {
+      "bytes": 2096752,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-neutral-closed.rgba.png",
+      "sha256": "b81c1f1b6f1a710128d6bf7507c91dd0581fb08f3d86c88c050585b91b055578"
+    },
+    {
+      "bytes": 2098688,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-neutral-half.rgba.png",
+      "sha256": "827ec31d2b258f749e387e4483d1f22c2acb7adcaa29a55829e5854bec6f3c4d"
+    },
+    {
+      "bytes": 2100164,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-neutral-rest.rgba.png",
+      "sha256": "48721a0cb6d1be0f83fa7fbd7cdd29d123c4745e13420b116a36294dffc4bb7f"
+    },
+    {
+      "bytes": 2097955,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-o-closed.rgba.png",
+      "sha256": "bc729bd30195ef36930aae40a3510f064744cd3370f079edf908187fc29c2b4d"
+    },
+    {
+      "bytes": 2099887,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-o-half.rgba.png",
+      "sha256": "4cbec4b65ffbe2280917d804d6b90ce1021bc8177e2c71b35a0d61669938d49e"
+    },
+    {
+      "bytes": 2101354,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-o-rest.rgba.png",
+      "sha256": "4dbd54d612f22389420ffd18551159f1c9111443fc21f123c6040b7c17317709"
+    },
+    {
+      "bytes": 2097881,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-small-closed.rgba.png",
+      "sha256": "729056a721168022e135870fce17654d180200e25b9cbf4096ebfcaf925ffb2f"
+    },
+    {
+      "bytes": 2099814,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-small-half.rgba.png",
+      "sha256": "85aa99ce41c61cc6a84902ed1c246a24f8d9f06088e716e9e698918c4437da2f"
+    },
+    {
+      "bytes": 2101311,
+      "path": "assets/expressions/complete-expressions/frames/front-restrained_amused_front-small-rest.rgba.png",
+      "sha256": "5819e55a6afb7a9a9fae7da398850f4eecaebc4c296fc55fdfbb498cf9bab42d"
+    },
+    {
+      "bytes": 2099256,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-a-closed.rgba.png",
+      "sha256": "84ea2167f3ef07cfb8d2ae3c8f5d32745e8cc66a0d333d53b54e04e4aecd6a4a"
+    },
+    {
+      "bytes": 2101190,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-a-half.rgba.png",
+      "sha256": "ead2ecd51e6d27a257caeaa34bb295f23217b9bcf1a41eecb5465d5af97737a0"
+    },
+    {
+      "bytes": 2101142,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-a-rest.rgba.png",
+      "sha256": "c98177feab18c75f64ea21fa7d9b8f4ce5a4a63bffcc8f694677d61cd95b5969"
+    },
+    {
+      "bytes": 2098350,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-neutral-closed.rgba.png",
+      "sha256": "c4d10a9bada8ba80aa71742de0ba26a897c896b7a2ad8ec03f4f9565f94482e1"
+    },
+    {
+      "bytes": 2100254,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-neutral-half.rgba.png",
+      "sha256": "ab40d318eb5ba87ead71b25cf20e52849bf189131790aa7792f2cbca96d32826"
+    },
+    {
+      "bytes": 2100227,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-neutral-rest.rgba.png",
+      "sha256": "b1bab9f6777f92bd749bf132d18ad261d483e4d50ab689acf3ba87fd0fad34a1"
+    },
+    {
+      "bytes": 2098721,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-o-closed.rgba.png",
+      "sha256": "344fab817ff7de0a6f45d42c264cf98aa85b4fbf27c31bc705538271a3771146"
+    },
+    {
+      "bytes": 2100659,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-o-half.rgba.png",
+      "sha256": "e806c0dc43997afa27a039581e3b53e3a9cc579561d5c499a20bc4a765f76041"
+    },
+    {
+      "bytes": 2100633,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-o-rest.rgba.png",
+      "sha256": "b9689f35a91f12aa5d68ef57c4ed7d9473f0ed6c3b1d202d2ec4a5b2a7cd2c0a"
+    },
+    {
+      "bytes": 2098659,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-small-closed.rgba.png",
+      "sha256": "a4b231b3e7092e8892ea66506e52e67ae09f8eeb51c779268f0d344e80b985c5"
+    },
+    {
+      "bytes": 2100605,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-small-half.rgba.png",
+      "sha256": "a347e982a51c28ccd23e7000bfbd8314a9b222cd583c8a4ec90d678eba2a41d8"
+    },
+    {
+      "bytes": 2100575,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_cute_front-small-rest.rgba.png",
+      "sha256": "7d89c56174753d68f51fec8de04bc344cac453d433a615a67efaa6a9f073905c"
+    },
+    {
+      "bytes": 2099702,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-a-closed.rgba.png",
+      "sha256": "6a3045c6a82978fbfc33ed06d9f5f325ab5d0870fbe4e26f208664095d1868ce"
+    },
+    {
+      "bytes": 2101550,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-a-half.rgba.png",
+      "sha256": "1bc8c8a2db65fa9c8e85dd78a954b46923aa048c3f7e4ee689f24233cd9d3774"
+    },
+    {
+      "bytes": 2102500,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-a-rest.rgba.png",
+      "sha256": "229625754ee2e0f5ea06ee53cfe538ff357e2e34acffe38547061d7c0ab3db75"
+    },
+    {
+      "bytes": 2098312,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-neutral-closed.rgba.png",
+      "sha256": "10f7d1c5ece586e703c9b8e364be1902d12e410165dcd953eac0dac9ec7ff845"
+    },
+    {
+      "bytes": 2100216,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-neutral-half.rgba.png",
+      "sha256": "fce0a9840d0a48a8e53b3d7a9b773fd0df700de6f5007499f9fce1a630aab450"
+    },
+    {
+      "bytes": 2101195,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-neutral-rest.rgba.png",
+      "sha256": "604d0e0193c763774d9b875fc9adb84c1fb68ce75cfd5db4bc3ad245c2f0b097"
+    },
+    {
+      "bytes": 2099192,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-o-closed.rgba.png",
+      "sha256": "54700a7fed00f79801558ea1f1e53bf0e9575cbd83bbfb1a7405ce486ba8f04c"
+    },
+    {
+      "bytes": 2101070,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-o-half.rgba.png",
+      "sha256": "5ac544055534f19abafb42c89615dc108f095280c2e12156a806e627b13c3403"
+    },
+    {
+      "bytes": 2102001,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-o-rest.rgba.png",
+      "sha256": "916e085d4c14e6c342664a0d5445e14067ba60f15cc205936e3ab71bd7ed3ee6"
+    },
+    {
+      "bytes": 2099113,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-small-closed.rgba.png",
+      "sha256": "20b96c4cac246f36268050f947d3ff3ebab27a903339b086aa1f5dee2ef2d730"
+    },
+    {
+      "bytes": 2101007,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-small-half.rgba.png",
+      "sha256": "8c04afcd6c51a519643f407073e56133e74f344c6941abe5b83f7acabe8cc9e3"
+    },
+    {
+      "bytes": 2101955,
+      "path": "assets/expressions/complete-expressions/frames/front-shy_front-small-rest.rgba.png",
+      "sha256": "2415bb4b146822424f704f0b7f87e6ca9bc1f5e7aac254c4f3d2b299151f8da9"
+    },
+    {
+      "bytes": 2099521,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-a-closed.rgba.png",
+      "sha256": "cec2c85242ec691b536663e248dcad891c83eeb7ad920b98a663ee74310fa0ca"
+    },
+    {
+      "bytes": 2101503,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-a-half.rgba.png",
+      "sha256": "f7487aca619ee91d6fd14506b70dbb99850a57784c74ebceccf3b106147e5ea0"
+    },
+    {
+      "bytes": 2102332,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-a-rest.rgba.png",
+      "sha256": "61aa36e989361d68e14b97ce4cc64b696e43ce3a191986fd7e1c749098310f23"
+    },
+    {
+      "bytes": 2099363,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-neutral-closed.rgba.png",
+      "sha256": "9a643e0456d1546f9ceaa2cdb486c754a23e21e741543c3fc84cd21bf1b13d8e"
+    },
+    {
+      "bytes": 2101352,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-neutral-half.rgba.png",
+      "sha256": "6b9fd1a638659eca3de67475c629c7e2b7acce0c728ad53c87472594fb4b39c9"
+    },
+    {
+      "bytes": 2102157,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-neutral-rest.rgba.png",
+      "sha256": "9a69cfb4b7c9051bd1334bce49097d87e9fde44b80cd2bb75404360ecf264f6d"
+    },
+    {
+      "bytes": 2099072,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-o-closed.rgba.png",
+      "sha256": "157d4fcf0570e7c22b83071d322af60ffd6b8845fcee5a543555ad7bc20defa1"
+    },
+    {
+      "bytes": 2101068,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-o-half.rgba.png",
+      "sha256": "8ddb822b8204c7b3a2c440f499dd633627ce4ca765a0de3d535eee9ba2582333"
+    },
+    {
+      "bytes": 2101914,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-o-rest.rgba.png",
+      "sha256": "8cc07d665b7274a54d8cb1b48f89507cbfbed27e5d6b1965775116a6d98b5bbb"
+    },
+    {
+      "bytes": 2098942,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-small-closed.rgba.png",
+      "sha256": "531500b2e5ac3a6493d260162d2df937d9811aeb4531537698c0c9776d9625a5"
+    },
+    {
+      "bytes": 2100947,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-small-half.rgba.png",
+      "sha256": "ca53ec4ebaa98a2bd6efb700a2fcd964b5b10e413b20e8b5a0e7631307fd4dfa"
+    },
+    {
+      "bytes": 2101814,
+      "path": "assets/expressions/complete-expressions/frames/front-surprised_front-small-rest.rgba.png",
+      "sha256": "090f9dd22241a32dcad325177a96ae66c7952a72593f7a9518308c25d30a44ad"
+    },
+    {
+      "bytes": 2098947,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-a-closed.rgba.png",
+      "sha256": "cc9ee900cff342baa9f6f951080676c322bc862ea36d4e17f549f9351a7d915e"
+    },
+    {
+      "bytes": 2100865,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-a-half.rgba.png",
+      "sha256": "3b6c61df5531368c3e31cdc1eb1b39df3664349ee97df5f86c11a8034c59ea5a"
+    },
+    {
+      "bytes": 2102595,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-a-rest.rgba.png",
+      "sha256": "906fe7691b26d0c66ce62464f860b9d7c2f36878cf31e9dbba8a0e67486c267e"
+    },
+    {
+      "bytes": 2098243,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-neutral-closed.rgba.png",
+      "sha256": "0693b026f0e003016c04cc454385a3d98a290cd6db7b347cae72661325b16cb3"
+    },
+    {
+      "bytes": 2100128,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-neutral-half.rgba.png",
+      "sha256": "85757a35b82d3e6b45a6e842ced2fd3db083b9198b716a14078eb30fdc63353b"
+    },
+    {
+      "bytes": 2101926,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-neutral-rest.rgba.png",
+      "sha256": "1b3e53dcb81f012f4c0f405b1ad19f9c9978fcd2d9ebbe968d6b7e38e0b55320"
+    },
+    {
+      "bytes": 2098452,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-o-closed.rgba.png",
+      "sha256": "15168985cd80997c123b435c070affb0a589214c8551cb023534f37c164f8be1"
+    },
+    {
+      "bytes": 2100371,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-o-half.rgba.png",
+      "sha256": "81ab9bed97baf485326c380f54658800e03b961391cdb4cb9680777a296b907d"
+    },
+    {
+      "bytes": 2102147,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-o-rest.rgba.png",
+      "sha256": "c773325a41f473f811b4ba86341a8729751689ea8f24deced2d028a15b682f65"
+    },
+    {
+      "bytes": 2098358,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-small-closed.rgba.png",
+      "sha256": "76c79caec975998c904bcad7736ff9e1f70306a4babd034f1afc8ccdaac22355"
+    },
+    {
+      "bytes": 2100277,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-small-half.rgba.png",
+      "sha256": "9200a92cd365ee74fd1827e43459f5b102036d9f41b0fb8ae3e1572709604a10"
+    },
+    {
+      "bytes": 2102072,
+      "path": "assets/expressions/complete-expressions/frames/front-thinking_front-small-rest.rgba.png",
+      "sha256": "2512af3250f89589bf18c9d85a0a98c5f33e895e9028538f565d966f010d5232"
+    },
+    {
+      "bytes": 2098049,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-a-closed.rgba.png",
+      "sha256": "3f840a26cbe3d307463f7017cba0d2fd69412bb504926bfc979dd20cf222dc0c"
+    },
+    {
+      "bytes": 2099934,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-a-half.rgba.png",
+      "sha256": "c92676369adc8c63dbf17c8ecb3905bf9add83632c60a2acab689556dae13aad"
+    },
+    {
+      "bytes": 2100626,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-a-rest.rgba.png",
+      "sha256": "7197195170101bca63e15843fb91730d080e3f36b984173671ecdc1ab2ce345c"
+    },
+    {
+      "bytes": 2096452,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-neutral-closed.rgba.png",
+      "sha256": "e265df55a2e291f77daef0c896fb6a7f34494165011b1932095e3e037349c645"
+    },
+    {
+      "bytes": 2098349,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-neutral-half.rgba.png",
+      "sha256": "d048a7064265276e56ba127b5a59f3f8e0f562bb32534031962053aa95d55d42"
+    },
+    {
+      "bytes": 2099025,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-neutral-rest.rgba.png",
+      "sha256": "1424660f88eb5cd4075b2fffc1e82e6138f6543ff644fd8a405329169f748e19"
+    },
+    {
+      "bytes": 2097439,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-o-closed.rgba.png",
+      "sha256": "b22979660bae93e9292674f257da4fd538c06d5f820b631e0fe1ba05c2173169"
+    },
+    {
+      "bytes": 2099350,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-o-half.rgba.png",
+      "sha256": "b70a2f5bb16cdaf5cfbe72877a75cb0e4abda3650b4880a5274f1016f0735b6c"
+    },
+    {
+      "bytes": 2100042,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-o-rest.rgba.png",
+      "sha256": "9259942cfb255f1178c2ccf399d4284764aeef5c65f4463a8e325053e1a96f0f"
+    },
+    {
+      "bytes": 2097421,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-small-closed.rgba.png",
+      "sha256": "46e5d75a90c7539913953a4c8bfab481070827de96ee7425af5d559b9c5a214e"
+    },
+    {
+      "bytes": 2099328,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-small-half.rgba.png",
+      "sha256": "60fc6e209a874fb4b45625c893ed565d12b69398bb7ae2c3b96108a101786ea6"
+    },
+    {
+      "bytes": 2100028,
+      "path": "assets/expressions/complete-expressions/frames/front-tired_front-small-rest.rgba.png",
+      "sha256": "39cb8178e1ab71a2574268ca71a534cc0030e7d535756fc740753ce78afe1c26"
+    },
+    {
+      "bytes": 2098268,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-a-closed.rgba.png",
+      "sha256": "9115abe3c5b695670a71635477f8bdbb072af214ede93b0434793d36b939a414"
+    },
+    {
+      "bytes": 2100125,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-a-half.rgba.png",
+      "sha256": "84eef3b8a9506609712d281a9499c0cb601e4e5b1bd1c19c9ad4e62e23096b7d"
+    },
+    {
+      "bytes": 2101558,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-a-rest.rgba.png",
+      "sha256": "b81fdd9221f89ea115b8304da7adf07998fa44f79bf75d47727cd919b875d130"
+    },
+    {
+      "bytes": 2096857,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-neutral-closed.rgba.png",
+      "sha256": "f1e9f2b018d9ecd6b61af07ce10e1481d88d3182ea9a9a5c68a4e7d62872d0ab"
+    },
+    {
+      "bytes": 2098743,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-neutral-half.rgba.png",
+      "sha256": "31d3f0005317334265ccb2918e64d5f5ac66da0bb14b39ef2e37122a773dc285"
+    },
+    {
+      "bytes": 2100239,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-neutral-rest.rgba.png",
+      "sha256": "f87e67bc6435a40aee9c68d2ff42a26956aa26e1239741850337e43017066c74"
+    },
+    {
+      "bytes": 2097743,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-o-closed.rgba.png",
+      "sha256": "d60bafc39bae79e0167245a1e3e0d883a2c8a99578d367ab3da49a1fb86d7bbf"
+    },
+    {
+      "bytes": 2099616,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-o-half.rgba.png",
+      "sha256": "f5d822cd64062ef1942a2436d95097a0985e5c40ccfd0d5b570e89d42a9c4866"
+    },
+    {
+      "bytes": 2101078,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-o-rest.rgba.png",
+      "sha256": "1b99cb8ab136575759542b02ad20f957ef499b854e89302b97dc3e7e09aeeb1c"
+    },
+    {
+      "bytes": 2097668,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-small-closed.rgba.png",
+      "sha256": "e88e3d4dceaae7931fcae74b8aedc2bc13752eee64205b749b5bac6b31c74a31"
+    },
+    {
+      "bytes": 2099539,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-small-half.rgba.png",
+      "sha256": "ac946b12b0696c25c393a598fb8f61294ca7c9ba206f3f7627514ab9bb4c12b8"
+    },
+    {
+      "bytes": 2101039,
+      "path": "assets/expressions/complete-expressions/frames/front-worried_front-small-rest.rgba.png",
+      "sha256": "e96ea88804fed7fe3c257898c32466d5162637ecdbc8f722d4e9f66d9177dde8"
+    },
+    {
       "bytes": 1955877,
       "path": "assets/expressions/complete-expressions/frames/left-neutral-a-closed.rgba.png",
       "sha256": "a04a1475e19833b8644285f55e0979a29f4686e53f5b844a0c003d97cf66dbe2"
@@ -822,9 +1602,9 @@
       "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b"
     },
     {
-      "bytes": 154526,
+      "bytes": 224638,
       "path": "assets/expressions/complete-expressions/manifest.json",
-      "sha256": "670e3e50e04ae39a6025678ff21098c19ca91d7bb52edc22c65c1aecc3e3cad7"
+      "sha256": "9f1e68f9d714ecef2d438015dad6088ec423b8ba315f42bed3642d44e0533ab1"
     },
     {
       "bytes": 6470,
@@ -902,6 +1682,201 @@
       "sha256": "744512bfd492bd82a8e9b93bc034d343f389f551d4d14979fbbd63fc2ecc1fd1"
     },
     {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-determined_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-determined_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-determined_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-gentle_smile_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-gentle_smile_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-gentle_smile_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-protective_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-protective_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-protective_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-proud_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-proud_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-proud_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-relieved_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-relieved_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-relieved_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-restrained_amused_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-restrained_amused_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-restrained_amused_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-shy_cute_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-shy_cute_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-shy_cute_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-shy_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-shy_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-shy_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-surprised_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-surprised_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-surprised_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-thinking_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-thinking_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-thinking_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-tired_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-tired_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-tired_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 9188,
+      "path": "assets/expressions/complete-expressions/masks/front-worried_front-oral-a.png",
+      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+    },
+    {
+      "bytes": 9109,
+      "path": "assets/expressions/complete-expressions/masks/front-worried_front-oral-o.png",
+      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+    },
+    {
+      "bytes": 9142,
+      "path": "assets/expressions/complete-expressions/masks/front-worried_front-oral-small.png",
+      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
       "bytes": 707281,
       "path": "assets/expressions/determined_front.png",
       "sha256": "4985803712a88d580cbf049b19c1f5ad2804d0692a377560d963d3d27be6964a"
@@ -975,6 +1950,11 @@
       "bytes": 707623,
       "path": "assets/expressions/exasperated_front_speech_round.png",
       "sha256": "a4b98fba1f09d7b562ad54993e271440b7cbca754587aa0f8167c705577b87d1"
+    },
+    {
+      "bytes": 2011,
+      "path": "assets/expressions/front-expression-install/receipt.json",
+      "sha256": "6a9df4d4b56e384882818a4e45e50ac605597862e2bd8db268274189d446ecb7"
     },
     {
       "bytes": 706451,
@@ -3012,9 +3992,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 109712,
+      "bytes": 143516,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "0fbc75cf2d25477e9b281f754a4775325bc93dcc6709e03f9b9b427edd9674f1"
+      "sha256": "6426b7d580247c3003b46b9de2dbf580cb1641b158caece38dd33b2d8c479cb6"
     },
     {
       "bytes": 6175,
@@ -3227,14 +4207,404 @@
       "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
     },
     {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6326,
+      "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-half.png",
+      "sha256": "089e41af67019f10ab55c179b0be4596bd2ee5b9d2122731afe7028f4547cfae"
+    },
+    {
+      "bytes": 6445,
+      "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-rest.png",
+      "sha256": "721d9d077653050cbcabea86bcc8768c0254afde20e181fa3ce3743854e2fd36"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-attentive_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7843,
+      "path": "assets/makeup-safe-regions/front-attentive_front/foundation-half.png",
+      "sha256": "39bb97208cfa87b3273c667934cfde72a19ca1d689c491479b8e856220f00ea2"
+    },
+    {
+      "bytes": 7952,
+      "path": "assets/makeup-safe-regions/front-attentive_front/foundation-rest.png",
+      "sha256": "15603dbf41b2e30e2217b39eaa3ca7396e90ab963ae89d6da5de4118fff7c379"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6290,
+      "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-half.png",
+      "sha256": "e1c89b83782accc54258113726dbbb7eb1fb3a529f9fdae06a85fdc67729aece"
+    },
+    {
+      "bytes": 6384,
+      "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-rest.png",
+      "sha256": "c1cb82779163089e389e2a7122e70549b5dc12c6c4361be38d624831585c173c"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-determined_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7823,
+      "path": "assets/makeup-safe-regions/front-determined_front/foundation-half.png",
+      "sha256": "009e426f049a38ea4d42d05102ed1b15d1877d3ccfc0663e7eaa77c54ec0c974"
+    },
+    {
+      "bytes": 7900,
+      "path": "assets/makeup-safe-regions/front-determined_front/foundation-rest.png",
+      "sha256": "d85f00bdf72d49a480692312b8f82e34bc2c01981168f1a22cd30e694f79fb02"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6295,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-half.png",
+      "sha256": "c937118bc0816c15430f0553cc8e66f9189f061236e5d13e6598e4f0185e5c8f"
+    },
+    {
+      "bytes": 6396,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-rest.png",
+      "sha256": "46c021bbe8725d56b04e09cee3a98fe5e750bcd9082385e50df750243cec5e1a"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7819,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-half.png",
+      "sha256": "0b3a1d904319c756c55a8f392b55ca11aa3bacd9e519c6828e000ef225f1e463"
+    },
+    {
+      "bytes": 7909,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-rest.png",
+      "sha256": "276b098f5bc67e45ef67ec40278887c057ac170daf3134aeed1d9e581b2c0959"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6293,
+      "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-half.png",
+      "sha256": "2908f8a8b4107aa1c586d7573031ad162f38a4a0cc830cdec788efe96423f814"
+    },
+    {
+      "bytes": 6396,
+      "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-rest.png",
+      "sha256": "27a5e7a412e60e224a5655c57713c06baef69882a1eba5a5fa6a52e32a1f82c0"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-protective_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7824,
+      "path": "assets/makeup-safe-regions/front-protective_front/foundation-half.png",
+      "sha256": "7ed3716a2691c07e72c7ee59b6584b38837b4722ab1beaea1cbe08975c2bcb37"
+    },
+    {
+      "bytes": 7905,
+      "path": "assets/makeup-safe-regions/front-protective_front/foundation-rest.png",
+      "sha256": "4dddf702646235c0175d722fada08f00493c5183ba4c311ab48c714486d36953"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6293,
+      "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-half.png",
+      "sha256": "7ddc70a631077ab13791b919a39eab0a8f8f30210c9b7a0358753f549f641198"
+    },
+    {
+      "bytes": 6380,
+      "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-rest.png",
+      "sha256": "db9a92fd41bcd253c6f751eddf52291886b3b9db15087bbc86c832aba171f508"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-proud_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7827,
+      "path": "assets/makeup-safe-regions/front-proud_front/foundation-half.png",
+      "sha256": "cf519d1f81d0cc49a11df09f0d5e53d028dfe5155b1e5cc570280fe37e71ba2c"
+    },
+    {
+      "bytes": 7899,
+      "path": "assets/makeup-safe-regions/front-proud_front/foundation-rest.png",
+      "sha256": "aba021c78387fb13b3501bf0f40feb8934f02cf16dbb6111303407704fa2fc2a"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6293,
+      "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-half.png",
+      "sha256": "7ddc70a631077ab13791b919a39eab0a8f8f30210c9b7a0358753f549f641198"
+    },
+    {
+      "bytes": 6380,
+      "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-rest.png",
+      "sha256": "db9a92fd41bcd253c6f751eddf52291886b3b9db15087bbc86c832aba171f508"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-relieved_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7827,
+      "path": "assets/makeup-safe-regions/front-relieved_front/foundation-half.png",
+      "sha256": "cf519d1f81d0cc49a11df09f0d5e53d028dfe5155b1e5cc570280fe37e71ba2c"
+    },
+    {
+      "bytes": 7899,
+      "path": "assets/makeup-safe-regions/front-relieved_front/foundation-rest.png",
+      "sha256": "aba021c78387fb13b3501bf0f40feb8934f02cf16dbb6111303407704fa2fc2a"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6295,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-half.png",
+      "sha256": "c937118bc0816c15430f0553cc8e66f9189f061236e5d13e6598e4f0185e5c8f"
+    },
+    {
+      "bytes": 6394,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-rest.png",
+      "sha256": "98330c153276833e81b995fa92f90a481a9d1da0a1bb117c82cddcf872e175d5"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7819,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-half.png",
+      "sha256": "0b3a1d904319c756c55a8f392b55ca11aa3bacd9e519c6828e000ef225f1e463"
+    },
+    {
+      "bytes": 7906,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-rest.png",
+      "sha256": "ac991e04ecf3c37348ad7f837293e614836394e23cb057631b75b99c4f65eb9b"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6278,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-half.png",
+      "sha256": "52e245884f309a975e8fc29807afed0c7dca655c5689f3f429fcec95c54b66ff"
+    },
+    {
+      "bytes": 6303,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-rest.png",
+      "sha256": "0804c3bf3065b3201235c0525e81fb67bd1ffc7965c45d6b147d6a5e2ab369ee"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7815,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-half.png",
+      "sha256": "3e9e51fc72cc4a96e542c5712b5de1a0f0d7901ff8d37fc895e8d0785ebf582f"
+    },
+    {
+      "bytes": 7831,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-rest.png",
+      "sha256": "0af1ac203316c9527139b87deed96a0623c3cb8a6633ed02997957181af554e2"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6311,
+      "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-half.png",
+      "sha256": "685c16583fc83e18dfeb93e3c621ffee1ed0d7820136acf905bff644a0c48290"
+    },
+    {
+      "bytes": 6377,
+      "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-rest.png",
+      "sha256": "48e983c955aa7a4233f1e7048882187eda06cc4a9d554890a81fe24c121f8f6b"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-shy_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7840,
+      "path": "assets/makeup-safe-regions/front-shy_front/foundation-half.png",
+      "sha256": "33bb9ac46a7a4095597a77f03c7eaa68790bca38cb73bb0c3e9e477ac1f1e7b6"
+    },
+    {
+      "bytes": 7890,
+      "path": "assets/makeup-safe-regions/front-shy_front/foundation-rest.png",
+      "sha256": "031349c6cad5bb70ddac33469bcfccde8ebedd72183f33f5ab46e2576efa8bcf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-half.png",
+      "sha256": "5514ed82b74a6988def6f2078afcade5578dc08a69890e25bb992b4b5eac8e52"
+    },
+    {
+      "bytes": 6431,
+      "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-rest.png",
+      "sha256": "4180f1f32458717ba84450396736d6d0679d9218eea2fce3d7f98a874cdfbe74"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-surprised_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7820,
+      "path": "assets/makeup-safe-regions/front-surprised_front/foundation-half.png",
+      "sha256": "f9633c722ff467eaac6857ef175a8350488689705669c573780a0990beb74781"
+    },
+    {
+      "bytes": 7915,
+      "path": "assets/makeup-safe-regions/front-surprised_front/foundation-rest.png",
+      "sha256": "42fb2dfa762a789ecbb8371eac6fbb77aed9b4166f7ddc0158e8a28eb6ec5cfb"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6279,
+      "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-half.png",
+      "sha256": "6e758c28afdd1e73c1cff6769ec45c216285e86535dcb09e172d3e3e270a27b6"
+    },
+    {
+      "bytes": 6385,
+      "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-rest.png",
+      "sha256": "4d5e0c102f006662204e1b3741007ca5d355ce795923103d782ba90be756ae2b"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-thinking_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7807,
+      "path": "assets/makeup-safe-regions/front-thinking_front/foundation-half.png",
+      "sha256": "b03cd4ec978a356b48d4553e96ff8fb3b3788b196da45df33f11e26385c8fc81"
+    },
+    {
+      "bytes": 7900,
+      "path": "assets/makeup-safe-regions/front-thinking_front/foundation-rest.png",
+      "sha256": "85856ddb52e1c5179a85431f6775b40c2c96f5b4beb365a5c780424c11290398"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6305,
+      "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-half.png",
+      "sha256": "ff8e842708ce478644702ec1bc3ddd5e329ccf043b753fa86fcd199bceb93a29"
+    },
+    {
+      "bytes": 6372,
+      "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-rest.png",
+      "sha256": "e9a9e28d73d556f826a463b53e158efa89023a24541c42ee436eaec3a8d43db9"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-tired_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7830,
+      "path": "assets/makeup-safe-regions/front-tired_front/foundation-half.png",
+      "sha256": "365744f5835cc16b8746c6022892fa9d2e4d2f1ff9a78354050e4182b1ba0a07"
+    },
+    {
+      "bytes": 7903,
+      "path": "assets/makeup-safe-regions/front-tired_front/foundation-rest.png",
+      "sha256": "3d01227b4532adf1a354107426502544ba6d259c0dd95252a44a92b60e6a3bd3"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6305,
+      "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-half.png",
+      "sha256": "8733951b83e037a6d8a5c10c0b54b26b0d73a1a9b533540d74deb46676813974"
+    },
+    {
+      "bytes": 6423,
+      "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-rest.png",
+      "sha256": "600919d594272a8820903ba1819b8111a3506538ac69e74fd4316195b594e234"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-worried_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7827,
+      "path": "assets/makeup-safe-regions/front-worried_front/foundation-half.png",
+      "sha256": "b623007b7f4c8731dab1af27c43fadf82c0f1b6380207eb56dbf61c3a3bf21d3"
+    },
+    {
+      "bytes": 7928,
+      "path": "assets/makeup-safe-regions/front-worried_front/foundation-rest.png",
+      "sha256": "6da3bb4b6a26a692ccf0e3ee7f336550322123c12ef3de6da682ff8346adc1bb"
+    },
+    {
       "bytes": 419110,
       "path": "assets/mohan-halfbody.ico",
       "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
     },
     {
-      "bytes": 29634200,
+      "bytes": 36325693,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "174a58315109592e8e69bf0b0f231c411930e79c51b8c039063df4d9d56c58c2"
+      "sha256": "3dc76508e658f8f66d40d37af2d2d5744604f5665ffc8b9cd2871059506d6042"
     },
     {
       "bytes": 29201813,
@@ -8548,21 +9918,21 @@
     }
   ],
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.3",
-  "package_hash": "c42de8ca9f3752d2e859ed9eb67595d842743200cba90df8cabb9764a5f914c4",
+  "pack_version": "1.0.4",
+  "package_hash": "f58e89c76dbc13bffd51e20c2bf159f6e3e19b240dd7efe3a9adb136b91f3d84",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "mohan-pack-v1.0.3",
+    "release_tag": "mohan-pack-v1.0.4",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {
-    "max_archive_bytes": 805306368,
+    "max_archive_bytes": 1073741824,
     "max_compression_ratio": 100,
     "max_file_bytes": 67108864,
     "max_files": 4096,
     "max_manifest_bytes": 1048576,
-    "max_total_bytes": 805306368,
+    "max_total_bytes": 1073741824,
     "max_zip_directory_bytes": 8388608
   }
 }

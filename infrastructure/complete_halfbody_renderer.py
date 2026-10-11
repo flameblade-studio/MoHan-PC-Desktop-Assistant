@@ -15,7 +15,8 @@ lazy from domain.qt_image_io import image_from_png, load_pixmap_png
 lazy from infrastructure.animated_appearance import AnimatedAppearance
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_expressions import (
-    COMPLETE_CHEEK_POSES, COMPLETE_POSES, EYES, FAMILIES, CompleteHalfbodyFrames,
+    COMPLETE_CHEEK_POSES, COMPLETE_FRONT_POSES, COMPLETE_POSES,
+    EYES, FAMILIES, CompleteHalfbodyFrames,
     load_complete_halfbody_frames,
 )
 
@@ -25,6 +26,7 @@ MAX_FRAME_CONTEXTS = 2 * len(COMPLETE_POSES) * len(FAMILIES) * len(EYES)
 MAX_DECODED_FRAMES = 24
 CLOSED_APERTURE = 0.01
 _CHEEK_SILHOUETTE = character_rig_manifest().pose_silhouettes["cheek"]
+_FRONT_SILHOUETTE = character_rig_manifest().pose_silhouettes["front"]
 
 
 class CompleteHalfbodyRenderer:
@@ -62,6 +64,12 @@ class CompleteHalfbodyRenderer:
             return None
         expression = getattr(layers, "mouth_expression", None) or motion.expression
         binding = assets.expressions.get(expression)
+        emotional_binding = assets.expressions.get(motion.expression)
+        if emotional_binding is not None and emotional_binding[0] in COMPLETE_FRONT_POSES:
+            # Generic speech mouth names choose only a mouth family. The live
+            # emotional expression still owns the brows, eyes and face canvas.
+            family = binding[1] if binding is not None else emotional_binding[1]
+            binding = emotional_binding[0], family
         if binding is None:
             self._set_active_mouth_state(None, None)
             return None
@@ -148,6 +156,8 @@ class CompleteHalfbodyRenderer:
 
     @staticmethod
     def _makeup_view_id(pose: str, eye: str) -> str | None:
+        if pose in COMPLETE_FRONT_POSES:
+            return pose
         if pose not in COMPLETE_CHEEK_POSES:
             return None
         return pose if eye == "rest" else f"{pose}-{eye}"
@@ -172,7 +182,7 @@ class CompleteHalfbodyRenderer:
         self._pixmaps.move_to_end(key)
         while len(self._pixmaps) > MAX_DECODED_FRAMES:
             self._pixmaps.popitem(last=False)
-        if pose in COMPLETE_CHEEK_POSES:
+        if pose in COMPLETE_CHEEK_POSES or pose in COMPLETE_FRONT_POSES:
             viseme = {"neutral": None, "small": "I", "a": "A", "o": "O"}[family]
             self._set_active_mouth_state(viseme, self._oral_mask(pose, family))
         else:
@@ -181,7 +191,9 @@ class CompleteHalfbodyRenderer:
         appearance_declares = getattr(
             self._overlay, "appearance_declares_view", None,
         )
-        if (
+        if pose in COMPLETE_FRONT_POSES:
+            appearance_view_id = _FRONT_SILHOUETTE
+        elif (
             pose in COMPLETE_CHEEK_POSES
             and callable(appearance_declares)
             and not appearance_declares(pose)

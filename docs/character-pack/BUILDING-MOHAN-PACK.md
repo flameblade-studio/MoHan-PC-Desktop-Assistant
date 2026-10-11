@@ -8,7 +8,7 @@
 
 ### 大小政策
 
-本建置採用做法 (a)：只在墨寒建置與驗證呼叫明確傳入 768 MiB 的 ZIP 容器與合計上限；角色包格式的 256 MiB／512 MiB 預設完全不變。產品執行期載入已安裝或開發用的官方角色包時，`application/character_runtime_bootstrap.py` 同樣明確傳入這組 768 MiB 上限，與角色包 `pack-source.json` 宣告一致。做法 (b) 若只拆出兩個外觀包，本體仍約 535 MiB，超過預設合計上限；若再拆成多個包，則必須先決定 DLC 歸屬、相依下載與安裝生命週期。這些事項仍待擁有者決定，因此本步不建立 `dependencies` 或多包語意。
+本建置採用做法 (a)：只在墨寒建置與驗證呼叫明確傳入 1 GiB 的 ZIP 容器與合計上限；角色包格式的 256 MiB／512 MiB 預設完全不變。產品執行期載入已安裝或開發用的官方角色包時，`application/character_runtime_bootstrap.py` 同樣明確傳入這組 1 GiB 上限，與角色包 `pack-source.json` 宣告一致。做法 (b) 若只拆出兩個外觀包，本體仍約 535 MiB，超過預設合計上限；若再拆成多個包，則必須先決定 DLC 歸屬、相依下載與安裝生命週期。這些事項仍待擁有者決定，因此本步不建立 `dependencies` 或多包語意。
 
 ### 建置與驗證
 
@@ -16,7 +16,7 @@
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.4.zip
 ```
 
 成功輸出包含 `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明確驗證上限與 `CHARACTER_PACK_VALID=1`。ZIP 使用排序後的成員、1980-01-01 固定時間戳、固定權限、無額外 metadata、`ZIP_STORED` 與停用 ZIP64；同一輸入兩次會得到相同 `package_hash` 與完全相同的 ZIP bytes。資料夾與 ZIP 的邏輯 `package_hash` 相同。
@@ -31,7 +31,7 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 ### 大小策略
 
-本构建采用做法 (a)：只在墨寒构建与验证调用中明确传入 768 MiB 的 ZIP 容器与合计上限；角色包格式的 256 MiB／512 MiB 默认值完全不变。产品运行时加载已安装或开发用的官方角色包时，`application/character_runtime_bootstrap.py` 同样明确传入这组 768 MiB 上限，与角色包 `pack-source.json` 声明一致。做法 (b) 若只拆出两个外观包，本体仍约 535 MiB，超过默认合计上限；若再拆成多个包，则必须先决定 DLC 归属、依赖下载与安装生命周期。这些事项仍待所有者决定，因此本步不建立 `dependencies` 或多包语义。
+本构建采用做法 (a)：只在墨寒构建与验证调用中明确传入 1 GiB 的 ZIP 容器与合计上限；角色包格式的 256 MiB／512 MiB 默认值完全不变。产品运行时加载已安装或开发用的官方角色包时，`application/character_runtime_bootstrap.py` 同样明确传入这组 1 GiB 上限，与角色包 `pack-source.json` 声明一致。做法 (b) 若只拆出两个外观包，本体仍约 535 MiB，超过默认合计上限；若再拆成多个包，则必须先决定 DLC 归属、依赖下载与安装生命周期。这些事项仍待所有者决定，因此本步不建立 `dependencies` 或多包语义。
 
 ### 构建与验证
 
@@ -39,7 +39,7 @@ python tools/build_character_pack.py --format zip --output .quality-tmp/split/fl
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.4.zip
 ```
 
 成功输出包含 `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明确验证上限与 `CHARACTER_PACK_VALID=1`。ZIP 使用排序后的成员、1980-01-01 固定时间戳、固定权限、无额外 metadata、`ZIP_STORED` 与停用 ZIP64；同一输入两次会得到相同 `package_hash` 与完全相同的 ZIP bytes。文件夹与 ZIP 的逻辑 `package_hash` 相同。
@@ -54,7 +54,7 @@ Physical payloads are the formal inventory's runtime files plus product self-tes
 
 ### Size policy
 
-The build uses option (a): only MoHan build and validation calls explicitly pass 768 MiB ZIP-container and aggregate limits. The character-pack format defaults remain unchanged at 256 MiB and 512 MiB. When the product runtime loads an installed or development official pack, `application/character_runtime_bootstrap.py` passes the same explicit 768 MiB limits, matching the pack's `pack-source.json` declaration. Under option (b), removing only the two appearance archives still leaves an approximately 535 MiB core, above the default aggregate limit. Splitting further would first require decisions about DLC ownership, dependency downloads, and installation lifecycle. Those decisions remain with the owner, so this step does not introduce `dependencies` or multi-package semantics.
+The build uses option (a): only MoHan build and validation calls explicitly pass 1 GiB ZIP-container and aggregate limits. The character-pack format defaults remain unchanged at 256 MiB and 512 MiB. When the product runtime loads an installed or development official pack, `application/character_runtime_bootstrap.py` passes the same explicit 1 GiB limits, matching the pack's `pack-source.json` declaration. Under option (b), removing only the two appearance archives still leaves an approximately 535 MiB core, above the default aggregate limit. Splitting further would first require decisions about DLC ownership, dependency downloads, and installation lifecycle. Those decisions remain with the owner, so this step does not introduce `dependencies` or multi-package semantics.
 
 ### Build and validation
 
@@ -62,7 +62,7 @@ The output path must not already exist. Both forms are fully checked with the `d
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.4.zip
 ```
 
 Successful output reports `PACKAGE_HASH`, `PAYLOAD_FILES`, `PAYLOAD_BYTES`, the explicit limits, and `CHARACTER_PACK_VALID=1`. ZIP output uses sorted members, the fixed timestamp 1980-01-01, fixed permissions, no extra metadata, `ZIP_STORED`, and disabled ZIP64. Identical inputs produce the same `package_hash` and byte-identical ZIPs. Equivalent directory and ZIP packages share the same logical `package_hash`.
@@ -77,7 +77,7 @@ This step does not change product read paths, installation, updates, or runtime 
 
 ### サイズ方針
 
-このビルドは方法 (a) を採用します。墨寒のビルドと検証呼び出しだけが、ZIP コンテナと合計サイズに 768 MiB を明示指定します。キャラクターパック形式の既定値 256 MiB／512 MiB は変更しません。製品の実行時にインストール済みまたは開発用の公式パックを読み込む際も、`application/character_runtime_bootstrap.py` が同じ 768 MiB の上限を明示的に渡し、パックの `pack-source.json` の宣言と一致させます。方法 (b) で二つの外観パックだけを分離しても、本体は約 535 MiB あり、既定の合計上限を超えます。さらに分割するには、DLC の帰属、依存ダウンロード、インストールのライフサイクルを先に決定する必要があります。これらは所有者の決定待ちなので、本段階では `dependencies` や複数パックの意味を導入しません。
+このビルドは方法 (a) を採用します。墨寒のビルドと検証呼び出しだけが、ZIP コンテナと合計サイズに 1 GiB を明示指定します。キャラクターパック形式の既定値 256 MiB／512 MiB は変更しません。製品の実行時にインストール済みまたは開発用の公式パックを読み込む際も、`application/character_runtime_bootstrap.py` が同じ 1 GiB の上限を明示的に渡し、パックの `pack-source.json` の宣言と一致させます。方法 (b) で二つの外観パックだけを分離しても、本体は約 535 MiB あり、既定の合計上限を超えます。さらに分割するには、DLC の帰属、依存ダウンロード、インストールのライフサイクルを先に決定する必要があります。これらは所有者の決定待ちなので、本段階では `dependencies` や複数パックの意味を導入しません。
 
 ### ビルドと検証
 
@@ -85,7 +85,7 @@ This step does not change product read paths, installation, updates, or runtime 
 
 ```powershell
 python tools/build_character_pack.py --format directory --output .quality-tmp/split/flameblade.mohan
-python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.3.zip
+python tools/build_character_pack.py --format zip --output .quality-tmp/split/flameblade.mohan-1.0.4.zip
 ```
 
 成功時は `PACKAGE_HASH`、`PAYLOAD_FILES`、`PAYLOAD_BYTES`、明示上限、`CHARACTER_PACK_VALID=1` を出力します。ZIP は並べ替えたメンバー、固定日時 1980-01-01、固定権限、追加 metadata なし、`ZIP_STORED`、ZIP64 無効を使用します。同じ入力から同じ `package_hash` と完全に同じ ZIP bytes を生成します。同等のディレクトリと ZIP は同じ論理 `package_hash` を共有します。

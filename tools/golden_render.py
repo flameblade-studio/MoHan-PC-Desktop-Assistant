@@ -17,7 +17,7 @@ lazy import uuid
 lazy import zipfile
 lazy from collections.abc import Iterable
 lazy from contextlib import contextmanager
-lazy from dataclasses import asdict, dataclass, fields
+lazy from dataclasses import asdict, dataclass, fields, replace
 lazy from datetime import date
 lazy from pathlib import Path, PurePosixPath, PureWindowsPath
 
@@ -36,13 +36,9 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from application.character_runtime_bootstrap import (
     activate_product_character_runtime,
 )
+lazy from domain.face_motion import FaceMotionController
 lazy from domain.face_rig import (
-    ExpressionShape,
-    FaceMotionFrame,
-    FacePose,
-    MouthShape,
-    Viseme,
-    blink_for_eye_state,
+    ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme, blink_for_eye_state,
 )
 lazy from domain.outfit_pack import clear_appearance_selection, restore_builtin_outfit
 lazy from domain.outfit_pack_makeup import (
@@ -429,9 +425,15 @@ def _render_environment(local_appdata: Path):
 
 
 def _motion(expression: str, pose: str, eye_state: str = "rest") -> FaceMotionFrame:
-    return FaceMotionFrame(
-        FacePose(pose), expression, Viseme.CLOSED, MouthShape(),
-        ExpressionShape(blink=blink_for_eye_state(eye_state)),
+    if pose != "front":
+        return FaceMotionFrame(
+            FacePose(pose), expression, Viseme.CLOSED, MouthShape(),
+            ExpressionShape(blink=blink_for_eye_state(eye_state)), breath=0.0,
+        )
+    motion = FaceMotionController().close(pose=pose, expression=expression)
+    return replace(
+        motion,
+        expression_shape=replace(motion.expression_shape, blink=blink_for_eye_state(eye_state)),
         breath=0.0,
     )
 

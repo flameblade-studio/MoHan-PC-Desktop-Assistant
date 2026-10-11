@@ -4075,6 +4075,1579 @@
           ]
         }
       }
+    },
+    "front-attentive_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-attentive_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-attentive_front/foundation-rest.png",
+          "sha256": "15603dbf41b2e30e2217b39eaa3ca7396e90ab963ae89d6da5de4118fff7c379",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-attentive_front/foundation-half.png",
+          "sha256": "39bb97208cfa87b3273c667934cfde72a19ca1d689c491479b8e856220f00ea2",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-attentive_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-rest.png",
+          "sha256": "721d9d077653050cbcabea86bcc8768c0254afde20e181fa3ce3743854e2fd36",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-half.png",
+          "sha256": "089e41af67019f10ab55c179b0be4596bd2ee5b9d2122731afe7028f4547cfae",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-determined_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-determined_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-determined_front/foundation-rest.png",
+          "sha256": "d85f00bdf72d49a480692312b8f82e34bc2c01981168f1a22cd30e694f79fb02",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-determined_front/foundation-half.png",
+          "sha256": "009e426f049a38ea4d42d05102ed1b15d1877d3ccfc0663e7eaa77c54ec0c974",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-determined_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-rest.png",
+          "sha256": "c1cb82779163089e389e2a7122e70549b5dc12c6c4361be38d624831585c173c",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-half.png",
+          "sha256": "e1c89b83782accc54258113726dbbb7eb1fb3a529f9fdae06a85fdc67729aece",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-gentle_smile_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-gentle_smile_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-rest.png",
+          "sha256": "276b098f5bc67e45ef67ec40278887c057ac170daf3134aeed1d9e581b2c0959",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-half.png",
+          "sha256": "0b3a1d904319c756c55a8f392b55ca11aa3bacd9e519c6828e000ef225f1e463",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-rest.png",
+          "sha256": "46c021bbe8725d56b04e09cee3a98fe5e750bcd9082385e50df750243cec5e1a",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-half.png",
+          "sha256": "c937118bc0816c15430f0553cc8e66f9189f061236e5d13e6598e4f0185e5c8f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-protective_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-protective_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-protective_front/foundation-rest.png",
+          "sha256": "4dddf702646235c0175d722fada08f00493c5183ba4c311ab48c714486d36953",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-protective_front/foundation-half.png",
+          "sha256": "7ed3716a2691c07e72c7ee59b6584b38837b4722ab1beaea1cbe08975c2bcb37",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-protective_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-rest.png",
+          "sha256": "27a5e7a412e60e224a5655c57713c06baef69882a1eba5a5fa6a52e32a1f82c0",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-half.png",
+          "sha256": "2908f8a8b4107aa1c586d7573031ad162f38a4a0cc830cdec788efe96423f814",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-proud_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-proud_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-proud_front/foundation-rest.png",
+          "sha256": "aba021c78387fb13b3501bf0f40feb8934f02cf16dbb6111303407704fa2fc2a",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-proud_front/foundation-half.png",
+          "sha256": "cf519d1f81d0cc49a11df09f0d5e53d028dfe5155b1e5cc570280fe37e71ba2c",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-proud_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-rest.png",
+          "sha256": "db9a92fd41bcd253c6f751eddf52291886b3b9db15087bbc86c832aba171f508",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-half.png",
+          "sha256": "7ddc70a631077ab13791b919a39eab0a8f8f30210c9b7a0358753f549f641198",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-relieved_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-relieved_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-relieved_front/foundation-rest.png",
+          "sha256": "aba021c78387fb13b3501bf0f40feb8934f02cf16dbb6111303407704fa2fc2a",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-relieved_front/foundation-half.png",
+          "sha256": "cf519d1f81d0cc49a11df09f0d5e53d028dfe5155b1e5cc570280fe37e71ba2c",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-relieved_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-rest.png",
+          "sha256": "db9a92fd41bcd253c6f751eddf52291886b3b9db15087bbc86c832aba171f508",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-half.png",
+          "sha256": "7ddc70a631077ab13791b919a39eab0a8f8f30210c9b7a0358753f549f641198",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-restrained_amused_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-restrained_amused_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-rest.png",
+          "sha256": "ac991e04ecf3c37348ad7f837293e614836394e23cb057631b75b99c4f65eb9b",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-half.png",
+          "sha256": "0b3a1d904319c756c55a8f392b55ca11aa3bacd9e519c6828e000ef225f1e463",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-rest.png",
+          "sha256": "98330c153276833e81b995fa92f90a481a9d1da0a1bb117c82cddcf872e175d5",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-half.png",
+          "sha256": "c937118bc0816c15430f0553cc8e66f9189f061236e5d13e6598e4f0185e5c8f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-shy_cute_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-shy_cute_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-rest.png",
+          "sha256": "0af1ac203316c9527139b87deed96a0623c3cb8a6633ed02997957181af554e2",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-half.png",
+          "sha256": "3e9e51fc72cc4a96e542c5712b5de1a0f0d7901ff8d37fc895e8d0785ebf582f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-rest.png",
+          "sha256": "0804c3bf3065b3201235c0525e81fb67bd1ffc7965c45d6b147d6a5e2ab369ee",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-half.png",
+          "sha256": "52e245884f309a975e8fc29807afed0c7dca655c5689f3f429fcec95c54b66ff",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-shy_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-shy_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-shy_front/foundation-rest.png",
+          "sha256": "031349c6cad5bb70ddac33469bcfccde8ebedd72183f33f5ab46e2576efa8bcf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-shy_front/foundation-half.png",
+          "sha256": "33bb9ac46a7a4095597a77f03c7eaa68790bca38cb73bb0c3e9e477ac1f1e7b6",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-shy_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-rest.png",
+          "sha256": "48e983c955aa7a4233f1e7048882187eda06cc4a9d554890a81fe24c121f8f6b",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-half.png",
+          "sha256": "685c16583fc83e18dfeb93e3c621ffee1ed0d7820136acf905bff644a0c48290",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-surprised_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-surprised_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-surprised_front/foundation-rest.png",
+          "sha256": "42fb2dfa762a789ecbb8371eac6fbb77aed9b4166f7ddc0158e8a28eb6ec5cfb",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-surprised_front/foundation-half.png",
+          "sha256": "f9633c722ff467eaac6857ef175a8350488689705669c573780a0990beb74781",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-surprised_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-rest.png",
+          "sha256": "4180f1f32458717ba84450396736d6d0679d9218eea2fce3d7f98a874cdfbe74",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-half.png",
+          "sha256": "5514ed82b74a6988def6f2078afcade5578dc08a69890e25bb992b4b5eac8e52",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-thinking_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-thinking_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-thinking_front/foundation-rest.png",
+          "sha256": "85856ddb52e1c5179a85431f6775b40c2c96f5b4beb365a5c780424c11290398",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-thinking_front/foundation-half.png",
+          "sha256": "b03cd4ec978a356b48d4553e96ff8fb3b3788b196da45df33f11e26385c8fc81",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-thinking_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-rest.png",
+          "sha256": "4d5e0c102f006662204e1b3741007ca5d355ce795923103d782ba90be756ae2b",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-half.png",
+          "sha256": "6e758c28afdd1e73c1cff6769ec45c216285e86535dcb09e172d3e3e270a27b6",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-tired_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-tired_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-tired_front/foundation-rest.png",
+          "sha256": "3d01227b4532adf1a354107426502544ba6d259c0dd95252a44a92b60e6a3bd3",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-tired_front/foundation-half.png",
+          "sha256": "365744f5835cc16b8746c6022892fa9d2e4d2f1ff9a78354050e4182b1ba0a07",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-tired_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-rest.png",
+          "sha256": "e9a9e28d73d556f826a463b53e158efa89023a24541c42ee436eaec3a8d43db9",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-half.png",
+          "sha256": "ff8e842708ce478644702ec1bc3ddd5e329ccf043b753fa86fcd199bceb93a29",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "front-worried_front": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "rig": "assets/front-makeup-rigs/front-worried_front",
+      "slots": {
+        "cheeks": [
+          [
+            461,
+            430,
+            149,
+            144
+          ],
+          [
+            590,
+            428,
+            173,
+            144
+          ]
+        ],
+        "eyes": [
+          [
+            485,
+            373,
+            113,
+            118
+          ],
+          [
+            586,
+            371,
+            135,
+            118
+          ],
+          [
+            505,
+            396,
+            91,
+            76
+          ],
+          [
+            616,
+            398,
+            94,
+            76
+          ]
+        ],
+        "lips": [
+          [
+            555,
+            524,
+            125,
+            72
+          ]
+        ]
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-worried_front/foundation-rest.png",
+          "sha256": "6da3bb4b6a26a692ccf0e3ee7f336550322123c12ef3de6da682ff8346adc1bb",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-worried_front/foundation-half.png",
+          "sha256": "b623007b7f4c8731dab1af27c43fadf82c0f1b6380207eb56dbf61c3a3bf21d3",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-worried_front/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-rest.png",
+          "sha256": "600919d594272a8820903ba1819b8111a3506538ac69e74fd4316195b594e234",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-half.png",
+          "sha256": "8733951b83e037a6d8a5c10c0b54b26b0d73a1a9b533540d74deb46676813974",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
     }
   },
   "source_sha256": "4ca78a577d93ba65d5d6af0d9aaee6d999d59b9fa6f6222d953d91afa19b7552",

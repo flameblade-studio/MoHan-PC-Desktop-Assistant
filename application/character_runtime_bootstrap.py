@@ -39,11 +39,11 @@ SUPPORTED_CHARACTER_IDS = frozenset({DEFAULT_CHARACTER_ID})
 _CHARACTER_SELECTION_LOGGER = logging.getLogger("mohan.character_selection")
 
 _CharacterLoader = Callable[..., CharacterSource]
-_OFFICIAL_PACK_CEILING_BYTES = 768 * 1024 * 1024
+_OFFICIAL_PACK_CEILING_BYTES = 1024 * 1024 * 1024
 
 
 def official_character_pack_limits() -> ValidationLimits:
-    """Match the 768 MiB ceiling official packs declare in pack-source.json."""
+    """Match the 1 GiB ceiling official packs declare in pack-source.json."""
 
     return replace(
         DEFAULT_LIMITS,

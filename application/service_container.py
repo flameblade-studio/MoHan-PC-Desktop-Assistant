@@ -151,7 +151,7 @@ def create_character_source(character_id: str) -> CharacterSource:
 
     root = resource_path(".")
     try:
-        # The bootstrap's default loaders apply the official 768 MiB pack limits.
+        # The bootstrap's default loaders apply the official 1 GiB pack limits.
         source = activate_product_character_runtime(
             root,
             character_id=character_id,

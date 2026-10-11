@@ -321,8 +321,8 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     built = builder.build_character_pack(output, output_format="directory")
     assert built.payload_files == expected_files
     assert built.payload_bytes == expected_bytes
-    assert built.validation_limits.max_archive_bytes == 768 * MIB
-    assert built.validation_limits.max_total_bytes == 768 * MIB
+    assert built.validation_limits.max_archive_bytes == 1024 * MIB
+    assert built.validation_limits.max_total_bytes == 1024 * MIB
     result = validate_character_pack(
         output,
         engine_version=FALLBACK_VERSION,
@@ -335,7 +335,7 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     manifest = _manifest_from_directory(output)
     assert manifest["pack_id"] == "flameblade.mohan"
     assert manifest["character"]["id"] == "mohan"
-    assert manifest["pack_version"] == "1.0.3"
+    assert manifest["pack_version"] == "1.0.4"
     assert manifest["distribution"]["access"] == "public"
     assert manifest["distribution"]["redistribution"] == "allowed"
     assert {entry["status"] for entry in manifest["licenses"].values()} == {

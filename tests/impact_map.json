@@ -858,6 +858,7 @@
         "test_companion_proactivity_preferences.py",
         "test_companion_proactivity_preferences_store.py",
         "test_companion_speech_mask.py",
+        "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
         "test_concurrent_futures_asyncio_compat.py",
         "test_consolidate_partitions.py",
@@ -937,6 +938,7 @@
         "test_framing_preferences.py",
         "test_framing_preferences_store.py",
         "test_framing_preferences_wiring.py",
+        "test_front_expression_distinctness.py",
         "test_full_body_asset_audit.py",
         "test_full_body_asset_evidence.py",
         "test_full_body_authored_blink.py",
@@ -1458,6 +1460,7 @@
         "test_companion_proactivity_preferences.py",
         "test_companion_proactivity_preferences_store.py",
         "test_companion_speech_mask.py",
+        "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
         "test_core.py",
         "test_core_hand_regions.py",
@@ -1498,6 +1501,7 @@
         "test_framing_preferences.py",
         "test_framing_preferences_store.py",
         "test_framing_preferences_wiring.py",
+        "test_front_expression_distinctness.py",
         "test_full_body_asset_audit.py",
         "test_full_body_asset_evidence.py",
         "test_full_body_authored_blink.py",
@@ -1731,6 +1735,7 @@
         "test_cloud_vision_composition.py",
         "test_cloud_vision_ui_bridge.py",
         "test_companion_proactivity_preferences_store.py",
+        "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
         "test_core.py",
         "test_core_hand_regions.py",
@@ -1765,6 +1770,7 @@
         "test_flagship_workflows.py",
         "test_framing_preferences_store.py",
         "test_framing_preferences_wiring.py",
+        "test_front_expression_distinctness.py",
         "test_full_body_authored_blink.py",
         "test_full_body_authored_speech.py",
         "test_full_body_authority_source.py",
@@ -1912,6 +1918,7 @@
         "test_build_makeup_safe_regions.py",
         "test_character_source.py",
         "test_closed_eye_makeup_regression.py",
+        "test_complete_front_expressions.py",
         "test_core_hand_regions.py",
         "test_external_boundary_faults.py",
         "test_four_look_makeup_pack.py",
@@ -2364,6 +2371,20 @@
     },
     {
       "paths": [
+        "domain/face_motion.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_complete_front_expressions.py",
+        "test_face_motion.py",
+        "test_face_motion_interpolation.py",
+        "test_front_expression_distinctness.py",
+        "test_shyness.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/character_runtime_bootstrap.py"
       ],
       "tests": [
@@ -2371,18 +2392,6 @@
         "test_cross_platform_core.py",
         "test_official_pack_ids_reservation.py",
         "test_renderer_profile_injection.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/face_motion.py"
-      ],
-      "tests": [
-        "test_active_character_switching.py",
-        "test_face_motion.py",
-        "test_face_motion_interpolation.py",
-        "test_shyness.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2425,6 +2434,7 @@
         "test_active_outfit_overlay.py",
         "test_active_outfit_overlay_makeup.py",
         "test_adaptive_character_runtime.py",
+        "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
         "test_exasperated_candidate_runtime.py",
         "test_face_assets.py",
@@ -2461,6 +2471,7 @@
         "test_active_outfit_overlay_makeup.py",
         "test_animated_makeup_depth.py",
         "test_closed_eye_makeup_regression.py",
+        "test_front_expression_distinctness.py",
         "test_full_body_complete_expression.py",
         "test_gesture_outfit_silhouettes.py",
         "test_hairstyle_face_clip.py",
@@ -2590,6 +2601,7 @@
       "tests": [
         "test_active_outfit_overlay_makeup.py",
         "test_build_half_body_layered_rig.py",
+        "test_front_expression_distinctness.py",
         "test_layered_face_assets.py",
         "test_layered_face_calibration.py"
       ],
@@ -2644,6 +2656,7 @@
         "test_active_outfit_overlay_makeup.py",
         "test_complete_halfbody_expressions.py",
         "test_exasperated_candidate_runtime.py",
+        "test_front_expression_distinctness.py",
         "test_gesture_outfit_silhouettes.py",
         "test_half_body_authority_directory.py",
         "test_half_body_blink_makeup_order.py",
@@ -4151,7 +4164,6 @@
       "paths": [
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
-        "assets/expressions/complete-expressions/manifest.json",
         "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
         "assets/expressions/reviewed-garments/manifest.json",
         "assets/expressions/source-bound-exasperated/receipt.json",
@@ -4380,6 +4392,16 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_integrations_audit2_gaps.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/expressions/complete-expressions/manifest.json"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_outfit_pack_makeup.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4953,6 +4975,18 @@
     },
     {
       "paths": [
+        "domain/character_runtime_data.py"
+      ],
+      "tests": [
+        "test_character_runtime_data.py",
+        "test_complete_front_expressions.py",
+        "test_front_expression_distinctness.py",
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "assets/ui/mohan-celestial-palace-v1.png"
       ],
       "tests": [
@@ -4991,16 +5025,6 @@
         "test_openai_outfit_generator.py",
         "test_pose_atlas_identity_candidate.py",
         "test_release_automation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_runtime_data.py"
-      ],
-      "tests": [
-        "test_character_runtime_data.py",
-        "test_renderer_profile_injection.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5322,11 +5346,46 @@
     },
     {
       "paths": [
+        "infrastructure/complete_halfbody_renderer.py"
+      ],
+      "tests": [
+        "test_complete_front_expressions.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/complete_halfbody_expressions.py"
       ],
       "tests": [
+        "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
         "test_expression_pipeline.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/golden_render.py"
+      ],
+      "tests": [
+        "test_complete_front_expressions.py",
+        "test_front_expression_distinctness.py",
+        "test_golden_render.py",
+        "test_golden_render_classic.py",
+        "test_golden_render_glamorous.py",
+        "test_golden_render_light.py",
+        "test_golden_render_none.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/detachable_halfbody_assets.py"
+      ],
+      "tests": [
+        "test_complete_front_expressions.py",
+        "test_integrate_detachable_halfbody.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6987,19 +7046,6 @@
     },
     {
       "paths": [
-        "tools/golden_render.py"
-      ],
-      "tests": [
-        "test_golden_render.py",
-        "test_golden_render_classic.py",
-        "test_golden_render_glamorous.py",
-        "test_golden_render_light.py",
-        "test_golden_render_none.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "tests/golden_render_support.py"
       ],
       "tests": [
@@ -7114,7 +7160,6 @@
     },
     {
       "paths": [
-        "infrastructure/detachable_halfbody_assets.py",
         "tools/art_pipeline/integrate_detachable_halfbody.py"
       ],
       "tests": [
@@ -7632,6 +7677,7 @@
     {
       "paths": [
         "assets/makeup/builtin/manifest.json",
+        "domain/outfit_pack_pose_assets.py",
         "tools/scaffold_makeup_pack_manifest.py"
       ],
       "tests": [

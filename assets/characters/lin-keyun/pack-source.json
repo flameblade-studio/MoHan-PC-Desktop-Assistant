@@ -235,12 +235,12 @@
     }
   ],
   "validation_limits": {
-    "max_archive_bytes": 805306368,
+    "max_archive_bytes": 1073741824,
     "max_compression_ratio": 100,
     "max_file_bytes": 67108864,
     "max_files": 4096,
     "max_manifest_bytes": 1048576,
-    "max_total_bytes": 805306368,
+    "max_total_bytes": 1073741824,
     "max_zip_directory_bytes": 8388608
   }
 }
