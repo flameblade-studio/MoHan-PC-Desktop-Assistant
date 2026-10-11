@@ -228,7 +228,10 @@ def test_cold_start_with_development_archive_activates_the_selected_character(
     probe = (
         "from application.character_runtime_bootstrap import activate_product_character_runtime\n"
         "print(activate_product_character_runtime().character_id)\n"
-        "import domain.outfit_pack_official\n"
+        "import domain.outfit_pack_official as official\n"
+        "from domain.character_pack.character_data import load_mohan_character_data\n"
+        "assert official.OFFICIAL_OUTFIT_PACK_ID == "
+        "load_mohan_character_data().appearance_defaults.outfit_pack_id\n"
     )
     completed = subprocess.run(
         [sys.executable, "-c", probe],
