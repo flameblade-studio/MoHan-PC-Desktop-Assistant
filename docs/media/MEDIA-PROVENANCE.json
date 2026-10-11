@@ -113,7 +113,7 @@
         "docs/media/mohan-hero.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab all",
             "generation": 2,
-            "sha256": "1dac49dcd188630f9f6d2ff83cc4b7f207a7dad184bcd7cd67eddff700238757",
+            "sha256": "a121608e2ea493a0a4f4225a47fe30e35973e05840c9424af67fc1d6549dc561",
             "auto_regenerable": true
         },
         "docs/media/portraits/gentle_smile_front.png": {

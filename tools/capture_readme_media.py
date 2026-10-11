@@ -534,7 +534,7 @@ def capture_conversation_assets(
 
 
 def representative_character(overlay: ActiveOutfitOverlay) -> QImage:
-    return render_portrait(overlay, "attentive_front")
+    return render_portrait(overlay, "gentle_smile_front")
 
 
 def capture_task_assets(
