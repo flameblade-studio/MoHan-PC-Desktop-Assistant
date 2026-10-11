@@ -76,14 +76,19 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 86,
+              "line": 92,
               "matched": "assets/expressions/",
               "text": "else \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 89,
+              "line": 95,
               "matched": "assets/expressions/",
               "text": "native = relative is not None and relative != \"assets/expressions/complete-expressions\""
+            },
+            {
+              "line": 106,
+              "matched": "assets/expressions/",
+              "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
             }
           ],
           "rule": "character_asset_path_literal",
@@ -106,17 +111,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 348,
-              "matched": "assets/expressions/",
-              "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
-            },
-            {
-              "line": 471,
+              "line": 444,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 472,
+              "line": 445,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }

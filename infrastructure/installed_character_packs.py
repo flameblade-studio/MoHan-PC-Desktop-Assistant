@@ -65,6 +65,7 @@ class _DevelopmentCharacterPackReader(CharacterPackReader):
             engine_features=engine.features,
             limits=limits,
             signature_verifier=signature_verifier,
+            body_pack_roots=(installed_body_pack_root(),),
         )
 
 
@@ -73,6 +74,12 @@ def installed_character_pack_root(data_root: str | Path | None = None) -> Path:
 
     root = resolved_data_dir() if data_root is None else Path(data_root)
     return root.expanduser() / INSTALLED_CHARACTER_PACKS_DIRECTORY
+
+
+def installed_body_pack_root(data_root: str | Path | None = None) -> Path:
+    """Locate externally installed body directories beside character packs."""
+    root = resolved_data_dir() if data_root is None else Path(data_root)
+    return root.expanduser() / "body-packs"
 
 
 def installed_character_pack_path(
@@ -115,6 +122,7 @@ def list_installed_character_packs(
             readers.append(
                 _read_character_source(
                     entry,
+                    data_root=data_root,
                     expected_character_id=entry.name,
                     engine=capabilities,
                     limits=limits,
@@ -177,6 +185,7 @@ def install_character_pack(
             _extract_validated_archive(archive_snapshot, staged, manifest, limits)
             staged_reader = _read_character_source(
                 staged,
+                data_root=data_root,
                 expected_character_id=manifest.character_id,
                 engine=capabilities,
                 limits=limits,
@@ -222,6 +231,7 @@ def load_installed_character_pack(
     source = installed_character_pack_path(character_id, data_root=data_root)
     return _read_character_source(
         source,
+        data_root=data_root,
         expected_character_id=character_id,
         engine=capabilities,
         limits=limits,
@@ -402,6 +412,7 @@ def _manifest(result: CharacterPackValidationResult) -> CharacterPackManifest:
 def _read_character_source(
     source: Path,
     *,
+    data_root: str | Path | None = None,
     expected_character_id: str,
     engine: EngineCapabilities,
     limits: ValidationLimits,
@@ -416,6 +427,7 @@ def _read_character_source(
             engine_features=engine.features,
             limits=limits,
             signature_verifier=signature_verifier,
+            body_pack_roots=(installed_body_pack_root(data_root),),
         )
     except (CharacterPackReadError, OSError, ValueError) as error:
         raise CharacterPackInstallError(str(error)) from error

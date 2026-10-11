@@ -2,9 +2,12 @@
 
 from __future__ import annotations
 
-lazy from collections.abc import Callable
-lazy from dataclasses import dataclass
+lazy from collections.abc import Callable, Mapping
+lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
+lazy from types import MappingProxyType
+lazy from domain.body_pack import BodyPackReference
+lazy from domain.character_layer_plan import CharacterLayerPlan
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,6 +121,10 @@ class CharacterPackManifest:
     dependencies: tuple[CharacterPackDependency, ...]
     package_hash: str
     signature: CharacterPackSignature | None
+    body_pack: BodyPackReference | None = None
+    layer_views: Mapping[str, CharacterLayerPlan] = field(
+        default_factory=lambda: MappingProxyType({})
+    )
 
 
 @dataclass(frozen=True, slots=True)

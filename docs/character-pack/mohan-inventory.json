@@ -118,7 +118,7 @@
   },
   "files": [
     {
-      "bytes": 4225,
+      "bytes": 6162,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
@@ -129,7 +129,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 86,
+          "line": 92,
           "matched": "assets/expressions/",
           "path": "application/character_default_look.py",
           "rule": "character_asset_path_literal",
@@ -139,12 +139,22 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 89,
+          "line": 95,
           "matched": "assets/expressions/",
           "path": "application/character_default_look.py",
           "rule": "character_asset_path_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
           "text": "native = relative is not None and relative != \"assets/expressions/complete-expressions\""
+        },
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "line": 106,
+          "matched": "assets/expressions/",
+          "path": "application/character_default_look.py",
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
         }
       ],
       "estimated_difficulty": "high",
@@ -153,21 +163,46 @@
       "path": "application/character_default_look.py",
       "readers": [
         {
-          "line": 112,
+          "line": 110,
           "path": "application/service_container.py",
-          "text": "lazy from application.character_default_look import CharacterDefaultLook"
+          "text": "lazy from application.character_default_look import ("
+        },
+        {
+          "line": 8,
+          "path": "infrastructure/character_fullbody_factory.py",
+          "text": "lazy from application.character_default_look import CharacterDefaultLook, complete_fullbody_path"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "86c044f8e86b429c8bed5a65eaf8cc5c64345ec77b1fd32c03422976c14bfa9b",
+      "sha256": "c9288516f48b2483e36f888c8cd21c0c6cd63c4d755f497301365ed2c20bce16",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 90,
-          "line": 11,
+          "end_line": 96,
+          "line": 13,
           "name": "CharacterDefaultLook"
+        },
+        {
+          "end_line": 108,
+          "line": 99,
+          "name": "character_frame_paths"
+        },
+        {
+          "end_line": 113,
+          "line": 111,
+          "name": "complete_halfbody_path"
+        },
+        {
+          "end_line": 118,
+          "line": 116,
+          "name": "complete_fullbody_path"
+        },
+        {
+          "end_line": 127,
+          "line": 121,
+          "name": "resolved_body_pack_for_source"
         }
       ],
       "work_package": "rig-and-asset-parameterization"
@@ -243,7 +278,7 @@
       "work_package": null
     },
     {
-      "bytes": 31601,
+      "bytes": 30008,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
@@ -254,17 +289,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 348,
-          "matched": "assets/expressions/",
-          "path": "application/service_container.py",
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
-        },
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 471,
+          "line": 444,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -274,7 +299,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 472,
+          "line": 445,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -294,124 +319,109 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "231800e69f4d029f4eed1645ad273f3a2ad8ec0f857685fc20e85a009aa7ec05",
+      "sha256": "c6405c1aef8a1e0cff81c199747d3757d3f188be93f8b39ed3225bc8a084b130",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 146,
-          "line": 146,
+          "end_line": 149,
+          "line": 149,
           "name": "_CHARACTER_SELECTION_LOGGER"
         },
         {
-          "end_line": 147,
-          "line": 147,
+          "end_line": 150,
+          "line": 150,
           "name": "SUPPORTED_CHARACTER_IDS"
         },
         {
-          "end_line": 177,
-          "line": 150,
+          "end_line": 180,
+          "line": 153,
           "name": "create_character_source"
         },
         {
-          "end_line": 185,
-          "line": 180,
+          "end_line": 188,
+          "line": 183,
           "name": "create_default_character_source"
         },
         {
-          "end_line": 209,
-          "line": 188,
+          "end_line": 212,
+          "line": 191,
           "name": "_reserve_official_pack_id_reservations"
         },
         {
-          "end_line": 250,
-          "line": 213,
+          "end_line": 236,
+          "line": 216,
           "name": "CompanionServices"
         },
         {
-          "end_line": 309,
-          "line": 253,
+          "end_line": 295,
+          "line": 239,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 332,
-          "line": 312,
+          "end_line": 316,
+          "line": 298,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 338,
-          "line": 335,
+          "end_line": 322,
+          "line": 319,
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 350,
-          "line": 341,
-          "name": "_character_frame_paths"
-        },
-        {
-          "end_line": 355,
-          "line": 353,
-          "name": "_complete_halfbody_path"
-        },
-        {
-          "end_line": 360,
-          "line": 358,
-          "name": "_complete_fullbody_path"
-        },
-        {
-          "end_line": 521,
-          "line": 363,
+          "end_line": 478,
+          "line": 325,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 527,
-          "line": 524,
+          "end_line": 484,
+          "line": 481,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 533,
-          "line": 530,
+          "end_line": 490,
+          "line": 487,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 575,
-          "line": 536,
+          "end_line": 532,
+          "line": 493,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 588,
-          "line": 578,
+          "end_line": 545,
+          "line": 535,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 608,
-          "line": 591,
+          "end_line": 565,
+          "line": 548,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 629,
-          "line": 611,
+          "end_line": 586,
+          "line": 568,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 648,
-          "line": 632,
+          "end_line": 605,
+          "line": 589,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 668,
-          "line": 651,
+          "end_line": 625,
+          "line": 608,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 688,
-          "line": 671,
+          "end_line": 645,
+          "line": 628,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 843,
-          "line": 691,
+          "end_line": 800,
+          "line": 648,
           "name": "create_default_services"
         }
       ],
@@ -620,7 +630,7 @@
       "path": "assets/characters/lin-keyun/dialogue/en.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -637,7 +647,7 @@
       "path": "assets/characters/lin-keyun/dialogue/events.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -654,7 +664,7 @@
       "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -688,7 +698,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -705,7 +715,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -722,7 +732,7 @@
       "path": "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -744,7 +754,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-a-closed.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -766,7 +776,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-a-half.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -788,7 +798,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-a-rest.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -810,7 +820,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-neutral-closed.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -832,7 +842,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-neutral-half.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -854,7 +864,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-neutral-rest.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -876,7 +886,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-o-closed.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -898,7 +908,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-o-half.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -920,7 +930,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-o-rest.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -942,7 +952,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-small-closed.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -964,7 +974,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-small-half.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -986,7 +996,7 @@
       "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-small-rest.rgba.png",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -1003,7 +1013,7 @@
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 130,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -1011,188 +1021,6 @@
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
       "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
-    },
-    {
-      "bytes": 122146,
-      "category": "archive_or_support",
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/manifest.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "4bd5766725c989905b959c8b9e5f2d1c6c3604a25f6c12cbcf885423a6ff7de4"
-    },
-    {
-      "bytes": 435956,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw+105-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "b1ea77bda0672ae7e9315e55b96fc72b3b5651c0defe36a06eceb32db6b2d385"
-    },
-    {
-      "bytes": 442681,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw+120-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "57c5ef6652804aea589f3d1907115400a2ffc2a720b71a40241d7a01f7abf9ff"
-    },
-    {
-      "bytes": 528568,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw+135-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "a77449b829f8a91d92da30c031c3cca806adba30a6957c342ca181d0c049c363"
-    },
-    {
-      "bytes": 553745,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw+150-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "39853cd23632eeada0ba0fbd8737156dd6e2a7969096f8d522ecdd876bd7f453"
-    },
-    {
-      "bytes": 517090,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw-015-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "de27334b84c5e25f8578bc317276f3ceb53329e4c6448eae5ccbef095656e9fe"
-    },
-    {
-      "bytes": 516799,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw-015-pitch+00_blink_closed.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "74fc76597af5ee431cc9e3c2aaaaa116da96a53df81033e5c376cab31d4eb394"
-    },
-    {
-      "bytes": 516796,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw-015-pitch+00_blink_half.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "0c224a1f2ff565fc442caf181471404afb8d923a0fac77b0fbbb10f09317de10"
-    },
-    {
-      "bytes": 403003,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw-105-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "1d678235b0532197cb5c254421c5a485ec691b36f3fe45c5259e197117b530fe"
-    },
-    {
-      "bytes": 512993,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw-165-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "c4662e2e3a77ddb197aa007363baacdcb58555642b800a00a1f188ea298aefe3"
-    },
-    {
-      "bytes": 559282,
-      "category": "archive_or_support",
-      "image": {
-        "height": 1536,
-        "mode": "RGBA",
-        "width": 1024
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/full/yaw-180-pitch+00.png",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "f838b3f348527e874353974c7f88a4101b4d7adef57bae439a652ff0d3c0101a"
-    },
-    {
-      "bytes": 855,
-      "category": "archive_or_support",
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/native/half/manifest.json",
-      "readers": [],
-      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
-      "scope": "excluded_support",
-      "sha256": "2216c995654873999e205a44a486b026a560cb18fbe4109fb94e272bcbf79b9a"
     },
     {
       "bytes": 24241819,
@@ -6160,7 +5988,7 @@
       "path": "assets/characters/lin-keyun/persona/en.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -6177,7 +6005,7 @@
       "path": "assets/characters/lin-keyun/persona/ja-JP.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -6194,7 +6022,7 @@
       "path": "assets/characters/lin-keyun/persona/profile.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -6228,7 +6056,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-CN.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -6245,7 +6073,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-TW.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -6262,7 +6090,7 @@
       "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 129,
+          "line": 132,
           "path": "infrastructure/character_source_pack.py",
           "text": "rig = _load_rig(root, rig_component)"
         }
@@ -6296,7 +6124,7 @@
       "path": "assets/characters/lin-keyun/voice/profile.json",
       "readers": [
         {
-          "line": 128,
+          "line": 131,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -34071,7 +33899,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 367,
+          "line": 329,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -69018,7 +68846,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 367,
+          "line": 329,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -110687,7 +110515,7 @@
       "path": "domain/constants.py",
       "readers": [
         {
-          "line": 6,
+          "line": 7,
           "path": "application/character_default_look.py",
           "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
         },
@@ -110704,7 +110532,7 @@
         {
           "line": 68,
           "path": "application/service_container.py",
-          "text": "lazy from domain.constants import ("
+          "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
         {
           "line": 9,
@@ -110720,6 +110548,11 @@
           "line": 11,
           "path": "domain/constants.py",
           "text": "from domain.constants import HOURS_PER_DAY, SECONDS_PER_DAY"
+        },
+        {
+          "line": 7,
+          "path": "infrastructure/character_fullbody_factory.py",
+          "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT, POSE_ATLAS_LAYERED_RELATIVE_ROOT"
         },
         {
           "line": 40,
@@ -111814,7 +111647,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 86,
+          "line": 82,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -111971,7 +111804,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 124,
+          "line": 127,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -112141,7 +111974,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 126,
+          "line": 129,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -114528,7 +114361,7 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 85,
+    "excluded_support": 73,
     "product_validation_data": 48,
     "runtime_data": 3824
   },

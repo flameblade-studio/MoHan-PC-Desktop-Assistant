@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 lazy from pathlib import Path
+lazy from collections.abc import Mapping
 lazy from domain.character_source import CharacterSource, character_appearance_defaults
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.body_pack import BodyPackMismatchError
 lazy from domain.outfit_pack import list_installed_ensembles, resolve_active_selection
 lazy from domain.outfit_pack_store import OfficialPackRoots, official_pack_roots
 
@@ -12,6 +14,10 @@ class CharacterDefaultLook:
     """Share one selection decision between overlays and both frame renderers."""
 
     def __init__(self, source: CharacterSource, store: Path, official_roots: OfficialPackRoots) -> None:
+        if getattr(source.appearance, "resolved_body_pack", None) is not None:
+            raise BodyPackMismatchError(
+                "body_pack_renderer_required", "Declared body packs require the body-pack renderer",
+            )
         self._source = source
         self._store = store
         self._official_roots = official_roots
@@ -88,3 +94,34 @@ class CharacterDefaultLook:
             relative = self._bindings.get("halfbody_complete")
             native = relative is not None and relative != "assets/expressions/complete-expressions"
         return (self._source.assets.resolve_path(relative) if relative is not None else None, native)
+
+
+def character_frame_paths(character_source: CharacterSource) -> tuple[Mapping[str, str], bool]:
+    bindings = (
+        character_source.appearance.runtime_bindings.asset_paths
+        if hasattr(character_source, "appearance") else {}
+    )
+    native_frames = (
+        bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT) != POSE_ATLAS_RELATIVE_ROOT
+        or bindings.get("halfbody_complete", "assets/expressions/complete-expressions") != "assets/expressions/complete-expressions"
+    )
+    return bindings, native_frames
+
+
+def complete_halfbody_path(character_source: CharacterSource, bindings: Mapping[str, str]) -> Path | None:
+    return (character_source.assets.resolve_path(bindings["halfbody_complete"])
+            if "halfbody_complete" in bindings else None)
+
+
+def complete_fullbody_path(character_source: CharacterSource, bindings: Mapping[str, str]) -> Path | None:
+    relative = bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT)
+    return character_source.assets.resolve_path(relative) if relative != POSE_ATLAS_RELATIVE_ROOT else None
+
+
+def resolved_body_pack_for_source(source: CharacterSource) -> object | None:
+    """Require resolution of a declared dependency before choosing a renderer."""
+    body = getattr(source.appearance, "resolved_body_pack", None) if hasattr(source, "appearance") else None
+    reference = getattr(getattr(source, "manifest", None), "body_pack", None)
+    if reference is not None and body is None:
+        raise BodyPackMismatchError("body_pack_missing", "Resolve the declared body pack before rendering")
+    return body

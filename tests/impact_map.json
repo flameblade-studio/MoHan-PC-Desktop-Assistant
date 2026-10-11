@@ -812,6 +812,10 @@
         "test_background_agent_ui.py",
         "test_background_agents.py",
         "test_behavior_director.py",
+        "test_body_pack.py",
+        "test_body_pack_compositor.py",
+        "test_body_pack_reader.py",
+        "test_body_pack_runtime.py",
         "test_body_pose_renderer.py",
         "test_body_profile_candidate.py",
         "test_body_sidecar_profile_knee.py",
@@ -1434,6 +1438,10 @@
         "test_audit_pose_atlas_working.py",
         "test_autonomous_wardrobe.py",
         "test_autonomous_wardrobe_runtime.py",
+        "test_body_pack.py",
+        "test_body_pack_compositor.py",
+        "test_body_pack_reader.py",
+        "test_body_pack_runtime.py",
         "test_body_pose_renderer.py",
         "test_build_character_pack.py",
         "test_build_makeup_safe_regions.py",
@@ -1727,6 +1735,9 @@
         "test_application_bootstrap_contract.py",
         "test_auxiliary_ui_localization.py",
         "test_background_agent_ui.py",
+        "test_body_pack_compositor.py",
+        "test_body_pack_reader.py",
+        "test_body_pack_runtime.py",
         "test_build_half_body_layered_rig.py",
         "test_character_native_frames.py",
         "test_character_pack_zip_snapshot.py",
@@ -1998,6 +2009,7 @@
         "test_background_agent_ui.py",
         "test_background_agents.py",
         "test_behavior_director.py",
+        "test_body_pack_runtime.py",
         "test_body_pose_renderer.py",
         "test_brow_tension_mirror.py",
         "test_camera_gesture_frames.py",
@@ -2146,6 +2158,7 @@
       "tests": [
         "test_active_character_switching.py",
         "test_approved_asset_install.py",
+        "test_body_pack_reader.py",
         "test_build_character_pack.py",
         "test_character_pack.py",
         "test_character_pack_zip_snapshot.py",
@@ -2172,6 +2185,7 @@
       "tests": [
         "test_active_character_switching.py",
         "test_approved_asset_install.py",
+        "test_body_pack_reader.py",
         "test_build_character_pack.py",
         "test_character_pack.py",
         "test_character_pack_zip_snapshot.py",
@@ -2193,6 +2207,7 @@
       "tests": [
         "test_active_character_switching.py",
         "test_approved_asset_install.py",
+        "test_body_pack_reader.py",
         "test_build_character_pack.py",
         "test_character_pack_zip_snapshot.py",
         "test_character_source.py",
@@ -2214,6 +2229,7 @@
       "tests": [
         "test_active_character_switching.py",
         "test_approved_asset_install.py",
+        "test_body_pack_reader.py",
         "test_build_character_pack.py",
         "test_character_pack_zip_snapshot.py",
         "test_character_source.py",
@@ -2243,6 +2259,7 @@
       "tests": [
         "test_active_character_switching.py",
         "test_approved_asset_install.py",
+        "test_body_pack_reader.py",
         "test_build_character_pack.py",
         "test_character_pack_zip_snapshot.py",
         "test_character_source.py",
@@ -2262,6 +2279,7 @@
       ],
       "tests": [
         "test_active_character_switching.py",
+        "test_body_pack_reader.py",
         "test_build_character_inventory.py",
         "test_build_character_pack.py",
         "test_character_pack_zip_snapshot.py",
@@ -2272,6 +2290,48 @@
         "test_official_pack_ids_reservation.py",
         "test_renderer_profile_injection.py",
         "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tests/character_pack_fixtures.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_body_pack_reader.py",
+        "test_character_pack_zip_snapshot.py",
+        "test_official_pack_ids_reservation.py",
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "application/service_container.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_body_pack_runtime.py",
+        "test_character_native_frames.py",
+        "test_character_source.py",
+        "test_cloud_vision_composition.py",
+        "test_cross_platform_core.py",
+        "test_dependency_injection.py",
+        "test_english_localization.py",
+        "test_exasperated_candidate_runtime.py",
+        "test_full_ui_localization.py",
+        "test_gesture_app_wiring.py",
+        "test_gesture_authorization_contract.py",
+        "test_japanese_localization.py",
+        "test_multisensory_speech_regression.py",
+        "test_native_product_wiring.py",
+        "test_official_default_pack.py",
+        "test_official_pack_ids_reservation.py",
+        "test_renderer_profile_injection.py",
+        "test_service_language_wiring.py",
+        "test_shared_hand_region_provider.py",
+        "test_swallowed_error_d05.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2317,52 +2377,12 @@
     },
     {
       "paths": [
-        "application/service_container.py"
-      ],
-      "tests": [
-        "test_active_character_switching.py",
-        "test_character_native_frames.py",
-        "test_character_source.py",
-        "test_cloud_vision_composition.py",
-        "test_cross_platform_core.py",
-        "test_dependency_injection.py",
-        "test_english_localization.py",
-        "test_exasperated_candidate_runtime.py",
-        "test_full_ui_localization.py",
-        "test_gesture_app_wiring.py",
-        "test_gesture_authorization_contract.py",
-        "test_japanese_localization.py",
-        "test_multisensory_speech_regression.py",
-        "test_native_product_wiring.py",
-        "test_official_default_pack.py",
-        "test_official_pack_ids_reservation.py",
-        "test_renderer_profile_injection.py",
-        "test_service_language_wiring.py",
-        "test_shared_hand_region_provider.py",
-        "test_swallowed_error_d05.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "infrastructure/installed_character_packs.py"
       ],
       "tests": [
         "test_active_character_switching.py",
         "test_character_pack_zip_snapshot.py",
         "test_official_pack_ids_reservation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "tests/character_pack_fixtures.py"
-      ],
-      "tests": [
-        "test_active_character_switching.py",
-        "test_character_pack_zip_snapshot.py",
-        "test_official_pack_ids_reservation.py",
-        "test_renderer_profile_injection.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2443,6 +2463,7 @@
         "test_active_outfit_overlay.py",
         "test_active_outfit_overlay_makeup.py",
         "test_adaptive_character_runtime.py",
+        "test_body_pack_runtime.py",
         "test_character_native_frames.py",
         "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
@@ -3879,6 +3900,7 @@
       ],
       "tests": [
         "test_audit_pose_atlas_working.py",
+        "test_body_pack_reader.py",
         "test_body_pose_renderer.py",
         "test_build_character_inventory.py",
         "test_character_full_body_rig.py",
@@ -4142,6 +4164,69 @@
         "test_persona_dialogue_voice_extraction.py",
         "test_runtime_async_regressions.py",
         "test_silent_failures_and_audit_data.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/body_pack.py"
+      ],
+      "tests": [
+        "test_body_pack.py",
+        "test_body_pack_reader.py",
+        "test_body_pack_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/character_layer_plan.py",
+        "infrastructure/body_pack_compositor.py"
+      ],
+      "tests": [
+        "test_body_pack_compositor.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/body_pack_reader.py",
+        "infrastructure/character_pack_files.py"
+      ],
+      "tests": [
+        "test_body_pack_reader.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/character_source_pack.py"
+      ],
+      "tests": [
+        "test_body_pack_reader.py",
+        "test_character_source.py",
+        "test_linkeyun_character_data.py",
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/body_pack_renderer.py",
+        "infrastructure/character_fullbody_factory.py"
+      ],
+      "tests": [
+        "test_body_pack_runtime.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "application/character_default_look.py"
+      ],
+      "tests": [
+        "test_body_pack_runtime.py",
+        "test_character_native_frames.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4851,7 +4936,6 @@
     },
     {
       "paths": [
-        "application/character_default_look.py",
         "assets/characters/lin-keyun/rig/runtime-bindings.json",
         "assets/characters/mohan/rig/runtime-bindings.json",
         "domain/character_runtime_bindings.py",
@@ -5125,17 +5209,6 @@
         "test_character_runtime_entrypoints.py",
         "test_preview_packaging.py",
         "test_python315_runtime.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "infrastructure/character_source_pack.py"
-      ],
-      "tests": [
-        "test_character_source.py",
-        "test_linkeyun_character_data.py",
-        "test_renderer_profile_injection.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

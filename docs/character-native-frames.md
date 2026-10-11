@@ -71,3 +71,5 @@ File, schema, dimension, and digest checks establish technical conformance only.
 半身 `manifest.json` の schema は `mohan.complete-halfbody-expressions.v1` です。各 `poses[pose_id`] には、空でない `source_lineage`、`blink_composition: "whole-frame"`、`frames[family][eye`]、任意の `oral_masks[small|a|o`] を記載します。フレームと口腔マスクの各レコードは `{ "path": "relative/file.png", "sha256": "64 hexadecimal characters" }` で素材ルート内のファイルを指定します。`expressions[name`] は `{ "pose": "pose_id", "family": "neutral|small|a|o" }` でポーズと口形ファミリーを結び付けます。各ポーズには四つの口形ファミリーをすべて用意します。半身 PNG は 1254×1254、8-bit RGBA とし、透明画素と不透明画素の両方を含めます。口腔マスクを使う場合は、ポーズごとに `small`、`a`、`o` の三種類すべてを用意します。
 
 ファイル・schema・寸法・digest の検証は技術形式への適合だけを示します。キャラクターの身元、外観、衣服は、現在の所有者審査権限に基づく検収が別途必要です。プログラム検査の合格は美術承認を意味しません。
+
+素體依附與角色圖層契約見 [body-pack.md](body-pack.md)。／素体依附与角色图层契约见 [body-pack.md](body-pack.md)。／See [body-pack.md](body-pack.md) for body dependencies and character layers.／素体依存とレイヤー契約は [body-pack.md](body-pack.md) を参照してください。
