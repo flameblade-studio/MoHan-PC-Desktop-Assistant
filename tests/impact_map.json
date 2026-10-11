@@ -7231,7 +7231,8 @@
     {
       "paths": [
         "assets/characters/lin-keyun/LICENSE.md",
-        "assets/characters/lin-keyun/appearance/defaults.json"
+        "assets/characters/lin-keyun/appearance/defaults.json",
+        "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
       ],
       "tests": [
         "test_linkeyun_character_data.py"

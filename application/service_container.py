@@ -374,7 +374,15 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         face_manifest = None
         authority_dir = None
         detachable_dir = None
+        complete_halfbody_supplement = None
         if source_bound:
+            supplement_path = character_source.appearance.runtime_bindings.asset_paths.get(
+                "halfbody_complete_supplement"
+            )
+            if supplement_path is not None:
+                complete_halfbody_supplement = (
+                    asset_root, character_source.assets.resolve_path(supplement_path),
+                )
             face_layer_root = character_source.assets.resolve_path(
                 str(CHARACTER_ASSET_PATHS["halfbody_layers"])
             )
@@ -427,6 +435,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             use_detachable=detachable_dir is not None,
             exasperated_candidate_dir=candidate_dir,
             exasperated_source_bindings=ExasperatedSourceBindings(
+                complete_halfbody_supplement=complete_halfbody_supplement,
                 appearance_overlay=candidate_appearance,
                 expression_provider=OutfitSourceBoundExpressionProvider(
                     presentation_contracts.default_data_dir() / "outfits",

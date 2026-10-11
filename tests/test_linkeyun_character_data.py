@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy import hashlib
 lazy import re
 lazy import string
 lazy import zipfile
@@ -44,9 +45,16 @@ RUNTIME_JSON_FILES = (
     "rig/runtime-bindings.json",
     "voice/profile.json",
 )
+SUPPLEMENT_FRAMES = frozenset(
+    f"expressions/frames/cheek-rest-{family}-{eye}.rgba.png"
+    for family in ("neutral", "small", "a", "o")
+    for eye in ("rest", "half", "closed")
+)
 EXPECTED_FILES = frozenset(
     {
         *RUNTIME_JSON_FILES,
+        *SUPPLEMENT_FRAMES,
+        "expressions/complete-halfbody-supplement.json",
         APPEARANCE_DEFAULTS_PATH,
         "LICENSE.md",
         "official-packs/linkeyun.official.modern-office.mohan-outfit",
@@ -56,7 +64,7 @@ EXPECTED_FILES = frozenset(
 )
 EXPECTED_FILE_COUNT = len(EXPECTED_FILES)
 HUMAN_READABLE_SUFFIXES = frozenset({".json", ".md"})
-BINARY_SUFFIXES = frozenset({".mohan-outfit"})
+BINARY_SUFFIXES = frozenset({".mohan-outfit", ".png"})
 ARCHIVE_BINARY_SUFFIXES = frozenset({".png"})
 EXPECTED_DIALOGUE_LABEL_COUNT = 33
 EXPECTED_LINE_SET_LINE_COUNT = 37
@@ -144,7 +152,7 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
     }
     assert files == EXPECTED_FILES
     assert len(files) == EXPECTED_FILE_COUNT
-    for relative in EXPECTED_FILES - {
+    for relative in EXPECTED_FILES - SUPPLEMENT_FRAMES - {
         "official-packs/linkeyun.official.modern-office.mohan-outfit"
     }:
         data = (LIN_KEYUN_ROOT / relative).read_bytes()
@@ -154,7 +162,12 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
 
 def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
     for relative in RUNTIME_JSON_FILES:
-        assert _shape(_load(LIN_KEYUN_ROOT, relative)) == _shape(
+        actual = _load(LIN_KEYUN_ROOT, relative)
+        if relative == "rig/runtime-bindings.json":
+            assert actual["asset_paths"].pop("halfbody_complete_supplement") == (
+                "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
+            )
+        assert _shape(actual) == _shape(
             _load(MOHAN_ROOT, relative)
         ), relative
 
@@ -174,6 +187,22 @@ def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
             == EXPECTED_PHRASEBOOK_LINE_COUNT
         )
         assert len(dialogue["templates"]) == EXPECTED_TEMPLATE_COUNT
+
+
+def test_linkeyun_cheek_rest_supplement_preserves_v5_authority() -> None:
+    supplement = _load(LIN_KEYUN_ROOT, "expressions/complete-halfbody-supplement.json")
+    assert supplement["schema"] == "mohan.complete-halfbody-expressions.v1"
+    assert set(supplement["poses"]) == {"cheek-rest"}
+    frames = supplement["poses"]["cheek-rest"]["frames"]
+    assert set(frames) == {"neutral", "small", "a", "o"}
+    for family, eyes in frames.items():
+        assert set(eyes) == {"rest", "half", "closed"}
+        for eye, record in eyes.items():
+            filename = f"cheek-rest-{family}-{eye}.rgba.png"
+            copied = ROOT / record["path"]
+            authority = ROOT / "assets/expressions/complete-expressions/frames" / filename
+            assert copied.read_bytes() == authority.read_bytes()
+            assert hashlib.sha256(copied.read_bytes()).hexdigest() == record["sha256"]
 
 
 def test_linkeyun_dialogue_placeholders_match_in_every_language() -> None:
@@ -224,6 +253,8 @@ def test_linkeyun_human_facing_content_has_no_legacy_identity_leak() -> None:
         HUMAN_READABLE_SUFFIXES | BINARY_SUFFIXES
     )
     for path in files:
+        if path.suffix == ".png":
+            continue
         if path.suffix in HUMAN_READABLE_SUFFIXES:
             assert "墨寒" not in path.read_text(encoding="utf-8"), path
             continue

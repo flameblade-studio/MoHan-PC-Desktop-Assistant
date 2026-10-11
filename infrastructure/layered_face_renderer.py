@@ -99,11 +99,15 @@ def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
 
 
 @dataclass(frozen=True)
-class ExasperatedSourceBindings:
+class HalfbodySourceBindings:
     """Construction-time dependencies for the source-bound expression route."""
 
     appearance_overlay: ExasperatedAppearanceOverlay | None = None
     expression_provider: ExasperatedCandidateProvider | None = None
+    complete_halfbody_supplement: tuple[Path, Path] | None = None
+
+
+ExasperatedSourceBindings = HalfbodySourceBindings
 
 
 class LayeredParametricFaceRenderer(
@@ -126,7 +130,7 @@ class LayeredParametricFaceRenderer(
         detachable_dir: Path | None = None,
         use_detachable: bool = True,
         exasperated_candidate_dir: Path | None = None,
-        exasperated_source_bindings: ExasperatedSourceBindings | None = None,
+        exasperated_source_bindings: HalfbodySourceBindings | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
@@ -161,7 +165,11 @@ class LayeredParametricFaceRenderer(
             if authority_dir is not None or detachable_dir is None
             else self._detachable_dir / "complete-expressions"
         )
-        self._complete_halfbody = CompleteHalfbodyRenderer(complete_root, outfit_overlay)
+        self._complete_halfbody = CompleteHalfbodyRenderer(
+            complete_root, outfit_overlay,
+            exasperated_source_bindings.complete_halfbody_supplement
+            if exasperated_source_bindings is not None else None,
+        )
         self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
         self._exasperated_candidate_key: str | None = None
         self._exasperated_candidate_rest: QPixmap | None = None

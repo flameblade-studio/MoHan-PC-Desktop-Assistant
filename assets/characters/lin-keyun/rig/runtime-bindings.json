@@ -14,7 +14,8 @@
     "lobby_backdrop": "assets/ui/mohan-strategist-lobby-v1.png",
     "onboarding_artwork": "assets/onboarding/first-run-ink-tech.png",
     "source_bound_expression": "assets/expressions/source-bound-exasperated",
-    "theme_artwork": "assets/ui/mohan-cloud.svg"
+    "theme_artwork": "assets/ui/mohan-cloud.svg",
+    "halfbody_complete_supplement": "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
   },
   "expression_roles": {
     "amusement": "restrained_amused_front",

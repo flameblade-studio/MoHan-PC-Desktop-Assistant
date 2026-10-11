@@ -36,12 +36,16 @@ class CompleteHalfbodyRenderer:
     A blink therefore follows that endpoint, even if the next mouth is queued.
     """
 
-    def __init__(self, root: Path, overlay: object = None) -> None:
+    def __init__(
+        self, root: Path, overlay: object = None,
+        supplement: tuple[Path, Path] | None = None,
+    ) -> None:
         self._root = root
         self._loaded = False
         self._assets: CompleteHalfbodyFrames | None = None
         self._appearance = AnimatedAppearance(overlay)
         self._overlay = overlay
+        self._supplement = supplement
         self._contexts: OrderedDict[int, tuple[str, str]] = OrderedDict()
         self._pixmaps: OrderedDict[tuple[str, str, str], QPixmap] = OrderedDict()
         self._oral_pixmaps: dict[tuple[str, str], QPixmap] = {}
@@ -49,6 +53,25 @@ class CompleteHalfbodyRenderer:
     def _load(self) -> CompleteHalfbodyFrames | None:
         if not self._loaded:
             self._assets = load_complete_halfbody_frames(self._root)
+            if self._supplement is not None:
+                root, manifest = self._supplement
+                additional = load_complete_halfbody_frames(root, manifest_path=manifest)
+                if additional is None:
+                    raise ValueError("Declared complete half-body supplement is unavailable")
+                existing = self._assets
+                if existing is None:
+                    self._assets = additional
+                else:
+                    if set(existing.frames) & set(additional.frames):
+                        raise ValueError("Complete half-body supplement repeats an existing pose")
+                    if set(existing.expressions) & set(additional.expressions):
+                        raise ValueError("Complete half-body supplement repeats an existing binding")
+                    self._assets = CompleteHalfbodyFrames(
+                        frozendict({**existing.frames, **additional.frames}),
+                        frozendict({**existing.expressions, **additional.expressions}),
+                        frozendict({**existing.oral_masks, **additional.oral_masks}),
+                        existing.whole_frame_blinks | additional.whole_frame_blinks,
+                    )
             self._loaded = True
         return self._assets
 

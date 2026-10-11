@@ -133,13 +133,17 @@ def _read_pose(
     return frozendict(result), oral_masks, blink_composition == "whole-frame"
 
 
-def load_complete_halfbody_frames(root: Path) -> CompleteHalfbodyFrames | None:
+def load_complete_halfbody_frames(
+    root: Path, *, manifest_path: Path | None = None,
+) -> CompleteHalfbodyFrames | None:
     """Absent installation keeps legacy behavior; corrupt installed data raises."""
 
     root = Path(root).resolve()
     if not root.exists():
         return None
-    path = root / "manifest.json"
+    path = root / "manifest.json" if manifest_path is None else Path(manifest_path).resolve()
+    if not path.is_relative_to(root):
+        raise ValueError("Complete half-body manifest escapes its asset root")
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict) or data.get("schema") != SCHEMA:
         raise ValueError("Unsupported complete half-body expression schema")
