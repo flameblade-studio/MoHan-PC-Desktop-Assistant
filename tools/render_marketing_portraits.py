@@ -22,6 +22,7 @@ lazy from collections.abc import Sequence
 lazy from pathlib import Path
 lazy from dataclasses import replace
 lazy from tempfile import TemporaryDirectory
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -34,11 +35,15 @@ lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application.character_runtime_bootstrap import activate_product_character_runtime
-lazy from domain.companion_animation_contract import EXPRESSION_POSES, outfit_silhouette
+lazy from domain.companion_animation_contract import (
+    EXPRESSION_POSES, SPEECH_FRAME_MARKER, outfit_silhouette,
+)
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from tools.golden_render import render_half_blink
 lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
 lazy from infrastructure.layered_face_assets import load_layered_face_assets
-lazy from domain.face_motion import FaceMotionController
+lazy from domain.face_motion import VISEME_MOUTH_TARGETS, FaceMotionController
+lazy from domain.face_rig import Viseme
 lazy from domain.character_runtime import CHARACTER_ASSET_PATHS
 lazy from domain.outfit_pack import restore_builtin_outfit
 lazy from domain.outfit_pack_makeup import (
@@ -60,6 +65,12 @@ DEFAULT_EXPRESSIONS = (
     "idle_front",
 )
 FRONT_POSE = "front"
+# Speech frame suffixes map to the mouth family the complete renderer selects
+# (``small``/``a``/``o``); blink frames reuse the idle endpoint closed-eyed.
+SPEECH_FRAME_VISEMES = {"mid": "I", "open": "A", "round": "O"}
+BLINK_FRAME_PREFIX = "blink"
+IDLE_FRAME_PREFIX = "idle"
+CLOSED_EYE_STATE = "closed"
 
 
 def silhouette_for(expression: str) -> str:
@@ -88,6 +99,18 @@ def portrait_renderer(overlay: ActiveOutfitOverlay) -> LayeredParametricFaceRend
     )
 
 
+def portrait_motion(expression: str) -> tuple[str, str | None, str]:
+    """Split a sprite name into (emotion, speech mouth frame, eye state)."""
+    if expression.startswith(BLINK_FRAME_PREFIX):
+        return IDLE_FRAME_PREFIX + expression.removeprefix(BLINK_FRAME_PREFIX), None, CLOSED_EYE_STATE
+    emotion, marker, frame = expression.partition(SPEECH_FRAME_MARKER)
+    if not marker:
+        return expression, None, "rest"
+    if frame not in SPEECH_FRAME_VISEMES:
+        raise ValueError(f"Unsupported speech frame for marketing portraits: {expression}")
+    return emotion, expression, "rest"
+
+
 def render_portrait(
     overlay: ActiveOutfitOverlay,
     expression: str,
@@ -96,15 +119,27 @@ def render_portrait(
     size: tuple[int, int] = PORTRAIT_SIZE,
 ) -> QImage:
     activate_product_character_runtime(ROOT)
-    pose = EXPRESSION_POSES.get(expression, FRONT_POSE)
+    emotion, speech_frame, eye_state = portrait_motion(expression)
+    pose = EXPRESSION_POSES.get(emotion, FRONT_POSE)
     motion = replace(
-        FaceMotionController().close(pose=pose, expression=expression), breath=0.0,
+        FaceMotionController().close(pose=pose, expression=emotion), breath=0.0,
     )
+    layers = None
+    if speech_frame is not None:
+        viseme = Viseme(SPEECH_FRAME_VISEMES[speech_frame.rpartition("_")[2]])
+        motion = replace(motion, viseme=viseme, mouth=VISEME_MOUTH_TARGETS[viseme])
+        layers = SimpleNamespace(mouth_expression=speech_frame)
     base = QPixmap(*size)
     base.fill(Qt.GlobalColor.transparent)
-    composed = (renderer or portrait_renderer(overlay)).render(base, motion, None)
+    active_renderer = renderer or portrait_renderer(overlay)
+    composed = active_renderer.render(base, motion, layers)
     if composed.isNull():
         raise RuntimeError(f"Product renderer returned an empty portrait: {expression}")
+    if eye_state != "rest":
+        blinked = render_half_blink(ROOT, active_renderer, emotion, eye_state)
+        if blinked.isNull():
+            raise RuntimeError(f"Product blink compositor returned an empty portrait: {expression}")
+        composed = blinked.scaled(*size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
     return composed.toImage()
 
 

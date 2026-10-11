@@ -11,6 +11,7 @@ lazy from application.character_runtime_bootstrap import activate_product_charac
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from tools.golden_render import pixel_sha256
 lazy from tools.render_marketing_portraits import (
+    portrait_motion,
     DEFAULT_EXPRESSIONS, ROOT, portrait_renderer, prepare_marketing_store, render_portrait,
 )
 
@@ -62,3 +63,24 @@ def test_saved_portrait_resizes_to_product_golden(tmp_path: Path, expression: st
     # PNG decoding and Qt premultiplied-alpha resizing round edge channels.
     assert difference.max() <= 1
     assert difference.mean() < SAVED_PORTRAIT_MEAN_DIFFERENCE_LIMIT
+
+
+@pytest.mark.parametrize(
+    ("expression", "expected"),
+    (
+        ("attentive_front", ("attentive_front", None, "rest")),
+        ("attentive_front_speech_mid", ("attentive_front", "attentive_front_speech_mid", "rest")),
+        ("attentive_front_speech_open", ("attentive_front", "attentive_front_speech_open", "rest")),
+        ("attentive_front_speech_round", ("attentive_front", "attentive_front_speech_round", "rest")),
+        ("blink_front", ("idle_front", None, "closed")),
+    ),
+)
+def test_portrait_motion_keeps_speech_and_blink_frames(
+    expression: str, expected: tuple[str, str | None, str],
+) -> None:
+    assert portrait_motion(expression) == expected
+
+
+def test_portrait_motion_rejects_unknown_speech_frames() -> None:
+    with pytest.raises(ValueError):
+        portrait_motion("attentive_front_speech_whisper")
