@@ -427,6 +427,9 @@ def _replace_hash(value: object, member: str, digest: str) -> None:
             _replace_hash(child, member, digest)
 
 
+UPPER_LIP_FRACTION = 0.3
+
+
 def _mutate_one_makeup_pixel(archive_path: Path) -> None:
     member = "assets/classic-rest-yaw+000-pitch+00-lips.png"
     with zipfile.ZipFile(archive_path, "r") as archive:
@@ -437,7 +440,13 @@ def _mutate_one_makeup_pixel(archive_path: Path) -> None:
         for y, x in product(range(image.height), range(image.width))
         if image.getpixel((x, y))[3] == OPAQUE_ALPHA
     ]
-    point = opaque[len(opaque) // 2]
+    # The middle opaque pixel can sit on the closed-mouth seam, which the oral
+    # protection mask keeps bare; pick the opaque pixel nearest the upper-lip body.
+    center_x = sum(x for x, _ in opaque) / len(opaque)
+    top = min(y for _, y in opaque)
+    bottom = max(y for _, y in opaque)
+    upper_lip_y = top + (bottom - top) * UPPER_LIP_FRACTION
+    point = min(opaque, key=lambda xy: (xy[0] - center_x) ** 2 + (xy[1] - upper_lip_y) ** 2)
     red, green, blue, alpha = image.getpixel(point)
     image.putpixel(
         point,

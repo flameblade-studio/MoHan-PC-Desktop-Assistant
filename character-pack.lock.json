@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.4.zip",
-    "bytes": 956174160,
-    "sha256": "33a077e61d975cd1f535290ce124eb48c88d5ce2fd20eff79f02a28dd540f996"
+    "bytes": 957032442,
+    "sha256": "f42044bbda017460ec39b6c50f8dc6ac1eb5770310b4bc02eb946d8ded7d6ca3"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -4602,9 +4602,9 @@
       "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
     },
     {
-      "bytes": 36325693,
+      "bytes": 37183975,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "3dc76508e658f8f66d40d37af2d2d5744604f5665ffc8b9cd2871059506d6042"
+      "sha256": "f8871cf98d76d37f8bfb6be033590138386f3fff434d33ae98172caf2a66a4ea"
     },
     {
       "bytes": 29201813,
@@ -9919,7 +9919,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.4",
-  "package_hash": "f58e89c76dbc13bffd51e20c2bf159f6e3e19b240dd7efe3a9adb136b91f3d84",
+  "package_hash": "a4f181001d2aac45104184cfa4b0a23e3d34f952703f43462f752f5482edcf76",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

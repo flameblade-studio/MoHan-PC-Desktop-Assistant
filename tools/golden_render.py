@@ -666,6 +666,19 @@ def _manifest_for_commit(
     return manifest
 
 
+def _ensure_revision_available(revision: str) -> None:
+    """Fetch a recorded revision that is not reachable from any local ref.
+
+    Squash merges leave PR-branch commits off main; GitHub still serves them by SHA.
+    """
+    present = subprocess.run(
+        ["git", "cat-file", "-e", f"{revision}^{{commit}}"],
+        cwd=ROOT, capture_output=True, check=False,
+    )
+    if present.returncode != 0:
+        subprocess.run(["git", "fetch", "--no-tags", "origin", revision], cwd=ROOT, check=True)
+
+
 def _recover_originals(expected: dict[str, object], cells: list[dict], baseline_dir: Path) -> None:
     """Reconstruct absent originals from the recorded Git revision, then verify pixels."""
     revision = expected.get("source_revision")
@@ -676,6 +689,7 @@ def _recover_originals(expected: dict[str, object], cells: list[dict], baseline_
     staging = ROOT / ".quality-tmp" / "golden-reference" / uuid.uuid4().hex
     staging.mkdir(parents=True)
     archive_path = staging / "source.zip"
+    _ensure_revision_available(revision)
     subprocess.run(
         ["git", "archive", "--format=zip", f"--output={archive_path}", revision],
         cwd=ROOT, check=True,
