@@ -175,10 +175,12 @@ def test_version_runtime_and_evidence_policy() -> None:
 CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
 )
-# docs/media/portraits/idle_front.png: generation-2 composite (official pack +
-# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-03.
+# docs/media/portraits/idle_front.png: V5 product composite (complete-expression
+# renderer, official pack, classic makeup), regenerated 2026-10-11 with the README
+# media.  The installer artwork and icons below were built from the 2026-09-03
+# composite and are rebuilt from this portrait only after owner approval.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+    "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243"
 )
 # installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-03.
 WIZARD_HERO_SHA256 = (
@@ -213,58 +215,58 @@ README_MEDIA_PATTERN = re.compile(
 )
 README_AUTO_MEDIA_SHA256 = {
     "docs/media/expressions.png": (
-        "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2"
+        "c36989312b6135f63c788d44ca7033563a96807e416e46e38fa04c19601f9dca"
     ),
     "docs/media/first-run-wizard.png": (
-        "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927"
+        "1fc8748282b5039126144cbf5e7b09aecd129d06f6efc90aa3f5f5bb8f273e0b"
     ),
     "docs/media/long-term-memory.png": (
-        "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
+        "bd08f4c7d9b0bc4464f5435a19b07cd634c5a79c857a7f795c6df19f760f977e"
     ),
     "docs/media/mohan-demo.mp4": (
         "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd"
     ),
     "docs/media/mohan-hero.png": (
-        "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
+        "a121608e2ea493a0a4f4225a47fe30e35973e05840c9424af67fc1d6549dc561"
     ),
     "docs/media/portraits/gentle_smile_front.png": (
-        "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
+        "9ecc2a7ee9b0c89d6123c290c2ca87c72e9d4f96800de1f6cf186b4e65bc85a9"
     ),
     "docs/media/portraits/idle_front.png": (
-        "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+        "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243"
     ),
     "docs/media/portraits/mock_hit_front.png": (
-        "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
+        "84f24b1a66ba08432069a2a9a35ec0407c66df84543c09a27bbfcbd0a9630539"
     ),
     "docs/media/portraits/proud_front.png": (
-        "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a"
+        "d14871c293a2936732df50479cc41b58ee705889f97755e02c1053ba61a13320"
     ),
     "docs/media/portraits/shy_cute_front.png": (
-        "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1"
+        "753c61174f7493b97ef8dd5f4198e81b034bd944157ca21e6269dfb40bb18521"
     ),
     "docs/media/portraits/thinking_front.png": (
-        "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd"
+        "d0f4923cc388ca55f79bb0dccff2fa82ed52182e980f3305f66dcd53606627ec"
     ),
     "docs/media/portraits/worried_front.png": (
-        "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5"
+        "86f2bd0401424427437c9554e017786b830ce23a006819ae1179c679c0c3943e"
     ),
     "docs/media/security-permissions.png": (
-        "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
+        "46c5f6656e647938a224b3236d03181d08a4fed57bb226058452d2803cde1d83"
     ),
     "docs/media/support-mock-hit.png": (
-        "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64"
+        "09517701fc8f028ce8ed345620eb39e02893d4357ed9c5e729c1aaef20c40cbb"
     ),
     "docs/media/support-proud.png": (
-        "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115"
+        "a6dd9446e57c99e6a9ae8c73b2ca89e18dacfd282b7a00129bc8a3eb5e3d5319"
     ),
     "docs/media/support-shy-aligned.png": (
-        "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996"
+        "d8deaf3044c6285544b0c43526cb74c2f4830608ce62f8584732cbb390480ab1"
     ),
     "docs/media/tasks-and-ideas.png": (
-        "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482"
+        "c886c61fa388a5c6427222bdf7fe742f04185571e1b8a8b9db3de3098a49901b"
     ),
     "docs/media/voice-modes.png": (
-        "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571"
+        "47eacde1011ed9dd45d4be16a49087981ff283fa77e8e8547738f309474d44ca"
     ),
 }
 
