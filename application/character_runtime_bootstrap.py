@@ -109,6 +109,10 @@ def activate_product_character_runtime(
         _activate(bundled_source)
         return bundled_source
 
+    # Pack validation checks view ids against the product body's canonical view
+    # ring, so a cold start selecting another character needs that baseline
+    # engine profile first; activating the loaded source below replaces it.
+    activate_character_engine_profile(_engine_profile(bundled_source))
     limits = official_character_pack_limits()
     load_development = (
         partial(load_development_character_pack_archive, limits=limits)

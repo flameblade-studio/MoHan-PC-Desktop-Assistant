@@ -75,11 +75,12 @@ OFFICIAL_NATIVE_HAIR_ALIAS = (
     _COMPATIBILITY_APPEARANCE.native_hair.variant_id,
 )
 _NATIVE_HEADWEAR = _COMPATIBILITY_APPEARANCE.native_headwear
-assert _NATIVE_HEADWEAR is not None
+# A character without native headwear (Lin Keyun) has no alias; asserting here
+# crashed any process that started with such a character selected.
 OFFICIAL_NATIVE_HEADWEAR_ALIAS = (
-    OFFICIAL_OUTFIT_PACK_ID,
-    _NATIVE_HEADWEAR.item_id,
-    _NATIVE_HEADWEAR.variant_id,
+    (OFFICIAL_OUTFIT_PACK_ID, _NATIVE_HEADWEAR.item_id, _NATIVE_HEADWEAR.variant_id)
+    if _NATIVE_HEADWEAR is not None
+    else None
 )
 # The slots the official default ensemble fills; accessories stay bare by default.
 OFFICIAL_OUTFIT_CATEGORIES = frozenset({"garment", "hairstyle", "headwear"})
