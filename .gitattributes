@@ -37,3 +37,4 @@ docs/release-evidence/ticket-211-*.json -text
 docs/character-pack/*.json -text
 docs/media/*.json -text
 docs/release-evidence/front-expressions-*.json -text
+docs/release-evidence/makeup-gradient-*.json -text
