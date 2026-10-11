@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 lazy import logging
+lazy import os
+lazy import subprocess
+lazy import sys
 lazy import importlib
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
@@ -207,6 +210,41 @@ def test_development_archive_is_explicit_and_not_persistently_installed(
         FAKE_CHARACTER_ID,
         data_root=data_root,
     ).exists()
+
+
+def test_cold_start_with_development_archive_activates_the_selected_character(
+    tmp_path: Path,
+) -> None:
+    """A fresh process selecting a pack must not depend on MoHan activating first."""
+
+    archive = build_fake_character_pack(tmp_path)
+    environment = os.environ.copy()
+    environment.update({
+        "QT_QPA_PLATFORM": "offscreen",
+        DATA_DIR_ENV: str(tmp_path / "profile"),
+        ACTIVE_CHARACTER_ENV: FAKE_CHARACTER_ID,
+        DEVELOPMENT_CHARACTER_PACK_ARCHIVE_ENV: str(archive),
+    })
+    probe = (
+        "from application.character_runtime_bootstrap import activate_product_character_runtime\n"
+        "print(activate_product_character_runtime().character_id)\n"
+        "import domain.outfit_pack_official as official\n"
+        "from domain.character_pack.character_data import load_mohan_character_data\n"
+        "assert official.OFFICIAL_OUTFIT_PACK_ID == "
+        "load_mohan_character_data().appearance_defaults.outfit_pack_id\n"
+    )
+    completed = subprocess.run(
+        [sys.executable, "-c", probe],
+        cwd=ROOT,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=120,
+        check=False,
+    )
+
+    assert completed.returncode == 0, completed.stderr
+    assert completed.stdout.strip().splitlines()[-1] == FAKE_CHARACTER_ID
 
 
 def test_incompatible_development_archive_fails_closed_to_mohan(

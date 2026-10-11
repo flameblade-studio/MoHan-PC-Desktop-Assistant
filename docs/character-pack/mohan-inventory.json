@@ -109993,7 +109993,7 @@
       "path": "domain/constants.py",
       "readers": [
         {
-          "line": 23,
+          "line": 24,
           "path": "application/character_runtime_bootstrap.py",
           "text": "lazy from domain.constants import ("
         },
@@ -110663,7 +110663,7 @@
       "work_package": null
     },
     {
-      "bytes": 11613,
+      "bytes": 11766,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -110719,7 +110719,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "43718591747593eb75db4e853cd5e1364fa028d165cd4fcec6b6da2eab3fc0d7",
+      "sha256": "2cd8d3c635a04a15e66b872bd84442ae7a054ab62563ce74aee2b83327257235",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
@@ -110790,143 +110790,143 @@
           "name": "_NATIVE_HEADWEAR"
         },
         {
-          "end_line": 83,
-          "line": 79,
+          "end_line": 84,
+          "line": 80,
           "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
         },
         {
-          "end_line": 85,
-          "line": 85,
+          "end_line": 86,
+          "line": 86,
           "name": "OFFICIAL_OUTFIT_CATEGORIES"
-        },
-        {
-          "end_line": 87,
-          "line": 87,
-          "name": "OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 88,
           "line": 88,
-          "name": "_PACK_IDENTIFIER"
+          "name": "OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 89,
           "line": 89,
-          "name": "_RESERVED_OFFICIAL_PACK_IDS"
+          "name": "_PACK_IDENTIFIER"
         },
         {
           "end_line": 90,
           "line": 90,
-          "name": "_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE"
+          "name": "_RESERVED_OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 91,
           "line": 91,
-          "name": "BARE_SELECTION"
+          "name": "_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE"
         },
         {
-          "end_line": 93,
-          "line": 93,
-          "name": "Identity"
+          "end_line": 92,
+          "line": 92,
+          "name": "BARE_SELECTION"
         },
         {
           "end_line": 94,
           "line": 94,
+          "name": "Identity"
+        },
+        {
+          "end_line": 95,
+          "line": 95,
           "name": "Resolution"
         },
         {
-          "end_line": 98,
-          "line": 97,
+          "end_line": 99,
+          "line": 98,
           "name": "official_outfit_pack_id"
         },
         {
-          "end_line": 102,
-          "line": 101,
+          "end_line": 103,
+          "line": 102,
           "name": "official_outfit_ensemble_id"
         },
         {
-          "end_line": 106,
-          "line": 105,
+          "end_line": 107,
+          "line": 106,
           "name": "builtin_makeup_pack_id"
         },
         {
-          "end_line": 111,
-          "line": 109,
+          "end_line": 112,
+          "line": 110,
           "name": "official_pack_ids"
         },
         {
-          "end_line": 128,
-          "line": 114,
+          "end_line": 129,
+          "line": 115,
           "name": "set_official_pack_id_reservations"
         },
         {
-          "end_line": 134,
-          "line": 131,
+          "end_line": 135,
+          "line": 132,
           "name": "official_pack_id_reservations_complete"
         },
         {
-          "end_line": 142,
-          "line": 137,
+          "end_line": 143,
+          "line": 138,
           "name": "reserved_official_pack_ids"
         },
         {
-          "end_line": 153,
-          "line": 145,
+          "end_line": 154,
+          "line": 146,
           "name": "official_native_hair_alias"
         },
         {
-          "end_line": 163,
-          "line": 156,
+          "end_line": 164,
+          "line": 157,
           "name": "official_native_headwear_alias"
         },
         {
-          "end_line": 173,
-          "line": 166,
+          "end_line": 174,
+          "line": 167,
           "name": "is_official_native_alias"
         },
         {
-          "end_line": 184,
-          "line": 176,
+          "end_line": 185,
+          "line": 177,
           "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
         },
         {
-          "end_line": 200,
-          "line": 187,
+          "end_line": 201,
+          "line": 188,
           "name": "native_overlay_is_redundant"
         },
         {
-          "end_line": 206,
-          "line": 203,
+          "end_line": 207,
+          "line": 204,
           "name": "SelectionLike"
         },
         {
-          "end_line": 212,
-          "line": 209,
+          "end_line": 213,
+          "line": 210,
           "name": "EnsembleSelectionLike"
         },
         {
-          "end_line": 218,
-          "line": 215,
+          "end_line": 219,
+          "line": 216,
           "name": "EnsembleLike"
         },
         {
-          "end_line": 238,
-          "line": 221,
+          "end_line": 239,
+          "line": 222,
           "name": "official_outfit_ensemble"
         },
         {
-          "end_line": 248,
-          "line": 241,
+          "end_line": 249,
+          "line": 242,
           "name": "builtin_makeup_resolution"
         },
         {
-          "end_line": 272,
-          "line": 251,
+          "end_line": 273,
+          "line": 252,
           "name": "builtin_outfit_resolution"
         },
         {
-          "end_line": 290,
-          "line": 275,
+          "end_line": 291,
+          "line": 276,
           "name": "resolve_builtin_sentinel"
         }
       ],

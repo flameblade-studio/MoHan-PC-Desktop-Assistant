@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+lazy import importlib
 lazy import logging
 lazy import os
 lazy import sys
@@ -109,6 +110,13 @@ def activate_product_character_runtime(
         _activate(bundled_source)
         return bundled_source
 
+    # A cold start selecting another character first activates the bundled
+    # product character: pack validation checks view ids against its canonical
+    # view ring, and legacy compatibility constants are frozen from it here so
+    # they never depend on which character a process happened to start with.
+    # Activating the loaded source below replaces it.
+    _activate(bundled_source)
+    importlib.import_module("domain.outfit_pack_official")
     limits = official_character_pack_limits()
     load_development = (
         partial(load_development_character_pack_archive, limits=limits)
