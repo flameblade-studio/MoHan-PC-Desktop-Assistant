@@ -16,7 +16,7 @@ lazy from infrastructure.animated_appearance import AnimatedAppearance
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_expressions import (
     COMPLETE_CHEEK_POSES, COMPLETE_FRONT_POSES, COMPLETE_POSES,
-    EYES, FAMILIES, CompleteHalfbodyFrames,
+    EYES, FAMILIES, REQUIRED_COMPLETE_POSES, CompleteHalfbodyFrames,
     load_complete_halfbody_frames,
 )
 
@@ -39,8 +39,11 @@ class CompleteHalfbodyRenderer:
     def __init__(
         self, root: Path, overlay: object = None,
         supplement: tuple[Path, Path] | None = None,
+        *, complete_root: Path | None = None, require_complete: bool = False,
     ) -> None:
-        self._root = root
+        self._root = root if complete_root is None else complete_root
+        self._explicit_complete = complete_root is not None
+        self._require_complete = require_complete
         self._loaded = False
         self._assets: CompleteHalfbodyFrames | None = None
         self._appearance = AnimatedAppearance(overlay)
@@ -49,11 +52,22 @@ class CompleteHalfbodyRenderer:
         self._contexts: OrderedDict[int, tuple[str, str]] = OrderedDict()
         self._pixmaps: OrderedDict[tuple[str, str, str], QPixmap] = OrderedDict()
         self._oral_pixmaps: dict[tuple[str, str], QPixmap] = {}
+        if self._explicit_complete:
+            self._load()
 
     def _load(self) -> CompleteHalfbodyFrames | None:
         if not self._loaded:
             self._assets = load_complete_halfbody_frames(self._root)
-            if self._supplement is not None:
+            if self._explicit_complete and self._assets is None:
+                raise FileNotFoundError(f"Missing declared complete half-body manifest: {self._root / 'manifest.json'}")
+            if self._require_complete and self._assets is not None:
+                missing = REQUIRED_COMPLETE_POSES - set(self._assets.frames)
+                if missing:
+                    raise ValueError(f"Missing complete half-body poses: {', '.join(sorted(missing))}")
+                missing_blinks = REQUIRED_COMPLETE_POSES - self._assets.whole_frame_blinks
+                if missing_blinks:
+                    raise ValueError(f"Native half-body requires whole-frame blinks: {', '.join(sorted(missing_blinks))}")
+            if self._supplement is not None and not self._explicit_complete:
                 root, manifest = self._supplement
                 additional = load_complete_halfbody_frames(root, manifest_path=manifest)
                 if additional is None:
@@ -94,6 +108,8 @@ class CompleteHalfbodyRenderer:
             family = binding[1] if binding is not None else emotional_binding[1]
             binding = emotional_binding[0], family
         if binding is None:
+            if self._require_complete:
+                raise ValueError(f"Missing native half-body expression: {expression}")
             self._set_active_mouth_state(None, None)
             return None
         pose, family = binding

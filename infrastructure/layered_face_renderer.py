@@ -105,6 +105,8 @@ class HalfbodySourceBindings:
     appearance_overlay: ExasperatedAppearanceOverlay | None = None
     expression_provider: ExasperatedCandidateProvider | None = None
     complete_halfbody_supplement: tuple[Path, Path] | None = None
+    complete_halfbody_root: Path | None = None
+    require_complete_halfbody: bool = False
 
 
 ExasperatedSourceBindings = HalfbodySourceBindings
@@ -169,6 +171,8 @@ class LayeredParametricFaceRenderer(
             complete_root, outfit_overlay,
             exasperated_source_bindings.complete_halfbody_supplement
             if exasperated_source_bindings is not None else None,
+            complete_root=source_bindings.complete_halfbody_root,
+            require_complete=source_bindings.require_complete_halfbody,
         )
         self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
         self._exasperated_candidate_key: str | None = None

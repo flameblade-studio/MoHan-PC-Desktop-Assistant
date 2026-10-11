@@ -15,7 +15,10 @@
     "onboarding_artwork": "assets/onboarding/first-run-ink-tech.png",
     "source_bound_expression": "assets/expressions/source-bound-exasperated",
     "theme_artwork": "assets/ui/mohan-cloud.svg",
-    "halfbody_complete_supplement": "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
+    "halfbody_complete_supplement": "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json",
+    "fullbody_complete_root": "assets/characters/lin-keyun/native/full",
+    "fullbody_complete_layered": "assets/pose-atlas/v5-base-layered",
+    "halfbody_complete": "assets/characters/lin-keyun/native/half"
   },
   "expression_roles": {
     "amusement": "restrained_amused_front",

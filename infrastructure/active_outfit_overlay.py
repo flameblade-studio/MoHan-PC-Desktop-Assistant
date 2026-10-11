@@ -81,7 +81,9 @@ class ActiveOutfitOverlay(
         *,
         visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
         official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
+        native_frames: bool = False,
     ) -> None:
+        self._native_frames = native_frames
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
@@ -146,6 +148,8 @@ class ActiveOutfitOverlay(
 
     def _resolve_base_clear_selection(self, category: str):
         """Keep base-clear selection reads on this module's patchable boundary."""
+        if self._native_frames and category != "makeup":
+            return SelectionResolution(category, "builtin", *("builtin",) * 6)
         return resolve_active_selection(
             self._store,
             category,
@@ -177,6 +181,17 @@ class ActiveOutfitOverlay(
         after_makeup = paint_after_makeup or options.paint_after_makeup
         if options.eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
+
+        if self._native_frames:
+            result = QPixmap(frame)
+            paint_motion(result)
+            result = self.apply_makeup(
+                result, view_id, suppress_makeup_slots=options.suppress_makeup_slots,
+                eye_state=options.eye_state, makeup_view_id=options.makeup_view_id,
+            )
+            if after_makeup is not None:
+                after_makeup(result)
+            return result
 
         def replace_core(target: QPixmap) -> QPixmap:
             if body_replacement is None:
@@ -236,6 +251,11 @@ class ActiveOutfitOverlay(
         eye_state: str = "rest",
         makeup_view_id: str | None = None,
     ) -> QPixmap:
+        if self._native_frames:
+            return self.apply_makeup(
+                frame, view_id, suppress_makeup_slots=suppress_makeup_slots,
+                eye_state=eye_state, makeup_view_id=makeup_view_id,
+            )
         if frame.isNull():
             return frame
         if eye_state not in {"rest", "half", "closed"}:
@@ -359,6 +379,8 @@ class ActiveOutfitOverlay(
         Full-body face motion is painted after this phase so a same-coordinate
         dressed skin overlay can replace the base hairline and neckline while preserving authored blink and mouth motion.
         """
+        if self._native_frames:
+            return QPixmap(frame)
         return self._apply_phase(
             frame,
             view_id,
@@ -417,7 +439,7 @@ class ActiveOutfitOverlay(
                 del self._layers_by_view_without_makeup_slots[combined_key]
         try:
             self._refresh_state()
-            reviewed = self._reviewed_frame(
+            reviewed = None if self._native_frames else self._reviewed_frame(
                 frame, view_id, suppress_makeup_slots, eye_state,
                 phase=phase, before_front_hair=before_front_hair,
                 makeup_view_id=makeup_view_id,
@@ -437,8 +459,10 @@ class ActiveOutfitOverlay(
                     makeup_view_id=makeup_view_id,
                 )
             garment_is_active = include_core and self._garment_is_active()
-            official_silhouette, replacement_mask, binding = self._base_clear_regions(
-                view_id, frame.size().toTuple(), garment_is_active, include_core,
+            official_silhouette, replacement_mask, binding = (
+                (None, None, None) if self._native_frames else self._base_clear_regions(
+                    view_id, frame.size().toTuple(), garment_is_active, include_core,
+                )
             )
             hand_overlays = (
                 binding.hand_overlays

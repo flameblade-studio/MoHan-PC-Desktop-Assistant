@@ -16,7 +16,10 @@
     "lobby_backdrop": "assets/ui/mohan-strategist-lobby-v1.png",
     "onboarding_artwork": "assets/onboarding/first-run-ink-tech.png",
     "source_bound_expression": "assets/expressions/source-bound-exasperated",
-    "theme_artwork": "assets/ui/mohan-cloud.svg"
+    "theme_artwork": "assets/ui/mohan-cloud.svg",
+    "fullbody_complete_root": "assets/pose-atlas/v5-base",
+    "fullbody_complete_layered": "assets/pose-atlas/v5-base-layered",
+    "halfbody_complete": "assets/expressions/complete-expressions"
   },
   "pose_roles": {
     "front_idle": "front-crossed",

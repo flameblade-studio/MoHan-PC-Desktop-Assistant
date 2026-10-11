@@ -149,7 +149,9 @@ def load_character_runtime_bindings(path: Path) -> CharacterRuntimeBindings:
             not isinstance(values, dict)
             or not expected_keys <= set(values)
             or set(values) - expected_keys - (
-                {"halfbody_complete_supplement"} if section == "asset_paths" else set()
+                {"halfbody_complete_supplement", "halfbody_complete",
+                 "fullbody_complete_root", "fullbody_complete_layered"}
+                if section == "asset_paths" else set()
             )
             or any(
                 not isinstance(key, str)

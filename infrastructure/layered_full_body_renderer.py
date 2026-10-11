@@ -43,6 +43,7 @@ from infrastructure.layered_full_body_complete_expression import (
 )
 lazy from infrastructure.mouth_geometry import paint_inward_lerped_u_layer
 lazy from infrastructure.animated_appearance import AnimatedAppearance
+lazy from infrastructure.character_native_frames import load_native_fullbody_frames
 lazy from infrastructure.full_body_blink_binding import bind_blink_source, snapshot_view_authority
 lazy from infrastructure.full_body_display_placement import FullBodyDisplayPlacement
 
@@ -117,7 +118,14 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         *,
         authority_root: Path | None = None,
         display_placement: FullBodyDisplayPlacement | None = None,
+        native_frames_root: Path | None = None,
     ) -> None:
+        self._native_frames = None
+        if native_frames_root is not None:
+            if manifest is None:
+                raise ValueError("Native full-body frames require an explicit face-motion manifest")
+            blink_views = frozenset(view.view_id for view in manifest.views.values() if view.blink_frames)
+            self._native_frames = load_native_fullbody_frames(native_frames_root, blink_views)
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
         self._display_placement = display_placement
@@ -233,6 +241,8 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
     ) -> QPixmap:
         """Render one complete full-body frame for the given view and motion."""
         view = self._manifest_or_load().view(view_id)
+        if self._native_frames is not None:
+            return self._render_native_view(view, motion)
         bounded_energy = max(0.0, min(1.0, float(body_energy)))
         complete_paths = self._complete_expression_paths(
             view,
@@ -374,6 +384,71 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         if self._display_placement is None:
             return translated
         return self._display_placement.apply(translated, view_id)
+
+    def _render_native_view(
+        self, view: LayeredFullBodyView, motion: FaceMotionFrame,
+    ) -> QPixmap:
+        if self._native_frames is None:
+            raise RuntimeError("Native full-body frames are unavailable")
+        eye = eye_state_for_blink(motion.expression_shape.blink)
+        frames = self._native_frames[view.view_id]
+        source_eye = eye if eye in frames else EyeState.REST
+        cache_key = f"native:{view.view_id}/{source_eye.value}"
+        base = self._pixmap_cache.get(cache_key)
+        if base is None:
+            base = QPixmap()
+            if not load_pixmap_png(base, frames[source_eye]):
+                raise ValueError(f"Cannot decode native full-body frame: {view.view_id}/{source_eye.value}")
+            self._pixmap_cache[cache_key] = base
+        self._pixmap_cache.move_to_end(cache_key)
+        while len(self._pixmap_cache) > MAX_CACHED_LAYER_PIXMAPS:
+            self._pixmap_cache.popitem(last=False)
+
+        set_mouth = getattr(self._outfit_overlay, "set_active_mouth_state", None)
+        if callable(set_mouth):
+            set_mouth(None, None)
+
+        def paint_motion(target: QPixmap) -> None:
+            if eye is EyeState.REST:
+                self._paint_dynamic_gaze(target, view, motion)
+            self._paint_native_mouth(target, view, motion, eye)
+
+        result = self._animated_appearance.compose(
+            base, view.view_id, paint_motion,
+            AppearanceRenderOptions(eye_state=eye.value),
+        )
+        translated = self._translated_frame(result, (motion.breath - 0.5) * BREATH_LIFT_SCALE, 0.0)
+        return translated if self._display_placement is None else self._display_placement.apply(translated, view.view_id)
+
+    def _paint_native_mouth(
+        self, target: QPixmap, view: LayeredFullBodyView,
+        motion: FaceMotionFrame, eye: EyeState,
+    ) -> None:
+        group = view.complete_expression_frames
+        if group is None or motion.mouth.aperture <= MOUTH_APERTURE_THRESHOLD:
+            self._paint_u_lip_layers(target, view, motion.mouth.u_inward)
+            if motion.mouth.aperture > MOUTH_APERTURE_THRESHOLD:
+                self._paint_visible_cavity(target, view, motion.mouth)
+            return
+        viseme = Viseme.CONSONANT if motion.viseme is Viseme.CLOSED else motion.viseme
+        oral_path = group.oral_mask(viseme, eye)
+        oral = self._cached_pixmap(oral_path) if oral_path is not None else None
+        region = QRegion()
+        for name in _LIP_LAYERS:
+            path = view.path(name)
+            if path is not None:
+                region = region.united(self._mask_region(self._cached_pixmap(path)))
+        if oral is not None:
+            region = region.united(self._mask_region(oral))
+        set_mouth = getattr(self._outfit_overlay, "set_active_mouth_state", None)
+        if callable(set_mouth):
+            set_mouth(viseme.value, oral)
+        painter = QPainter(target)
+        painter.setClipRegion(region)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
+        painter.setOpacity(min(1.0, motion.mouth.aperture / AUTHORED_SPEECH_VISIBLE_APERTURE))
+        painter.drawPixmap(0, 0, self._cached_pixmap(group.frame(viseme, eye)))
+        painter.end()
 
     @staticmethod
     def _sleeve_lift(

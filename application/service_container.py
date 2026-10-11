@@ -4,7 +4,7 @@ lazy import sqlite3
 lazy import threading
 lazy import os
 lazy import logging
-lazy from collections.abc import Callable
+lazy from collections.abc import Callable, Mapping
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
 lazy from typing import Protocol
@@ -337,6 +337,23 @@ def create_presentation_ports() -> PresentationPorts:
     return _create_presentation_ports(active_character_source())
 
 
+def _character_frame_paths(character_source: CharacterSource) -> tuple[Mapping[str, str], bool]:
+    bindings = (
+        character_source.appearance.runtime_bindings.asset_paths
+        if hasattr(character_source, "appearance") else {}
+    )
+    native_frames = (
+        bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT) != POSE_ATLAS_RELATIVE_ROOT
+        or bindings.get("halfbody_complete", "assets/expressions/complete-expressions") != "assets/expressions/complete-expressions"
+    )
+    return bindings, native_frames
+
+
+def _complete_halfbody_path(character_source: CharacterSource, bindings: Mapping[str, str]) -> Path | None:
+    return (character_source.assets.resolve_path(bindings["halfbody_complete"])
+            if "halfbody_complete" in bindings else None)
+
+
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
 
@@ -346,6 +363,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         "official_pack_roots",
         (asset_root / "assets" / "official-packs",),
     )
+    bindings, native_frames = _character_frame_paths(character_source)
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 
@@ -363,6 +381,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
             official_pack_root=official_pack_roots,
+            native_frames=native_frames,
         )
 
     def face_renderer_factory() -> LayeredParametricFaceRenderer:
@@ -370,16 +389,14 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         if source_bound:
             validated_renderer_rig(character_source)
         configured = os.environ.get("MOHAN_EXASPERATED_CANDIDATE_DIR")
-        candidate_dir = None
-        face_manifest = None
-        authority_dir = None
-        detachable_dir = None
+        candidate_dir = face_manifest = authority_dir = detachable_dir = None
         complete_halfbody_supplement = None
+        complete_halfbody_root = _complete_halfbody_path(character_source, bindings)
         if source_bound:
             supplement_path = character_source.appearance.runtime_bindings.asset_paths.get(
                 "halfbody_complete_supplement"
             )
-            if supplement_path is not None:
+            if supplement_path is not None and complete_halfbody_root is None:
                 complete_halfbody_supplement = (
                     asset_root, character_source.assets.resolve_path(supplement_path),
                 )
@@ -436,8 +453,13 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             exasperated_candidate_dir=candidate_dir,
             exasperated_source_bindings=ExasperatedSourceBindings(
                 complete_halfbody_supplement=complete_halfbody_supplement,
+                complete_halfbody_root=complete_halfbody_root,
+                require_complete_halfbody=(
+                    bindings.get("halfbody_complete", "assets/expressions/complete-expressions")
+                    != "assets/expressions/complete-expressions"
+                ),
                 appearance_overlay=candidate_appearance,
-                expression_provider=OutfitSourceBoundExpressionProvider(
+                expression_provider=None if native_frames else OutfitSourceBoundExpressionProvider(
                     presentation_contracts.default_data_dir() / "outfits",
                     official_pack_root=official_pack_roots,
                 ),
@@ -456,7 +478,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             )
         validated_renderer_rig(character_source)
         layered_root = character_source.assets.resolve_path(
-            POSE_ATLAS_LAYERED_RELATIVE_ROOT
+            bindings.get("fullbody_complete_layered", POSE_ATLAS_LAYERED_RELATIVE_ROOT)
         )
         authority_root = character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)
         manifest = load_layered_full_body_assets(layered_root)
@@ -465,6 +487,11 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             outfit_overlay=outfit_overlay,
             authority_root=authority_root,
             display_placement=load_full_body_display_placement(authority_root),
+            native_frames_root=(
+                character_source.assets.resolve_path(bindings["fullbody_complete_root"])
+                if bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT)
+                != POSE_ATLAS_RELATIVE_ROOT else None
+            ),
         )
 
     return PresentationPorts(
