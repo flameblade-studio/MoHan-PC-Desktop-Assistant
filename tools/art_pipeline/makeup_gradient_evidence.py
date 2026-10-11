@@ -7,6 +7,7 @@ lazy import csv
 lazy import hashlib
 lazy import json
 lazy from collections import defaultdict
+lazy from itertools import pairwise
 lazy from pathlib import Path
 
 lazy import numpy as np
@@ -305,6 +306,36 @@ def _average(values: list[dict[str, object]], field: str) -> float:
     return sum(float(row[field]) for row in values) / len(values)
 
 
+def _require_gradient(rows: list[dict[str, object]]) -> None:
+    """Fail before writing evidence unless every measured state meets the targets."""
+
+    failures: list[str] = []
+    after = [row for row in rows if row["phase"] == "after"]
+    for row in after:
+        label = f"{row['character']}/{row['state']}/{row['region']}/{row['look']}"
+        if float(row["adjacent_p90_de76"]) < TARGET_ADJACENT_P90:
+            failures.append(f"{label}: adjacent P90 {row['adjacent_p90_de76']} < {TARGET_ADJACENT_P90}")
+        if (
+            row["kind"] == "half"
+            and row["region"] == "eyeliner"
+            and row["look"] == "glamorous"
+            and float(row["vs_bare_p90_de76"]) < TARGET_GLAMOROUS_EYELINER_P90
+        ):
+            failures.append(
+                f"{label}: glamorous eyeliner P90 {row['vs_bare_p90_de76']} < {TARGET_GLAMOROUS_EYELINER_P90}"
+            )
+    by_group: dict[tuple[object, ...], dict[object, float]] = {}
+    for row in after:
+        key = (row["character"], row["state"], row["region"])
+        by_group.setdefault(key, {})[row["look"]] = float(row["vs_bare_mean_de76"])
+    for key, levels in by_group.items():
+        ordered = [levels[look] for look in LOOKS[1:]]
+        if not all(lower < higher for lower, higher in pairwise(ordered)):
+            failures.append(f"{'/'.join(map(str, key))}: light < classic < glamorous violated {ordered}")
+    if failures:
+        raise ValueError("Makeup gradient targets not met:\n" + "\n".join(failures))
+
+
 def _write_report(rows: list[dict[str, object]], pack: dict[str, object], output: Path) -> None:
     lines = [
         "# MAKEUP-GRADIENT 梯度量測與目視驗收",
@@ -341,7 +372,7 @@ def _write_report(rows: list[dict[str, object]], pack: dict[str, object], output
         f"- 改後 1.0.3：`{pack['candidate_sha256']}`。",
         "- 三個有妝款的既有眼／唇 alpha 統一乘 4；RGB、形狀、位置、非零支撐區、畫布與路徑不變；腮紅與底妝位元組不變。",
         "- 淡妝仍由既有經典素材的固定關係產生；各妝款使用同一倍率，未改妝級間的作者比例。",
-        "- golden 未重產。預期變動範圍為 light／classic／glamorous 的 75 個半身格與 13 個全身格，共 88 格／妝、264 格；none 的 88 格不變。",
+        "- golden 基準狀態以 `tests/golden/golden-manifest.json` 與其核准紀錄為準，本報告不另行宣告格數。",
         "",
         "完整逐狀態數值見 `gradient-measurements.csv`；封裝收據、冷啟動與逐格 SHA 見 `build-receipt.json`、`linkeyun-cold-start-render-manifest.json` 與 `evidence-manifest.json`。",
         "",
@@ -372,6 +403,7 @@ def build_evidence(
     after_roots = {character: phases["after"] for character, phases in roots.items()}
     _draw_detail(after_roots, "eyes", output / "eyes-3x.png")
     _draw_detail(after_roots, "lips", output / "lips-3x.png")
+    _require_gradient(rows)
     _write_csv(rows, output / "gradient-measurements.csv")
     pack = {
         "source_sha256": _sha256(source_pack),
