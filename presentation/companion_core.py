@@ -102,8 +102,7 @@ lazy from presentation.dashboard_shared import resource_path
 __all__ = ("CompanionCoreMixin",)
 _LOGGER = logging.getLogger(__name__)
 
-# Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
-# legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
+# Full-body framing retains legacy half-body poses for HALF and CLOSE.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
 _EXPRESSIONS = active_expression_catalog().emotion_to_expression
 
@@ -116,7 +115,6 @@ class CompanionCoreMixin:
         enabled: bool | None,
     ) -> None:
         """Open the v4 composition gate while preserving legacy rendering."""
-
         self._adaptive_character_composition: AdaptiveCharacterComposition | None = None
         self._adaptive_character_startup_error: SafeError | None = None
         self._performance_app_bridge = None
@@ -143,6 +141,8 @@ class CompanionCoreMixin:
                 ),
             )
         try:
+            if getattr(self.presentation_ports, "body_pack_required", False):
+                raise ValueError("body_pack_renderer_required: adaptive PoseAtlas composition requires a legacy source")
             composition = composition_factory(self._stage_adaptive_character_frame)
             generation = composition.runtime.begin_operation()
         except (ImportError, LookupError, OSError, RuntimeError, TypeError, ValueError) as error:

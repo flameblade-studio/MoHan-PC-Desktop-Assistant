@@ -12,8 +12,8 @@ DEFAULT_CHARACTER_LAYER_ORDER = (
     "hair-back",
     "base",
     "body-fix",
-    "garment",
     "makeup",
+    "garment",
     "hair-front",
     "ornament",
 )
@@ -76,6 +76,14 @@ class CharacterLayerPlan:
             raise CharacterLayerPlanError(
                 "Character layer order must include base once and contain no duplicates."
             )
+        if "makeup" in self.order:
+            makeup_index = self.order.index("makeup")
+            if makeup_index < self.order.index("base") or (
+                "garment" in self.order and makeup_index > self.order.index("garment")
+            ):
+                raise CharacterLayerPlanError(
+                    "Makeup must follow the base and precede the garment stage."
+                )
         if not isinstance(self.layers, tuple):
             raise CharacterLayerPlanError("Character layers must be an immutable tuple.")
         for layer in self.layers:

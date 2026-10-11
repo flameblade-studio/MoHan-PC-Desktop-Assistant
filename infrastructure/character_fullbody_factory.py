@@ -5,7 +5,8 @@ lazy from collections.abc import Callable, Mapping
 lazy from domain.character_source import CharacterSource
 lazy from domain.character_renderer_compatibility import validated_renderer_rig
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT, POSE_ATLAS_LAYERED_RELATIVE_ROOT
-lazy from application.character_default_look import CharacterDefaultLook, complete_fullbody_path
+lazy from application.character_default_look import CharacterDefaultLook, complete_fullbody_path, resolved_body_pack_for_source
+lazy from domain.body_pack import BodyPackMismatchError
 
 
 def create_character_fullbody_renderer(
@@ -14,6 +15,10 @@ def create_character_fullbody_renderer(
     renderer_factory: Callable, manifest_loader: Callable, placement_loader: Callable,
 ) -> object:
     """Preserve native and structural legacy routes through explicit dependencies."""
+    if resolved_body_pack_for_source(source) is not None:
+        raise BodyPackMismatchError(
+            "body_pack_renderer_required", "Use the declared body pack instead of legacy full-body assets",
+        )
     if not hasattr(source, "appearance"):
         return renderer_factory(
             outfit_overlay=overlay,

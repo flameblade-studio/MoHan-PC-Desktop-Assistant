@@ -118,7 +118,7 @@
   },
   "files": [
     {
-      "bytes": 6162,
+      "bytes": 6573,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
@@ -149,7 +149,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 106,
+          "line": 107,
           "matched": "assets/expressions/",
           "path": "application/character_default_look.py",
           "rule": "character_asset_path_literal",
@@ -163,18 +163,18 @@
       "path": "application/character_default_look.py",
       "readers": [
         {
-          "line": 110,
+          "line": 112,
           "path": "application/service_container.py",
           "text": "lazy from application.character_default_look import ("
         },
         {
           "line": 8,
           "path": "infrastructure/character_fullbody_factory.py",
-          "text": "lazy from application.character_default_look import CharacterDefaultLook, complete_fullbody_path"
+          "text": "lazy from application.character_default_look import CharacterDefaultLook, complete_fullbody_path, resolved_body_pack_for_source"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "c9288516f48b2483e36f888c8cd21c0c6cd63c4d755f497301365ed2c20bce16",
+      "sha256": "3743b1ec2584ebe36bebaf18579aa9efaf108a0a7c6295d879198fb2d2ddd3cb",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -185,24 +185,29 @@
           "name": "CharacterDefaultLook"
         },
         {
-          "end_line": 108,
+          "end_line": 109,
           "line": 99,
           "name": "character_frame_paths"
         },
         {
-          "end_line": 113,
-          "line": 111,
+          "end_line": 115,
+          "line": 112,
           "name": "complete_halfbody_path"
         },
         {
-          "end_line": 118,
-          "line": 116,
+          "end_line": 121,
+          "line": 118,
           "name": "complete_fullbody_path"
         },
         {
-          "end_line": 127,
-          "line": 121,
+          "end_line": 130,
+          "line": 124,
           "name": "resolved_body_pack_for_source"
+        },
+        {
+          "end_line": 137,
+          "line": 133,
+          "name": "_require_legacy_frame_source"
         }
       ],
       "work_package": "rig-and-asset-parameterization"
@@ -278,7 +283,7 @@
       "work_package": null
     },
     {
-      "bytes": 30008,
+      "bytes": 30179,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
@@ -289,7 +294,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 444,
+          "line": 443,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -299,7 +304,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 445,
+          "line": 444,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -319,59 +324,59 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "c6405c1aef8a1e0cff81c199747d3757d3f188be93f8b39ed3225bc8a084b130",
+      "sha256": "64d3360e32cb0dd755caa87cc045ba0edf761977486d84ec0ed02eff98525d14",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 149,
-          "line": 149,
+          "end_line": 151,
+          "line": 151,
           "name": "_CHARACTER_SELECTION_LOGGER"
         },
         {
-          "end_line": 150,
-          "line": 150,
+          "end_line": 152,
+          "line": 152,
           "name": "SUPPORTED_CHARACTER_IDS"
         },
         {
-          "end_line": 180,
-          "line": 153,
+          "end_line": 182,
+          "line": 155,
           "name": "create_character_source"
         },
         {
-          "end_line": 188,
-          "line": 183,
+          "end_line": 189,
+          "line": 185,
           "name": "create_default_character_source"
         },
         {
-          "end_line": 212,
-          "line": 191,
+          "end_line": 213,
+          "line": 192,
           "name": "_reserve_official_pack_id_reservations"
         },
         {
-          "end_line": 236,
-          "line": 216,
+          "end_line": 237,
+          "line": 217,
           "name": "CompanionServices"
         },
         {
-          "end_line": 295,
-          "line": 239,
+          "end_line": 296,
+          "line": 240,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 316,
-          "line": 298,
+          "end_line": 317,
+          "line": 299,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 322,
-          "line": 319,
+          "end_line": 323,
+          "line": 320,
           "name": "create_presentation_ports"
         },
         {
           "end_line": 478,
-          "line": 325,
+          "line": 326,
           "name": "_create_presentation_ports"
         },
         {
@@ -105535,7 +105540,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+000-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105552,7 +105557,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+000-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105619,7 +105624,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+015-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105636,7 +105641,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+015-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105703,7 +105708,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+030-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105720,7 +105725,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+030-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105787,7 +105792,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+045-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105804,7 +105809,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+045-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105871,7 +105876,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+060-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105888,7 +105893,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+060-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105960,7 +105965,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -105977,7 +105982,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+075-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106049,7 +106054,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+090-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106066,7 +106071,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+090-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106121,7 +106126,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+105-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106138,7 +106143,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+105-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106193,7 +106198,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+120-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106210,7 +106215,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+120-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106265,7 +106270,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+135-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106282,7 +106287,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+135-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106326,7 +106331,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+150-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106343,7 +106348,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+150-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106387,7 +106392,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+165-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106404,7 +106409,7 @@
       "path": "assets/pose-atlas/v5-base/yaw+165-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106465,7 +106470,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-015-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106482,7 +106487,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-015-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106549,7 +106554,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-030-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106566,7 +106571,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-030-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106633,7 +106638,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-045-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106650,7 +106655,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-045-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106717,7 +106722,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106734,7 +106739,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-060-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106806,7 +106811,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106823,7 +106828,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-075-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106878,7 +106883,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106895,7 +106900,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-090-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106950,7 +106955,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-105-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -106967,7 +106972,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-105-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107022,7 +107027,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-120-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107039,7 +107044,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-120-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107094,7 +107099,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-135-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107111,7 +107116,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-135-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107155,7 +107160,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-150-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107172,7 +107177,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-150-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107216,7 +107221,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-165-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107233,7 +107238,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-165-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107277,7 +107282,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-180-pitch+00.hands.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -107294,7 +107299,7 @@
       "path": "assets/pose-atlas/v5-base/yaw-180-pitch+00.landmarks.json",
       "readers": [
         {
-          "line": 133,
+          "line": 135,
           "path": "application/packaged_self_test.py",
           "text": "for suffix in (\".landmarks.json\", \".hands.json\")"
         }
@@ -110530,7 +110535,7 @@
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 68,
+          "line": 69,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
@@ -111005,7 +111010,7 @@
           "text": "lazy from domain.contracts import ("
         },
         {
-          "line": 47,
+          "line": 48,
           "path": "application/service_container.py",
           "text": "lazy from domain.contracts import ("
         },
@@ -111647,7 +111652,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 82,
+          "line": 83,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -111804,7 +111809,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 127,
+          "line": 129,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -111974,7 +111979,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 129,
+          "line": 131,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -113311,7 +113316,7 @@
       "work_package": null
     },
     {
-      "bytes": 51191,
+      "bytes": 51481,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -113322,7 +113327,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 539,
+          "line": 540,
           "matched": "墨寒",
           "path": "presentation/ui_localization.py",
           "rule": "product_identity_literal",
@@ -113332,7 +113337,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 541,
+          "line": 542,
           "matched": "墨寒",
           "path": "presentation/ui_localization.py",
           "rule": "product_identity_literal",
@@ -113342,7 +113347,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 542,
+          "line": 543,
           "matched": "MoHan",
           "path": "presentation/ui_localization.py",
           "rule": "product_identity_literal",
@@ -113417,7 +113422,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "f47d5c3967d72a162d652f547a805dc8e38d8920d020e385b3cbfda393f57c54",
+      "sha256": "0202ebafe4db922214169c72087ee4304f4073db7eb444f8948ee06daeb5e2f9",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -113428,35 +113433,35 @@
           "name": "_CHARACTER_DIALOGUES"
         },
         {
-          "end_line": 566,
+          "end_line": 567,
           "line": 14,
           "name": "_SIMPLIFIED_CHINESE"
         },
         {
-          "end_line": 691,
-          "line": 568,
+          "end_line": 693,
+          "line": 569,
           "name": "_JAPANESE"
         },
         {
-          "end_line": 732,
-          "line": 706,
+          "end_line": 734,
+          "line": 708,
           "name": "ui_text"
         },
         {
-          "end_line": 748,
-          "line": 735,
+          "end_line": 750,
+          "line": 737,
           "name": "display_label"
         },
         {
-          "end_line": 765,
-          "line": 751,
+          "end_line": 767,
+          "line": 753,
           "name": "__all__"
         }
       ],
       "work_package": null
     },
     {
-      "bytes": 41719,
+      "bytes": 41840,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -113467,7 +113472,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 729,
+          "line": 730,
           "matched": "MoHan",
           "path": "presentation/ui_localization_en.py",
           "rule": "product_identity_literal",
@@ -113477,7 +113482,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 731,
+          "line": 732,
           "matched": "MoHan",
           "path": "presentation/ui_localization_en.py",
           "rule": "product_identity_literal",
@@ -113497,7 +113502,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "61cda47078322cf204f3e8028944531ab30f5ccfcde5b366bc03d245e3f0c5ea",
+      "sha256": "4ccdeefb674503ef6c02ff49a1ded049f9467bc41a609bbba0f45ac31eb0797b",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -113508,13 +113513,13 @@
           "name": "_DIALOGUE"
         },
         {
-          "end_line": 760,
+          "end_line": 761,
           "line": 10,
           "name": "ENGLISH_UI_TEXT"
         },
         {
-          "end_line": 762,
-          "line": 762,
+          "end_line": 763,
+          "line": 763,
           "name": "__all__"
         }
       ],

@@ -4,6 +4,7 @@ lazy import sqlite3
 lazy import threading
 lazy import os
 lazy import logging
+lazy from functools import cache
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
@@ -107,6 +108,7 @@ lazy from infrastructure.outfit_source_bound_expressions import (
 )
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from application.appearance_ports import no_outfit_overlay_factory
 lazy from application.character_default_look import (
     CharacterDefaultLook,
     character_frame_paths as _character_frame_paths,
@@ -182,7 +184,6 @@ def create_character_source(character_id: str) -> CharacterSource:
 
 def create_default_character_source() -> CharacterSource:
     """Select the launch-configured character while keeping MoHan as default."""
-
     return create_character_source(
         os.environ.get(ACTIVE_CHARACTER_ENV, DEFAULT_CHARACTER_ID)
     )
@@ -324,12 +325,9 @@ def create_presentation_ports() -> PresentationPorts:
 
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
-
     asset_root = character_source.assets.asset_root
     official_pack_roots = getattr(
-        character_source.assets,
-        "official_pack_roots",
-        (asset_root / "assets" / "official-packs",),
+        character_source.assets, "official_pack_roots", (asset_root / "assets" / "official-packs",),
     )
     body_pack = resolved_body_pack_for_source(character_source)
     bindings, native_frames = _character_frame_paths(character_source)
@@ -348,7 +346,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
 
     def outfit_overlay_factory(on_stale_body_profile=None):
         if body_pack is not None:
-            return None
+            return no_outfit_overlay_factory()
         return ActiveOutfitOverlay(
             presentation_contracts.default_data_dir() / "outfits",
             asset_root,
@@ -358,6 +356,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             native_frames=default_look.native_frames if default_look is not None else native_frames,
         )
 
+    @cache
     def body_renderer() -> BodyPackRenderer:
         return BodyPackRenderer(
             body_pack, character_source.appearance.character_layer_views,
@@ -475,6 +474,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         official_pack_roots=official_pack_roots,
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=full_body_renderer_factory,
+        body_pack_required=body_pack is not None,
     )
 
 

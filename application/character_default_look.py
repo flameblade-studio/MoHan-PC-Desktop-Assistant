@@ -14,7 +14,7 @@ class CharacterDefaultLook:
     """Share one selection decision between overlays and both frame renderers."""
 
     def __init__(self, source: CharacterSource, store: Path, official_roots: OfficialPackRoots) -> None:
-        if getattr(source.appearance, "resolved_body_pack", None) is not None:
+        if resolved_body_pack_for_source(source) is not None:
             raise BodyPackMismatchError(
                 "body_pack_renderer_required", "Declared body packs require the body-pack renderer",
             )
@@ -97,6 +97,7 @@ class CharacterDefaultLook:
 
 
 def character_frame_paths(character_source: CharacterSource) -> tuple[Mapping[str, str], bool]:
+    resolved_body_pack_for_source(character_source)
     bindings = (
         character_source.appearance.runtime_bindings.asset_paths
         if hasattr(character_source, "appearance") else {}
@@ -109,11 +110,13 @@ def character_frame_paths(character_source: CharacterSource) -> tuple[Mapping[st
 
 
 def complete_halfbody_path(character_source: CharacterSource, bindings: Mapping[str, str]) -> Path | None:
+    _require_legacy_frame_source(character_source)
     return (character_source.assets.resolve_path(bindings["halfbody_complete"])
             if "halfbody_complete" in bindings else None)
 
 
 def complete_fullbody_path(character_source: CharacterSource, bindings: Mapping[str, str]) -> Path | None:
+    _require_legacy_frame_source(character_source)
     relative = bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT)
     return character_source.assets.resolve_path(relative) if relative != POSE_ATLAS_RELATIVE_ROOT else None
 
@@ -125,3 +128,10 @@ def resolved_body_pack_for_source(source: CharacterSource) -> object | None:
     if reference is not None and body is None:
         raise BodyPackMismatchError("body_pack_missing", "Resolve the declared body pack before rendering")
     return body
+
+
+def _require_legacy_frame_source(source: CharacterSource) -> None:
+    if resolved_body_pack_for_source(source) is not None:
+        raise BodyPackMismatchError(
+            "body_pack_renderer_required", "Use the declared body pack to render character frames",
+        )

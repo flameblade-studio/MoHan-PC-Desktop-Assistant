@@ -123,7 +123,8 @@ class CharacterPackManifest:
     signature: CharacterPackSignature | None
     body_pack: BodyPackReference | None = None
     layer_views: Mapping[str, CharacterLayerPlan] = field(
-        default_factory=lambda: MappingProxyType({})
+        default_factory=lambda: MappingProxyType({}),
+        hash=False,
     )
 
 

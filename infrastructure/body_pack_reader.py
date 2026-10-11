@@ -2,16 +2,18 @@
 
 from __future__ import annotations
 
-lazy import hashlib
-lazy import json
-lazy import logging
-lazy import os
-lazy import stat
-lazy import warnings
-lazy from collections.abc import Iterable, Mapping
-lazy from dataclasses import dataclass
-lazy from io import BytesIO
-lazy from pathlib import Path, PurePosixPath
+import hashlib
+import json
+import logging
+import os
+import stat
+import warnings
+from collections import OrderedDict
+from collections.abc import Iterable, Mapping
+from dataclasses import dataclass
+from io import BytesIO
+from pathlib import Path, PurePosixPath
+from threading import RLock
 
 lazy from PIL import Image, UnidentifiedImageError
 lazy from domain.body_pack import (
@@ -32,6 +34,17 @@ LOGGER = logging.getLogger(__name__)
 MANIFEST_PATH = "manifest.json"
 MAX_MANIFEST_BYTES = 1024 * 1024
 MAX_IMAGE_BYTES = 64 * 1024 * 1024
+MAX_CACHED_IMAGE_BYTES = 16 * 1024 * 1024
+_PNG_IHDR_MIN_BYTES = 33
+_PNG_IHDR_CHUNK_BYTES = 13
+_PNG_COLOR_TYPE_RGBA = 6
+_FileSignature = tuple[int, int, int, int, int, int]
+
+
+@dataclass(frozen=True, slots=True)
+class _PayloadCacheEntry:
+    data: bytes
+    signature: _FileSignature
 
 
 class BodyPackReader:
@@ -103,14 +116,17 @@ class BodyPackReader:
             )
         )
         self._image_sizes: dict[str, tuple[int, int]] = {}
+        self._decoded_image_signatures: dict[str, _FileSignature] = {}
+        self._payload_cache: OrderedDict[str, _PayloadCacheEntry] = OrderedDict()
+        self._payload_cache_size = 0
+        self._payload_cache_lock = RLock()
 
         for record in self._declared_records.values():
             self._inspect_image(record)
 
         full_sizes = {
-            self._image_sizes[record.path]
+            *(self._image_sizes[record.path] for record in frames.values())
             for frames in self._full_frames.values()
-            for record in frames.values()
         }
         if not full_sizes:
             raise _mismatch(
@@ -134,9 +150,8 @@ class BodyPackReader:
         full_canvas = next(iter(full_sizes))
 
         half_sizes = {
-            self._image_sizes[record.path]
+            *(self._image_sizes[record.path] for record in frames.values())
             for frames in self._half_frames.values()
-            for record in frames.values()
         }
         if not half_sizes:
             raise _mismatch(
@@ -222,7 +237,7 @@ class BodyPackReader:
         return None if record is None else self.read_image(record)
 
     def read_image(self, record: BodyPackFile) -> bytes:
-        """Read a manifest-declared image and recheck its SHA-256 each time."""
+        """Read a verified image, decoding its PNG only on first use."""
         declared = self._declared_records.get(record.path)
         if declared != record:
             raise _mismatch(
@@ -230,7 +245,11 @@ class BodyPackReader:
                 "The requested image record is not part of this body pack.",
                 record.path,
             )
-        return _read_payload(self._root, record)
+        data, signature = self._read_payload(record)
+        if self._decoded_image_signatures.get(record.path) != signature:
+            _decode_image(record, data, self._image_sizes[record.path])
+            self._decoded_image_signatures[record.path] = signature
+        return data
 
     def _select_view(self, view: str, *, halfbody: bool) -> Mapping[str, BodyPackFile]:
         groups = self._half_frames if halfbody else self._full_frames
@@ -244,50 +263,108 @@ class BodyPackReader:
             ) from None
 
     def _inspect_image(self, record: BodyPackFile) -> tuple[int, int]:
-        data = _read_payload(self._root, record)
-        try:
-            with warnings.catch_warnings():
-                warnings.simplefilter("error", Image.DecompressionBombWarning)
-                with Image.open(BytesIO(data)) as image:
-                    if image.format != "PNG":
-                        raise _mismatch(
-                            "invalid_image",
-                            "Body-pack images must use PNG encoding.",
-                            record.path,
-                        )
-                    image.verify()
-                with Image.open(BytesIO(data)) as image:
-                    if image.format != "PNG" or image.mode != "RGBA":
-                        raise _mismatch(
-                            "invalid_image",
-                            "Body-pack images must be PNG files in RGBA mode.",
-                            record.path,
-                        )
-                    if image.width < 1 or image.height < 1:
-                        raise _mismatch(
-                            "invalid_image",
-                            "Body-pack image dimensions must be positive.",
-                            record.path,
-                        )
-                    image.load()
-                    size = image.size
-        except BodyPackMismatchError:
-            raise
-        except (
-            Image.DecompressionBombError,
-            Image.DecompressionBombWarning,
-            OSError,
-            ValueError,
-            SyntaxError,
-            UnidentifiedImageError,
-        ) as error:
-            raise _mismatch(
-                "invalid_image",
-                f"A body-pack image could not be decoded safely: {type(error).__name__}.",
-                record.path,
-            ) from None
+        data, _ = self._read_payload(record)
+        size = _png_size(data, record.path)
         self._image_sizes[record.path] = size
         return size
+
+    def _read_payload(self, record: BodyPackFile) -> tuple[bytes, _FileSignature]:
+        """Read/hash once and retain verified bytes within the reader budget."""
+        candidate = self._root.joinpath(*PurePosixPath(record.path).parts)
+        with self._payload_cache_lock:
+            _require_contained_path(self._root, candidate, record.path)
+            try:
+                metadata = candidate.stat(follow_symlinks=False)
+            except OSError:
+                raise _mismatch(
+                    "missing_file", "A declared body-pack image is missing.", record.path
+                ) from None
+            if not stat.S_ISREG(metadata.st_mode):
+                raise _mismatch(
+                    "unsafe_path", "Body-pack assets must be regular files.", record.path
+                )
+            if metadata.st_size > MAX_IMAGE_BYTES:
+                raise _mismatch(
+                    "file_too_large", "A body-pack image exceeds the read limit.", record.path
+                )
+
+            cached = self._payload_cache.get(record.path)
+            try:
+                with candidate.open("rb") as stream:
+                    opened = os.fstat(stream.fileno())
+                    _require_same_file(metadata, opened, record.path)
+                    signature = _file_signature(opened)
+                    if cached is not None and signature == cached.signature:
+                        current = candidate.stat(follow_symlinks=False)
+                        _require_same_file(metadata, current, record.path)
+                        if _file_signature(current) == cached.signature:
+                            self._payload_cache.move_to_end(record.path)
+                            return cached.data, cached.signature
+
+                    if cached is not None:
+                        self._discard_cached_payload(record.path)
+                    data = stream.read(MAX_IMAGE_BYTES + 1)
+                    after_read = os.fstat(stream.fileno())
+                    after_path = candidate.stat(follow_symlinks=False)
+                    _require_same_file(metadata, after_read, record.path)
+                    _require_same_file(metadata, after_path, record.path)
+                    if (
+                        _file_signature(metadata) != _file_signature(after_read)
+                        or _file_signature(metadata) != _file_signature(after_path)
+                    ):
+                        raise _mismatch(
+                            "file_changed",
+                            "A body-pack image changed while it was read.",
+                            record.path,
+                        )
+            except BodyPackMismatchError:
+                raise
+            except OSError as error:
+                raise _mismatch(
+                    "missing_file",
+                    f"A declared body-pack image could not be read: {type(error).__name__}.",
+                    record.path,
+                ) from None
+
+            if len(data) > MAX_IMAGE_BYTES or len(data) != metadata.st_size:
+                raise _mismatch(
+                    "size_mismatch",
+                    "A body-pack image changed while it was read.",
+                    record.path,
+                )
+            if hashlib.sha256(data).hexdigest() != record.sha256:
+                raise _mismatch(
+                    "file_hash_mismatch",
+                    "A body-pack image does not match its declared SHA-256.",
+                    record.path,
+                )
+
+            signature = _file_signature(metadata)
+            if len(data) <= MAX_CACHED_IMAGE_BYTES:
+                self._remember_payload(record.path, data, signature)
+            return data, signature
+
+    def _remember_payload(
+        self,
+        path: str,
+        data: bytes,
+        signature: _FileSignature,
+    ) -> None:
+        previous = self._payload_cache.pop(path, None)
+        if previous is not None:
+            self._payload_cache_size -= len(previous.data)
+        if len(data) > MAX_CACHED_IMAGE_BYTES:
+            return
+        self._payload_cache[path] = _PayloadCacheEntry(data, signature)
+        self._payload_cache_size += len(data)
+        while self._payload_cache_size > MAX_CACHED_IMAGE_BYTES:
+            _, evicted = self._payload_cache.popitem(last=False)
+            self._payload_cache_size -= len(evicted.data)
+
+    def _discard_cached_payload(self, path: str) -> None:
+        previous = self._payload_cache.pop(path, None)
+        if previous is not None:
+            self._payload_cache_size -= len(previous.data)
 
 
 def resolve_body_pack(
@@ -442,37 +519,90 @@ def _read_manifest(root: Path, candidate: Path) -> bytes:
     return data
 
 
-def _read_payload(root: Path, record: BodyPackFile) -> bytes:
-    candidate = root.joinpath(*PurePosixPath(record.path).parts)
-    _require_contained_path(root, candidate, record.path)
-    try:
-        metadata = candidate.stat(follow_symlinks=False)
-    except OSError:
-        raise _mismatch("missing_file", "A declared body-pack image is missing.", record.path) from None
-    if not stat.S_ISREG(metadata.st_mode):
-        raise _mismatch("unsafe_path", "Body-pack assets must be regular files.", record.path)
-    if metadata.st_size > MAX_IMAGE_BYTES:
-        raise _mismatch("file_too_large", "A body-pack image exceeds the read limit.", record.path)
-    try:
-        with candidate.open("rb") as stream:
-            _require_same_file(metadata, os.fstat(stream.fileno()), record.path)
-            data = stream.read(MAX_IMAGE_BYTES + 1)
-            _require_same_file(metadata, candidate.stat(follow_symlinks=False), record.path)
-    except OSError as error:
+def _file_signature(metadata: os.stat_result) -> _FileSignature:
+    return (
+        metadata.st_dev,
+        metadata.st_ino,
+        metadata.st_mode,
+        metadata.st_size,
+        metadata.st_mtime_ns,
+        metadata.st_ctime_ns,
+    )
+
+
+def _png_size(data: bytes, relative: str) -> tuple[int, int]:
+    signature = b"\x89PNG\r\n\x1a\n"
+    if (
+        len(data) < _PNG_IHDR_MIN_BYTES
+        or data[:8] != signature
+        or int.from_bytes(data[8:12], "big") != _PNG_IHDR_CHUNK_BYTES
+        or data[12:16] != b"IHDR"
+    ):
+        raise _mismatch("invalid_image", "A body-pack image must have a valid PNG header.", relative)
+
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    bit_depth = data[24]
+    color_type = data[25]
+    compression = data[26]
+    filtering = data[27]
+    interlace = data[28]
+    if (
+        width < 1
+        or height < 1
+        or color_type != _PNG_COLOR_TYPE_RGBA
+        or bit_depth not in {8, 16}
+        or compression != 0
+        or filtering != 0
+        or interlace not in {0, 1}
+    ):
         raise _mismatch(
-            "missing_file",
-            f"A declared body-pack image could not be read: {type(error).__name__}.",
+            "invalid_image",
+            "Body-pack images must use positive-dimension RGBA PNG encoding.",
+            relative,
+        )
+    return width, height
+
+
+def _decode_image(
+    record: BodyPackFile,
+    data: bytes,
+    expected_size: tuple[int, int],
+) -> None:
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", Image.DecompressionBombWarning)
+            with Image.open(BytesIO(data)) as image:
+                if image.format != "PNG" or image.mode != "RGBA" or image.size != expected_size:
+                    raise _mismatch(
+                        "invalid_image",
+                        "Body-pack images must decode as RGBA PNGs with their declared dimensions.",
+                        record.path,
+                    )
+                image.verify()
+            with Image.open(BytesIO(data)) as image:
+                if image.format != "PNG" or image.mode != "RGBA" or image.size != expected_size:
+                    raise _mismatch(
+                        "invalid_image",
+                        "Body-pack images must decode as RGBA PNGs with their declared dimensions.",
+                        record.path,
+                    )
+                image.load()
+    except BodyPackMismatchError:
+        raise
+    except (
+        Image.DecompressionBombError,
+        Image.DecompressionBombWarning,
+        OSError,
+        ValueError,
+        SyntaxError,
+        UnidentifiedImageError,
+    ) as error:
+        raise _mismatch(
+            "invalid_image",
+            f"A body-pack image could not be decoded safely: {type(error).__name__}.",
             record.path,
         ) from None
-    if len(data) > MAX_IMAGE_BYTES or len(data) != metadata.st_size:
-        raise _mismatch("size_mismatch", "A body-pack image changed while it was read.", record.path)
-    if hashlib.sha256(data).hexdigest() != record.sha256:
-        raise _mismatch(
-            "file_hash_mismatch",
-            "A body-pack image does not match its declared SHA-256.",
-            record.path,
-        )
-    return data
 
 
 def _require_contained_path(root: Path, candidate: Path, relative: str) -> None:

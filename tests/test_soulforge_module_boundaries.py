@@ -312,3 +312,9 @@ def test_import_scan_resolves_importlib_aliases(tmp_path: Path) -> None:
     known = frozenset({"feature", "shell_a", "shell_b", "shell_c"})
     edges = _import_edges("feature", source, known)
     assert {edge.imported for edge in edges} == {"shell_a", "shell_b", "shell_c"}
+
+
+def test_product_frame_helpers_have_explicit_shell_ownership():
+    ownership = _classification_map(_load_boundary())
+    assert ownership["application.character_default_look"] == "mohan_product_shell"
+    assert ownership["infrastructure.character_fullbody_factory"] == "mohan_product_shell"

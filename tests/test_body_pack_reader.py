@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import json
 lazy import logging
+lazy import os
 lazy import zipfile
 lazy from io import BytesIO
 lazy from pathlib import Path
@@ -13,6 +14,7 @@ lazy import pytest
 lazy from PIL import Image
 
 lazy from domain.body_pack import (
+    BodyPackFile,
     BodyPackMismatchError,
     compute_body_pack_fingerprint,
     parse_body_pack_reference,
@@ -22,6 +24,7 @@ lazy from domain.character_pack.validation import (
     validate_character_pack,
 )
 lazy from domain.character_pose import canonical_view_id
+lazy from infrastructure import body_pack_reader
 lazy from infrastructure.body_pack_reader import BodyPackReader, resolve_body_pack
 lazy from infrastructure.character_pack_files import CharacterPackReadError
 lazy from infrastructure.character_source_pack import CharacterPackReader
@@ -129,6 +132,130 @@ def test_reader_exposes_hash_verified_frames_and_canvases(tmp_path: Path) -> Non
     ).read_bytes()
     assert reader.load_face_core("front") == (pack_root / "masks/front.png").read_bytes()
     assert reader.load_face_core("portrait") is None
+
+
+def test_reader_defers_png_decode_until_a_frame_is_used(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "body-packs"
+    root.mkdir()
+    _, reference = _write_pack(root)
+    original_decode = body_pack_reader._decode_image
+    decode_count = 0
+
+    def count_decode(record: BodyPackFile, data: bytes, size: tuple[int, int]) -> None:
+        nonlocal decode_count
+        decode_count += 1
+        original_decode(record, data, size)
+
+    monkeypatch.setattr(body_pack_reader, "_decode_image", count_decode)
+    reader = resolve_body_pack(reference, [root])
+
+    assert decode_count == 0
+    assert reader.load_frame("front", "rest")
+    assert decode_count == 1
+    assert reader.load_frame("front", "rest")
+    assert decode_count == 1
+
+
+def test_reader_rejects_corrupt_png_pixels_on_first_use(tmp_path: Path) -> None:
+    root = tmp_path / "body-packs"
+    root.mkdir()
+    manifest, files = _manifest()
+    relative = "frames/full/front-rest.png"
+    damaged = files[relative][:33]
+    files[relative] = damaged
+    manifest["full_body"]["front"]["rest"] = _file(relative, damaged)  # type: ignore[index]
+    manifest["fingerprint"] = compute_body_pack_fingerprint(manifest)
+    pack_root = root / PACK_ID
+    pack_root.mkdir()
+    for path, payload in files.items():
+        file_path = pack_root / path
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_path.write_bytes(payload)
+    (pack_root / "manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8", newline="\n"
+    )
+    reference = parse_body_pack_reference(
+        {
+            "id": PACK_ID,
+            "version": PACK_VERSION,
+            "fingerprint": manifest["fingerprint"],
+        }
+    )
+
+    reader = resolve_body_pack(reference, [root])
+
+    with pytest.raises(BodyPackMismatchError) as error:
+        reader.load_frame("front", "rest")
+
+    assert error.value.code == "invalid_image"
+
+
+def test_verified_byte_cache_skips_rehash_and_stats_detect_file_changes(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "body-packs"
+    root.mkdir()
+    pack_root, reference = _write_pack(root)
+    reader = resolve_body_pack(reference, [root])
+    hash_function = body_pack_reader.hashlib.sha256
+    hash_count = 0
+
+    def count_hash(data: bytes = b"") -> object:
+        nonlocal hash_count
+        hash_count += 1
+        return hash_function(data)
+
+    monkeypatch.setattr(body_pack_reader.hashlib, "sha256", count_hash)
+    path = pack_root / "frames/full/front-rest.png"
+    assert reader.load_frame("front", "rest") == path.read_bytes()
+    assert reader.load_frame("front", "rest") == path.read_bytes()
+    assert hash_count == 0
+
+    changed = _png(FULL_SIZE, (200, 10, 20, 255))
+    path.write_bytes(changed)
+    metadata = path.stat()
+    os.utime(path, ns=(metadata.st_atime_ns, metadata.st_mtime_ns + 1_000_000_000))
+    with pytest.raises(BodyPackMismatchError) as error:
+        reader.load_frame("front", "rest")
+
+    assert error.value.code == "file_hash_mismatch"
+    assert hash_count == 1
+
+
+def test_verified_byte_cache_obeys_its_memory_limit(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root = tmp_path / "body-packs"
+    root.mkdir()
+    manifest, files = _manifest()
+    limit = max(len(payload) for payload in files.values())
+    monkeypatch.setattr(body_pack_reader, "MAX_CACHED_IMAGE_BYTES", limit)
+    pack_root = root / PACK_ID
+    pack_root.mkdir()
+    for relative, payload in files.items():
+        path = pack_root / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(payload)
+    (pack_root / "manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8", newline="\n"
+    )
+    reference = parse_body_pack_reference(
+        {
+            "id": PACK_ID,
+            "version": PACK_VERSION,
+            "fingerprint": manifest["fingerprint"],
+        }
+    )
+
+    reader = resolve_body_pack(reference, [root])
+
+    assert reader._payload_cache_size <= limit
+    assert len(reader._payload_cache) < len(files)
 
 
 def test_missing_body_pack_is_a_logged_mismatch(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
@@ -382,6 +509,7 @@ def test_character_reader_resolves_declared_body_pack_and_layers(
         reader.character_layer_views[view_id].layers[0]
     ) == layer_payload
     assert reader.resolved_body_pack.load_face_core(view_id) is not None
+    assert hash(reader.manifest)
 
 
 def test_character_reader_rejects_missing_declared_body_pack(

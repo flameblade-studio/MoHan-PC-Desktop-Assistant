@@ -144,6 +144,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_view_left": "Left",
     "wardrobe_view_right": "Right",
     "wardrobe_view_back": "Back",
+    "wardrobe_preview_body_pack_error": "Body-pack preview failed to load. Check the character’s required body pack.",
     "wardrobe_preview_composing": "Composing the appearance preview through the runtime…",
     "wardrobe_preview_fallback": 'Appearance composition requires attention. The preview currently shows the bare base; the desktop companion keeps its current appearance.',
     "wardrobe_upload_single_file": "Upload one file",

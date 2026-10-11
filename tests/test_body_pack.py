@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import hashlib
+lazy import json
 
 lazy import pytest
 
@@ -86,7 +87,7 @@ def test_parse_body_pack_accepts_matching_reference() -> None:
 @pytest.mark.parametrize(
     ("reference", "code"),
     [
-        ({"id": "other-pack", "version": "1.0", "fingerprint": "0" * 64}, "missing_pack"),
+        ({"id": "other-pack", "version": "1.0", "fingerprint": "0" * 64}, "id_mismatch"),
         ({"id": "mohan-body-test", "version": "2.0", "fingerprint": "0" * 64}, "version_mismatch"),
         ({"id": "mohan-body-test", "version": "1.0", "fingerprint": "0" * 64}, "fingerprint_mismatch"),
     ],
@@ -114,7 +115,7 @@ def test_declared_fingerprint_must_match_distinct_files() -> None:
     assert error.value.code == "fingerprint_mismatch"
 
 
-def test_fingerprint_sorts_hashes_and_deduplicates_only_identical_paths() -> None:
+def test_fingerprint_sorts_normalized_frame_bindings_and_includes_core_masks() -> None:
     manifest: dict[str, object] = {
         "full_body": {
             "front": _file("z.png", "a" * 64),
@@ -130,11 +131,78 @@ def test_fingerprint_sorts_hashes_and_deduplicates_only_identical_paths() -> Non
             "side": _file("b.png", "a" * 64),
         },
     }
+    records = [
+        ("full_body", "front", "rest", "z.png", "a" * 64),
+        ("half_body", "front", "rest", "a.png", "b" * 64),
+        ("half_body", "front", "closed", "a.png", "b" * 64),
+        ("face_core_masks", "front", "mask", "z.png", "a" * 64),
+        ("face_core_masks", "side", "mask", "b.png", "a" * 64),
+    ]
     expected = hashlib.sha256(
-        ("a" * 64 + "\n" + "a" * 64 + "\n" + "b" * 64).encode("ascii")
+        json.dumps(sorted(records), ensure_ascii=False, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
 
     assert compute_body_pack_fingerprint(manifest) == expected
+
+
+def test_fingerprint_changes_when_view_or_state_bindings_change() -> None:
+    manifest: dict[str, object] = {
+        "full_body": {
+            "front": _file("front.png", "a" * 64),
+            "side": _file("side.png", "b" * 64),
+        },
+        "half_body": {
+            "front": {
+                "rest": _file("half-rest.png", "c" * 64),
+                "blink": _file("half-blink.png", "d" * 64),
+            },
+        },
+        "face_core_masks": {"front": _file("face.png", "e" * 64)},
+    }
+    original = compute_body_pack_fingerprint(manifest)
+    reordered: dict[str, object] = {
+        "full_body": {
+            "side": _file("side.png", "b" * 64),
+            "front": _file("front.png", "a" * 64),
+        },
+        "half_body": {
+            "front": {
+                "blink": _file("half-blink.png", "d" * 64),
+                "rest": _file("half-rest.png", "c" * 64),
+            },
+        },
+        "face_core_masks": {"front": _file("face.png", "e" * 64)},
+    }
+    assert compute_body_pack_fingerprint(reordered) == original
+
+    swapped_views = dict(manifest)
+    swapped_views["full_body"] = {
+        "front": _file("side.png", "b" * 64),
+        "side": _file("front.png", "a" * 64),
+    }
+    assert compute_body_pack_fingerprint(swapped_views) != original
+
+    swapped_states = dict(manifest)
+    swapped_states["half_body"] = {
+        "front": {
+            "rest": _file("half-blink.png", "d" * 64),
+            "blink": _file("half-rest.png", "c" * 64),
+        },
+    }
+    assert compute_body_pack_fingerprint(swapped_states) != original
+
+
+def test_fingerprint_preserves_case_sensitive_view_and_state_ids() -> None:
+    manifest = {
+        "full_body": {"front": _file("front.png", "a" * 64)},
+        "half_body": {"portrait": _file("half.png", "b" * 64)},
+    }
+    changed_case = {
+        "full_body": {"Front": _file("front.png", "a" * 64)},
+        "half_body": {"portrait": _file("half.png", "b" * 64)},
+    }
+
+    assert compute_body_pack_fingerprint(manifest) != compute_body_pack_fingerprint(changed_case)
 
 
 @pytest.mark.parametrize(

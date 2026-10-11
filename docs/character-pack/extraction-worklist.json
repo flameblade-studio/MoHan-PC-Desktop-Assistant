@@ -86,7 +86,7 @@
               "text": "native = relative is not None and relative != \"assets/expressions/complete-expressions\""
             },
             {
-              "line": 106,
+              "line": 107,
               "matched": "assets/expressions/",
               "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
             }
@@ -111,12 +111,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 444,
+              "line": 443,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 445,
+              "line": 444,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }
@@ -974,17 +974,17 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 539,
+              "line": 540,
               "matched": "墨寒",
               "text": "'about_heading': '<b>关于墨寒</b>',"
             },
             {
-              "line": 541,
+              "line": 542,
               "matched": "墨寒",
               "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
             },
             {
-              "line": 542,
+              "line": 543,
               "matched": "MoHan",
               "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
             }
@@ -1009,12 +1009,12 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 729,
+              "line": 730,
               "matched": "MoHan",
               "text": "\"about_heading\": \"<b>About MoHan</b>\","
             },
             {
-              "line": 731,
+              "line": 732,
               "matched": "MoHan",
               "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
             }

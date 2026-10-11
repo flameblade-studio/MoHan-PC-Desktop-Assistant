@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-lazy import hashlib
-lazy import re
-lazy import unicodedata
-lazy from collections.abc import Mapping
-lazy from dataclasses import dataclass
+import hashlib
+import json
+import re
+import unicodedata
+from collections.abc import Mapping
+from dataclasses import dataclass
 
 
 SCHEMA = "mohan.body-pack.v1"
@@ -32,7 +33,7 @@ class BodyPackMismatchError(BodyPackError):
     """A declared fingerprint or an expected body-pack reference differs."""
 
     def __init__(self, code: str, message: str, path: str | None = None) -> None:
-        super().__init__(message)
+        super().__init__(f"{code}: {message}")
         self.code = code
         self.path = path
 
@@ -139,7 +140,7 @@ def parse_body_pack(
         expected = parse_body_pack_reference(reference)
         if expected.id != parsed.id:
             raise BodyPackMismatchError(
-                "missing_pack",
+                "id_mismatch",
                 "The body pack ID does not match the expected reference.",
             )
         if expected.version != parsed.version:
@@ -158,12 +159,13 @@ def parse_body_pack(
 def compute_body_pack_fingerprint(
     value: BodyPackManifest | Mapping[str, object],
 ) -> str:
-    """Hash distinct payload digests after deduplicating by relative path.
+    """Hash normalized frame-to-file bindings in a stable order.
 
-    Each unique path contributes its lowercase SHA-256 once. Digest values
-    are sorted lexicographically, then joined with LF and no trailing LF before
-    the final SHA-256 is calculated. Different paths with equal digests retain
-    their multiplicity; a path declared with different digests is invalid.
+    Each record contains its section, view, state, path and file SHA-256.
+    Text fields use Unicode NFC. Sorted records are encoded as compact JSON
+    arrays in UTF-8 before hashing.
+    Repeated paths may bind to multiple frames, while one path cannot declare
+    conflicting digests.
     """
     if isinstance(value, BodyPackManifest):
         full_body, half_body, masks = (
@@ -171,17 +173,50 @@ def compute_body_pack_fingerprint(
             value.half_body,
             value.face_core_masks,
         )
-        files = _files_from_parsed(full_body, half_body, masks)
     elif isinstance(value, Mapping):
         full_body = _parse_views(value.get("full_body"), "full_body")
         half_body = _parse_views(value.get("half_body"), "half_body")
         masks = _parse_face_core_masks(value.get("face_core_masks", {}))
-        files = _files_from_parsed(full_body, half_body, masks)
     else:
         raise BodyPackError("Provide a parsed body-pack manifest or mapping.")
 
-    payload = "\n".join(sorted(files.values())).encode("ascii")
-    return hashlib.sha256(payload).hexdigest()
+    # Validate path collisions and conflicting hashes before hashing bindings.
+    _files_from_parsed(full_body, half_body, masks)
+    records: list[tuple[str, str, str, str, str]] = []
+
+    def add(
+        section: str,
+        view_id: str,
+        state: str,
+        file: BodyPackFile,
+    ) -> None:
+        records.append(
+            (
+                section,
+                _fingerprint_text(view_id),
+                _fingerprint_text(state),
+                _fingerprint_text(_safe_path(file.path)),
+                _sha256(file.sha256, f"{file.path}.sha256"),
+            )
+        )
+
+    for view in full_body:
+        for state, file in view.frames:
+            add("full_body", view.view_id, state, file)
+    for view in half_body:
+        for state, file in view.frames:
+            add("half_body", view.view_id, state, file)
+    for view_id, file in masks:
+        add("face_core_masks", view_id, "mask", file)
+
+    payload_bytes = json.dumps(
+        sorted(records), ensure_ascii=False, separators=(",", ":")
+    ).encode("utf-8")
+    return hashlib.sha256(payload_bytes).hexdigest()
+
+
+def _fingerprint_text(value: str) -> str:
+    return unicodedata.normalize("NFC", value)
 
 
 def _parse_views(value: object, label: str) -> tuple[BodyPackView, ...]:
