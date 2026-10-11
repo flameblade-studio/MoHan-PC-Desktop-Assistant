@@ -12,6 +12,7 @@ turns smoothly, and the view ring wraps around (yaw+165 → yaw-180).
 from __future__ import annotations
 
 lazy from collections import OrderedDict
+lazy from collections.abc import Callable
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect, QRectF, Qt
@@ -119,7 +120,10 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         authority_root: Path | None = None,
         display_placement: FullBodyDisplayPlacement | None = None,
         native_frames_root: Path | None = None,
+        native_frames_provider: Callable[[], Path | None] | None = None,
     ) -> None:
+        self._native_frames_provider = native_frames_provider
+        self._native_frames_root = native_frames_root
         self._native_frames = None
         if native_frames_root is not None:
             if manifest is None:
@@ -228,6 +232,16 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             self._pixmap_cache.popitem(last=False)
         return pixmap
 
+    def _refresh_native_frames(self) -> None:
+        if self._native_frames_provider is not None:
+            root = self._native_frames_provider()
+            if root != self._native_frames_root:
+                manifest = self._manifest_or_load()
+                blink_views = frozenset(view.view_id for view in manifest.views.values() if view.blink_frames)
+                frames = load_native_fullbody_frames(root, blink_views) if root is not None else None
+                self._native_frames = frames
+                self._native_frames_root = root
+
     def render_view(
         self,
         view_id: str,
@@ -240,6 +254,7 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         gesture_beat: bool = False,
     ) -> QPixmap:
         """Render one complete full-body frame for the given view and motion."""
+        self._refresh_native_frames()
         view = self._manifest_or_load().view(view_id)
         if self._native_frames is not None:
             return self._render_native_view(view, motion)

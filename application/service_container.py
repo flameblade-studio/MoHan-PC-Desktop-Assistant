@@ -109,6 +109,7 @@ lazy from infrastructure.outfit_source_bound_expressions import (
 )
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from application.character_default_look import CharacterDefaultLook
 lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance
 lazy from infrastructure.exasperated_candidate_assets import (
     FORMAL_ASSET_RELATIVE_DIR,
@@ -354,6 +355,11 @@ def _complete_halfbody_path(character_source: CharacterSource, bindings: Mapping
             if "halfbody_complete" in bindings else None)
 
 
+def _complete_fullbody_path(character_source: CharacterSource, bindings: Mapping[str, str]) -> Path | None:
+    relative = bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT)
+    return character_source.assets.resolve_path(relative) if relative != POSE_ATLAS_RELATIVE_ROOT else None
+
+
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
 
@@ -364,6 +370,9 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         (asset_root / "assets" / "official-packs",),
     )
     bindings, native_frames = _character_frame_paths(character_source)
+    default_look = (CharacterDefaultLook(
+        character_source, presentation_contracts.default_data_dir() / "outfits", official_pack_roots,
+    ) if "default_look_fullbody" in bindings else None)
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 
@@ -381,7 +390,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
             official_pack_root=official_pack_roots,
-            native_frames=native_frames,
+            native_frames=default_look.native_frames if default_look is not None else native_frames,
         )
 
     def face_renderer_factory() -> LayeredParametricFaceRenderer:
@@ -391,7 +400,8 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         configured = os.environ.get("MOHAN_EXASPERATED_CANDIDATE_DIR")
         candidate_dir = face_manifest = authority_dir = detachable_dir = None
         complete_halfbody_supplement = None
-        complete_halfbody_root = _complete_halfbody_path(character_source, bindings)
+        complete_halfbody_root = (default_look.halfbody_root()[0] if default_look is not None
+                                  else _complete_halfbody_path(character_source, bindings))
         if source_bound:
             supplement_path = character_source.appearance.runtime_bindings.asset_paths.get(
                 "halfbody_complete_supplement"
@@ -454,12 +464,15 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             exasperated_source_bindings=ExasperatedSourceBindings(
                 complete_halfbody_supplement=complete_halfbody_supplement,
                 complete_halfbody_root=complete_halfbody_root,
+                complete_halfbody_provider=default_look.halfbody_root if default_look is not None else None,
+                native_frames=default_look.native_frames if default_look is not None else None,
                 require_complete_halfbody=(
+                    default_look.halfbody_root()[1] if default_look is not None else
                     bindings.get("halfbody_complete", "assets/expressions/complete-expressions")
                     != "assets/expressions/complete-expressions"
                 ),
                 appearance_overlay=candidate_appearance,
-                expression_provider=None if native_frames else OutfitSourceBoundExpressionProvider(
+                expression_provider=None if native_frames and default_look is None else OutfitSourceBoundExpressionProvider(
                     presentation_contracts.default_data_dir() / "outfits",
                     official_pack_root=official_pack_roots,
                 ),
@@ -487,11 +500,9 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             outfit_overlay=outfit_overlay,
             authority_root=authority_root,
             display_placement=load_full_body_display_placement(authority_root),
-            native_frames_root=(
-                character_source.assets.resolve_path(bindings["fullbody_complete_root"])
-                if bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT)
-                != POSE_ATLAS_RELATIVE_ROOT else None
-            ),
+            native_frames_provider=default_look.fullbody_root if default_look is not None else None,
+            native_frames_root=(default_look.fullbody_root() if default_look is not None
+                                else _complete_fullbody_path(character_source, bindings)),
         )
 
     return PresentationPorts(

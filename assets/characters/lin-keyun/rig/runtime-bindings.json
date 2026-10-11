@@ -18,7 +18,9 @@
     "halfbody_complete_supplement": "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json",
     "fullbody_complete_root": "assets/characters/lin-keyun/native/full",
     "fullbody_complete_layered": "assets/pose-atlas/v5-base-layered",
-    "halfbody_complete": "assets/characters/lin-keyun/native/half"
+    "halfbody_complete": "assets/characters/lin-keyun/native/half",
+    "default_look_fullbody": "assets/characters/lin-keyun/native/full",
+    "default_look_halfbody": "assets/characters/lin-keyun/native/half"
   },
   "expression_roles": {
     "amusement": "restrained_amused_front",

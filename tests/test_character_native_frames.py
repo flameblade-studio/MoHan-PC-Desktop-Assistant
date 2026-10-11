@@ -22,6 +22,13 @@ lazy from domain.character_runtime_bindings import load_character_runtime_bindin
 lazy from domain.face_rig import EyeState
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.character_native_frames import load_native_fullbody_frames
+lazy from application.character_default_look import CharacterDefaultLook
+lazy from application import character_default_look as default_look_module
+lazy from infrastructure.bundled_character_source import LegacyMohanCharacterSource
+lazy from application import service_container
+lazy from domain.outfit_pack import SelectionResolution, apply_ensemble, restore_builtin_outfit
+lazy from domain.outfit_pack_official import official_outfit_pack_id, official_outfit_ensemble_id
+lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
 lazy from infrastructure.complete_halfbody_expressions import (
     COMPLETE_CHEEK_POSES,
     EYES,
@@ -278,3 +285,172 @@ def test_native_outfit_overlay_preserves_source_art_and_requests_makeup_only(
     assert static.toImage().pixelColor(4, 4) == QColor("blue")
     assert animated.toImage().pixelColor(4, 4) == QColor("green")
     assert requested_categories == [frozenset({"makeup"}), frozenset({"makeup"})]
+
+
+@pytest.mark.parametrize("selection", ["fresh", "official", "builtin", "other", "other-accessory"])
+def test_default_look_routes_resolved_appearance(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, selection: str,
+) -> None:
+    source = LegacyMohanCharacterSource(ROOT)
+    store = tmp_path / "outfits"
+    if selection == "official":
+        apply_ensemble(store, official_outfit_pack_id(), official_outfit_ensemble_id())
+    elif selection == "builtin":
+        store.mkdir()
+        (store / "active.json").write_text(json.dumps({
+            category: {"pack_id": "builtin", "item_id": "none", "variant_id": "none"}
+            for category in ("garment", "hairstyle", "headwear")
+        }), encoding="utf-8")
+    elif selection in {"other", "other-accessory"}:
+        original = default_look_module.resolve_active_selection
+
+        def other_selection(root, category, **options):
+            if category == ("weapon" if selection == "other-accessory" else "garment"):
+                return SelectionResolution(category, "installed", *("other", "robe", "blue") * 2)
+            return original(root, category, **options)
+
+        monkeypatch.setattr(default_look_module, "resolve_active_selection", other_selection)
+    requested: list[str] = []
+
+    def resolve(relative: str) -> Path:
+        requested.append(relative)
+        return tmp_path / relative
+
+    monkeypatch.setattr(source, "resolve_path", resolve)
+    look = CharacterDefaultLook(source, store, source.official_pack_roots)
+    expected = selection in {"fresh", "official"}
+    assert look.native_frames() is expected
+    assert look.fullbody_root() == (
+        tmp_path / "assets/characters/mohan/native/full" if expected else None
+    )
+    half, required = look.halfbody_root()
+    assert required is expected
+    assert half == tmp_path / (
+        "assets/characters/mohan/native/half" if expected else "assets/expressions/complete-expressions"
+    )
+    assert ("assets/characters/mohan/native/full" in requested) is expected
+
+
+@pytest.mark.parametrize("canvas", ["full", "half"])
+def test_fresh_default_look_factory_fails_for_missing_declared_frames(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, canvas: str,
+) -> None:
+    source = LegacyMohanCharacterSource(ROOT)
+    original = source.resolve_path
+    missing = tmp_path / canvas
+    monkeypatch.setattr(source, "resolve_path", lambda relative: (
+        missing if relative == f"assets/characters/mohan/native/{canvas}" else original(relative)
+    ))
+    # Both paths must resolve to staging; the loader itself diagnoses the missing frame.
+    monkeypatch.setattr(service_container.presentation_contracts, "default_data_dir", lambda: tmp_path)
+    ports = service_container._create_presentation_ports(source)
+    with pytest.raises(FileNotFoundError):
+        if canvas == "full":
+            ports.full_body_renderer_factory(outfit_overlay=ports.outfit_overlay_factory())
+        else:
+            ports.face_renderer_factory()
+
+
+def test_default_look_re_resolves_after_selection_changes(tmp_path: Path) -> None:
+    source = LegacyMohanCharacterSource(ROOT)
+    store = tmp_path / "outfits"
+    look = CharacterDefaultLook(source, store, source.official_pack_roots)
+    assert look.native_frames()
+    store.mkdir()
+    (store / "active.json").write_text(json.dumps({
+        "garment": {"pack_id": "builtin", "item_id": "none", "variant_id": "none"},
+    }), encoding="utf-8")
+    assert not look.native_frames()
+    restore_builtin_outfit(store)
+    assert look.native_frames()
+
+
+def test_default_look_fullbody_switches_back_to_shared_v5(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = LegacyMohanCharacterSource(ROOT)
+    native = tmp_path / "native-full"
+    bindings = _runtime_asset_paths(MOHAN_BINDINGS_PATH)
+    original = source.resolve_path
+    monkeypatch.setattr(source, "resolve_path", lambda relative: (
+        native if relative == bindings["default_look_fullbody"] else original(relative)
+    ))
+    monkeypatch.setattr(service_container.presentation_contracts, "default_data_dir", lambda: tmp_path)
+    manifest = service_container.load_layered_full_body_assets(
+        ROOT / bindings["fullbody_complete_layered"]
+    )
+    blinks = frozenset(view.view_id for view in manifest.views.values() if view.blink_frames)
+    _write_native_fullbody_set(native, blinks)
+    ports = service_container._create_presentation_ports(source)
+    overlay = ports.outfit_overlay_factory()
+    renderer = ports.full_body_renderer_factory(outfit_overlay=overlay)
+    assert renderer._native_frames is not None
+    store = tmp_path / "outfits"
+    store.mkdir()
+    (store / "active.json").write_text(json.dumps({
+        "garment": {"pack_id": "builtin", "item_id": "none", "variant_id": "none"},
+    }), encoding="utf-8")
+    renderer._refresh_native_frames()
+    assert renderer._native_frames is None
+    assert not overlay._native_frames
+    assert renderer._authority_root == ROOT / POSE_ATLAS_RELATIVE_ROOT
+
+
+@pytest.mark.parametrize("character", ["mohan", "lin-keyun"])
+def test_character_default_look_bindings_declare_both_canvases(character: str) -> None:
+    bindings = _runtime_asset_paths(ROOT / "assets" / "characters" / character / "rig" / "runtime-bindings.json")
+    assert bindings["default_look_fullbody"] == f"assets/characters/{character}/native/full"
+    assert bindings["default_look_halfbody"] == f"assets/characters/{character}/native/half"
+
+
+def test_default_look_bindings_reject_a_single_canvas(tmp_path: Path) -> None:
+    payload = json.loads(MOHAN_BINDINGS_PATH.read_text(encoding="utf-8"))
+    payload["asset_paths"].pop("default_look_halfbody")
+    path = tmp_path / "runtime-bindings.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(RuntimeError, match="require both full-body and half-body"):
+        load_character_runtime_bindings(path)
+
+
+def test_default_look_halfbody_switch_clears_displayed_endpoint_contexts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    selected = [MOHAN_COMPLETE_HALF_ROOT, False]
+    renderer = CompleteHalfbodyRenderer(
+        MOHAN_COMPLETE_HALF_ROOT,
+        complete_provider=lambda: (selected[0], selected[1]),
+    )
+    renderer._contexts[123] = ("front-crossed", "neutral")
+    renderer._pixmaps["front-crossed", "neutral", "rest"] = QPixmap(1, 1)
+    assets = CompleteHalfbodyFrames(
+        frames={pose: {} for pose in REQUIRED_COMPLETE_POSES},
+        expressions={}, oral_masks={}, whole_frame_blinks=frozenset(REQUIRED_COMPLETE_POSES),
+    )
+    monkeypatch.setattr(complete_halfbody_renderer_module, "load_complete_halfbody_frames", lambda _root: assets)
+    selected[:] = [tmp_path / "native-half", True]
+    assert renderer._load() is assets
+    assert not renderer._contexts
+    assert not renderer._pixmaps
+    assert renderer._require_complete
+
+
+def test_default_look_overlay_provider_preserves_makeup_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    selected = [True]
+    overlay = ActiveOutfitOverlay(
+        tmp_path / "store", ROOT, native_frames=lambda: selected[0], visible_hand_region=None,
+    )
+    requested_categories: list[frozenset[str] | None] = []
+
+    def layers(_view, _size, *, categories=None, **_options):
+        requested_categories.append(categories)
+        return ()
+    monkeypatch.setattr(overlay, "_active_layers", layers)
+    source = QPixmap(8, 8)
+    source.fill(QColor("blue"))
+    rendered = overlay.apply(source, "front-crossed")
+    assert requested_categories == [frozenset({"makeup"})]
+    assert rendered.toImage().pixelColor(4, 4) == QColor("blue")
+    selected[0] = False
+    assert not overlay._native_frames

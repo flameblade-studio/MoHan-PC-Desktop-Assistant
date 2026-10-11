@@ -4,11 +4,9 @@
 
 ### 綁定與執行期行為
 
-角色的 `rig/runtime-bindings.json` 可在 `asset_paths` 宣告三個選填路徑：`fullbody_complete_root`、`fullbody_complete_layered`、`halfbody_complete`。墨寒使用 `assets/pose-atlas/v5-base`、`assets/pose-atlas/v5-base-layered` 與 `assets/expressions/complete-expressions`。林可芸的全身完整圖位於 `assets/characters/lin-keyun/native/full`，共用臉部動態分層位於 `assets/pose-atlas/v5-base-layered`，半身完整圖位於 `assets/characters/lin-keyun/native/half`。
+預設造型使用成對的 `asset_paths.default_look_fullbody` 與 `asset_paths.default_look_halfbody`。墨寒指向 `assets/characters/mohan/native/{full,half}`；林可芸指向 `assets/characters/lin-keyun/native/{full,half}`。既有完整影格欄位保留相容性。既有外觀解析器比對服裝、髮型與頭飾的有效選擇與角色官方套裝；全新使用者或明確選取官方預設且解析符合時，使用角色完整影格，只疊加妝容與共用 V5 臉部動態。素體選擇 `builtin/none/none`、其他服裝包或另選髮型／頭飾使用共用 V5 素體與既有分層合成。兩個角色依同一規則切換；外觀選擇改變時清除半身影格快取。完整影格模式的 exasperated 表情由完整半身圖提供。
 
-執行期依全身來源路徑與共用 V5 素體路徑是否相同，判斷角色是否使用原生全身影格。墨寒沿用 V5 共用素體與既有服裝合成。林可芸的原生全身完整圖負責髮型、身體與衣服；共用 V5 分層只提供臉部動態，不繪製 V5 頭髮、身體或衣服。嘴型直接取自 V5 `complete_expression_frames`，並限制在嘴唇與口腔遮罩區域內合成，保留原生全身圖其餘像素。原生模式保留妝容與臉部動態，略過服裝、頭髮、身體覆蓋層及底圖清除，也不啟用來源綁定的 exasperated 表情提供器。沒有 V5 眨眼參照的側面與背面只需要 rest 影格。
-
-指定 `halfbody_complete` 後，renderer 建立時會讀取該目錄的 `manifest.json`；明確指定的目錄若缺少 manifest 或影格，會立即報錯。林可芸的原生半身素材必須涵蓋 `REQUIRED_COMPLETE_POSES` 定義的 24 個實際姿勢，姿勢別名不計入這 24 個姿勢。每個姿勢都必須包含 `neutral`、`small`、`a`、`o` 四種嘴型家族，各自具備 `rest`、`half`、`closed` 三種眼睛狀態，並宣告 `whole-frame` 眨眼。`require_complete=True` 會在建構 renderer 時檢查完整姿勢與眨眼集合。墨寒使用 `require_complete=False`，保留既有的眼皮貼片式眨眼契約。
+預設完整半身影格使用 `require_complete=True`，須涵蓋 `REQUIRED_COMPLETE_POSES` 的 24 個實際姿勢；各姿勢具 `neutral`、`small`、`a`、`o` 四家族與 `rest`、`half`、`closed` 三眼態，宣告 `whole-frame` 眨眼。素體半身維持 `assets/expressions/complete-expressions` 與 `require_complete=False`。選中的預設來源缺少目錄、manifest 或影格，會在 renderer 建構或來源切換時明確失敗。golden 維持既有素體合成設定，以 `GOLDEN_MATCH` 驗收。美術交件前的假資料限於 `.quality-tmp/mohan-look-engine/`，正式外觀另依擁有者審閱。
 
 若 `halfbody_complete` 與舊版 `halfbody_complete_supplement` 同時存在，新完整目錄優先；只有新欄位不存在時才使用舊補充路徑。新路徑一旦宣告，缺檔便依新路徑契約報錯，不會由舊補充路徑掩蓋缺口。
 
@@ -24,11 +22,9 @@
 
 ### 绑定与运行时行为
 
-角色的 `rig/runtime-bindings.json` 可在 `asset_paths` 声明三个可选路径：`fullbody_complete_root`、`fullbody_complete_layered`、`halfbody_complete`。墨寒使用 `assets/pose-atlas/v5-base`、`assets/pose-atlas/v5-base-layered` 和 `assets/expressions/complete-expressions`。林可芸的全身完整图位于 `assets/characters/lin-keyun/native/full`，共享面部动态分层位于 `assets/pose-atlas/v5-base-layered`，半身完整图位于 `assets/characters/lin-keyun/native/half`。
+默认造型使用成对的 `asset_paths.default_look_fullbody` 与 `asset_paths.default_look_halfbody`。墨寒指向 `assets/characters/mohan/native/{full,half}`；林可芸指向 `assets/characters/lin-keyun/native/{full,half}`。现有完整帧字段保留兼容性。现有外观解析器比对服装、发型与头饰的有效选择与角色官方套装；新用户或明确选择官方默认且解析符合时，使用角色完整帧，只叠加妆容与共享 V5 面部动态。素体选择 `builtin/none/none`、其他服装包或另选发型／头饰使用共享 V5 素体与现有分层合成。两个角色按相同规则切换；外观改变时清除半身帧缓存。完整帧模式的 exasperated 表情由完整半身图提供。
 
-运行时根据全身来源路径是否与共享 V5 素体路径相同，判断角色是否使用原生全身帧。墨寒沿用 V5 共享素体和既有服装合成。林可芸的原生全身完整图负责发型、身体和衣服；共享 V5 分层只提供面部动态，不绘制 V5 头发、身体或衣服。嘴型直接取自 V5 `complete_expression_frames`，并限制在嘴唇与口腔遮罩区域内合成，保留原生全身图其余像素。原生模式保留妆容与面部动态，跳过服装、头发、身体覆盖层和底图清除，也不启用来源绑定的 exasperated 表情提供器。没有 V5 眨眼参照的侧面和背面只需要 rest 帧。
-
-指定 `halfbody_complete` 后，renderer 创建时会读取该目录的 `manifest.json`；明确指定的目录若缺少 manifest 或帧，会立即报错。林可芸的原生半身素材必须覆盖 `REQUIRED_COMPLETE_POSES` 定义的 24 个实际姿势，姿势别名不计入这 24 个姿势。每个姿势都必须包含 `neutral`、`small`、`a`、`o` 四种嘴型家族，各自具备 `rest`、`half`、`closed` 三种眼睛状态，并声明 `whole-frame` 眨眼。`require_complete=True` 会在构建 renderer 时检查完整姿势和眨眼集合。墨寒使用 `require_complete=False`，保留既有的眼皮贴片式眨眼契约。
+默认完整半身帧使用 `require_complete=True`，须覆盖 `REQUIRED_COMPLETE_POSES` 的 24 个实际姿势；各姿势具 `neutral`、`small`、`a`、`o` 四家族与 `rest`、`half`、`closed` 三眼态，声明 `whole-frame` 眨眼。素体半身维持 `assets/expressions/complete-expressions` 与 `require_complete=False`。选中的默认来源缺少目录、manifest 或帧，会在 renderer 构建或来源切换时明确失败。golden 维持现有素体合成设置，以 `GOLDEN_MATCH` 验收。美术交付前的假数据限于 `.quality-tmp/mohan-look-engine/`，正式外观另按所有者审阅。
 
 若 `halfbody_complete` 与旧版 `halfbody_complete_supplement` 同时存在，新完整目录优先；只有新字段不存在时才使用旧补充路径。新路径一旦声明，缺文件便按新路径契约报错，不会由旧补充路径掩盖缺口。
 
@@ -44,11 +40,9 @@
 
 ### Bindings and runtime behavior
 
-A character's `rig/runtime-bindings.json` may declare three optional `asset_paths`: `fullbody_complete_root`, `fullbody_complete_layered`, and `halfbody_complete`. MoHan uses `assets/pose-atlas/v5-base`, `assets/pose-atlas/v5-base-layered`, and `assets/expressions/complete-expressions`. Lin Keyun's complete full-body frames live in `assets/characters/lin-keyun/native/full`, shared facial-motion layers use `assets/pose-atlas/v5-base-layered`, and complete half-body frames live in `assets/characters/lin-keyun/native/half`.
+Default looks use paired `asset_paths.default_look_fullbody` and `asset_paths.default_look_halfbody` fields. MoHan uses `assets/characters/mohan/native/{full,half}`; Lin Keyun uses `assets/characters/lin-keyun/native/{full,half}`. Existing complete-frame fields retain compatibility. The existing appearance resolver matches effective garment, hairstyle and headwear selections against the character's official ensemble. Fresh profiles and explicit official-default selections use complete frames when resolved selections match, with makeup and shared V5 facial motion applied. Bare `builtin/none/none`, other outfit packs, and changed hair or headwear use the shared V5 base and existing layered composition. Both characters follow the same switching rule; selection changes clear half-body frame caches. Complete half-body art supplies exasperated expressions in native mode.
 
-Runtime identifies native full-body frames by comparing their source path with the shared V5 body path. MoHan keeps the shared V5 body and its existing outfit composition. Lin Keyun's native full-body images own the hair, body, and clothing; shared V5 layers provide facial motion only and do not draw V5 hair, body, or clothes. Mouth shapes come directly from V5 `complete_expression_frames` and are composited only inside the lip and oral-mask regions, preserving the rest of the native frame. Native mode keeps makeup and facial motion while skipping clothing, hair, body overlays, and base clearing. It also disables the source-bound exasperated expression provider. Side and rear views without a V5 blink reference need only a rest frame.
-
-When `halfbody_complete` is explicitly bound, the renderer loads that directory's `manifest.json` during construction; a declared directory with a missing manifest or frame fails immediately. Lin Keyun's native half-body package must cover the 24 actual poses in `REQUIRED_COMPLETE_POSES`; aliases do not count as additional poses. Each pose has all four mouth families, `neutral`, `small`, `a`, and `o`, with `rest`, `half`, and `closed` eye frames for each family, plus `whole-frame` blinks. `require_complete=True` checks the full pose and blink sets when the renderer is constructed. MoHan uses `require_complete=False` and retains its existing eye-patch blink contract.
+Default half-body frames use `require_complete=True` and cover all 24 actual `REQUIRED_COMPLETE_POSES`, each with `neutral`, `small`, `a`, and `o` families, `rest`, `half`, and `closed` eyes, and `whole-frame` blinks. Bare half-body rendering keeps `assets/expressions/complete-expressions` with `require_complete=False`. Missing selected default directories, manifests or frames fail explicitly during renderer construction or source switching. Golden retains its existing base composition settings and requires `GOLDEN_MATCH`. Pre-delivery synthetic data stays inside `.quality-tmp/mohan-look-engine/`; official appearance follows owner review.
 
 When both `halfbody_complete` and the legacy `halfbody_complete_supplement` are present, the new complete root takes priority. The legacy supplement is used only when the new field is absent. Once the new root is declared, missing data fails under that root's contract instead of being hidden by the legacy supplement.
 
@@ -64,11 +58,9 @@ File, schema, dimension, and digest checks establish technical conformance only.
 
 ### バインディングと実行時の動作
 
-キャラクターの `rig/runtime-bindings.json` では、`asset_paths` に三つの任意パス `fullbody_complete_root`、`fullbody_complete_layered`、`halfbody_complete` を指定できます。墨寒は `assets/pose-atlas/v5-base`、`assets/pose-atlas/v5-base-layered`、`assets/expressions/complete-expressions` を使用します。林可芸の全身完成フレームは `assets/characters/lin-keyun/native/full`、共有の顔動作用レイヤーは `assets/pose-atlas/v5-base-layered`、半身完成フレームは `assets/characters/lin-keyun/native/half` を使用します。
+既定外観は対の `asset_paths.default_look_fullbody` と `asset_paths.default_look_halfbody` を使います。墨寒は `assets/characters/mohan/native/{full,half}`、林可芸は `assets/characters/lin-keyun/native/{full,half}` を指定します。既存の完成フレームフィールドは互換性を維持します。既存の外観リゾルバーで衣装、髪型、頭飾りの有効選択と公式セットを比較し、新規ユーザーや明示的な公式既定の選択が一致した場合、完成フレームにメイクと共有 V5 の顔動作を合成します。素体の `builtin/none/none`、他の衣装パック、個別変更した髪型や頭飾りは共有 V5 素体と既存レイヤー合成を使います。両キャラクターが同じ規則で切り替え、選択変更時に半身キャッシュを消去します。完成モードの exasperated 表情は完成半身画像が提供します。
 
-実行時は全身ソースのパスと共通 V5 素体のパスを比較し、ネイティブ全身フレームを使うか判定します。墨寒は共通 V5 素体と既存の衣装合成を維持します。林可芸のネイティブ全身画像が髪型・身体・衣服を担い、共通 V5 レイヤーは顔の動きだけを提供します。V5 の髪・身体・衣服は描画しません。口形は V5 の `complete_expression_frames` から取得し、唇と口腔マスクの範囲内だけに合成して、ネイティブ全身画像の他の画素を保ちます。ネイティブモードではメイクと顔の動きを維持し、衣服・髪・身体のオーバーレイとベース消去を省略します。また、source-bound の exasperated 表情プロバイダーを無効にします。V5 にまばたき参照がない横向き・後ろ向きの視点には rest フレームだけが必要です。
-
-`halfbody_complete` を明示すると、renderer の構築時にそのディレクトリの `manifest.json` を読み込みます。明示したディレクトリに manifest やフレームがない場合は直ちにエラーになります。林可芸のネイティブ半身素材には `REQUIRED_COMPLETE_POSES` が定義する実際の24ポーズをすべて含めます。別名は追加ポーズとして数えません。各ポーズには四つの口形ファミリー `neutral`、`small`、`a`、`o` を用意し、それぞれに `rest`、`half`、`closed` の目のフレームと `whole-frame` のまばたきを用意します。`require_complete=True` は renderer の構築時にポーズとまばたきの全件を検証します。墨寒は `require_complete=False` を使い、既存の目パッチ方式のまばたきを維持します。
+既定半身は `require_complete=True` を使い、`REQUIRED_COMPLETE_POSES` の実際の24ポーズすべてに `neutral`、`small`、`a`、`o` と `rest`、`half`、`closed`、`whole-frame` のまばたきを用意します。素体半身は `assets/expressions/complete-expressions` と `require_complete=False` を維持します。選択した既定ソースのディレクトリ、manifest、フレームが欠ける場合、renderer の構築または切替時に明確に失敗します。golden は既存の素体合成設定を維持し、`GOLDEN_MATCH` を要求します。納品前の仮データは `.quality-tmp/mohan-look-engine/` 内に置き、正式外観は所有者の審査に従います。
 
 `halfbody_complete` と旧 `halfbody_complete_supplement` が両方ある場合は、新しい完成ディレクトリを優先します。新しいフィールドがない場合だけ旧補助パスを使います。新しいパスを指定した後に不足があれば、その契約に従ってエラーにし、旧補助パスで不足を隠しません。
 

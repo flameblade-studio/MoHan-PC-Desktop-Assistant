@@ -19,7 +19,9 @@
     "theme_artwork": "assets/ui/mohan-cloud.svg",
     "fullbody_complete_root": "assets/pose-atlas/v5-base",
     "fullbody_complete_layered": "assets/pose-atlas/v5-base-layered",
-    "halfbody_complete": "assets/expressions/complete-expressions"
+    "halfbody_complete": "assets/expressions/complete-expressions",
+    "default_look_fullbody": "assets/characters/mohan/native/full",
+    "default_look_halfbody": "assets/characters/mohan/native/half"
   },
   "pose_roles": {
     "front_idle": "front-crossed",

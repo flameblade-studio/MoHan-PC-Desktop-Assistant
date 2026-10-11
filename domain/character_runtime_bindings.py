@@ -150,7 +150,8 @@ def load_character_runtime_bindings(path: Path) -> CharacterRuntimeBindings:
             or not expected_keys <= set(values)
             or set(values) - expected_keys - (
                 {"halfbody_complete_supplement", "halfbody_complete",
-                 "fullbody_complete_root", "fullbody_complete_layered"}
+                 "fullbody_complete_root", "fullbody_complete_layered",
+                 "default_look_fullbody", "default_look_halfbody"}
                 if section == "asset_paths" else set()
             )
             or any(
@@ -163,6 +164,9 @@ def load_character_runtime_bindings(path: Path) -> CharacterRuntimeBindings:
         ):
             raise RuntimeError("Character runtime bindings require complete non-empty text maps.")
         sections[section] = frozendict(values)
+    default_keys = {"default_look_fullbody", "default_look_halfbody"}
+    if default_keys & sections["asset_paths"].keys() and not default_keys <= sections["asset_paths"].keys():
+        raise RuntimeError("Default look frames require both full-body and half-body paths.")
     for value in sections["asset_paths"].values():
         relative = PurePosixPath(value)
         if (

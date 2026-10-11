@@ -81,9 +81,9 @@ class ActiveOutfitOverlay(
         *,
         visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
         official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
-        native_frames: bool = False,
+        native_frames: bool | Callable[[], bool] = False,
     ) -> None:
-        self._native_frames = native_frames
+        self._native_frames_provider = native_frames
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
@@ -145,6 +145,11 @@ class ActiveOutfitOverlay(
         """
         self._active_viseme = viseme
         self._active_oral_mask = oral_mask if viseme is not None else None
+
+    @property
+    def _native_frames(self) -> bool:
+        provider = self._native_frames_provider
+        return provider() if callable(provider) else provider
 
     def _resolve_base_clear_selection(self, category: str):
         """Keep base-clear selection reads on this module's patchable boundary."""

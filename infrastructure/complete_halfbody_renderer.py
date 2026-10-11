@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 lazy from collections import OrderedDict
+lazy from collections.abc import Callable
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import Qt
@@ -40,7 +41,12 @@ class CompleteHalfbodyRenderer:
         self, root: Path, overlay: object = None,
         supplement: tuple[Path, Path] | None = None,
         *, complete_root: Path | None = None, require_complete: bool = False,
+        complete_provider: Callable[[], tuple[Path | None, bool]] | None = None,
     ) -> None:
+        self._fallback_root = root
+        self._complete_provider = complete_provider
+        if complete_provider is not None:
+            complete_root, require_complete = complete_provider()
         self._root = root if complete_root is None else complete_root
         self._explicit_complete = complete_root is not None
         self._require_complete = require_complete
@@ -56,6 +62,18 @@ class CompleteHalfbodyRenderer:
             self._load()
 
     def _load(self) -> CompleteHalfbodyFrames | None:
+        if self._complete_provider is not None:
+            root, required = self._complete_provider()
+            selected_root = self._fallback_root if root is None else root
+            if (selected_root, required) != (self._root, self._require_complete):
+                self._root = selected_root
+                self._explicit_complete = root is not None
+                self._require_complete = required
+                self._loaded = False
+                self._assets = None
+                self._contexts.clear()
+                self._pixmaps.clear()
+                self._oral_pixmaps.clear()
         if not self._loaded:
             self._assets = load_complete_halfbody_frames(self._root)
             if self._explicit_complete and self._assets is None:
@@ -128,6 +146,7 @@ class CompleteHalfbodyRenderer:
     ) -> QPixmap | None:
         if eye_state not in EYES:
             raise ValueError(f"Unsupported complete half-body eye state: {eye_state}")
+        self._load()
         binding = self._contexts.get(base.cacheKey())
         if binding is None:
             return None
@@ -166,8 +185,8 @@ class CompleteHalfbodyRenderer:
     def has_whole_frame_blink(self, frame: QPixmap) -> bool:
         """Whether this displayed endpoint owns the entire blink frame."""
 
-        binding = self._contexts.get(frame.cacheKey())
         assets = self._load()
+        binding = self._contexts.get(frame.cacheKey())
         return (
             binding is not None
             and assets is not None
