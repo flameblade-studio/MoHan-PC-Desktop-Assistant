@@ -371,7 +371,7 @@ def test_readme_media_generation_tools_use_runtime_composition() -> None:
             "ActiveOutfitOverlay",
             "grab_widget_image",
             'render_portrait(overlay, "idle_front")',
-            'render_portrait(overlay, "attentive_front")',
+            'render_portrait(overlay, "gentle_smile_front")',
             'compose_expression_showcase(output_dir / "expressions.png", overlay)',
             "render_all(",
         ),
