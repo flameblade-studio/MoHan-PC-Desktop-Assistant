@@ -10,7 +10,7 @@ TOOL_DIR = Path(__file__).resolve().parent
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
 
-lazy from assemble_changelog import fragment_document, validate_fragment
+lazy from assemble_changelog import fragment_document, parse_fragment, validate_fragment
 
 LANGUAGE_HEADINGS = (
     "繁體中文",
@@ -303,11 +303,37 @@ def audit_document(path: Path) -> list[str]:
     return audit_text(path.read_text(encoding="utf-8"), require_h1=True)
 
 
+def _fragment_script_errors(text: str) -> list[str]:
+    """Require Chinese or Japanese text in every non-English fragment entry.
+
+    Both the slash format and the retained legacy four-section format are
+    parsed into aligned per-language rows, so damage shorter than a run of
+    question marks or reduced to ASCII is caught in either format.
+    """
+
+    parsed = parse_fragment(text)
+    errors: list[str] = []
+    for row in (parsed.titles, *parsed.bullet_rows):
+        for index in (0, 1, 3):
+            if CJK_CHARACTER_PATTERN.search(row[index]):
+                continue
+            errors.append(
+                f"{LANGUAGE_HEADINGS[index]} 項目缺少中日文字，請還原翻譯：{row[index]!r}"
+                "／该项目缺少中日文字，请还原翻译"
+                "／This language entry lacks Chinese or Japanese characters; restore the translation"
+                "／この言語項目には中国語・日本語の文字がありません。翻訳を復元してください"
+            )
+    return errors
+
+
 def audit_fragment(text: str) -> list[str]:
     """Audit a changelog fragment through the standard four-language rules."""
 
     errors = list(validate_fragment(text))
     errors.extend(_mojibake_errors(text))
+    if errors:
+        return errors
+    errors.extend(_fragment_script_errors(text))
     if errors:
         return errors
     return audit_text(fragment_document(text), require_h1=True)

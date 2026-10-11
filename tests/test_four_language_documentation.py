@@ -269,3 +269,28 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+LEGACY_FRAGMENT = """### 未發布 — 文件修復
+
+* 修復說明文字。
+
+### 未发布 — 文件修复
+
+* 修复说明文字。
+
+### Unreleased — Documentation repair
+
+* Repair the description text.
+
+### 未リリース — 文書修復
+
+* 説明文を修復。
+"""
+
+
+def test_legacy_fragment_passes_and_rejects_short_or_ascii_damage() -> None:
+    assert audit_fragment(LEGACY_FRAGMENT) == []
+    for native, damaged in (("説明文を修復。", "??"), ("修复说明文字。", "fix text")):
+        errors = audit_fragment(LEGACY_FRAGMENT.replace(native, damaged))
+        assert any("中日文字" in error for error in errors), errors
