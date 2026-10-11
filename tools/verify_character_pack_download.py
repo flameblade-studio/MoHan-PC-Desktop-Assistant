@@ -17,7 +17,11 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from application.character_runtime_bootstrap import official_character_pack_limits
+lazy from application.character_runtime_bootstrap import (
+    DEFAULT_CHARACTER_ID,
+    activate_product_character_runtime,
+    official_character_pack_limits,
+)
 lazy from infrastructure.installed_character_packs import (
     installed_character_pack_path,
     load_installed_character_pack,
@@ -30,6 +34,10 @@ def verify_download(profile_name: str, data_root: Path) -> int:
     """Fetch, install, and load one released pack; return the loaded file count."""
 
     profile = RELEASE_PROFILES[profile_name]
+    # Pack validation reads the canonical view ring, so this entry point acts
+    # as the composition root and activates the bundled character first, the
+    # same way a product cold start does before loading an installed pack.
+    activate_product_character_runtime(ROOT, character_id=DEFAULT_CHARACTER_ID)
     character_id = profile.pack_id.removeprefix("flameblade.")
     target = installed_character_pack_path(character_id, data_root=data_root)
     result = fetch_character_pack(target, lock_path=ROOT / profile.lock_path)

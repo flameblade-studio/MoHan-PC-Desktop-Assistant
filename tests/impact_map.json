@@ -1257,6 +1257,7 @@
         "test_v4_vision_architecture_contracts.py",
         "test_v4_vision_documentation.py",
         "test_validate_third_party_denylist.py",
+        "test_verify_character_pack_download.py",
         "test_verify_character_pack_lock.py",
         "test_verify_multimodal_model_assets.py",
         "test_viseme_sync_contract.py",
