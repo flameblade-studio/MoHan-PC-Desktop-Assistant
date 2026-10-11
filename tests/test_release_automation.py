@@ -177,26 +177,25 @@ CANONICAL_HALF_BODY_SHA256 = (
 )
 # docs/media/portraits/idle_front.png: V5 product composite (complete-expression
 # renderer, official pack, classic makeup), regenerated 2026-10-11 with the README
-# media.  The installer artwork and icons below were built from the 2026-09-03
-# composite and are rebuilt from this portrait only after owner approval.
+# media.  The installer artwork and icons below are rebuilt from this portrait.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
     "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243"
 )
-# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-hero.png: built from the V5 composite portrait, 2026-10-11.
 WIZARD_HERO_SHA256 = (
-    "ef39c7708e4d9782a3b02f5fc4e0d27db23b6675f7656a1e5012761f66962248"
+    "a26bbcbd6505b1a3ffb08efaff1c01a1e7625f409a2064723100e29ddfc961d9"
 )
-# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-small.png: built from the V5 composite portrait, 2026-10-11.
 WIZARD_SMALL_SHA256 = (
-    "2733f8ee842867ddb7fb38ed07f7260f20db33093159f7f1fd678fbdfa884a33"
+    "e6459629958e96b62b0700ea0e75da844701ecf1c48c99a438491051c9b7d8de"
 )
-# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-taskbar-icon.png: built from the V5 composite portrait, 2026-10-11.
 TASKBAR_ICON_PNG_SHA256 = (
-    "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
+    "b84c800c546af3793c69c414cf09d6fc0761a14225f7a07a8804ff3fe8c93422"
 )
-# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-halfbody.ico: built from the V5 composite portrait, 2026-10-11.
 WINDOWS_ICON_SHA256 = (
-    "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+    "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
 )
 # The README expression cards and the canonical idle portrait, rendered composed.
 MARKETING_PORTRAITS = (

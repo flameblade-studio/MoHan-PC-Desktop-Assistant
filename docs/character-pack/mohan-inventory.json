@@ -5637,7 +5637,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c0ff06dd9957d23f2577bfb4a05890f36d1c4f4ffb79a1b304c3a8fc8b3c9157"
+      "sha256": "4f3ffbe8efa74da19ab3f8f9bd4ad9080c4fa478ea5ce1be84a07aedc22416c3"
     },
     {
       "bytes": 698,
@@ -5784,7 +5784,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "e74e2f8c06badbec8a00a7d768f15b9657ec55b5f0e945697794720736b5964c"
+      "sha256": "d76a778e849f7a608576d1aaaadccba9b2fdd0b336dc3bc09ccfbb00cf5b54d5"
     },
     {
       "bytes": 3149,
@@ -33351,10 +33351,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+      "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
     },
     {
-      "bytes": 1087689,
+      "bytes": 1093433,
       "category": "ui_character_icon_build_output",
       "image": {
         "height": 1024,
@@ -33367,7 +33367,7 @@
       "readers": [],
       "reason": "Windows 圖示建置產物；執行期讀取 mohan-halfbody.ico",
       "scope": "excluded_product_build_output",
-      "sha256": "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
+      "sha256": "b84c800c546af3793c69c414cf09d6fc0761a14225f7a07a8804ff3fe8c93422"
     },
     {
       "bytes": 37183975,

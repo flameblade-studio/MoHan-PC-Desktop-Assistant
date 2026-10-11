@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.mohan-1.0.4.zip",
+    "asset_name": "flameblade.mohan-1.0.5.zip",
     "bytes": 957032442,
-    "sha256": "f42044bbda017460ec39b6c50f8dc6ac1eb5770310b4bc02eb946d8ded7d6ca3"
+    "sha256": "b6b320ac8b75fba3dcc04a09e64ea64518db22f76de557ffd36817f028d85e34"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -4599,7 +4599,7 @@
     {
       "bytes": 419110,
       "path": "assets/mohan-halfbody.ico",
-      "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+      "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
     },
     {
       "bytes": 37183975,
@@ -9918,12 +9918,12 @@
     }
   ],
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.4",
-  "package_hash": "a4f181001d2aac45104184cfa4b0a23e3d34f952703f43462f752f5482edcf76",
+  "pack_version": "1.0.5",
+  "package_hash": "5449d42f33c0ee826a4f740056836b0fb0b3e0b7651b755b863b7d6d6063ac2b",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "mohan-pack-v1.0.4",
+    "release_tag": "mohan-pack-v1.0.5",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {

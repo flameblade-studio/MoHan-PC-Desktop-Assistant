@@ -187,8 +187,8 @@ def test_repository_lock_uses_the_owner_approved_public_release_identity() -> No
     assert lock.pack_id == "flameblade.mohan"
     assert lock.pack_version == "1.0.4"
     assert lock.source.repository == verifier.SOURCE_REPOSITORY
-    assert lock.source.release_tag == "mohan-pack-v1.0.4"
-    assert lock.archive.asset_name == "flameblade.mohan-1.0.4.zip"
+    assert lock.source.release_tag == "mohan-pack-v1.0.5"
+    assert lock.archive.asset_name == "flameblade.mohan-1.0.5.zip"
     assert lock.files
 
 

@@ -1,0 +1,3 @@
+### 安裝圖與圖示改用 V5 外觀／安装图与图标改用 V5 外观／Installer artwork and icons use the V5 appearance／インストーラー画像とアイコンを V5 外観に更新
+
+- 安裝精靈圖、工作列圖示與 Windows 圖示改由 V5 待機肖像重新產生，與 README 配圖一致；墨寒角色包因內含圖示升為 1.0.5，林可芸鎖檔同步重建。／安装向导图、任务栏图标与 Windows 图标改由 V5 待机肖像重新生成，与 README 配图一致；墨寒角色包因包含图标升为 1.0.5，林可芸锁定文件同步重建。／The installer wizard artwork, taskbar icon and Windows icon are regenerated from the V5 idle portrait to match the README media; the MoHan character pack, which ships the icon, moves to 1.0.5 and the Lin Keyun lock is rebuilt.／インストーラーのウィザード画像、タスクバーアイコン、Windows アイコンを V5 の待機ポートレートから再生成し、README 画像と一致させました。アイコンを含む墨寒キャラクターパックは 1.0.5 に更新し、林可芸のロックも再構築しました。
