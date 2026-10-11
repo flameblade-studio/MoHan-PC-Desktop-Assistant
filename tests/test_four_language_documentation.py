@@ -9,7 +9,7 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-lazy from check_four_language_docs import audit_repository, audit_text
+lazy from check_four_language_docs import audit_fragment, audit_repository, audit_text
 
 DOCUMENT = """# 文件／文档／Document／文書
 ## 繁體中文
@@ -168,7 +168,84 @@ def test_current_release_four_language_bullet_parity() -> None:
         assert ".," not in text
 
 
+FRAGMENT = """### 文件修復／文档修复／Document repair／文書の修復
+
+- 還原文字／还原文字／Restore text／文字を復元。
+"""
+
+
+def test_fragment_rejects_mojibake_title() -> None:
+    errors = audit_fragment(FRAGMENT.replace("文件修復", "README ???? V5 ???"))
+    assert any(error.startswith("1:") and "encoding loss" in error for error in errors)
+    assert any(error.startswith("1:") and "繁體中文" in error for error in errors)
+    assert all("／" in error and ("翻訳" in error or "復元" in error) for error in errors)
+
+
+def test_fragment_rejects_mojibake_bullet() -> None:
+    errors = audit_fragment(FRAGMENT.replace("文字を復元。", "????"))
+    assert any(error.startswith("3:") and "encoding loss" in error for error in errors)
+    assert any(error.startswith("3:") and "日本語" in error for error in errors)
+
+
+def test_fragment_requires_native_characters_in_each_translation() -> None:
+    for native in ("文件修復", "文档修复", "文書の修復", "還原文字", "还原文字", "文字を復元。"):
+        errors = audit_fragment(FRAGMENT.replace(native, "README ? V5 ?"))
+        assert any("lacks Chinese or Japanese characters" in error for error in errors)
+
+
+def test_fullwidth_question_marks_and_normal_four_language_text_pass() -> None:
+    assert audit_fragment(FRAGMENT) == []
+    assert audit_fragment(FRAGMENT.replace("文字", "文字？？？")) == []
+    assert audit_text(DOCUMENT.replace("說明", "說明？？？"), require_h1=True) == []
+
+
+def test_section_technical_slashes_are_not_translation_separators() -> None:
+    texts = ("授權（MIT／Apache 2.0／CC0／CC BY）。",
+             "授权（MIT／Apache 2.0／CC0／CC BY）。",
+             "Licenses (MIT / Apache 2.0 / CC0 / CC BY).",
+             "ライセンス（MIT／Apache 2.0／CC0／CC BY）。")
+    document = DOCUMENT
+    for original, replacement in zip(
+        ("繁體說明。", "简体说明。", "English description.", "日本語の説明。"),
+        texts,
+        strict=True,
+    ):
+        document = document.replace(original, "- " + replacement)
+    assert audit_text(document, require_h1=True) == []
+
+
+def test_document_rejects_mojibake_in_original_lines() -> None:
+    for original in ("文件", "繁體說明。", "English description."):
+        corrupted = DOCUMENT.replace(original, "???")
+        number = next(
+            index for index, line in enumerate(corrupted.splitlines(), start=1) if "???" in line
+        )
+        errors = audit_text(corrupted, require_h1=True)
+        assert any(error.startswith(f"{number}:") and "encoding loss" in error for error in errors)
+    errors = audit_text(DOCUMENT.replace("文件", "README ?"), require_h1=True)
+    assert any(error.startswith("1:") and "lacks Chinese" in error for error in errors)
+
+
+def test_repository_audit_checks_untracked_fragments_with_line_numbers() -> None:
+    with tempfile.TemporaryDirectory(prefix="mohan-mojibake-") as raw:
+        root = Path(raw)
+        subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+        fragment = root / "changelog.d" / "encoding.md"
+        fragment.parent.mkdir()
+        fragment.write_text(FRAGMENT.replace("还原文字", "??"), encoding="utf-8", newline="\n")
+        failures = audit_repository(root)
+        assert tuple(failures) == (Path("changelog.d/encoding.md"),)
+        assert any(error.startswith("3:") and "简体中文" in error for error in failures[next(iter(failures))])
+
+
 def main() -> None:
+    test_fragment_rejects_mojibake_title()
+    test_fragment_rejects_mojibake_bullet()
+    test_fragment_requires_native_characters_in_each_translation()
+    test_fullwidth_question_marks_and_normal_four_language_text_pass()
+    test_section_technical_slashes_are_not_translation_separators()
+    test_document_rejects_mojibake_in_original_lines()
+    test_repository_audit_checks_untracked_fragments_with_line_numbers()
     test_document_contract()
     test_document_requires_h1_and_only_language_h2_headings()
     test_document_rejects_untranslated_duplicate_section()
