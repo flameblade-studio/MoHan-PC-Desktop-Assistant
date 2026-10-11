@@ -10,7 +10,7 @@ TOOL_DIR = Path(__file__).resolve().parent
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
 
-lazy from assemble_changelog import fragment_document, validate_fragment
+lazy from assemble_changelog import fragment_document, parse_fragment, validate_fragment
 
 LANGUAGE_HEADINGS = (
     "繁體中文",
@@ -73,6 +73,51 @@ ADJACENT_ENGLISH_WORD_PATTERN = re.compile(
 )
 
 
+QUESTION_RUN_PATTERN = re.compile(r"\?{3,}")
+CJK_CHARACTER_PATTERN = re.compile(
+    r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff"
+    r"\U00020000-\U0002fa1f\U00030000-\U000323af]"
+)
+TRANSLATED_ROW_PATTERN = re.compile(r"^\s*(?:#{1,6}|[-*+]|\d+[.)])\s+(.+)$")
+
+
+def _mojibake_errors(text: str) -> list[str]:
+    """Check original lines so fragment conversion cannot shift diagnostics."""
+
+    errors: list[str] = []
+    in_language_section = False
+    for number, line in enumerate(text.splitlines(), start=1):
+        if LANGUAGE_HEADING_PATTERN.fullmatch(line):
+            in_language_section = True
+        if QUESTION_RUN_PATTERN.search(line):
+            errors.append(
+                f"{number}: 連續半形問號疑似編碼遺失，請還原原文"
+                "／连续半形问号疑似编码丢失，请还原原文"
+                "／Consecutive ASCII question marks suggest encoding loss; restore the text"
+                "／連続する半角疑問符は文字化けの可能性があります。原文を復元してください"
+            )
+        # Section prose can use slashes for technical lists, rather than translations.
+        if in_language_section:
+            continue
+        match = TRANSLATED_ROW_PATTERN.fullmatch(line)
+        if match is None:
+            continue
+        parts = match.group(1).split("／")
+        if len(parts) != LANGUAGE_COUNT:
+            continue
+        for index in (0, 1, 3):
+            if CJK_CHARACTER_PATTERN.search(parts[index]):
+                continue
+            language = LANGUAGE_HEADINGS[index]
+            errors.append(
+                f"{number}: {language} 段缺少中日文字，請還原翻譯"
+                "／该段缺少中日文字，请还原翻译"
+                "／This language entry lacks Chinese or Japanese characters; restore the translation"
+                "／この言語項目には中国語・日本語の文字がありません。翻訳を復元してください"
+            )
+    return errors
+
+
 def _tracked_documents(root: Path) -> tuple[Path, ...]:
     result = subprocess.run(
         [
@@ -93,7 +138,10 @@ def _tracked_documents(root: Path) -> tuple[Path, ...]:
     if result.returncode:
         detail = result.stderr.strip() or "git ls-files requires attention; review the command output"
         raise RuntimeError(detail)
-    relative_paths = sorted(set(result.stdout.splitlines()))
+    relative_paths = sorted(
+        set(result.stdout.splitlines())
+        | {path.relative_to(root).as_posix() for path in (root / "changelog.d").glob("*.md")}
+    )
     documents: list[Path] = []
     for relative_path in relative_paths:
         path = root / relative_path
@@ -216,8 +264,10 @@ def _english_repetition_errors(section: str) -> list[str]:
 
 def audit_text(text: str, *, require_h1: bool = False) -> list[str]:
     _, sections, errors = _extract_sections(text, require_h1=require_h1)
+    encoding_errors = _mojibake_errors(text)
     if errors or not sections:
-        return errors
+        return errors + encoding_errors
+    errors.extend(encoding_errors)
 
     errors.extend(_english_repetition_errors(sections[2]))
 
@@ -253,10 +303,37 @@ def audit_document(path: Path) -> list[str]:
     return audit_text(path.read_text(encoding="utf-8"), require_h1=True)
 
 
+def _fragment_script_errors(text: str) -> list[str]:
+    """Require Chinese or Japanese text in every non-English fragment entry.
+
+    Both the slash format and the retained legacy four-section format are
+    parsed into aligned per-language rows, so damage shorter than a run of
+    question marks or reduced to ASCII is caught in either format.
+    """
+
+    parsed = parse_fragment(text)
+    errors: list[str] = []
+    for row in (parsed.titles, *parsed.bullet_rows):
+        for index in (0, 1, 3):
+            if CJK_CHARACTER_PATTERN.search(row[index]):
+                continue
+            errors.append(
+                f"{LANGUAGE_HEADINGS[index]} 項目缺少中日文字，請還原翻譯：{row[index]!r}"
+                "／该项目缺少中日文字，请还原翻译"
+                "／This language entry lacks Chinese or Japanese characters; restore the translation"
+                "／この言語項目には中国語・日本語の文字がありません。翻訳を復元してください"
+            )
+    return errors
+
+
 def audit_fragment(text: str) -> list[str]:
     """Audit a changelog fragment through the standard four-language rules."""
 
     errors = list(validate_fragment(text))
+    errors.extend(_mojibake_errors(text))
+    if errors:
+        return errors
+    errors.extend(_fragment_script_errors(text))
     if errors:
         return errors
     return audit_text(fragment_document(text), require_h1=True)
@@ -286,7 +363,7 @@ def main() -> int:
         for path, errors in failures.items():
             print(f"FAIL: {path}", file=sys.stderr)
             for error in errors:
-                print(f"  - {error}", file=sys.stderr)
+                print(f"{path}:{error}", file=sys.stderr)
         return 1
     print("FOUR_LANGUAGE_DOCUMENTATION_OK")
     return 0
