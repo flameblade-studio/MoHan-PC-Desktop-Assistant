@@ -45,7 +45,9 @@ lazy from tools.capture_media_contract import (
     select_dashboard_tab,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-lazy from tools.render_marketing_portraits import render_all, render_portrait
+lazy from tools.render_marketing_portraits import (
+    prepare_marketing_store, render_all, render_portrait,
+)
 
 
 def seed_demo_database(db: StudioDB) -> None:
@@ -663,8 +665,10 @@ def capture_media(
         os.environ["MOHAN_DATA_DIR"] = temp_dir
         prepare_demo_profile(temp_dir)
         app = create_capture_app()
+        store = Path(temp_dir) / "marketing-store"
+        prepare_marketing_store(store)
         overlay = ActiveOutfitOverlay(
-            Path(temp_dir) / "marketing-store",
+            store,
             ROOT,
             official_pack_root=ROOT / "assets" / "official-packs",
         )

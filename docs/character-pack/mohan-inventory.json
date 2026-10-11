@@ -109488,7 +109488,7 @@
       "sha256": "a35ebf52fd3ce5f1469b2a36158dba761bc47b973ea3382b3186ca15b1f5af28"
     },
     {
-      "bytes": 11422,
+      "bytes": 11632,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -109496,7 +109496,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "0eed260bf247e1c444d6e62b8d425f28b2bbdaa239200c618fb8436f15b293ac"
+      "sha256": "fe114e9809c5a941e8feea30c282b4598e96f42b0a91ddd78cbc6ecc3ce5c82f"
     },
     {
       "bytes": 99871,
@@ -109563,7 +109563,7 @@
       "sha256": "e58d1bd7fca01baf3d834f167bf301650bc1711d7ddba9851ff35798dd8f5098"
     },
     {
-      "bytes": 331715,
+      "bytes": 309546,
       "category": "archive_or_support",
       "image": {
         "height": 940,
@@ -109576,10 +109576,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2"
+      "sha256": "c36989312b6135f63c788d44ca7033563a96807e416e46e38fa04c19601f9dca"
     },
     {
-      "bytes": 525856,
+      "bytes": 515298,
       "category": "archive_or_support",
       "image": {
         "height": 720,
@@ -109592,7 +109592,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927"
+      "sha256": "1fc8748282b5039126144cbf5e7b09aecd129d06f6efc90aa3f5f5bb8f273e0b"
     },
     {
       "bytes": 230449,
@@ -109611,7 +109611,7 @@
       "sha256": "8592519da6ac23592304511746b7cbad4042e3163f7d6773375181b32b5cedf3"
     },
     {
-      "bytes": 361858,
+      "bytes": 943933,
       "category": "archive_or_support",
       "image": {
         "height": 900,
@@ -109624,7 +109624,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
+      "sha256": "bd08f4c7d9b0bc4464f5435a19b07cd634c5a79c857a7f795c6df19f760f977e"
     },
     {
       "bytes": 865507,
@@ -109734,7 +109734,7 @@
       "sha256": "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd"
     },
     {
-      "bytes": 431016,
+      "bytes": 740189,
       "category": "archive_or_support",
       "image": {
         "height": 900,
@@ -109747,10 +109747,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
+      "sha256": "1dac49dcd188630f9f6d2ff83cc4b7f207a7dad184bcd7cd67eddff700238757"
     },
     {
-      "bytes": 1067620,
+      "bytes": 1297636,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109763,10 +109763,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
+      "sha256": "9ecc2a7ee9b0c89d6123c290c2ca87c72e9d4f96800de1f6cf186b4e65bc85a9"
     },
     {
-      "bytes": 1088145,
+      "bytes": 1299710,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109779,10 +109779,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+      "sha256": "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243"
     },
     {
-      "bytes": 1175455,
+      "bytes": 1333461,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109795,10 +109795,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
+      "sha256": "84f24b1a66ba08432069a2a9a35ec0407c66df84543c09a27bbfcbd0a9630539"
     },
     {
-      "bytes": 1067401,
+      "bytes": 1298269,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109811,10 +109811,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a"
+      "sha256": "d14871c293a2936732df50479cc41b58ee705889f97755e02c1053ba61a13320"
     },
     {
-      "bytes": 1071592,
+      "bytes": 1296600,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109827,10 +109827,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1"
+      "sha256": "753c61174f7493b97ef8dd5f4198e81b034bd944157ca21e6269dfb40bb18521"
     },
     {
-      "bytes": 1074479,
+      "bytes": 1298881,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109843,10 +109843,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd"
+      "sha256": "d0f4923cc388ca55f79bb0dccff2fa82ed52182e980f3305f66dcd53606627ec"
     },
     {
-      "bytes": 1068040,
+      "bytes": 1297687,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -109859,10 +109859,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5"
+      "sha256": "86f2bd0401424427437c9554e017786b830ce23a006819ae1179c679c0c3943e"
     },
     {
-      "bytes": 420304,
+      "bytes": 943576,
       "category": "archive_or_support",
       "image": {
         "height": 900,
@@ -109875,10 +109875,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
+      "sha256": "46c5f6656e647938a224b3236d03181d08a4fed57bb226058452d2803cde1d83"
     },
     {
-      "bytes": 362884,
+      "bytes": 353220,
       "category": "archive_or_support",
       "image": {
         "height": 640,
@@ -109891,10 +109891,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64"
+      "sha256": "09517701fc8f028ce8ed345620eb39e02893d4357ed9c5e729c1aaef20c40cbb"
     },
     {
-      "bytes": 351004,
+      "bytes": 346769,
       "category": "archive_or_support",
       "image": {
         "height": 640,
@@ -109907,10 +109907,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115"
+      "sha256": "a6dd9446e57c99e6a9ae8c73b2ca89e18dacfd282b7a00129bc8a3eb5e3d5319"
     },
     {
-      "bytes": 351850,
+      "bytes": 346454,
       "category": "archive_or_support",
       "image": {
         "height": 640,
@@ -109923,10 +109923,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996"
+      "sha256": "d8deaf3044c6285544b0c43526cb74c2f4830608ce62f8584732cbb390480ab1"
     },
     {
-      "bytes": 355398,
+      "bytes": 925805,
       "category": "archive_or_support",
       "image": {
         "height": 900,
@@ -109939,10 +109939,10 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482"
+      "sha256": "c886c61fa388a5c6427222bdf7fe742f04185571e1b8a8b9db3de3098a49901b"
     },
     {
-      "bytes": 448269,
+      "bytes": 951693,
       "category": "archive_or_support",
       "image": {
         "height": 900,
@@ -109955,7 +109955,7 @@
       "readers": [],
       "reason": "文件與行銷媒體",
       "scope": "excluded_marketing",
-      "sha256": "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571"
+      "sha256": "47eacde1011ed9dd45d4be16a49087981ff283fa77e8e8547738f309474d44ca"
     },
     {
       "bytes": 9415,
