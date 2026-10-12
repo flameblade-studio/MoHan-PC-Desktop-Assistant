@@ -5456,7 +5456,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "9c7507ced971c77a0efce529aad13b872e46d76eff03b2b05c2d815aa069a835"
+      "sha256": "ea4845d2e89f22985e0ee4213b16c09dfba3d113ca65db20c271b8266ba03883"
     },
     {
       "bytes": 2163,
@@ -5784,7 +5784,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "e74e2f8c06badbec8a00a7d768f15b9657ec55b5f0e945697794720736b5964c"
+      "sha256": "d76a778e849f7a608576d1aaaadccba9b2fdd0b336dc3bc09ccfbb00cf5b54d5"
     },
     {
       "bytes": 3149,
@@ -68317,7 +68317,7 @@
       "sha256": "55a86367257dbbcbe17650f2218f60844c807a6606fd84ee909fa3e21c91e64d"
     },
     {
-      "bytes": 29201813,
+      "bytes": 29245749,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -68331,7 +68331,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "958930db0da15fb382290b8f92ab76b72ae13550441c0690ddd753a2704bdd7b"
+      "sha256": "68eb0783416c40485e63170539685500d408a489a71447f33e21ee9d0330ad3e"
     },
     {
       "appearance_categories": [
@@ -68498,7 +68498,7 @@
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 764836,
+      "bytes": 767605,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68515,13 +68515,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "f54981b8d321b91ec58246123d3891b61349cc71433f1a27050246e35952b0d9"
+      "sha256": "40167a76736382b20167254b4a3058d18e067c54049f929a27a30e832e8a86eb"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 746614,
+      "bytes": 746472,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68538,13 +68538,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "aef78c6aa283cbfdb15f63524eafcb9af60082b390302861373b47a98f030da9"
+      "sha256": "3d559d5b4dbf1189656d6fb79b111c077abe0bb790b314c70feac310ae2d224f"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 761294,
+      "bytes": 761269,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68561,13 +68561,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "62cf0b311db0fb6c62f9178ce5e65c91cd8d573a7b84f44cea88bd331bb945f2"
+      "sha256": "adafa97d41580a5356fd934fd6923e2a5a896fc3d0fa2ff336626dccdf343708"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 680832,
+      "bytes": 680954,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68584,13 +68584,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "7701a594cf68839872885ed79d3d09ad388fb57901e13a290f5f86a30578506f"
+      "sha256": "042d7aa99202a514cbafd7fc4d991f5458f3721a439861cf9c0404f2a1004daa"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 647042,
+      "bytes": 646771,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68607,13 +68607,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "4fd0bbb933d725c3b95f42f69494d0e7b6ea21f22e86dbb62f01756a385a1007"
+      "sha256": "ec906267b1522bfad7c3da8eb84f813360f29ebf3290c09f28c4b1dfd224a0e5"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 510479,
+      "bytes": 513853,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68630,13 +68630,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "efdffdc567207678c0f8858c48ea54da9a87ec4532b2ae89980dd3039e278d58"
+      "sha256": "5d0aa28f02c07bb89ed15498072e071dbe09e15fbb22875b6b407a1bc13f03dc"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 466305,
+      "bytes": 469960,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68653,13 +68653,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "a07154a3fbc738be5e6a51374e0f6b6e0c4af97ffa305d66098db9a8e925a7f4"
+      "sha256": "09824fbda2a62e84e7ffd5d6672af16a779b9f45dd9595170533b65107087094"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 495163,
+      "bytes": 498753,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68676,13 +68676,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "e6784392dac6cd843b4dcb532f7e9948a2a90e2c49720351e8b1527fc32581d6"
+      "sha256": "5dcc9c8013684bc13a075c754d8afa74fd6a9584af4f9bac4abd4b2b0fb636a9"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 621715,
+      "bytes": 624002,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68699,13 +68699,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "d0f411a897f20dd29eee9825e846b82847cada392e166e6ea57c96d37a395996"
+      "sha256": "196923f3179fa26948b922d61042e49d15a6d392e7052618530431a41020c584"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 747092,
+      "bytes": 751445,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68722,13 +68722,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "03e4218680f8a7d3be03bc84a21b6a02d2c001de0aa901835990b159a955c468"
+      "sha256": "d719309913b1e20a0cf124ddf05619f6a14daa35e8fac688218f8dff6f069c81"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 751594,
+      "bytes": 753793,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68745,13 +68745,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "9d6ca986ea6a8a27b3a2a645fed7a44d961a8b9bd208327f4b7c9b1598b0f71d"
+      "sha256": "464f8a39981e89bda17132f7bc0f70904ca32d0c69c4314234b4265e40734f7a"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 827907,
+      "bytes": 831211,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68768,13 +68768,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "23a999af91cabb12695b14349388f2c53187a2099731eeb95576440a565798ab"
+      "sha256": "2a0b9327662577d912b387250e1a0c5c0004159d549d9b437f283e7a3834a715"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 686496,
+      "bytes": 686372,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68791,13 +68791,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "dc751a806e4bc5cc9778a4f8bfe7eb1ffda33cbef8485e3d9616ec76f5e955f2"
+      "sha256": "ea187721071b4ce5d6b3bfffe61f1fb93b3c5a4a62d247211b5f50f5e591b2a9"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 612934,
+      "bytes": 612833,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68814,13 +68814,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "b4c4765dbf1adeedc329d8eb6d8597275841c0f462cfa53a81e9130d31ab8259"
+      "sha256": "a9bbe96661fef6142a765d5dc61076ed156df5a40a02d583aa74b7019b5a0b1e"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 653961,
+      "bytes": 654147,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68837,13 +68837,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "4b29c6500f215fe7e7dd0443cc22c632c7a8437d7621e057170f9016c37fd01d"
+      "sha256": "85de67bf8a8c9c6c71b7f909a24c16a5095ff44ff649c28b63483e79074b9ef1"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 540733,
+      "bytes": 540516,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68860,13 +68860,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "90ae0dd93d72e256b8d15a3ab22bc637ccfeef0b1d64d3ade025d001f8445af5"
+      "sha256": "23381342b38477e4c823528628363d06524bc38a3217435fb8eae3300565027e"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 505386,
+      "bytes": 507068,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68883,13 +68883,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "6e63d117e9032e4ef5f1fb8ae3af4994675963802da00a437f5b0f55d5b4ddbd"
+      "sha256": "7f53beb7ae76bea12bb849c88f79a3cbaa829eedb36d699cc37ff30fb7bcfb2b"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 468653,
+      "bytes": 472325,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68906,13 +68906,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "530a42b586507abe0b0f7fb36f680fffaea5567c13c94681e1e1c52556534f87"
+      "sha256": "f50ee81f5acb84d643ed0c98d65d286d98c606c9c14f98b3893d88fd993c6b4b"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 486231,
+      "bytes": 489862,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68929,13 +68929,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "962b8440d9ff06c991bd1dbd3bf03bec285d73648c4f4cf5f9c69aa48ac64df1"
+      "sha256": "05bf60e74a2c63b9cb9fcd43c751da640893132db48a9cd1fb1cd3199c44f83f"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 569730,
+      "bytes": 570810,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68952,13 +68952,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "847c22fd446a1d5d00912bc3bab727d81d7cff7ee2cd56e3958e552848bd592c"
+      "sha256": "22a5c63dda56d1ec451b639bf8c77f2de58b6874eafee0c753ab6023e5ceb012"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 751395,
+      "bytes": 754006,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68975,13 +68975,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "47899639efb4ae8bd6c0f8c4f2e6753bac194af96a40e04e6ab3bcf1087c8464"
+      "sha256": "f3f883ab074b4bec0858642483ce26021312dd58f2d6157458e3855a35c2d2c2"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 754642,
+      "bytes": 755735,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -68998,13 +68998,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "53bcee99212f3d1ed4e5f506603c05320f3af7c9dcd1a42c94050472b1852848"
+      "sha256": "47c0e0326946d68a216a8a150b50dc1dd2159ad49df6e1324b0b5c76c84353d8"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 830420,
+      "bytes": 833120,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -69021,13 +69021,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "539967bfa2a25cfc86f1f9a4c43f2e08ce4cfc8cee7eb9ee331099c40f2a1fa5"
+      "sha256": "95515e7f7ef50c787888d7183ea229307190c6f1cf202d2d0573324446f7eaeb"
     },
     {
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 810249,
+      "bytes": 812379,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -69044,7 +69044,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "cde783107417fd07838435148c0909519711a9e03a780f379f3516c4176b5bed"
+      "sha256": "acb74eeb05385aae93c3cfaeb8a9d1a0e6ce07ab2058333d23acded45ddd148f"
     },
     {
       "appearance_categories": [
@@ -71051,7 +71051,7 @@
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 15616,
+      "bytes": 15610,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -71068,7 +71068,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "77ed5a3ce0f2a81a8c5f9cb99b7d9e8e04b7d3eb95881a270b5ee11aac2a1661"
+      "sha256": "5bc6bb7e43f26bbc70c0872410299f04f8a3a2307e6d3eb3c79b1983adbcda51"
     },
     {
       "appearance_categories": [
@@ -71199,7 +71199,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "a22e154413bdb3b22f9e65db656db045a9239be583c2b61bde0d32720d62277d"
+      "sha256": "ac7a40375b2db0e69f0ab6d56b6fbf6c223e98e30ef4447d00f7571e0ac9a7b3"
     },
     {
       "bytes": 1422107,
@@ -107139,7 +107139,7 @@
       "sha256": "b113c428a70830f6abb8064d47c6676475c1b5dd24631885465c692357ab1fba"
     },
     {
-      "bytes": 20709,
+      "bytes": 20231,
       "category": "garment_visibility",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -107153,7 +107153,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "41a5395787995822ef512203672e76b960728c5072b34996f42895d8c62c07d9"
+      "sha256": "bc4fed87bb23b99edcdfbd9e8f9888f639214a7276bb0692f64d0649e4f6d8b8"
     },
     {
       "bytes": 10251,
