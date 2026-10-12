@@ -498,6 +498,25 @@ def _render_half_cell(
     )
 
 
+def render_half_blink(
+    asset_root: Path,
+    renderer: LayeredParametricFaceRenderer,
+    expression: str,
+    eye_state: str,
+    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+) -> QPixmap:
+    """Render one half-body blink endpoint through the runtime blink compositor.
+
+    Blink regions are registered in the half-body display space, so the
+    endpoint is produced at ``settings.half_size`` exactly as golden cells are.
+    """
+    cell = GoldenCell(
+        f"half__{expression}__blink__{eye_state}", "half-body", "classic", eye_state,
+        expression=expression, pose=settings.expression_pose_map().get(expression, "front"),
+    )
+    return _render_half_cell(cell, renderer, _BlinkHarness(asset_root, renderer, settings), settings)
+
+
 def _render_full_cell(
     cell: GoldenCell,
     renderer: LayeredFullBodyRenderer,

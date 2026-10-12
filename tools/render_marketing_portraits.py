@@ -1,14 +1,10 @@
 """Render the composed half-body portraits used by README, installer and icon art.
 
-The runtime sprites under ``assets/expressions/`` are the bare generation-2
-base (bun, grey top, unpainted face); the official default outfit pack and the
-built-in ``classic`` makeup are composited over them at runtime by
-``infrastructure.active_outfit_overlay.ActiveOutfitOverlay``.  Marketing
-surfaces (README expression cards, installer wizard art, taskbar icon) must
-show that composed look, so this tool drives the very same overlay with a
-fresh, empty store -- which resolves to the official pack plus ``classic``
-makeup at 100 % intensity -- and writes the results to
-``docs/media/portraits/{expression}.png``.
+Marketing surfaces use the product half-body renderer after activating the
+selected character. Its installed V5 complete-expression frames provide the
+face and body; the official default outfit and built-in ``classic`` makeup use
+the same defaults as the approved product golden. Portrait resizing and canvas
+placement happen only after the product renderer has composed the appearance.
 
 Output is deterministic: the overlay paints fixed layers with fixed opacities
 and Qt's PNG encoder omits timestamp and software chunks, so re-running the
@@ -24,7 +20,9 @@ lazy import os
 lazy import sys
 lazy from collections.abc import Sequence
 lazy from pathlib import Path
+lazy from dataclasses import replace
 lazy from tempfile import TemporaryDirectory
+lazy from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -37,13 +35,24 @@ lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application.character_runtime_bootstrap import activate_product_character_runtime
-lazy from domain.companion_animation_contract import EXPRESSION_POSES, outfit_silhouette
+lazy from domain.companion_animation_contract import (
+    EXPRESSION_POSES, SPEECH_FRAME_MARKER, outfit_silhouette,
+)
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from tools.golden_render import render_half_blink
+lazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer
+lazy from infrastructure.layered_face_assets import load_layered_face_assets
+lazy from domain.face_motion import VISEME_MOUTH_TARGETS, FaceMotionController
+lazy from domain.face_rig import Viseme
+lazy from domain.character_runtime import CHARACTER_ASSET_PATHS
+lazy from domain.outfit_pack import restore_builtin_outfit
+lazy from domain.outfit_pack_makeup import (
+    DEFAULT_MAKEUP_INTENSITY, DEFAULT_SLOT_INTENSITIES_V2,
+    select_builtin_makeup, write_makeup_intensity, write_makeup_slot_intensity,
+)
 
-SPRITE_ROOT = ROOT / "assets" / "expressions"
 OUTPUT_ROOT = ROOT / "docs" / "media" / "portraits"
 PORTRAIT_SIZE = (1254, 1254)
-CLOSED_EYE_MAKEUP_SLOTS = frozenset({"eyes"})
 # The six README expression cards plus the canonical idle portrait that the
 # installer artwork and the taskbar icon are derived from.
 DEFAULT_EXPRESSIONS = (
@@ -56,6 +65,12 @@ DEFAULT_EXPRESSIONS = (
     "idle_front",
 )
 FRONT_POSE = "front"
+# Speech frame suffixes map to the mouth family the complete renderer selects
+# (``small``/``a``/``o``); blink frames reuse the idle endpoint closed-eyed.
+SPEECH_FRAME_VISEMES = {"mid": "I", "open": "A", "round": "O"}
+BLINK_FRAME_PREFIX = "blink"
+IDLE_FRAME_PREFIX = "idle"
+CLOSED_EYE_STATE = "closed"
 
 
 def silhouette_for(expression: str) -> str:
@@ -63,33 +78,69 @@ def silhouette_for(expression: str) -> str:
     return outfit_silhouette(expression, EXPRESSION_POSES.get(expression, FRONT_POSE))
 
 
-def render_portrait(overlay: ActiveOutfitOverlay, expression: str) -> QImage:
-    source = SPRITE_ROOT / f"{expression}.png"
-    sprite = QPixmap(str(source))
-    if sprite.isNull():
-        raise RuntimeError(f"Half-body sprite could not be loaded: {source}")
-    if sprite.size().toTuple() != PORTRAIT_SIZE:
-        raise RuntimeError(f"Half-body sprite is not {PORTRAIT_SIZE}: {source}")
-    silhouette = silhouette_for(expression)
-    suppressed_makeup_slots = (
-        CLOSED_EYE_MAKEUP_SLOTS
-        if expression.startswith("blink") or expression.endswith("_speech_blink")
-        else frozenset()
+def prepare_marketing_store(store: Path) -> None:
+    """Select the same official outfit and classic defaults as the product golden."""
+    activate_product_character_runtime(ROOT)
+    restore_builtin_outfit(store)
+    write_makeup_intensity(store, DEFAULT_MAKEUP_INTENSITY)
+    for slot, intensity in DEFAULT_SLOT_INTENSITIES_V2.items():
+        write_makeup_slot_intensity(store, slot, intensity)
+    select_builtin_makeup(store, "classic")
+
+
+def portrait_renderer(overlay: ActiveOutfitOverlay) -> LayeredParametricFaceRenderer:
+    """Build the product half-body renderer after character activation."""
+    activate_product_character_runtime(ROOT)
+    return LayeredParametricFaceRenderer(
+        manifest=load_layered_face_assets(ROOT / CHARACTER_ASSET_PATHS["halfbody_layers"]),
+        outfit_overlay=overlay,
+        authority_dir=ROOT / CHARACTER_ASSET_PATHS["halfbody_root"],
+        detachable_dir=ROOT / CHARACTER_ASSET_PATHS["halfbody_detachable"],
     )
-    composed = overlay.apply(
-        sprite,
-        silhouette,
-        suppress_makeup_slots=suppressed_makeup_slots,
+
+
+def portrait_motion(expression: str) -> tuple[str, str | None, str]:
+    """Split a sprite name into (emotion, speech mouth frame, eye state)."""
+    if expression.startswith(BLINK_FRAME_PREFIX):
+        return IDLE_FRAME_PREFIX + expression.removeprefix(BLINK_FRAME_PREFIX), None, CLOSED_EYE_STATE
+    emotion, marker, frame = expression.partition(SPEECH_FRAME_MARKER)
+    if not marker:
+        return expression, None, "rest"
+    if frame not in SPEECH_FRAME_VISEMES:
+        raise ValueError(f"Unsupported speech frame for marketing portraits: {expression}")
+    return emotion, expression, "rest"
+
+
+def render_portrait(
+    overlay: ActiveOutfitOverlay,
+    expression: str,
+    *,
+    renderer: LayeredParametricFaceRenderer | None = None,
+    size: tuple[int, int] = PORTRAIT_SIZE,
+) -> QImage:
+    activate_product_character_runtime(ROOT)
+    emotion, speech_frame, eye_state = portrait_motion(expression)
+    pose = EXPRESSION_POSES.get(emotion, FRONT_POSE)
+    motion = replace(
+        FaceMotionController().close(pose=pose, expression=emotion), breath=0.0,
     )
-    if overlay.layer_count(
-        silhouette,
-        suppress_makeup_slots=suppressed_makeup_slots,
-    ) == 0:
-        raise RuntimeError(
-            f"No appearance layers were composited for {expression} ({silhouette}); "
-            "provide both the official default pack and the built-in makeup."
-        )
-    return composed.toImage().convertToFormat(QImage.Format_ARGB32)
+    layers = None
+    if speech_frame is not None:
+        viseme = Viseme(SPEECH_FRAME_VISEMES[speech_frame.rpartition("_")[2]])
+        motion = replace(motion, viseme=viseme, mouth=VISEME_MOUTH_TARGETS[viseme])
+        layers = SimpleNamespace(mouth_expression=speech_frame)
+    base = QPixmap(*size)
+    base.fill(Qt.GlobalColor.transparent)
+    active_renderer = renderer or portrait_renderer(overlay)
+    composed = active_renderer.render(base, motion, layers)
+    if composed.isNull():
+        raise RuntimeError(f"Product renderer returned an empty portrait: {expression}")
+    if eye_state != "rest":
+        blinked = render_half_blink(ROOT, active_renderer, emotion, eye_state)
+        if blinked.isNull():
+            raise RuntimeError(f"Product blink compositor returned an empty portrait: {expression}")
+        composed = blinked.scaled(*size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+    return composed.toImage()
 
 
 def _alpha_bounds(image: QImage):
@@ -167,18 +218,19 @@ def render_all(
         raise ValueError("output names must match the expression count")
     written: list[tuple[Path, str]] = []
     with TemporaryDirectory(prefix="mohan-marketing-portraits-") as temporary:
-        # A fresh store with empty active.json / makeup.json selections resolves
-        # to the official pack and the built-in classic makeup at intensity 1.
+        store = Path(temporary) / "store"
+        prepare_marketing_store(store)
         overlay = ActiveOutfitOverlay(
-            Path(temporary) / "store",
+            store,
             ROOT,
             official_pack_root=ROOT / "assets" / "official-packs",
         )
+        renderer = portrait_renderer(overlay)
         for expression, name in zip(expressions, names, strict=True):
             if Path(name).name != name or not name.endswith(".png"):
                 raise ValueError(f"output name must be a PNG filename: {name}")
             image = _resize_portrait(
-                render_portrait(overlay, expression),
+                render_portrait(overlay, expression, renderer=renderer),
                 output_size,
                 crop_alpha=crop_alpha,
                 content_size=content_size,
@@ -220,7 +272,7 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
         "expressions",
         nargs="*",
         default=list(DEFAULT_EXPRESSIONS),
-        help="Sprite names under assets/expressions/ (default: the README six plus idle_front).",
+        help="Product expression names (default: the README six plus idle_front).",
     )
     parser.add_argument(
         "--output",

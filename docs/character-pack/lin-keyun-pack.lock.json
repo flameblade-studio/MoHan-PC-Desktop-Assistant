@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.lin-keyun-1.0.3.zip",
+    "asset_name": "flameblade.lin-keyun-1.0.4.zip",
     "bytes": 981315328,
-    "sha256": "31f026946b26947c5030461f94f397fea91c88f9e15d4c8f4a58319622877743"
+    "sha256": "dd8cc29bfa2e6c35754d8942bbdc68c2106d1e4e7ce63c1e9c2eeb914c9e7c48"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -4604,7 +4604,7 @@
     {
       "bytes": 419110,
       "path": "assets/mohan-halfbody.ico",
-      "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+      "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
     },
     {
       "bytes": 37183975,
@@ -9923,12 +9923,12 @@
     }
   ],
   "pack_id": "flameblade.lin-keyun",
-  "pack_version": "1.0.3",
-  "package_hash": "10d94359f0d4fdbf6e37a88fd132cbf3b2811a39b2b07832721ad879c28115e8",
+  "pack_version": "1.0.4",
+  "package_hash": "2b526577c3703dd6bcd4c6de6c62493819ab6725e0c6c8f22a2c01ddfdc57326",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "lin-keyun-pack-v1.0.3",
+    "release_tag": "lin-keyun-pack-v1.0.4",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {
