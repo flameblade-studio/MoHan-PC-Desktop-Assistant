@@ -1228,6 +1228,7 @@
         "test_remote_rate_limit.py",
         "test_remote_tool_error_safety.py",
         "test_remove_top_level_definitions.py",
+        "test_render_marketing_portraits.py",
         "test_renderer_profile_injection.py",
         "test_resource_lifecycle_bounds.py",
         "test_reviewed_garment_assets.py",
@@ -1944,6 +1945,7 @@
         "test_remote_file_access.py",
         "test_remote_rate_limit.py",
         "test_remote_tool_error_safety.py",
+        "test_render_marketing_portraits.py",
         "test_renderer_profile_injection.py",
         "test_resource_lifecycle_bounds.py",
         "test_reviewed_garment_assets.py",
@@ -2210,6 +2212,7 @@
         "test_proactive_companion_runtime.py",
         "test_python315_runtime.py",
         "test_remote_tool_error_safety.py",
+        "test_render_marketing_portraits.py",
         "test_renderer_profile_injection.py",
         "test_runtime_async_regressions.py",
         "test_safe_error_integration.py",
@@ -2560,6 +2563,7 @@
         "test_build_character_inventory.py",
         "test_cross_platform_core.py",
         "test_official_pack_ids_reservation.py",
+        "test_render_marketing_portraits.py",
         "test_renderer_profile_injection.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -2738,6 +2742,7 @@
         "test_outfit_overlay_hardening.py",
         "test_outfit_phase_counts.py",
         "test_rear_hair_composition.py",
+        "test_render_marketing_portraits.py",
         "test_reviewed_garment_overlay.py",
         "test_reviewed_pose_dynamic_source.py",
         "test_reviewed_pose_overlay.py",
@@ -4521,7 +4526,8 @@
         "docs/character-pack/lin-keyun-inventory.json",
         "docs/character-pack/mohan-inventory-summary.md",
         "docs/character-pack/mohan-inventory.json",
-        "infrastructure/installed_body_packs.py"
+        "infrastructure/installed_body_packs.py",
+        "tests/impact_map.json"
       ],
       "tests": [
         "test_build_character_inventory.py"
@@ -4787,16 +4793,6 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_public_profile_persona.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "tests/impact_map.json"
-      ],
-      "tests": [
-        "test_build_character_inventory.py",
-        "test_pytest_collection_contract.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5484,7 +5480,8 @@
       ],
       "tests": [
         "test_closed_eye_makeup_regression.py",
-        "test_release_automation.py"
+        "test_release_automation.py",
+        "test_render_marketing_portraits.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5740,7 +5737,8 @@
         "test_golden_render_classic.py",
         "test_golden_render_glamorous.py",
         "test_golden_render_light.py",
-        "test_golden_render_none.py"
+        "test_golden_render_none.py",
+        "test_render_marketing_portraits.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6673,17 +6671,6 @@
       "tests": [
         "test_fetch_character_pack.py",
         "test_huapu.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "docs/character-pack/lin-keyun-pack.lock.json"
-      ],
-      "tests": [
-        "test_fetch_character_pack.py",
-        "test_linkeyun_character_data.py",
         "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -7625,6 +7612,16 @@
     },
     {
       "paths": [
+        "docs/character-pack/lin-keyun-pack.lock.json"
+      ],
+      "tests": [
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/object_interaction.py"
       ],
       "tests": [
@@ -8548,6 +8545,15 @@
       ],
       "tests": [
         "test_release_notes_generation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tests/golden/golden-manifest.json"
+      ],
+      "tests": [
+        "test_render_marketing_portraits.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
