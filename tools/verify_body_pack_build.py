@@ -858,7 +858,34 @@ def _state_evidence(context: VerificationContext, request: StateRequest) -> None
         _record_case_error(context, request.label, error)
 
 
+SPEAKING_FAMILIES = frozenset({"a", "o", "small"})
+
+
+def _declares_speaking_states(context: VerificationContext, view: str, halfbody: bool) -> bool:
+    """Eyes-mode packs omit every speaking family; all-mode packs must declare them."""
+    return any(
+        key.split("-", 1)[0] in SPEAKING_FAMILIES
+        for key in context.reader.frame_keys(view, halfbody=halfbody)
+    )
+
+
+def _missing_sample_state(
+    context: VerificationContext, label: str, view: str, state: str, halfbody: bool,
+) -> None:
+    """Skip speaking samples for eyes-mode packs; any other absent state is an error."""
+    speaking = state.split("-", 1)[0] in SPEAKING_FAMILIES
+    if speaking and not _declares_speaking_states(context, view, halfbody):
+        _record_skipped(context, label, "eyes-mode pack declares no speaking states")
+        return
+    _record_case_error(
+        context, label, ValueError(f"Body pack does not declare required state {state}.")
+    )
+
+
 def _required_view_exists(context: VerificationContext, view: str, halfbody: bool) -> bool:
+    if halfbody and view in context.reader.manifest.missing_body_poses:
+        _record_skipped(context, f"half/{view}", "pose declared in manifest.missing_body_poses")
+        return False
     manifest_views = context.reader.manifest.half_body if halfbody else context.reader.manifest.full_body
     available = {item.view_id for item in manifest_views}
     if view not in available:
@@ -899,9 +926,7 @@ def _verify_yaw_zero_states(context: VerificationContext, yaw_zero: str) -> None
     for state in YAW_ZERO_SAMPLE_STATES:
         label = f"full/{yaw_zero}/{state}"
         if state not in frame_keys:
-            _record_case_error(
-                context, label, ValueError(f"Body pack does not declare required state {state}.")
-            )
+            _missing_sample_state(context, label, yaw_zero, state, halfbody=False)
             continue
         viseme, blink, _ = _sample_state_parameters(state)
         _state_evidence(
@@ -925,9 +950,7 @@ def _verify_half_front_states(context: VerificationContext, view: str = "front-c
     for state in HALF_FRONT_SAMPLE_STATES:
         label = f"half/{view}/{state}"
         if state not in frame_keys:
-            _record_case_error(
-                context, label, ValueError(f"Body pack does not declare required state {state}.")
-            )
+            _missing_sample_state(context, label, view, state, halfbody=True)
             continue
         viseme, blink, blink_after = _sample_state_parameters(state)
         _state_evidence(
