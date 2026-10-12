@@ -323,13 +323,13 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     mohan_source = _load(MOHAN_ROOT, "pack-source.json")
     assert source["pack_id"] == "flameblade.lin-keyun"
     assert source["character_id"] == "lin-keyun"
-    assert source["pack_version"] == "1.0.2"
+    assert source["pack_version"] == "1.0.3"
     lock = json.loads(
         (ROOT / "docs/character-pack/lin-keyun-pack.lock.json").read_text(encoding="utf-8")
     )
     assert lock["pack_version"] == source["pack_version"]
     assert lock["package_hash"] == (
-        "8124f70560bb79232e8b11ee6303ae6b045da47baa2677bc657862239a9e543f"
+        "10d94359f0d4fdbf6e37a88fd132cbf3b2811a39b2b07832721ad879c28115e8"
     )
     assert source["distribution"]["access"] == "public"
     assert source["distribution"]["redistribution"] == "allowed"
