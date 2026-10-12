@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.5.zip",
-    "bytes": 957122143,
-    "sha256": "8b8a543643e4589f2d2ba15a49027947a68a60f0f9ee7256a8ec866174d3c78d"
+    "bytes": 957137820,
+    "sha256": "e14ac954432b2790406641765f70828ac6440b3ce7b880fec8c5df2ab76cc0f4"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -1604,7 +1604,7 @@
     {
       "bytes": 234330,
       "path": "assets/expressions/complete-expressions/manifest.json",
-      "sha256": "8a4bf760dcb79c7cc80ec4f233fa9922ad0795bd5868bd20022707fc2b67b5ac"
+      "sha256": "b6f3e43e974249be7027321055e223084728ff175bd1a24e23541b0258746f93"
     },
     {
       "bytes": 6470,
@@ -1682,214 +1682,214 @@
       "sha256": "744512bfd492bd82a8e9b93bc034d343f389f551d4d14979fbbd63fc2ecc1fd1"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 6898,
+      "bytes": 6904,
       "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-a.png",
-      "sha256": "2bb119c5c06af6a62ed920872c66ed9acad28b2e9858eb89756e57b0a7c0a751"
+      "sha256": "4ff0f4d64e6e0f60fcbbe79a1bd13337761370dcda080f02deb0b6e624944759"
     },
     {
-      "bytes": 6582,
+      "bytes": 6663,
       "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-o.png",
-      "sha256": "cd3c9262c97bd09da98793d5bd1a6c39df2cdfd38d078440dadd731554885ac1"
+      "sha256": "a8028704bcd08b6f3f334075e0b916b8af1c86e13c86cf30424c9ede8bf31b23"
     },
     {
-      "bytes": 6813,
+      "bytes": 6694,
       "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-small.png",
-      "sha256": "cda2059df58cffbb1f3f1ded43171a172f2dd3adcd9e35e9d941ea03af82ba2b"
+      "sha256": "02316be83ef7a8434df88cc4d74f61a813c6acecf8f3dfa83013dc37a7839ab0"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-determined_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-determined_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-determined_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-gentle_smile_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-gentle_smile_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-gentle_smile_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-protective_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-protective_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-protective_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-proud_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-proud_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-proud_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-relieved_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-relieved_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-relieved_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-restrained_amused_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-restrained_amused_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-restrained_amused_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-shy_cute_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-shy_cute_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-shy_cute_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-shy_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-shy_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-shy_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-surprised_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-surprised_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-surprised_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-thinking_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-thinking_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-thinking_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-tired_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-tired_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-tired_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
-      "bytes": 9188,
+      "bytes": 9585,
       "path": "assets/expressions/complete-expressions/masks/front-worried_front-oral-a.png",
-      "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+      "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
     },
     {
-      "bytes": 9109,
+      "bytes": 9395,
       "path": "assets/expressions/complete-expressions/masks/front-worried_front-oral-o.png",
-      "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+      "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
     },
     {
-      "bytes": 9142,
+      "bytes": 9404,
       "path": "assets/expressions/complete-expressions/masks/front-worried_front-oral-small.png",
-      "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+      "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
     },
     {
       "bytes": 707281,
@@ -4647,9 +4647,9 @@
       "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
     },
     {
-      "bytes": 37154228,
+      "bytes": 37157652,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "9138d49ee1ea94148660a20cfdd1b1eb619259747d8064b666c6271d137526ed"
+      "sha256": "0dbce9b9e15d18a72f891933fd39afd1e69dbf8b39cfb38ca323c9aab87f3d3e"
     },
     {
       "bytes": 29245749,
@@ -9964,7 +9964,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.5",
-  "package_hash": "48a1b7ae358cd7bde0639b3cb01b1a8c0fdfd8275209662b2b838ac5ab0e2cd2",
+  "package_hash": "15d15e6f5901ea8c207e6ab748a0d46b4af6f68465a6d2c8fdfa5e1788c9858a",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

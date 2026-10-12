@@ -110,7 +110,7 @@ class ActiveOutfitOverlay(
         self._feature_by_view: dict[str, QRegion] = {}
         self._gesture_expression_feature_by_view: dict[str, QRegion] = {}
         self._hair_mask_by_view: dict[str, tuple[QImage, QRect] | None] = {}
-        self._makeup_exclusion_by_view: dict[tuple[str, str], QRegion] = {}
+        self._makeup_exclusion_by_view: dict[tuple[str, str, str | None, bool], QRegion] = {}
         self._core_hand_overlays_by_view: dict[str, Sequence[Layer]] = {}
         self._core_body_overlays_by_view: dict[str, Sequence[Layer]] = {}
         self._official_silhouettes_by_view: dict[str, QRegion | None] = {}
@@ -126,11 +126,10 @@ class ActiveOutfitOverlay(
         # set by the renderer via set_active_mouth_state() before each
         # render. None means no substitution (including the CLOSED/rest
         # mouth). Included in every layer cache key below so a stale entry
-        # computed under one viseme can never be reused under another; the
-        # oral mask (native-canvas QPixmap, already resolved by the renderer
-        # from the complete-expression manifest's own oral_masks field) is
-        # only used to build the mouth-state safe-region exclusion and is not
-        # itself part of any cache key.
+        # computed under one viseme or oral mask can never be reused under
+        # another; the mask is a native-canvas QPixmap resolved by the renderer
+        # from the complete-expression manifest's oral_masks field and applied
+        # to makeup layers as pixel alpha so partial coverage is kept.
         self._active_viseme: str | None = None
         self._active_oral_mask: QPixmap | None = None
         self._logged_fallbacks: set[tuple[str, str]] = set()
@@ -143,12 +142,20 @@ class ActiveOutfitOverlay(
 
         Called by the full-body renderer immediately before each render.
         `oral_mask` is the same native-canvas mask the renderer already
-        resolved for restoring skin under the mouth after makeup; when a
-        mouth_states substitution applies, it replaces the rest-rig oral
-        exclusion slit for lips/foundation/other makeup slots alike.
+        resolved for restoring skin under the mouth after makeup. During an
+        active mouth state, its fractional alpha is applied to makeup layers
+        without flattening the oral edge into a QRegion.
         """
         self._active_viseme = viseme
         self._active_oral_mask = oral_mask if viseme is not None else None
+
+    @property
+    def _active_mouth_cache_identity(self) -> str | None:
+        if self._active_viseme is None:
+            return None
+        if self._active_oral_mask is None:
+            return self._active_viseme
+        return f"{self._active_viseme}:{self._active_oral_mask.cacheKey()}"
 
     @property
     def _native_frames(self) -> bool:
@@ -286,7 +293,7 @@ class ActiveOutfitOverlay(
         simple = not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None
         cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
         cache_key = OutfitLayerCacheKey.combined(
-            view_id, suppressed, eye_state, self._active_viseme, makeup_view_id,
+            view_id, suppressed, eye_state, self._active_mouth_cache_identity, makeup_view_id,
         )
         try:
             self._refresh_state()
@@ -435,7 +442,7 @@ class ActiveOutfitOverlay(
             raise ValueError("Use a recognized makeup eye state")
         key = OutfitLayerCacheKey.for_phase(
             view_id, phase, suppress_makeup_slots, eye_state,
-            self._active_viseme, makeup_view_id,
+            self._active_mouth_cache_identity, makeup_view_id,
         )
         include_core = phase == "appearance"
         before_front_hair, replace_body = callbacks.before_front_hair, callbacks.replace_body

@@ -423,6 +423,44 @@ def test_mouth_states_substitutes_lips_for_the_active_viseme(tmp_path: Path, mon
     assert dressed.pixelColor(*LIPS_PIXEL) == LIP_GREEN
 
 
+def test_active_oral_mask_preserves_half_alpha_coverage(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Active oral-mask coverage attenuates makeup smoothly at one pixel."""
+    _app()
+    _authority(tmp_path)
+    store = _configure(monkeypatch, tmp_path, {"lips": _lips_block()})
+    oral_image = QImage(CANVAS, CANVAS, QImage.Format_RGBA8888)
+    oral_image.fill(Qt.transparent)
+    oral_image.setPixelColor(*LIPS_PIXEL, QColor(255, 255, 255, 128))
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+    overlay.set_active_mouth_state("A", QPixmap.fromImage(oral_image))
+
+    dressed = overlay.apply(_frame(), "front-crossed").toImage()
+    pixel = dressed.pixelColor(*LIPS_PIXEL)
+    expected = tuple((BASE_GRAY.getRgb()[index] + LIP_RED.getRgb()[index]) / 2 for index in range(3))
+    assert all(abs(pixel.getRgb()[index] - expected[index]) <= MIDPOINT_TOLERANCE for index in range(3))
+    assert dressed.pixelColor(*OUTSIDE_PIXEL) == BASE_GRAY
+
+
+def test_active_oral_mask_retains_translucent_layer_alpha(tmp_path: Path) -> None:
+    """DestinationOut preserves partial coverage before canvas composition."""
+    _app()
+    overlay = ActiveOutfitOverlay(tmp_path, tmp_path)
+    source = QImage(CANVAS, CANVAS, QImage.Format_RGBA8888)
+    source.fill(LIP_RED)
+    oral = QImage(CANVAS, CANVAS, QImage.Format_RGBA8888)
+    oral.fill(Qt.transparent)
+    oral.setPixelColor(*LIPS_PIXEL, QColor(255, 255, 255, 128))
+    overlay.set_active_mouth_state("A", QPixmap.fromImage(oral))
+    masked = overlay._subtract_active_oral_mask(source)
+    expected_alpha = 127
+    opaque_alpha = 255
+    assert masked.pixelColor(*LIPS_PIXEL).alpha() == expected_alpha
+    assert masked.pixelColor(*OUTSIDE_PIXEL).alpha() == opaque_alpha
+    assert source.pixelColor(*LIPS_PIXEL).alpha() == opaque_alpha
+
+
 def test_mouth_states_closed_path_is_unaffected(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """The CLOSED/rest path (no active viseme) must render the base declared lips, byte for byte."""
     _app()
