@@ -25,9 +25,16 @@ ROI = (548, 530, 686, 600)
 SCALE = 8
 MIDPOINT = 128
 OPAQUE = 255
-OFFSET_LIMIT = .5
 MIN_CONTOUR_COLUMNS = 3
 FAMILIES = ("small", "a", "o")
+TEETH_RED_GREEN_GAP = 35
+TEETH_RED_BLUE_GAP = 45
+TEETH_GREEN_MIN = 65
+TEETH_RED_MAX = 210
+CAVITY_RED_MAX = 115
+CAVITY_GREEN_MAX = 75
+NATIVE_MOUTH_BOUNDS = (566, 550, 656, 580)
+MIN_COMPONENT_COUNT = 2
 
 
 def pixels(data: bytes) -> np.ndarray:
@@ -35,41 +42,52 @@ def pixels(data: bytes) -> np.ndarray:
         return np.asarray(image.convert("RGBA")).copy()
 
 
-def smooth_aperture(alpha: np.ndarray) -> tuple[np.ndarray, dict]:
-    """Close fragmented openings and antialias their subpixel envelope.
-
-    The outer upper/lower envelope is the registration authority: internal
-    fragment edges are removed, rather than counted as lip contour positions.
-    """
+def classify_native_opening(frame: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Return the connected native opening and its low-chroma tooth pixels."""
     left, top, right, bottom = ROI
-    binary = (alpha[top:bottom, left:right] >= MIDPOINT).astype(np.uint8)
+    red, green, blue = frame[top:bottom, left:right, :3].astype(float).transpose(2, 0, 1)
+    yy, xx = np.mgrid[top:bottom, left:right]
+    teeth = ((red - green < TEETH_RED_GREEN_GAP)
+             & (red - blue < TEETH_RED_BLUE_GAP)
+             & (green > TEETH_GREEN_MIN) & (red < TEETH_RED_MAX))
+    cavity = (red < CAVITY_RED_MAX) & (green < CAVITY_GREEN_MAX)
+    bounds = NATIVE_MOUTH_BOUNDS
+    mouth = (xx > bounds[0]) & (xx < bounds[2]) & (yy > bounds[1]) & (yy < bounds[3])
+    binary = ((teeth | cavity) & mouth).astype(np.uint8)
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(binary)
+    if count < MIN_COMPONENT_COUNT:
+        raise ValueError("The native frame has no measurable mouth opening")
+    binary = (labels == 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])).astype(np.uint8)
+    return binary, teeth & (binary > 0)
+
+
+def native_aperture(frame: np.ndarray) -> tuple[np.ndarray, dict]:
+    """Measure teeth and dark cavity directly from the bare native frame.
+
+    The mouth-local colour classifier separates low-chroma teeth and dark
+    cavity from red lips. The largest connected component owns one continuous
+    upper/lower envelope; the old cosmetic mask supplies no contour positions.
+    """
+    binary, teeth = classify_native_opening(frame)
     columns = np.flatnonzero(binary.any(axis=0))
     if len(columns) < MIN_CONTOUR_COLUMNS:
-        raise ValueError("The mouth aperture has no measurable contour")
+        raise ValueError("The native mouth opening has too few columns")
     xs = np.arange(columns[0], columns[-1] + 1)
     upper = np.interp(xs, columns, [np.flatnonzero(binary[:, x])[0] - .5 for x in columns])
     lower = np.interp(xs, columns, [np.flatnonzero(binary[:, x])[-1] + .5 for x in columns])
-    # Bounded closing joins the native dark fragments; the envelope also fills
-    # tooth-shaped holes so a single aperture owns the cosmetic exclusion.
-    closed = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, np.ones((3, 7), np.uint8))
-    envelope = closed.copy()
-    for i, x in enumerate(xs):
-        envelope[int(np.ceil(upper[i])):int(np.floor(lower[i])) + 1, x] = 1
-    contours, _ = cv2.findContours(envelope, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    if len(contours) != 1:
-        raise ValueError("Closing did not produce a single mouth opening")
-    # Smooth the source envelope, preserving its native horizontal extent.
     kernel = np.array([1, 2, 3, 2, 1], dtype=float) / 9
     smooth_upper = np.convolve(np.pad(upper, 2, mode="edge"), kernel, "valid")
     smooth_lower = np.convolve(np.pad(lower, 2, mode="edge"), kernel, "valid")
-    offset = float(np.mean(np.abs(np.concatenate((smooth_upper - upper, smooth_lower - lower)))))
-    if offset > OFFSET_LIMIT:
-        raise ValueError(f"Mean source-envelope contour offset {offset:.4f} exceeds {OFFSET_LIMIT}")
+    # Cover the native colour-transition pixels as well as the tooth cores.
+    # Rounding never moves inward across a classified native boundary.
+    smooth_upper = np.minimum(smooth_upper, upper) - .5
+    smooth_lower = np.maximum(smooth_lower, lower) + .5
     coverage = rasterize_aperture(binary.shape, xs, smooth_upper, smooth_lower)
-    result = alpha.copy()
-    result[top:bottom, left:right] = coverage
-    return result, {"mean_outer_envelope_offset_px": offset,
-                    "original_components": cv2.connectedComponents(binary)[0] - 1,
+    result = np.zeros(frame.shape[:2], dtype=np.uint8)
+    result[ROI[1]:ROI[3], ROI[0]:ROI[2]] = coverage
+    return result, {"native_classified_pixels": int(binary.sum()),
+                    "native_teeth_pixels": int(np.count_nonzero(teeth & (binary > 0))),
+                    "maximum_inset_px": 0,
                     "result_components": cv2.connectedComponents((coverage >= MIDPOINT).astype(np.uint8))[0] - 1,
                     "partial_alpha_pixels": int(np.count_nonzero((coverage > 0) & (coverage < OPAQUE)))}
 
@@ -86,6 +104,23 @@ def rasterize_aperture(shape: tuple[int, int], xs: np.ndarray,
     return cv2.resize(high.astype(np.uint8) * OPAQUE, (shape[1], shape[0]), interpolation=cv2.INTER_AREA)
 
 
+def extend_retracted_hole(patch: np.ndarray, old_opening: np.ndarray,
+                          opening: np.ndarray) -> np.ndarray:
+    """Extend nearest authored pigment into a former hard hole, where needed."""
+    result = patch.copy()
+    missing = (patch[..., 3] == 0) & (old_opening >= MIDPOINT) & (opening < OPAQUE)
+    if not missing.any():
+        return result
+    transparent = (patch[..., 3] == 0).astype(np.uint8)
+    _, labels = cv2.distanceTransformWithLabels(transparent, cv2.DIST_L2, 5,
+                                               labelType=cv2.DIST_LABEL_PIXEL)
+    lookup = np.zeros((int(labels.max()) + 1, 4), dtype=np.uint8)
+    painted = patch[..., 3] > 0
+    lookup[labels[painted]] = patch[painted]
+    result[missing] = lookup[labels[missing]]
+    return result
+
+
 class MakeupEdgeRepair(RigBuilder):
     """Seal only cosmetic alpha assets, with complete frames pinned unchanged."""
 
@@ -100,7 +135,21 @@ class MakeupEdgeRepair(RigBuilder):
                 descriptor = record["oral_masks"][family]
                 relative = "assets/expressions/complete-expressions/" + descriptor["path"]
                 original = pixels(self.original(relative))
-                oral, metrics = smooth_aperture(original[..., 3])
+                native_frames = []
+                for frame in record["frames"][family].values():
+                    path = "assets/expressions/complete-expressions/" + frame["path"]
+                    data = self.original(path)
+                    if digest(data) != frame["sha256"]:
+                        raise ValueError(f"Complete-frame source pin changed: {path}")
+                    native_frames.append(pixels(data))
+                # Blink states use one mouth mask: verify the source mouth agrees.
+                left, top, right, bottom = ROI
+                native = native_frames[0]
+                if any(not np.array_equal(native[top:bottom, left:right],
+                                          image[top:bottom, left:right]) for image in native_frames[1:]):
+                    raise ValueError(f"Native mouth differs across eye states: {pose} {family}")
+                oral, metrics = native_aperture(native)
+                self.aperture_overlay(pose, family, native, oral)
                 fixed = original.copy()
                 fixed[..., 3] = oral
                 descriptor["sha256"] = self.put(relative, fixed)["sha256"]
@@ -117,6 +166,18 @@ class MakeupEdgeRepair(RigBuilder):
                 self.lip_layers(pose, family, original[..., 3], oral)
         write_json(self.evidence / "contour-metrics.json", self.metrics)
 
+    def aperture_overlay(self, pose: str, family: str, native: np.ndarray,
+                         oral: np.ndarray) -> None:
+        """Publish a three-times native/opening overlay for owner review."""
+        left, top, right, bottom = ROI
+        rgb = native[top:bottom, left:right, :3].astype(float)
+        weight = oral[top:bottom, left:right, None] / OPAQUE * .45
+        overlay = np.rint(rgb * (1 - weight) + np.array([0, 255, 0]) * weight).astype(np.uint8)
+        image = Image.fromarray(overlay).resize(((right - left) * 3, (bottom - top) * 3), Image.Resampling.NEAREST)
+        destination = self.evidence / "opening-overlays" / f"{pose}-{family}.png"
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        image.save(destination)
+
     def lip_layers(self, pose: str, family: str, old_oral: np.ndarray, oral: np.ndarray) -> None:
         """Cut the smooth aperture and soften its finite exterior alpha band."""
         left, top, right, bottom = ROI
@@ -130,15 +191,14 @@ class MakeupEdgeRepair(RigBuilder):
                     raise ValueError(f"Cosmetic source pin changed: {row['path']}")
                 original = pixels(data)
                 fixed = original.copy()
-                alpha = original[top:bottom, left:right, 3]
-                # Transparent baked cutout pixels have zero RGB. Retain their
-                # zero coverage and soften only the finite exterior edge band;
-                # restoring their alpha would introduce black pigment.
                 opening = oral[top:bottom, left:right]
-                distance = cv2.distanceTransform((opening == 0).astype(np.uint8),
-                                                cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
-                exterior = np.clip((distance - .5) / 1.5, 0, 1)
-                retention = np.minimum(1 - opening / OPAQUE, exterior)
+                patch = extend_retracted_hole(original[top:bottom, left:right],
+                                              old_oral[top:bottom, left:right], opening)
+                fixed[top:bottom, left:right] = patch
+                alpha = patch[..., 3]
+                # Preserve the accepted exterior feather and authored RGB.
+                # A larger native opening only subtracts extra pigment.
+                retention = 1 - opening / OPAQUE
                 fixed[top:bottom, left:right, 3] = np.rint(alpha * retention).astype(np.uint8)
                 self.pins[f"{PACK}!/{row['path']}"] = digest(data)
                 backup = self.evidence / "lip-backups" / row["path"]
@@ -185,7 +245,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--install-candidate", action="store_true", help="Verify pins and install the sealed candidate without rebuilding")
-    parser.add_argument("--evidence", type=Path, default=ROOT / ".quality-tmp/mouth-edge-1/round2/alpha-repair")
+    parser.add_argument("--evidence", type=Path, default=ROOT / ".quality-tmp/mouth-edge-3/repair")
     args = parser.parse_args()
     if args.install_candidate:
         install_candidate(args.evidence.resolve())
@@ -199,7 +259,7 @@ def main() -> None:
     builder.install()
     receipt_path = builder.evidence / "receipt.json"
     receipt = json.loads(receipt_path.read_text("utf-8"))
-    receipt.update(method="8x continuous cosmetic aperture alpha; complete RGB unchanged",
+    receipt.update(method="native teeth/cavity colour segmentation; 8x aperture alpha; complete RGB unchanged",
                    target_poses=builder.targets, roi=ROI, complete_frames_modified=0)
     write_json(receipt_path, receipt)
 

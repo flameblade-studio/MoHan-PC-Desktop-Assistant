@@ -404,15 +404,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-crossed-transplant-oral-small.png",
-          "sha256": "02316be83ef7a8434df88cc4d74f61a813c6acecf8f3dfa83013dc37a7839ab0"
+          "sha256": "a5a6ce0285724958f3bb6b3b7f355addfde1210b8befa90b0a5c296247438862"
         },
         "a": {
           "path": "masks/front-crossed-transplant-oral-a.png",
-          "sha256": "4ff0f4d64e6e0f60fcbbe79a1bd13337761370dcda080f02deb0b6e624944759"
+          "sha256": "583679ae0b2d8efe03f2ae7b674bc4dadb745edfcd4dec21f26f879db9a00775"
         },
         "o": {
           "path": "masks/front-crossed-transplant-oral-o.png",
-          "sha256": "a8028704bcd08b6f3f334075e0b916b8af1c86e13c86cf30424c9ede8bf31b23"
+          "sha256": "6b0a6eb5e4d894b98f3d4bc32827e02eeb3ce18f1499187ed0f2b49fce962479"
         }
       }
     },
@@ -3799,15 +3799,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-proud_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-proud_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-proud_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -3911,15 +3911,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-thinking_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-thinking_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-thinking_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4023,15 +4023,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-gentle_smile_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-gentle_smile_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-gentle_smile_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4135,15 +4135,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-worried_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-worried_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-worried_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4247,15 +4247,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-shy_cute_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-shy_cute_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-shy_cute_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4359,15 +4359,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-attentive_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-attentive_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-attentive_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4471,15 +4471,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-determined_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-determined_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-determined_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4583,15 +4583,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-shy_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-shy_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-shy_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4695,15 +4695,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-surprised_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-surprised_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-surprised_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4807,15 +4807,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-relieved_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-relieved_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-relieved_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4919,15 +4919,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-tired_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-tired_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-tired_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -5031,15 +5031,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-restrained_amused_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-restrained_amused_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-restrained_amused_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -5143,15 +5143,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-protective_front-oral-small.png",
-          "sha256": "9561a92c0b20ec1ac3d543add1c77c97f85cbc22205d3cdf98da81d71b286c63"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-protective_front-oral-a.png",
-          "sha256": "0382239bcc08ad5a5e8a0b5a5162f85e1cba43cd2f6f6f7c0941eb380213a175"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-protective_front-oral-o.png",
-          "sha256": "7465165d86853ffdbc2bb2a82465319a971c29f9e0ec34ffef95597e53ea1863"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     }
