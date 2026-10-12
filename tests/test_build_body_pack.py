@@ -677,7 +677,17 @@ def test_recomputed_layer_reuse_rejects_a_different_bald_body(
     output = tmp_path / "output"
     builder.write_json(output / "lin-keyun-layers/recomputed" / view / "builder-provenance.json",
                        {"bald_sha256": "0" * 64, "face_core_precleared": False})
-    build = builder._Builder(product, bald, layers, output, "Fixture license", "all", "reuse")
+    build = builder._Builder(
+        builder.BuildRequest(
+            product_root=product,
+            bald_root=bald,
+            layers_root=layers,
+            output=output,
+            license_text="Fixture license",
+            mode="all",
+            layer_mode="reuse",
+        )
+    )
     with pytest.raises(ValueError, match="different bald body"):
         build.layer_source(view)
 
@@ -787,6 +797,16 @@ def test_reuse_rejects_layers_without_explicit_native_alpha_contract(
     output = tmp_path / "output"
     builder.write_json(output / "lin-keyun-layers/recomputed" / view / "builder-provenance.json",
                        {"bald_sha256": "0" * 64, "face_core_precleared": precleared})
-    build = builder._Builder(product, bald, layers, output, "Fixture license", "all", "reuse")
+    build = builder._Builder(
+        builder.BuildRequest(
+            product_root=product,
+            bald_root=bald,
+            layers_root=layers,
+            output=output,
+            license_text="Fixture license",
+            mode="all",
+            layer_mode="reuse",
+        )
+    )
     with pytest.raises(ValueError, match="unweighted face-core contract"):
         build.layer_source(view)

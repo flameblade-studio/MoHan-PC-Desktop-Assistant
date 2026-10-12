@@ -60,7 +60,7 @@ def test_verify_download_activates_the_composition_root_in_a_fresh_process(
         env={**os.environ, "QT_QPA_PLATFORM": "offscreen", "PYTHONUTF8": "1"},
     )
     assert completed.returncode == 0, completed.stderr
-    assert "CHECKED 1" in completed.stdout
+    assert "CHECKED mohan 1" in completed.stdout
 
 
 def test_linkeyun_release_flow_installs_body_before_character_pack(

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy import ast
+lazy import importlib
 lazy import io
 lazy import re
 lazy import subprocess
@@ -34,6 +36,46 @@ lazy from tools.migrate_python315_imports import inventory, python_files
 
 EXPECTED_EXCEPTION_COUNT = 3
 FROZEN_EXIT_PROBE_CODE = 7
+
+
+@pytest.mark.parametrize(
+    ("source", "expected_codes"),
+    [
+        (
+            "build_opener(handler).open(request, timeout=120.0)",
+            (),
+        ),
+        ("open('payload.txt')", ("TEXT_ENCODING",)),
+        ("builtins.open('payload.txt')", ("TEXT_ENCODING",)),
+        ("io.open('payload.txt')", ("TEXT_ENCODING",)),
+        ("open('payload.txt', encoding='utf-8')", ()),
+        ("builtins.open('payload.txt', encoding='utf-8')", ()),
+        ("io.open('payload.txt', encoding='utf-8')", ()),
+        ("path.read_text()", ("TEXT_ENCODING",)),
+        ("path.write_text('payload')", ("TEXT_ENCODING",)),
+    ],
+    ids=(
+        "urllib-opener-method",
+        "bare-open-requires-encoding",
+        "builtins-open-requires-encoding",
+        "io-open-requires-encoding",
+        "bare-open-with-encoding",
+        "builtins-open-with-encoding",
+        "io-open-with-encoding",
+        "path-read-text-requires-encoding",
+        "path-write-text-requires-encoding",
+    ),
+)
+def test_python315_compatibility_audit_text_encoding_targets(
+    source: str,
+    expected_codes: tuple[str, ...],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.syspath_prepend(str(ROOT / "tools"))
+    audit_module = importlib.import_module("audit_python315_compatibility")
+    audit = audit_module.CompatibilityAudit(ROOT / "tools" / "fetch_body_pack.py")
+    audit.visit(ast.parse(source, filename="audit-contract.py"))
+    assert tuple(issue.split(" ", 1)[0] for issue in audit.issues) == expected_codes
 
 
 def test_frozen_runtime_enforces_jit_policy(monkeypatch) -> None:

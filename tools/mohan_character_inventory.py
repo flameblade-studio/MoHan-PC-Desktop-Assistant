@@ -346,6 +346,8 @@ CONTENT_RULES = (
 )
 
 PRODUCT_SHELL_ALLOWLIST = {
+    "application/character_runtime_bootstrap.py": '產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。',
+    "infrastructure/installed_body_packs.py": '產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。',
     "application/character_default_look.py": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
     "application/service_container.py": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
     "application/application_bootstrap.py": "墨寒最外層組裝入口保留產品程序名稱。",
@@ -797,6 +799,11 @@ def _source_classification(path: str, evidence: list[dict[str, Any]]) -> str:
     if rules == {PERSISTED_IDENTIFIER_RULE.name}:
         return "persisted_identifier"
     shell_rules = {"character_name_literal", "character_asset_path_literal"}
+    if path in {
+        "application/character_runtime_bootstrap.py",
+        "infrastructure/installed_body_packs.py",
+    }:
+        shell_rules = shell_rules | {"character_body_profile_literal"}
     if path in PRODUCT_SHELL_ALLOWLIST and rules <= shell_rules:
         return "product_shell_allowed"
     ui_rules = {"character_name_literal", "character_title_or_dialogue_literal"}

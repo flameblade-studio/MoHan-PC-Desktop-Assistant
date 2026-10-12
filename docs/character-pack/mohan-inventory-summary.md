@@ -50,7 +50,7 @@
 
 正式包內點名：服裝項目 2、髮型項目 2、髮飾項目 1、妝容項目 1。變體與四語名稱見清冊 appearance_catalog。
 
-實際內容規則找到 22 個程式檔；其中真正待搬或參數化 2 個，產品殼允許保留 20 個。舊名單另有 64 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。
+實際內容規則找到 22 個程式檔；其中真正待搬或參數化 0 個，產品殼允許保留 22 個。舊名單另有 64 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。
 
 圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。
 
@@ -110,7 +110,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 正式包内列明：服装项目 2、发型项目 2、发饰项目 1、妆容项目 1。变体与四语名称见清册 appearance_catalog。
 
-实际内容规则找到 22 个程序文件；其中真正待迁移或参数化 2 个，产品壳允许保留 20 个。旧名单另有 64 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。
+实际内容规则找到 22 个程序文件；其中真正待迁移或参数化 0 个，产品壳允许保留 22 个。旧名单另有 64 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。
 
 图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。
 
@@ -170,7 +170,7 @@ Product data totals 2157 physical files: 2109 runtime files and 48 required self
 
 Official archives declare 2 garment, 2 hairstyle, 1 headwear and 1 makeup item. Variants and names are indexed in appearance_catalog.
 
-Actual-content rules find 22 source files: 2 require extraction or parameterization and 20 are allowed product-shell files. Another 64 files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.
+Actual-content rules find 22 source files: 0 require extraction or parameterization and 22 are allowed product-shell files. Another 64 files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.
 
 Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.
 
@@ -230,7 +230,7 @@ Independent download is a design requirement from inception. The public MoHan re
 
 正式パック内には衣装 2、髪型 2、髪飾り 1、メイク 1 項目があります。差分と四言語の名称は appearance_catalog に記録します。
 
-実内容の規則により 22 ソースファイルを検出しました。抽出またはパラメータ化が必要なのは 2、製品シェルで保持可能なのは 20 ファイルです。旧一覧のうち 64 ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。
+実内容の規則により 22 ソースファイルを検出しました。抽出またはパラメータ化が必要なのは 0、製品シェルで保持可能なのは 22 ファイルです。旧一覧のうち 64 ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。
 
 画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。
 

@@ -6,6 +6,7 @@ lazy import subprocess
 lazy import zipfile
 lazy import sys
 lazy import importlib
+lazy import json
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
@@ -47,6 +48,11 @@ lazy from infrastructure.installed_character_packs import (
     CharacterPackInstallError,
     install_character_pack,
     installed_character_pack_path,
+)
+lazy from tests.body_pack_fixtures import (
+    bind_character_pack_to_body_fixture,
+    build_body_pack_release_fixture,
+    materialize_body_pack_fixture,
 )
 lazy from tests.character_pack_fixtures import (
     FAKE_CANONICAL_NAME,
@@ -385,6 +391,16 @@ def test_linkeyun_source_resolves_its_official_pack_and_builtin_sentinel(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     data_root = tmp_path / "profile"
+    source = json.loads(
+        (ROOT / "assets/characters/lin-keyun/pack-source.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    body_fixture = build_body_pack_release_fixture(
+        tmp_path / "body-pack-release",
+        view_ids=source["layer_views"],
+    )
+    materialize_body_pack_fixture(body_fixture, data_root / "body-packs")
     character_pack = installed_character_pack_path(
         "lin-keyun",
         data_root=data_root,
@@ -394,10 +410,13 @@ def test_linkeyun_source_resolves_its_official_pack_and_builtin_sentinel(
         output_format="directory",
         source_path="assets/characters/lin-keyun/pack-source.json",
     )
+    bind_character_pack_to_body_fixture(character_pack, body_fixture)
     monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
     monkeypatch.setenv(ACTIVE_CHARACTER_ENV, "lin-keyun")
 
     source = service_container.create_default_character_source()
+    assert source.resolved_body_pack is not None
+    assert source.resolved_body_pack.reference == body_fixture.reference
     ports = service_container.create_presentation_ports()
     shared_root = source.assets.asset_root / "assets" / "official-packs"
     character_root = (

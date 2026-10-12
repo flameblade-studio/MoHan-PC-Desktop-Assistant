@@ -8,11 +8,13 @@ lazy import zipfile
 lazy from dataclasses import dataclass
 lazy from io import BytesIO
 lazy from pathlib import Path
+lazy from collections.abc import Iterable
 lazy from typing import Any
 
 lazy from PIL import Image
 lazy from domain.body_pack import BodyPackReference, compute_body_pack_fingerprint
 lazy from domain.character_pose import canonical_view_id
+lazy from domain.character_pack.validation import compute_package_hash
 
 BODY_PACK_ID = "mohan-body-v2"
 BODY_PACK_VERSION = "1.0.0"
@@ -40,7 +42,11 @@ class BodyPackReleaseFixture:
     reference: BodyPackReference
 
 
-def build_body_pack_release_fixture(base: Path) -> BodyPackReleaseFixture:
+def build_body_pack_release_fixture(
+    base: Path,
+    *,
+    view_ids: Iterable[str] | None = None,
+) -> BodyPackReleaseFixture:
     """Write an exact lock and deterministic local archive for release tests."""
 
     base.mkdir(parents=True, exist_ok=True)
@@ -52,13 +58,23 @@ def build_body_pack_release_fixture(base: Path) -> BodyPackReleaseFixture:
         "frames/half/portrait.png": half_png,
         "masks/front.png": mask_png,
     }
+    canonical_views = tuple(
+        canonical_view_id(yaw) for yaw in range(-180, 180, 15)
+    )
+    aliases = () if view_ids is None else tuple(dict.fromkeys(view_ids))
+    full_view_ids = tuple(dict.fromkeys((*canonical_views, *aliases)))
+    half_view_ids = ("portrait",)
     full_views = {
-        canonical_view_id(yaw): {"rest": _file("frames/full/front.png", full_png)}
-        for yaw in range(-180, 180, 15)
+        view_id: {"rest": _file("frames/full/front.png", full_png)}
+        for view_id in full_view_ids
+    }
+    half_views = {
+        view_id: {"rest": _file("frames/half/portrait.png", half_png)}
+        for view_id in half_view_ids
     }
     face_core_masks = {
-        canonical_view_id(yaw): _file("masks/front.png", mask_png)
-        for yaw in range(-180, 180, 15)
+        view_id: _file("masks/front.png", mask_png)
+        for view_id in full_view_ids
     }
     manifest: dict[str, Any] = {
         "schema": "mohan.body-pack.v1",
@@ -66,9 +82,7 @@ def build_body_pack_release_fixture(base: Path) -> BodyPackReleaseFixture:
         "version": BODY_PACK_VERSION,
         "license": BODY_PACK_LICENSE,
         "full_body": full_views,
-        "half_body": {
-            "portrait": {"rest": _file("frames/half/portrait.png", half_png)},
-        },
+        "half_body": half_views,
         "face_core_masks": face_core_masks,
     }
     manifest["fingerprint"] = compute_body_pack_fingerprint(manifest)
@@ -129,6 +143,64 @@ def build_body_pack_release_fixture(base: Path) -> BodyPackReleaseFixture:
     lock_path = base / "body-pack.lock.json"
     lock_path.write_bytes(_json_bytes(lock))
     return BodyPackReleaseFixture(lock_path, archive_path, payloads, reference)
+
+
+def materialize_body_pack_fixture(
+    fixture: BodyPackReleaseFixture,
+    body_pack_root: Path,
+) -> Path:
+    """Install fixture payloads below a local body-pack root without network access."""
+
+    pack_root = body_pack_root / fixture.reference.id
+    for relative, payload in fixture.payloads.items():
+        destination = pack_root / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(payload)
+    return pack_root
+
+
+def bind_character_pack_to_body_fixture(
+    character_pack_root: Path,
+    fixture: BodyPackReleaseFixture,
+) -> None:
+    """Bind a built test character pack to the local body-pack release fixture."""
+
+    reference = {
+        "id": fixture.reference.id,
+        "version": fixture.reference.version,
+        "fingerprint": fixture.reference.fingerprint,
+    }
+    body_manifest_path = (
+        character_pack_root
+        / "assets/characters/lin-keyun/body/manifest.json"
+    )
+    if body_manifest_path.is_file():
+        body_manifest = json.loads(body_manifest_path.read_text(encoding="utf-8"))
+        body_manifest["body_pack"] = reference
+        body_manifest_bytes = _json_bytes(body_manifest)
+        body_manifest_path.write_bytes(body_manifest_bytes)
+
+        manifest_path = character_pack_root / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        body_record = next(
+            record
+            for record in manifest["files"]
+            if record["path"] == "assets/characters/lin-keyun/body/manifest.json"
+        )
+        body_digest = _sha256(body_manifest_bytes)
+        body_record["bytes"] = len(body_manifest_bytes)
+        body_record["sha256"] = body_digest
+        for reference_group in (manifest["source_refs"], manifest["approval_refs"]):
+            for reference_entry in reference_group:
+                if reference_entry["path"] == body_record["path"]:
+                    reference_entry["sha256"] = body_digest
+    else:
+        manifest_path = character_pack_root / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+    manifest["body_pack"] = reference
+    manifest["package_hash"] = compute_package_hash(manifest)
+    manifest_path.write_bytes(_json_bytes(manifest))
 
 
 def _png(size: tuple[int, int], color: tuple[int, int, int, int]) -> bytes:

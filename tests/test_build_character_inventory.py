@@ -200,7 +200,10 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 loose files plus appearance defaults.
+CHARACTER_DATA_FILE_COUNTS = {
+    "mohan": 17,
+    "lin-keyun": 19,  # Includes the declared body manifest and appearance approval.
+}
 
 
 @pytest.mark.parametrize("character_id", ("mohan", "lin-keyun"))
@@ -220,7 +223,7 @@ def test_character_data_files_are_runtime_data(
         for path, row in rows.items()
         if "!" not in path and path.endswith(".json") and path not in build_only
     }
-    assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
+    assert len(data_rows) == CHARACTER_DATA_FILE_COUNTS[character_id]
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
     assert rows[f"{prefix}rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
     assert rows[f"{prefix}dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
@@ -230,6 +233,10 @@ def test_character_data_files_are_runtime_data(
     assert license_notice["category"] == "character_license_notice"
     assert license_notice["scope"] == "runtime_data"
     assert license_notice["readers"]
+    if character_id == "lin-keyun":
+        for relative in ("body/manifest.json", "body/approval.json"):
+            assert rows[f"{prefix}{relative}"]["category"] == "character_layer_view"
+            assert rows[f"{prefix}{relative}"]["readers"]
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
@@ -252,6 +259,13 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     } <= set(by_path)
     assert "domain/expression_system.py" not in by_path
     assert by_path["domain/constants.py"]["classification"] == "product_shell_allowed"
+    for path in (
+        "application/character_runtime_bootstrap.py",
+        "infrastructure/installed_body_packs.py",
+    ):
+        assert by_path[path]["classification"] == "product_shell_allowed"
+        assert by_path[path]["classification_reason"] == builder.PRODUCT_SHELL_ALLOWLIST[path]
+        assert by_path[path]["work_package"] is None
     for row in rows:
         assert row["migration"] == builder.EMBEDDED
         assert row["classification"] in builder.CLASSIFICATION_REASONS

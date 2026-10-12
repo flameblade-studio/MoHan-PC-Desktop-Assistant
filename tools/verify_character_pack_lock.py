@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-lazy import argparse
 lazy import sys
 lazy from collections.abc import Callable, Mapping, Sequence
 lazy from functools import partial
@@ -13,6 +12,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 lazy from huapu import character_pack_lock as _core
+lazy from huapu import character_pack_lock_cli as _cli
 lazy from tools import build_character_pack as builder
 lazy from application.character_runtime_bootstrap import (
     activate_product_character_runtime,
@@ -125,50 +125,15 @@ render_character_pack_lock = _core.render_character_pack_lock
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
-    activate_product_character_runtime(ROOT)
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--profile", choices=tuple(RELEASE_PROFILES), default="mohan")
-    parser.add_argument("--lock", type=Path)
-    parser.add_argument("--repo-root", type=Path, default=ROOT)
-    parser.add_argument("--update", action="store_true")
-    parser.add_argument("--archive-output", type=Path, help="Keep the exact release ZIP during --update.")
-    parsed = parser.parse_args(arguments)
-    if parsed.archive_output is not None and not parsed.update:
-        parser.error("--archive-output requires --update")
-    profile = RELEASE_PROFILES[parsed.profile]
-    lock_path = profile.lock_path if parsed.lock is None else parsed.lock
-    settings = profile.settings()
-    build = _build_for_profile(parsed.profile)
-    try:
-        operation = (
-            partial(_core.update_character_pack_lock, archive_output=parsed.archive_output)
-            if parsed.update
-            else _core.verify_character_pack_lock
-        )
-        result = operation(
-            lock_path,
-            repo_root=parsed.repo_root,
-            build=build,
-            settings=settings,
-        )
-        if parsed.update:
-            print(
-                "CHARACTER_PACK_LOCK_UPDATED="
-                f"{_core._resolve_lock_path(parsed.repo_root.resolve(), lock_path)}"
-            )
-    except (CharacterPackLockError, builder.CharacterPackBuildError, OSError) as error:
-        print(f"CHARACTER_PACK_LOCK_ERROR={error}", file=sys.stderr)
-        return 1
-    if not result.valid:
-        print("CHARACTER_PACK_LOCK_MISMATCH", file=sys.stderr)
-        for issue in result.issues:
-            print(f"LOCK_DIFFERENCE={issue}", file=sys.stderr)
-        return 1
-    print(f"PACKAGE_HASH={result.package_hash}")
-    print(f"ARCHIVE_SHA256={result.archive_sha256}")
-    print(f"ARCHIVE_BYTES={result.archive_bytes}")
-    print("CHARACTER_PACK_LOCK_VALID=1")
-    return 0
+    return _cli.run_release_lock_cli(
+        arguments,
+        description=__doc__,
+        profiles=RELEASE_PROFILES,
+        default_profile="mohan",
+        build_for_profile=_build_for_profile,
+        repository_root=ROOT,
+        activate_runtime=activate_product_character_runtime,
+    )
 
 
 if __name__ == "__main__":

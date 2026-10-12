@@ -5,13 +5,13 @@ from __future__ import annotations
 lazy import argparse
 lazy import json
 lazy import sys
-lazy from collections import Counter
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from huapu.inventory import build_owned_character_inventory
 lazy from tools import mohan_character_inventory as _adapter
 
 DIRECT = _adapter.DIRECT
@@ -68,21 +68,13 @@ render_summary = _adapter.render_summary
 
 def build_lin_keyun_inventory(inventory: dict[str, object]) -> dict[str, object]:
     """Select the release payload index owned by Lin Keyun only."""
-    rows = [
-        row for row in inventory["files"]
-        if row["path"].startswith("assets/characters/lin-keyun/")
-    ]
-    return {
-        "schema": "flameblade.character-pack-inventory.v1",
-        "schema_version": 1,
-        "profile": "lin-keyun",
-        "purpose": (
+    return build_owned_character_inventory(
+        inventory, profile="lin-keyun", prefix="assets/characters/lin-keyun/",
+        purpose=(
             "Release payload inventory limited to Lin Keyun-owned character files; "
             "shared MoHan full-frame assets are excluded."
         ),
-        "scope_counts": dict(sorted(Counter(row["scope"] for row in rows).items())),
-        "files": rows,
-    }
+    )
 
 
 def render_lin_keyun_inventory(inventory: dict[str, object]) -> str:

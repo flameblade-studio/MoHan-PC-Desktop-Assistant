@@ -337,6 +337,7 @@
       "infrastructure.bundled_character_source",
       "infrastructure.character_fullbody_factory",
       "infrastructure.flagship_windows_toolbox",
+      "infrastructure.installed_body_packs",
       "infrastructure.installed_character_packs",
       "infrastructure.platform_linux",
       "infrastructure.platform_macos",

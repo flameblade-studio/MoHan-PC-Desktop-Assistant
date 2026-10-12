@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy from collections import Counter
 lazy from collections.abc import Mapping, Sequence
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
@@ -137,3 +138,22 @@ def render_asset_inventory(inventory: Mapping[str, object]) -> str:
         sort_keys=True,
         indent=2,
     ) + "\n"
+
+
+def build_owned_character_inventory(
+    inventory: Mapping[str, object],
+    *,
+    profile: str,
+    prefix: str,
+    purpose: str,
+) -> dict[str, object]:
+    """Select a release index by the caller's exclusive character namespace."""
+    rows = [row for row in inventory["files"] if row["path"].startswith(prefix)]
+    return {
+        "schema": "flameblade.character-pack-inventory.v1",
+        "schema_version": 1,
+        "profile": profile,
+        "purpose": purpose,
+        "scope_counts": dict(sorted(Counter(row["scope"] for row in rows).items())),
+        "files": rows,
+    }

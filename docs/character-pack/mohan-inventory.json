@@ -112,9 +112,8 @@
     }
   ],
   "embedded_code_classification_counts": {
-    "engine_extract": 2,
     "persisted_identifier": 2,
-    "product_shell_allowed": 18
+    "product_shell_allowed": 20
   },
   "files": [
     {
@@ -215,8 +214,8 @@
     {
       "bytes": 6823,
       "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。",
       "content_categories": [
         "identity",
         "rig"
@@ -342,7 +341,7 @@
           "name": "__all__"
         }
       ],
-      "work_package": "rig-and-asset-parameterization"
+      "work_package": null
     },
     {
       "bytes": 2550,
@@ -117197,8 +117196,8 @@
     {
       "bytes": 4974,
       "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。",
       "content_categories": [
         "rig"
       ],
@@ -117272,7 +117271,7 @@
           "name": "__all__"
         }
       ],
-      "work_package": "rig-and-asset-parameterization"
+      "work_package": null
     },
     {
       "bytes": 38365,
@@ -119774,6 +119773,10 @@
       "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。"
     },
     {
+      "path": "application/character_runtime_bootstrap.py",
+      "reason": "產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。"
+    },
+    {
       "path": "application/runtime_bootstrap.py",
       "reason": "墨寒產品執行期入口保留程序與執行緒識別字。"
     },
@@ -119796,6 +119799,10 @@
     {
       "path": "infrastructure/backup_manager.py",
       "reason": "墨寒使用者備份檔名與產品資料位置屬產品殼相容契約。"
+    },
+    {
+      "path": "infrastructure/installed_body_packs.py",
+      "reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。"
     },
     {
       "path": "infrastructure/profile_transfer.py",

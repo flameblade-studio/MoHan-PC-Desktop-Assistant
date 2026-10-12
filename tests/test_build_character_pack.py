@@ -275,6 +275,9 @@ def test_manifest_preserves_declared_body_pack_and_layer_views(tmp_path: Path) -
     layer_bytes = b"\x89PNG\r\n\x1a\nlayer-payload"
     layer_hash = hashlib.sha256(layer_bytes).hexdigest()
     payloads[layer_path] = layer_bytes
+    layer_file = tmp_path / "repo" / layer_path
+    layer_file.parent.mkdir(parents=True, exist_ok=True)
+    layer_file.write_bytes(layer_bytes)
     inventory_document = json.loads(inventory.read_text(encoding="utf-8"))
     inventory_document["files"].append(
         _inventory_row(layer_path, layer_bytes, "character_layer_view")
