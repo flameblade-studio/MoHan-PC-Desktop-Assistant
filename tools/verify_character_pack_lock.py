@@ -24,6 +24,7 @@ DEFAULT_LOCK = _core.DEFAULT_LOCK
 SOURCE_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
 RELEASE_TAG_PREFIX = "mohan-pack-v"
 LIN_KEYUN_LOCK = Path("docs/character-pack/lin-keyun-pack.lock.json")
+LIN_KEYUN_INVENTORY = Path("docs/character-pack/lin-keyun-inventory.json")
 LIN_KEYUN_RELEASE_TAG_PREFIX = "lin-keyun-pack-v"
 
 CharacterPackLockError = _core.CharacterPackLockError
@@ -112,6 +113,14 @@ def compare_manifest_to_lock(
     return _core.compare_manifest_to_lock(manifest, lock)
 
 
+def _build_for_profile(profile_name: str) -> Callable[..., builder.CharacterPackBuildResult]:
+    profile = RELEASE_PROFILES[profile_name]
+    options: dict[str, Path] = {"source_path": profile.source_path}
+    if profile_name == "lin-keyun":
+        options["inventory_path"] = LIN_KEYUN_INVENTORY
+    return partial(builder.build_character_pack, **options)
+
+
 render_character_pack_lock = _core.render_character_pack_lock
 
 
@@ -129,7 +138,7 @@ def main(arguments: Sequence[str] | None = None) -> int:
     profile = RELEASE_PROFILES[parsed.profile]
     lock_path = profile.lock_path if parsed.lock is None else parsed.lock
     settings = profile.settings()
-    build = partial(builder.build_character_pack, source_path=profile.source_path)
+    build = _build_for_profile(parsed.profile)
     try:
         operation = (
             partial(_core.update_character_pack_lock, archive_output=parsed.archive_output)

@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 lazy import argparse
+lazy import json
 lazy import sys
+lazy from collections import Counter
 lazy from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,6 +66,32 @@ render_extraction_summary = _adapter.render_extraction_summary
 render_summary = _adapter.render_summary
 
 
+def build_lin_keyun_inventory(inventory: dict[str, object]) -> dict[str, object]:
+    """Select the release payload index owned by Lin Keyun only."""
+    rows = [
+        row for row in inventory["files"]
+        if row["path"].startswith("assets/characters/lin-keyun/")
+    ]
+    return {
+        "schema": "flameblade.character-pack-inventory.v1",
+        "schema_version": 1,
+        "profile": "lin-keyun",
+        "purpose": (
+            "Release payload inventory limited to Lin Keyun-owned character files; "
+            "shared MoHan full-frame assets are excluded."
+        ),
+        "scope_counts": dict(sorted(Counter(row["scope"] for row in rows).items())),
+        "files": rows,
+    }
+
+
+def render_lin_keyun_inventory(inventory: dict[str, object]) -> str:
+    """Serialize the dedicated Lin Keyun release inventory deterministically."""
+    return json.dumps(
+        build_lin_keyun_inventory(inventory), ensure_ascii=False, sort_keys=True, indent=2
+    ) + "\n"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
@@ -76,6 +104,7 @@ def main(argv: list[str] | None = None) -> int:
         "mohan-inventory-summary.md": render_summary(inventory),
         "extraction-worklist.json": render_extraction_worklist(worklist),
         "extraction-worklist.md": render_extraction_summary(worklist),
+        "lin-keyun-inventory.json": render_lin_keyun_inventory(inventory),
     }
     if args.check:
         for name, expected in outputs.items():

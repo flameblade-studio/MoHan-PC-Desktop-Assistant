@@ -8,6 +8,7 @@ lazy import zipfile
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
 
+lazy from domain.body_pack import BodyPackMismatchError
 lazy from domain.character_pack.models import (
     CharacterPackManifest,
     CharacterPackValidationResult,
@@ -20,6 +21,7 @@ lazy from infrastructure.character_source_pack import (
     CharacterPackReadError,
     CharacterPackReader,
 )
+lazy from infrastructure.installed_body_packs import installed_body_pack_root
 lazy from infrastructure.platform_services import resolved_data_dir
 
 INSTALLED_CHARACTER_PACKS_DIRECTORY = "character-packs"
@@ -76,12 +78,6 @@ def installed_character_pack_root(data_root: str | Path | None = None) -> Path:
     return root.expanduser() / INSTALLED_CHARACTER_PACKS_DIRECTORY
 
 
-def installed_body_pack_root(data_root: str | Path | None = None) -> Path:
-    """Locate externally installed body directories beside character packs."""
-    root = resolved_data_dir() if data_root is None else Path(data_root)
-    return root.expanduser() / "body-packs"
-
-
 def installed_character_pack_path(
     character_id: str,
     *,
@@ -129,7 +125,7 @@ def list_installed_character_packs(
                     signature_verifier=signature_verifier,
                 )
             )
-        except CharacterPackInstallError as error:
+        except (CharacterPackInstallError, BodyPackMismatchError) as error:
             raise CharacterPackInstallError(
                 f"Installed character pack {entry.name!r} failed validation: {error}"
             ) from error
@@ -429,6 +425,8 @@ def _read_character_source(
             signature_verifier=signature_verifier,
             body_pack_roots=(installed_body_pack_root(data_root),),
         )
+    except BodyPackMismatchError:
+        raise
     except (CharacterPackReadError, OSError, ValueError) as error:
         raise CharacterPackInstallError(str(error)) from error
     _require_character_id(reader, expected)

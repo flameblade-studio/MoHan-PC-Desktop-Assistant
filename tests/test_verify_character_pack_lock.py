@@ -192,15 +192,28 @@ def test_repository_lock_uses_the_owner_approved_public_release_identity() -> No
     assert lock.files
 
 
+def test_release_build_profile_uses_the_lin_keyun_inventory_only() -> None:
+    lin_keyun_build = verifier._build_for_profile("lin-keyun")
+    mohan_build = verifier._build_for_profile("mohan")
+
+    assert lin_keyun_build.func is builder.build_character_pack
+    assert lin_keyun_build.keywords == {
+        "source_path": Path("assets/characters/lin-keyun/pack-source.json"),
+        "inventory_path": verifier.LIN_KEYUN_INVENTORY,
+    }
+    assert mohan_build.func is builder.build_character_pack
+    assert mohan_build.keywords == {"source_path": builder.DEFAULT_SOURCE}
+
+
 def test_release_lock_loader_accepts_the_lin_keyun_public_release_identity() -> None:
     lock = verifier.load_release_character_pack_lock(
         ROOT / "docs" / "character-pack" / "lin-keyun-pack.lock.json"
     )
     assert lock.pack_id == "flameblade.lin-keyun"
-    assert lock.pack_version == "1.0.3"
+    assert lock.pack_version == "1.0.4"
     assert lock.source.repository == verifier.SOURCE_REPOSITORY
-    assert lock.source.release_tag == "lin-keyun-pack-v1.0.3"
-    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.3.zip"
+    assert lock.source.release_tag == "lin-keyun-pack-v1.0.4"
+    assert lock.archive.asset_name == "flameblade.lin-keyun-1.0.4.zip"
     assert lock.files
 
 

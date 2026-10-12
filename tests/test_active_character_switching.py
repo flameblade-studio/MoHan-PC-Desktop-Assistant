@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import logging
 lazy import os
 lazy import subprocess
+lazy import zipfile
 lazy import sys
 lazy import importlib
 lazy from pathlib import Path
@@ -82,6 +83,30 @@ def _install_fake_character(
     assert result.character_id == FAKE_CHARACTER_ID
     monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
     return archive, data_root
+
+
+def _write_fake_character_requiring_missing_body(
+    tmp_path: Path,
+    data_root: Path,
+) -> None:
+    archive = build_fake_character_pack(tmp_path)
+
+    def declare_missing_body(manifest: dict[str, object]) -> None:
+        manifest["body_pack"] = {
+            "id": "mohan-body-v2",
+            "version": "1.0.0",
+            "fingerprint": "1" * 64,
+        }
+
+    body_bound_archive = rewrite_character_pack_manifest(
+        archive,
+        tmp_path / "character-with-body-dependency.zip",
+        declare_missing_body,
+    )
+    installed = installed_character_pack_path(FAKE_CHARACTER_ID, data_root=data_root)
+    installed.mkdir(parents=True)
+    with zipfile.ZipFile(body_bound_archive) as package:
+        package.extractall(installed)
 
 
 def test_product_bundle_exposes_only_mohan() -> None:
@@ -278,6 +303,43 @@ def test_incompatible_development_archive_fails_closed_to_mohan(
 
     assert active_character_source().character_id == "mohan"
     assert "bundled default character remains active" in caplog.text
+
+
+def test_missing_body_dependency_refuses_character_without_mohan_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data_root = tmp_path / "profile"
+    _write_fake_character_requiring_missing_body(tmp_path, data_root)
+    monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
+    monkeypatch.setenv(ACTIVE_CHARACTER_ENV, FAKE_CHARACTER_ID)
+
+    with pytest.raises(RuntimeError, match="body_pack_missing") as error:
+        service_container.create_default_character_source()
+
+    message = str(error.value)
+    assert "No character was activated" in message
+    assert "bundled MoHan body is not used" in message
+    assert "python -m tools.fetch_body_pack" in message
+    with pytest.raises(RuntimeError, match="composition root must activate"):
+        active_character_source()
+    with pytest.raises(RuntimeError, match="composition root must activate"):
+        active_character_engine_profile()
+
+
+def test_mohan_default_stays_active_when_installed_character_loses_body_dependency(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    data_root = tmp_path / "profile"
+    _write_fake_character_requiring_missing_body(tmp_path, data_root)
+    monkeypatch.setenv(DATA_DIR_ENV, str(data_root))
+
+    source = service_container.create_character_source("mohan")
+
+    assert source.character_id == "mohan"
+    assert active_character_source() is source
+    active_character_engine_profile()
 
 
 def test_missing_external_outfit_falls_back_to_bare_base_with_diagnostic(

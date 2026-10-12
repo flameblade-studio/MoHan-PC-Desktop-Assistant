@@ -80,6 +80,7 @@ CATEGORY_LABELS = {
     "character_voice_data": "角色聲音偏好資料／角色声音偏好数据／Character voice preference data／キャラクターの音声設定データ",
     "character_rig_data": "角色外觀骨架資料／角色外观骨架数据／Character rig data／キャラクターのリグデータ",
     "character_expression_catalog": "角色表情狀態目錄／角色表情状态目录／Character expression state catalog／キャラクターの表情状態目録",
+    "character_layer_view": "角色分層圖與視角清冊／角色分层图与视角清单／Character layer views and view manifest／キャラクターのレイヤー画像と視点マニフェスト",
     "ui_onboarding": "初次設定角色圖／首次设置角色图／Onboarding character image／初回設定のキャラクター画像",
 }
 
@@ -118,6 +119,7 @@ GROUPS = (
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
     Group("assets/characters/lin-keyun/official-packs/", "appearance_pack", "tools/build_character_pack.py", "inspect_outfit_pack(path)"),
+    Group("assets/characters/lin-keyun/body/", "character_layer_view", "infrastructure/character_source_pack.py", "Read a manifest-declared character layer and recheck its SHA-256."),
     Group("assets/characters/mohan/appearance/", "character_appearance_defaults", "domain/character_pack/appearance_data.py", 'Path(path).read_text(encoding="utf-8")'),
     Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = active_character_data_path("persona/ui-identifiers.json")'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data_loader.py", 'root / "persona"'),

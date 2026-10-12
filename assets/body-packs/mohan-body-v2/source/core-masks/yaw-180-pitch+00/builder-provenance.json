@@ -1,0 +1,8 @@
+{
+  "adapter": "prior-delivery registration; original semantic masks",
+  "bald_sha256": "4a914e6bc2a65d5ae727dabc872f0e6607e87e6f7f84baee1ac45994c634b976",
+  "face_core_precleared": false,
+  "output_redirected": true,
+  "script": "exact-round9.py",
+  "script_sha256": "78613ad71e07d0ef1611085c81d76cd7a2bdab8d4bae767bcaa0cc1881d974d8"
+}

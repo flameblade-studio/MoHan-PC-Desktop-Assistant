@@ -169,6 +169,9 @@ if (-not (Test-Path -LiteralPath $Abi3tCompatibilityDll)) {
 
 $BuildInfo = Join-Path $ProjectRoot "build-info.json"
 $FontRoot = Join-Path $ProjectRoot "assets\fonts"
+$BuildRoot = [IO.Path]::GetFullPath((Join-Path $ProjectRoot "build"))
+$AssetStage = Join-Path $BuildRoot ("installer-assets-" + [guid]::NewGuid().ToString("N"))
+New-Item -ItemType Directory -Path $BuildRoot -Force | Out-Null
 @{
     version = $Version
     repository = "flameblade-studio/MoHan-PC-Desktop-Assistant"
@@ -178,13 +181,19 @@ $FontRoot = Join-Path $ProjectRoot "assets\fonts"
 } | ConvertTo-Json | Set-Content -Encoding utf8 $BuildInfo
 
 try {
+    & $Python tools/stage_installer_assets.py `
+        --source (Join-Path $ProjectRoot "assets") `
+        --destination $AssetStage
+    if ($LASTEXITCODE -ne 0) {
+        throw "MoHan $Version installer asset staging failed with exit code $LASTEXITCODE."
+    }
     & $Python -m PyInstaller `
         --noconfirm `
         --clean `
         --windowed `
         --name "$AppName-$Version" `
         --icon "assets\mohan-halfbody.ico" `
-        --add-data "assets;assets" `
+        --add-data "$AssetStage;assets" `
         --add-data "$FontRoot;assets/fonts" `
         --add-data "voice_listener.ps1;." `
         --add-data "LICENSE;." `
@@ -209,12 +218,23 @@ try {
         --collect-all "opencc" `
         --collect-all "sounddevice" `
         app.py
+    $PyInstallerExitCode = $LASTEXITCODE
 }
 finally {
-    Remove-Item -LiteralPath $BuildInfo -Force -ErrorAction SilentlyContinue
+    try {
+        if (Test-Path -LiteralPath $AssetStage) {
+            & $Python tools/stage_installer_assets.py --destination $AssetStage --cleanup
+            if ($LASTEXITCODE -ne 0) {
+                throw "MoHan $Version installer asset staging cleanup failed."
+            }
+        }
+    }
+    finally {
+        Remove-Item -LiteralPath $BuildInfo -Force -ErrorAction SilentlyContinue
+    }
 }
-if ($LASTEXITCODE -ne 0) {
-    throw "MoHan $Version main application PyInstaller build failed with exit code $LASTEXITCODE."
+if ($PyInstallerExitCode -ne 0) {
+    throw "MoHan $Version main application PyInstaller build failed with exit code $PyInstallerExitCode."
 }
 
 $PackageRoot = Join-Path $ProjectRoot "dist\$AppName-$Version"

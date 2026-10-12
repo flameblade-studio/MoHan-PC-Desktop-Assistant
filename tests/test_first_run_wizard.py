@@ -3,17 +3,21 @@ from __future__ import annotations
 lazy import os
 lazy import sys
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 lazy import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+lazy from PySide6.QtGui import QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.app_profile import profile_window_title
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.profile_transfer import PortableProfileManager
+lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from presentation import first_run_wizard as wizard_module
 lazy from presentation.first_run_wizard import FirstRunWizard
 
 
@@ -215,6 +219,67 @@ def test_imported_profile_is_not_rewritten_by_the_wizard(
     wizard.close()
     source_db.close()
     target_db.close()
+
+
+def test_body_pack_source_without_composed_portrait_never_uses_mohan_portrait(
+    application: QApplication,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    optional_path_calls: list[str] = []
+    source = SimpleNamespace(
+        appearance=SimpleNamespace(resolved_body_pack=object()),
+        manifest=SimpleNamespace(body_pack=object()),
+        assets=SimpleNamespace(
+            resolve_optional_path=lambda path: optional_path_calls.append(path),
+        ),
+    )
+    monkeypatch.setattr(wizard_module, "active_character_source", lambda: source)
+    resource_requests: list[str] = []
+    original_resource_path = wizard_module.resource_path
+
+    def track_resource_path(path: str) -> Path:
+        resource_requests.append(path)
+        return original_resource_path(path)
+
+    monkeypatch.setattr(wizard_module, "resource_path", track_resource_path)
+    db = StudioDB(tmp_path / "body-pack-wizard.db")
+
+    wizard = FirstRunWizard(db)
+
+    assert wizard.hero_image.isHidden()
+    assert optional_path_calls == []
+    assert resource_requests == [CHARACTER_ASSET_PATHS["onboarding_artwork"]]
+    wizard.close()
+    db.close()
+    application.processEvents()
+
+
+def test_mohan_null_injected_pixmap_resolves_its_active_source_portrait(
+    application: QApplication,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    portrait = Path(__file__).resolve().parents[1] / CHARACTER_ASSET_PATHS["first_run_portrait"]
+    path_calls: list[str] = []
+    source = SimpleNamespace(
+        appearance=SimpleNamespace(resolved_body_pack=None),
+        manifest=SimpleNamespace(body_pack=None),
+        assets=SimpleNamespace(
+            resolve_optional_path=lambda path: path_calls.append(path) or portrait,
+        ),
+    )
+    monkeypatch.setattr(wizard_module, "active_character_source", lambda: source)
+    db = StudioDB(tmp_path / "mohan-null-pixmap-wizard.db")
+
+    wizard = FirstRunWizard(db, appearance_pixmap=QPixmap())
+
+    assert path_calls == [CHARACTER_ASSET_PATHS["first_run_portrait"]]
+    assert wizard.hero_image.pixmap() is not None
+    assert not wizard.hero_image.pixmap().isNull()
+    wizard.close()
+    db.close()
+    application.processEvents()
 
 
 if __name__ == "__main__":

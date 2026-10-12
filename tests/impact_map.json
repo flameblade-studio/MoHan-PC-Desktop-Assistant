@@ -975,6 +975,7 @@
         "test_face_motion_interpolation.py",
         "test_face_renderer.py",
         "test_favor_exclusive.py",
+        "test_fetch_body_pack.py",
         "test_fetch_character_pack.py",
         "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
@@ -1065,6 +1066,7 @@
         "test_input_validation_boundaries.py",
         "test_installed_outfit_blink_roundtrip.py",
         "test_installed_outfit_cache.py",
+        "test_installer_asset_staging.py",
         "test_integrate_detachable_halfbody.py",
         "test_integrations_audit2_gaps.py",
         "test_integrations_silent_failures.py",
@@ -1319,6 +1321,7 @@
         "test_v4_vision_architecture_contracts.py",
         "test_v4_vision_documentation.py",
         "test_validate_third_party_denylist.py",
+        "test_verify_body_pack_lock.py",
         "test_verify_character_pack_download.py",
         "test_verify_character_pack_lock.py",
         "test_verify_multimodal_model_assets.py",
@@ -1555,6 +1558,7 @@
         "test_face_motion_interpolation.py",
         "test_face_renderer.py",
         "test_favor_exclusive.py",
+        "test_fetch_body_pack.py",
         "test_fetch_character_pack.py",
         "test_first_run_wizard.py",
         "test_flagship_core_layering.py",
@@ -2355,6 +2359,22 @@
     },
     {
       "paths": [
+        "docs/body-pack/source.json"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_body_pack_reader.py",
+        "test_character_pack.py",
+        "test_character_pack_zip_snapshot.py",
+        "test_fetch_body_pack.py",
+        "test_official_pack_ids_reservation.py",
+        "test_quality_gate.py",
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "tests/character_pack_fixtures.py"
       ],
       "tests": [
@@ -2490,7 +2510,8 @@
       ],
       "tests": [
         "test_active_character_switching.py",
-        "test_linkeyun_character_data.py"
+        "test_linkeyun_character_data.py",
+        "test_verify_character_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3972,6 +3993,7 @@
         "test_character_pose.py",
         "test_character_source.py",
         "test_check_pose_atlas_release.py",
+        "test_fetch_body_pack.py",
         "test_full_body_asset_audit.py",
         "test_full_body_asset_evidence.py",
         "test_hand_asset_evidence.py",
@@ -4239,7 +4261,8 @@
         "test_body_pack.py",
         "test_body_pack_presentation.py",
         "test_body_pack_reader.py",
-        "test_body_pack_runtime.py"
+        "test_body_pack_runtime.py",
+        "test_fetch_body_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4386,6 +4409,7 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/persona/profile.json",
         "assets/expressions/cheek_native_bcc8.png",
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
@@ -4398,6 +4422,7 @@
         "changelog.d/honest-character-extraction-measure.md",
         "docs/character-pack/extraction-worklist.json",
         "docs/character-pack/extraction-worklist.md",
+        "docs/character-pack/lin-keyun-inventory.json",
         "docs/character-pack/mohan-inventory-summary.md",
         "docs/character-pack/mohan-inventory.json"
       ],
@@ -4448,6 +4473,7 @@
         "test_character_source.py",
         "test_core_hand_regions.py",
         "test_face_motion_interpolation.py",
+        "test_first_run_wizard.py",
         "test_full_body_authored_blink.py",
         "test_full_body_authored_speech.py",
         "test_full_body_png_integrity.py",
@@ -4510,6 +4536,7 @@
       "tests": [
         "test_build_character_inventory.py",
         "test_character_runtime_data.py",
+        "test_installer_asset_staging.py",
         "test_release_automation.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -4685,6 +4712,7 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/body/manifest.json",
         "assets/characters/mohan/persona/ui-identifiers.json",
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -4731,6 +4759,16 @@
         "test_build_character_pack.py",
         "test_character_source.py",
         "test_preview_packaging.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/characters/lin-keyun/body/approval.json"
+      ],
+      "tests": [
+        "test_build_character_pack.py",
+        "test_golden_render.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4852,6 +4890,7 @@
         "test_face_layer_asymmetry_audit.py",
         "test_hand_model_packaging.py",
         "test_hand_model_provenance.py",
+        "test_installer_asset_staging.py",
         "test_layered_full_body_packaging_gate.py",
         "test_native_packaging_contract.py",
         "test_openai_vision_release_gate.py",
@@ -6520,6 +6559,18 @@
     },
     {
       "paths": [
+        "assets/body-packs/mohan-body-v2/LICENSE.txt",
+        "assets/body-packs/mohan-body-v2/NOTICE.md",
+        "tests/body_pack_fixtures.py",
+        "tools/fetch_body_pack.py"
+      ],
+      "tests": [
+        "test_fetch_body_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "tools/verify_character_pack_lock.py"
       ],
       "tests": [
@@ -7300,6 +7351,18 @@
       ],
       "tests": [
         "test_hand_asset_evidence.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/stage_installer_assets.py"
+      ],
+      "tests": [
+        "test_hand_model_packaging.py",
+        "test_hand_model_provenance.py",
+        "test_installer_asset_staging.py",
+        "test_vision_sbom.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -8759,6 +8822,15 @@
       ],
       "tests": [
         "test_validate_third_party_denylist.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/verify_body_pack_lock.py"
+      ],
+      "tests": [
+        "test_verify_body_pack_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

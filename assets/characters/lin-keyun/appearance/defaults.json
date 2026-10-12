@@ -1,31 +1,31 @@
 {
-  "schema": "flameblade.character-appearance-defaults.v1",
-  "schema_version": 1,
   "makeup": {
-    "pack_id": "mohan.makeup.builtin",
-    "item_id": "mohan-signature",
-    "variants": [
-      "classic",
+    "always_visible_variants": [
       "light",
-      "glamorous"
+      "classic"
     ],
+    "item_id": "none",
     "menu_variants": [
       "light",
       "classic",
       "glamorous"
     ],
-    "always_visible_variants": [
+    "pack_id": "builtin",
+    "variants": [
+      "classic",
       "light",
-      "classic"
+      "glamorous"
     ]
   },
   "outfit": {
-    "pack_id": "linkeyun.official.modern-office",
     "ensemble_id": "modern-office",
     "native_hair": {
       "item_id": "long-hair",
       "variant_id": "dark-brown"
     },
-    "native_headwear": null
-  }
+    "native_headwear": null,
+    "pack_id": "linkeyun.official.modern-office"
+  },
+  "schema": "flameblade.character-appearance-defaults.v1",
+  "schema_version": 1
 }

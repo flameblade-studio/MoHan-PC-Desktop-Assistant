@@ -6,14 +6,14 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 20,
-    "engine_extract_files": 0,
+    "actual_embedded_code_files": 22,
+    "engine_extract_files": 2,
     "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
     "product_shell_allowed_files": 20,
-    "true_extraction_files": 0,
+    "true_extraction_files": 2,
     "ui_text_reference_files": 0,
-    "work_packages": 0
+    "work_packages": 1
   },
   "declared_product_shell_allowlist": [
     {
@@ -77,7 +77,77 @@
       "status": "allowed_content_present"
     }
   ],
-  "extraction_items": [],
+  "extraction_items": [
+    {
+      "classification": "engine_extract",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "角色身形或角色識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 151,
+              "matched": "mohan-body-v2",
+              "text": "body_path = installed_body_pack_root() / \"mohan-body-v2\""
+            },
+            {
+              "line": 155,
+              "matched": "mohan-body-v2",
+              "text": "f\"Active character {selected!r} requires body pack 'mohan-body-v2'; \""
+            }
+          ],
+          "rule": "character_body_profile_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        },
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 157,
+              "matched": "MoHan",
+              "text": "\"No character was activated, so the bundled MoHan body is not used. \""
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/character_runtime_bootstrap.py",
+      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json",
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": "rig-and-asset-parameterization"
+    },
+    {
+      "classification": "engine_extract",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "角色身形或角色識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 17,
+              "matched": "mohan-body-v2",
+              "text": "MOHAN_BODY_PACK_ID = \"mohan-body-v2\""
+            }
+          ],
+          "rule": "character_body_profile_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/installed_body_packs.py",
+      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": "rig-and-asset-parameterization"
+    }
+  ],
   "owner_decisions": {
     "art_tool_license": "MIT",
     "character_asset_license": "CC-BY-NC-ND-4.0",
@@ -1050,5 +1120,22 @@
   "schema": "mohan.character-extraction-worklist.v1",
   "schema_version": 1,
   "source_inventory": "docs/character-pack/mohan-inventory.json",
-  "work_packages": []
+  "work_packages": [
+    {
+      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
+      "exclusive_files": [
+        "application/character_runtime_bootstrap.py",
+        "infrastructure/installed_body_packs.py"
+      ],
+      "file_count": 2,
+      "id": "rig-and-asset-parameterization",
+      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
+      "titles": [
+        "Rig 與素材路徑參數化",
+        "Rig 与素材路径参数化",
+        "Rig and asset parameterization",
+        "Rig と素材パスのパラメータ化"
+      ]
+    }
+  ]
 }

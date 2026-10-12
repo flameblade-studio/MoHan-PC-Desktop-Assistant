@@ -5,9 +5,12 @@ lazy import argparse
 lazy import hashlib
 lazy import json
 lazy import sys
+lazy import stat
+lazy import zipfile
 lazy from io import BytesIO
 lazy from math import ceil
 lazy from pathlib import Path, PurePosixPath
+lazy from dataclasses import dataclass
 lazy from PIL import Image, ImageChops, ImageFilter
 lazy import numpy as np
 lazy import cv2
@@ -24,6 +27,14 @@ EYES = ("rest", "half", "closed")
 MISSING_POSES = frozenset({"front-eureka", "front-mock-scold", "front-mock-hit"})
 HALF_BASES = ("front-crossed", "left-neutral", "cheek-rest", "exasperated")
 FULL_VIEW_COUNT = 24
+APPROVED_LAYER_VIEW_COUNT = 203
+APPROVED_LAYER_FILE_COUNT = 155
+APPROVED_LAYER_DIRECTORY_COUNT = 31
+BODY_PACK_ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
+EXPECTED_BODY_REFERENCE = {
+    "id": "mohan-body-v2",
+    "fingerprint": "6340691bfdca8f2eb6197f6237481a550f366ddb762905353703e1a513da778c",
+}
 MOTION_THRESHOLD = 8
 OPAQUE_ALPHA = 255
 CORE_ALPHA_THRESHOLD = 128
@@ -363,6 +374,63 @@ def write_frame(root: Path, relative: str, image: Image.Image) -> dict[str, str]
     return {"path": relative, "sha256": hashlib.sha256(payload).hexdigest()}
 
 
+def _zip_file_records(package_root: Path) -> list[dict[str, object]]:
+    records = []
+    for path in sorted(package_root.rglob("*")):
+        if path.is_symlink() or path.is_junction():
+            raise ValueError(f"Release package contains a link: {path}")
+        if not path.is_file():
+            continue
+        relative = path.relative_to(package_root).as_posix()
+        pure = PurePosixPath(relative)
+        if pure.is_absolute() or "\\" in relative or ".." in pure.parts or ":" in relative:
+            raise ValueError(f"Unsafe release member path: {relative}")
+        payload = path.read_bytes()
+        records.append({
+            "path": relative,
+            "bytes": len(payload),
+            "sha256": hashlib.sha256(payload).hexdigest(),
+        })
+    return sorted(records, key=lambda item: str(item["path"]))
+
+
+def build_reproducible_zip(package_root: Path, archive_path: Path) -> dict[str, object]:
+    """Write sorted ZIP_STORED regular files with fixed timestamps and permissions."""
+    root = package_root.resolve()
+    destination = archive_path.resolve(strict=False)
+    if destination.is_relative_to(root):
+        raise ValueError("Release archive must be outside the package directory")
+    _check_output_path(archive_path)
+    records = _zip_file_records(root)
+    archive_path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(archive_path, "w", compression=zipfile.ZIP_STORED, allowZip64=False) as archive:
+        for record in records:
+            relative = str(record["path"])
+            info = zipfile.ZipInfo(relative, date_time=BODY_PACK_ZIP_TIMESTAMP)
+            info.compress_type = zipfile.ZIP_STORED
+            info.create_system = 3
+            info.external_attr = (stat.S_IFREG | 0o644) << 16
+            info.extra = b""
+            info.comment = b""
+            archive.writestr(info, (root / relative).read_bytes())
+    payload = archive_path.read_bytes()
+    return {
+        "bytes": len(payload),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "files": records,
+    }
+
+
+def _copy_release_legal_files(product_root: Path, package_root: Path) -> None:
+    legal_root = product_root / "assets/body-packs/mohan-body-v2"
+    for name in ("LICENSE.txt", "NOTICE.md"):
+        source = legal_root / name
+        if not source.is_file():
+            raise ValueError(f"Required release legal text is missing: {source}")
+        text = source.read_text(encoding="utf-8")
+        (package_root / name).write_text(text, encoding="utf-8", newline="\n")
+
+
 def layer_directory(root: Path, view: str) -> Path:
     """Resolve the owner's exact F1/F2/H partition, without recursive discovery."""
     if not view.startswith("yaw"):
@@ -394,6 +462,95 @@ def _input_manifest(path: Path) -> dict:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         raise ValueError(f"Expected a manifest object: {path}")
+    return value
+
+
+def _load_approved_layer_views(root: Path, version: str, product_root: Path) -> dict:
+    """Validate and retain the exact approved companion layer manifest."""
+    manifest = _input_manifest(root / "manifest.json")
+    if set(manifest) != {"body_pack", "layer_views"}:
+        raise ValueError("The companion body manifest has unexpected fields")
+    expected_reference = {**EXPECTED_BODY_REFERENCE, "version": version}
+    if manifest["body_pack"] != expected_reference:
+        raise ValueError("The companion layer manifest references a different body pack")
+    layer_views = manifest["layer_views"]
+    parse_character_layer_views(layer_views)
+    if len(layer_views) != APPROVED_LAYER_VIEW_COUNT:
+        raise ValueError(f"Expected 203 approved layer views, found {len(layer_views)}")
+    unique_paths = set()
+    view_directories = set()
+    for view, plan in layer_views.items():
+        for record in [*plan["layers"], plan["base_hide"]]:
+            relative = record["path"]
+            path = _safe_file(product_root, relative)
+            if hashlib.sha256(path.read_bytes()).hexdigest() != record["sha256"]:
+                raise ValueError(f"Companion layer SHA-256 mismatch: {view}/{relative}")
+            unique_paths.add(relative)
+            view_directories.add(PurePosixPath(relative).parent.as_posix())
+    if (len(unique_paths) != APPROVED_LAYER_FILE_COUNT
+            or len(view_directories) != APPROVED_LAYER_DIRECTORY_COUNT):
+        raise ValueError(
+            "Expected the approved 155 PNGs in 31 view directories; "
+            f"found {len(unique_paths)} PNGs in {len(view_directories)} directories"
+        )
+    return layer_views
+
+
+def verify_release_source_manifest(path: Path, product_root: Path) -> dict:
+    """Verify the complete, portable, checked-in source tree before a release build."""
+    value = _input_manifest(path)
+    expected_fields = {
+        "schema", "schema_version", "pack", "source_roots", "files",
+        "metadata_receipts", "source_manifest_drift", "layer_dependency", "build_provenance",
+    }
+    if set(value) != expected_fields:
+        raise ValueError("Release source manifest fields differ from the supported schema")
+    if value["schema"] != "flameblade.body-pack-source.v1" or value["schema_version"] != 1:
+        raise ValueError("Release source manifest uses an unsupported schema")
+    pack = value["pack"]
+    if set(pack) != {"id", "version", "license", "expected_fingerprint"}:
+        raise ValueError("Release source pack identity fields differ from the schema")
+    if (pack["id"], pack["license"], pack["expected_fingerprint"]) != (
+        EXPECTED_BODY_REFERENCE["id"], "CC-BY-NC-ND-4.0", EXPECTED_BODY_REFERENCE["fingerprint"]
+    ):
+        raise ValueError("Release source manifest does not match the approved body identity")
+    if not isinstance(pack["version"], str) or not pack["version"].strip():
+        raise ValueError("Release source manifest must declare a non-empty pack version")
+    source_root = product_root / "assets/body-packs/mohan-body-v2/source"
+    records = value["files"]
+    if not isinstance(records, list) or not records:
+        raise ValueError("Release source manifest must declare its source files")
+    declared = {}
+    for row in records:
+        if not isinstance(row, dict) or set(row) != {"path", "bytes", "sha256"}:
+            raise ValueError("Release source file records require path, bytes and sha256")
+        relative = row["path"]
+        if not isinstance(relative, str) or relative in declared:
+            raise ValueError("Release source file paths must be unique relative POSIX paths")
+        source = _safe_file(source_root, relative)
+        payload = source.read_bytes()
+        if type(row["bytes"]) is not int or len(payload) != row["bytes"]:
+            raise ValueError(f"Release source byte count changed: {relative}")
+        digest = hashlib.sha256(payload).hexdigest()
+        if row["sha256"] != digest:
+            raise ValueError(f"Release source SHA-256 changed: {relative}")
+        declared[relative] = digest
+    actual = {
+        item.relative_to(source_root).as_posix()
+        for item in source_root.rglob("*")
+        if item.is_file()
+    }
+    if actual != set(declared):
+        raise ValueError(
+            "Release source tree differs from its manifest: "
+            f"unlisted={sorted(actual - set(declared))}, missing={sorted(set(declared) - actual)}"
+        )
+    serialized = json.dumps(value, ensure_ascii=False)
+    if "C:" in serialized or "D:" in serialized:
+        raise ValueError("Release source manifest contains a local absolute path")
+    for field in ("source_roots", "metadata_receipts", "source_manifest_drift", "layer_dependency", "build_provenance"):
+        if field not in value:
+            raise ValueError(f"Release source manifest is missing {field}")
     return value
 
 
@@ -451,12 +608,43 @@ def _directory_stats(root: Path, *, exclude_recomputed: bool = False) -> dict:
     return {"files": len(rows), "bytes": sum(row["bytes"] for row in rows), "inventory": rows}
 
 
+@dataclass(frozen=True)
+class BuildRequest:
+    """Immutable inputs for one legacy or release body-pack build."""
+
+    product_root: Path
+    bald_root: Path
+    layers_root: Path
+    output: Path
+    license_text: str
+    mode: str = "all"
+    layer_mode: str = "copy"
+    fixed_core_root: Path | None = None
+    character_layers_root: Path | None = None
+    source_manifest: Path | None = None
+    version: str = "1.0.0"
+
+
 class _Builder:
     """Own one build's source paths, bindings and deterministic output files."""
 
-    def __init__(self, product_root: Path, bald_root: Path, layers_root: Path,
-                 output: Path, license_text: str, mode: str, layer_mode: str) -> None:
+    def __init__(self, request: BuildRequest) -> None:
+        product_root = request.product_root
+        bald_root = request.bald_root
+        layers_root = request.layers_root
+        output = request.output
+        license_text = request.license_text
+        mode = request.mode
+        layer_mode = request.layer_mode
+        fixed_core_root = request.fixed_core_root
+        character_layers_root = request.character_layers_root
+        version = request.version
         self.mode = mode
+        self.fixed_core_root = fixed_core_root
+        self.character_layers_root = character_layers_root
+        self.direct_source = fixed_core_root is not None
+        if self.direct_source != (character_layers_root is not None):
+            raise ValueError("Fixed core masks and companion layer assets must be supplied together")
         gestures_root = layers_root / "gestures3"
         self.gestures_root = gestures_root if gestures_root.is_dir() else None
         self.gestures = set()
@@ -486,10 +674,12 @@ class _Builder:
             raise ValueError(f"Expected 24 approved full-body canvases, found {len(self.views)}")
         bald_manifest = _input_manifest(bald_root / "manifest.json")
         self.bald_hashes = {row["view"]: row["sha256"] for row in bald_manifest["views"]}
-        self.manifest = {"schema": "mohan.body-pack.v1", "id": "mohan-body-v2", "version": "1.0.0",
+        if self.direct_source and self.gestures != MISSING_POSES:
+            raise ValueError("The locked release source requires all three approved gesture inputs")
+        self.manifest = {"schema": "mohan.body-pack.v1", "id": "mohan-body-v2", "version": version,
                          "license": license_text, "missing_body_poses": {pose: {"status": "missing_body_pose"}
                          for pose in sorted(MISSING_POSES - self.gestures)}, "full_body": {}, "half_body": {}, "face_core_masks": {}}
-        self.layer_views = {}
+        self.layer_views = _load_approved_layer_views(character_layers_root, version, product_root) if self.direct_source else {}
         self.inventory = {"full_body": {}, "half_body": {}, "expressions": {}, "missing_body_poses": []}
 
     def base_pose(self, pose: str) -> str | None:
@@ -529,15 +719,20 @@ class _Builder:
 
     def build_full_body(self) -> None:
         for view in self.views:
-            source_dir = self.layer_source(view)
-            plan, core = _copy_layer_view(source_dir, self.character, view)
+            if self.direct_source:
+                plan = self.layer_views[view]
+                core = read_mask(_safe_file(self.fixed_core_root, f"{view}.png"))
+            else:
+                source_dir = self.layer_source(view)
+                plan, core = _copy_layer_view(source_dir, self.character, view)
             base = read_image(self.bald_root / view / "bald-natural.png", self.bald_hashes[view])
             if core.size != base.size:
                 raise ValueError(f"Core canvas mismatch: {view}")
             group = self.full_source.get(view)
             if group is None:
                 raw = read_image(self.atlas / f"{view}.png")
-                core = dynamic_face_core(core, raw, [], feather_radius=_static_feather_radius(source_dir))
+                if not self.direct_source:
+                    core = dynamic_face_core(core, raw, [], feather_radius=_static_feather_radius(source_dir))
                 states = {"rest": write_frame(self.pack, f"full-body/{view}/rest.png",
                                                transplant_face_core(base, raw, core))}
             else:
@@ -545,15 +740,17 @@ class _Builder:
                             "a": group["frames"]["A"], "o": group["frames"]["O"]}
                 all_records = _states(families, halfbody=False, mode="all")
                 originals = {state: _record_image(self.layered, record) for state, record in all_records.items()}
-                core = dynamic_face_core(core, originals["rest"], list(originals.values()),
-                                         feather_radius=_static_feather_radius(source_dir))
+                if not self.direct_source:
+                    core = dynamic_face_core(core, originals["rest"], list(originals.values()),
+                                             feather_radius=_static_feather_radius(source_dir))
                 states = {}
                 for state in _states(families, halfbody=False, mode=self.mode):
                     image = transplant_face_core(base, originals[state], core)
                     states[state] = write_frame(self.pack, f"full-body/{view}/{state}.png", image)
             self.manifest["full_body"][view] = states
             self.manifest["face_core_masks"][view] = write_frame(self.pack, f"face-core/{view}.png", core)
-            self.layer_views[view] = plan
+            if not self.direct_source:
+                self.layer_views[view] = plan
             self.inventory["full_body"][view] = {"states": sorted(states), "rest_only": group is None,
                                             "source_visemes": [] if group is None else sorted(group["frames"])}
 
@@ -564,7 +761,12 @@ class _Builder:
                 self.inventory["missing_body_poses"].append(pose)
                 self.inventory["half_body"][pose] = {"body_pose": None, "status": "missing_body_pose"}
                 continue
-            if base_pose not in self.layer_views:
+            if self.direct_source:
+                core = read_mask(_safe_file(self.fixed_core_root, f"{base_pose}.png"))
+                self.manifest["face_core_masks"][base_pose] = write_frame(
+                    self.pack, f"face-core/{base_pose}.png", core
+                )
+            elif base_pose not in self.layer_views:
                 source_dir = self.layer_source(base_pose)
                 plan, core = _copy_layer_view(source_dir, self.character, base_pose)
                 # Recomputing B may change eligibility; retain the approved static F.
@@ -588,7 +790,9 @@ class _Builder:
                     )
                 core = _feather_face_union(static_core, movement, _static_feather_radius(source_dir))
                 self.layer_views[base_pose] = plan
-                self.manifest["face_core_masks"][base_pose] = write_frame(self.pack, f"face-core/{base_pose}.png", core)
+                self.manifest["face_core_masks"][base_pose] = write_frame(
+                    self.pack, f"face-core/{base_pose}.png", core
+                )
             core = read_image(self.pack / self.manifest["face_core_masks"][base_pose]["path"])
             base = self.bald_image(base_pose)
             states = {}
@@ -598,7 +802,11 @@ class _Builder:
                 states[state] = write_frame(self.pack, f"half-body/{pose}/{state}.png", image)
             self.manifest["half_body"][pose] = states
             self.manifest["face_core_masks"][pose] = self.manifest["face_core_masks"][base_pose]
-            self.layer_views[pose] = self.layer_views[base_pose]
+            if self.direct_source:
+                if self.layer_views.get(pose) != self.layer_views[base_pose]:
+                    raise ValueError(f"Approved companion layer alias differs from the body binding: {pose}")
+            else:
+                self.layer_views[pose] = self.layer_views[base_pose]
             self.inventory["half_body"][pose] = {"body_pose": base_pose, "states": sorted(states), "status": "built"}
             if pose in self.gestures:
                 self.inventory["half_body"][pose]["appearance_accepted"] = True
@@ -609,7 +817,11 @@ class _Builder:
                             "lean": "left-neutral", "cheek": "cheek-rest"}.items():
             self.manifest["half_body"][alias] = self.manifest["half_body"][pose]
             self.manifest["face_core_masks"][alias] = self.manifest["face_core_masks"][pose]
-            self.layer_views[alias] = self.layer_views[pose]
+            if self.direct_source:
+                if self.layer_views.get(alias) != self.layer_views[pose]:
+                    raise ValueError(f"Approved companion alias differs from the body binding: {alias}")
+            else:
+                self.layer_views[alias] = self.layer_views[pose]
         for expression, binding in sorted(self.half_manifest["expressions"].items()):
             pose = binding["pose"]
             built = pose in self.manifest["half_body"]
@@ -618,39 +830,74 @@ class _Builder:
             if built:
                 self.manifest["half_body"][expression] = self.manifest["half_body"][pose]
                 self.manifest["face_core_masks"][expression] = self.manifest["face_core_masks"][pose]
-                self.layer_views[expression] = self.layer_views[pose]
+                if self.direct_source:
+                    if self.layer_views.get(expression) != self.layer_views[pose]:
+                        raise ValueError(
+                            f"Approved companion expression alias differs from the body binding: {expression}"
+                        )
+                else:
+                    self.layer_views[expression] = self.layer_views[pose]
 
 
-def build_body_pack(product_root: Path, bald_root: Path, layers_root: Path,
-                    output: Path, license_text: str, mode: str = "all", *, layer_mode: str = "copy") -> dict:
-    """Build reviewed views and expression aliases; enumerate missing silhouettes."""
+def _build_body_pack_request(request: BuildRequest) -> dict:
+    """Build reviewed views and expression aliases from one validated request."""
+    product_root = request.product_root
+    bald_root = request.bald_root
+    layers_root = request.layers_root
+    output = request.output
+    license_text = request.license_text
+    mode = request.mode
+    layer_mode = request.layer_mode
+    fixed_core_root = request.fixed_core_root
+    character_layers_root = request.character_layers_root
+    source_manifest = request.source_manifest
+    version = request.version
     if layer_mode not in {"copy", "recompute", "reuse"}:
         raise ValueError("Layer mode must be copy, recompute or reuse")
     if mode not in {"all", "eyes"}:
         raise ValueError("Build mode must be all or eyes")
     if not license_text.strip():
         raise ValueError("Provide the rights holder's license text")
+    if (fixed_core_root is None) != (character_layers_root is None):
+        raise ValueError("Fixed core masks and companion layer assets must be supplied together")
+    if fixed_core_root is not None and source_manifest is None:
+        raise ValueError("Fixed-source release builds require a source manifest")
+    if not isinstance(version, str) or not version.strip():
+        raise ValueError("Provide a non-empty body-pack version")
+    if source_manifest is not None:
+        source_document = verify_release_source_manifest(source_manifest, product_root)
+        if source_document["pack"]["version"] != version:
+            raise ValueError("Requested build version differs from the release source manifest")
     _check_output_path(output)
     roots = [(product_root / "assets").resolve(), bald_root.resolve(), layers_root.resolve()]
+    roots.extend(root.resolve() for root in (fixed_core_root, character_layers_root) if root is not None)
     resolved_output = output.resolve()
     if any(resolved_output.is_relative_to(root) or root.is_relative_to(resolved_output) for root in roots):
         raise ValueError("Output must be separate from every read-only input root")
     receipt = output / "build-receipt.json"
     if receipt.exists() and _input_manifest(receipt)["mode"] != mode:
         raise ValueError("Use a separate output directory for a different build mode")
-    builder = _Builder(product_root, bald_root, layers_root, output, license_text, mode, layer_mode)
+    builder = _Builder(request)
     builder.build_full_body()
     builder.build_half_body()
     builder.bind_aliases()
     manifest = builder.manifest
     manifest["fingerprint"] = compute_body_pack_fingerprint(manifest)
     parse_body_pack(manifest)
+    if builder.direct_source and manifest["fingerprint"] != EXPECTED_BODY_REFERENCE["fingerprint"]:
+        raise ValueError(
+            "Rebuilt body fingerprint differs from the approved source reference: "
+            f"{manifest['fingerprint']}"
+        )
     write_json(builder.pack / "manifest.json", manifest)
     reference = {key: manifest[key] for key in ("id", "version", "fingerprint")}
     write_json(builder.character / "manifest.json", {"body_pack": reference, "layer_views": builder.layer_views})
     write_json(output / "inventory.json", builder.inventory)
     stats = {"mode": mode, "body_pack": _directory_stats(builder.pack),
-             "character_layers": _directory_stats(builder.character, exclude_recomputed=True),
+             "character_layers": _directory_stats(
+                 builder.character_layers_root if builder.direct_source else builder.character,
+                 exclude_recomputed=True,
+             ),
              "fingerprint": manifest["fingerprint"],
              "missing_body_poses": builder.inventory["missing_body_poses"],
              "pending_appearance_approval": [],
@@ -660,24 +907,77 @@ def build_body_pack(product_root: Path, bald_root: Path, layers_root: Path,
     return stats
 
 
+def build_body_pack(product_root: Path, bald_root: Path, layers_root: Path,
+                    output: Path, license_text: str, mode: str = "all", *,
+                    layer_mode: str = "copy") -> dict:
+    """Preserve the original public builder API for existing callers."""
+    return _build_body_pack_request(BuildRequest(
+        product_root=product_root, bald_root=bald_root, layers_root=layers_root,
+        output=output, license_text=license_text, mode=mode, layer_mode=layer_mode,
+    ))
+
+
+def build_release_body_pack(request: BuildRequest) -> dict:
+    """Build from the complete pinned release-source request."""
+    return _build_body_pack_request(request)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     for option in ("product-root", "bald-root", "layers-root", "output"):
         parser.add_argument(f"--{option}", type=Path, required=True)
     parser.add_argument("--license", required=True)
+    parser.add_argument("--fixed-core-root", type=Path)
+    parser.add_argument("--character-layers-root", type=Path)
+    parser.add_argument("--source-manifest", type=Path)
+    parser.add_argument("--version")
+    parser.add_argument("--zip-output", type=Path)
     partition_options = parser.add_mutually_exclusive_group()
     partition_options.add_argument("--recompute-layers", action="store_true")
     partition_options.add_argument("--reuse-recomputed-layers", action="store_true")
     parser.add_argument("--mode", choices=("all", "eyes"), default="all")
     args = parser.parse_args()
-    stats = build_body_pack(args.product_root, args.bald_root, args.layers_root,
-                            args.output, args.license, args.mode,
-                            layer_mode="recompute" if args.recompute_layers else
-                            "reuse" if args.reuse_recomputed_layers else "copy")
+    version = args.version or "1.0.0"
+    if args.source_manifest is not None:
+        source = verify_release_source_manifest(args.source_manifest, args.product_root)
+        source_version = source["pack"]["version"]
+        if args.version is not None and args.version != source_version:
+            parser.error("--version must match the version declared in --source-manifest")
+        version = source_version
+    stats = build_release_body_pack(BuildRequest(
+        product_root=args.product_root,
+        bald_root=args.bald_root,
+        layers_root=args.layers_root,
+        output=args.output,
+        license_text=args.license,
+        mode=args.mode,
+        layer_mode=("recompute" if args.recompute_layers else
+                    "reuse" if args.reuse_recomputed_layers else "copy"),
+        fixed_core_root=args.fixed_core_root,
+        character_layers_root=args.character_layers_root,
+        source_manifest=args.source_manifest,
+        version=version,
+    ))
+    archive_info = None
+    archive_path = None
+    if args.zip_output is not None:
+        package_root = args.output / "mohan-body-v2"
+        _copy_release_legal_files(args.product_root, package_root)
+        archive_name = f"flameblade.mohan-body-v2-{version}.zip"
+        archive_path = args.zip_output
+        if archive_path.suffix.lower() != ".zip":
+            archive_path = archive_path / archive_name
+        elif archive_path.name != archive_name:
+            parser.error(f"--zip-output filename must be {archive_name}")
+        archive_info = build_reproducible_zip(package_root, archive_path)
     print(json.dumps({key: value for key, value in stats.items() if key not in {"body_pack", "character_layers"}},
                      sort_keys=True))
     print(json.dumps({key: {"files": stats[key]["files"], "bytes": stats[key]["bytes"]}
                       for key in ("body_pack", "character_layers")}, sort_keys=True))
+    if archive_info is not None:
+        print(json.dumps({"archive": archive_path.as_posix(),
+                          "archive_bytes": archive_info["bytes"],
+                          "archive_sha256": archive_info["sha256"]}, sort_keys=True))
     return 0
 
 

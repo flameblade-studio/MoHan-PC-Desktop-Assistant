@@ -50,11 +50,50 @@ def test_inventory_rebuild_matches_committed_bytes(inventory: dict[str, Any]) ->
     expected = builder.render_inventory(inventory)
     assert builder.render_inventory(builder.build_inventory(ROOT)) == expected
     assert (ROOT / "docs/character-pack/mohan-inventory.json").read_text(encoding="utf-8") == expected
+    lin_keyun_expected = builder.render_lin_keyun_inventory(inventory)
+    assert (
+        ROOT / "docs/character-pack/lin-keyun-inventory.json"
+    ).read_text(encoding="utf-8") == lin_keyun_expected
     assert (ROOT / "docs/character-pack/mohan-inventory-summary.md").read_text(encoding="utf-8") == builder.render_summary(inventory)
     paths = [row["path"] for row in inventory["files"]]
     assert paths == sorted(set(paths))
     assert str(ROOT) not in expected
     assert "timestamp" not in inventory
+
+
+def test_lin_keyun_inventory_selects_only_owned_files() -> None:
+    inventory = {
+        "files": [
+            {
+                "path": "assets/characters/lin-keyun/body/views/front/hair-front.png",
+                "scope": "runtime_data",
+                "sha256": "a" * 64,
+                "bytes": 7,
+            },
+            {
+                "path": "assets/characters/lin-keyun/persona/profile.json",
+                "scope": "runtime_data",
+                "sha256": "b" * 64,
+                "bytes": 5,
+            },
+            {
+                "path": "assets/pose-atlas/v5-base/front.png",
+                "scope": "excluded_support",
+                "sha256": "c" * 64,
+                "bytes": 9,
+            },
+        ]
+    }
+
+    selected = builder.build_lin_keyun_inventory(inventory)
+
+    assert selected["profile"] == "lin-keyun"
+    assert [row["path"] for row in selected["files"]] == [
+        "assets/characters/lin-keyun/body/views/front/hair-front.png",
+        "assets/characters/lin-keyun/persona/profile.json",
+    ]
+    assert selected["scope_counts"] == {"runtime_data": 2}
+    assert json.loads(builder.render_lin_keyun_inventory(inventory)) == selected
 
 
 def test_worklist_rebuild_matches_committed_bytes(
