@@ -11,6 +11,11 @@ lazy import zipfile
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path
 lazy from domain.character_pack.archive import _ValidationFailure, _PackageReader, _open_reader, _validate_safe_path, _fold_path
+lazy from domain.body_pack import BodyPackError, parse_body_pack_reference
+lazy from domain.character_layer_plan import (
+    CharacterLayerPlanError,
+    parse_character_layer_views,
+)
 
 lazy from domain.character_pack.models import (
     CharacterPackComponent,
@@ -87,7 +92,13 @@ TOP_LEVEL_REQUIRED = frozenset({
     "files",
     "package_hash",
 })
-TOP_LEVEL_OPTIONAL = frozenset({"components", "dependencies", "signature"})
+TOP_LEVEL_OPTIONAL = frozenset({
+    "body_pack",
+    "components",
+    "dependencies",
+    "layer_views",
+    "signature",
+})
 IDENTIFIER = re.compile(r"[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?\Z")
 SEMVER = re.compile(r"(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\.(0|[1-9][0-9]{0,8})\Z")
 SHA256 = re.compile(r"[0-9a-f]{64}\Z")
@@ -255,9 +266,36 @@ def _parse_manifest(value: dict[str, object]) -> CharacterPackManifest:
     files = _files(value["files"])
     components = _components(value.get("components", []))
     dependencies = _dependencies(value.get("dependencies", []))
+    try:
+        body_pack = (
+            parse_body_pack_reference(value["body_pack"])
+            if "body_pack" in value
+            else None
+        )
+    except BodyPackError as error:
+        raise _ValidationFailure(
+            "invalid_manifest",
+            f"body_pack does not contain a valid id, version, and fingerprint: {error}",
+            "body_pack",
+        ) from None
+    try:
+        layer_views = parse_character_layer_views(value.get("layer_views"))
+    except CharacterLayerPlanError as error:
+        raise _ValidationFailure(
+            "invalid_manifest",
+            f"layer_views violates its character layer contract: {error}",
+            "layer_views",
+        ) from None
+    if layer_views and body_pack is None:
+        raise _ValidationFailure(
+            "invalid_manifest",
+            "layer_views requires a declared body_pack reference.",
+            "layer_views",
+        )
     package_hash = _sha256(value["package_hash"], "package_hash")
     signature = _signature(value.get("signature"))
     _validate_manifest_references(licenses, source_refs, approval_refs, components, files)
+    _validate_layer_references(layer_views, files)
     return CharacterPackManifest(
         SCHEMA,
         pack_id,
@@ -278,6 +316,8 @@ def _parse_manifest(value: dict[str, object]) -> CharacterPackManifest:
         dependencies,
         package_hash,
         signature,
+        body_pack,
+        layer_views,
     )
 
 
@@ -588,6 +628,29 @@ def _validate_manifest_references(
             raise _ValidationFailure("missing_file", "A component is not declared in files.", component.path)
         if record.sha256 != component.sha256:
             raise _ValidationFailure("reference_hash_mismatch", "A component hash differs from its file record.", component.path)
+
+
+def _validate_layer_references(
+    layer_views: Mapping[str, object],
+    files: tuple[CharacterPackFile, ...],
+) -> None:
+    by_path = {record.path: record for record in files}
+    for plan in layer_views.values():
+        assets = (*plan.layers, *((plan.base_hide,) if plan.base_hide is not None else ()))
+        for asset in assets:
+            record = by_path.get(asset.path)
+            if record is None:
+                raise _ValidationFailure(
+                    "missing_file",
+                    "A character layer reference is not declared in files.",
+                    asset.path,
+                )
+            if record.sha256 != asset.sha256:
+                raise _ValidationFailure(
+                    "reference_hash_mismatch",
+                    "A character layer hash differs from its file record.",
+                    asset.path,
+                )
 
 
 def _validate_engine_compatibility(

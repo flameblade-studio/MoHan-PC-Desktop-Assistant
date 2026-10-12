@@ -12,6 +12,7 @@ turns smoothly, and the view ring wraps around (yaw+165 → yaw-180).
 from __future__ import annotations
 
 lazy from collections import OrderedDict
+lazy from collections.abc import Callable
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import QRect, QRectF, Qt
@@ -36,6 +37,18 @@ lazy from infrastructure.layered_full_body_assets import (
     snapshot_complete_expression_frames,
     snapshot_speech_frames,
 )
+lazy from infrastructure import layered_full_body_authority_compositor as _authority_compositor
+
+# Resolve compatibility exports through their owner to expose concrete values.
+FACE_AUTHORITY_REGION_LAYERS = _authority_compositor.FACE_AUTHORITY_REGION_LAYERS
+LayeredFullBodyAuthorityMixin = _authority_compositor.LayeredFullBodyAuthorityMixin
+MAX_CACHED_STATIC_COMPOSITES = _authority_compositor.MAX_CACHED_STATIC_COMPOSITES
+REGISTERED_COMPOSITE_LAYERS = _authority_compositor.REGISTERED_COMPOSITE_LAYERS
+SEAM_HEAL_RADIUS = _authority_compositor.SEAM_HEAL_RADIUS
+_BACK_HAIR_LAYER = _authority_compositor._BACK_HAIR_LAYER
+_FRONT_HAIR_LAYERS = _authority_compositor._FRONT_HAIR_LAYERS
+_SLEEVE_LAYERS = _authority_compositor._SLEEVE_LAYERS
+
 # Eager on purpose: ``MOUTH_APERTURE_THRESHOLD`` is re-exported to the tests.
 from infrastructure.layered_full_body_complete_expression import (
     MOUTH_APERTURE_THRESHOLD,
@@ -43,6 +56,7 @@ from infrastructure.layered_full_body_complete_expression import (
 )
 lazy from infrastructure.mouth_geometry import paint_inward_lerped_u_layer
 lazy from infrastructure.animated_appearance import AnimatedAppearance
+lazy from infrastructure.character_native_frames import load_native_fullbody_frames
 lazy from infrastructure.full_body_blink_binding import bind_blink_source, snapshot_view_authority
 lazy from infrastructure.full_body_display_placement import FullBodyDisplayPlacement
 
@@ -52,15 +66,6 @@ AUTHORED_SPEECH_VISIBLE_APERTURE = 0.16
 # (0.5) to zero lift and the extremes to a small vertical body rise/fall.
 _RIG_MANIFEST = character_rig_manifest()
 _FRONT_POSE = CHARACTER_POSE_ROLES["front_idle"]
-_BACK_HAIR_LAYER = CHARACTER_LAYER_ROLES["rear_hair"]
-_FRONT_HAIR_LAYERS = (
-    CHARACTER_LAYER_ROLES["left_side_hair"],
-    CHARACTER_LAYER_ROLES["right_side_hair"],
-)
-_SLEEVE_LAYERS = (
-    CHARACTER_LAYER_ROLES["left_sleeve"],
-    CHARACTER_LAYER_ROLES["right_sleeve"],
-)
 _BLINK_LAYERS = (
     CHARACTER_LAYER_ROLES["left_eyelid"],
     CHARACTER_LAYER_ROLES["right_eyelid"],
@@ -92,11 +97,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 50
 # One static base composite (body..authority face) per recently used view;
 # four covers the two adjacent views of a turn plus hysteresis.
-MAX_CACHED_STATIC_COMPOSITES = 4
 MAX_CACHED_MASK_REGIONS = 256
-SEAM_HEAL_RADIUS = 7
-REGISTERED_COMPOSITE_LAYERS = _RIG_MANIFEST.registered_composite_layers
-FACE_AUTHORITY_REGION_LAYERS = _RIG_MANIFEST.face_authority_layers
 _DEFAULT_MANIFEST: LayeredFullBodyManifest | None = None
 _DEFAULT_BOUND_PNG_BYTES: dict[str, bytes] | None = None
 
@@ -107,7 +108,7 @@ def load_layered_full_body_assets(root: Path) -> LayeredFullBodyManifest:
     return _load_layered_full_body_assets(root)
 
 
-class LayeredFullBodyRenderer(CompleteExpressionRendering):
+class LayeredFullBodyRenderer(CompleteExpressionRendering, LayeredFullBodyAuthorityMixin):
     """Compose the 25 authored layers across 24 yaw views."""
 
     def __init__(
@@ -117,7 +118,17 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         *,
         authority_root: Path | None = None,
         display_placement: FullBodyDisplayPlacement | None = None,
+        native_frames_root: Path | None = None,
+        native_frames_provider: Callable[[], Path | None] | None = None,
     ) -> None:
+        self._native_frames_provider = native_frames_provider
+        self._native_frames_root = native_frames_root
+        self._native_frames = None
+        if native_frames_root is not None:
+            if manifest is None:
+                raise ValueError("Native full-body frames require an explicit face-motion manifest")
+            blink_views = frozenset(view.view_id for view in manifest.views.values() if view.blink_frames)
+            self._native_frames = load_native_fullbody_frames(native_frames_root, blink_views)
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
         self._display_placement = display_placement
@@ -220,6 +231,16 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             self._pixmap_cache.popitem(last=False)
         return pixmap
 
+    def _refresh_native_frames(self) -> None:
+        if self._native_frames_provider is not None:
+            root = self._native_frames_provider()
+            if root != self._native_frames_root:
+                manifest = self._manifest_or_load()
+                blink_views = frozenset(view.view_id for view in manifest.views.values() if view.blink_frames)
+                frames = load_native_fullbody_frames(root, blink_views) if root is not None else None
+                self._native_frames = frames
+                self._native_frames_root = root
+
     def render_view(
         self,
         view_id: str,
@@ -232,7 +253,10 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         gesture_beat: bool = False,
     ) -> QPixmap:
         """Render one complete full-body frame for the given view and motion."""
+        self._refresh_native_frames()
         view = self._manifest_or_load().view(view_id)
+        if self._native_frames is not None:
+            return self._render_native_view(view, motion)
         bounded_energy = max(0.0, min(1.0, float(body_energy)))
         complete_paths = self._complete_expression_paths(
             view,
@@ -375,6 +399,71 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
             return translated
         return self._display_placement.apply(translated, view_id)
 
+    def _render_native_view(
+        self, view: LayeredFullBodyView, motion: FaceMotionFrame,
+    ) -> QPixmap:
+        if self._native_frames is None:
+            raise RuntimeError("Native full-body frames are unavailable")
+        eye = eye_state_for_blink(motion.expression_shape.blink)
+        frames = self._native_frames[view.view_id]
+        source_eye = eye if eye in frames else EyeState.REST
+        cache_key = f"native:{view.view_id}/{source_eye.value}"
+        base = self._pixmap_cache.get(cache_key)
+        if base is None:
+            base = QPixmap()
+            if not load_pixmap_png(base, frames[source_eye]):
+                raise ValueError(f"Cannot decode native full-body frame: {view.view_id}/{source_eye.value}")
+            self._pixmap_cache[cache_key] = base
+        self._pixmap_cache.move_to_end(cache_key)
+        while len(self._pixmap_cache) > MAX_CACHED_LAYER_PIXMAPS:
+            self._pixmap_cache.popitem(last=False)
+
+        set_mouth = getattr(self._outfit_overlay, "set_active_mouth_state", None)
+        if callable(set_mouth):
+            set_mouth(None, None)
+
+        def paint_motion(target: QPixmap) -> None:
+            if eye is EyeState.REST:
+                self._paint_dynamic_gaze(target, view, motion)
+            self._paint_native_mouth(target, view, motion, eye)
+
+        result = self._animated_appearance.compose(
+            base, view.view_id, paint_motion,
+            AppearanceRenderOptions(eye_state=eye.value),
+        )
+        translated = self._translated_frame(result, (motion.breath - 0.5) * BREATH_LIFT_SCALE, 0.0)
+        return translated if self._display_placement is None else self._display_placement.apply(translated, view.view_id)
+
+    def _paint_native_mouth(
+        self, target: QPixmap, view: LayeredFullBodyView,
+        motion: FaceMotionFrame, eye: EyeState,
+    ) -> None:
+        group = view.complete_expression_frames
+        if group is None or motion.mouth.aperture <= MOUTH_APERTURE_THRESHOLD:
+            self._paint_u_lip_layers(target, view, motion.mouth.u_inward)
+            if motion.mouth.aperture > MOUTH_APERTURE_THRESHOLD:
+                self._paint_visible_cavity(target, view, motion.mouth)
+            return
+        viseme = Viseme.CONSONANT if motion.viseme is Viseme.CLOSED else motion.viseme
+        oral_path = group.oral_mask(viseme, eye)
+        oral = self._cached_pixmap(oral_path) if oral_path is not None else None
+        region = QRegion()
+        for name in _LIP_LAYERS:
+            path = view.path(name)
+            if path is not None:
+                region = region.united(self._mask_region(self._cached_pixmap(path)))
+        if oral is not None:
+            region = region.united(self._mask_region(oral))
+        set_mouth = getattr(self._outfit_overlay, "set_active_mouth_state", None)
+        if callable(set_mouth):
+            set_mouth(viseme.value, oral)
+        painter = QPainter(target)
+        painter.setClipRegion(region)
+        painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
+        painter.setOpacity(min(1.0, motion.mouth.aperture / AUTHORED_SPEECH_VISIBLE_APERTURE))
+        painter.drawPixmap(0, 0, self._cached_pixmap(group.frame(viseme, eye)))
+        painter.end()
+
     @staticmethod
     def _sleeve_lift(
         hand: str,
@@ -406,161 +495,6 @@ class LayeredFullBodyRenderer(CompleteExpressionRendering):
         seed = f"{pose_id}:{left_hand}:{right_hand}"
         direction = -1.0 if sum(map(ord, seed)) % 2 else 1.0
         return direction * MAX_GESTURE_SWAY * max(0.4, body_energy)
-
-    def _static_base_composite(
-        self,
-        view: LayeredFullBodyView,
-        pose_id: str,
-        left_hand: str,
-        right_hand: str,
-        bounded_energy: float,
-    ) -> QPixmap:
-        """Compose and cache every motion-independent layer of one view.
-
-        Everything from the body up to and including the authority-face
-        restoration is identical for every animation frame of a given view,
-        pose and hand state: the neutral face cutouts painted here are fully
-        covered again by ``_restore_authority_face``.  Rebuilding this stack
-        on the 50 Hz viseme path dominated the frame budget, so it is cached
-        and only the dynamic eye/mouth layers are painted per frame.
-        """
-
-        key = (
-            view.view_id,
-            pose_id,
-            left_hand,
-            right_hand,
-            round(bounded_energy, 3),
-        )
-        cached = self._static_composite_cache.get(key)
-        if cached is not None:
-            self._static_composite_cache.move_to_end(key)
-            return cached
-        body = self._cached_pixmap(view.path("body"))
-        if body.isNull():
-            return QPixmap()
-        if self._strict_authority:
-            self._view_authority(view, body)
-        result = QPixmap(body)
-        self._paint_opacity(result, view.path(_BACK_HAIR_LAYER), 1.0)
-        self._paint_opacity(result, view.path("base"), 1.0)
-        self._paint_neutral_face_layers(result, view)
-
-        # Front hair, sleeves, ornament.
-        self._paint_opacity(result, view.path(_FRONT_HAIR_LAYERS[0]), 1.0)
-        self._paint_opacity(result, view.path(_FRONT_HAIR_LAYERS[1]), 1.0)
-        left_lift = self._sleeve_lift(left_hand, pose_id, bounded_energy)
-        right_lift = self._sleeve_lift(right_hand, pose_id, bounded_energy)
-        self._paint_translated(result, view.path(_SLEEVE_LAYERS[0]), dy=left_lift)
-        self._paint_translated(result, view.path(_SLEEVE_LAYERS[1]), dy=right_lift)
-        self._paint_opacity(result, view.path("ornament"), 1.0)
-        self._heal_registered_seams(result, view)
-        self._restore_authority_face(result, view)
-        self._static_composite_cache[key] = result
-        self._static_composite_cache.move_to_end(key)
-        while len(self._static_composite_cache) > MAX_CACHED_STATIC_COMPOSITES:
-            self._static_composite_cache.popitem(last=False)
-        return result
-
-    def _paint_neutral_face_layers(
-        self,
-        result: QPixmap,
-        view: LayeredFullBodyView,
-    ) -> None:
-        """Paint the registered neutral facial cutouts (with parameter motion applied later).
-
-        The authored facial layers are neutral registered cutouts, not
-        effect-only overlays: painting them fills the transparent holes in
-        ``base``.  Every pixel painted here sits inside the authority-face
-        region and is replaced by ``_restore_authority_face``, so parameter
-        motion (corner smile, gaze) is intentionally not applied — dynamic
-        eye and mouth motion is re-applied after restoration instead.
-        """
-
-        for layer_name in _RIG_MANIFEST.face_authority_layers[1:]:
-            self._paint_opacity(result, view.path(layer_name), 1.0)
-
-    def _heal_registered_seams(
-        self,
-        target: QPixmap,
-        view: LayeredFullBodyView,
-    ) -> None:
-        """Colour-register only authored cut-out boundaries to the view authority."""
-        region = self._seam_region_cache.get(view.view_id)
-        if region is None:
-            region = QRegion()
-            offsets = tuple(
-                (dx, dy)
-                for dx in range(-SEAM_HEAL_RADIUS, SEAM_HEAL_RADIUS + 1)
-                for dy in range(-SEAM_HEAL_RADIUS, SEAM_HEAL_RADIUS + 1)
-                if abs(dx) + abs(dy) <= SEAM_HEAL_RADIUS
-            )
-            for layer_name in REGISTERED_COMPOSITE_LAYERS:
-                path = view.path(layer_name)
-                if path is None:
-                    continue
-                source = self._cached_pixmap(path)
-                if source.isNull():
-                    continue
-                source_region = self._mask_region(source)
-                if source_region.isEmpty():
-                    continue
-                outer = QRegion(source_region)
-                inner = QRegion(source_region)
-                for dx, dy in offsets:
-                    outer = outer.united(source_region.translated(dx, dy))
-                    inner = inner.intersected(source_region.translated(dx, dy))
-                region = region.united(outer.subtracted(inner))
-            self._seam_region_cache[view.view_id] = region
-        if region.isEmpty():
-            return
-        authority = self._view_authority(view, target)
-        if authority.isNull():
-            return
-        painter = QPainter(target)
-        painter.setClipRegion(region)
-        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
-        painter.drawPixmap(0, 0, authority)
-        painter.end()
-
-    def _restore_authority_face(
-        self,
-        target: QPixmap,
-        view: LayeredFullBodyView,
-    ) -> None:
-        """Remove broad skin-cutout artefacts while preserving body layers."""
-        region = self._face_region_cache.get(view.view_id)
-        if region is None:
-            region = QRegion()
-            for layer_name in FACE_AUTHORITY_REGION_LAYERS:
-                path = view.path(layer_name)
-                if path is None:
-                    continue
-                source = self._cached_pixmap(path)
-                if not source.isNull():
-                    region = region.united(self._mask_region(source))
-            self._face_region_cache[view.view_id] = region
-        if region.isEmpty():
-            return
-        authority = self._view_authority(view, target)
-        if authority.isNull():
-            return
-        painter = QPainter(target)
-        painter.setClipRegion(region)
-        painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
-        painter.drawPixmap(0, 0, authority)
-        painter.end()
-
-    def _view_authority(self, view: LayeredFullBodyView, target: QPixmap) -> QPixmap:
-        """Bind seam/face restoration to this renderer's immutable source set."""
-        path = self._authority_root / f"{view.view_id}.png"
-        authority = self._cached_pixmap(path, required=self._strict_authority)
-        if self._strict_authority:
-            if authority.isNull():
-                raise ValueError(f"Missing or invalid view authority: {path}")
-            if authority.size() != target.size():
-                raise ValueError(f"View authority canvas mismatch: {path}")
-        return authority
 
     @staticmethod
     def _translated_frame(source: QPixmap, dy: float, dx: float = 0.0) -> QPixmap:

@@ -114,6 +114,8 @@ def _neutral_face_motion() -> FaceMotionFrame:
 
 
 def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
+    # This product release check validates the bundled MoHan calibration assets;
+    # it does not select runtime frames for the active character.
     root = resource_path(POSE_ATLAS_RELATIVE_ROOT)
     try:
         assets = PoseAtlasAssets(root, image_size=465, display_scale=True)

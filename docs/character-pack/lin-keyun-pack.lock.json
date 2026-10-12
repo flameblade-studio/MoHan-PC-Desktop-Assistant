@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.lin-keyun-1.0.2.zip",
-    "bytes": 981271870,
-    "sha256": "f6cbc86400ec4e910cde23bdc8210bfbaa34cd6daa35fecdbf02564eff1823db"
+    "asset_name": "flameblade.lin-keyun-1.0.4.zip",
+    "bytes": 981315328,
+    "sha256": "dd8cc29bfa2e6c35754d8942bbdc68c2106d1e4e7ce63c1e9c2eeb914c9e7c48"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -4612,9 +4612,9 @@
       "sha256": "f8871cf98d76d37f8bfb6be033590138386f3fff434d33ae98172caf2a66a4ea"
     },
     {
-      "bytes": 29201813,
+      "bytes": 29245749,
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
-      "sha256": "958930db0da15fb382290b8f92ab76b72ae13550441c0690ddd753a2704bdd7b"
+      "sha256": "68eb0783416c40485e63170539685500d408a489a71447f33e21ee9d0330ad3e"
     },
     {
       "bytes": 1422107,
@@ -9467,9 +9467,9 @@
       "sha256": "b113c428a70830f6abb8064d47c6676475c1b5dd24631885465c692357ab1fba"
     },
     {
-      "bytes": 20709,
+      "bytes": 20231,
       "path": "assets/pose-atlas/v5-garment-visibility/manifest.json",
-      "sha256": "41a5395787995822ef512203672e76b960728c5072b34996f42895d8c62c07d9"
+      "sha256": "bc4fed87bb23b99edcdfbd9e8f9888f639214a7276bb0692f64d0649e4f6d8b8"
     },
     {
       "bytes": 10251,
@@ -9923,12 +9923,12 @@
     }
   ],
   "pack_id": "flameblade.lin-keyun",
-  "pack_version": "1.0.2",
-  "package_hash": "8c875de9d4cd5356521bbb8fa89fadb1583b6930f364af9daf38bbfef6890a80",
+  "pack_version": "1.0.4",
+  "package_hash": "2b526577c3703dd6bcd4c6de6c62493819ab6725e0c6c8f22a2c01ddfdc57326",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "lin-keyun-pack-v1.0.2",
+    "release_tag": "lin-keyun-pack-v1.0.4",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {

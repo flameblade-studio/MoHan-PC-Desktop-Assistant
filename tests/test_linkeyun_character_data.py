@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import json
+lazy import hashlib
 lazy import re
 lazy import string
 lazy import zipfile
@@ -11,6 +12,7 @@ lazy from typing import Any
 lazy from domain.character_pack.appearance_data import load_character_appearance_defaults
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.character_source_pack import CharacterPackReader
+lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
 lazy from tools import build_character_pack as builder
 
 
@@ -56,7 +58,7 @@ EXPECTED_FILES = frozenset(
 )
 EXPECTED_FILE_COUNT = len(EXPECTED_FILES)
 HUMAN_READABLE_SUFFIXES = frozenset({".json", ".md"})
-BINARY_SUFFIXES = frozenset({".mohan-outfit"})
+BINARY_SUFFIXES = frozenset({".mohan-outfit", ".png"})
 ARCHIVE_BINARY_SUFFIXES = frozenset({".png"})
 EXPECTED_DIALOGUE_LABEL_COUNT = 33
 EXPECTED_LINE_SET_LINE_COUNT = 37
@@ -154,7 +156,8 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
 
 def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
     for relative in RUNTIME_JSON_FILES:
-        assert _shape(_load(LIN_KEYUN_ROOT, relative)) == _shape(
+        actual = _load(LIN_KEYUN_ROOT, relative)
+        assert _shape(actual) == _shape(
             _load(MOHAN_ROOT, relative)
         ), relative
 
@@ -174,6 +177,41 @@ def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
             == EXPECTED_PHRASEBOOK_LINE_COUNT
         )
         assert len(dialogue["templates"]) == EXPECTED_TEMPLATE_COUNT
+
+
+def test_linkeyun_cheek_rest_supplement_preserves_v5_authority(tmp_path: Path) -> None:
+    authority_root = ROOT / "assets/expressions/complete-expressions"
+    pose = {"source_lineage": {"approval": "test-source"}}
+    frames = {}
+    for family in ("neutral", "small", "a", "o"):
+        frames[family] = {}
+        for eye in ("rest", "half", "closed"):
+            filename = f"cheek-rest-{family}-{eye}.rgba.png"
+            data = (authority_root / "frames" / filename).read_bytes()
+            (tmp_path / filename).write_bytes(data)
+            frames[family][eye] = {"path": filename, "sha256": hashlib.sha256(data).hexdigest()}
+    document = {
+        "schema": "mohan.complete-halfbody-expressions.v1",
+        "poses": {"cheek-rest": {**pose, "frames": frames}},
+        "expressions": {family: {"pose": "cheek-rest", "family": family} for family in frames},
+    }
+    (tmp_path / "manifest.json").write_text(
+        json.dumps(document), encoding="utf-8", newline="\n",
+    )
+    supplement = _load(tmp_path, "manifest.json")
+    assert supplement["schema"] == "mohan.complete-halfbody-expressions.v1"
+    assert set(supplement["poses"]) == {"cheek-rest"}
+    frames = supplement["poses"]["cheek-rest"]["frames"]
+    assert set(frames) == {"neutral", "small", "a", "o"}
+    loaded = load_complete_halfbody_frames(tmp_path)
+    for family, eyes in frames.items():
+        assert set(eyes) == {"rest", "half", "closed"}
+        for eye, record in eyes.items():
+            copied = tmp_path / record["path"]
+            authority = authority_root / "frames" / record["path"]
+            assert copied.read_bytes() == authority.read_bytes()
+            assert hashlib.sha256(copied.read_bytes()).hexdigest() == record["sha256"]
+            assert loaded.frames["cheek-rest"][family][eye] == authority.read_bytes()
 
 
 def test_linkeyun_dialogue_placeholders_match_in_every_language() -> None:
@@ -224,6 +262,8 @@ def test_linkeyun_human_facing_content_has_no_legacy_identity_leak() -> None:
         HUMAN_READABLE_SUFFIXES | BINARY_SUFFIXES
     )
     for path in files:
+        if path.suffix == ".png":
+            continue
         if path.suffix in HUMAN_READABLE_SUFFIXES:
             assert "墨寒" not in path.read_text(encoding="utf-8"), path
             continue
@@ -323,13 +363,13 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     mohan_source = _load(MOHAN_ROOT, "pack-source.json")
     assert source["pack_id"] == "flameblade.lin-keyun"
     assert source["character_id"] == "lin-keyun"
-    assert source["pack_version"] == "1.0.2"
+    assert source["pack_version"] == "1.0.4"
     lock = json.loads(
         (ROOT / "docs/character-pack/lin-keyun-pack.lock.json").read_text(encoding="utf-8")
     )
     assert lock["pack_version"] == source["pack_version"]
     assert lock["package_hash"] == (
-        "8c875de9d4cd5356521bbb8fa89fadb1583b6930f364af9daf38bbfef6890a80"
+        "2b526577c3703dd6bcd4c6de6c62493819ab6725e0c6c8f22a2c01ddfdc57326"
     )
     assert source["distribution"]["access"] == "public"
     assert source["distribution"]["redistribution"] == "allowed"

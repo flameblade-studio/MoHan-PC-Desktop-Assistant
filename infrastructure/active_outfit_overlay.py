@@ -34,6 +34,9 @@ lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.engine_capabilities import current_engine_capabilities
 lazy from infrastructure.active_outfit_base_clear import ActiveOutfitBaseClearMixin
 lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin, FULL_BODY_CANVAS
+lazy from infrastructure.active_outfit_garment_layers import (
+    ActiveOutfitGarmentLayerMixin,
+)
 lazy from infrastructure.reviewed_garment_overlay import ReviewedGarmentOverlayMixin
 lazy from infrastructure.source_bound_garment_visibility import compose_garment_base
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
@@ -65,6 +68,7 @@ class ActiveOutfitOverlay(
     OutfitLayerCacheMixin,
     ReviewedGarmentOverlayMixin,
     ActiveOutfitLayerMixin,
+    ActiveOutfitGarmentLayerMixin,
     ActiveOutfitBaseClearMixin,
 ):
     """Resolve active.json through sealed packs and composite appearance assets.
@@ -81,7 +85,9 @@ class ActiveOutfitOverlay(
         *,
         visible_hand_region: Callable[[str], QRegion] | sentinel | None = _AUTO_HAND_REGIONS,
         official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
+        native_frames: bool | Callable[[], bool] = False,
     ) -> None:
+        self._native_frames_provider = native_frames
         self._store = Path(store)
         self._asset_root = Path(asset_root)
         self._on_stale_body_profile = on_stale_body_profile
@@ -144,8 +150,15 @@ class ActiveOutfitOverlay(
         self._active_viseme = viseme
         self._active_oral_mask = oral_mask if viseme is not None else None
 
+    @property
+    def _native_frames(self) -> bool:
+        provider = self._native_frames_provider
+        return provider() if callable(provider) else provider
+
     def _resolve_base_clear_selection(self, category: str):
         """Keep base-clear selection reads on this module's patchable boundary."""
+        if self._native_frames and category != "makeup":
+            return SelectionResolution(category, "builtin", *("builtin",) * 6)
         return resolve_active_selection(
             self._store,
             category,
@@ -177,6 +190,17 @@ class ActiveOutfitOverlay(
         after_makeup = paint_after_makeup or options.paint_after_makeup
         if options.eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
+
+        if self._native_frames:
+            result = QPixmap(frame)
+            paint_motion(result)
+            result = self.apply_makeup(
+                result, view_id, suppress_makeup_slots=options.suppress_makeup_slots,
+                eye_state=options.eye_state, makeup_view_id=options.makeup_view_id,
+            )
+            if after_makeup is not None:
+                after_makeup(result)
+            return result
 
         def replace_core(target: QPixmap) -> QPixmap:
             if body_replacement is None:
@@ -236,6 +260,11 @@ class ActiveOutfitOverlay(
         eye_state: str = "rest",
         makeup_view_id: str | None = None,
     ) -> QPixmap:
+        if self._native_frames:
+            return self.apply_makeup(
+                frame, view_id, suppress_makeup_slots=suppress_makeup_slots,
+                eye_state=eye_state, makeup_view_id=makeup_view_id,
+            )
         if frame.isNull():
             return frame
         if eye_state not in {"rest", "half", "closed"}:
@@ -359,6 +388,8 @@ class ActiveOutfitOverlay(
         Full-body face motion is painted after this phase so a same-coordinate
         dressed skin overlay can replace the base hairline and neckline while preserving authored blink and mouth motion.
         """
+        if self._native_frames:
+            return QPixmap(frame)
         return self._apply_phase(
             frame,
             view_id,
@@ -417,7 +448,7 @@ class ActiveOutfitOverlay(
                 del self._layers_by_view_without_makeup_slots[combined_key]
         try:
             self._refresh_state()
-            reviewed = self._reviewed_frame(
+            reviewed = None if self._native_frames else self._reviewed_frame(
                 frame, view_id, suppress_makeup_slots, eye_state,
                 phase=phase, before_front_hair=before_front_hair,
                 makeup_view_id=makeup_view_id,
@@ -437,8 +468,10 @@ class ActiveOutfitOverlay(
                     makeup_view_id=makeup_view_id,
                 )
             garment_is_active = include_core and self._garment_is_active()
-            official_silhouette, replacement_mask, binding = self._base_clear_regions(
-                view_id, frame.size().toTuple(), garment_is_active, include_core,
+            official_silhouette, replacement_mask, binding = (
+                (None, None, None) if self._native_frames else self._base_clear_regions(
+                    view_id, frame.size().toTuple(), garment_is_active, include_core,
+                )
             )
             hand_overlays = (
                 binding.hand_overlays
@@ -726,57 +759,6 @@ class ActiveOutfitOverlay(
         if (image.width(), image.height()) != (declaration.width, declaration.height):
             raise OutfitPackError("Runtime appearance dimensions disagree.")
         return encoded, image.convertToFormat(QImage.Format_RGBA8888)
-
-    def _garment_layers(
-        self,
-        archive: zipfile.ZipFile,
-        declarations,
-        category: str,
-        item,
-        variant,
-        view_id: str,
-        canvas_size: tuple[int, int],
-    ) -> list[tuple[int, Layer]]:
-        forbidden = self._forbidden_face_region(category, item, variant, view_id)
-        allowed = QRegion(QRect(0, 0, canvas_size[0], canvas_size[1]))
-        # Hair falls over the face naturally: it is faded out of the feature core
-        # below instead of being cut by the protected-face rectangle.
-        if category != "hairstyle":
-            allowed = allowed.subtracted(forbidden)
-        allowed = self._hand_allowed_region(allowed, category, variant, view_id)
-        layers: list[tuple[int, Layer]] = []
-        for declaration in declarations:
-            if declaration.clears_base:
-                continue
-            _encoded, image = self._decoded_layer(archive, declaration)
-            if (
-                declaration.anchor_x < 0
-                or declaration.anchor_y < 0
-                or declaration.anchor_x + image.width() > canvas_size[0]
-                or declaration.anchor_y + image.height() > canvas_size[1]
-            ):
-                raise OutfitPackError("Runtime appearance anchor escaped the canvas.")
-            pixmap = QPixmap.fromImage(image)
-            has_content = self._validate_alpha(
-                pixmap,
-                declaration.anchor_x,
-                declaration.anchor_y,
-                QRegion() if category == "hairstyle" else forbidden,
-                allow_empty=category != "garment",
-            )
-            if not has_content:
-                continue
-            # A back-hair layer is authored behind the face and is already
-            # kept outside the exact eye or mouth core when its alpha reaches that region.  Keep
-            # its remaining alpha intact so the front-hair feather cannot
-            # punch desktop-coloured holes beside the chin.
-            if category == "hairstyle" and declaration.slot != "back":
-                pixmap = self._feathered_hair_layer(pixmap, declaration.anchor_x, declaration.anchor_y, view_id)
-            layers.append((
-                declaration.z_order,
-                (pixmap, declaration.anchor_x, declaration.anchor_y, allowed, 1.0),
-            ))
-        return layers
 
     @staticmethod
     def _compatible(app_range: str) -> bool:

@@ -6,11 +6,11 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 18,
+    "actual_embedded_code_files": 20,
     "engine_extract_files": 0,
-    "manual_review_hint_only_files": 65,
+    "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
-    "product_shell_allowed_files": 18,
+    "product_shell_allowed_files": 20,
     "true_extraction_files": 0,
     "ui_text_reference_files": 0,
     "work_packages": 0
@@ -22,8 +22,18 @@
       "status": "no_current_content_evidence"
     },
     {
+      "path": "application/character_default_look.py",
+      "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+      "status": "allowed_content_present"
+    },
+    {
       "path": "application/runtime_bootstrap.py",
       "reason": "墨寒產品執行期入口保留程序與執行緒識別字。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "application/service_container.py",
+      "reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
       "status": "allowed_content_present"
     },
     {
@@ -82,6 +92,41 @@
       "classification": "product_shell_allowed",
       "content": [
         {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 92,
+              "matched": "assets/expressions/",
+              "text": "else \"assets/expressions/complete-expressions\")"
+            },
+            {
+              "line": 95,
+              "matched": "assets/expressions/",
+              "text": "native = relative is not None and relative != \"assets/expressions/complete-expressions\""
+            },
+            {
+              "line": 105,
+              "matched": "assets/expressions/",
+              "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/character_default_look.py",
+      "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -100,6 +145,36 @@
       "reason": "墨寒產品執行期入口保留程序與執行緒識別字。",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 443,
+              "matched": "assets/expressions/",
+              "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
+            },
+            {
+              "line": 444,
+              "matched": "assets/expressions/",
+              "text": "!= \"assets/expressions/complete-expressions\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/service_container.py",
+      "reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": null
     },
@@ -878,17 +953,17 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 539,
+              "line": 540,
               "matched": "墨寒",
               "text": "'about_heading': '<b>关于墨寒</b>',"
             },
             {
-              "line": 541,
+              "line": 542,
               "matched": "墨寒",
               "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
             },
             {
-              "line": 542,
+              "line": 543,
               "matched": "MoHan",
               "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
             }
@@ -913,12 +988,12 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 729,
+              "line": 730,
               "matched": "MoHan",
               "text": "\"about_heading\": \"<b>About MoHan</b>\","
             },
             {
-              "line": 731,
+              "line": 732,
               "matched": "MoHan",
               "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
             }

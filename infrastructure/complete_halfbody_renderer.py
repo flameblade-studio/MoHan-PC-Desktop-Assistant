@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 lazy from collections import OrderedDict
+lazy from collections.abc import Callable
 lazy from pathlib import Path
 
 lazy from PySide6.QtCore import Qt
@@ -16,7 +17,7 @@ lazy from infrastructure.animated_appearance import AnimatedAppearance
 lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
 lazy from infrastructure.complete_halfbody_expressions import (
     COMPLETE_CHEEK_POSES, COMPLETE_FRONT_POSES, COMPLETE_POSES,
-    EYES, FAMILIES, CompleteHalfbodyFrames,
+    EYES, FAMILIES, REQUIRED_COMPLETE_POSES, CompleteHalfbodyFrames,
     load_complete_halfbody_frames,
 )
 
@@ -36,19 +37,73 @@ class CompleteHalfbodyRenderer:
     A blink therefore follows that endpoint, even if the next mouth is queued.
     """
 
-    def __init__(self, root: Path, overlay: object = None) -> None:
-        self._root = root
+    def __init__(
+        self, root: Path, overlay: object = None,
+        supplement: tuple[Path, Path] | None = None,
+        *, complete_root: Path | None = None, require_complete: bool = False,
+        complete_provider: Callable[[], tuple[Path | None, bool]] | None = None,
+    ) -> None:
+        self._fallback_root = root
+        self._complete_provider = complete_provider
+        if complete_provider is not None:
+            complete_root, require_complete = complete_provider()
+        self._root = root if complete_root is None else complete_root
+        self._explicit_complete = complete_root is not None
+        self._require_complete = require_complete
         self._loaded = False
         self._assets: CompleteHalfbodyFrames | None = None
         self._appearance = AnimatedAppearance(overlay)
         self._overlay = overlay
+        self._supplement = supplement
         self._contexts: OrderedDict[int, tuple[str, str]] = OrderedDict()
         self._pixmaps: OrderedDict[tuple[str, str, str], QPixmap] = OrderedDict()
         self._oral_pixmaps: dict[tuple[str, str], QPixmap] = {}
+        if self._explicit_complete:
+            self._load()
 
     def _load(self) -> CompleteHalfbodyFrames | None:
+        if self._complete_provider is not None:
+            root, required = self._complete_provider()
+            selected_root = self._fallback_root if root is None else root
+            if (selected_root, required) != (self._root, self._require_complete):
+                self._root = selected_root
+                self._explicit_complete = root is not None
+                self._require_complete = required
+                self._loaded = False
+                self._assets = None
+                self._contexts.clear()
+                self._pixmaps.clear()
+                self._oral_pixmaps.clear()
         if not self._loaded:
             self._assets = load_complete_halfbody_frames(self._root)
+            if self._explicit_complete and self._assets is None:
+                raise FileNotFoundError(f"Missing declared complete half-body manifest: {self._root / 'manifest.json'}")
+            if self._require_complete and self._assets is not None:
+                missing = REQUIRED_COMPLETE_POSES - set(self._assets.frames)
+                if missing:
+                    raise ValueError(f"Missing complete half-body poses: {', '.join(sorted(missing))}")
+                missing_blinks = REQUIRED_COMPLETE_POSES - self._assets.whole_frame_blinks
+                if missing_blinks:
+                    raise ValueError(f"Native half-body requires whole-frame blinks: {', '.join(sorted(missing_blinks))}")
+            if self._supplement is not None and not self._explicit_complete:
+                root, manifest = self._supplement
+                additional = load_complete_halfbody_frames(root, manifest_path=manifest)
+                if additional is None:
+                    raise ValueError("Declared complete half-body supplement is unavailable")
+                existing = self._assets
+                if existing is None:
+                    self._assets = additional
+                else:
+                    if set(existing.frames) & set(additional.frames):
+                        raise ValueError("Complete half-body supplement repeats an existing pose")
+                    if set(existing.expressions) & set(additional.expressions):
+                        raise ValueError("Complete half-body supplement repeats an existing binding")
+                    self._assets = CompleteHalfbodyFrames(
+                        frozendict({**existing.frames, **additional.frames}),
+                        frozendict({**existing.expressions, **additional.expressions}),
+                        frozendict({**existing.oral_masks, **additional.oral_masks}),
+                        existing.whole_frame_blinks | additional.whole_frame_blinks,
+                    )
             self._loaded = True
         return self._assets
 
@@ -71,6 +126,8 @@ class CompleteHalfbodyRenderer:
             family = binding[1] if binding is not None else emotional_binding[1]
             binding = emotional_binding[0], family
         if binding is None:
+            if self._require_complete:
+                raise ValueError(f"Missing native half-body expression: {expression}")
             self._set_active_mouth_state(None, None)
             return None
         pose, family = binding
@@ -89,6 +146,7 @@ class CompleteHalfbodyRenderer:
     ) -> QPixmap | None:
         if eye_state not in EYES:
             raise ValueError(f"Unsupported complete half-body eye state: {eye_state}")
+        self._load()
         binding = self._contexts.get(base.cacheKey())
         if binding is None:
             return None
@@ -127,8 +185,8 @@ class CompleteHalfbodyRenderer:
     def has_whole_frame_blink(self, frame: QPixmap) -> bool:
         """Whether this displayed endpoint owns the entire blink frame."""
 
-        binding = self._contexts.get(frame.cacheKey())
         assets = self._load()
+        binding = self._contexts.get(frame.cacheKey())
         return (
             binding is not None
             and assets is not None
