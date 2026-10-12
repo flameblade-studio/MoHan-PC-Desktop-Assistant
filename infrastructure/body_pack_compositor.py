@@ -61,7 +61,9 @@ def compose_body_pack_frame(
     素体パックだけが F_body を定義し、L と H は元の Alpha を保持し、
     顔保護は最終補間で一度適用します。
     """
-    if plan is None and (makeup_base is None or face_core is None):
+    if plan is None and (
+        makeup_base is None or face_core is None or makeup_base.cacheKey() == base.cacheKey()
+    ):
         return QPixmap(base)
     plan = plan or CharacterLayerPlan(("base",), ())
     if base.isNull():

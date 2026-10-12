@@ -162,7 +162,7 @@
       "path": "application/character_default_look.py",
       "readers": [
         {
-          "line": 111,
+          "line": 110,
           "path": "application/service_container.py",
           "text": "lazy from application.character_default_look import ("
         },
@@ -263,7 +263,7 @@
           "text": "lazy from application.character_runtime_bootstrap import ("
         },
         {
-          "line": 27,
+          "line": 26,
           "path": "application/service_container.py",
           "text": "lazy from application.character_runtime_bootstrap import ("
         },
@@ -414,7 +414,7 @@
       "work_package": null
     },
     {
-      "bytes": 30909,
+      "bytes": 30046,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -425,7 +425,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 461,
+          "line": 439,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -435,7 +435,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 462,
+          "line": 440,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -455,114 +455,109 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "1b5b45b79fda10b7cb2b3961545354452bb3e27b91e23f718462250ab5b52981",
+      "sha256": "df28bdb5b267620a0464d94e8f8f023fede2f375325f5756f1846a1f7161af97",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 150,
-          "line": 150,
+          "end_line": 149,
+          "line": 149,
           "name": "_CHARACTER_SELECTION_LOGGER"
         },
         {
-          "end_line": 151,
-          "line": 151,
+          "end_line": 150,
+          "line": 150,
           "name": "SUPPORTED_CHARACTER_IDS"
         },
         {
-          "end_line": 181,
-          "line": 154,
+          "end_line": 180,
+          "line": 153,
           "name": "create_character_source"
         },
         {
-          "end_line": 188,
-          "line": 184,
+          "end_line": 187,
+          "line": 183,
           "name": "create_default_character_source"
         },
         {
-          "end_line": 212,
-          "line": 191,
+          "end_line": 211,
+          "line": 190,
           "name": "_reserve_official_pack_id_reservations"
         },
         {
-          "end_line": 236,
-          "line": 216,
+          "end_line": 235,
+          "line": 215,
           "name": "CompanionServices"
         },
         {
-          "end_line": 295,
-          "line": 239,
+          "end_line": 294,
+          "line": 238,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 316,
-          "line": 298,
+          "end_line": 315,
+          "line": 297,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 322,
-          "line": 319,
+          "end_line": 321,
+          "line": 318,
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 339,
-          "line": 325,
-          "name": "_body_pack_makeup_applier"
-        },
-        {
-          "end_line": 496,
-          "line": 342,
+          "end_line": 474,
+          "line": 324,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 502,
-          "line": 499,
+          "end_line": 480,
+          "line": 477,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 508,
-          "line": 505,
+          "end_line": 486,
+          "line": 483,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 550,
-          "line": 511,
+          "end_line": 528,
+          "line": 489,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 563,
-          "line": 553,
+          "end_line": 541,
+          "line": 531,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 583,
-          "line": 566,
+          "end_line": 561,
+          "line": 544,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 604,
-          "line": 586,
+          "end_line": 582,
+          "line": 564,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 623,
-          "line": 607,
+          "end_line": 601,
+          "line": 585,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 643,
-          "line": 626,
+          "end_line": 621,
+          "line": 604,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 663,
-          "line": 646,
+          "end_line": 641,
+          "line": 624,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 818,
-          "line": 666,
+          "end_line": 796,
+          "line": 644,
           "name": "create_default_services"
         }
       ],
@@ -39379,7 +39374,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 345,
+          "line": 327,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -74326,7 +74321,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 345,
+          "line": 327,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -116010,7 +116005,7 @@
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 68,
+          "line": 67,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
@@ -116485,7 +116480,7 @@
           "text": "lazy from domain.contracts import ("
         },
         {
-          "line": 47,
+          "line": 46,
           "path": "application/service_container.py",
           "text": "lazy from domain.contracts import ("
         },
@@ -117127,7 +117122,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 82,
+          "line": 81,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -117304,7 +117299,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 128,
+          "line": 127,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -117474,7 +117469,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 130,
+          "line": 129,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }

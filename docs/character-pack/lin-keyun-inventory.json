@@ -15703,7 +15703,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 345,
+          "line": 327,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }

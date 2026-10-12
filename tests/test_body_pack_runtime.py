@@ -266,6 +266,16 @@ def test_unknown_halfbody_blink_endpoint_raises_before_legacy_patch(qapp):
 
 
 class _FaceCoreBody(_Body):
+    def frame_keys(self, view: str, *, halfbody: bool = False) -> tuple[str, ...]:
+        keys = super().frame_keys(view, halfbody=halfbody)
+        return (*keys, "a-half", "a-closed") if halfbody else keys
+
+    def load_frame(self, view: str, key: str, *, halfbody: bool = False) -> bytes:
+        if halfbody and key in {"a-half", "a-closed"}:
+            self.calls.append((view, key, halfbody))
+            return _png({"a-half": "green", "a-closed": "blue"}[key])
+        return super().load_frame(view, key, halfbody=halfbody)
+
     def load_face_core(self, view: str) -> bytes:
         output = io.BytesIO()
         mask = Image.new("RGBA", (4, 4))
@@ -326,6 +336,11 @@ def test_body_makeup_receives_fullbody_and_halfbody_eye_mouth_context(qapp):
     frame = renderer.render(QPixmap(), _motion(Viseme.A), None)
     renderer.render_complete_blink(frame, "half")
     renderer.render_complete_blink(frame, "closed")
+    assert renderer._body.calls == [
+        ("front", "a-rest", False), ("front", "closed", False),
+        ("front", "a-rest", True), ("front", "a-half", True),
+        ("front", "a-closed", True),
+    ]
     assert selected.calls == [
         ("front", "rest", "A"), ("front", "closed", None),
         ("front-crossed", "rest", None), ("front-crossed", "half", None),

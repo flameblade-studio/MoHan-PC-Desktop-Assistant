@@ -2058,6 +2058,36 @@
     },
     {
       "paths": [
+        "assets/makeup-safe-regions.json"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_active_outfit_overlay_makeup.py",
+        "test_approved_asset_install.py",
+        "test_body_pack_reader.py",
+        "test_build_character_inventory.py",
+        "test_build_character_pack.py",
+        "test_build_makeup_safe_regions.py",
+        "test_character_pack_zip_snapshot.py",
+        "test_character_source.py",
+        "test_check_pose_atlas_release.py",
+        "test_fetch_character_pack.py",
+        "test_huapu.py",
+        "test_installed_outfit_blink_roundtrip.py",
+        "test_linkeyun_character_data.py",
+        "test_makeup_blink_states.py",
+        "test_makeup_safe_region_visibility.py",
+        "test_official_pack_ids_reservation.py",
+        "test_persona_dialogue_voice_extraction.py",
+        "test_preview_packaging.py",
+        "test_renderer_profile_injection.py",
+        "test_source_bound_makeup_pack.py",
+        "test_verify_character_pack_lock.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/__init__.py"
       ],
       "tests": [
@@ -2345,6 +2375,7 @@
     },
     {
       "paths": [
+        "assets/characters/lin-keyun/pack-source.json",
         "character-pack.lock.json",
         "huapu/character_pack_builder.py",
         "huapu/character_pack_lock.py",
@@ -2619,17 +2650,6 @@
     },
     {
       "paths": [
-        "assets/characters/lin-keyun/pack-source.json"
-      ],
-      "tests": [
-        "test_active_character_switching.py",
-        "test_linkeyun_character_data.py",
-        "test_verify_character_pack_lock.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "application/wardrobe_appearance_service.py"
       ],
       "tests": [
@@ -2818,22 +2838,6 @@
       "tests": [
         "test_active_outfit_overlay.py",
         "test_source_bound_garment_visibility.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/makeup-safe-regions.json"
-      ],
-      "tests": [
-        "test_active_outfit_overlay_makeup.py",
-        "test_build_character_inventory.py",
-        "test_build_makeup_safe_regions.py",
-        "test_installed_outfit_blink_roundtrip.py",
-        "test_makeup_blink_states.py",
-        "test_makeup_safe_region_visibility.py",
-        "test_preview_packaging.py",
-        "test_source_bound_makeup_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

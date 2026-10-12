@@ -4,14 +4,13 @@ lazy import sqlite3
 lazy import threading
 lazy import os
 lazy import logging
-lazy from functools import cache
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QObject
-lazy from PySide6.QtGui import QPixmap, QRegion
+lazy from PySide6.QtGui import QRegion
 
 lazy from integrations.speech import (
     OpenAITTS,
@@ -81,7 +80,7 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
-lazy from infrastructure.body_pack_renderer import BodyPackRenderer, create_body_pack_renderer
+lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
@@ -322,23 +321,6 @@ def create_presentation_ports() -> PresentationPorts:
     return _create_presentation_ports(active_character_source())
 
 
-def _body_pack_makeup_applier(asset_root: Path, official_pack_roots):
-    """Apply the character's selected makeup pack to body frames (B′ in the face formula)."""
-    overlay = ActiveOutfitOverlay(
-        default_data_dir() / "outfits", asset_root,
-        visible_hand_region=None, official_pack_root=official_pack_roots,
-        native_frames=True,
-    )
-
-    def apply_body_makeup(
-        frame: QPixmap, view: str, eye_state: str, viseme: str | None,
-    ) -> QPixmap:
-        overlay.set_active_mouth_state(viseme)
-        return overlay.apply_makeup(frame, view, eye_state=eye_state)
-
-    return apply_body_makeup
-
-
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
     asset_root = character_source.assets.asset_root
@@ -372,13 +354,9 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             native_frames=default_look.native_frames if default_look is not None else native_frames,
         )
 
-    @cache
-    def body_renderer() -> BodyPackRenderer:
-        return create_body_pack_renderer(
-            body_pack, character_source.appearance.character_layer_views,
-            character_source.assets.load_character_layer,
-            apply_makeup=_body_pack_makeup_applier(asset_root, official_pack_roots),
-        )
+    body_renderer = body_pack_renderer_factory(
+        character_source, body_pack, default_data_dir() / "outfits", official_pack_roots,
+    )
 
     def face_renderer_factory():
         if body_pack is not None:

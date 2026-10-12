@@ -408,8 +408,8 @@ def test_linkeyun_appearance_defaults_load_with_explicitly_no_headwear() -> None
     )
 
     assert source["makeup"] == {
-        "pack_id": "builtin",
-        "item_id": "none",
+        "pack_id": "mohan.makeup.builtin",
+        "item_id": "mohan-signature",
         "variants": ["classic", "light", "glamorous"],
         "menu_variants": ["light", "classic", "glamorous"],
         "always_visible_variants": ["light", "classic"],
@@ -437,7 +437,7 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     )
     assert lock["pack_version"] == source["pack_version"]
     assert lock["package_hash"] == (
-        "eca84e905c14b8509d444a85298c7461db04734f03fb22c95136cf697d7729f4"
+        "e25140e8bf555dcb2112469fa0ff777cdfa79d9520af831e9cd669015a681e6e"
     )
     assert source["distribution"]["access"] == "public"
     assert source["distribution"]["redistribution"] == "allowed"

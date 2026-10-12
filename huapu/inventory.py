@@ -157,3 +157,62 @@ def build_owned_character_inventory(
         "scope_counts": dict(sorted(Counter(row["scope"] for row in rows).items())),
         "files": rows,
     }
+
+
+def build_character_inventory_with_makeup_dependencies(
+    inventory: Mapping[str, object], *, repo_root: Path, source: Mapping[str, object],
+    profile: str, prefix: str, regions_path: str, purpose: str,
+) -> dict[str, object]:
+    """Select owned files and the source's declared makeup safety dependencies."""
+    selected = build_owned_character_inventory(
+        inventory, profile=profile, prefix=prefix, purpose=purpose,
+    )
+    makeup_paths: set[str] = set()
+    for field in ("components", "approval_refs", "source_refs"):
+        makeup_paths.update(row["path"] for row in source[field] if "makeup" in row["path"])
+    if regions_path in makeup_paths:
+        regions = json.loads((repo_root / regions_path).read_text(encoding="utf-8"))
+        for region in regions["silhouettes"].values():
+            for field in ("foundation_masks", "eye_aperture_masks"):
+                makeup_paths.update(row["path"] for row in region.get(field, {}).values())
+            for layer in (
+                "iris_left", "iris_right", "eyelid_left", "eyelid_right",
+                "oral_cavity", "teeth_tongue", "lip_upper", "lip_lower",
+            ):
+                path = f"{region['rig']}_{layer}.png"
+                if (repo_root / path).is_file():
+                    makeup_paths.add(path)
+    shared = [
+        {**row, "scope": "runtime_data",
+         "reason": "Declared runtime makeup component, approval or safety dependency."}
+        for row in inventory["files"] if row["path"] in makeup_paths
+    ]
+    selected["files"] = sorted([*selected["files"], *shared], key=lambda row: row["path"])
+    selected["scope_counts"] = dict(sorted(Counter(row["scope"] for row in selected["files"]).items()))
+    return selected
+
+
+def build_lin_keyun_release_inventory(
+    inventory: dict[str, object], repo_root: Path,
+) -> dict[str, object]:
+    """Select Lin Keyun files and the declared shared makeup support assets."""
+    source = json.loads(
+        (repo_root / "assets/characters/lin-keyun/pack-source.json").read_text(encoding="utf-8")
+    )
+    return build_character_inventory_with_makeup_dependencies(
+        inventory, repo_root=repo_root, source=source,
+        profile="lin-keyun", prefix="assets/characters/lin-keyun/",
+        regions_path="assets/makeup-safe-regions.json",
+        purpose=(
+            "Release payload inventory includes Lin Keyun-owned files and declared "
+            "shared makeup dependencies; shared full-frame assets are excluded."
+        ),
+    )
+
+
+def render_lin_keyun_release_inventory(inventory: dict[str, object], repo_root: Path) -> str:
+    """Serialize the dedicated Lin Keyun release inventory deterministically."""
+    return json.dumps(
+        build_lin_keyun_release_inventory(inventory, repo_root),
+        ensure_ascii=False, sort_keys=True, indent=2,
+    ) + "\n"

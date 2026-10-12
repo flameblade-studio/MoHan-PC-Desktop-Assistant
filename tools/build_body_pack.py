@@ -18,9 +18,17 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-lazy from domain.body_pack import compute_body_pack_fingerprint, parse_body_pack
+lazy from collections.abc import Mapping
+lazy from domain import body_pack as _body_pack
+lazy from domain.body_pack import BodyPackManifest, parse_body_pack
 lazy from domain.character_layer_plan import parse_character_layer_views
 lazy from domain.constants import POSE_ATLAS_ROOT_NAME, POSE_ATLAS_LAYERED_ROOT_NAME
+
+
+def compute_body_pack_fingerprint(value: BodyPackManifest | Mapping[str, object]) -> str:
+    """Expose the canonical fingerprint function through a resolved lazy module."""
+    return _body_pack.compute_body_pack_fingerprint(value)
+
 
 FAMILIES = ("neutral", "small", "a", "o")
 EYES = ("rest", "half", "closed")
