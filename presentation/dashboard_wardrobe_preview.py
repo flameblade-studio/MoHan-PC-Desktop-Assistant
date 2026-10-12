@@ -9,9 +9,8 @@ Composites are cached per (appearance signature, view) and rebuilt only when
 the selection or makeup state changes.  A first composite takes a moment, so
 it runs on a short timer once the preview is on screen. During rotation the
 previous frame remains visible with an explicit "composing" line; only the
-first composition starts from the bare base. A failed composite falls back
-to the bare base and, when a pack is
-active, says so in the wardrobe status instead of staying silent.
+first composition starts from the bare base. A legacy composite failure shows the bare base with its fallback status.
+Declared body packs show an explicit error state when their own frames fail.
 """
 
 from __future__ import annotations
@@ -26,6 +25,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
+lazy from domain.body_pack import BodyPackMismatchError
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
 lazy from domain.face_rig import (
     ExpressionShape,
@@ -60,6 +60,7 @@ STATE_IDLE = "idle"
 STATE_COMPOSING = "composing"
 STATE_COMPOSITED = "composited"
 STATE_FALLBACK = "fallback"
+STATE_ERROR = "error"
 # Neutral closed-mouth frame; breath 0.5 is zero lift in the full-body renderer.
 PREVIEW_MOTION = FaceMotionFrame(
     FacePose.FRONT, "idle", Viseme.CLOSED, MouthShape(), ExpressionShape(), breath=0.5,
@@ -158,7 +159,8 @@ class DashboardWardrobePreviewMixin:
             # The offline dashboard uses its local compositor slot (offline dashboards): base plus overlay is cheap.
             self._compose_wardrobe_preview()
             return
-        base = self._wardrobe_base_pixmap(view_id)
+        base = (QPixmap() if getattr(self.presentation_ports, "body_pack_required", False)
+                else self._wardrobe_base_pixmap(view_id))
         if self._wardrobe_pose_source.isNull() and not base.isNull():
             self._present_wardrobe_preview(base)
         self._set_wardrobe_preview_state(STATE_COMPOSING)
@@ -188,7 +190,8 @@ class DashboardWardrobePreviewMixin:
         if pixmap is None:
             pixmap, state = self._composited_wardrobe_view(view_id)
             if pixmap.isNull():
-                self._set_wardrobe_preview_state(STATE_FALLBACK)
+                self._present_wardrobe_preview(QPixmap())
+                self._set_wardrobe_preview_state(state)
                 return
             if state == STATE_COMPOSITED:
                 # One signature at a time: a selection change keeps each selection's look current.
@@ -199,19 +202,27 @@ class DashboardWardrobePreviewMixin:
         self._set_wardrobe_preview_state(state)
 
     def _composited_wardrobe_view(self, view_id: str) -> tuple[QPixmap, str]:
-        """Compose one view through the runtime path; fall back to the bare base protective."""
+        """Compose through runtime; declared body packs fail with an explicit error state."""
         renderer = self._wardrobe_full_body_renderer
         composed = QPixmap()
         if renderer is not None:
             try:
                 composed = QPixmap(renderer.render_view(view_id, PREVIEW_MOTION))
+            except BodyPackMismatchError as error:
+                self._wardrobe_body_pack_error = error.code
+                return QPixmap(), STATE_ERROR
             except (KeyError, OSError, RuntimeError, TypeError, ValueError):
                 composed = QPixmap()
         if composed.isNull():
+            if getattr(self.presentation_ports, "body_pack_required", False):
+                self._wardrobe_body_pack_error = "body_pack_render_failed"
+                return QPixmap(), STATE_ERROR
             base = self._wardrobe_base_pixmap(view_id)
             if base.isNull():
                 return base, STATE_FALLBACK
             composed = self._wardrobe_outfit_overlay.apply(base, view_id)
+        if getattr(self.presentation_ports, "body_pack_required", False):
+            return composed, STATE_COMPOSITED
         dressed = self._wardrobe_outfit_overlay.layer_count(view_id) > 0
         if not dressed and self.wardrobe_service.appearance_active():
             return composed, STATE_FALLBACK
@@ -220,8 +231,9 @@ class DashboardWardrobePreviewMixin:
     def _wardrobe_preview_key(self, view_id: str) -> tuple[object, ...]:
         return (view_id, *self.wardrobe_service.appearance_signature())
 
-    @staticmethod
-    def _wardrobe_base_pixmap(view_id: str) -> QPixmap:
+    def _wardrobe_base_pixmap(self, view_id: str) -> QPixmap:
+        if getattr(self.presentation_ports, "body_pack_required", False):
+            return QPixmap()
         return QPixmap(str(resource_path(POSE_ATLAS_RELATIVE_ROOT) / f"{view_id}.png"))
 
     def _present_wardrobe_preview(self, pixmap: QPixmap) -> None:
@@ -236,9 +248,14 @@ class DashboardWardrobePreviewMixin:
         )
         label = getattr(self, "wardrobe_preview_state_label", None)
         if label is not None:
-            label.setVisible(state == STATE_COMPOSING)
+            label.setVisible(state in {STATE_COMPOSING, STATE_ERROR})
             if state == STATE_COMPOSING:
                 label.setText(self._t("wardrobe_preview_composing", "正在以執行期合成造型預覽……"))
+            elif state == STATE_ERROR:
+                label.setText(self._t(
+                    "wardrobe_preview_body_pack_error",
+                    "素體包預覽載入失敗，請檢查角色依附的素體包。",
+                ) + " (" + getattr(self, "_wardrobe_body_pack_error", "body_pack_render_failed") + ")")
             elif state == STATE_FALLBACK:
                 label.setText(fallback)
             else:

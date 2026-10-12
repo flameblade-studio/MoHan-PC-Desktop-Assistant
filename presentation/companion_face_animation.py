@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import math
+lazy import logging
 lazy import random
 lazy import time
 lazy from PySide6.QtCore import (
@@ -254,6 +255,9 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
 
     def _wink_once(self) -> bool:
         """Play one deliberate, expression-preserving wink when idle."""
+        if not getattr(self.face_renderer, "supports_wink", True):
+            logging.getLogger(__name__).warning("body_pack_wink_rejected: unsupported_wink")
+            return False
         if (
             self.speech_playing
             or self.state == "speaking"
@@ -262,10 +266,8 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
         ):
             return False
         if getattr(self, "_adaptive_full_body_active", False):
-            # The full-body renderer has a single continuous blink value and no
-            # per-eye wink layer, so a deliberate wink degrades to a full blink
-            # driven through the live-state refresh instead of a half-body wink
-            # patch that would overwrite the full-body photograph.
+            # Legacy full-body views use their authored full blink for wink requests.
+            # The refresh preserves the full-body image throughout the blink.
             self._full_body_blink()
             return True
         base_expression = self.current_expression
@@ -288,9 +290,7 @@ class CompanionFaceAnimationMixin(CompanionBlinkRuntimeMixin):
                 return
             self.character.setPixmap(
                 self._wink_composite(
-                    restore,
-                    render_base,
-                    opacity,
+                    restore, render_base, opacity,
                 )
             )
 

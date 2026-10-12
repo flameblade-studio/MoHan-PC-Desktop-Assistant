@@ -4,6 +4,7 @@ lazy import sqlite3
 lazy import threading
 lazy import os
 lazy import logging
+lazy from functools import cache
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
@@ -40,9 +41,8 @@ lazy from application.cloud_vision_ui_bridge import (
 )
 lazy from application.native_acceleration import NativeAcceleration
 lazy from application.presentation_ports import (
-    AIWorkerPort,
-    PresentationPorts,
-    bind_dashboard_portable_secrets,
+    AIWorkerPort, PresentationPorts,
+    bind_dashboard_portable_secrets, default_data_dir,
 )
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
@@ -65,11 +65,7 @@ lazy from domain.language_support import (
     canonical_ui_language,
     localized_transcription_prompt,
 )
-lazy from domain.constants import (
-    CHARACTER_ASSET_PATHS,
-    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
-    POSE_ATLAS_RELATIVE_ROOT,
-)
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.outfit_pack import set_official_pack_id_reservations
 lazy from domain.openai_vision_preferences import VisionDetail
 lazy from domain.speech_providers import (
@@ -85,6 +81,8 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
+lazy from infrastructure.body_pack_renderer import BodyPackRenderer, create_body_pack_renderer
+lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
 )
@@ -109,6 +107,13 @@ lazy from infrastructure.outfit_source_bound_expressions import (
 )
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
+lazy from application.appearance_ports import no_outfit_overlay_factory
+lazy from application.character_default_look import (
+    CharacterDefaultLook,
+    character_frame_paths as _character_frame_paths,
+    complete_halfbody_path as _complete_halfbody_path,
+    resolved_body_pack_for_source,
+)
 lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance
 lazy from infrastructure.exasperated_candidate_assets import (
     FORMAL_ASSET_RELATIVE_DIR,
@@ -178,7 +183,6 @@ def create_character_source(character_id: str) -> CharacterSource:
 
 def create_default_character_source() -> CharacterSource:
     """Select the launch-configured character while keeping MoHan as default."""
-
     return create_character_source(
         os.environ.get(ACTIVE_CHARACTER_ENV, DEFAULT_CHARACTER_ID)
     )
@@ -213,9 +217,7 @@ class CompanionServices:
     """Explicit dependencies owned by one companion-window runtime."""
 
     db: StudioDB
-    secret_store: SecretStorePort = field(
-        repr=False,
-    )
+    secret_store: SecretStorePort = field(repr=False)
     local_tts: LocalSpeechEnginePort
     cloud_tts: CloudSpeechEnginePort
     realtime: RealtimeVoicePort
@@ -226,27 +228,12 @@ class CompanionServices:
     speech_providers: SpeechProviderRegistryPort | None = None
     azure_speech: AzureSpeechEnginePort | None = None
     azure_hd_speech: AzureSpeechEnginePort | None = None
-    azure_secret_store: SecretStorePort | None = field(
-        default=None,
-        repr=False,
-    )
-    azure_hd_secret_store: SecretStorePort | None = field(
-        default=None,
-        repr=False,
-    )
-    secret_store_factory: SecretStoreFactoryPort | None = field(
-        default=None,
-        repr=False,
-    )
+    azure_secret_store: SecretStorePort | None = field(default=None, repr=False)
+    azure_hd_secret_store: SecretStorePort | None = field(default=None, repr=False)
+    secret_store_factory: SecretStoreFactoryPort | None = field(default=None, repr=False)
     platform_services: PlatformServicePort | None = None
-    cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = field(
-        default=None,
-        repr=False,
-    )
-    dense_face_provider_factory: Callable[[], object] | None = field(
-        default=None,
-        repr=False,
-    )
+    cloud_vision_service_factory: CloudVisionServiceFactoryPort | None = field(default=None, repr=False)
+    dense_face_provider_factory: Callable[[], object] | None = field(default=None, repr=False)
 
 
 class _ProductionVoiceCatalog:
@@ -308,9 +295,7 @@ class _ProductionVoiceCatalog:
         return preferred_windows_voice(voices, saved, target_language)
 
 
-def _create_ai_worker(
-    request: presentation_contracts.AIWorkerRequest,
-) -> AIWorkerPort:
+def _create_ai_worker(request: presentation_contracts.AIWorkerRequest) -> AIWorkerPort:
     """Translate the inward request contract to the OpenAI adapter request."""
 
     return AIWorker(
@@ -339,13 +324,15 @@ def create_presentation_ports() -> PresentationPorts:
 
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
-
     asset_root = character_source.assets.asset_root
     official_pack_roots = getattr(
-        character_source.assets,
-        "official_pack_roots",
-        (asset_root / "assets" / "official-packs",),
+        character_source.assets, "official_pack_roots", (asset_root / "assets" / "official-packs",),
     )
+    body_pack = resolved_body_pack_for_source(character_source)
+    bindings, native_frames = _character_frame_paths(character_source)
+    default_look = (CharacterDefaultLook(
+        character_source, default_data_dir() / "outfits", official_pack_roots,
+    ) if body_pack is None and "default_look_fullbody" in bindings else None)
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
 
@@ -357,24 +344,44 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         return shared_hand_region_provider
 
     def outfit_overlay_factory(on_stale_body_profile=None):
+        if body_pack is not None:
+            return no_outfit_overlay_factory()
         return ActiveOutfitOverlay(
-            presentation_contracts.default_data_dir() / "outfits",
+            default_data_dir() / "outfits",
             asset_root,
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
             official_pack_root=official_pack_roots,
+            native_frames=default_look.native_frames if default_look is not None else native_frames,
         )
 
-    def face_renderer_factory() -> LayeredParametricFaceRenderer:
+    @cache
+    def body_renderer() -> BodyPackRenderer:
+        return create_body_pack_renderer(
+            body_pack, character_source.appearance.character_layer_views,
+            character_source.assets.load_character_layer,
+        )
+
+    def face_renderer_factory():
+        if body_pack is not None:
+            return body_renderer()
         source_bound = hasattr(character_source, "appearance")
         if source_bound:
             validated_renderer_rig(character_source)
         configured = os.environ.get("MOHAN_EXASPERATED_CANDIDATE_DIR")
-        candidate_dir = None
-        face_manifest = None
-        authority_dir = None
-        detachable_dir = None
+        candidate_dir = face_manifest = authority_dir = detachable_dir = None
+        complete_halfbody_supplement = None
+        complete_halfbody_root = (default_look.halfbody_root()[0] if default_look is not None
+                                  else _complete_halfbody_path(character_source, bindings))
         if source_bound:
+            supplement_path = getattr(
+                getattr(character_source.appearance, "runtime_bindings", None),
+                "asset_paths", {},
+            ).get("halfbody_complete_supplement")
+            if supplement_path is not None and complete_halfbody_root is None:
+                complete_halfbody_supplement = (
+                    asset_root, character_source.assets.resolve_path(supplement_path),
+                )
             face_layer_root = character_source.assets.resolve_path(
                 str(CHARACTER_ASSET_PATHS["halfbody_layers"])
             )
@@ -416,7 +423,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             candidate_appearance = ExasperatedCandidateAppearance.load(
                 appearance_dir, official_pack_root=official_pack_roots,
             )
-            candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
+            candidate_appearance.store = default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
         return LayeredParametricFaceRenderer(
@@ -427,35 +434,31 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             use_detachable=detachable_dir is not None,
             exasperated_candidate_dir=candidate_dir,
             exasperated_source_bindings=ExasperatedSourceBindings(
+                complete_halfbody_supplement=complete_halfbody_supplement,
+                complete_halfbody_root=complete_halfbody_root,
+                complete_halfbody_provider=default_look.halfbody_root if default_look is not None else None,
+                native_frames=default_look.native_frames if default_look is not None else None,
+                require_complete_halfbody=(
+                    default_look.halfbody_root()[1] if default_look is not None else
+                    bindings.get("halfbody_complete", "assets/expressions/complete-expressions")
+                    != "assets/expressions/complete-expressions"
+                ),
                 appearance_overlay=candidate_appearance,
-                expression_provider=OutfitSourceBoundExpressionProvider(
-                    presentation_contracts.default_data_dir() / "outfits",
+                expression_provider=None if native_frames and default_look is None else OutfitSourceBoundExpressionProvider(
+                    default_data_dir() / "outfits",
                     official_pack_root=official_pack_roots,
                 ),
             ),
         )
 
     def full_body_renderer_factory(outfit_overlay=None):
-        if not hasattr(character_source, "appearance"):
-            # Keep the legacy structural test seam for older callers that pass
-            # a display-placement-only stub rather than a CharacterSource.
-            return LayeredFullBodyRenderer(
-                outfit_overlay=outfit_overlay,
-                display_placement=load_full_body_display_placement(
-                    character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)
-                ),
-            )
-        validated_renderer_rig(character_source)
-        layered_root = character_source.assets.resolve_path(
-            POSE_ATLAS_LAYERED_RELATIVE_ROOT
-        )
-        authority_root = character_source.assets.resolve_path(POSE_ATLAS_RELATIVE_ROOT)
-        manifest = load_layered_full_body_assets(layered_root)
-        return LayeredFullBodyRenderer(
-            manifest=manifest,
-            outfit_overlay=outfit_overlay,
-            authority_root=authority_root,
-            display_placement=load_full_body_display_placement(authority_root),
+        if body_pack is not None:
+            return body_renderer()
+        return create_character_fullbody_renderer(
+            character_source, bindings, outfit_overlay, default_look,
+            renderer_factory=LayeredFullBodyRenderer,
+            manifest_loader=load_layered_full_body_assets,
+            placement_loader=load_full_body_display_placement,
         )
 
     return PresentationPorts(
@@ -471,6 +474,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         official_pack_roots=official_pack_roots,
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=full_body_renderer_factory,
+        body_pack_required=body_pack is not None,
     )
 
 

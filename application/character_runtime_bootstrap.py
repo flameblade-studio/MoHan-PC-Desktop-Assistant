@@ -58,6 +58,8 @@ def _product_root() -> Path:
 
 
 def _engine_profile(source: CharacterSource) -> CharacterEngineProfile:
+    # Product metadata retains the legacy PoseAtlas roots; declared body packs
+    # are resolved by the presentation factories before any legacy frame loading.
     return CharacterEngineProfile(
         assets=source.assets,
         runtime_bindings=source.appearance.runtime_bindings,

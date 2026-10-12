@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-lazy import hashlib
-lazy import stat
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path, PurePosixPath
 
@@ -27,8 +25,12 @@ lazy from domain.character_pack.models import (
     SignatureVerifier,
     ValidationLimits,
 )
+lazy from domain.character_layer_plan import (
+    CharacterLayerAsset,
+    CharacterLayerMask,
+    CharacterLayerPlan,
+)
 lazy from domain.character_pack.validation import DEFAULT_LIMITS, validate_character_pack
-lazy from domain.character_pose import canonical_view_id
 lazy from domain.character_rig_data_loader import load_rig_manifest
 lazy from domain.character_runtime_bindings import (
     CharacterRuntimeBindings,
@@ -44,6 +46,16 @@ lazy from domain.character_source import (
 )
 lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
 lazy from domain.language_support import canonical_ui_language
+lazy from infrastructure.character_pack_files import (
+    CharacterPackReadError,
+    _read_verified_file,
+    _relative_path,
+    _require_contained_path,
+)
+lazy from infrastructure.body_pack_reader import (
+    BodyPackReader,
+    resolve_character_body_binding,
+)
 
 IDENTITY_SCHEMA = "flameblade.character-identity-profile.v1"
 PERSONA_SCHEMA = "flameblade.character-persona.v1"
@@ -65,16 +77,6 @@ _KNOWN_EXPRESSION_SCHEMAS = frozenset(
 )
 
 
-class CharacterPackReadError(ValueError):
-    """A stable rejection code and safe explanation for an unusable pack."""
-
-    def __init__(self, code: str, message: str, path: str | None = None) -> None:
-        location = f" ({path})" if path else ""
-        super().__init__(f"Character pack rejected [{code}]{location}: {message}")
-        self.code = code
-        self.path = path
-
-
 class CharacterPackReader(
     CharacterAssets,
     CharacterPersona,
@@ -92,6 +94,7 @@ class CharacterPackReader(
         engine_features: Iterable[str] = (),
         limits: ValidationLimits = DEFAULT_LIMITS,
         signature_verifier: SignatureVerifier | None = None,
+        body_pack_roots: Iterable[Path] = (),
     ) -> None:
         result = validate_character_pack(
             source,
@@ -167,6 +170,7 @@ class CharacterPackReader(
                 "The expression catalog and rig must identify the same character.",
                 expression_component.path,
             )
+
         profile_id, profile_version = profile
         if profile_id is None or profile_version is None:
             raise CharacterPackReadError(
@@ -174,9 +178,12 @@ class CharacterPackReader(
                 "The character rig requires a body-profile binding.",
                 rig_component.path,
             )
-
-        fullbody_canvas = CharacterCanvas(rig.full_body_canvas.width, rig.full_body_canvas.height, rig.full_body_canvas.mode)
-        halfbody_canvas = CharacterCanvas(rig.half_body_asset_canvas.width, rig.half_body_asset_canvas.height, rig.half_body_asset_canvas.mode)
+        body_binding = resolve_character_body_binding(
+            manifest.body_pack,
+            rig,
+            body_pack_roots,
+            manifest.layer_views,
+        )
 
         # Assign only after every outer and child contract has passed. A rejected
         # package therefore cannot leak a partially initialized source.
@@ -203,12 +210,14 @@ class CharacterPackReader(
         self._appearance_defaults = character_data.appearance_defaults
         self._voice_profile = character_data.voice
         self._body_profile = CharacterBodyProfileReference(profile_id, profile_version)
-        self._fullbody_canvas = fullbody_canvas
-        self._halfbody_canvas = halfbody_canvas
-        self._view_ids = tuple(canonical_view_id(yaw) for yaw in rig.view_ring.yaws)
+        self._fullbody_canvas = body_binding.fullbody_canvas
+        self._halfbody_canvas = body_binding.halfbody_canvas
+        self._view_ids = body_binding.view_ids
         self._layer_order = rig.layer_z_order
         self._rig_manifest = rig
         self._runtime_bindings = runtime_bindings
+        self._resolved_body_pack = body_binding.resolved_body_pack
+        self._character_layer_views = manifest.layer_views
 
     @property
     def validation_result(self) -> CharacterPackValidationResult:
@@ -217,6 +226,16 @@ class CharacterPackReader(
     @property
     def manifest(self) -> CharacterPackManifest:
         return self._manifest
+
+    @property
+    def resolved_body_pack(self) -> BodyPackReader | None:
+        """Return the verified external body pack declared by this character."""
+        return self._resolved_body_pack
+
+    @property
+    def character_layer_views(self) -> Mapping[str, CharacterLayerPlan]:
+        """Return immutable, manifest-bound layer plans keyed by view ID."""
+        return self._character_layer_views
 
     @property
     def character_id(self) -> str:
@@ -306,6 +325,26 @@ class CharacterPackReader(
         ):
             return None
         return self.resolve_path(relative_path)
+
+    def load_character_layer(
+        self,
+        record: CharacterLayerAsset | CharacterLayerMask,
+    ) -> bytes:
+        """Read a manifest-declared character layer and recheck its SHA-256."""
+        file_record = self._records.get(record.path)
+        if file_record is None:
+            raise CharacterPackReadError(
+                "undeclared_path",
+                "The requested character layer is outside the validated file inventory.",
+                record.path,
+            )
+        if file_record.sha256 != record.sha256:
+            raise CharacterPackReadError(
+                "reference_hash_mismatch",
+                "The character layer reference differs from its file record.",
+                record.path,
+            )
+        return _read_verified_file(self._root, file_record)
 
     @property
     def canonical_name(self) -> str:
@@ -714,74 +753,6 @@ def _load_expression_catalog(
             f"Expression catalog validation failed: {type(error).__name__}.",
             component.path,
         ) from None
-
-
-def _read_verified_file(root: Path, record: CharacterPackFile) -> bytes:
-    candidate = root.joinpath(*PurePosixPath(record.path).parts)
-    _require_contained_path(root, candidate, record.path)
-    metadata = candidate.stat(follow_symlinks=False)
-    if not stat.S_ISREG(metadata.st_mode) or metadata.st_size != record.bytes:
-        raise CharacterPackReadError(
-            "size_mismatch",
-            "A character asset no longer matches the validated byte count.",
-            record.path,
-        )
-    data = candidate.read_bytes()
-    if hashlib.sha256(data).hexdigest() != record.sha256:
-        raise CharacterPackReadError(
-            "file_hash_mismatch",
-            "A character asset no longer matches the validated SHA-256.",
-            record.path,
-        )
-    return data
-
-
-def _require_contained_path(root: Path, candidate: Path, name: str) -> None:
-    if candidate.is_symlink() or candidate.is_junction():
-        raise CharacterPackReadError(
-            "unsafe_path",
-            "Character asset paths cannot use symbolic links or junctions.",
-            name,
-        )
-    try:
-        resolved = candidate.resolve(strict=True)
-    except OSError:
-        raise CharacterPackReadError(
-            "missing_file",
-            "A validated character asset is no longer present.",
-            name,
-        ) from None
-    if not resolved.is_relative_to(root):
-        raise CharacterPackReadError(
-            "unsafe_path",
-            "A character asset path escapes the validated package root.",
-            name,
-        )
-    for ancestor in candidate.parents:
-        if ancestor == root:
-            break
-        if ancestor.is_symlink() or ancestor.is_junction():
-            raise CharacterPackReadError(
-                "unsafe_path",
-                "Character asset ancestors cannot use symbolic links or junctions.",
-                name,
-            )
-
-
-def _relative_path(value: str) -> PurePosixPath:
-    if not isinstance(value, str) or not value or "\\" in value:
-        raise CharacterPackReadError(
-            "unsafe_path",
-            "Character asset paths must use relative POSIX syntax.",
-        )
-    path = PurePosixPath(value)
-    if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
-        raise CharacterPackReadError(
-            "unsafe_path",
-            "Character asset paths must use canonical relative syntax.",
-            value,
-        )
-    return path
 
 
 __all__ = (

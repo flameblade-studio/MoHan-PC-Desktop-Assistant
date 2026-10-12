@@ -9,6 +9,7 @@ composed; source approval and formal installation are independent gates.
 from __future__ import annotations
 
 lazy from collections import OrderedDict
+lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, replace
 lazy from pathlib import Path
 lazy from PySide6.QtCore import QRect, Qt
@@ -99,11 +100,19 @@ def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
 
 
 @dataclass(frozen=True)
-class ExasperatedSourceBindings:
+class HalfbodySourceBindings:
     """Construction-time dependencies for the source-bound expression route."""
 
     appearance_overlay: ExasperatedAppearanceOverlay | None = None
     expression_provider: ExasperatedCandidateProvider | None = None
+    complete_halfbody_supplement: tuple[Path, Path] | None = None
+    complete_halfbody_root: Path | None = None
+    require_complete_halfbody: bool = False
+    complete_halfbody_provider: Callable[[], tuple[Path | None, bool]] | None = None
+    native_frames: Callable[[], bool] | None = None
+
+
+ExasperatedSourceBindings = HalfbodySourceBindings
 
 
 class LayeredParametricFaceRenderer(
@@ -126,7 +135,7 @@ class LayeredParametricFaceRenderer(
         detachable_dir: Path | None = None,
         use_detachable: bool = True,
         exasperated_candidate_dir: Path | None = None,
-        exasperated_source_bindings: ExasperatedSourceBindings | None = None,
+        exasperated_source_bindings: HalfbodySourceBindings | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
@@ -151,6 +160,7 @@ class LayeredParametricFaceRenderer(
             else None
         )
         source_bindings = exasperated_source_bindings or ExasperatedSourceBindings()
+        self._native_frames_provider = source_bindings.native_frames
         self._candidate_appearance_overlay = source_bindings.appearance_overlay
         self._source_bound_expression_provider = source_bindings.expression_provider
         # An explicitly injected detachable candidate must not be shadowed by
@@ -161,7 +171,14 @@ class LayeredParametricFaceRenderer(
             if authority_dir is not None or detachable_dir is None
             else self._detachable_dir / "complete-expressions"
         )
-        self._complete_halfbody = CompleteHalfbodyRenderer(complete_root, outfit_overlay)
+        self._complete_halfbody = CompleteHalfbodyRenderer(
+            complete_root, outfit_overlay,
+            exasperated_source_bindings.complete_halfbody_supplement
+            if exasperated_source_bindings is not None else None,
+            complete_root=source_bindings.complete_halfbody_root,
+            require_complete=source_bindings.require_complete_halfbody,
+            complete_provider=source_bindings.complete_halfbody_provider,
+        )
         self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
         self._exasperated_candidate_key: str | None = None
         self._exasperated_candidate_rest: QPixmap | None = None
@@ -247,6 +264,10 @@ class LayeredParametricFaceRenderer(
         # the layers cut on that very portrait (its gesture silhouette).
         gesture = gesture_portrait_expression(motion.expression)
         silhouette = outfit_silhouette(motion.expression, motion.pose.value)
+        if self._native_frames_provider is not None and self._native_frames_provider():
+            complete = self._complete_halfbody.render(base, motion, layers)
+            if complete is not None:
+                return complete
         if gesture == _EXASPERATED_EXPRESSION:
             portable = (
                 self._source_bound_expression_provider.assets_for(

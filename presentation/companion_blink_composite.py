@@ -221,6 +221,8 @@ class CompanionBlinkCompositeMethods:
         opacity: float = 1.0,
     ) -> QPixmap:
         """Close one eye while preserving the surrounding expression."""
+        if not getattr(self.face_renderer, "supports_wink", True):
+            return self.face_renderer.render_overlay(base_pixmap, QPixmap(), eye_state="wink")
         if eye_state_for_blink(opacity) is EyeState.REST:
             return QPixmap(base_pixmap)
         pose = self.physics_expression_poses.get(

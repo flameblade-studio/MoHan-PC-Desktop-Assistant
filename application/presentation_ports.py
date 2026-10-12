@@ -164,7 +164,6 @@ class _PresentationFallbackPlatformService:
 
 def fallback_platform_services() -> PlatformServicePort:
     """Return immutable platform facts for backwards-compatible UI creation."""
-
     return _PresentationFallbackPlatformService()
 
 
@@ -766,6 +765,7 @@ class PresentationPorts:
     )
     outfit_overlay_factory: OutfitOverlayFactory = no_outfit_overlay_factory
     full_body_renderer_factory: FullBodyRendererFactory = no_full_body_renderer_factory
+    body_pack_required: bool = False
 
 
 _PORTABLE_SECRET_IDS = frozenset(
