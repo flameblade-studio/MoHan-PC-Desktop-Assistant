@@ -657,14 +657,16 @@ def test_dynamic_core_feathers_motion_on_every_edge_with_static_radius() -> None
     static = Image.new("RGBA", rest.size, (255, 255, 255, ZERO_ALPHA))
     static.paste((255, 255, 255, FULL_ALPHA), (15, 15, 25, 25))
     moved = rest.copy()
-    moved.paste((30, 40, 50, FULL_ALPHA), (27, 18, 30, 21))
+    # The head ROI ends at x=29 (exclusive). Keep all three motion columns
+    # inside it so the 3x3 opening retains M before S union M is feathered.
+    moved.paste((30, 40, 50, FULL_ALPHA), (26, 18, 29, 21))
     core = builder.dynamic_face_core(static, rest, [moved], feather_radius=4)
-    assert core.getpixel((28, 19))[3] == FULL_ALPHA
+    assert core.getpixel((27, 19))[3] == FULL_ALPHA
     one_pixel_feather_alpha = round(FULL_ALPHA * 3 / 4)
-    assert core.getpixel((30, 19))[3] == one_pixel_feather_alpha
-    assert core.getpixel((28, 17))[3] == one_pixel_feather_alpha
-    assert core.getpixel((28, 21))[3] == one_pixel_feather_alpha
-    assert core.getpixel((33, 19))[3] == ZERO_ALPHA
+    assert core.getpixel((29, 19))[3] == one_pixel_feather_alpha
+    assert core.getpixel((27, 17))[3] == one_pixel_feather_alpha
+    assert core.getpixel((27, 21))[3] == one_pixel_feather_alpha
+    assert core.getpixel((32, 19))[3] == ZERO_ALPHA
 
 
 def test_recomputed_layer_reuse_rejects_a_different_bald_body(
