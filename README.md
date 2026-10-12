@@ -22,7 +22,7 @@
 
 <p align="center">[下載 Windows 安裝程式](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [快速開始](QUICKSTART.md) · [跨平台能力矩陣](docs/CROSS-PLATFORM.md)</p>
 
-> **軟體作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。實際產物仍須通過本版最終發布門檻；最新公開版本以動態徽章與 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準。<!-- x-release-please-version-date -->
+> **軟體作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。已發布程式以 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 為準；下列主線更新另標示待發布狀態。<!-- x-release-please-version-date -->
 
 ### 這是什麼
 
@@ -33,7 +33,7 @@
 [觀看實際展示](docs/media/mohan-demo.mp4)。設定與主要畫面：[首次設定](docs/media/first-run-wizard.png)、[語音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待辦與靈感](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全權限](docs/media/security-permissions.png)。
 
 - V5 二代素體提供全身 24 角度、半身表情、眨眼、說話嘴型與 50 Hz 嘴型同步。
-- 外袍、髮型、髮飾與妝容採可拆卸外觀圖層；內建藍白漢服，妝容可選原妝、淡雅或素顏三段。
+- 外袍、髮型、髮飾與妝容採可拆卸外觀圖層；主線藍白漢服的 24 視角鞋子已統一為白底藍花繡花平底鞋，妝容提供素顏、淡妝、經典與華麗四級。
 - 文字、Realtime、Windows 本機女聲、OpenAI TTS 與 Azure Speech 選用路徑。
 - 對話、可編輯記憶、待辦、靈感、工作計時、提醒與可攜設定檔。
 - 工具執行需經權限、風險分級、確認、稽核與緊急停止。
@@ -46,12 +46,23 @@
 
 ### 三專案與角色包
 
-墨寒保留既有名稱、網址、版本與使用者，定位為可直接安裝的產品。通用引擎正搬遷至 MIT 授權的 [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine)；角色素材的清冊、核准與匯出工具則是 MIT 授權的 [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu)。
+墨寒保留既有名稱、網址、版本與使用者，定位為可直接安裝的產品。MIT 授權的 [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine) 負責通用互動與執行機制，主線已完成引擎對墨寒產品殼的依賴拆分；MIT 授權的 [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) 負責角色素材清冊、核准與匯出。角色的人設、台詞、聲音與外觀由角色包提供。
 
 - 墨寒角色包：千年女劍魂墨寒的人設、台詞、聲音與外觀資料，使用 `mohan-pack-v*` 標籤。
 - 林可芸角色包：墨寒的今生，是稱呼使用者「劍主」的現代女性，使用 `lin-keyun-pack-v*` 標籤。
 
 兩個角色包都在本專案的 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 獨立提供，需另外下載，不隨安裝檔附帶。下載不需金鑰，安裝前會核對大小、`SHA-256`、manifest 與逐檔內容。
+
+截至 2026-10-12，最新已發布角色包為墨寒 `1.0.4` 與林可芸 `1.0.1`；待發布版本為墨寒 `1.0.6` 與林可芸 `1.0.4`。角色包版號與程式版號分開，主線更新將隨後續發布提供。
+
+#### 主線已合併、待發布的更新
+
+炎劍鑄魂引擎已支援角色包依附指定素體包：素體提供身形、眨眼與嘴型，角色包提供髮型、服裝與妝容；缺少相符素體時會清楚提示。每個角度可安排不同圖層前後順序，並用素體隱藏遮罩移除衣髮下多出的底圖；臉部核心以柔邊線性混合保留表情與嘴型，讓臉與角色外觀自然銜接。作者規格與建置驗證見 [素體包與角色圖層](docs/body-pack.md)。素體包另行下載（#296）與墨寒官方長髮造型仍在開發中。
+
+- 正面 13 組表情包含說話與眨眼狀態；妝容四級層次更清楚，眼妝、腮紅、唇妝可各自調整濃淡。
+- 雲裳閣可拖曳或用方向鍵環視 24 角度，Home 回正面；換裝與調妝保留目前角度。
+- 控制中心字級放大，桌面狀態卡可收合並記住偏好；外部主題也會套用至選取狀態。
+- 午餐與晚餐提醒各自保存送達、回應與延後狀態；四語自然語言任務判斷已修正，撤銷資料夾或 OAuth 授權會立即阻止舊工作繼續使用權限。
 
 ### 墨寒的傲嬌工程小劇場 / MoHan's Tsundere Developer Theatre
 
@@ -144,7 +155,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 1. 下載 `.mohan-outfit`，並保持副檔名與封裝完整。
 2. 開啟控制中心「雲裳閣」，按「匯入服裝套件」並選檔；衣裝包與妝容包共用此入口、驗證、清單與移除流程。
-3. 從套件或完整造型清單選取後按「套用選取服裝」；妝容則在妝容選單挑選原妝、淡雅、素顏或已安裝款式，再用 0–100% 滑桿調整濃度。
+3. 從套件或完整造型清單選取後按「套用選取服裝」；主線妝容選單提供素顏、淡妝、標準妝、華麗妝與已安裝款式，再用 0–100% 滑桿調整整體及眼妝、腮紅、唇妝濃度。
 4. 要撤銷自訂外觀，按「還原內建服裝」；妝容改選內建原妝或素顏。內建藍白漢服與內建妝容固定保留，且同 id 套件沿用內建版本。
 
 #### 安裝與還原主題
@@ -250,7 +261,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 <p align="center">[下载 Windows 安装程序](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [快速开始](QUICKSTART.md) · [跨平台能力矩阵](docs/CROSS-PLATFORM.md)</p>
 
-> **软件作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。实际产物仍须通过本版本最终发布关卡；最新公开版本以动态徽章与 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准。<!-- x-release-please-version-date -->
+> **软件作者：CHOU MING HUA** · Windows 10/11 完整版 · macOS／Linux 功能受限 Preview<br>**最新正式版本：** `v4.6.0`（2026-08-29）。已发布程序以 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 为准；下列主线更新另标明待发布状态。<!-- x-release-please-version-date -->
 
 ### 这是什么
 
@@ -261,7 +272,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 [观看实际演示](docs/media/mohan-demo.mp4)。设置与主要界面：[首次设置](docs/media/first-run-wizard.png)、[语音模式](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[待办与灵感](docs/media/tasks-and-ideas.png)、[长期记忆](docs/media/long-term-memory.png)、[安全权限](docs/media/security-permissions.png)。
 
 - V5 二代素体提供全身 24 角度、半身表情、眨眼、说话口型与 50 Hz 口型同步。
-- 外袍、发型、发饰与妆容采用可拆卸外观图层；内置蓝白汉服，妆容可选原妆、淡雅或素颜三档。
+- 外袍、发型、发饰与妆容采用可拆卸外观图层；主线蓝白汉服的 24 视角鞋子已统一为白底蓝花绣花平底鞋，妆容提供素颜、淡妆、经典与华丽四级。
 - 文本、Realtime、Windows 本地女声、OpenAI TTS 与 Azure Speech 可选路径。
 - 对话、可编辑记忆、待办事项、灵感、工作计时、提醒与便携配置文件。
 - 工具执行必须经过权限、风险分级、确认、审计与紧急停止。
@@ -274,12 +285,23 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 ### 三项目与角色包
 
-墨寒保留现有名称、网址、版本与用户，定位为可直接安装的产品。通用引擎正在迁移到采用 MIT 许可的 [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine)；负责角色素材清单、批准与导出的工具则是采用 MIT 许可的 [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu)。
+墨寒保留现有名称、网址、版本与用户，定位为可直接安装的产品。MIT 许可的 [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine) 负责通用互动与运行机制，主线已完成引擎对墨寒产品壳的依赖拆分；MIT 许可的 [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) 负责角色素材清单、批准与导出。角色的人设、台词、声音与外观由角色包提供。
 
 - 墨寒角色包：千年女剑魂墨寒的人设、台词、声音与外观数据，使用 `mohan-pack-v*` 标签。
 - 林可芸角色包：墨寒的今生，是称呼用户“剑主”的现代女性，使用 `lin-keyun-pack-v*` 标签。
 
 两个角色包都在本项目的 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 独立提供，需要另外下载，不随安装文件附带。下载无需密钥，安装前会核对大小、`SHA-256`、manifest 与逐文件内容。
+
+截至 2026-10-12，最新已发布角色包为墨寒 `1.0.4` 与林可芸 `1.0.1`；待发布版本为墨寒 `1.0.6` 与林可芸 `1.0.4`。角色包版本号与程序版本号分开，主线更新将在后续发布中提供。
+
+#### 主线已合并、待发布的更新
+
+炎剑铸魂引擎已支持角色包依附指定素体包：素体提供体形、眨眼与口型，角色包提供发型、服装与妆容；缺少匹配素体时会明确提示。每个角度可安排不同图层前后顺序，并用素体隐藏遮罩移除衣发下多出的底图；脸部核心以柔边线性混合保留表情与口型，让脸与角色外观自然衔接。作者规范与构建验证见 [素体包与角色图层](docs/body-pack.md)。素体包另行下载（#296）与墨寒官方长发造型仍在开发中。
+
+- 正面 13 组表情包含说话与眨眼状态；妆容四级层次更清楚，眼妆、腮红、唇妆可各自调整浓淡。
+- 云裳阁可拖动或用方向键环视 24 角度，Home 回正面；换装与调妆保留当前角度。
+- 控制中心字号放大，桌面状态卡可折叠并记住偏好；外部主题也会应用到选中状态。
+- 午餐与晚餐提醒各自保存送达、回应与延后状态；四语自然语言任务判断已修正，撤销文件夹或 OAuth 授权会立即阻止旧任务继续使用权限。
 
 ### 墨寒的傲娇工程小剧场
 
@@ -372,7 +394,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 1. 下载 `.mohan-outfit`，并保持扩展名与封装完整。
 2. 打开控制中心“云裳阁”，点击“导入服装套件”并选择文件；服装包与妆容包共用该入口、验证、列表与删除流程。
-3. 从套件或完整造型列表选取后点击“应用所选服装”；妆容则在妆容菜单选择原妆、淡雅、素颜或已安装样式，再使用 0–100% 滑块调整浓度。
+3. 从套件或完整造型列表选取后点击“应用所选服装”；主线妆容菜单提供素颜、淡妆、标准妆、华丽妆与已安装样式，再使用 0–100% 滑块调整整体及眼妆、腮红、唇妆浓度。
 4. 要撤销自定义外观，点击“恢复内置服装”；妆容改选内置原妆或素颜。内置蓝白汉服与内置妆容固定保留，且同 id 套件沿用内置版本。
 
 #### 安装与恢复主题
@@ -478,7 +500,7 @@ Windows 正式打包规范使用 Rust 1.97.1、Maturin 1.14.1 与 PyO3 0.29.2 �
 
 <p align="center">[Download Windows installer](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [Quick Start](QUICKSTART.md) · [Cross-platform capability matrix](docs/CROSS-PLATFORM.md)</p>
 
-> **Author: CHOU MING HUA** · Windows 10/11 complete build · macOS/Linux limited Preview<br>**Latest formal release:** `v4.6.0` (August 29, 2026). The actual artifacts must still pass this release's final publication gates; the dynamic badge and [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) remain authoritative.<!-- x-release-please-version-date -->
+> **Author: CHOU MING HUA** · Windows 10/11 complete build · macOS/Linux limited Preview<br>**Latest formal release:** `v4.6.0` (August 29, 2026). [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) lists published application builds; main-branch updates below are marked as awaiting release.<!-- x-release-please-version-date -->
 
 ### What this is
 
@@ -489,7 +511,7 @@ MoHan is a Windows voice-interactive desktop assistant built around safety, priv
 [Watch the live demonstration](docs/media/mohan-demo.mp4). Setup and main screens: [first run](docs/media/first-run-wizard.png), [voice modes](docs/media/voice-modes.png), [expressions](docs/media/expressions.png), [tasks and ideas](docs/media/tasks-and-ideas.png), [long-term memory](docs/media/long-term-memory.png), and [security permissions](docs/media/security-permissions.png).
 
 - The V5 generation-2 body provides 24 full-body angles, half-body expressions, blinking, speech mouth shapes, and 50 Hz lip sync.
-- Robe, hairstyle, hairpiece, and makeup use detachable appearance layers; Blue-and-White Hanfu is built in, with classic, light, and bare-face makeup levels.
+- Robe, hairstyle, hairpiece, and makeup use detachable layers; on main, all 24 Blue-and-White Hanfu views use white flats with blue floral embroidery, with bare, light, classic, and glamorous makeup levels.
 - Text, Realtime, Windows local female speech, OpenAI TTS, and optional Azure Speech paths.
 - Conversations, editable memory, tasks, ideas, work timers, reminders, and a portable profile.
 - Tool execution passes through permissions, risk levels, confirmation, auditing, and emergency stop.
@@ -502,12 +524,23 @@ Traditional Chinese, Simplified Chinese, English, and Japanese cover first run, 
 
 ### Three projects and character packs
 
-MoHan retains its existing name, URL, versions, and users as the installable product. The general-purpose engine is moving to the MIT-licensed [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine), while the MIT-licensed [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) manages character-asset inventories, approvals, and exports.
+MoHan retains its name, URL, versions, and users as the installable product. The MIT-licensed [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine) provides general interaction and runtime mechanisms; main has completed the removal of engine dependencies on the MoHan product shell. The MIT-licensed [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) manages asset inventories, approvals, and exports. Character packs provide persona, dialogue, voice, and appearance.
 
 - MoHan character pack: persona, dialogue, voice, and appearance data for the thousand-year-old sword spirit, published under `mohan-pack-v*` tags.
 - Lin Keyun character pack: MoHan's present-day incarnation, a modern woman who addresses the user as “Swordmaster,” published under `lin-keyun-pack-v*` tags.
 
 Both packs are separately available from this project's [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) and must be downloaded in addition to the installer. Downloads require no key; size, `SHA-256`, manifest, and every file are verified before installation.
+
+As of October 12, 2026, the latest published character packs are MoHan `1.0.4` and Lin Keyun `1.0.1`; MoHan `1.0.6` and Lin Keyun `1.0.4` await release. Pack and application versions are separate; main-branch updates will be delivered in subsequent releases.
+
+#### Updates merged into main and awaiting release
+
+Soulforge now supports character packs that depend on a specified body pack: the body supplies body shape, blinking, and mouth shapes, while the character pack supplies hair, clothing, and makeup. A missing matching body produces a clear error. Each view can define its own layer order and use a body hide mask to remove excess base pixels beneath hair and clothing. Soft-edged linear blending protects the face core's expressions and mouth shapes while joining it to the character's appearance. Author contracts and build validation are in [Body packs and character layers](docs/body-pack.md). Separate body-pack downloads (#296) and MoHan's official long-hair style remain in development.
+
+- Thirteen front expressions include speech and blink states; four makeup levels are more distinct, with separate eye, blush, and lip intensity controls.
+- Drag or use arrow keys to rotate the Wardrobe Pavilion preview through 24 views; Home returns to the front. Outfit and makeup changes retain the current angle.
+- The control center uses larger text, the desktop status card remembers its collapsed state, and external themes also color selected states.
+- Lunch and dinner reminders store delivery, response, and postponement separately. Four-language task intent recognition is corrected; revoking folder or OAuth access immediately prevents stale work from continuing to use it.
 
 ### MoHan's Tsundere Developer Theatre
 
@@ -600,7 +633,7 @@ Multisensory vision is enabled explicitly by the user. After the user explicitly
 
 1. Download the `.mohan-outfit`; keep its filename and package intact.
 2. Open the control center's Wardrobe Pavilion, press “Import outfit package,” and choose the file. Outfit and makeup packs share this entry point, validation, catalog, and removal flow.
-3. Choose a package or complete look and press “Apply selected outfit.” For makeup, select classic, light, bare face, or an installed style in the makeup menu, then adjust intensity with the 0–100% slider.
+3. Choose a package or complete look and press “Apply selected outfit.” On main, the makeup menu offers bare face, light, classic, glamorous, and installed styles; use the 0–100% sliders for overall, eye, blush, and lip intensity.
 4. To undo appearance customization, press “Restore built-in outfit”; choose built-in classic makeup or bare face for makeup. The built-in Blue-and-White Hanfu and makeup remain fixed and take precedence by a package with the same id.
 
 #### Install and restore themes
@@ -706,7 +739,7 @@ The formal Windows packaging contract builds its first-party native module with 
 
 <p align="center">[Windows インストーラーをダウンロード](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) · [クイックスタート](QUICKSTART.md) · [クロスプラットフォーム機能表](docs/CROSS-PLATFORM.md)</p>
 
-> **作者：CHOU MING HUA** · Windows 10/11 完全版 · macOS／Linux 機能限定 Preview<br>**最新正式リリース：** `v4.6.0`（2026 年 8 月 29 日）。実際の成果物は本版の最終公開ゲートに合格する必要があります。最新の公開版は動的バッジと [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) を基準とします。<!-- x-release-please-version-date -->
+> **作者：CHOU MING HUA** · Windows 10/11 完全版 · macOS／Linux 機能限定 Preview<br>**最新正式リリース：** `v4.6.0`（2026 年 8 月 29 日）。公開済みアプリは [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) で確認できます。以下の main ブランチの更新は、公開待ちとして区別しています。<!-- x-release-please-version-date -->
 
 ### これは何か
 
@@ -717,25 +750,36 @@ The formal Windows packaging contract builds its first-party native module with 
 [実機デモを見る](docs/media/mohan-demo.mp4)。設定と主な画面：[初回設定](docs/media/first-run-wizard.png)、[音声モード](docs/media/voice-modes.png)、[表情](docs/media/expressions.png)、[タスクとアイデア](docs/media/tasks-and-ideas.png)、[長期記憶](docs/media/long-term-memory.png)、[安全権限](docs/media/security-permissions.png)。
 
 - V5 第二世代素体は、全身 24 方向、半身表情、まばたき、発話時の口形、50 Hz リップシンクに対応します。
-- 外衣、髪型、髪飾り、メイクは着脱可能な外観レイヤーです。藍白漢服を内蔵し、メイクは基本、薄化粧、素顔の三段階から選べます。
+- 外衣、髪型、髪飾り、メイクは着脱可能なレイヤーです。main では藍白漢服の全 24 視点の靴を白地に青い花の刺繍があるフラットシューズに統一し、メイクは素顔・ナチュラル・クラシック・華やかの 4 段階を用意しています。
 - テキスト、Realtime、Windows 本機女性音声、OpenAI TTS、任意の Azure Speech 経路。
 - 会話、編集可能な記憶、タスク、アイデア、作業タイマー、リマインダー、可搬プロファイル。
 - ツール実行は権限、危険度、確認、監査、緊急停止を通過します。
 - Google は実接続検証済みです。Microsoft、GitHub、Home Assistant は実験的 Preview のままです。
 - マルチセンサー視覚、ジェスチャー、遠隔アクセス、クラウド連携はユーザーが個別に有効化し、いつでも管理できます。
 
-#### 日本語の対応範囲
+#### 四言語の対応範囲
 
 繁体字中国語、簡体字中国語、英語、日本語は、初回設定、会話、音声、権限、基本設定、作業モード、リマインダーに対応します。高度な画面には繁体字中国語が残る場合があります。Azure Speech（プレビュー）の実際の音声、リージョン、割り当て、費用は、利用者自身のサービスアカウントに依存します。
 
 ### 三つのプロジェクトとキャラクターパック
 
-墨寒は、従来の名称、URL、バージョン、利用者を引き継ぐインストール可能な製品です。汎用エンジンは MIT ライセンスの [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine) へ移行中です。キャラクター素材の目録、承認、書き出しは、MIT ライセンスの [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) が担います。
+墨寒は、従来の名称、URL、バージョン、利用者を引き継ぐインストール可能な製品です。MIT ライセンスの [炎劍鑄魂 Soulforge Engine](https://github.com/flameblade-studio/soulforge-engine) は汎用の対話・実行機構を担当し、main では墨寒の製品シェルへのエンジン依存の解消が完了しています。MIT ライセンスの [炎劍畫譜 Flameblade Huapu](https://github.com/flameblade-studio/flameblade-huapu) は素材目録・承認・書き出しを担当します。人物設定・台詞・音声・外観はキャラクターパックが提供します。
 
 - 墨寒キャラクターパック：千年の女剣魂である墨寒の人物設定、台詞、音声、外観データを収録し、`mohan-pack-v*` タグで公開します。
 - 林可芸キャラクターパック：墨寒の現世の姿にあたる現代女性で、利用者を「剣主」と呼びます。`lin-keyun-pack-v*` タグで公開します。
 
 両パックは本プロジェクトの [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) から個別に取得します。インストーラーには同梱されないため、別途ダウンロードしてください。取得にキーは不要で、導入前にサイズ、`SHA-256`、manifest、全ファイルの内容を検証します。
+
+2026 年 10 月 12 日時点の最新公開済みキャラクターパックは墨寒 `1.0.4` と林可芸 `1.0.1` です。墨寒 `1.0.6` と林可芸 `1.0.4` は公開待ちです。パックとアプリのバージョンは別で、main の更新は今後のリリースで提供されます。
+
+#### main に統合済み・公開待ちの更新
+
+炎剣鋳魂エンジンは、指定した素体パックに依存するキャラクターパックに対応しました。素体が体形・まばたき・口形を、キャラクターパックが髪型・衣装・メイクを提供し、対応する素体が不足すると明確なエラーを表示します。視点ごとにレイヤーの前後関係を設定し、素体非表示マスクで髪や衣装の下に余分に残る素体部分を除去できます。顔の中心部分は境界をぼかした線形合成で表情と口形を保ち、キャラクターの外観へ自然につなぎます。作者向け仕様とビルド検証は [素体パックとキャラクターレイヤー](docs/body-pack.md) を参照してください。素体パックの別途ダウンロード（#296）と墨寒の公式ロングヘアは開発中です。
+
+- 正面 13 組の表情は発話・まばたき状態を含みます。4 段階のメイクの差が明確になり、アイメイク・チーク・リップの濃さを個別に調整できます。
+- 雲裳閣のプレビューはドラッグまたは矢印キーで 24 方向に回転し、Home で正面に戻ります。衣装やメイクを変えても現在の角度を維持します。
+- コントロールセンターの文字を拡大し、デスクトップ状態カードの折りたたみ設定を保存します。外部テーマの色は選択状態にも適用されます。
+- 昼食・夕食の通知は送達・応答・延期を個別に保存します。四言語の自然言語によるタスク判定を修正し、フォルダーや OAuth の許可を取り消すと古い処理による権限の継続利用を直ちに止めます。
 
 ### 墨寒のツンデレ開発小劇場
 
@@ -828,7 +872,7 @@ https://www.googleapis.com/auth/drive.metadata.readonly
 
 1. `.mohan-outfit` をダウンロードし、拡張子を変えたり解凍したりしないでください。
 2. コントロールセンターの「雲裳閣」を開き、「衣装パッケージをインポート」でファイルを選びます。衣装とメイクは同じ入口、検証、一覧、削除経路を使います。
-3. パッケージまたは一式を選び、「選択した衣装を適用」を押します。メイクは基本、淡め、すっぴん、導入済みスタイルから選び、0–100% スライダーで濃さを調整します。
+3. パッケージまたは一式を選び、「選択した衣装を適用」を押します。main のメイクメニューは素顔・ナチュラル・クラシック・華やか・導入済みスタイルに対応し、0–100% スライダーで全体・アイメイク・チーク・リップの濃さを調整できます。
 4. カスタム外観を取り消すには「内蔵衣装に戻す」を押し、メイクは内蔵の基本メイクまたはすっぴんを選びます。内蔵の藍白漢服とメイクは削除できず、同じ id のパッケージで置き換えられません。
 
 #### テーマの導入と復元
