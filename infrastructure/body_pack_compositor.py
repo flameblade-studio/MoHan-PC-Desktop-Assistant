@@ -1,4 +1,4 @@
-"""Composite body-pack layers while preserving the body-owned face core."""
+"""Protect the body-owned face core with continuous alpha weights."""
 from __future__ import annotations
 
 lazy from collections import OrderedDict
@@ -14,7 +14,6 @@ lazy from domain.character_layer_plan import (
     CharacterLayerMask,
     CharacterLayerPlan,
 )
-lazy from infrastructure.appearance_layer_stack import clear_appearance_base
 
 LayerRecord = CharacterLayerAsset | CharacterLayerMask
 ImageLoader = Callable[[LayerRecord], QPixmap]
@@ -30,59 +29,115 @@ def compose_body_pack_frame(
     base: QPixmap,
     plan: CharacterLayerPlan | None,
     load_image: ImageLoader,
-    face_core: QRegion | None = None,
+    face_core: QPixmap | None = None,
 ) -> QPixmap:
-    """Draw declared stages on the GUI thread and preserve body-owned pixels.
+    """Blend the protected body and declared character stack on the GUI thread.
 
-    A missing plan returns a copy of the supplied frame without calling the
-    loader, leaving route selection to the composition boundary.
-    Makeup is clipped to the protected face core and painted SourceAtop after
-    the base and before garments. Other character layers stay outside that
-    core, so they cannot cover its body-owned makeup.
+    A missing plan returns a copy without calling the loader.
+    臉部核心以 alpha 權重保護：X 依 H 非零 alpha 清除 B，再按宣告順序
+    （含 base）以 SourceOver 疊所有非 makeup 角色層，完全不考慮 F。
+    B′ 是 B 加 makeup SourceAtop；R＝B′·F_α＋X·(1−F_α)。
+    預乘 RGBA 逐像素線性插值，makeup 僅在 B′，hair-back 沒有例外。
+    脸部核心以 alpha 权重保护：X 按 H 非零 alpha 清除 B，再按声明顺序
+    （含 base）以 SourceOver 叠所有非 makeup 角色层，完全不考虑 F。
+    B′ 是 B 加 makeup SourceAtop；R＝B′·F_α＋X·(1−F_α)。
+    预乘 RGBA 逐像素线性插值，makeup 仅在 B′，hair-back 没有例外。
+    Face-core alpha protects the body. X clears B wherever H has nonzero
+    alpha, then draws non-makeup character stages in declared order (including
+    base) with SourceOver, without considering F. B′ paints makeup SourceAtop
+    onto original B. R = B′*F_alpha + X*(1-F_alpha) linearly interpolates
+    premultiplied RGBA per pixel. Makeup appears only in B′; hair-back has
+    no exception. Transparent F yields X; opaque F always yields B′.
+    顔核心を Alpha の重みで保護します。X は H の非ゼロ Alpha で B を
+    消去し、base を含む宣言順でメイク以外を SourceOver で重ねます。
+    B′ は元の B にメイクを SourceAtop で重ねた結果です。
+    R＝B′·F_α＋X·(1−F_α) を乗算済み RGBA で画素ごとに線形補間します。
+    メイクは B′ だけに現れ、hair-back に例外はありません。
+    素體包獨佔 F_body；L 與 H 保留原始 alpha，僅在最終插值套用 F。
+    素体包独占 F_body；L 与 H 保留原始 alpha，仅在最终插值应用 F。
+    The body pack alone defines F_body; L and H retain native alpha and
+    face protection is applied once, at the final interpolation.
+    素体パックだけが F_body を定義し、L と H は元の Alpha を保持し、
+    顔保護は最終補間で一度適用します。
     """
     if plan is None:
         return QPixmap(base)
     if base.isNull():
         raise ValueError("Body-pack composition requires a valid base frame.")
 
-    canvas = QRegion(base.rect())
-    protected = QRegion() if face_core is None else QRegion(face_core).intersected(canvas)
-    layer_clip = canvas.subtracted(protected)
+    if face_core is not None:
+        if not isinstance(face_core, QPixmap):
+            raise TypeError("Face-core weights require a QPixmap.")
+        if face_core.isNull() or face_core.size() != base.size():
+            raise ValueError("Face-core weights must match the decoded base canvas.")
+        if not face_core.hasAlphaChannel():
+            raise ValueError("Face-core weights require an alpha channel.")
 
-    base_hide = QRegion()
+    cleared_base = QPixmap(base)
     if plan.base_hide is not None:
         mask = _load_canvas_image(load_image, plan.base_hide, base, alpha_required=True)
-        base_hide = body_pack_alpha_region(mask, plan.base_hide.sha256).subtracted(protected)
-    cleared_base = clear_appearance_base(base, None, base_hide)
+        erase = QPixmap(base.size())
+        erase.fill(Qt.transparent)
+        painter = QPainter(erase)
+        try:
+            painter.setClipRegion(body_pack_alpha_region(mask, plan.base_hide.sha256))
+            painter.fillRect(erase.rect(), Qt.white)
+        finally:
+            painter.end()
+        cleared_base = _weight_image(base, erase, inside=False)
 
     layers_by_kind: dict[str, list[QPixmap]] = {}
     for record in plan.layers:
         image = _load_canvas_image(load_image, record, base, alpha_required=False)
         layers_by_kind.setdefault(record.kind, []).append(image)
 
-    result = QPixmap(base.size())
-    result.fill(Qt.transparent)
-    painter = QPainter(result)
+    character = QPixmap(base.size())
+    character.fill(Qt.transparent)
+    protected_body = QPixmap(base)
+    character_painter = QPainter(character)
+    body_painter = QPainter(protected_body)
     try:
+        body_painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
         for stage in plan.order:
             if stage == "base":
-                painter.setClipRegion(canvas)
-                painter.drawPixmap(0, 0, cleared_base)
+                character_painter.drawPixmap(0, 0, cleared_base)
                 continue
-            if stage == "makeup":
-                painter.setClipRegion(protected)
-                painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
-                for image in layers_by_kind.get(stage, ()):
-                    painter.drawPixmap(0, 0, image)
-                painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
-                continue
-            painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+            painter = body_painter if stage == "makeup" else character_painter
             for image in layers_by_kind.get(stage, ()):
-                painter.setClipRegion(layer_clip)
                 painter.drawPixmap(0, 0, image)
+    finally:
+        character_painter.end()
+        body_painter.end()
+
+    result = _weight_image(character, face_core, inside=False)
+    protected_body = _weight_image(protected_body, face_core, inside=True)
+    painter = QPainter(result)
+    try:
+        painter.setCompositionMode(QPainter.CompositionMode_Plus)
+        painter.drawPixmap(0, 0, protected_body)
     finally:
         painter.end()
     return result
+
+
+def _weight_image(image: QPixmap, mask: QPixmap | None, *, inside: bool) -> QPixmap:
+    """Multiply an isolated layer by mask alpha or its complement."""
+    buffer = QPixmap(image.size())
+    buffer.fill(Qt.transparent)
+    painter = QPainter(buffer)
+    try:
+        if mask is None and inside:
+            return buffer
+        painter.drawPixmap(0, 0, image)
+        if mask is not None:
+            painter.setCompositionMode(
+                QPainter.CompositionMode_DestinationIn
+                if inside else QPainter.CompositionMode_DestinationOut
+            )
+            painter.drawPixmap(0, 0, mask)
+    finally:
+        painter.end()
+    return buffer
 
 
 def _load_canvas_image(

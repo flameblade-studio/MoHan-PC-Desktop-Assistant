@@ -876,6 +876,7 @@
         "test_body_profile_candidate.py",
         "test_body_sidecar_profile_knee.py",
         "test_brow_tension_mirror.py",
+        "test_build_body_pack.py",
         "test_build_character_inventory.py",
         "test_build_character_pack.py",
         "test_build_half_body_layered_rig.py",
@@ -4374,6 +4375,17 @@
         "test_multimodal_controller.py",
         "test_multimodal_fusion_hub.py",
         "test_multimodal_model_provider.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/pose-atlas/v5-base-layered/complete_expression_manifest.json",
+        "tools/build_body_pack.py",
+        "tools/verify_body_pack_build.py"
+      ],
+      "tests": [
+        "test_build_body_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

@@ -8,8 +8,8 @@ lazy import time
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 lazy import pytest
-lazy from PySide6.QtCore import QRect
-lazy from PySide6.QtGui import QColor, QImage, QPixmap, QRegion
+lazy from PySide6.QtCore import QRect, Qt
+lazy from PySide6.QtGui import QColor, QImage, QPainter, QPixmap, QRegion
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.character_layer_plan import (
@@ -48,6 +48,12 @@ def _sparse(width: int, pixels: dict[int, QColor]) -> QPixmap:
     for x, color in pixels.items():
         image.setPixelColor(x, 0, color)
     return QPixmap.fromImage(image)
+
+
+def _premultiplied_pixel(image: QImage) -> tuple[int, int, int, int]:
+    converted = image.convertToFormat(QImage.Format_RGBA8888_Premultiplied)
+    pixels = bytes(converted.constBits())[:4]
+    return pixels[0], pixels[1], pixels[2], pixels[3]
 
 
 def _asset(kind: str, name: str) -> CharacterLayerAsset:
@@ -100,7 +106,7 @@ def test_missing_order_uses_legacy_hair_back_underpaint(qt_app: QApplication) ->
     assert qt_app is not None
 
 
-def test_base_hide_clears_alpha_region_and_protects_face_core(
+def test_base_hide_nonzero_alpha_hard_clears_independent_of_face_core(
     qt_app: QApplication,
 ) -> None:
     base = _solid(4, QColor("green"))
@@ -124,9 +130,7 @@ def test_base_hide_clears_alpha_region_and_protects_face_core(
         base,
         plan,
         lambda record: assets[record.path],
-        face_core=body_pack_alpha_region(
-            _sparse(4, {0: QColor(255, 255, 255, 1)})
-        ),
+        face_core=_sparse(4, {0: QColor(255, 255, 255, 255)}),
     ).toImage()
 
     assert result.pixelColor(0, 0) == QColor("green")
@@ -175,8 +179,8 @@ def test_makeup_is_source_atop_in_face_core_and_preserves_base_alpha(
         (_asset("makeup", "makeup.png"), _asset("garment", "garment.png")),
     )
     assets = {"makeup.png": makeup, "garment.png": garment}
-    face_core = body_pack_alpha_region(
-        _sparse(4, {0: QColor(255, 255, 255, 255), 3: QColor(255, 255, 255, 255)})
+    face_core = _sparse(
+        4, {0: QColor(255, 255, 255, 255), 3: QColor(255, 255, 255, 255)}
     )
 
     result = compose_body_pack_frame(
@@ -326,3 +330,189 @@ def test_parser_rejects_nonzero_layer_anchor() -> None:
                 }
             }
         )
+
+
+@pytest.mark.parametrize("kind", ["body-fix", "garment", "hair-front", "ornament"])
+def test_face_feather_weights_character_layers(qt_app: QApplication, kind: str) -> None:
+    base = _solid(3, QColor(0, 0, 255))
+    core = _sparse(3, {1: QColor(255, 255, 255, 128), 2: QColor("white")})
+    plan = CharacterLayerPlan(("base", kind), (_asset(kind, "layer.png"),))
+    result = compose_body_pack_frame(
+        base, plan, lambda _record: _solid(3, QColor("red")), face_core=core,
+    ).toImage()
+    assert result.pixelColor(0, 0) == QColor("red")
+    assert result.pixelColor(1, 0) == QColor(127, 0, 128)
+    assert result.pixelColor(2, 0) == QColor(0, 0, 255)
+
+
+@pytest.mark.parametrize(
+    ("witness", "body_rgba", "kind", "layer_rgba", "hide_alpha", "face_alpha"),
+    [
+        pytest.param(
+            "yaw+060-pitch+00", (133, 91, 80, 255), "hair-back",
+            (186, 140, 124, 255), 0, 255, id="yaw-060-hair-back",
+        ),
+        pytest.param(
+            "front-eureka", (230, 198, 187, 255), "body-fix",
+            (233, 197, 187, 253), 255, 115, id="front-eureka",
+        ),
+        pytest.param(
+            "front-mock-scold", (198, 155, 135, 254), "body-fix",
+            (201, 159, 139, 253), 255, 133, id="front-mock-scold",
+        ),
+        pytest.param(
+            "front-mock-hit", (220, 170, 157, 254), "body-fix",
+            (216, 169, 156, 253), 255, 132, id="front-mock-hit",
+        ),
+    ],
+)
+def test_root_cause_witnesses_follow_premultiplied_face_formula(
+    qt_app: QApplication,
+    witness: str,
+    body_rgba: tuple[int, int, int, int],
+    kind: str,
+    layer_rgba: tuple[int, int, int, int],
+    hide_alpha: int,
+    face_alpha: int,
+) -> None:
+    # A second, fully transparent pixel keeps an alpha channel even when the
+    # witness pixel is opaque; QPixmap drops alpha from fully opaque images.
+    base = _solid(2, QColor(*body_rgba))
+    layer = _solid(2, QColor(*layer_rgba))
+    core = _sparse(2, {0: QColor(255, 255, 255, face_alpha)})
+    assets = {"layer.png": layer}
+    mask = None
+    if hide_alpha:
+        assets["hide.png"] = _sparse(2, {0: QColor(255, 255, 255, hide_alpha)})
+        mask = CharacterLayerMask("hide.png", "f" * 64, (0, 0))
+    plan = CharacterLayerPlan(("base", kind), (_asset(kind, "layer.png"),), mask)
+    result = compose_body_pack_frame(
+        base, plan, lambda record: assets[record.path], face_core=core,
+    ).toImage()
+
+    body_endpoint = base.toImage().convertToFormat(QImage.Format_RGBA8888_Premultiplied)
+    cleared_body = body_endpoint.copy()
+    if hide_alpha:
+        binary_hide = QImage(1, 1, QImage.Format_RGBA8888)
+        binary_hide.fill(QColor(255, 255, 255, 255))
+        clear_painter = QPainter(cleared_body)
+        clear_painter.setCompositionMode(QPainter.CompositionMode_DestinationOut)
+        clear_painter.drawImage(0, 0, binary_hide)
+        clear_painter.end()
+
+    character_endpoint = QImage(1, 1, QImage.Format_RGBA8888_Premultiplied)
+    character_endpoint.fill(Qt.transparent)
+    endpoint_painter = QPainter(character_endpoint)
+    endpoint_painter.setCompositionMode(QPainter.CompositionMode_SourceOver)
+    endpoint_painter.drawImage(0, 0, cleared_body)
+    endpoint_painter.drawImage(0, 0, layer.toImage())
+    endpoint_painter.end()
+
+    protected = _premultiplied_pixel(body_endpoint)
+    character = _premultiplied_pixel(character_endpoint)
+    expected = tuple(
+        (protected[channel] * face_alpha
+         + character[channel] * (255 - face_alpha) + 127) // 255
+        for channel in range(4)
+    )
+    actual = _premultiplied_pixel(result)
+    assert max(abs(actual[channel] - expected[channel]) for channel in range(4)) <= 1, witness
+
+
+def test_role_layers_keep_native_alpha_until_the_final_face_formula(
+    qt_app: QApplication,
+) -> None:
+    core = _sparse(3, {1: QColor(255, 255, 255, 128), 2: QColor("white")})
+    plan = CharacterLayerPlan(
+        ("base", "body-fix", "garment"),
+        (_asset("body-fix", "fix.png"), _asset("garment", "garment.png")),
+    )
+    assets = {
+        "fix.png": _solid(3, QColor("red")),
+        "garment.png": _solid(3, QColor("green")),
+    }
+    result = compose_body_pack_frame(
+        _solid(3, QColor("blue")), plan, lambda record: assets[record.path],
+        face_core=core,
+    ).toImage()
+    assert result.pixelColor(0, 0) == QColor("green")
+    assert result.pixelColor(1, 0) == QColor(0, 64, 128)
+    assert result.pixelColor(2, 0) == QColor("blue")
+
+
+def test_face_feather_weights_base_hide_clearing(qt_app: QApplication) -> None:
+    core = _sparse(3, {1: QColor(255, 255, 255, 128), 2: QColor("white")})
+    # This three-pixel mask has its own digest: witness masks cover only pixel 0.
+    plan = CharacterLayerPlan(
+        ("base",), (), CharacterLayerMask(
+            "hide.png", hashlib.sha256(b"three-pixel-hide-alpha-one").hexdigest(), (0, 0),
+        ),
+    )
+    result = compose_body_pack_frame(
+        _solid(3, QColor("blue")), plan,
+        lambda _record: _solid(3, QColor(255, 255, 255, 1)), face_core=core,
+    ).toImage()
+    assert [result.pixelColor(x, 0).alpha() for x in range(3)] == [0, 128, 255]
+
+
+def test_face_feather_weights_makeup_and_preserves_destination_alpha(
+    qt_app: QApplication,
+) -> None:
+    core = _sparse(4, {1: QColor(255, 255, 255, 128), 2: QColor("white"),
+                       3: QColor("white")})
+    base = _sparse(4, {x: QColor(0, 0, 255, 128) for x in range(3)})
+    plan = CharacterLayerPlan(("base", "makeup"), (_asset("makeup", "makeup.png"),))
+    result = compose_body_pack_frame(
+        base, plan, lambda _record: _solid(4, QColor("red")), face_core=core,
+    ).toImage()
+    assert result.pixelColor(0, 0) == QColor(0, 0, 255, 128)
+    feather = result.pixelColor(1, 0)
+    assert abs(feather.red() - 128) <= 1
+    assert abs(feather.blue() - 127) <= 1
+    assert feather.alpha() == HALF_ALPHA
+    assert result.pixelColor(2, 0) == QColor(255, 0, 0, 128)
+    assert result.pixelColor(3, 0).alpha() == 0
+
+
+def test_makeup_source_atop_changes_bprime_and_is_excluded_from_x(
+    qt_app: QApplication,
+) -> None:
+    core = _sparse(3, {0: QColor("white"), 1: QColor(255, 255, 255, 128)})
+    plan = CharacterLayerPlan(("base", "makeup"), (_asset("makeup", "makeup.png"),))
+    makeup = _sparse(3, {x: QColor(255, 0, 0, 128) for x in range(3)})
+    result = compose_body_pack_frame(
+        _solid(3, QColor("blue")), plan, lambda _record: makeup, face_core=core,
+    ).toImage()
+    assert result.pixelColor(0, 0) == QColor(128, 0, 127)
+    assert result.pixelColor(1, 0) == QColor(64, 0, 191)
+    assert result.pixelColor(2, 0) == QColor("blue")
+
+
+def test_transparent_face_core_keeps_layers_and_suppresses_makeup(
+    qt_app: QApplication,
+) -> None:
+    plan = CharacterLayerPlan(
+        ("base", "body-fix", "makeup"),
+        (_asset("body-fix", "layer.png"), _asset("makeup", "makeup.png")),
+    )
+    assets = {"layer.png": _solid(3, QColor("red")),
+              "makeup.png": _solid(3, QColor("blue"))}
+    result = compose_body_pack_frame(
+        _solid(3, QColor("green")), plan, lambda record: assets[record.path],
+        face_core=_sparse(3, {}),
+    ).toImage()
+    assert all(result.pixelColor(x, 0) == QColor("red") for x in range(3))
+
+
+def test_rear_hair_uses_the_same_face_formula_as_every_role_layer(
+    qt_app: QApplication,
+) -> None:
+    plan = CharacterLayerPlan(("base", "hair-back"), (_asset("hair-back", "hair.png"),))
+    core = _sparse(3, {0: QColor("white"), 1: QColor(255, 255, 255, 128)})
+    result = compose_body_pack_frame(
+        _solid(3, QColor("green")), plan, lambda _record: _solid(3, QColor("red")),
+        face_core=core,
+    ).toImage()
+    assert result.pixelColor(0, 0) == QColor("green")
+    assert result.pixelColor(1, 0) == QColor(127, 64, 0)
+    assert result.pixelColor(2, 0) == QColor("red")
