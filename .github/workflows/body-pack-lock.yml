@@ -22,7 +22,9 @@ concurrency:
 jobs:
   verify-body-pack-lock:
     name: Rebuild and verify the public MoHan body-pack release lock
-    runs-on: ubuntu-latest
+    # The archive is published from Windows; PNG bytes depend on the platform's
+    # Pillow/zlib build, so the byte-exact rebuild is verified on the release platform.
+    runs-on: windows-latest
     timeout-minutes: 30
     steps:
       - name: Check out source
@@ -34,11 +36,6 @@ jobs:
           python-version: "3.15.0-rc.1"
           allow-prereleases: true
           cache: pip
-
-      - name: Install the Qt runtime library used to decode pack images
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes libegl1
 
       - name: Install hash-locked official Qt wheels
         run: >-
