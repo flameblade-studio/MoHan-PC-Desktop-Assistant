@@ -34,6 +34,9 @@ lazy from domain.outfit_pack_official import native_overlay_is_redundant
 lazy from domain.engine_capabilities import current_engine_capabilities
 lazy from infrastructure.active_outfit_base_clear import ActiveOutfitBaseClearMixin
 lazy from infrastructure.active_outfit_overlay_layers import ActiveOutfitLayerMixin, FULL_BODY_CANVAS
+lazy from infrastructure.active_outfit_garment_layers import (
+    ActiveOutfitGarmentLayerMixin,
+)
 lazy from infrastructure.reviewed_garment_overlay import ReviewedGarmentOverlayMixin
 lazy from infrastructure.source_bound_garment_visibility import compose_garment_base
 lazy from infrastructure.core_hand_regions import load_core_hand_regions
@@ -65,6 +68,7 @@ class ActiveOutfitOverlay(
     OutfitLayerCacheMixin,
     ReviewedGarmentOverlayMixin,
     ActiveOutfitLayerMixin,
+    ActiveOutfitGarmentLayerMixin,
     ActiveOutfitBaseClearMixin,
 ):
     """Resolve active.json through sealed packs and composite appearance assets.
@@ -755,57 +759,6 @@ class ActiveOutfitOverlay(
         if (image.width(), image.height()) != (declaration.width, declaration.height):
             raise OutfitPackError("Runtime appearance dimensions disagree.")
         return encoded, image.convertToFormat(QImage.Format_RGBA8888)
-
-    def _garment_layers(
-        self,
-        archive: zipfile.ZipFile,
-        declarations,
-        category: str,
-        item,
-        variant,
-        view_id: str,
-        canvas_size: tuple[int, int],
-    ) -> list[tuple[int, Layer]]:
-        forbidden = self._forbidden_face_region(category, item, variant, view_id)
-        allowed = QRegion(QRect(0, 0, canvas_size[0], canvas_size[1]))
-        # Hair falls over the face naturally: it is faded out of the feature core
-        # below instead of being cut by the protected-face rectangle.
-        if category != "hairstyle":
-            allowed = allowed.subtracted(forbidden)
-        allowed = self._hand_allowed_region(allowed, category, variant, view_id)
-        layers: list[tuple[int, Layer]] = []
-        for declaration in declarations:
-            if declaration.clears_base:
-                continue
-            _encoded, image = self._decoded_layer(archive, declaration)
-            if (
-                declaration.anchor_x < 0
-                or declaration.anchor_y < 0
-                or declaration.anchor_x + image.width() > canvas_size[0]
-                or declaration.anchor_y + image.height() > canvas_size[1]
-            ):
-                raise OutfitPackError("Runtime appearance anchor escaped the canvas.")
-            pixmap = QPixmap.fromImage(image)
-            has_content = self._validate_alpha(
-                pixmap,
-                declaration.anchor_x,
-                declaration.anchor_y,
-                QRegion() if category == "hairstyle" else forbidden,
-                allow_empty=category != "garment",
-            )
-            if not has_content:
-                continue
-            # A back-hair layer is authored behind the face and is already
-            # kept outside the exact eye or mouth core when its alpha reaches that region.  Keep
-            # its remaining alpha intact so the front-hair feather cannot
-            # punch desktop-coloured holes beside the chin.
-            if category == "hairstyle" and declaration.slot != "back":
-                pixmap = self._feathered_hair_layer(pixmap, declaration.anchor_x, declaration.anchor_y, view_id)
-            layers.append((
-                declaration.z_order,
-                (pixmap, declaration.anchor_x, declaration.anchor_y, allowed, 1.0),
-            ))
-        return layers
 
     @staticmethod
     def _compatible(app_range: str) -> bool:

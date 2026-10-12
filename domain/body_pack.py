@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import re
-import unicodedata
-from collections.abc import Mapping
-from dataclasses import dataclass
+lazy import hashlib
+lazy import json
+lazy import re
+lazy import unicodedata
+lazy from collections.abc import Mapping
+lazy from dataclasses import dataclass
+lazy from typing import Protocol
 
 
 SCHEMA = "mohan.body-pack.v1"
@@ -75,6 +76,19 @@ class BodyPackManifest:
     half_body: tuple[BodyPackView, ...]
     face_core_masks: tuple[tuple[str, BodyPackFile], ...]
     fingerprint: str
+
+
+class BodyPackSource(Protocol):
+    """Read-only frame source required by body-pack renderers."""
+
+    @property
+    def manifest(self) -> BodyPackManifest: ...
+
+    def frame_keys(self, view: str, *, halfbody: bool = False) -> tuple[str, ...]: ...
+
+    def load_frame(self, view: str, key: str, *, halfbody: bool = False) -> bytes: ...
+
+    def load_face_core(self, view: str) -> bytes | None: ...
 
 
 def parse_body_pack_reference(value: object) -> BodyPackReference:

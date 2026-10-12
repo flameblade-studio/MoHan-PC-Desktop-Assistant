@@ -344,6 +344,8 @@ CONTENT_RULES = (
 )
 
 PRODUCT_SHELL_ALLOWLIST = {
+    "application/character_default_look.py": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+    "application/service_container.py": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
     "application/application_bootstrap.py": "墨寒最外層組裝入口保留產品程序名稱。",
     "application/runtime_bootstrap.py": "墨寒產品執行期入口保留程序與執行緒識別字。",
     "domain/constants.py": "現行 PoseAtlas 世代目錄名依專案契約只在此定義一次（AGENTS.md：換代只改這裡），屬墨寒產品殼。",

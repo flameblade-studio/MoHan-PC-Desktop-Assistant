@@ -18,7 +18,12 @@ lazy from PySide6.QtGui import QColor, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
 lazy from application.appearance_ports import AppearanceRenderOptions
-lazy from domain.character_runtime_bindings import load_character_runtime_bindings
+lazy from domain.character_runtime_bindings import (
+    _SECTION_KEYS,
+    RUNTIME_BINDINGS_SCHEMA,
+    RUNTIME_BINDINGS_VERSION,
+    load_character_runtime_bindings,
+)
 lazy from domain.face_rig import EyeState
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.character_native_frames import load_native_fullbody_frames
@@ -28,7 +33,10 @@ lazy from infrastructure.bundled_character_source import LegacyMohanCharacterSou
 lazy from application import service_container
 lazy from domain.outfit_pack import SelectionResolution, apply_ensemble, restore_builtin_outfit
 lazy from domain.outfit_pack_official import official_outfit_pack_id, official_outfit_ensemble_id
-lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.constants import (
+    POSE_ATLAS_RELATIVE_ROOT,
+    POSE_ATLAS_LAYERED_RELATIVE_ROOT,
+)
 lazy from infrastructure.complete_halfbody_expressions import (
     COMPLETE_CHEEK_POSES,
     EYES,
@@ -39,9 +47,12 @@ lazy from infrastructure.complete_halfbody_expressions import (
 )
 lazy from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
 lazy from infrastructure import complete_halfbody_renderer as complete_halfbody_renderer_module
-lazy from infrastructure.layered_full_body_assets import VIEW_IDS
+lazy from infrastructure.layered_full_body_assets import (
+    LayeredFullBodyManifest,
+    LayeredFullBodyView,
+    VIEW_IDS,
+)
 
-MOHAN_BINDINGS_PATH = ROOT / "assets" / "characters" / "mohan" / "rig" / "runtime-bindings.json"
 MOHAN_COMPLETE_HALF_ROOT = ROOT / "assets" / "expressions" / "complete-expressions"
 
 
@@ -70,9 +81,17 @@ def _runtime_asset_paths(path: Path) -> dict[str, str]:
 
 
 def _native_bindings_payload(character: str = "mohan") -> dict:
-    path = ROOT / "assets" / "characters" / character / "rig" / "runtime-bindings.json"
-    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload = {
+        "schema": RUNTIME_BINDINGS_SCHEMA,
+        "schema_version": RUNTIME_BINDINGS_VERSION,
+    }
+    for section, keys in _SECTION_KEYS.items():
+        payload[section] = {
+            key: f"assets/characters/{character}/test/{section}/{key}"
+            for key in sorted(keys)
+        }
     payload["asset_paths"].update({
+        "halfbody_complete": "assets/expressions/complete-expressions",
         "default_look_fullbody": f"assets/characters/{character}/native/full",
         "default_look_halfbody": f"assets/characters/{character}/native/half",
     })
@@ -88,26 +107,58 @@ def _native_source(tmp_path: Path) -> LegacyMohanCharacterSource:
 
 
 def test_character_runtime_bindings_parse_native_and_shared_frame_roots(tmp_path: Path) -> None:
-    mohan = _runtime_asset_paths(MOHAN_BINDINGS_PATH)
+    mohan_path = tmp_path / "mohan-runtime-bindings.json"
+    mohan_path.write_text(json.dumps(_native_bindings_payload()), encoding="utf-8", newline="\n")
+    mohan = _runtime_asset_paths(mohan_path)
     payload = _native_bindings_payload("lin-keyun")
     payload["asset_paths"].update({
         "fullbody_complete_root": "assets/characters/lin-keyun/native/full",
         "halfbody_complete": "assets/characters/lin-keyun/native/half",
         "halfbody_complete_supplement": "assets/characters/lin-keyun/expressions/supplement.json",
     })
-    path = tmp_path / "runtime-bindings.json"
+    path = tmp_path / "lin-keyun-runtime-bindings.json"
     path.write_text(json.dumps(payload), encoding="utf-8", newline="\n")
     lin_keyun = _runtime_asset_paths(path)
 
-    assert mohan["fullbody_complete_root"] == "assets/pose-atlas/v5-base"
-    assert mohan["fullbody_complete_layered"] == "assets/pose-atlas/v5-base-layered"
+    assert "fullbody_complete_root" not in mohan
+    assert mohan.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT) == POSE_ATLAS_RELATIVE_ROOT
+    assert mohan.get("fullbody_complete_layered", POSE_ATLAS_LAYERED_RELATIVE_ROOT) == (
+        POSE_ATLAS_LAYERED_RELATIVE_ROOT
+    )
     assert mohan["halfbody_complete"] == "assets/expressions/complete-expressions"
     assert lin_keyun["fullbody_complete_root"] == "assets/characters/lin-keyun/native/full"
-    assert lin_keyun["fullbody_complete_layered"] == mohan["fullbody_complete_layered"]
+    assert lin_keyun.get("fullbody_complete_layered", POSE_ATLAS_LAYERED_RELATIVE_ROOT) == (
+        POSE_ATLAS_LAYERED_RELATIVE_ROOT
+    )
     assert lin_keyun["halfbody_complete"] == "assets/characters/lin-keyun/native/half"
     assert lin_keyun["halfbody_complete_supplement"] == (
         "assets/characters/lin-keyun/expressions/supplement.json"
     )
+
+
+def _bind_test_shared_fullbody_assets(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    source: LegacyMohanCharacterSource,
+) -> LayeredFullBodyManifest:
+    view_id = VIEW_IDS[0]
+    authority_root = tmp_path / POSE_ATLAS_RELATIVE_ROOT
+    _write_rgba_png(authority_root / f"{view_id}.png", (1024, 1536))
+    manifest = LayeredFullBodyManifest({view_id: LayeredFullBodyView(view_id, {})})
+    original_resolve = source.resolve_path
+
+    def resolve(relative: str) -> Path:
+        if relative in {POSE_ATLAS_RELATIVE_ROOT, POSE_ATLAS_LAYERED_RELATIVE_ROOT}:
+            return tmp_path / relative
+        return original_resolve(relative)
+
+    monkeypatch.setattr(source, "resolve_path", resolve)
+    monkeypatch.setattr(service_container, "load_layered_full_body_assets", lambda _root: manifest)
+    monkeypatch.setattr(service_container, "load_full_body_display_placement", lambda _root: None)
+    monkeypatch.setattr(service_container, "load_core_hand_regions", lambda _root: None)
+    monkeypatch.setattr(service_container, "load_layered_face_assets", lambda _root: None)
+    monkeypatch.setattr(service_container, "default_data_dir", lambda: tmp_path)
+    return manifest
 
 
 def _write_native_fullbody_set(
@@ -366,9 +417,14 @@ def test_fresh_default_look_factory_fails_for_missing_declared_frames(
         missing if relative == f"assets/characters/mohan/native/{canvas}" else original(relative)
     ))
     # Both paths must resolve to staging; the loader itself diagnoses the missing frame.
-    monkeypatch.setattr(service_container.presentation_contracts, "default_data_dir", lambda: tmp_path)
+    _bind_test_shared_fullbody_assets(tmp_path, monkeypatch, source)
+    monkeypatch.setenv("MOHAN_EXASPERATED_CANDIDATE_DIR", str(tmp_path / "candidate"))
     ports = service_container._create_presentation_ports(source)
-    with pytest.raises(FileNotFoundError):
+    message = (
+        "Missing native full-body frame" if canvas == "full"
+        else "Missing declared complete half-body manifest"
+    )
+    with pytest.raises(FileNotFoundError, match=message):
         if canvas == "full":
             ports.full_body_renderer_factory(outfit_overlay=ports.outfit_overlay_factory())
         else:
@@ -399,10 +455,7 @@ def test_default_look_fullbody_switches_back_to_shared_v5(
     monkeypatch.setattr(source, "resolve_path", lambda relative: (
         native if relative == bindings["default_look_fullbody"] else original(relative)
     ))
-    monkeypatch.setattr(service_container.presentation_contracts, "default_data_dir", lambda: tmp_path)
-    manifest = service_container.load_layered_full_body_assets(
-        ROOT / bindings["fullbody_complete_layered"]
-    )
+    manifest = _bind_test_shared_fullbody_assets(tmp_path, monkeypatch, source)
     blinks = frozenset(view.view_id for view in manifest.views.values() if view.blink_frames)
     _write_native_fullbody_set(native, blinks)
     ports = service_container._create_presentation_ports(source)
@@ -417,7 +470,7 @@ def test_default_look_fullbody_switches_back_to_shared_v5(
     renderer._refresh_native_frames()
     assert renderer._native_frames is None
     assert not overlay._native_frames
-    assert renderer._authority_root == ROOT / POSE_ATLAS_RELATIVE_ROOT
+    assert renderer._authority_root == tmp_path / POSE_ATLAS_RELATIVE_ROOT
 
 
 @pytest.mark.parametrize("character", ["mohan", "lin-keyun"])

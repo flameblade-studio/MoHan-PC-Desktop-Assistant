@@ -5,7 +5,7 @@ lazy from pathlib import Path
 lazy from collections.abc import Mapping
 lazy from domain.character_source import CharacterSource, character_appearance_defaults
 lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
-lazy from domain.body_pack import BodyPackMismatchError
+lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
 lazy from domain.outfit_pack import list_installed_ensembles, resolve_active_selection
 lazy from domain.outfit_pack_store import OfficialPackRoots, official_pack_roots
 
@@ -98,10 +98,8 @@ class CharacterDefaultLook:
 
 def character_frame_paths(character_source: CharacterSource) -> tuple[Mapping[str, str], bool]:
     resolved_body_pack_for_source(character_source)
-    bindings = (
-        character_source.appearance.runtime_bindings.asset_paths
-        if hasattr(character_source, "appearance") else {}
-    )
+    runtime_bindings = getattr(getattr(character_source, "appearance", None), "runtime_bindings", None)
+    bindings = getattr(runtime_bindings, "asset_paths", {})
     native_frames = (
         bindings.get("fullbody_complete_root", POSE_ATLAS_RELATIVE_ROOT) != POSE_ATLAS_RELATIVE_ROOT
         or bindings.get("halfbody_complete", "assets/expressions/complete-expressions") != "assets/expressions/complete-expressions"
@@ -121,7 +119,7 @@ def complete_fullbody_path(character_source: CharacterSource, bindings: Mapping[
     return character_source.assets.resolve_path(relative) if relative != POSE_ATLAS_RELATIVE_ROOT else None
 
 
-def resolved_body_pack_for_source(source: CharacterSource) -> object | None:
+def resolved_body_pack_for_source(source: CharacterSource) -> BodyPackSource | None:
     """Require resolution of a declared dependency before choosing a renderer."""
     body = getattr(source.appearance, "resolved_body_pack", None) if hasattr(source, "appearance") else None
     reference = getattr(getattr(source, "manifest", None), "body_pack", None)

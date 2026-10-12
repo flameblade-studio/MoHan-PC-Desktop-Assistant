@@ -41,9 +41,8 @@ lazy from application.cloud_vision_ui_bridge import (
 )
 lazy from application.native_acceleration import NativeAcceleration
 lazy from application.presentation_ports import (
-    AIWorkerPort,
-    PresentationPorts,
-    bind_dashboard_portable_secrets,
+    AIWorkerPort, PresentationPorts,
+    bind_dashboard_portable_secrets, default_data_dir,
 )
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
@@ -332,7 +331,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
     body_pack = resolved_body_pack_for_source(character_source)
     bindings, native_frames = _character_frame_paths(character_source)
     default_look = (CharacterDefaultLook(
-        character_source, presentation_contracts.default_data_dir() / "outfits", official_pack_roots,
+        character_source, default_data_dir() / "outfits", official_pack_roots,
     ) if body_pack is None and "default_look_fullbody" in bindings else None)
     shared_hand_region_provider: Callable[[str], QRegion] | None = None
     hand_region_loaded = False
@@ -348,7 +347,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         if body_pack is not None:
             return no_outfit_overlay_factory()
         return ActiveOutfitOverlay(
-            presentation_contracts.default_data_dir() / "outfits",
+            default_data_dir() / "outfits",
             asset_root,
             on_stale_body_profile=on_stale_body_profile,
             visible_hand_region=shared_hand_regions(),
@@ -375,9 +374,10 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         complete_halfbody_root = (default_look.halfbody_root()[0] if default_look is not None
                                   else _complete_halfbody_path(character_source, bindings))
         if source_bound:
-            supplement_path = character_source.appearance.runtime_bindings.asset_paths.get(
-                "halfbody_complete_supplement"
-            )
+            supplement_path = getattr(
+                getattr(character_source.appearance, "runtime_bindings", None),
+                "asset_paths", {},
+            ).get("halfbody_complete_supplement")
             if supplement_path is not None and complete_halfbody_root is None:
                 complete_halfbody_supplement = (
                     asset_root, character_source.assets.resolve_path(supplement_path),
@@ -423,7 +423,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             candidate_appearance = ExasperatedCandidateAppearance.load(
                 appearance_dir, official_pack_root=official_pack_roots,
             )
-            candidate_appearance.store = presentation_contracts.default_data_dir() / "outfits"
+            candidate_appearance.store = default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
         return LayeredParametricFaceRenderer(
@@ -445,7 +445,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
                 ),
                 appearance_overlay=candidate_appearance,
                 expression_provider=None if native_frames and default_look is None else OutfitSourceBoundExpressionProvider(
-                    presentation_contracts.default_data_dir() / "outfits",
+                    default_data_dir() / "outfits",
                     official_pack_root=official_pack_roots,
                 ),
             ),

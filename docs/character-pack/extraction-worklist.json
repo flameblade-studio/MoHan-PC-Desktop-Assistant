@@ -6,14 +6,14 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 21,
-    "engine_extract_files": 3,
+    "actual_embedded_code_files": 20,
+    "engine_extract_files": 0,
     "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
-    "product_shell_allowed_files": 18,
-    "true_extraction_files": 3,
+    "product_shell_allowed_files": 20,
+    "true_extraction_files": 0,
     "ui_text_reference_files": 0,
-    "work_packages": 1
+    "work_packages": 0
   },
   "declared_product_shell_allowlist": [
     {
@@ -22,8 +22,18 @@
       "status": "no_current_content_evidence"
     },
     {
+      "path": "application/character_default_look.py",
+      "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+      "status": "allowed_content_present"
+    },
+    {
       "path": "application/runtime_bootstrap.py",
       "reason": "墨寒產品執行期入口保留程序與執行緒識別字。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "application/service_container.py",
+      "reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
       "status": "allowed_content_present"
     },
     {
@@ -67,9 +77,19 @@
       "status": "allowed_content_present"
     }
   ],
-  "extraction_items": [
+  "extraction_items": [],
+  "owner_decisions": {
+    "art_tool_license": "MIT",
+    "character_asset_license": "CC-BY-NC-ND-4.0",
+    "dlc_relationship": "owner_decision_pending",
+    "engine_license": "MIT",
+    "pack_visibility": "public_mohan_release_page",
+    "paid_dlc_license": "CC-BY-NC-ND-4.0",
+    "standalone_download_design": true
+  },
+  "product_shell_allowed": [
     {
-      "classification": "engine_extract",
+      "classification": "product_shell_allowed",
       "content": [
         {
           "content_kind": "rig_assets",
@@ -86,7 +106,7 @@
               "text": "native = relative is not None and relative != \"assets/expressions/complete-expressions\""
             },
             {
-              "line": 107,
+              "line": 105,
               "matched": "assets/expressions/",
               "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
             }
@@ -97,83 +117,12 @@
       ],
       "estimated_difficulty": "high",
       "path": "application/character_default_look.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
-      "work_package": "rig-and-asset-parameterization"
+      "work_package": null
     },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig_assets",
-          "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "locations": [
-            {
-              "line": 443,
-              "matched": "assets/expressions/",
-              "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
-            },
-            {
-              "line": 444,
-              "matched": "assets/expressions/",
-              "text": "!= \"assets/expressions/complete-expressions\""
-            }
-          ],
-          "rule": "character_asset_path_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "application/service_container.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒現行畫布尺寸仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 10,
-              "matched": "1024x1536",
-              "text": "FULLBODY_CANVAS = (1024, 1536)"
-            },
-            {
-              "line": 37,
-              "matched": "1024x1536",
-              "text": "raise ValueError(f\"Native full-body frame requires 1024x1536 RGBA PNG: {path}\")"
-            }
-          ],
-          "rule": "character_canvas_size_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/character_native_frames.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    }
-  ],
-  "owner_decisions": {
-    "art_tool_license": "MIT",
-    "character_asset_license": "CC-BY-NC-ND-4.0",
-    "dlc_relationship": "owner_decision_pending",
-    "engine_license": "MIT",
-    "pack_visibility": "public_mohan_release_page",
-    "paid_dlc_license": "CC-BY-NC-ND-4.0",
-    "standalone_download_design": true
-  },
-  "product_shell_allowed": [
     {
       "classification": "product_shell_allowed",
       "content": [
@@ -196,6 +145,36 @@
       "reason": "墨寒產品執行期入口保留程序與執行緒識別字。",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 443,
+              "matched": "assets/expressions/",
+              "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
+            },
+            {
+              "line": 444,
+              "matched": "assets/expressions/",
+              "text": "!= \"assets/expressions/complete-expressions\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/service_container.py",
+      "reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": null
     },
@@ -1071,23 +1050,5 @@
   "schema": "mohan.character-extraction-worklist.v1",
   "schema_version": 1,
   "source_inventory": "docs/character-pack/mohan-inventory.json",
-  "work_packages": [
-    {
-      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
-      "exclusive_files": [
-        "application/character_default_look.py",
-        "application/service_container.py",
-        "infrastructure/character_native_frames.py"
-      ],
-      "file_count": 3,
-      "id": "rig-and-asset-parameterization",
-      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
-      "titles": [
-        "Rig 與素材路徑參數化",
-        "Rig 与素材路径参数化",
-        "Rig and asset parameterization",
-        "Rig と素材パスのパラメータ化"
-      ]
-    }
-  ]
+  "work_packages": []
 }

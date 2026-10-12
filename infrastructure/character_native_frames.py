@@ -5,9 +5,11 @@ lazy import io
 lazy from pathlib import Path
 lazy from PIL import Image
 lazy from domain.face_rig import EyeState
-lazy from infrastructure.layered_full_body_assets import VIEW_IDS
+lazy from infrastructure.layered_full_body_assets import (
+    FULL_BODY_DIMENSION_HEIGHT, FULL_BODY_DIMENSION_WIDTH, VIEW_IDS,
+)
 
-FULLBODY_CANVAS = (1024, 1536)
+FULLBODY_CANVAS = (FULL_BODY_DIMENSION_WIDTH, FULL_BODY_DIMENSION_HEIGHT)
 
 
 def load_native_fullbody_frames(
@@ -34,7 +36,7 @@ def load_native_fullbody_frames(
                 raise FileNotFoundError(f"Missing native full-body frame {view_id}/{state.value}: {path}") from error
             with Image.open(io.BytesIO(data)) as image:
                 if image.format != "PNG" or image.mode != "RGBA" or image.size != FULLBODY_CANVAS:
-                    raise ValueError(f"Native full-body frame requires 1024x1536 RGBA PNG: {path}")
+                    raise ValueError(f"Native full-body frame requires {FULLBODY_CANVAS[0]}x{FULLBODY_CANVAS[1]} RGBA PNG: {path}")
                 image.load()
             frames[state] = data
         result[view_id] = frozendict(frames)

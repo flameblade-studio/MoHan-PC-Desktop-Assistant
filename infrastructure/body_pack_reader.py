@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-import logging
-import os
-import stat
-import warnings
-from collections import OrderedDict
-from collections.abc import Iterable, Mapping
-from dataclasses import dataclass
-from io import BytesIO
-from pathlib import Path, PurePosixPath
-from threading import RLock
+lazy import hashlib
+lazy import json
+lazy import logging
+lazy import os
+lazy import stat
+lazy import warnings
+lazy from collections import OrderedDict
+lazy from collections.abc import Iterable, Mapping
+lazy from dataclasses import dataclass
+lazy from io import BytesIO
+lazy from pathlib import Path, PurePosixPath
+lazy from threading import RLock
 
 lazy from PIL import Image, UnidentifiedImageError
 lazy from domain.body_pack import (
@@ -289,6 +289,7 @@ class BodyPackReader:
                 )
 
             cached = self._payload_cache.get(record.path)
+            state_changed = False
             try:
                 with candidate.open("rb") as stream:
                     opened = os.fstat(stream.fileno())
@@ -297,7 +298,11 @@ class BodyPackReader:
                     if cached is not None and signature == cached.signature:
                         current = candidate.stat(follow_symlinks=False)
                         _require_same_file(metadata, current, record.path)
-                        if _file_signature(current) == cached.signature:
+                        confirmed = os.fstat(stream.fileno())
+                        if (
+                            _same_file_state(current, confirmed)
+                            and _file_signature(confirmed) == cached.signature
+                        ):
                             self._payload_cache.move_to_end(record.path)
                             return cached.data, cached.signature
 
@@ -308,15 +313,11 @@ class BodyPackReader:
                     after_path = candidate.stat(follow_symlinks=False)
                     _require_same_file(metadata, after_read, record.path)
                     _require_same_file(metadata, after_path, record.path)
-                    if (
-                        _file_signature(metadata) != _file_signature(after_read)
-                        or _file_signature(metadata) != _file_signature(after_path)
-                    ):
-                        raise _mismatch(
-                            "file_changed",
-                            "A body-pack image changed while it was read.",
-                            record.path,
-                        )
+                    state_changed = (
+                        _file_signature(opened) != _file_signature(after_read)
+                        or not _same_file_state(metadata, opened)
+                        or not _same_file_state(after_read, after_path)
+                    )
             except BodyPackMismatchError:
                 raise
             except OSError as error:
@@ -338,8 +339,14 @@ class BodyPackReader:
                     "A body-pack image does not match its declared SHA-256.",
                     record.path,
                 )
+            if state_changed:
+                raise _mismatch(
+                    "file_changed",
+                    "A body-pack image changed while it was read.",
+                    record.path,
+                )
 
-            signature = _file_signature(metadata)
+            signature = _file_signature(opened)
             if len(data) <= MAX_CACHED_IMAGE_BYTES:
                 self._remember_payload(record.path, data, signature)
             return data, signature
@@ -520,6 +527,7 @@ def _read_manifest(root: Path, candidate: Path) -> bytes:
 
 
 def _file_signature(metadata: os.stat_result) -> _FileSignature:
+    """Return a complete signature for comparisons from the same stat API."""
     return (
         metadata.st_dev,
         metadata.st_ino,
@@ -527,6 +535,17 @@ def _file_signature(metadata: os.stat_result) -> _FileSignature:
         metadata.st_size,
         metadata.st_mtime_ns,
         metadata.st_ctime_ns,
+    )
+
+
+def _same_file_state(left: os.stat_result, right: os.stat_result) -> bool:
+    """Compare fields shared by Windows path.stat() and os.fstat()."""
+    return (
+        left.st_dev == right.st_dev
+        and left.st_ino == right.st_ino
+        and left.st_mode == right.st_mode
+        and left.st_size == right.st_size
+        and left.st_mtime_ns == right.st_mtime_ns
     )
 
 

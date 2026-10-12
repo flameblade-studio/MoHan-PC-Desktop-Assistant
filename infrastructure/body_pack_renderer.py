@@ -7,11 +7,10 @@ lazy from collections import OrderedDict
 lazy from collections.abc import Callable, Mapping
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPixmap, QRegion
-lazy from domain.body_pack import BodyPackMismatchError
+lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
 lazy from domain.character_layer_plan import CharacterLayerPlan, CharacterLayerAsset, CharacterLayerMask
 lazy from domain.face_rig import FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from domain.qt_image_io import load_pixmap_png
-lazy from infrastructure.body_pack_reader import BodyPackReader
 lazy from infrastructure.body_pack_compositor import compose_body_pack_frame, body_pack_alpha_region
 
 
@@ -38,7 +37,7 @@ class BodyPackRenderer:
     supports_wink = False
 
     def __init__(
-        self, body: BodyPackReader, views: Mapping[str, CharacterLayerPlan],
+        self, body: BodyPackSource, views: Mapping[str, CharacterLayerPlan],
         load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
     ) -> None:
         self._body = body
@@ -224,10 +223,10 @@ class BodyPackRenderer:
 
 
 def create_body_pack_renderer(
-    body: object, views: Mapping[str, CharacterLayerPlan],
+    body: BodyPackSource | None, views: Mapping[str, CharacterLayerPlan],
     load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
 ) -> BodyPackRenderer:
-    """Build a renderer from a resolved body pack, rejecting any other source type."""
-    if not isinstance(body, BodyPackReader):
-        raise TypeError(f"Resolved body pack must be a BodyPackReader, not {type(body).__name__}")
+    """Build a renderer from a structurally compatible body-pack source."""
+    if body is None:
+        raise TypeError("A resolved body-pack source is required.")
     return BodyPackRenderer(body, views, load_layer)
