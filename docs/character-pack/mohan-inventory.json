@@ -283,7 +283,7 @@
       "work_package": null
     },
     {
-      "bytes": 30179,
+      "bytes": 30215,
       "category": "embedded_character_content",
       "classification": "engine_extract",
       "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
@@ -324,7 +324,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "64d3360e32cb0dd755caa87cc045ba0edf761977486d84ec0ed02eff98525d14",
+      "sha256": "9a66ede89324caf39cbbaaff4eb04d46698df380df7384a92de04a12ca1a92c3",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -728,287 +728,6 @@
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
       "sha256": "f459a1a6984eb61c711a62c2313d76e11a617c96b4e9bae9793264eed9cc9274"
-    },
-    {
-      "bytes": 3871,
-      "category": "character_expression_catalog",
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "4d5b91e79e869b60ea016186ec095346d15eac3fc165e1ffd5af87b39d75f218"
-    },
-    {
-      "bytes": 1999824,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-a-closed.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "01edc85882c329469d574283c20e9b91e97a879c25bd7a4a7c7ee49447981d4a"
-    },
-    {
-      "bytes": 2002447,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-a-half.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "9fbc0c638b916f238ec9b0ea80680f50d5554dd1cd1d035ffd0ff1ea2c52bd25"
-    },
-    {
-      "bytes": 2003897,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-a-rest.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "7265a7eef8876bf5d36cbea901a0c8823495de7b7d31f37bd231ddfde3815bdb"
-    },
-    {
-      "bytes": 1999424,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-neutral-closed.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "39589714c47233ce3dce4f4115f55c41030f686368b81381633c403d7c5570cf"
-    },
-    {
-      "bytes": 2002048,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-neutral-half.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "2a47a24bfcfe4a1447582880c506996c6e7f6ff4c34ba378e12b58bcb02325f2"
-    },
-    {
-      "bytes": 2003509,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-neutral-rest.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "c5adc768e2de3391a56f5ceb1dcff40d9e58c2b47e497cfcc9dd00c52c4e3796"
-    },
-    {
-      "bytes": 1998749,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-o-closed.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "268c27392dd9fb121319657f65d4e34f9f70937781d12d7c0fb1213b33033a15"
-    },
-    {
-      "bytes": 2001430,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-o-half.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "aec0c3da9925fa8b0db87779dd07c43330b514f7c2a179a23d77274148333638"
-    },
-    {
-      "bytes": 2002905,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-o-rest.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "478caa894e3ff1bba3c135e14c14c2f71cf6361d50d26628fb27901fa761db88"
-    },
-    {
-      "bytes": 1999139,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-small-closed.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "9f401997ac0120e17897a9c6f0432bbf673f6c59673e1823ebc1c5148bb05165"
-    },
-    {
-      "bytes": 2001761,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-small-half.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "d11893f4ca3c28b3108ff61114f8ad2e4770fb40772cc21057cb89d65600749d"
-    },
-    {
-      "bytes": 2003231,
-      "category": "character_expression_catalog",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "manifest_references": [],
-      "migration": "純資料可直接搬",
-      "path": "assets/characters/lin-keyun/expressions/frames/cheek-rest-small-rest.rgba.png",
-      "readers": [
-        {
-          "line": 133,
-          "path": "infrastructure/character_source_pack.py",
-          "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
-        }
-      ],
-      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
-      "scope": "runtime_data",
-      "sha256": "8c888fef5ad81b67becd32e83d72352b928f0ac07c6c1721e96c72042f6843b2"
     },
     {
       "bytes": 13892,
@@ -6105,7 +5824,7 @@
       "sha256": "eedd60bd7bfec1bddccf6c84cd003fe713a5f85a83e8bd12ada78c0d594dd3eb"
     },
     {
-      "bytes": 3259,
+      "bytes": 2791,
       "category": "character_runtime_binding_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -6119,7 +5838,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "24d04a8db47398a5fe9832565e8859e64175ea7ee5a38442ca712b3ab63efffc"
+      "sha256": "def026492f3afcf4f11b2dc90bf51eaa281a216dac96bc04a54f833a334e012d"
     },
     {
       "bytes": 5655,
@@ -6433,7 +6152,7 @@
       "sha256": "c933abeaece6f077f8e4a8df9b0a5ee81cbc32381055f3d8973a0301ed3d2f4d"
     },
     {
-      "bytes": 3124,
+      "bytes": 2791,
       "category": "character_runtime_binding_data",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -6447,7 +6166,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "ed16b9c8f60d4bbe72b01f557d212d15614a3c2d1206076ed45d7e42088b2489"
+      "sha256": "4e3c76ef890e1767f78f2a1fb5c31c594335671d1c6a53fa0b2234bc41425231"
     },
     {
       "bytes": 6194,
@@ -114323,7 +114042,7 @@
     "body_overlay": 15,
     "character_appearance_defaults": 2,
     "character_dialogue_data": 10,
-    "character_expression_catalog": 15,
+    "character_expression_catalog": 2,
     "character_license_notice": 2,
     "character_persona_data": 10,
     "character_rig_data": 2,
@@ -114368,7 +114087,7 @@
     "excluded_review_source": 39,
     "excluded_support": 73,
     "product_validation_data": 48,
-    "runtime_data": 3824
+    "runtime_data": 3811
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

@@ -124,10 +124,7 @@ class BodyPackReader:
         for record in self._declared_records.values():
             self._inspect_image(record)
 
-        full_sizes = {
-            *(self._image_sizes[record.path] for record in frames.values())
-            for frames in self._full_frames.values()
-        }
+        full_sizes = self._frame_sizes(self._full_frames)
         if not full_sizes:
             raise _mismatch(
                 "missing_frame",
@@ -149,10 +146,7 @@ class BodyPackReader:
             )
         full_canvas = next(iter(full_sizes))
 
-        half_sizes = {
-            *(self._image_sizes[record.path] for record in frames.values())
-            for frames in self._half_frames.values()
-        }
+        half_sizes = self._frame_sizes(self._half_frames)
         if not half_sizes:
             raise _mismatch(
                 "missing_frame",
@@ -197,6 +191,12 @@ class BodyPackReader:
                 )
         self._fullbody_canvas = full_canvas
         self._halfbody_canvas = half_canvas
+
+    def _frame_sizes(self, views: Mapping[str, Mapping[str, BodyPackFile]]) -> set[tuple[int, int]]:
+        sizes: set[tuple[int, int]] = set()
+        for frames in views.values():
+            sizes.update(self._image_sizes[record.path] for record in frames.values())
+        return sizes
 
     @property
     def manifest(self) -> BodyPackManifest:

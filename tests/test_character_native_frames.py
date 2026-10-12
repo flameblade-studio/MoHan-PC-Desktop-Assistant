@@ -42,7 +42,6 @@ lazy from infrastructure import complete_halfbody_renderer as complete_halfbody_
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 
 MOHAN_BINDINGS_PATH = ROOT / "assets" / "characters" / "mohan" / "rig" / "runtime-bindings.json"
-LIN_KEYUN_BINDINGS_PATH = ROOT / "assets" / "characters" / "lin-keyun" / "rig" / "runtime-bindings.json"
 MOHAN_COMPLETE_HALF_ROOT = ROOT / "assets" / "expressions" / "complete-expressions"
 
 
@@ -70,19 +69,44 @@ def _runtime_asset_paths(path: Path) -> dict[str, str]:
     return dict(load_character_runtime_bindings(path).asset_paths)
 
 
-def test_character_runtime_bindings_parse_native_and_shared_frame_roots() -> None:
+def _native_bindings_payload(character: str = "mohan") -> dict:
+    path = ROOT / "assets" / "characters" / character / "rig" / "runtime-bindings.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["asset_paths"].update({
+        "default_look_fullbody": f"assets/characters/{character}/native/full",
+        "default_look_halfbody": f"assets/characters/{character}/native/half",
+    })
+    return payload
+
+
+def _native_source(tmp_path: Path) -> LegacyMohanCharacterSource:
+    source = LegacyMohanCharacterSource(ROOT)
+    path = tmp_path / "runtime-bindings.json"
+    path.write_text(json.dumps(_native_bindings_payload()), encoding="utf-8", newline="\n")
+    source._runtime_bindings = load_character_runtime_bindings(path)
+    return source
+
+
+def test_character_runtime_bindings_parse_native_and_shared_frame_roots(tmp_path: Path) -> None:
     mohan = _runtime_asset_paths(MOHAN_BINDINGS_PATH)
-    lin_keyun = _runtime_asset_paths(LIN_KEYUN_BINDINGS_PATH)
+    payload = _native_bindings_payload("lin-keyun")
+    payload["asset_paths"].update({
+        "fullbody_complete_root": "assets/characters/lin-keyun/native/full",
+        "halfbody_complete": "assets/characters/lin-keyun/native/half",
+        "halfbody_complete_supplement": "assets/characters/lin-keyun/expressions/supplement.json",
+    })
+    path = tmp_path / "runtime-bindings.json"
+    path.write_text(json.dumps(payload), encoding="utf-8", newline="\n")
+    lin_keyun = _runtime_asset_paths(path)
 
     assert mohan["fullbody_complete_root"] == "assets/pose-atlas/v5-base"
     assert mohan["fullbody_complete_layered"] == "assets/pose-atlas/v5-base-layered"
     assert mohan["halfbody_complete"] == "assets/expressions/complete-expressions"
-
     assert lin_keyun["fullbody_complete_root"] == "assets/characters/lin-keyun/native/full"
     assert lin_keyun["fullbody_complete_layered"] == mohan["fullbody_complete_layered"]
     assert lin_keyun["halfbody_complete"] == "assets/characters/lin-keyun/native/half"
     assert lin_keyun["halfbody_complete_supplement"] == (
-        "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
+        "assets/characters/lin-keyun/expressions/supplement.json"
     )
 
 
@@ -291,7 +315,7 @@ def test_native_outfit_overlay_preserves_source_art_and_requests_makeup_only(
 def test_default_look_routes_resolved_appearance(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, selection: str,
 ) -> None:
-    source = LegacyMohanCharacterSource(ROOT)
+    source = _native_source(tmp_path)
     store = tmp_path / "outfits"
     if selection == "official":
         apply_ensemble(store, official_outfit_pack_id(), official_outfit_ensemble_id())
@@ -335,7 +359,7 @@ def test_default_look_routes_resolved_appearance(
 def test_fresh_default_look_factory_fails_for_missing_declared_frames(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, canvas: str,
 ) -> None:
-    source = LegacyMohanCharacterSource(ROOT)
+    source = _native_source(tmp_path)
     original = source.resolve_path
     missing = tmp_path / canvas
     monkeypatch.setattr(source, "resolve_path", lambda relative: (
@@ -352,7 +376,7 @@ def test_fresh_default_look_factory_fails_for_missing_declared_frames(
 
 
 def test_default_look_re_resolves_after_selection_changes(tmp_path: Path) -> None:
-    source = LegacyMohanCharacterSource(ROOT)
+    source = _native_source(tmp_path)
     store = tmp_path / "outfits"
     look = CharacterDefaultLook(source, store, source.official_pack_roots)
     assert look.native_frames()
@@ -368,9 +392,9 @@ def test_default_look_re_resolves_after_selection_changes(tmp_path: Path) -> Non
 def test_default_look_fullbody_switches_back_to_shared_v5(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    source = LegacyMohanCharacterSource(ROOT)
+    source = _native_source(tmp_path)
     native = tmp_path / "native-full"
-    bindings = _runtime_asset_paths(MOHAN_BINDINGS_PATH)
+    bindings = dict(source.runtime_bindings.asset_paths)
     original = source.resolve_path
     monkeypatch.setattr(source, "resolve_path", lambda relative: (
         native if relative == bindings["default_look_fullbody"] else original(relative)
@@ -397,14 +421,16 @@ def test_default_look_fullbody_switches_back_to_shared_v5(
 
 
 @pytest.mark.parametrize("character", ["mohan", "lin-keyun"])
-def test_character_default_look_bindings_declare_both_canvases(character: str) -> None:
-    bindings = _runtime_asset_paths(ROOT / "assets" / "characters" / character / "rig" / "runtime-bindings.json")
+def test_character_default_look_bindings_declare_both_canvases(character: str, tmp_path: Path) -> None:
+    path = tmp_path / "runtime-bindings.json"
+    path.write_text(json.dumps(_native_bindings_payload(character)), encoding="utf-8", newline="\n")
+    bindings = _runtime_asset_paths(path)
     assert bindings["default_look_fullbody"] == f"assets/characters/{character}/native/full"
     assert bindings["default_look_halfbody"] == f"assets/characters/{character}/native/half"
 
 
 def test_default_look_bindings_reject_a_single_canvas(tmp_path: Path) -> None:
-    payload = json.loads(MOHAN_BINDINGS_PATH.read_text(encoding="utf-8"))
+    payload = _native_bindings_payload()
     payload["asset_paths"].pop("default_look_halfbody")
     path = tmp_path / "runtime-bindings.json"
     path.write_text(json.dumps(payload), encoding="utf-8")

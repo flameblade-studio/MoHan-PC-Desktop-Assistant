@@ -221,3 +221,13 @@ class BodyPackRenderer:
         if eye_state == "rest":
             return QPixmap(base)
         return self.render_complete_blink(base, eye_state)
+
+
+def create_body_pack_renderer(
+    body: object, views: Mapping[str, CharacterLayerPlan],
+    load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
+) -> BodyPackRenderer:
+    """Build a renderer from a resolved body pack, rejecting any other source type."""
+    if not isinstance(body, BodyPackReader):
+        raise TypeError(f"Resolved body pack must be a BodyPackReader, not {type(body).__name__}")
+    return BodyPackRenderer(body, views, load_layer)

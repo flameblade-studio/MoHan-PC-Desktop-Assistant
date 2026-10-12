@@ -4,7 +4,7 @@
 
 ### 綁定與執行期行為
 
-預設造型使用成對的 `asset_paths.default_look_fullbody` 與 `asset_paths.default_look_halfbody`。墨寒指向 `assets/characters/mohan/native/{full,half}`；林可芸指向 `assets/characters/lin-keyun/native/{full,half}`。既有完整影格欄位保留相容性。既有外觀解析器比對服裝、髮型與頭飾的有效選擇與角色官方套裝；全新使用者或明確選取官方預設且解析符合時，使用角色完整影格，只疊加妝容與共用 V5 臉部動態。素體選擇 `builtin/none/none`、其他服裝包或另選髮型／頭飾使用共用 V5 素體與既有分層合成。兩個角色依同一規則切換；外觀選擇改變時清除半身影格快取。完整影格模式的 exasperated 表情由完整半身圖提供。
+預設造型使用成對的 `asset_paths.default_look_fullbody` 與 `asset_paths.default_look_halfbody`。路徑由角色綁定宣告；本 PR 保持墨寒與林可芸的已發布素材與綁定，新外觀日後以素體包與角色圖層另案安裝。既有完整影格欄位保留相容性。既有外觀解析器比對服裝、髮型與頭飾的有效選擇與角色官方套裝；全新使用者或明確選取官方預設且解析符合時，使用角色完整影格，只疊加妝容與共用 V5 臉部動態。素體選擇 `builtin/none/none`、其他服裝包或另選髮型／頭飾使用共用 V5 素體與既有分層合成。兩個角色依同一規則切換；外觀選擇改變時清除半身影格快取。完整影格模式的 exasperated 表情由完整半身圖提供。
 
 預設完整半身影格使用 `require_complete=True`，須涵蓋 `REQUIRED_COMPLETE_POSES` 的 24 個實際姿勢；各姿勢具 `neutral`、`small`、`a`、`o` 四家族與 `rest`、`half`、`closed` 三眼態，宣告 `whole-frame` 眨眼。素體半身維持 `assets/expressions/complete-expressions` 與 `require_complete=False`。選中的預設來源缺少目錄、manifest 或影格，會在 renderer 建構或來源切換時明確失敗。golden 維持既有素體合成設定，以 `GOLDEN_MATCH` 驗收。美術交件前的假資料限於 `.quality-tmp/mohan-look-engine/`，正式外觀另依擁有者審閱。
 
@@ -18,11 +18,13 @@
 
 通過檔案、schema、尺寸與摘要檢查只代表技術格式合格；角色身分、外觀與衣著仍依擁有者目前的審閱授權驗收，程式檢查不等於美術核准。
 
+素體依附與角色圖層契約見 [body-pack.md](body-pack.md)。
+
 ## 简体中文
 
 ### 绑定与运行时行为
 
-默认造型使用成对的 `asset_paths.default_look_fullbody` 与 `asset_paths.default_look_halfbody`。墨寒指向 `assets/characters/mohan/native/{full,half}`；林可芸指向 `assets/characters/lin-keyun/native/{full,half}`。现有完整帧字段保留兼容性。现有外观解析器比对服装、发型与头饰的有效选择与角色官方套装；新用户或明确选择官方默认且解析符合时，使用角色完整帧，只叠加妆容与共享 V5 面部动态。素体选择 `builtin/none/none`、其他服装包或另选发型／头饰使用共享 V5 素体与现有分层合成。两个角色按相同规则切换；外观改变时清除半身帧缓存。完整帧模式的 exasperated 表情由完整半身图提供。
+默认造型使用成对的 `asset_paths.default_look_fullbody` 与 `asset_paths.default_look_halfbody`。路径由角色绑定声明；本 PR 保持墨寒与林可芸的已发布素材与绑定，新外观日后以素体包与角色图层另案安装。现有完整帧字段保留兼容性。现有外观解析器比对服装、发型与头饰的有效选择与角色官方套装；新用户或明确选择官方默认且解析符合时，使用角色完整帧，只叠加妆容与共享 V5 面部动态。素体选择 `builtin/none/none`、其他服装包或另选发型／头饰使用共享 V5 素体与现有分层合成。两个角色按相同规则切换；外观改变时清除半身帧缓存。完整帧模式的 exasperated 表情由完整半身图提供。
 
 默认完整半身帧使用 `require_complete=True`，须覆盖 `REQUIRED_COMPLETE_POSES` 的 24 个实际姿势；各姿势具 `neutral`、`small`、`a`、`o` 四家族与 `rest`、`half`、`closed` 三眼态，声明 `whole-frame` 眨眼。素体半身维持 `assets/expressions/complete-expressions` 与 `require_complete=False`。选中的默认来源缺少目录、manifest 或帧，会在 renderer 构建或来源切换时明确失败。golden 维持现有素体合成设置，以 `GOLDEN_MATCH` 验收。美术交付前的假数据限于 `.quality-tmp/mohan-look-engine/`，正式外观另按所有者审阅。
 
@@ -36,11 +38,13 @@
 
 通过文件、schema、尺寸和摘要检查只代表技术格式合格；角色身份、外观和衣着仍按所有者当前的审阅授权验收，程序检查不等于美术批准。
 
+素体依附与角色图层契约见 [body-pack.md](body-pack.md)。
+
 ## English
 
 ### Bindings and runtime behavior
 
-Default looks use paired `asset_paths.default_look_fullbody` and `asset_paths.default_look_halfbody` fields. MoHan uses `assets/characters/mohan/native/{full,half}`; Lin Keyun uses `assets/characters/lin-keyun/native/{full,half}`. Existing complete-frame fields retain compatibility. The existing appearance resolver matches effective garment, hairstyle and headwear selections against the character's official ensemble. Fresh profiles and explicit official-default selections use complete frames when resolved selections match, with makeup and shared V5 facial motion applied. Bare `builtin/none/none`, other outfit packs, and changed hair or headwear use the shared V5 base and existing layered composition. Both characters follow the same switching rule; selection changes clear half-body frame caches. Complete half-body art supplies exasperated expressions in native mode.
+Default looks use paired `asset_paths.default_look_fullbody` and `asset_paths.default_look_halfbody` fields. Character bindings declare the paths. This PR preserves the published MoHan and Lin Keyun assets and bindings; new appearances will be installed separately using body packs and character layers. Existing complete-frame fields retain compatibility. The existing appearance resolver matches effective garment, hairstyle and headwear selections against the character's official ensemble. Fresh profiles and explicit official-default selections use complete frames when resolved selections match, with makeup and shared V5 facial motion applied. Bare `builtin/none/none`, other outfit packs, and changed hair or headwear use the shared V5 base and existing layered composition. Both characters follow the same switching rule; selection changes clear half-body frame caches. Complete half-body art supplies exasperated expressions in native mode.
 
 Default half-body frames use `require_complete=True` and cover all 24 actual `REQUIRED_COMPLETE_POSES`, each with `neutral`, `small`, `a`, and `o` families, `rest`, `half`, and `closed` eyes, and `whole-frame` blinks. Bare half-body rendering keeps `assets/expressions/complete-expressions` with `require_complete=False`. Missing selected default directories, manifests or frames fail explicitly during renderer construction or source switching. Golden retains its existing base composition settings and requires `GOLDEN_MATCH`. Pre-delivery synthetic data stays inside `.quality-tmp/mohan-look-engine/`; official appearance follows owner review.
 
@@ -54,11 +58,13 @@ The half-body `manifest.json` uses schema `mohan.complete-halfbody-expressions.v
 
 File, schema, dimension, and digest checks establish technical conformance only. Character identity, appearance, and clothing still require acceptance under the owner's current review authorization; passing program checks does not approve the artwork.
 
+See [body-pack.md](body-pack.md) for body dependencies and character layers.
+
 ## 日本語
 
 ### バインディングと実行時の動作
 
-既定外観は対の `asset_paths.default_look_fullbody` と `asset_paths.default_look_halfbody` を使います。墨寒は `assets/characters/mohan/native/{full,half}`、林可芸は `assets/characters/lin-keyun/native/{full,half}` を指定します。既存の完成フレームフィールドは互換性を維持します。既存の外観リゾルバーで衣装、髪型、頭飾りの有効選択と公式セットを比較し、新規ユーザーや明示的な公式既定の選択が一致した場合、完成フレームにメイクと共有 V5 の顔動作を合成します。素体の `builtin/none/none`、他の衣装パック、個別変更した髪型や頭飾りは共有 V5 素体と既存レイヤー合成を使います。両キャラクターが同じ規則で切り替え、選択変更時に半身キャッシュを消去します。完成モードの exasperated 表情は完成半身画像が提供します。
+既定外観は対の `asset_paths.default_look_fullbody` と `asset_paths.default_look_halfbody` を使います。パスはキャラクターのバインディングで宣言します。本 PR は公開済みの墨寒と林可芸の素材とバインディングを維持し、新しい外観は素体パックとキャラクターレイヤーで別途導入します。既存の完成フレームフィールドは互換性を維持します。既存の外観リゾルバーで衣装、髪型、頭飾りの有効選択と公式セットを比較し、新規ユーザーや明示的な公式既定の選択が一致した場合、完成フレームにメイクと共有 V5 の顔動作を合成します。素体の `builtin/none/none`、他の衣装パック、個別変更した髪型や頭飾りは共有 V5 素体と既存レイヤー合成を使います。両キャラクターが同じ規則で切り替え、選択変更時に半身キャッシュを消去します。完成モードの exasperated 表情は完成半身画像が提供します。
 
 既定半身は `require_complete=True` を使い、`REQUIRED_COMPLETE_POSES` の実際の24ポーズすべてに `neutral`、`small`、`a`、`o` と `rest`、`half`、`closed`、`whole-frame` のまばたきを用意します。素体半身は `assets/expressions/complete-expressions` と `require_complete=False` を維持します。選択した既定ソースのディレクトリ、manifest、フレームが欠ける場合、renderer の構築または切替時に明確に失敗します。golden は既存の素体合成設定を維持し、`GOLDEN_MATCH` を要求します。納品前の仮データは `.quality-tmp/mohan-look-engine/` 内に置き、正式外観は所有者の審査に従います。
 
@@ -72,4 +78,4 @@ File, schema, dimension, and digest checks establish technical conformance only.
 
 ファイル・schema・寸法・digest の検証は技術形式への適合だけを示します。キャラクターの身元、外観、衣服は、現在の所有者審査権限に基づく検収が別途必要です。プログラム検査の合格は美術承認を意味しません。
 
-素體依附與角色圖層契約見 [body-pack.md](body-pack.md)。／素体依附与角色图层契约见 [body-pack.md](body-pack.md)。／See [body-pack.md](body-pack.md) for body dependencies and character layers.／素体依存とレイヤー契約は [body-pack.md](body-pack.md) を参照してください。
+素体依存とレイヤー契約は [body-pack.md](body-pack.md) を参照してください。

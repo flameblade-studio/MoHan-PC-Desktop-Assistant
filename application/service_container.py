@@ -82,7 +82,7 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
-lazy from infrastructure.body_pack_renderer import BodyPackRenderer
+lazy from infrastructure.body_pack_renderer import BodyPackRenderer, create_body_pack_renderer
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
@@ -358,7 +358,7 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
 
     @cache
     def body_renderer() -> BodyPackRenderer:
-        return BodyPackRenderer(
+        return create_body_pack_renderer(
             body_pack, character_source.appearance.character_layer_views,
             character_source.assets.load_character_layer,
         )

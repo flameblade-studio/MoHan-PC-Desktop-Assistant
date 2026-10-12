@@ -12,6 +12,7 @@ lazy from typing import Any
 lazy from domain.character_pack.appearance_data import load_character_appearance_defaults
 lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.character_source_pack import CharacterPackReader
+lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
 lazy from tools import build_character_pack as builder
 
 
@@ -45,16 +46,9 @@ RUNTIME_JSON_FILES = (
     "rig/runtime-bindings.json",
     "voice/profile.json",
 )
-SUPPLEMENT_FRAMES = frozenset(
-    f"expressions/frames/cheek-rest-{family}-{eye}.rgba.png"
-    for family in ("neutral", "small", "a", "o")
-    for eye in ("rest", "half", "closed")
-)
 EXPECTED_FILES = frozenset(
     {
         *RUNTIME_JSON_FILES,
-        *SUPPLEMENT_FRAMES,
-        "expressions/complete-halfbody-supplement.json",
         APPEARANCE_DEFAULTS_PATH,
         "LICENSE.md",
         "official-packs/linkeyun.official.modern-office.mohan-outfit",
@@ -152,7 +146,7 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
     }
     assert files == EXPECTED_FILES
     assert len(files) == EXPECTED_FILE_COUNT
-    for relative in EXPECTED_FILES - SUPPLEMENT_FRAMES - {
+    for relative in EXPECTED_FILES - {
         "official-packs/linkeyun.official.modern-office.mohan-outfit"
     }:
         data = (LIN_KEYUN_ROOT / relative).read_bytes()
@@ -163,10 +157,6 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
 def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
     for relative in RUNTIME_JSON_FILES:
         actual = _load(LIN_KEYUN_ROOT, relative)
-        if relative == "rig/runtime-bindings.json":
-            assert actual["asset_paths"].pop("halfbody_complete_supplement") == (
-                "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
-            )
         assert _shape(actual) == _shape(
             _load(MOHAN_ROOT, relative)
         ), relative
@@ -189,20 +179,39 @@ def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
         assert len(dialogue["templates"]) == EXPECTED_TEMPLATE_COUNT
 
 
-def test_linkeyun_cheek_rest_supplement_preserves_v5_authority() -> None:
-    supplement = _load(LIN_KEYUN_ROOT, "expressions/complete-halfbody-supplement.json")
+def test_linkeyun_cheek_rest_supplement_preserves_v5_authority(tmp_path: Path) -> None:
+    authority_root = ROOT / "assets/expressions/complete-expressions"
+    pose = {"source_lineage": {"approval": "test-source"}}
+    frames = {}
+    for family in ("neutral", "small", "a", "o"):
+        frames[family] = {}
+        for eye in ("rest", "half", "closed"):
+            filename = f"cheek-rest-{family}-{eye}.rgba.png"
+            data = (authority_root / "frames" / filename).read_bytes()
+            (tmp_path / filename).write_bytes(data)
+            frames[family][eye] = {"path": filename, "sha256": hashlib.sha256(data).hexdigest()}
+    document = {
+        "schema": "mohan.complete-halfbody-expressions.v1",
+        "poses": {"cheek-rest": {**pose, "frames": frames}},
+        "expressions": {family: {"pose": "cheek-rest", "family": family} for family in frames},
+    }
+    (tmp_path / "manifest.json").write_text(
+        json.dumps(document), encoding="utf-8", newline="\n",
+    )
+    supplement = _load(tmp_path, "manifest.json")
     assert supplement["schema"] == "mohan.complete-halfbody-expressions.v1"
     assert set(supplement["poses"]) == {"cheek-rest"}
     frames = supplement["poses"]["cheek-rest"]["frames"]
     assert set(frames) == {"neutral", "small", "a", "o"}
+    loaded = load_complete_halfbody_frames(tmp_path)
     for family, eyes in frames.items():
         assert set(eyes) == {"rest", "half", "closed"}
         for eye, record in eyes.items():
-            filename = f"cheek-rest-{family}-{eye}.rgba.png"
-            copied = ROOT / record["path"]
-            authority = ROOT / "assets/expressions/complete-expressions/frames" / filename
+            copied = tmp_path / record["path"]
+            authority = authority_root / "frames" / record["path"]
             assert copied.read_bytes() == authority.read_bytes()
             assert hashlib.sha256(copied.read_bytes()).hexdigest() == record["sha256"]
+            assert loaded.frames["cheek-rest"][family][eye] == authority.read_bytes()
 
 
 def test_linkeyun_dialogue_placeholders_match_in_every_language() -> None:

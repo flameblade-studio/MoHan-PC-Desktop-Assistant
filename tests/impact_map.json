@@ -4987,7 +4987,6 @@
     },
     {
       "paths": [
-        "assets/characters/lin-keyun/rig/runtime-bindings.json",
         "assets/characters/mohan/rig/runtime-bindings.json",
         "domain/character_runtime_bindings.py",
         "infrastructure/character_native_frames.py"
@@ -5015,16 +5014,7 @@
         "test_character_native_frames.py",
         "test_complete_front_expressions.py",
         "test_complete_halfbody_expressions.py",
-        "test_expression_pipeline.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/characters/lin-keyun/expressions/complete-halfbody-supplement.json"
-      ],
-      "tests": [
-        "test_character_native_frames.py",
+        "test_expression_pipeline.py",
         "test_linkeyun_character_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
