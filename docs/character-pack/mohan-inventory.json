@@ -34333,7 +34333,7 @@
       "sha256": "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
     },
     {
-      "bytes": 37179665,
+      "bytes": 37173487,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -34347,7 +34347,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "7ee42a03e863d02ccbfd7a06d80d25dd569ed96b41096e1f69770e70c7b4e42e"
+      "sha256": "3d7612988408f49a3cd5ee446b97367860eff6c9c47d8b71e36f98087bf283cd"
     },
     {
       "appearance_categories": [
@@ -47532,7 +47532,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 33491,
+      "bytes": 31282,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -47549,13 +47549,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "321953061722f7bb38ab381ad58e68e45dfabfbcbdba632a0f008d835d861165"
+      "sha256": "07d272010f2faebf000797f14465d7091f5d9615a19d7f249e63e5c2c46ae137"
     },
     {
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 38711,
+      "bytes": 36499,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -47572,13 +47572,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "6a61fb2e0353a10a8f544dc8ad9541ca1de151f1b543c793eb1c5fbc3449dbad"
+      "sha256": "e110574b09587875aff757722a7a921932dc9b28774f426bf6c4cd9686ec1ca7"
     },
     {
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 65827,
+      "bytes": 65155,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -47595,7 +47595,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "9583f37676e24fb372572c5b30607ee2977e70aedacadc6207c066d361a3c280"
+      "sha256": "6cae4e6c6c3a7ae2df97db2eeb6aa961c18be2979752d21908f4703f1f7f8c1a"
     },
     {
       "appearance_categories": [
@@ -69484,7 +69484,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "b97cae5e1ec902f31d8dcfb18d09eea4e09df83f834f2c1fac60776d575185c9"
+      "sha256": "559ed21db2cb38846728e9b2c455630525d0f1cc447e428d163184edcdb4be51"
     },
     {
       "bytes": 29245749,

@@ -12,6 +12,7 @@ lazy import hashlib
 lazy import io
 lazy import json
 lazy import sys
+lazy import subprocess
 lazy import zipfile
 lazy from pathlib import Path
 
@@ -32,6 +33,8 @@ SOURCE_LIPS = (568, 644, [558, 551, 546, 550, 546, 550, 554, 558],
                [559, 568, 577, 580, 579, 575, 566, 559])
 ORAL_DARK_THRESHOLD = 125
 PACK = "assets/official-packs/mohan.makeup.builtin.mohan-outfit"
+MAIN_EYE_SOURCE_COMMIT = "b8bd116634a3659de6d15a51f2668de5b20b84c4"
+MAIN_EYE_SOURCE_PACK_SHA256 = "f8871cf98d76d37f8bfb6be033590138386f3fff434d33ae98172caf2a66a4ea"
 STATES = ("rest", "half", "closed")
 FAMILIES = ("neutral", "small", "a", "o")
 
@@ -293,26 +296,48 @@ class RigBuilder:
                     variant["mouth_states"][family]["front-crossed"] = [declaration]
             self.eye_pigment()
 
+    def approved_glamorous_eyes(self) -> dict[str, bytes]:
+        """Read the approved eye layers from the pinned main pack without resampling."""
+        data = subprocess.check_output(
+            ["git", "show", f"{MAIN_EYE_SOURCE_COMMIT}:{PACK}"], cwd=self.root,
+        )
+        if digest(data) != MAIN_EYE_SOURCE_PACK_SHA256:
+            raise ValueError("Pinned main makeup pack SHA-256 mismatch")
+        self.pins[f"{MAIN_EYE_SOURCE_COMMIT}:{PACK}"] = digest(data)
+        layers = {}
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            manifest = json.loads(archive.read("manifest.json"))
+            variant = next(v for v in manifest["makeup"][0]["variants"] if v["id"] == "glamorous")
+            for state in STATES:
+                table = variant["poses"] if state == "rest" else variant["eye_states"][state]
+                record = next(a for a in table["front-crossed"] if a["slot"] == "eyes")
+                layer = archive.read(record["path"])
+                if digest(layer) != record["sha256"]:
+                    raise ValueError(f"Pinned main eye layer SHA-256 mismatch: {state}")
+                self.pins[f"{MAIN_EYE_SOURCE_COMMIT}:{record['path']}"] = digest(layer)
+                layers[state] = layer
+        return layers
+
     def eye_pigment(self) -> None:
         from tools.art_pipeline.front_crossed_pigment import painted_eyes
         self.original("assets/front-makeup-rigs/front-crossed-brush-plan.json")
+        glamorous_eyes = self.approved_glamorous_eyes()
         for variant in self.pack["makeup"][0]["variants"]:
             style = variant["id"]
             for state in STATES:
                 table = variant["poses"] if state == "rest" else variant["eye_states"][state]
-                source = next(a for a in table["front-attentive_front"] if a["slot"] == "eyes")
                 target_record = next(a for a in table["front-crossed"] if a["slot"] == "eyes")
-                target = rgba(FRAMES / f"front-crossed-neutral-{state}.rgba.png")
                 if style == "glamorous":
-                    reference = rgba(FRAMES / f"front-attentive_front-neutral-{state}.rgba.png")
-                    layer = warp(rgba(self.staging / source["path"]), registration(target, reference))
+                    data = glamorous_eyes[state]
                 else:
+                    target = rgba(FRAMES / f"front-crossed-neutral-{state}.rgba.png")
                     layer = painted_eyes(target, state, self.root / "assets/front-makeup-rigs/front-crossed-brush-plan.json")
                     if style == "light":
                         layer[..., 3] = np.rint(layer[..., 3].astype(float) * .55).astype(np.uint8)
-                layer = bounded(layer, self.region["slots"]["eyes"])
+                    layer = bounded(layer, self.region["slots"]["eyes"])
+                    data = encoded(layer)
                 relative = f"assets/front-rig-{style}-{state}-eyes.png"
-                (self.staging / relative).write_bytes(encoded(layer))
+                (self.staging / relative).write_bytes(data)
                 table["front-crossed"] = [a if a["slot"] != "eyes" else {**target_record, "path": relative, "sha256": digest((self.staging / relative).read_bytes())} for a in table["front-crossed"]]
 
     def preserve_mouth(self) -> None:
