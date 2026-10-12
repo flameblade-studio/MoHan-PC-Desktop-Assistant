@@ -1,7 +1,7 @@
 {
   "approval": {
     "path": "docs/release-evidence/hanfu-shoes-unify-golden-approval.json",
-    "sha256": "cef9fe6de9658f43d33ada0565cfd590a22d711a5b4317d0ec0e2714b01d6200"
+    "sha256": "c277c448959d8bbee2b41ab6b946530919e72bbc342f5658311e41f13e43b47d"
   },
   "cells": [
     {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "e71ee6eac67bedc28dc131b85fd9dda1d8c71918"
+  "source_revision": "186527bc8a9b7440a98e2c75364b184225c093a2"
 }
