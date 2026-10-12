@@ -3,6 +3,10 @@
     {
       "path": "assets/characters/lin-keyun/body/approval.json",
       "scope": "Owner-authorized prior approval for 28 views and three Lin Keyun gestures, plus separate GitHub Release download under CC BY-NC-ND 4.0; hashes and source authority are recorded in this evidence."
+    },
+    {
+      "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
+      "scope": "Four detachable makeup looks and existing native expression states only."
     }
   ],
   "body_pack": {
@@ -140,6 +144,17 @@
       "path": "assets/characters/lin-keyun/voice/profile.json",
       "required": true,
       "schema": "flameblade.character-voice-profile.v1"
+    },
+    {
+      "body_profile": {
+        "id": "mohan-body-v2",
+        "version": 2
+      },
+      "id": "mohan.makeup.builtin",
+      "kind": "outfit_pack",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
+      "required": true,
+      "schema": "mohan-outfit-pack.v2"
     }
   ],
   "distribution": {
@@ -11363,6 +11378,10 @@
     {
       "path": "assets/characters/lin-keyun/body/manifest.json",
       "scope": "Exact seventh-round Lin Keyun layer-view manifest; body fingerprint and layer file hashes are preserved."
+    },
+    {
+      "path": "assets/makeup-safe-regions.json",
+      "scope": "Shared makeup safety rectangles, foundation masks, eye apertures and exclusion rig layers required by the declared makeup component."
     }
   ],
   "validation_limits": {

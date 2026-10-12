@@ -2503,6 +2503,19 @@
     },
     {
       "paths": [
+        "domain/character_source.py"
+      ],
+      "tests": [
+        "test_active_character_switching.py",
+        "test_body_pack_runtime.py",
+        "test_character_source.py",
+        "test_official_default_pack.py",
+        "test_renderer_profile_injection.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "application/character_runtime_bootstrap.py"
       ],
       "tests": [
@@ -2574,18 +2587,6 @@
         "test_active_character_switching.py",
         "test_character_pack_zip_snapshot.py",
         "test_official_pack_ids_reservation.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/character_source.py"
-      ],
-      "tests": [
-        "test_active_character_switching.py",
-        "test_character_source.py",
-        "test_official_default_pack.py",
-        "test_renderer_profile_injection.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2822,6 +2823,22 @@
     },
     {
       "paths": [
+        "assets/makeup-safe-regions.json"
+      ],
+      "tests": [
+        "test_active_outfit_overlay_makeup.py",
+        "test_build_character_inventory.py",
+        "test_build_makeup_safe_regions.py",
+        "test_installed_outfit_blink_roundtrip.py",
+        "test_makeup_blink_states.py",
+        "test_makeup_safe_region_visibility.py",
+        "test_preview_packaging.py",
+        "test_source_bound_makeup_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/layered_face_assets.py"
       ],
       "tests": [
@@ -2856,21 +2873,6 @@
         "test_outfit_pack_makeup.py",
         "test_preview_packaging.py",
         "test_swallowed_error_d04.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/makeup-safe-regions.json"
-      ],
-      "tests": [
-        "test_active_outfit_overlay_makeup.py",
-        "test_build_makeup_safe_regions.py",
-        "test_installed_outfit_blink_roundtrip.py",
-        "test_makeup_blink_states.py",
-        "test_makeup_safe_region_visibility.py",
-        "test_preview_packaging.py",
-        "test_source_bound_makeup_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4429,6 +4431,17 @@
     },
     {
       "paths": [
+        "infrastructure/complete_halfbody_renderer.py"
+      ],
+      "tests": [
+        "test_body_pack_runtime.py",
+        "test_character_native_frames.py",
+        "test_complete_front_expressions.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "assets/expressions/idle_lean.png"
       ],
       "tests": [
@@ -4481,6 +4494,7 @@
         "assets/expressions/cheek_native_gray_20260914.png",
         "assets/expressions/reviewed-garments/cheek-rest/motion/manifest.json",
         "assets/expressions/reviewed-garments/manifest.json",
+        "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
         "assets/expressions/source-bound-exasperated/receipt.json",
         "assets/pose-atlas/v5-base-layered/complete-expressions/frames/minus015-a-closed.rgba.png",
         "assets/pose-atlas/v5-base/DISPLAY-PLACEMENT.json",
@@ -4681,6 +4695,19 @@
         "test_v4_development_version_consistency.py",
         "test_v4_release_document_integrity.py",
         "test_v4_vision_documentation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/official-packs/mohan.makeup.builtin.mohan-outfit"
+      ],
+      "tests": [
+        "test_build_character_inventory.py",
+        "test_four_look_makeup_pack.py",
+        "test_golden_render.py",
+        "test_outfit_pack_legacy_silhouettes.py",
+        "test_preview_packaging.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5165,16 +5192,6 @@
       ],
       "tests": [
         "test_character_native_frames.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "infrastructure/complete_halfbody_renderer.py"
-      ],
-      "tests": [
-        "test_character_native_frames.py",
-        "test_complete_front_expressions.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6898,18 +6915,6 @@
       ],
       "tests": [
         "test_four_look_makeup_pack.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/official-packs/mohan.makeup.builtin.mohan-outfit"
-      ],
-      "tests": [
-        "test_four_look_makeup_pack.py",
-        "test_golden_render.py",
-        "test_outfit_pack_legacy_silhouettes.py",
-        "test_preview_packaging.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

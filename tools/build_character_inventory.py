@@ -67,14 +67,38 @@ render_summary = _adapter.render_summary
 
 
 def build_lin_keyun_inventory(inventory: dict[str, object]) -> dict[str, object]:
-    """Select the release payload index owned by Lin Keyun only."""
-    return build_owned_character_inventory(
+    """Select Lin Keyun files and the declared shared makeup support assets."""
+    selected = build_owned_character_inventory(
         inventory, profile="lin-keyun", prefix="assets/characters/lin-keyun/",
         purpose=(
-            "Release payload inventory limited to Lin Keyun-owned character files; "
-            "shared MoHan full-frame assets are excluded."
+            "Release payload inventory includes Lin Keyun-owned files and declared "
+            "shared makeup dependencies; shared full-frame assets are excluded."
         ),
     )
+
+    source = json.loads((ROOT / "assets/characters/lin-keyun/pack-source.json").read_text(encoding="utf-8"))
+    makeup_paths = set()
+    for field in ("components", "approval_refs", "source_refs"):
+        makeup_paths.update(row["path"] for row in source[field] if "makeup" in row["path"])
+    if "assets/makeup-safe-regions.json" in makeup_paths:
+        regions = json.loads((ROOT / "assets/makeup-safe-regions.json").read_text(encoding="utf-8"))
+        for region in regions["silhouettes"].values():
+            for field in ("foundation_masks", "eye_aperture_masks"):
+                makeup_paths.update(row["path"] for row in region.get(field, {}).values())
+            for layer in ("iris_left", "iris_right", "eyelid_left", "eyelid_right",
+                          "oral_cavity", "teeth_tongue", "lip_upper", "lip_lower"):
+                path = f"{region['rig']}_{layer}.png"
+                if (ROOT / path).is_file():
+                    makeup_paths.add(path)
+    shared = [{**row, "scope": "runtime_data",
+               "reason": "Declared runtime makeup component, approval or safety dependency."}
+              for row in inventory["files"] if row["path"] in makeup_paths]
+    selected["files"] = sorted([*selected["files"], *shared], key=lambda row: row["path"])
+    counts = {}
+    for row in selected["files"]:
+        counts[row["scope"]] = counts.get(row["scope"], 0) + 1
+    selected["scope_counts"] = dict(sorted(counts.items()))
+    return selected
 
 
 def render_lin_keyun_inventory(inventory: dict[str, object]) -> str:

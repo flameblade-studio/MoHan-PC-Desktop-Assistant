@@ -328,5 +328,88 @@ def test_body_makeup_receives_fullbody_and_halfbody_eye_mouth_context(qapp):
     renderer.render_complete_blink(frame, "closed")
     assert selected.calls == [
         ("front", "rest", "A"), ("front", "closed", None),
-        ("front", "rest", "A"), ("front", "half", "A"), ("front", "closed", "A"),
+        ("front-crossed", "rest", None), ("front-crossed", "half", None),
+        ("front-crossed", "closed", None),
     ]
+
+
+@pytest.mark.parametrize("expression", ["attentive_front", "worried_front", "glance", "happy"])
+@pytest.mark.parametrize("eye", ["rest", "half", "closed"])
+def test_body_makeup_expression_silhouette_matches_complete_halfbody(qapp, expression, eye):
+    from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
+    from domain.character_source import active_expression_catalog
+
+    pose = active_expression_catalog().state_to_pose[expression]
+    silhouette = f"{pose}-{expression}"
+    expected = CompleteHalfbodyRenderer._makeup_view_id(silhouette, eye)
+    calls = []
+
+    def apply(frame, view, eye_state, viseme):
+        calls.append((view, eye_state, viseme))
+        return frame
+
+    body = _FaceCoreBody()
+    body.load_frame = lambda *args, **kwargs: _png("red")
+    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=apply)
+    motion = _motion(Viseme.A)
+    motion.expression = expression
+    renderer._compose(silhouette, f"a-{eye}", halfbody=True, expression=motion.expression)
+    assert calls == [(expected, eye, "A")]
+
+
+def test_body_makeup_selected_pose_overrides_live_expression_during_blink(qapp):
+    calls = []
+
+    def apply(frame, view, eye, viseme):
+        calls.append((view, eye, viseme))
+        return frame
+
+    body = _FaceCoreBody()
+    body.load_frame = lambda *args, **kwargs: _png("red")
+    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=apply)
+    motion = _motion(Viseme.A)
+    motion.expression = "attentive_front"
+    frame = renderer.render(QPixmap(), motion, None)
+    renderer.render_complete_blink(frame, "closed")
+    assert calls == [("front-crossed", "rest", None),
+                     ("front-crossed", "closed", None)]
+
+
+def test_body_fullbody_makeup_keeps_yaw_view_for_a_halfbody_expression(qapp):
+    calls = []
+
+    def apply(frame, view, eye, viseme):
+        calls.append((view, eye, viseme))
+        return frame
+
+    renderer = BodyPackRenderer(_FaceCoreBody(), {}, lambda record: b"", apply_makeup=apply)
+    motion = _motion(Viseme.A)
+    motion.expression = "attentive_front"
+    renderer.render_view("yaw+000-pitch+00", motion)
+    assert calls == [("yaw+000-pitch+00", "rest", "A")]
+
+
+@pytest.mark.parametrize("alias", ["front", "idle_front", "mouth_wide_front"])
+def test_body_makeup_manifest_alias_uses_exact_source_frame_bindings(qapp, alias):
+    from domain.body_pack import BodyPackFile, BodyPackView
+
+    frames = (("a-rest", BodyPackFile("opaque/source.png", "a" * 64)),)
+    body = _FaceCoreBody()
+    body.manifest = SimpleNamespace(half_body=(
+        BodyPackView(alias, frames), BodyPackView("front-crossed", frames),
+        BodyPackView("front-attentive_front", (("a-rest", BodyPackFile("other.png", "b" * 64)),)),
+    ))
+    body.load_frame = lambda *args, **kwargs: _png("red")
+    selected = _SelectedMakeup()
+    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=selected)
+    renderer._compose(alias, "a-rest", halfbody=True, expression="attentive_front")
+    assert selected.calls == [("front-crossed", "rest", None)]
+
+
+def test_body_makeup_small_family_uses_product_viseme_i(qapp):
+    selected = _SelectedMakeup()
+    body = _FaceCoreBody()
+    body.load_frame = lambda *args, **kwargs: _png("red")
+    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=selected)
+    renderer._compose("front-attentive_front", "small-rest", halfbody=True)
+    assert selected.calls == [("front-attentive_front", "rest", "I")]

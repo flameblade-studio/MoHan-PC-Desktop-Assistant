@@ -414,7 +414,7 @@
       "work_package": null
     },
     {
-      "bytes": 30711,
+      "bytes": 30909,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -425,7 +425,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 456,
+          "line": 461,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -435,7 +435,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 457,
+          "line": 462,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -455,7 +455,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "55b6c3a5b8c80d9275ecab8cdff740cb9645fe34698894499318750ba5a23019",
+      "sha256": "1b5b45b79fda10b7cb2b3961545354452bb3e27b91e23f718462250ab5b52981",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -506,58 +506,63 @@
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 491,
+          "end_line": 339,
           "line": 325,
+          "name": "_body_pack_makeup_applier"
+        },
+        {
+          "end_line": 496,
+          "line": 342,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 497,
-          "line": 494,
+          "end_line": 502,
+          "line": 499,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 503,
-          "line": 500,
+          "end_line": 508,
+          "line": 505,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 545,
-          "line": 506,
+          "end_line": 550,
+          "line": 511,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 558,
-          "line": 548,
+          "end_line": 563,
+          "line": 553,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 578,
-          "line": 561,
+          "end_line": 583,
+          "line": 566,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 599,
-          "line": 581,
+          "end_line": 604,
+          "line": 586,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 618,
-          "line": 602,
+          "end_line": 623,
+          "line": 607,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 638,
-          "line": 621,
+          "end_line": 643,
+          "line": 626,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 658,
-          "line": 641,
+          "end_line": 663,
+          "line": 646,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 813,
-          "line": 661,
+          "end_line": 818,
+          "line": 666,
           "name": "create_default_services"
         }
       ],
@@ -11445,7 +11450,7 @@
       "sha256": "60205421659aed3837f2282ef1bc8c18f9d883f74b29e63ad35d368c9cdf858c"
     },
     {
-      "bytes": 332663,
+      "bytes": 333376,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -11453,7 +11458,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "748870646d079d9512fa0814b1cfb2dc410c56eb8529b51e168159115bc1ca3f"
+      "sha256": "4f0e72014113816411eb7babde9dc9ca0a7a008b1eeb101969f647f264654731"
     },
     {
       "bytes": 2163,
@@ -39374,7 +39379,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 328,
+          "line": 345,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -74321,7 +74326,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 328,
+          "line": 345,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }

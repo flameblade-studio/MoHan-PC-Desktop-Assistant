@@ -493,3 +493,26 @@ def test_product_identity_exempts_only_its_own_span() -> None:
     assert ("MoHan", "product_identity_literal") in rules
     assert ("墨寒", "character_name_literal") in rules
     assert builder._source_classification("presentation/example.py", evidence) != "product_shell_allowed"
+
+
+def test_lin_keyun_inventory_keeps_declared_shared_makeup_dependencies() -> None:
+    makeup = "assets/official-packs/mohan.makeup.builtin.mohan-outfit"
+    approval = "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json"
+    unrelated = "assets/pose-atlas/v5-base/front.png"
+    inventory = {"files": [{"path": path, "scope": "runtime_data"}
+                           for path in (makeup, approval, unrelated)]}
+    selected = builder.build_lin_keyun_inventory(inventory)
+    assert {row["path"] for row in selected["files"]} == {makeup, approval}
+    assert selected["scope_counts"] == {"runtime_data": 2}
+
+
+def test_declared_makeup_exclusion_rig_is_packaged_as_runtime_support() -> None:
+    regions = json.loads((ROOT / "assets/makeup-safe-regions.json").read_text(encoding="utf-8"))
+    rig = regions["silhouettes"]["front-attentive_front"]["rig"]
+    path = f"{rig}_oral_cavity.png"
+    selected = builder.build_lin_keyun_inventory(
+        {"files": [{"path": path, "scope": "excluded_support"}]},
+    )
+    assert selected["files"][0]["path"] == path
+    assert selected["files"][0]["scope"] == "runtime_data"
+    assert selected["scope_counts"] == {"runtime_data": 1}
