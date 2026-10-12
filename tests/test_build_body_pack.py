@@ -6,6 +6,7 @@ lazy import hashlib
 lazy import json
 lazy import os
 lazy from pathlib import Path
+lazy from types import SimpleNamespace
 
 lazy import pytest
 lazy from PIL import Image
@@ -810,3 +811,36 @@ def test_reuse_rejects_layers_without_explicit_native_alpha_contract(
     )
     with pytest.raises(ValueError, match="unweighted face-core contract"):
         build.layer_source(view)
+
+
+def _skip_context(frame_keys: tuple[str, ...], missing: tuple[str, ...] = ()) -> SimpleNamespace:
+    reader = SimpleNamespace(
+        manifest=SimpleNamespace(missing_body_poses=missing, half_body=(), full_body=()),
+        frame_keys=lambda view, *, halfbody=False: frame_keys,
+    )
+    return SimpleNamespace(reader=reader, errors=[], skipped=[], layer_views={})
+
+
+def test_eyes_mode_pack_skips_speaking_samples_instead_of_failing() -> None:
+    context = _skip_context(("rest", "half", "closed"))
+    verifier._missing_sample_state(context, "full/v/a-rest", "v", "a-rest", halfbody=False)
+    assert context.errors == []
+    assert context.skipped == [
+        {"case": "full/v/a-rest", "reason": "eyes-mode pack declares no speaking states"}
+    ]
+
+
+def test_all_mode_pack_still_fails_on_a_missing_speaking_state() -> None:
+    context = _skip_context(("rest", "small-rest"))
+    verifier._missing_sample_state(context, "full/v/a-rest", "v", "a-rest", halfbody=False)
+    assert context.skipped == []
+    assert len(context.errors) == 1
+
+
+def test_declared_missing_half_pose_is_skipped_not_failed() -> None:
+    context = _skip_context(("neutral-rest",), missing=("front-eureka",))
+    assert not verifier._required_view_exists(context, "front-eureka", halfbody=True)
+    assert context.errors == []
+    assert context.skipped == [
+        {"case": "half/front-eureka", "reason": "pose declared in manifest.missing_body_poses"}
+    ]
