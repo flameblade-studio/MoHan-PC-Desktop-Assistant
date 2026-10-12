@@ -2,6 +2,12 @@
 
 ## 繁體中文
 
+### 2026-10-12 漢服鞋子接入
+
+全身 24 視角漢服鞋子已統一為白底藍花繡花平底鞋，±045 使用主控最終邊緣修正版；官方衣裝包由既有 `tools/build_outfit_pack.py` 重建。角色包建置版本由 1.0.4 升為 1.0.5，正式清冊與 `character-pack.lock.json` 依實測同步更新。林可芸角色包的既有 payload 同樣包含墨寒官方漢服包，因此其建置版本同步由 1.0.2 升為 1.0.3 並更新鎖定。兩個新版的對外發布由擁有者決定，目前為本機建置狀態。
+
+`tools/golden_render.py` 的 `_prepare_store` 恢復官方預設衣裝，`render_matrix` 注入 `ActiveOutfitOverlay`，因此全身 golden 可能受到鞋子變更影響。SHOES-INSTALL2 已更新 17 筆 source-bound 服裝 member SHA 綁定並重新量測兩份角色包鎖定；24 視角 overlay 均通過。Golden 比對 352 格，52 格鞋腳區域改變、300 格未變，fallback 為 0；逐格差異均位於既有鞋部遮罩框加 12 像素腳緣範圍，基準更新交由主控依核准程序處理。
+
 本檔是可攜、受版本控制的專案交接點；記錄範圍限定為可安全共享的專案狀態，憑證、密碼、API 金鑰、原始對話內容與私人本機路徑留在各自的安全儲存邊界。程式碼、文件、發行證據與本檔均以 [Flameblade Studio 組織儲存庫](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 為跨電腦基準；已發布穩定版本為 [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2)，不可變標籤指向 `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea`，四平台正式封裝、Windows EXE／MSI 安裝生命週期、19 項精確資產、SBOM 與 SHA256 驗證已由 [Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) 通過。
 
 - v4.4.2 修復半身／全身分層說話破圖、無聲與嘴型停止，並限制渲染快取以排除「記憶體已滿」。
@@ -18,6 +24,12 @@
 5. 聽到「儲存進度」時，盤點狀態、更新交接、適度驗證、提交推送，並提供可貼回雲端 ChatGPT 專案的摘要。
 
 ## 简体中文
+
+### 2026-10-12 汉服鞋子接入
+
+全身 24 视角汉服鞋子已统一为白底蓝花绣花平底鞋，±045 使用主控最终边缘修正版；官方服装包由现有 `tools/build_outfit_pack.py` 重建。角色包构建版本由 1.0.4 升为 1.0.5，正式清册与 `character-pack.lock.json` 按实测同步更新。林可芸角色包的现有 payload 同样包含墨寒官方汉服包，因此其构建版本同步由 1.0.2 升为 1.0.3 并更新锁定。两个新版的对外发布由所有者决定，目前为本机构建状态。
+
+`tools/golden_render.py` 的 `_prepare_store` 恢复官方默认服装，`render_matrix` 注入 `ActiveOutfitOverlay`，因此全身 golden 可能受到鞋子变更影响。SHOES-INSTALL2 已更新 17 条 source-bound 服装 member SHA 绑定并重新测量两份角色包锁定；24 视角 overlay 均通过。Golden 比对 352 格，52 格鞋脚区域改变、300 格未变，fallback 为 0；逐格差异均位于现有鞋部遮罩框加 12 像素脚缘范围，基准更新交由主控按批准程序处理。
 
 本文件是可携带、受版本控制的项目交接点；记录范围限定为可安全共享的项目状态，凭据、密码、API 密钥、原始对话内容与私人本机路径留在各自的安全存储边界。代码、文档、发布证据与本文件均以 [Flameblade Studio 组织仓库](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) 为跨电脑基准；已发布稳定版本为 [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2)，不可变标签指向 `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea`，四平台正式封装、Windows EXE／MSI 安装生命周期、19 项精确资产、SBOM 与 SHA256 验证已由 [Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) 通过。
 
@@ -36,6 +48,12 @@
 
 ## English
 
+### 2026-10-12 hanfu shoe integration
+
+Hanfu shoes across all 24 full-body views now use white flats with blue floral embroidery, with the coordinator’s final edge repairs at ±045. The official outfit archive is rebuilt through the existing `tools/build_outfit_pack.py`. The character-pack build version moves from 1.0.4 to 1.0.5, with the formal inventory and `character-pack.lock.json` updated from measurements. The existing Lin Keyun payload also includes the MoHan official hanfu archive, so its build version moves from 1.0.2 to 1.0.3 with a remeasured lock. Publication of both versions remains an owner decision; these are local builds.
+
+In `tools/golden_render.py`, `_prepare_store` restores the official default outfit and `render_matrix` injects `ActiveOutfitOverlay`, so the shoe changes may affect full-body goldens. SHOES-INSTALL2 refreshes 17 source-bound garment member SHA bindings and remeasures both character-pack locks; all 24 overlay views pass. Golden comparison covers 352 cells: 52 change within feet and shoes, 300 remain unchanged, and fallback is zero. Every changed pixel stays within existing shoe-mask bounds plus a 12-pixel foot-edge margin; the coordinator handles baseline updates through the approval procedure.
+
 This document is the portable, version-controlled project handoff; its record scope is safely shareable project state, while credentials, passwords, API keys, raw conversation content, and private local paths remain within their secure storage boundaries. The [Flameblade Studio organization repository](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) is the cross-computer baseline. The published stable release is [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2); its immutable tag identifies `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea`, and [Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) passed four-platform packaging, the Windows EXE/MSI installation lifecycle, the exact 19-asset set, SBOM, and SHA256 verification.
 
 - v4.4.2 repairs torn half/full-body layered speech, silent playback and stopped mouth motion, and bounds render caches to prevent “memory full”.
@@ -52,6 +70,12 @@ For device acceptance, confirm both framings speak without corruption and with a
 5. When the owner says "儲存進度", inspect the state, update this handoff, verify proportionately, commit and push, then provide a summary suitable for the cloud ChatGPT project.
 
 ## 日本語
+
+### 2026-10-12 漢服の靴の統合
+
+全身 24 視点の漢服の靴を白地に青い花の刺繍がある平底靴に統一し、±045 には主担当の最終の縁修正版を使用します。公式衣装パックは既存の `tools/build_outfit_pack.py` で再構築します。キャラクターパックのビルド版を 1.0.4 から 1.0.5 に上げ、正式一覧と `character-pack.lock.json` を実測で更新します。林可芸の既存 payload にも墨寒の公式漢服パックが含まれるため、そのビルド版も 1.0.2 から 1.0.3 に上げてロックを更新します。両新版の公開は所有者が判断し、現在はローカルビルドです。
+
+`tools/golden_render.py` の `_prepare_store` は公式の既定衣装を復元し、`render_matrix` は `ActiveOutfitOverlay` を注入するため、靴の変更が全身 golden に影響する可能性があります。SHOES-INSTALL2 で source-bound 衣装 member SHA の参照 17 件と両キャラクターパックのロックを再計測し、全 24 視点の overlay が合格しました。Golden は 352 セルを比較し、靴と足の 52 セルが変化、300 セルは同一、fallback は 0 です。全差分は既存の靴マスク境界に足の縁 12 ピクセルを加えた範囲内にあり、基準更新は主担当が承認手順に従って実施します。
 
 この文書は持ち運び可能でバージョン管理されたプロジェクト引継ぎです。記録範囲は安全に共有できるプロジェクト状態に限定し、認証情報、パスワード、API キー、生の会話内容、私的ローカルパスはそれぞれの安全な保存境界に維持します。[Flameblade Studio 組織リポジトリ](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant) がクロスコンピュータ基準です。公開済み安定版は [v4.4.2](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases/tag/v4.4.2) で、不変タグは `9dd7ebffff3e35f849752ed7ae8b1120d4fbd8ea` を指します。[Multi-platform Release #32541158913](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/actions/runs/32541158913) により、4 プラットフォーム正式パッケージ、Windows EXE／MSI のインストールライフサイクル、厳密な 19 資産セット、SBOM、SHA256 検証が通過しています。
 

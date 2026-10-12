@@ -1,7 +1,7 @@
 {
   "approval": {
-    "path": "docs/release-evidence/makeup-gradient-approval.json",
-    "sha256": "eb6adc01c4ea614f41a092cc3ec328d04ce636125ce75e4d5b50f9c8c7833f46"
+    "path": "docs/release-evidence/hanfu-shoes-unify-golden-approval.json",
+    "sha256": "c277c448959d8bbee2b41ab6b946530919e72bbc342f5658311e41f13e43b47d"
   },
   "cells": [
     {
@@ -15,7 +15,7 @@
         "view_id": "yaw+000-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "c9bc366081c4f0a0a9f8c849cc7ce72bd37524f5985becf075a99829328c61a5",
+      "pixel_sha256": "4b7ccbc0b4d20b66ab74252b1dc349e6e426d11e6b33a3e32b8d2a823f03dfee",
       "width": 1024
     },
     {
@@ -29,7 +29,7 @@
         "view_id": "yaw+000-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "73b43612bebd6e1a99e7cccf241f9122b9d8573fc4ab61de9eb3613e59c8ac32",
+      "pixel_sha256": "91511b2ab7590f17ef3e05a42972b9cdf5cf68f0da02551b061d35239a476b9e",
       "width": 1024
     },
     {
@@ -43,7 +43,7 @@
         "view_id": "yaw+000-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "fe75de05172976657518756b910b2ddd5e6e0f0b67860060df303936691c218c",
+      "pixel_sha256": "5292ef40a0568ab5e0fb7b0619c379da0a9adf08e7e54f3e3f09b383038c9bf1",
       "width": 1024
     },
     {
@@ -57,7 +57,7 @@
         "view_id": "yaw+000-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "94f24fa123318b4f65c1717cedef3acbdafb2ed39d5da1e96fb32ddfb249e166",
+      "pixel_sha256": "b3efa5887091456538ab5552f31a98a3430192f9b73c4eda35bb672e541af3b0",
       "width": 1024
     },
     {
@@ -71,7 +71,7 @@
         "view_id": "yaw+015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "43e42ea71b4ff2f62f49fb1b3493d9988bb96dfdb7f27b3d34f7b42d83794bf9",
+      "pixel_sha256": "01ba144629a3d15cff63c787f2efcd2f34fa7c577dc421644f02a45abb51fc37",
       "width": 1024
     },
     {
@@ -85,7 +85,7 @@
         "view_id": "yaw+015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "769c083e02a530bff2bc49b44f3e6b0c22729d1de0f10517b19b396b3b5462e0",
+      "pixel_sha256": "c74df15d4b0a9bc2fe863b52fbf4164d421322d18b699d337f23e4fe5a4c8a98",
       "width": 1024
     },
     {
@@ -99,7 +99,7 @@
         "view_id": "yaw+015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "743b9dcee84fdcd0e97512795daa1fbb5330e4de947f5bf1d42d4b2a1bd2a09d",
+      "pixel_sha256": "870321a8f2db72ae115b06d4a67d6809cc0366cf7540bb54bbf525db9a42a0fd",
       "width": 1024
     },
     {
@@ -113,7 +113,7 @@
         "view_id": "yaw+015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "541b20d60b9299ff9f5e7cf42b8ffcc2b977816a879b4142b6f85708eabc2e1e",
+      "pixel_sha256": "0be872a98147534526444423efa85157cc775dcac28e8a37b5860c8bbba63ab5",
       "width": 1024
     },
     {
@@ -127,7 +127,7 @@
         "view_id": "yaw+030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "33c25a3698b0c277d70955ee4d31339daa3326139421e0f340c7a8179039bebb",
+      "pixel_sha256": "8a098620261f7f8a82d6e44f91cb707a590218ef91de811fcd12b1e5c77e4364",
       "width": 1024
     },
     {
@@ -141,7 +141,7 @@
         "view_id": "yaw+030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "7c23bb06524af2a7ef13c1dcf0b7098ac010049352c367bfe9ad0af1d649039e",
+      "pixel_sha256": "f9d98de3d920480c825b1bd471be36936056aad5e2cd07d5862a1df9e66434c9",
       "width": 1024
     },
     {
@@ -155,7 +155,7 @@
         "view_id": "yaw+030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "3317beff754b32229a91745f893363d7077fdf1331a4f435b2457fba03444b29",
+      "pixel_sha256": "7054f63a8bfed6e7d9a6b67624b3418b38a14e7d8ab7e08028bb19095560861b",
       "width": 1024
     },
     {
@@ -169,7 +169,7 @@
         "view_id": "yaw+030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "f75cfbb9145cbb3933fcde6dfdc591293710fef88066ae3e61adce28e25b8cb9",
+      "pixel_sha256": "615f1c627fb8689b71678feb4cf50b6306e3470c0b95dc2629dbd11c03692668",
       "width": 1024
     },
     {
@@ -183,7 +183,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1375dce82608ee52b93cd66e42f074627a8f62a19883d54ed618209107b2dc35",
+      "pixel_sha256": "3eff46bcca559c7b4334a9f074ad4cb7fd4cd9d27e6e84f6980ab394e060bcfa",
       "width": 1024
     },
     {
@@ -197,7 +197,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "2e27d6cabdd38fdc1dfdc9cd032683d6dac0ac028700777714da6f190d04f758",
+      "pixel_sha256": "6960d20a450abf1c5fb68bb8092759b4a654986938e23ceb5d9dd937223db973",
       "width": 1024
     },
     {
@@ -211,7 +211,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "ac3cf56a993c0752c018ef7a100d4c7a8254b446f5e29b8b30411d729d3a7d91",
+      "pixel_sha256": "068072d3324c0fc4ca59c76cfbce64ba45d28a27a7e9b081acbbd81d01f22527",
       "width": 1024
     },
     {
@@ -225,7 +225,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "b8a15e116a19a1006490ec26d3170e249667ba520a4b407c5d9233d2c3440e51",
+      "pixel_sha256": "06a9b74b8a87fa3a3dc2ad60ba2050a12e8385eb2a6841fac8017496e677a3d5",
       "width": 1024
     },
     {
@@ -239,7 +239,7 @@
         "view_id": "yaw+060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "f619955cc00dfe3d83c0f8897f66b295aab5b5d55838d8c3388936ed6376f494",
+      "pixel_sha256": "a007125bd4c3652ddd0feda54a5d111c1b2b35045e11eb8b02eb98ddf5b6ce4a",
       "width": 1024
     },
     {
@@ -253,7 +253,7 @@
         "view_id": "yaw+060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "959bd57da4dd850814a91fc89011e4750006b99da036c429256e760eff6410b9",
+      "pixel_sha256": "3eddfdf56c59694d5eed38dd1371814950f0a92853ea3090fdeaea3d4aaa5a83",
       "width": 1024
     },
     {
@@ -267,7 +267,7 @@
         "view_id": "yaw+060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "c478109e893173c8605424275cbecc2edf468ea673a78425a60d3923ee4776b5",
+      "pixel_sha256": "4e7ef9fafd9c0a943ee4ba61df43db484e9d59287faad0d078fe7fe963f7b126",
       "width": 1024
     },
     {
@@ -281,7 +281,7 @@
         "view_id": "yaw+060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "d46a3e781f05d445524e756010b137accb7375dab41e1202f9bdc657c73584da",
+      "pixel_sha256": "20f59e6923df99881f9114749072ba40357300e0f2d62bd40fe6808a299b7bd4",
       "width": 1024
     },
     {
@@ -295,7 +295,7 @@
         "view_id": "yaw+075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "4a9b076530d36d75f3d20c7116356f73d9e630ddd0f1dec35957cdacc97cc8da",
+      "pixel_sha256": "8bafce3fe93cf23c9a1990ca917759035d1cbfaf293bc8b1ffb77b94ba0429ec",
       "width": 1024
     },
     {
@@ -309,7 +309,7 @@
         "view_id": "yaw+075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "d3792d3ea41a83e200fb7f906983996b2c281e10dbb5b61c65cae17d3c81cdc1",
+      "pixel_sha256": "4da53ed8bee579c263298f42b54553ad49fafc7fbb803f9bf6af9f7dc4a3456c",
       "width": 1024
     },
     {
@@ -323,7 +323,7 @@
         "view_id": "yaw+075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "b2830226012683b7fc877f88edcfcd9dac4b9f30c0c0bf06b15a0747ff48b822",
+      "pixel_sha256": "825c57ce67e8f371e32ee55ea993aaf7d6011df1b44464023f4a5048e586c777",
       "width": 1024
     },
     {
@@ -337,7 +337,7 @@
         "view_id": "yaw+075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "41e792ab59afcc89e4e4ba4116103a519ac56ee0d8ae1f96e03ac5e393557189",
+      "pixel_sha256": "33f88637d8a3bdf2d926f7daef50ff73b095b230ca8a22ab6f59ff4ea75992e4",
       "width": 1024
     },
     {
@@ -351,7 +351,7 @@
         "view_id": "yaw+090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "28cf6cf9d6d293fdc26709ae7c156fd89e67564467930ce49f75d236ed66878f",
+      "pixel_sha256": "932fa09ffbf8caf47b66db5db3cfc40f1e21245254191f0b57ae110fa033b294",
       "width": 1024
     },
     {
@@ -365,7 +365,7 @@
         "view_id": "yaw+090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "3f661d3a9337e552e582b2561f63f633cce0458fcd324c90229f186879da820a",
+      "pixel_sha256": "77ed9fe7a7c04294f55f056d74c639a7af793e60ff1ae9a7861ca525b6fcd803",
       "width": 1024
     },
     {
@@ -379,7 +379,7 @@
         "view_id": "yaw+090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "d81e0d5580c00d47a6d9dd2efb45c21fa35a53a66796a51c694eecc56e2a479f",
+      "pixel_sha256": "b85e857bada3fafd5ef5d76c01c7fb129557422e29c3cfbe197c1eba26c91d22",
       "width": 1024
     },
     {
@@ -393,7 +393,7 @@
         "view_id": "yaw+090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "ae60b395fc8c6112b8a01c690fe1fb67d5fc547ba4f3d379ace0855c881fac0b",
+      "pixel_sha256": "62bfbaf9d97dc52457ddf1c54ef0a70e03d328626d1569a5cd289fe5f45e67ca",
       "width": 1024
     },
     {
@@ -407,7 +407,7 @@
         "view_id": "yaw-015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "dbac9befec8251b999128b23ccbd686c00fabdc0ca55703985c1188154cace59",
+      "pixel_sha256": "f432f45787764bb653b3569f23075f624c72045d67519dbb641c67112c8ba21e",
       "width": 1024
     },
     {
@@ -421,7 +421,7 @@
         "view_id": "yaw-015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "14d2c796263b80490f67eed6f4b9350467b24a2bc2013b6cf2c375522f4dfc55",
+      "pixel_sha256": "48c6ead1bc1dbca61585fd92634f0bca5a8ee675367f8d45d04e659e62affedd",
       "width": 1024
     },
     {
@@ -435,7 +435,7 @@
         "view_id": "yaw-015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "b4e830de900b5a04ac931a08591abe85424e5c5d88c93918af2c890f82fd7ebe",
+      "pixel_sha256": "b7f3c29ac7ffd656f0a9f5f514fd38dcb1696732286460f7752a174d2a8e313b",
       "width": 1024
     },
     {
@@ -449,7 +449,7 @@
         "view_id": "yaw-015-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "6dd37762899b4b09b4b2bfc2dda21228fa88a055cb6b0a63841fb42f9dad18a1",
+      "pixel_sha256": "009ce629fb1466c4c1826680a6d5df3a12379ef42ccb900991ccedd1a7beeb00",
       "width": 1024
     },
     {
@@ -463,7 +463,7 @@
         "view_id": "yaw-030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "a53697b89fb2ce1691dc7d242554a90680166389d37c8861473e500387d1438f",
+      "pixel_sha256": "b97146056d3c12565c5a1743f32a73c1b1764539d5e9086ab794d3e0a9d72b01",
       "width": 1024
     },
     {
@@ -477,7 +477,7 @@
         "view_id": "yaw-030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "d2a62b6df132e8a8c35d1428840ffc6e1944fb1bbd88896229968fcec0725586",
+      "pixel_sha256": "c1e813ec508d93f831471483dda064f6083bfff19d603837890e375bb65e8611",
       "width": 1024
     },
     {
@@ -491,7 +491,7 @@
         "view_id": "yaw-030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "b25a50bf05059430f44ab99f5ca2d51cdb1d7567fed117fff1bbf6768590d547",
+      "pixel_sha256": "7bd23ba553f97f72ebe05b234ff9198fc229f3a548545d77b9478f3ff9b6679d",
       "width": 1024
     },
     {
@@ -505,7 +505,7 @@
         "view_id": "yaw-030-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "3e9f3b0d15b50a443710b711a7f47b1a89d9f6d010a313f3b8ee4c2c295609f3",
+      "pixel_sha256": "152afbeb0733ad64026e5f9c275270015ec5c2c488dac8ade382ef43caed4bba",
       "width": 1024
     },
     {
@@ -519,7 +519,7 @@
         "view_id": "yaw-045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "fde30af1ca189254bc1fd47ca4573f06867e3f06240fbd59f75658bce06b49ff",
+      "pixel_sha256": "74bb3c9fbd417262b568288f352912513d784176c115096885928e344caf5825",
       "width": 1024
     },
     {
@@ -533,7 +533,7 @@
         "view_id": "yaw-045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "80d8a9f75fbb121460a0b43197a84bb673a345f2686d5927a06eb0f21e533ad3",
+      "pixel_sha256": "0c310d2991bf53ca7af5f1ce8ca5cf159321c690703221eaf66e726a4fbc36f1",
       "width": 1024
     },
     {
@@ -547,7 +547,7 @@
         "view_id": "yaw-045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "90d809a538ea75c6bb45fdcd0ca180e832f176aaba4337ceac9eab09e9d4a920",
+      "pixel_sha256": "a0f338da3dc77fabfe9be69fbf52eb5cd7c79bfc6c6ae83aebde6160140df8fc",
       "width": 1024
     },
     {
@@ -561,7 +561,7 @@
         "view_id": "yaw-045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "132854f73e65dafe51a603611bd2fb00d229c1a95e215dd252b78d39ffd2bac1",
+      "pixel_sha256": "c91cbb6e571fabbcbe9fdd6ed33e50761bc6f74544f03d89254d1d2df2cd42b3",
       "width": 1024
     },
     {
@@ -575,7 +575,7 @@
         "view_id": "yaw-060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "d1dfa5c3360e5e2d3cd784f9ebb0e389f66413839b4c89dc1bea10ae07d18f39",
+      "pixel_sha256": "dcbb050de9c35838828c4dd6179025168c1eefdd8e83ffef76fe996329cd42b6",
       "width": 1024
     },
     {
@@ -589,7 +589,7 @@
         "view_id": "yaw-060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "f7637e9ab32e0c0bfb101f0179fcb78cab41a0ef6a012a4f2e556923aad6c9a9",
+      "pixel_sha256": "dd4c03de919ed993dba47fcab4dc627402f8f78d2e20228c4b15749a88c932ae",
       "width": 1024
     },
     {
@@ -603,7 +603,7 @@
         "view_id": "yaw-060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "2ef125f0c190d0766071488f74b45c809e827ab5f4fe9382688b30ea5d50fea4",
+      "pixel_sha256": "306a04c304901a86f14cb775c920e1847f797feff3d8149d8a9871eb58f94628",
       "width": 1024
     },
     {
@@ -617,7 +617,7 @@
         "view_id": "yaw-060-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "bb5d0c01d452bb1dbb3b5c5b4f68d7c3d1ab31516108746f64a320b6130680e7",
+      "pixel_sha256": "dda04da171cfb3475d9fe9fe5d0c41bce29b0d58ac4f15a6b4c9df6de1e76a80",
       "width": 1024
     },
     {
@@ -631,7 +631,7 @@
         "view_id": "yaw-075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "94f572895fc3fea14406624774baa9135d919ed5a05941b2d5d91f117dbb2200",
+      "pixel_sha256": "e1e2dd02165b00848045efe728db9f10bc96a92c06bb30599e2162d03ad807d6",
       "width": 1024
     },
     {
@@ -645,7 +645,7 @@
         "view_id": "yaw-075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "7924635ff0b05c94888de9ebe4ba83a06af93910e5aa81e857e1714b67896616",
+      "pixel_sha256": "6654732736465387b7c166015ff395ab52cd5cd532559f0b6919a643101fdf28",
       "width": 1024
     },
     {
@@ -659,7 +659,7 @@
         "view_id": "yaw-075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "6695fa088d8f07105d9825ff0c01f69a475e19190e2c74b1ece6a7e79b7ac494",
+      "pixel_sha256": "f7f2e68ec81bfbf558020e65060dc54e1e1a83ac2809a17e60eeeed89fd6a554",
       "width": 1024
     },
     {
@@ -673,7 +673,7 @@
         "view_id": "yaw-075-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "28d0efdc9e709377b0d7496d9a8c7eccda408ee2587f4da7a9bec3715aeeaaa3",
+      "pixel_sha256": "40900503a51869608d0f004313044cfc1896cc24de5bf324fb13ce6037ebf294",
       "width": 1024
     },
     {
@@ -687,7 +687,7 @@
         "view_id": "yaw-090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "cccb80fbc2a69aa5f8d1332b76db3a586685f0e87477c7fe551c85b413097187",
+      "pixel_sha256": "8980c3bc07cf94851bcd53d0517e3b3ed4816c51b76d681c0fc98a7b4d636f55",
       "width": 1024
     },
     {
@@ -701,7 +701,7 @@
         "view_id": "yaw-090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "ce31553f6421e4015f5a8d6c202dd0dfbf378ad57ad9c19fd54e6b52a2e88aef",
+      "pixel_sha256": "a379abf7275e6dde322dda4bb1f2c500eeea38a2a4c39c664600e38b5a5ebaf9",
       "width": 1024
     },
     {
@@ -715,7 +715,7 @@
         "view_id": "yaw-090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "b226ffeb9a56ef82a5cda15a7ea211927abb24aff68ee3a49a8571ccfce1ffa1",
+      "pixel_sha256": "aaf1fe40880e02cab8a994896044261c0df16ce1a0f9dfd9a1dd59ad45c658d4",
       "width": 1024
     },
     {
@@ -729,7 +729,7 @@
         "view_id": "yaw-090-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "7472a53abcf6566f4c6fec2f31a442466ee4fb82d750cca63dffd761626addaa",
+      "pixel_sha256": "3fa4027e4e4487bd1f6a7b1fb4f858a9afc81c8ea23b9690ea1311798fde9bc1",
       "width": 1024
     },
     {
@@ -5240,8 +5240,8 @@
     "store_policy": "isolated-fixed-per-makeup"
   },
   "harness": {
-    "sha256": "601287d441b4974a5ce81887760c602bb9dbf21441a6d1234c227274b8810447",
-    "source": "\"\"\"Render and verify the deterministic MoHan appearance golden matrix.\"\"\"\n\nfrom __future__ import annotations\n\nlazy import argparse\nlazy import hashlib\nlazy import json\nlazy import os\nlazy import re\nlazy import shutil\nlazy import socket\nlazy import struct\nlazy import subprocess\nlazy import sys\nlazy import time\nlazy import uuid\nlazy import zipfile\nlazy from collections.abc import Iterable\nlazy from contextlib import contextmanager\nlazy from dataclasses import asdict, dataclass, fields, replace\nlazy from datetime import date\nlazy from pathlib import Path, PurePosixPath, PureWindowsPath\n\nos.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n\nROOT = Path(__file__).resolve().parents[1]\nif str(ROOT) not in sys.path:\n    sys.path.insert(0, str(ROOT))\n\nlazy import numpy as np\nlazy from PIL import Image, ImageChops\nlazy from PySide6.QtCore import Qt\nlazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache\nlazy from PySide6.QtWidgets import QApplication\n\nlazy from application.character_runtime_bootstrap import (\n    activate_product_character_runtime,\n)\nlazy from domain.face_motion import FaceMotionController\nlazy from domain.face_rig import (\n    ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme, blink_for_eye_state,\n)\nlazy from domain.outfit_pack import clear_appearance_selection, restore_builtin_outfit\nlazy from domain.outfit_pack_makeup import (\n    DEFAULT_MAKEUP_INTENSITY,\n    DEFAULT_SLOT_INTENSITIES_V2,\n    select_builtin_makeup,\n    write_makeup_intensity,\n    write_makeup_slot_intensity,\n)\nlazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay\nlazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer\nlazy from infrastructure.layered_face_assets import load_layered_face_assets\nlazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets\nlazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer\nlazy from presentation.companion_face_assets import CompanionFaceAssetMethods\n\nDEFAULT_OUTPUT = ROOT / \".quality-tmp\" / \"golden-render\" / \"current\"\nDEFAULT_BASELINE = ROOT / \".quality-tmp\" / \"golden-render\" / \"baseline\"\nDEFAULT_DIFF = ROOT / \".quality-tmp\" / \"golden-diff\"\nGIT_REVISION_LENGTH = 40\nPAIR_LENGTH = 2\n\n_MOHAN_EXPRESSION_POSES = (\n    (\"glance\", \"cheek\"), (\"caught\", \"cheek\"), (\"happy\", \"cheek\"),\n    (\"worried\", \"cheek\"), (\"reminder\", \"cheek\"), (\"thinking_front\", \"front\"),\n    (\"gentle_smile_front\", \"front\"), (\"worried_front\", \"front\"),\n    (\"shy_front\", \"front\"), (\"mock_scold\", \"front\"),\n    (\"surprised_front\", \"front\"), (\"relieved_front\", \"front\"),\n    (\"tired_front\", \"front\"), (\"proud_front\", \"front\"),\n    (\"shy_cute_front\", \"front\"), (\"mock_hit_front\", \"front\"),\n    (\"attentive_front\", \"front\"), (\"determined_front\", \"front\"),\n    (\"restrained_amused_front\", \"front\"), (\"exasperated_front\", \"front\"),\n    (\"eureka_front\", \"front\"), (\"protective_front\", \"front\"),\n)\n_MOHAN_EXPRESSION_ASSETS = (\n    \"idle\", \"idle_lean\", \"idle_front\", \"blink\", \"blink_lean\", \"blink_front\",\n    \"glance\", \"caught\", \"speaking\", \"speaking_lean\", \"speaking_front\",\n    \"happy\", \"worried\", \"reminder\", \"thinking_front\", \"gentle_smile_front\",\n    \"worried_front\", \"shy_front\", \"mock_scold\", \"surprised_front\",\n    \"relieved_front\", \"tired_front\", \"proud_front\", \"shy_cute_front\",\n    \"mock_hit_front\", \"attentive_front\", \"determined_front\",\n    \"restrained_amused_front\", \"exasperated_front\", \"eureka_front\",\n    \"protective_front\",\n    *(\n        f\"{expression}_speech_{frame}\"\n        for expression, _pose in _MOHAN_EXPRESSION_POSES\n        for frame in (\"mid\", \"open\", \"round\")\n    ),\n    \"thinking_front_speech_blink\",\n    \"idle_front_half\", \"idle_lean_half\", \"eureka_front_half\",\n    \"mock_hit_front_half\", \"mock_scold_half\", \"idle_lean_closed\",\n    \"idle_front_closed\", \"eureka_front_closed\", \"mock_hit_front_closed\",\n    \"mock_scold_closed\", \"viseme_mid_front\", \"viseme_wide_front\",\n    \"viseme_round\", \"viseme_round_lean\", \"viseme_round_front\", \"viseme_i\",\n    \"viseme_i_lean\", \"viseme_i_front\", \"viseme_o\", \"viseme_o_lean\",\n    \"viseme_o_front\",\n)\n_MOHAN_FULL_BODY_VIEWS = (\n    \"yaw+000-pitch+00\",\n    \"yaw+015-pitch+00\", \"yaw-015-pitch+00\",\n    \"yaw+030-pitch+00\", \"yaw-030-pitch+00\",\n    \"yaw+045-pitch+00\", \"yaw-045-pitch+00\",\n    \"yaw+060-pitch+00\", \"yaw-060-pitch+00\",\n    \"yaw+075-pitch+00\", \"yaw-075-pitch+00\",\n    \"yaw+090-pitch+00\", \"yaw-090-pitch+00\",\n)\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCharacterSettings:\n    \"\"\"Character-owned catalogs and paths consumed by the golden harness.\"\"\"\n\n    character_id: str\n    manifest_schema: str\n    approval_schema: str\n    makeups: tuple[str, ...]\n    eye_states: tuple[str, ...]\n    half_expressions: tuple[str, ...]\n    expression_poses: tuple[tuple[str, str], ...]\n    expression_assets: tuple[str, ...]\n    full_body_views: tuple[str, ...]\n    half_size: tuple[int, int]\n    full_size: tuple[int, int]\n    official_pack_root: str\n    half_expression_root: str\n    half_layered_root: str\n    half_detachable_root: str\n    full_layered_root: str\n    full_authority_root: str\n    bare_makeup: str = \"none\"\n    full_eye_state: str = \"rest\"\n    neutral_expression: str = \"idle_front\"\n    neutral_pose: str = \"front\"\n\n    def __post_init__(self) -> None:\n        text_fields = (\n            self.character_id,\n            self.manifest_schema,\n            self.approval_schema,\n            *self.makeups,\n            *self.eye_states,\n            *self.half_expressions,\n            *self.expression_assets,\n            *self.full_body_views,\n            self.bare_makeup,\n            self.full_eye_state,\n            self.neutral_expression,\n            self.neutral_pose,\n        )\n        if not all(isinstance(value, str) and value for value in text_fields):\n            raise ValueError(\"角色設定的識別碼、schema 與清單項目必須是非空字串。\")\n        for value in (*self.makeups, *self.eye_states, *self.half_expressions,\n                      *self.expression_assets, *self.full_body_views):\n            if re.fullmatch(r\"[A-Za-z0-9_+.-]+\", value) is None or value in {\".\", \"..\"}:\n                raise ValueError(\"角色清單項目必須是安全的檔名識別碼。\")\n        if len(set(self.makeups)) != len(self.makeups):\n            raise ValueError(\"角色設定的妝容清單不得重複。\")\n        if len(set(self.eye_states)) != len(self.eye_states):\n            raise ValueError(\"角色設定的眼態清單不得重複。\")\n        if len(set(self.half_expressions)) != len(self.half_expressions):\n            raise ValueError(\"角色設定的表情清單不得重複。\")\n        if len(set(self.full_body_views)) != len(self.full_body_views):\n            raise ValueError(\"角色設定的全身視角清單不得重複。\")\n        pose_names = [expression for expression, _pose in self.expression_poses]\n        if any(not isinstance(value, str) or not value for pair in self.expression_poses for value in pair):\n            raise ValueError(\"角色設定的表情姿勢映射必須是非空字串。\")\n        if len(set(pose_names)) != len(pose_names):\n            raise ValueError(\"角色設定的表情姿勢映射不得重複。\")\n        if set(self.half_expressions) - set(pose_names):\n            raise ValueError(\"每個半身表情必須提供姿勢映射。\")\n        if any(len(size) != PAIR_LENGTH or any(type(value) is not int or value <= 0 for value in size)\n               for size in (self.half_size, self.full_size)):\n            raise ValueError(\"角色設定的畫布尺寸必須是正整數。\")\n        for value in self.asset_paths():\n            if not isinstance(value, str):\n                raise ValueError(\"角色素材路徑必須是字串。\")\n            path = PurePosixPath(value)\n            if PureWindowsPath(value).drive or \"\\\\\" in value or path.is_absolute() or \"..\" in path.parts or not path.parts:\n                raise ValueError(f\"角色素材路徑必須是安全的相對路徑：{value}\")\n\n    def asset_paths(self) -> tuple[str, ...]:\n        return (\n            self.official_pack_root,\n            self.half_expression_root,\n            self.half_layered_root,\n            self.half_detachable_root,\n            self.full_layered_root,\n            self.full_authority_root,\n        )\n\n    def expression_pose_map(self) -> dict[str, str]:\n        return dict(self.expression_poses)\n\n    def resolve_asset_path(self, asset_root: Path, relative: str) -> Path:\n        root = Path(asset_root).resolve()\n        resolved = (root / relative).resolve()\n        if not resolved.is_relative_to(root):\n            raise ValueError(f\"角色素材路徑逸出素材根目錄：{relative}\")\n        return resolved\n\n\nDEFAULT_CHARACTER_SETTINGS = GoldenCharacterSettings(\n    character_id=\"flameblade.mohan\",\n    manifest_schema=\"mohan.golden-render.v1\",\n    approval_schema=\"mohan.golden-render-approval.v1\",\n    makeups=(\"none\", \"light\", \"classic\", \"glamorous\"),\n    eye_states=(\"rest\", \"half\", \"closed\"),\n    half_expressions=(\n        \"idle\", \"idle_lean\", \"idle_front\",\n        *(expression for expression, _pose in _MOHAN_EXPRESSION_POSES),\n    ),\n    expression_poses=((\"idle\", \"cheek\"), (\"idle_lean\", \"lean\"), (\"idle_front\", \"front\"),\n                      *_MOHAN_EXPRESSION_POSES),\n    expression_assets=_MOHAN_EXPRESSION_ASSETS,\n    full_body_views=_MOHAN_FULL_BODY_VIEWS,\n    half_size=(465, 465),\n    full_size=(1024, 1536),\n    official_pack_root=\"assets/official-packs\",\n    half_expression_root=\"assets/expressions\",\n    half_layered_root=\"assets/expressions/layered\",\n    half_detachable_root=\"assets/expressions/detachable\",\n    full_layered_root=\"assets/pose-atlas/v5-base-layered\",\n    full_authority_root=\"assets/pose-atlas/v5-base\",\n)\n\n# Public compatibility aliases keep existing callers and the approved manifest stable.\nSCHEMA = DEFAULT_CHARACTER_SETTINGS.manifest_schema\nAPPROVAL_SCHEMA = DEFAULT_CHARACTER_SETTINGS.approval_schema\nMANIFEST_PATH = ROOT / \"tests\" / \"golden\" / \"golden-manifest.json\"\nMAKEUPS = DEFAULT_CHARACTER_SETTINGS.makeups\nEYE_STATES = DEFAULT_CHARACTER_SETTINGS.eye_states\nHALF_EXPRESSIONS = DEFAULT_CHARACTER_SETTINGS.half_expressions\nFULL_BODY_VIEWS = DEFAULT_CHARACTER_SETTINGS.full_body_views\nHALF_SIZE = DEFAULT_CHARACTER_SETTINGS.half_size\nFULL_SIZE = DEFAULT_CHARACTER_SETTINGS.full_size\n\n\ndef load_character_settings(path: Path) -> GoldenCharacterSettings:\n    \"\"\"Read a complete data-only character configuration without path fallback.\"\"\"\n    payload = _load_json(path)\n    required = {field.name for field in fields(GoldenCharacterSettings)}\n    if set(payload) != required:\n        raise ValueError(\"角色設定必須完整提供 GoldenCharacterSettings 的欄位。\")\n    for key in (\"makeups\", \"eye_states\", \"half_expressions\", \"expression_assets\",\n                \"full_body_views\", \"half_size\", \"full_size\", \"expression_poses\"):\n        if not isinstance(payload[key], list):\n            raise ValueError(f\"角色設定欄位 {key} 必須是陣列。\")\n        if key == \"expression_poses\":\n            if any(not isinstance(pair, list) or len(pair) != PAIR_LENGTH for pair in payload[key]):\n                raise ValueError(\"表情姿勢映射必須是兩元素陣列。\")\n            payload[key] = tuple(tuple(pair) for pair in payload[key])\n        else:\n            payload[key] = tuple(payload[key])\n    return GoldenCharacterSettings(**payload)\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCell:\n    cell_id: str\n    kind: str\n    makeup: str\n    eye_state: str\n    expression: str | None = None\n    pose: str | None = None\n    view_id: str | None = None\n\n    @property\n    def filename(self) -> str:\n        return f\"{self.cell_id}.png\"\n\n    def inputs(self) -> dict[str, str]:\n        values = {\"kind\": self.kind, \"makeup\": self.makeup, \"eye_state\": self.eye_state}\n        for key in (\"expression\", \"pose\", \"view_id\"):\n            value = getattr(self, key)\n            if value is not None:\n                values[key] = value\n        return values\n\n\ndef matrix_cells(\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> tuple[GoldenCell, ...]:\n    cells: list[GoldenCell] = []\n    expression_poses = settings.expression_pose_map()\n    for expression in settings.half_expressions:\n        pose = expression_poses[expression]\n        cells.extend(\n            GoldenCell(\n                    f\"half__{expression}__{makeup}__{eye_state}\",\n                    \"half-body\", makeup, eye_state, expression=expression, pose=pose,\n            )\n            for makeup in settings.makeups\n            for eye_state in settings.eye_states\n        )\n    for view_id in settings.full_body_views:\n        cells.extend(\n            GoldenCell(\n                f\"full__{view_id}__{makeup}__{settings.full_eye_state}\",\n                \"full-body\", makeup, settings.full_eye_state, view_id=view_id,\n            )\n            for makeup in settings.makeups\n        )\n    return tuple(cells)\n\n\ndef _rgba_bytes(image: QImage) -> bytes:\n    \"\"\"Return straight RGBA8888 bytes with an exact, CPU-independent conversion.\n\n    Qt's SIMD unpremultiply uses the approximate reciprocal instruction, whose\n    result differs between Intel and AMD processors, so the golden contract\n    never asks Qt to leave premultiplied alpha.  Rounding is exact integer\n    arithmetic: channel = round(premultiplied * 255 / alpha).\n    \"\"\"\n    source_format = image.format()\n    if source_format not in {\n        QImage.Format_ARGB32,\n        QImage.Format_ARGB32_Premultiplied,\n        QImage.Format_RGB32,\n    }:\n        image = image.convertToFormat(QImage.Format_ARGB32_Premultiplied)\n        source_format = QImage.Format_ARGB32_Premultiplied\n    width, height = image.width(), image.height()\n    rows = np.frombuffer(bytes(image.constBits()), dtype=np.uint8)\n    bgra = rows.reshape(height, image.bytesPerLine())[:, : width * 4].reshape(height, width, 4)\n    alpha = bgra[:, :, 3].astype(np.uint32)\n    color = bgra[:, :, 2::-1].astype(np.uint32)\n    if source_format == QImage.Format_RGB32:\n        alpha = np.full_like(alpha, 255)\n    elif source_format == QImage.Format_ARGB32_Premultiplied:\n        safe_alpha = np.maximum(alpha, 1)[:, :, None]\n        color = np.where(\n            alpha[:, :, None] > 0,\n            (color * 255 + safe_alpha // 2) // safe_alpha,\n            0,\n        )\n    rgba = np.dstack((np.minimum(color, 255), alpha)).astype(np.uint8)\n    return rgba.tobytes()\n\n\ndef pixel_sha256(image: QImage) -> str:\n    payload = struct.pack(\">II\", image.width(), image.height()) + _rgba_bytes(image)\n    return hashlib.sha256(payload).hexdigest()\n\n\ndef _save_pixmap(pixmap: QPixmap, path: Path) -> dict[str, object]:\n    image = pixmap.toImage()\n    path.parent.mkdir(parents=True, exist_ok=True)\n    Image.frombytes(\"RGBA\", (image.width(), image.height()), _rgba_bytes(image)).save(path, \"PNG\")\n    # Reload the persisted PNG before hashing so the manifest describes the\n    # decoded RGBA pixels a reviewer sees, not an in-memory paint buffer.\n    decoded = QImage(str(path))\n    return {\n        \"width\": decoded.width(),\n        \"height\": decoded.height(),\n        \"mode\": \"RGBA\",\n        \"pixel_sha256\": pixel_sha256(decoded),\n        \"png_sha256\": hashlib.sha256(path.read_bytes()).hexdigest(),\n    }\n\n\n@contextmanager\ndef _network_disabled():\n    original_connect = socket.socket.connect\n    original_create_connection = socket.create_connection\n\n    def blocked(*_args, **_kwargs):\n        raise RuntimeError(\"golden render 已停用網路連線\")\n\n    socket.socket.connect = blocked\n    socket.create_connection = blocked\n    try:\n        yield\n    finally:\n        socket.socket.connect = original_connect\n        socket.create_connection = original_create_connection\n\n\n@contextmanager\ndef _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):\n    from domain import outfit_pack, outfit_pack_store\n\n    # outfit_pack_store defines the root and outfit_pack re-exports it; consumers\n    # import it from the defining module, so both bindings must point here.\n    modules = (outfit_pack_store, outfit_pack)\n    previous = tuple(module.OFFICIAL_PACK_ROOT for module in modules)\n    root = settings.resolve_asset_path(asset_root, settings.official_pack_root)\n    for module in modules:\n        module.OFFICIAL_PACK_ROOT = root\n    try:\n        yield\n    finally:\n        for module, value in zip(modules, previous, strict=True):\n            module.OFFICIAL_PACK_ROOT = value\n\n\ndef _prepare_store(\n    store: Path, makeup: str,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> None:\n    store.mkdir(parents=True, exist_ok=True)\n    restore_builtin_outfit(store)\n    write_makeup_intensity(store, DEFAULT_MAKEUP_INTENSITY)\n    for slot, intensity in DEFAULT_SLOT_INTENSITIES_V2.items():\n        write_makeup_slot_intensity(store, slot, intensity)\n    if makeup == settings.bare_makeup:\n        clear_appearance_selection(store, \"makeup\")\n    else:\n        select_builtin_makeup(store, makeup)\n\n\n@contextmanager\ndef _render_environment(local_appdata: Path):\n    previous = {key: os.environ.get(key) for key in (\"QT_QPA_PLATFORM\", \"LOCALAPPDATA\")}\n    os.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n    os.environ[\"LOCALAPPDATA\"] = str(local_appdata)\n    try:\n        yield\n    finally:\n        for key, value in previous.items():\n            if value is None:\n                os.environ.pop(key, None)\n            else:\n                os.environ[key] = value\n\n\ndef _motion(expression: str, pose: str, eye_state: str = \"rest\") -> FaceMotionFrame:\n    if pose != \"front\":\n        return FaceMotionFrame(\n            FacePose(pose), expression, Viseme.CLOSED, MouthShape(),\n            ExpressionShape(blink=blink_for_eye_state(eye_state)), breath=0.0,\n        )\n    motion = FaceMotionController().close(pose=pose, expression=expression)\n    return replace(\n        motion,\n        expression_shape=replace(motion.expression_shape, blink=blink_for_eye_state(eye_state)),\n        breath=0.0,\n    )\n\n\ndef _scaled_expression(\n    asset_root: Path,\n    stem: str,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)\n    pixmap = QPixmap(str(expression_root / f\"{stem}.png\"))\n    if pixmap.isNull():\n        raise FileNotFoundError(f\"缺少表情素材：{stem}\")\n    return pixmap.scaled(*settings.half_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)\n\n\nclass _BlinkHarness(CompanionFaceAssetMethods):\n    \"\"\"Small runtime-equivalent host for the real companion blink compositor.\"\"\"\n\n    def __init__(\n        self,\n        asset_root: Path,\n        renderer: LayeredParametricFaceRenderer,\n        settings: GoldenCharacterSettings,\n    ) -> None:\n        self.state = \"idle\"\n        self.face_renderer = renderer\n        self.active_physics_pose = \"front\"\n        self.physics_expression_poses = settings.expression_pose_map()\n        self.expression_anchor_profiles = {}\n        expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)\n        self.expression_pixmaps = {\n            stem: _scaled_expression(asset_root, stem, settings)\n            for stem in settings.expression_assets\n            if (expression_root / f\"{stem}.png\").is_file()\n        }\n        self._build_expression_anchor_profiles()\n        self._build_blink_masks(self._blink_regions())\n\n\ndef _render_half_cell(\n    cell: GoldenCell,\n    renderer: LayeredParametricFaceRenderer,\n    harness: _BlinkHarness,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    base = QPixmap(*settings.half_size)\n    base.fill(Qt.transparent)\n    rest = renderer.render(base, _motion(cell.expression or \"idle\", cell.pose or \"front\"), None)\n    if rest.isNull() or (rest.width(), rest.height()) != settings.half_size:\n        raise RuntimeError(f\"半身渲染尺寸錯誤：{cell.cell_id}\")\n    if cell.eye_state == \"rest\":\n        return rest\n    # Complete emotional portraits expose their expression-bound eye endpoints\n    # through the speaking/blink route.  The compositor still preserves an\n    # expression unchanged when no endpoint is bound to that exact portrait.\n    harness.state = \"speaking\"\n    return harness._blink_composite(\n        rest,\n        cell.expression or \"idle\",\n        blink_for_eye_state(cell.eye_state),\n    )\n\n\ndef _render_full_cell(\n    cell: GoldenCell,\n    renderer: LayeredFullBodyRenderer,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    rendered = renderer.render_view(\n        cell.view_id or settings.full_body_views[0],\n        _motion(settings.neutral_expression, settings.neutral_pose, settings.full_eye_state),\n    )\n    if rendered.isNull() or (rendered.width(), rendered.height()) != settings.full_size:\n        raise RuntimeError(f\"全身渲染尺寸錯誤：{cell.cell_id}\")\n    return rendered\n\n\ndef render_matrix(\n    output: Path,\n    *,\n    asset_root: Path = ROOT,\n    cells: Iterable[GoldenCell] | None = None,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    activate_product_character_runtime(ROOT)\n    selected = tuple(matrix_cells(settings) if cells is None else cells)\n    output = Path(output).resolve()\n    asset_root = Path(asset_root).resolve()\n    runtime_root = output / \"runtime\"\n    local_appdata = runtime_root / \"localappdata\"\n    local_appdata.mkdir(parents=True, exist_ok=True)\n    QApplication.instance() or QApplication([])\n    # Each standard capture starts with the same Qt file-pixmap cache state,\n    # including when a test renders twice in one interpreter.\n    QPixmapCache.clear()\n    started = time.perf_counter()\n    entries: list[dict[str, object]] = []\n\n    with _render_environment(local_appdata), _network_disabled(), _official_pack_root(\n        asset_root, settings,\n    ):\n        for makeup in settings.makeups:\n            makeup_cells = tuple(cell for cell in selected if cell.makeup == makeup)\n            if not makeup_cells:\n                continue\n            store = runtime_root / \"stores\" / makeup\n            _prepare_store(store, makeup, settings)\n            overlay = ActiveOutfitOverlay(store, asset_root)\n            half_renderer = LayeredParametricFaceRenderer(\n                manifest=load_layered_face_assets(settings.resolve_asset_path(\n                    asset_root, settings.half_layered_root,\n                )),\n                outfit_overlay=overlay,\n                authority_dir=settings.resolve_asset_path(\n                    asset_root, settings.half_expression_root,\n                ),\n                detachable_dir=settings.resolve_asset_path(\n                    asset_root, settings.half_detachable_root,\n                ),\n            ) if any(cell.kind == \"half-body\" for cell in makeup_cells) else None\n            harness = (\n                _BlinkHarness(asset_root, half_renderer, settings)\n                if half_renderer is not None else None\n            )\n            full_manifest = load_layered_full_body_assets(\n                settings.resolve_asset_path(asset_root, settings.full_layered_root)\n            ) if any(cell.kind == \"full-body\" for cell in makeup_cells) else None\n            full_renderer = LayeredFullBodyRenderer(\n                full_manifest,\n                outfit_overlay=overlay,\n                authority_root=settings.resolve_asset_path(\n                    asset_root, settings.full_authority_root,\n                ),\n            ) if full_manifest is not None else None\n            for cell in makeup_cells:\n                frame = (\n                    _render_half_cell(cell, half_renderer, harness, settings)\n                    if cell.kind == \"half-body\"\n                    else _render_full_cell(cell, full_renderer, settings)\n                )\n                path = output / cell.filename\n                measurements = _save_pixmap(frame, path)\n                entries.append({\n                    \"id\": cell.cell_id,\n                    \"file\": cell.filename,\n                    \"inputs\": cell.inputs(),\n                    **measurements,\n                })\n\n    entries.sort(key=lambda item: str(item[\"id\"]))\n    return {\n        \"schema\": settings.manifest_schema,\n        \"hash_contract\": \"sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)\",\n        \"pixel_tolerance\": 0,\n        \"matrix\": {\n            \"half_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"half-body\" for item in entries),\n            \"full_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"full-body\" for item in entries),\n            \"total_cells\": len(entries),\n        },\n        \"environment\": {\n            \"qt_qpa_platform\": \"offscreen\",\n            \"network\": \"disabled\",\n            \"store_policy\": \"isolated-fixed-per-makeup\",\n            \"localappdata_policy\": \"isolated-fixed\",\n        },\n        \"elapsed_seconds\": round(time.perf_counter() - started, 3),\n        \"cells\": entries,\n    }\n\n\ndef _load_json(path: Path) -> dict[str, object]:\n    value = json.loads(path.read_text(encoding=\"utf-8\"))\n    if not isinstance(value, dict):\n        raise ValueError(f\"JSON 根節點必須是物件：{path}\")\n    return value\n\n\ndef validate_approval(\n    path: Path,\n    cell_ids: frozenset[str],\n    *,\n    known_ids: frozenset[str] | None = None,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    approval = _load_json(path)\n    required = {\"schema\", \"owner\", \"date\", \"quote\", \"cells\"}\n    if set(approval) != required or approval.get(\"schema\") != settings.approval_schema:\n        raise ValueError(f\"核准紀錄必須符合 {settings.approval_schema}。\")\n    for key in (\"owner\", \"date\", \"quote\"):\n        if not isinstance(approval[key], str) or not approval[key].strip():\n            raise ValueError(f\"核准紀錄欄位 {key} 必須是非空字串。\")\n    date.fromisoformat(str(approval[\"date\"]))\n    covered = approval[\"cells\"]\n    if covered == \"*\":\n        return approval\n    if not isinstance(covered, list) or not all(isinstance(item, str) for item in covered):\n        raise ValueError(\"核准紀錄 cells 必須是 '*' 或格子 ID 陣列。\")\n    missing = cell_ids - frozenset(covered)\n    unknown = frozenset(covered) - (known_ids if known_ids is not None else cell_ids)\n    if missing or unknown:\n        raise ValueError(\n            f\"核准涵蓋不完整：missing={sorted(missing)} unknown={sorted(unknown)}\"\n        )\n    return approval\n\n\ndef _manifest_for_commit(\n    rendered: dict[str, object], approval_path: Path,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    manifest = dict(rendered)\n    manifest.pop(\"elapsed_seconds\", None)\n    manifest[\"source_revision\"] = subprocess.check_output(\n        [\"git\", \"rev-parse\", \"HEAD\"], cwd=ROOT, text=True,\n    ).strip()\n    harness_source = Path(__file__).read_bytes()\n    manifest[\"harness\"] = {\n        \"source\": harness_source.decode(\"utf-8\"),\n        \"sha256\": hashlib.sha256(harness_source).hexdigest(),\n    }\n    manifest[\"approval\"] = {\n        \"path\": approval_path.relative_to(ROOT).as_posix(),\n        \"sha256\": hashlib.sha256(approval_path.read_bytes()).hexdigest(),\n    }\n    if settings != DEFAULT_CHARACTER_SETTINGS:\n        manifest[\"character_settings\"] = asdict(settings)\n    for cell in manifest[\"cells\"]:\n        cell.pop(\"png_sha256\", None)\n    return manifest\n\n\ndef _recover_originals(expected: dict[str, object], cells: list[dict], baseline_dir: Path) -> None:\n    \"\"\"Reconstruct absent originals from the recorded Git revision, then verify pixels.\"\"\"\n    revision = expected.get(\"source_revision\")\n    if not isinstance(revision, str) or len(revision) != GIT_REVISION_LENGTH or any(\n        char not in \"0123456789abcdef\" for char in revision\n    ):\n        raise ValueError(\"原圖快取缺失；清單需要有效 source_revision 才能重建核准原圖。\")\n    staging = ROOT / \".quality-tmp\" / \"golden-reference\" / uuid.uuid4().hex\n    staging.mkdir(parents=True)\n    archive_path = staging / \"source.zip\"\n    subprocess.run(\n        [\"git\", \"archive\", \"--format=zip\", f\"--output={archive_path}\", revision],\n        cwd=ROOT, check=True,\n    )\n    reference_root = staging / \"source\"\n    with zipfile.ZipFile(archive_path) as archive:\n        archive.extractall(reference_root)\n    # Freeze the capture driver too: future harness changes must not alter\n    # reconstruction of the approved production modules and assets.\n    harness = expected.get(\"harness\")\n    harness_path = reference_root / \"tools\" / \"golden_render.py\"\n    if isinstance(harness, dict) and isinstance(harness.get(\"source\"), str):\n        payload = harness[\"source\"].encode(\"utf-8\")\n        if hashlib.sha256(payload).hexdigest() != harness.get(\"sha256\"):\n            raise ValueError(\"基準渲染 harness 的 SHA-256 不符。\")\n        harness_path.write_bytes(payload)\n    else:\n        shutil.copy2(Path(__file__), harness_path)\n    request_path = staging / \"cells.json\"\n    request_path.write_text(json.dumps([cell[\"id\"] for cell in cells]), encoding=\"utf-8\")\n    output = staging / \"images\"\n    script = (\n        \"import json,sys; from pathlib import Path; \"\n        \"from tools.golden_render import matrix_cells,render_matrix; \"\n        \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n        \"render_matrix(Path(sys.argv[2]),cells=[c for c in matrix_cells() if c.cell_id in ids])\"\n    )\n    arguments = [sys.executable, \"-c\", script, str(request_path), str(output)]\n    if \"character_settings\" in expected:\n        settings_path = staging / \"character-settings.json\"\n        _write_manifest(settings_path, expected[\"character_settings\"])\n        script = (\n            \"import json,sys; from pathlib import Path; \"\n            \"from tools.golden_render import matrix_cells,render_matrix,load_character_settings; \"\n            \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n            \"settings=load_character_settings(Path(sys.argv[3])); \"\n            \"render_matrix(Path(sys.argv[2]),settings=settings,\"\n            \"cells=[c for c in matrix_cells(settings) if c.cell_id in ids])\"\n        )\n        arguments = [sys.executable, \"-c\", script, str(request_path), str(output), str(settings_path)]\n    environment = dict(os.environ)\n    environment[\"PYTHONPATH\"] = str(reference_root)\n    subprocess.run(\n        arguments,\n        cwd=reference_root, env=environment, check=True,\n    )\n    baseline_dir.mkdir(parents=True, exist_ok=True)\n    # Keep every unmatched rebuild so CI can upload it for a pixel-level review.\n    unrecoverable = ROOT / \".quality-tmp\" / \"golden-diff\" / \"unrecoverable\"\n    mismatched: list[str] = []\n    for cell in cells:\n        original = output / str(cell[\"file\"])\n        actual = pixel_sha256(QImage(str(original)))\n        if actual != cell[\"pixel_sha256\"]:\n            unrecoverable.mkdir(parents=True, exist_ok=True)\n            shutil.copy2(original, unrecoverable / str(cell[\"file\"]))\n            mismatched.append(f\"{cell['id']}={actual}\")\n            continue\n        shutil.copy2(original, baseline_dir / str(cell[\"file\"]))\n    if mismatched:\n        raise ValueError(\n            f\"歷史重建像素與核准雜湊不同（{len(mismatched)} 格）：{', '.join(mismatched)}；\"\n            f\"重建影像保存在 {unrecoverable.relative_to(ROOT).as_posix()}。\"\n        )\n\n\ndef _write_diff(expected: Path | None, actual: Path, target: Path) -> None:\n    target.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(actual, target / \"new.png\")\n    if expected is None or not expected.is_file():\n        (target / \"original-unavailable.txt\").write_text(\n            \"本機尚無基準 PNG；先以核准紀錄執行 --update 產生本機基準影像。\\n\",\n            encoding=\"utf-8\",\n        )\n        return\n    shutil.copy2(expected, target / \"original.png\")\n    original = Image.open(expected).convert(\"RGBA\")\n    new = Image.open(actual).convert(\"RGBA\")\n    # RGB makes equal-alpha colour changes visible; an RGBA difference would\n    # carry alpha=0 for those pixels and appear fully transparent.\n    if original.size != new.size:\n        canvas_size = (max(original.width, new.width), max(original.height, new.height))\n        old_canvas = Image.new(\"RGBA\", canvas_size)\n        new_canvas = Image.new(\"RGBA\", canvas_size)\n        old_canvas.paste(original, (0, 0))\n        new_canvas.paste(new, (0, 0))\n        original, new = old_canvas, new_canvas\n    channels = ImageChops.difference(original, new).split()\n    intensity = channels[0]\n    for channel in channels[1:]:\n        intensity = ImageChops.lighter(intensity, channel)\n    intensity.convert(\"RGB\").save(target / \"difference.png\")\n\n\ndef compare_manifest(\n    rendered: dict[str, object],\n    expected: dict[str, object],\n    *,\n    output: Path,\n    baseline_dir: Path = DEFAULT_BASELINE,\n    diff_dir: Path = DEFAULT_DIFF,\n) -> list[str]:\n    expected_by_id = {str(cell[\"id\"]): cell for cell in expected.get(\"cells\", [])}\n    actual_by_id = {str(cell[\"id\"]): cell for cell in rendered.get(\"cells\", [])}\n    changed: list[str] = []\n    originals_needed: list[dict] = []\n    for cell_id in sorted(set(expected_by_id) | set(actual_by_id)):\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        compared_fields = (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n        if old is not None and new is not None and all(\n            old.get(field) == new.get(field) for field in compared_fields\n        ):\n            continue\n        changed.append(cell_id)\n        if old is not None and new is not None:\n            original = baseline_dir / str(old[\"file\"])\n            if not original.is_file() or pixel_sha256(QImage(str(original))) != old[\"pixel_sha256\"]:\n                originals_needed.append(old)\n    if originals_needed:\n        _recover_originals(expected, originals_needed, baseline_dir)\n    for cell_id in changed:\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        if new is not None:\n            _write_diff(\n                baseline_dir / str(old[\"file\"]) if old is not None else None,\n                output / str(new[\"file\"]),\n                diff_dir / cell_id,\n            )\n    return changed\n\n\ndef _write_manifest(path: Path, manifest: dict[str, object]) -> None:\n    path.parent.mkdir(parents=True, exist_ok=True)\n    path.write_text(\n        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + \"\\n\",\n        encoding=\"utf-8\",\n    )\n\n\ndef _require_committed_render_sources(\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> None:\n    changed = subprocess.check_output(\n        [\"git\", \"status\", \"--porcelain\", \"--\", \"assets\", \"domain\", \"infrastructure\", \"presentation\",\n         *settings.asset_paths()],\n        cwd=ROOT, text=True,\n    ).strip()\n    if changed:\n        raise ValueError(\"請先提交渲染程式與素材，再核准更新；source_revision 必須可重建基準。\")\n\n\ndef main(argv: Iterable[str] | None = None) -> int:\n    activate_product_character_runtime(ROOT)\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument(\"--output\", type=Path, default=DEFAULT_OUTPUT)\n    parser.add_argument(\"--manifest\", type=Path, default=MANIFEST_PATH)\n    parser.add_argument(\"--update\", action=\"store_true\")\n    parser.add_argument(\"--approval\", type=Path)\n    parser.add_argument(\"--character-settings\", type=Path)\n    parser.add_argument(\"--asset-root\", type=Path, default=ROOT)\n    args = parser.parse_args(tuple(argv) if argv is not None else None)\n    if args.update != (args.approval is not None):\n        parser.error(\"--update 必須與 --approval <核准紀錄 JSON> 同時使用\")\n    settings = load_character_settings(args.character_settings) if args.character_settings else DEFAULT_CHARACTER_SETTINGS\n    if args.character_settings and args.manifest.resolve() == MANIFEST_PATH.resolve():\n        parser.error(\"自訂角色設定必須指定獨立的 --manifest 路徑。\")\n    if args.update:\n        if args.asset_root.resolve() != ROOT:\n            parser.error(\"--update 的素材根目錄必須是目前儲存庫，才能由 Git 重建核准基準。\")\n        validate_approval(\n            args.approval, frozenset(),\n            known_ids=frozenset(cell.cell_id for cell in matrix_cells(settings)), settings=settings,\n        )\n        _require_committed_render_sources(settings)\n\n    rendered = render_matrix(args.output, asset_root=args.asset_root, settings=settings)\n    output_manifest = dict(rendered)\n    output_manifest.pop(\"elapsed_seconds\", None)\n    _write_manifest(args.output / \"render-manifest.json\", output_manifest)\n    print(\n        f\"GOLDEN_RENDER cells={rendered['matrix']['total_cells']} \"\n        f\"seconds={rendered['elapsed_seconds']:.3f} output={args.output}\"\n    )\n    if args.update:\n        cell_ids = frozenset(str(cell[\"id\"]) for cell in rendered[\"cells\"])\n        approval_path = args.approval.resolve()\n        old_cells = (\n            {cell[\"id\"]: cell for cell in _load_json(args.manifest)[\"cells\"]}\n            if args.manifest.is_file() else {}\n        )\n        changed_ids = frozenset(\n            str(cell[\"id\"]) for cell in rendered[\"cells\"]\n            if any(\n                old_cells.get(cell[\"id\"], {}).get(field) != cell.get(field)\n                for field in (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n            )\n        ) | (frozenset(old_cells) - cell_ids)\n        validate_approval(approval_path, changed_ids, known_ids=cell_ids | frozenset(old_cells), settings=settings)\n        manifest = _manifest_for_commit(rendered, approval_path, settings)\n        _write_manifest(args.manifest, manifest)\n        baseline = args.output / \"baseline\" if args.character_settings else DEFAULT_BASELINE\n        baseline.mkdir(parents=True, exist_ok=True)\n        for cell in rendered[\"cells\"]:\n            shutil.copy2(args.output / str(cell[\"file\"]), baseline / str(cell[\"file\"]))\n        print(f\"GOLDEN_UPDATED manifest={args.manifest} approval={approval_path}\")\n        return 0\n\n    if not args.manifest.is_file():\n        print(f\"缺少 golden 清單：{args.manifest}\", file=sys.stderr)\n        return 2\n    changed = compare_manifest(\n        rendered, _load_json(args.manifest), output=args.output,\n        baseline_dir=args.output / \"baseline\" if args.character_settings else DEFAULT_BASELINE,\n        diff_dir=args.output / \"diff\" if args.character_settings else DEFAULT_DIFF,\n    )\n    if changed:\n        print(\"GOLDEN_CHANGED \" + \" \".join(changed), file=sys.stderr)\n        return 1\n    print(\"GOLDEN_MATCH\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n"
+    "sha256": "fae995bd71966312918b54e2474951839c1fcf50d4255f751a6c0cb8f5a74f8b",
+    "source": "\"\"\"Render and verify the deterministic MoHan appearance golden matrix.\"\"\"\n\nfrom __future__ import annotations\n\nlazy import argparse\nlazy import hashlib\nlazy import json\nlazy import os\nlazy import re\nlazy import shutil\nlazy import socket\nlazy import struct\nlazy import subprocess\nlazy import sys\nlazy import time\nlazy import uuid\nlazy import zipfile\nlazy from collections.abc import Iterable\nlazy from contextlib import contextmanager\nlazy from dataclasses import asdict, dataclass, fields, replace\nlazy from datetime import date\nlazy from pathlib import Path, PurePosixPath, PureWindowsPath\n\nos.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n\nROOT = Path(__file__).resolve().parents[1]\nif str(ROOT) not in sys.path:\n    sys.path.insert(0, str(ROOT))\n\nlazy import numpy as np\nlazy from PIL import Image, ImageChops\nlazy from PySide6.QtCore import Qt\nlazy from PySide6.QtGui import QImage, QPixmap, QPixmapCache\nlazy from PySide6.QtWidgets import QApplication\n\nlazy from application.character_runtime_bootstrap import (\n    activate_product_character_runtime,\n)\nlazy from domain.face_motion import FaceMotionController\nlazy from domain.face_rig import (\n    ExpressionShape, FaceMotionFrame, FacePose, MouthShape, Viseme, blink_for_eye_state,\n)\nlazy from domain.outfit_pack import clear_appearance_selection, restore_builtin_outfit\nlazy from domain.outfit_pack_makeup import (\n    DEFAULT_MAKEUP_INTENSITY,\n    DEFAULT_SLOT_INTENSITIES_V2,\n    select_builtin_makeup,\n    write_makeup_intensity,\n    write_makeup_slot_intensity,\n)\nlazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay\nlazy from infrastructure.layered_face_renderer import LayeredParametricFaceRenderer\nlazy from infrastructure.layered_face_assets import load_layered_face_assets\nlazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets\nlazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer\nlazy from presentation.companion_face_assets import CompanionFaceAssetMethods\n\nDEFAULT_OUTPUT = ROOT / \".quality-tmp\" / \"golden-render\" / \"current\"\nDEFAULT_BASELINE = ROOT / \".quality-tmp\" / \"golden-render\" / \"baseline\"\nDEFAULT_DIFF = ROOT / \".quality-tmp\" / \"golden-diff\"\nGIT_REVISION_LENGTH = 40\nPAIR_LENGTH = 2\n\n_MOHAN_EXPRESSION_POSES = (\n    (\"glance\", \"cheek\"), (\"caught\", \"cheek\"), (\"happy\", \"cheek\"),\n    (\"worried\", \"cheek\"), (\"reminder\", \"cheek\"), (\"thinking_front\", \"front\"),\n    (\"gentle_smile_front\", \"front\"), (\"worried_front\", \"front\"),\n    (\"shy_front\", \"front\"), (\"mock_scold\", \"front\"),\n    (\"surprised_front\", \"front\"), (\"relieved_front\", \"front\"),\n    (\"tired_front\", \"front\"), (\"proud_front\", \"front\"),\n    (\"shy_cute_front\", \"front\"), (\"mock_hit_front\", \"front\"),\n    (\"attentive_front\", \"front\"), (\"determined_front\", \"front\"),\n    (\"restrained_amused_front\", \"front\"), (\"exasperated_front\", \"front\"),\n    (\"eureka_front\", \"front\"), (\"protective_front\", \"front\"),\n)\n_MOHAN_EXPRESSION_ASSETS = (\n    \"idle\", \"idle_lean\", \"idle_front\", \"blink\", \"blink_lean\", \"blink_front\",\n    \"glance\", \"caught\", \"speaking\", \"speaking_lean\", \"speaking_front\",\n    \"happy\", \"worried\", \"reminder\", \"thinking_front\", \"gentle_smile_front\",\n    \"worried_front\", \"shy_front\", \"mock_scold\", \"surprised_front\",\n    \"relieved_front\", \"tired_front\", \"proud_front\", \"shy_cute_front\",\n    \"mock_hit_front\", \"attentive_front\", \"determined_front\",\n    \"restrained_amused_front\", \"exasperated_front\", \"eureka_front\",\n    \"protective_front\",\n    *(\n        f\"{expression}_speech_{frame}\"\n        for expression, _pose in _MOHAN_EXPRESSION_POSES\n        for frame in (\"mid\", \"open\", \"round\")\n    ),\n    \"thinking_front_speech_blink\",\n    \"idle_front_half\", \"idle_lean_half\", \"eureka_front_half\",\n    \"mock_hit_front_half\", \"mock_scold_half\", \"idle_lean_closed\",\n    \"idle_front_closed\", \"eureka_front_closed\", \"mock_hit_front_closed\",\n    \"mock_scold_closed\", \"viseme_mid_front\", \"viseme_wide_front\",\n    \"viseme_round\", \"viseme_round_lean\", \"viseme_round_front\", \"viseme_i\",\n    \"viseme_i_lean\", \"viseme_i_front\", \"viseme_o\", \"viseme_o_lean\",\n    \"viseme_o_front\",\n)\n_MOHAN_FULL_BODY_VIEWS = (\n    \"yaw+000-pitch+00\",\n    \"yaw+015-pitch+00\", \"yaw-015-pitch+00\",\n    \"yaw+030-pitch+00\", \"yaw-030-pitch+00\",\n    \"yaw+045-pitch+00\", \"yaw-045-pitch+00\",\n    \"yaw+060-pitch+00\", \"yaw-060-pitch+00\",\n    \"yaw+075-pitch+00\", \"yaw-075-pitch+00\",\n    \"yaw+090-pitch+00\", \"yaw-090-pitch+00\",\n)\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCharacterSettings:\n    \"\"\"Character-owned catalogs and paths consumed by the golden harness.\"\"\"\n\n    character_id: str\n    manifest_schema: str\n    approval_schema: str\n    makeups: tuple[str, ...]\n    eye_states: tuple[str, ...]\n    half_expressions: tuple[str, ...]\n    expression_poses: tuple[tuple[str, str], ...]\n    expression_assets: tuple[str, ...]\n    full_body_views: tuple[str, ...]\n    half_size: tuple[int, int]\n    full_size: tuple[int, int]\n    official_pack_root: str\n    half_expression_root: str\n    half_layered_root: str\n    half_detachable_root: str\n    full_layered_root: str\n    full_authority_root: str\n    bare_makeup: str = \"none\"\n    full_eye_state: str = \"rest\"\n    neutral_expression: str = \"idle_front\"\n    neutral_pose: str = \"front\"\n\n    def __post_init__(self) -> None:\n        text_fields = (\n            self.character_id,\n            self.manifest_schema,\n            self.approval_schema,\n            *self.makeups,\n            *self.eye_states,\n            *self.half_expressions,\n            *self.expression_assets,\n            *self.full_body_views,\n            self.bare_makeup,\n            self.full_eye_state,\n            self.neutral_expression,\n            self.neutral_pose,\n        )\n        if not all(isinstance(value, str) and value for value in text_fields):\n            raise ValueError(\"角色設定的識別碼、schema 與清單項目必須是非空字串。\")\n        for value in (*self.makeups, *self.eye_states, *self.half_expressions,\n                      *self.expression_assets, *self.full_body_views):\n            if re.fullmatch(r\"[A-Za-z0-9_+.-]+\", value) is None or value in {\".\", \"..\"}:\n                raise ValueError(\"角色清單項目必須是安全的檔名識別碼。\")\n        if len(set(self.makeups)) != len(self.makeups):\n            raise ValueError(\"角色設定的妝容清單不得重複。\")\n        if len(set(self.eye_states)) != len(self.eye_states):\n            raise ValueError(\"角色設定的眼態清單不得重複。\")\n        if len(set(self.half_expressions)) != len(self.half_expressions):\n            raise ValueError(\"角色設定的表情清單不得重複。\")\n        if len(set(self.full_body_views)) != len(self.full_body_views):\n            raise ValueError(\"角色設定的全身視角清單不得重複。\")\n        pose_names = [expression for expression, _pose in self.expression_poses]\n        if any(not isinstance(value, str) or not value for pair in self.expression_poses for value in pair):\n            raise ValueError(\"角色設定的表情姿勢映射必須是非空字串。\")\n        if len(set(pose_names)) != len(pose_names):\n            raise ValueError(\"角色設定的表情姿勢映射不得重複。\")\n        if set(self.half_expressions) - set(pose_names):\n            raise ValueError(\"每個半身表情必須提供姿勢映射。\")\n        if any(len(size) != PAIR_LENGTH or any(type(value) is not int or value <= 0 for value in size)\n               for size in (self.half_size, self.full_size)):\n            raise ValueError(\"角色設定的畫布尺寸必須是正整數。\")\n        for value in self.asset_paths():\n            if not isinstance(value, str):\n                raise ValueError(\"角色素材路徑必須是字串。\")\n            path = PurePosixPath(value)\n            if PureWindowsPath(value).drive or \"\\\\\" in value or path.is_absolute() or \"..\" in path.parts or not path.parts:\n                raise ValueError(f\"角色素材路徑必須是安全的相對路徑：{value}\")\n\n    def asset_paths(self) -> tuple[str, ...]:\n        return (\n            self.official_pack_root,\n            self.half_expression_root,\n            self.half_layered_root,\n            self.half_detachable_root,\n            self.full_layered_root,\n            self.full_authority_root,\n        )\n\n    def expression_pose_map(self) -> dict[str, str]:\n        return dict(self.expression_poses)\n\n    def resolve_asset_path(self, asset_root: Path, relative: str) -> Path:\n        root = Path(asset_root).resolve()\n        resolved = (root / relative).resolve()\n        if not resolved.is_relative_to(root):\n            raise ValueError(f\"角色素材路徑逸出素材根目錄：{relative}\")\n        return resolved\n\n\nDEFAULT_CHARACTER_SETTINGS = GoldenCharacterSettings(\n    character_id=\"flameblade.mohan\",\n    manifest_schema=\"mohan.golden-render.v1\",\n    approval_schema=\"mohan.golden-render-approval.v1\",\n    makeups=(\"none\", \"light\", \"classic\", \"glamorous\"),\n    eye_states=(\"rest\", \"half\", \"closed\"),\n    half_expressions=(\n        \"idle\", \"idle_lean\", \"idle_front\",\n        *(expression for expression, _pose in _MOHAN_EXPRESSION_POSES),\n    ),\n    expression_poses=((\"idle\", \"cheek\"), (\"idle_lean\", \"lean\"), (\"idle_front\", \"front\"),\n                      *_MOHAN_EXPRESSION_POSES),\n    expression_assets=_MOHAN_EXPRESSION_ASSETS,\n    full_body_views=_MOHAN_FULL_BODY_VIEWS,\n    half_size=(465, 465),\n    full_size=(1024, 1536),\n    official_pack_root=\"assets/official-packs\",\n    half_expression_root=\"assets/expressions\",\n    half_layered_root=\"assets/expressions/layered\",\n    half_detachable_root=\"assets/expressions/detachable\",\n    full_layered_root=\"assets/pose-atlas/v5-base-layered\",\n    full_authority_root=\"assets/pose-atlas/v5-base\",\n)\n\n# Public compatibility aliases keep existing callers and the approved manifest stable.\nSCHEMA = DEFAULT_CHARACTER_SETTINGS.manifest_schema\nAPPROVAL_SCHEMA = DEFAULT_CHARACTER_SETTINGS.approval_schema\nMANIFEST_PATH = ROOT / \"tests\" / \"golden\" / \"golden-manifest.json\"\nMAKEUPS = DEFAULT_CHARACTER_SETTINGS.makeups\nEYE_STATES = DEFAULT_CHARACTER_SETTINGS.eye_states\nHALF_EXPRESSIONS = DEFAULT_CHARACTER_SETTINGS.half_expressions\nFULL_BODY_VIEWS = DEFAULT_CHARACTER_SETTINGS.full_body_views\nHALF_SIZE = DEFAULT_CHARACTER_SETTINGS.half_size\nFULL_SIZE = DEFAULT_CHARACTER_SETTINGS.full_size\n\n\ndef load_character_settings(path: Path) -> GoldenCharacterSettings:\n    \"\"\"Read a complete data-only character configuration without path fallback.\"\"\"\n    payload = _load_json(path)\n    required = {field.name for field in fields(GoldenCharacterSettings)}\n    if set(payload) != required:\n        raise ValueError(\"角色設定必須完整提供 GoldenCharacterSettings 的欄位。\")\n    for key in (\"makeups\", \"eye_states\", \"half_expressions\", \"expression_assets\",\n                \"full_body_views\", \"half_size\", \"full_size\", \"expression_poses\"):\n        if not isinstance(payload[key], list):\n            raise ValueError(f\"角色設定欄位 {key} 必須是陣列。\")\n        if key == \"expression_poses\":\n            if any(not isinstance(pair, list) or len(pair) != PAIR_LENGTH for pair in payload[key]):\n                raise ValueError(\"表情姿勢映射必須是兩元素陣列。\")\n            payload[key] = tuple(tuple(pair) for pair in payload[key])\n        else:\n            payload[key] = tuple(payload[key])\n    return GoldenCharacterSettings(**payload)\n\n\n@dataclass(frozen=True, slots=True)\nclass GoldenCell:\n    cell_id: str\n    kind: str\n    makeup: str\n    eye_state: str\n    expression: str | None = None\n    pose: str | None = None\n    view_id: str | None = None\n\n    @property\n    def filename(self) -> str:\n        return f\"{self.cell_id}.png\"\n\n    def inputs(self) -> dict[str, str]:\n        values = {\"kind\": self.kind, \"makeup\": self.makeup, \"eye_state\": self.eye_state}\n        for key in (\"expression\", \"pose\", \"view_id\"):\n            value = getattr(self, key)\n            if value is not None:\n                values[key] = value\n        return values\n\n\ndef matrix_cells(\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> tuple[GoldenCell, ...]:\n    cells: list[GoldenCell] = []\n    expression_poses = settings.expression_pose_map()\n    for expression in settings.half_expressions:\n        pose = expression_poses[expression]\n        cells.extend(\n            GoldenCell(\n                    f\"half__{expression}__{makeup}__{eye_state}\",\n                    \"half-body\", makeup, eye_state, expression=expression, pose=pose,\n            )\n            for makeup in settings.makeups\n            for eye_state in settings.eye_states\n        )\n    for view_id in settings.full_body_views:\n        cells.extend(\n            GoldenCell(\n                f\"full__{view_id}__{makeup}__{settings.full_eye_state}\",\n                \"full-body\", makeup, settings.full_eye_state, view_id=view_id,\n            )\n            for makeup in settings.makeups\n        )\n    return tuple(cells)\n\n\ndef _rgba_bytes(image: QImage) -> bytes:\n    \"\"\"Return straight RGBA8888 bytes with an exact, CPU-independent conversion.\n\n    Qt's SIMD unpremultiply uses the approximate reciprocal instruction, whose\n    result differs between Intel and AMD processors, so the golden contract\n    never asks Qt to leave premultiplied alpha.  Rounding is exact integer\n    arithmetic: channel = round(premultiplied * 255 / alpha).\n    \"\"\"\n    source_format = image.format()\n    if source_format not in {\n        QImage.Format_ARGB32,\n        QImage.Format_ARGB32_Premultiplied,\n        QImage.Format_RGB32,\n    }:\n        image = image.convertToFormat(QImage.Format_ARGB32_Premultiplied)\n        source_format = QImage.Format_ARGB32_Premultiplied\n    width, height = image.width(), image.height()\n    rows = np.frombuffer(bytes(image.constBits()), dtype=np.uint8)\n    bgra = rows.reshape(height, image.bytesPerLine())[:, : width * 4].reshape(height, width, 4)\n    alpha = bgra[:, :, 3].astype(np.uint32)\n    color = bgra[:, :, 2::-1].astype(np.uint32)\n    if source_format == QImage.Format_RGB32:\n        alpha = np.full_like(alpha, 255)\n    elif source_format == QImage.Format_ARGB32_Premultiplied:\n        safe_alpha = np.maximum(alpha, 1)[:, :, None]\n        color = np.where(\n            alpha[:, :, None] > 0,\n            (color * 255 + safe_alpha // 2) // safe_alpha,\n            0,\n        )\n    rgba = np.dstack((np.minimum(color, 255), alpha)).astype(np.uint8)\n    return rgba.tobytes()\n\n\ndef pixel_sha256(image: QImage) -> str:\n    payload = struct.pack(\">II\", image.width(), image.height()) + _rgba_bytes(image)\n    return hashlib.sha256(payload).hexdigest()\n\n\ndef _save_pixmap(pixmap: QPixmap, path: Path) -> dict[str, object]:\n    image = pixmap.toImage()\n    path.parent.mkdir(parents=True, exist_ok=True)\n    Image.frombytes(\"RGBA\", (image.width(), image.height()), _rgba_bytes(image)).save(path, \"PNG\")\n    # Reload the persisted PNG before hashing so the manifest describes the\n    # decoded RGBA pixels a reviewer sees, not an in-memory paint buffer.\n    decoded = QImage(str(path))\n    return {\n        \"width\": decoded.width(),\n        \"height\": decoded.height(),\n        \"mode\": \"RGBA\",\n        \"pixel_sha256\": pixel_sha256(decoded),\n        \"png_sha256\": hashlib.sha256(path.read_bytes()).hexdigest(),\n    }\n\n\n@contextmanager\ndef _network_disabled():\n    original_connect = socket.socket.connect\n    original_create_connection = socket.create_connection\n\n    def blocked(*_args, **_kwargs):\n        raise RuntimeError(\"golden render 已停用網路連線\")\n\n    socket.socket.connect = blocked\n    socket.create_connection = blocked\n    try:\n        yield\n    finally:\n        socket.socket.connect = original_connect\n        socket.create_connection = original_create_connection\n\n\n@contextmanager\ndef _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):\n    from domain import outfit_pack, outfit_pack_store\n\n    # outfit_pack_store defines the root and outfit_pack re-exports it; consumers\n    # import it from the defining module, so both bindings must point here.\n    modules = (outfit_pack_store, outfit_pack)\n    previous = tuple(module.OFFICIAL_PACK_ROOT for module in modules)\n    root = settings.resolve_asset_path(asset_root, settings.official_pack_root)\n    for module in modules:\n        module.OFFICIAL_PACK_ROOT = root\n    try:\n        yield\n    finally:\n        for module, value in zip(modules, previous, strict=True):\n            module.OFFICIAL_PACK_ROOT = value\n\n\ndef _prepare_store(\n    store: Path, makeup: str,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> None:\n    store.mkdir(parents=True, exist_ok=True)\n    restore_builtin_outfit(store)\n    write_makeup_intensity(store, DEFAULT_MAKEUP_INTENSITY)\n    for slot, intensity in DEFAULT_SLOT_INTENSITIES_V2.items():\n        write_makeup_slot_intensity(store, slot, intensity)\n    if makeup == settings.bare_makeup:\n        clear_appearance_selection(store, \"makeup\")\n    else:\n        select_builtin_makeup(store, makeup)\n\n\n@contextmanager\ndef _render_environment(local_appdata: Path):\n    previous = {key: os.environ.get(key) for key in (\"QT_QPA_PLATFORM\", \"LOCALAPPDATA\")}\n    os.environ[\"QT_QPA_PLATFORM\"] = \"offscreen\"\n    os.environ[\"LOCALAPPDATA\"] = str(local_appdata)\n    try:\n        yield\n    finally:\n        for key, value in previous.items():\n            if value is None:\n                os.environ.pop(key, None)\n            else:\n                os.environ[key] = value\n\n\ndef _motion(expression: str, pose: str, eye_state: str = \"rest\") -> FaceMotionFrame:\n    if pose != \"front\":\n        return FaceMotionFrame(\n            FacePose(pose), expression, Viseme.CLOSED, MouthShape(),\n            ExpressionShape(blink=blink_for_eye_state(eye_state)), breath=0.0,\n        )\n    motion = FaceMotionController().close(pose=pose, expression=expression)\n    return replace(\n        motion,\n        expression_shape=replace(motion.expression_shape, blink=blink_for_eye_state(eye_state)),\n        breath=0.0,\n    )\n\n\ndef _scaled_expression(\n    asset_root: Path,\n    stem: str,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)\n    pixmap = QPixmap(str(expression_root / f\"{stem}.png\"))\n    if pixmap.isNull():\n        raise FileNotFoundError(f\"缺少表情素材：{stem}\")\n    return pixmap.scaled(*settings.half_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)\n\n\nclass _BlinkHarness(CompanionFaceAssetMethods):\n    \"\"\"Small runtime-equivalent host for the real companion blink compositor.\"\"\"\n\n    def __init__(\n        self,\n        asset_root: Path,\n        renderer: LayeredParametricFaceRenderer,\n        settings: GoldenCharacterSettings,\n    ) -> None:\n        self.state = \"idle\"\n        self.face_renderer = renderer\n        self.active_physics_pose = \"front\"\n        self.physics_expression_poses = settings.expression_pose_map()\n        self.expression_anchor_profiles = {}\n        expression_root = settings.resolve_asset_path(asset_root, settings.half_expression_root)\n        self.expression_pixmaps = {\n            stem: _scaled_expression(asset_root, stem, settings)\n            for stem in settings.expression_assets\n            if (expression_root / f\"{stem}.png\").is_file()\n        }\n        self._build_expression_anchor_profiles()\n        self._build_blink_masks(self._blink_regions())\n\n\ndef _render_half_cell(\n    cell: GoldenCell,\n    renderer: LayeredParametricFaceRenderer,\n    harness: _BlinkHarness,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    base = QPixmap(*settings.half_size)\n    base.fill(Qt.transparent)\n    rest = renderer.render(base, _motion(cell.expression or \"idle\", cell.pose or \"front\"), None)\n    if rest.isNull() or (rest.width(), rest.height()) != settings.half_size:\n        raise RuntimeError(f\"半身渲染尺寸錯誤：{cell.cell_id}\")\n    if cell.eye_state == \"rest\":\n        return rest\n    # Complete emotional portraits expose their expression-bound eye endpoints\n    # through the speaking/blink route.  The compositor still preserves an\n    # expression unchanged when no endpoint is bound to that exact portrait.\n    harness.state = \"speaking\"\n    return harness._blink_composite(\n        rest,\n        cell.expression or \"idle\",\n        blink_for_eye_state(cell.eye_state),\n    )\n\n\ndef _render_full_cell(\n    cell: GoldenCell,\n    renderer: LayeredFullBodyRenderer,\n    settings: GoldenCharacterSettings,\n) -> QPixmap:\n    rendered = renderer.render_view(\n        cell.view_id or settings.full_body_views[0],\n        _motion(settings.neutral_expression, settings.neutral_pose, settings.full_eye_state),\n    )\n    if rendered.isNull() or (rendered.width(), rendered.height()) != settings.full_size:\n        raise RuntimeError(f\"全身渲染尺寸錯誤：{cell.cell_id}\")\n    return rendered\n\n\ndef render_matrix(\n    output: Path,\n    *,\n    asset_root: Path = ROOT,\n    cells: Iterable[GoldenCell] | None = None,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    activate_product_character_runtime(ROOT)\n    selected = tuple(matrix_cells(settings) if cells is None else cells)\n    output = Path(output).resolve()\n    asset_root = Path(asset_root).resolve()\n    runtime_root = output / \"runtime\"\n    local_appdata = runtime_root / \"localappdata\"\n    local_appdata.mkdir(parents=True, exist_ok=True)\n    QApplication.instance() or QApplication([])\n    # Each standard capture starts with the same Qt file-pixmap cache state,\n    # including when a test renders twice in one interpreter.\n    QPixmapCache.clear()\n    started = time.perf_counter()\n    entries: list[dict[str, object]] = []\n\n    with _render_environment(local_appdata), _network_disabled(), _official_pack_root(\n        asset_root, settings,\n    ):\n        for makeup in settings.makeups:\n            makeup_cells = tuple(cell for cell in selected if cell.makeup == makeup)\n            if not makeup_cells:\n                continue\n            store = runtime_root / \"stores\" / makeup\n            _prepare_store(store, makeup, settings)\n            overlay = ActiveOutfitOverlay(store, asset_root)\n            half_renderer = LayeredParametricFaceRenderer(\n                manifest=load_layered_face_assets(settings.resolve_asset_path(\n                    asset_root, settings.half_layered_root,\n                )),\n                outfit_overlay=overlay,\n                authority_dir=settings.resolve_asset_path(\n                    asset_root, settings.half_expression_root,\n                ),\n                detachable_dir=settings.resolve_asset_path(\n                    asset_root, settings.half_detachable_root,\n                ),\n            ) if any(cell.kind == \"half-body\" for cell in makeup_cells) else None\n            harness = (\n                _BlinkHarness(asset_root, half_renderer, settings)\n                if half_renderer is not None else None\n            )\n            full_manifest = load_layered_full_body_assets(\n                settings.resolve_asset_path(asset_root, settings.full_layered_root)\n            ) if any(cell.kind == \"full-body\" for cell in makeup_cells) else None\n            full_renderer = LayeredFullBodyRenderer(\n                full_manifest,\n                outfit_overlay=overlay,\n                authority_root=settings.resolve_asset_path(\n                    asset_root, settings.full_authority_root,\n                ),\n            ) if full_manifest is not None else None\n            for cell in makeup_cells:\n                frame = (\n                    _render_half_cell(cell, half_renderer, harness, settings)\n                    if cell.kind == \"half-body\"\n                    else _render_full_cell(cell, full_renderer, settings)\n                )\n                path = output / cell.filename\n                measurements = _save_pixmap(frame, path)\n                entries.append({\n                    \"id\": cell.cell_id,\n                    \"file\": cell.filename,\n                    \"inputs\": cell.inputs(),\n                    **measurements,\n                })\n\n    entries.sort(key=lambda item: str(item[\"id\"]))\n    return {\n        \"schema\": settings.manifest_schema,\n        \"hash_contract\": \"sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)\",\n        \"pixel_tolerance\": 0,\n        \"matrix\": {\n            \"half_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"half-body\" for item in entries),\n            \"full_body_cells\": sum(item[\"inputs\"][\"kind\"] == \"full-body\" for item in entries),\n            \"total_cells\": len(entries),\n        },\n        \"environment\": {\n            \"qt_qpa_platform\": \"offscreen\",\n            \"network\": \"disabled\",\n            \"store_policy\": \"isolated-fixed-per-makeup\",\n            \"localappdata_policy\": \"isolated-fixed\",\n        },\n        \"elapsed_seconds\": round(time.perf_counter() - started, 3),\n        \"cells\": entries,\n    }\n\n\ndef _load_json(path: Path) -> dict[str, object]:\n    value = json.loads(path.read_text(encoding=\"utf-8\"))\n    if not isinstance(value, dict):\n        raise ValueError(f\"JSON 根節點必須是物件：{path}\")\n    return value\n\n\ndef validate_approval(\n    path: Path,\n    cell_ids: frozenset[str],\n    *,\n    known_ids: frozenset[str] | None = None,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    approval = _load_json(path)\n    required = {\"schema\", \"owner\", \"date\", \"quote\", \"cells\"}\n    if set(approval) != required or approval.get(\"schema\") != settings.approval_schema:\n        raise ValueError(f\"核准紀錄必須符合 {settings.approval_schema}。\")\n    for key in (\"owner\", \"date\", \"quote\"):\n        if not isinstance(approval[key], str) or not approval[key].strip():\n            raise ValueError(f\"核准紀錄欄位 {key} 必須是非空字串。\")\n    date.fromisoformat(str(approval[\"date\"]))\n    covered = approval[\"cells\"]\n    if covered == \"*\":\n        return approval\n    if not isinstance(covered, list) or not all(isinstance(item, str) for item in covered):\n        raise ValueError(\"核准紀錄 cells 必須是 '*' 或格子 ID 陣列。\")\n    missing = cell_ids - frozenset(covered)\n    unknown = frozenset(covered) - (known_ids if known_ids is not None else cell_ids)\n    if missing or unknown:\n        raise ValueError(\n            f\"核准涵蓋不完整：missing={sorted(missing)} unknown={sorted(unknown)}\"\n        )\n    return approval\n\n\ndef _manifest_for_commit(\n    rendered: dict[str, object], approval_path: Path,\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> dict[str, object]:\n    manifest = dict(rendered)\n    manifest.pop(\"elapsed_seconds\", None)\n    manifest[\"source_revision\"] = subprocess.check_output(\n        [\"git\", \"rev-parse\", \"HEAD\"], cwd=ROOT, text=True,\n    ).strip()\n    harness_source = Path(__file__).read_bytes()\n    manifest[\"harness\"] = {\n        \"source\": harness_source.decode(\"utf-8\"),\n        \"sha256\": hashlib.sha256(harness_source).hexdigest(),\n    }\n    manifest[\"approval\"] = {\n        \"path\": approval_path.relative_to(ROOT).as_posix(),\n        \"sha256\": hashlib.sha256(approval_path.read_bytes()).hexdigest(),\n    }\n    if settings != DEFAULT_CHARACTER_SETTINGS:\n        manifest[\"character_settings\"] = asdict(settings)\n    for cell in manifest[\"cells\"]:\n        cell.pop(\"png_sha256\", None)\n    return manifest\n\n\ndef _ensure_revision_available(revision: str) -> None:\n    \"\"\"Fetch a recorded revision that is not reachable from any local ref.\n\n    Squash merges leave PR-branch commits off main; GitHub still serves them by SHA.\n    \"\"\"\n    present = subprocess.run(\n        [\"git\", \"cat-file\", \"-e\", f\"{revision}^{{commit}}\"],\n        cwd=ROOT, capture_output=True, check=False,\n    )\n    if present.returncode != 0:\n        subprocess.run([\"git\", \"fetch\", \"--no-tags\", \"origin\", revision], cwd=ROOT, check=True)\n\n\ndef _recover_originals(expected: dict[str, object], cells: list[dict], baseline_dir: Path) -> None:\n    \"\"\"Reconstruct absent originals from the recorded Git revision, then verify pixels.\"\"\"\n    revision = expected.get(\"source_revision\")\n    if not isinstance(revision, str) or len(revision) != GIT_REVISION_LENGTH or any(\n        char not in \"0123456789abcdef\" for char in revision\n    ):\n        raise ValueError(\"原圖快取缺失；清單需要有效 source_revision 才能重建核准原圖。\")\n    staging = ROOT / \".quality-tmp\" / \"golden-reference\" / uuid.uuid4().hex\n    staging.mkdir(parents=True)\n    archive_path = staging / \"source.zip\"\n    _ensure_revision_available(revision)\n    subprocess.run(\n        [\"git\", \"archive\", \"--format=zip\", f\"--output={archive_path}\", revision],\n        cwd=ROOT, check=True,\n    )\n    reference_root = staging / \"source\"\n    with zipfile.ZipFile(archive_path) as archive:\n        archive.extractall(reference_root)\n    # Freeze the capture driver too: future harness changes must not alter\n    # reconstruction of the approved production modules and assets.\n    harness = expected.get(\"harness\")\n    harness_path = reference_root / \"tools\" / \"golden_render.py\"\n    if isinstance(harness, dict) and isinstance(harness.get(\"source\"), str):\n        payload = harness[\"source\"].encode(\"utf-8\")\n        if hashlib.sha256(payload).hexdigest() != harness.get(\"sha256\"):\n            raise ValueError(\"基準渲染 harness 的 SHA-256 不符。\")\n        harness_path.write_bytes(payload)\n    else:\n        shutil.copy2(Path(__file__), harness_path)\n    request_path = staging / \"cells.json\"\n    request_path.write_text(json.dumps([cell[\"id\"] for cell in cells]), encoding=\"utf-8\")\n    output = staging / \"images\"\n    script = (\n        \"import json,sys; from pathlib import Path; \"\n        \"from tools.golden_render import matrix_cells,render_matrix; \"\n        \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n        \"render_matrix(Path(sys.argv[2]),cells=[c for c in matrix_cells() if c.cell_id in ids])\"\n    )\n    arguments = [sys.executable, \"-c\", script, str(request_path), str(output)]\n    if \"character_settings\" in expected:\n        settings_path = staging / \"character-settings.json\"\n        _write_manifest(settings_path, expected[\"character_settings\"])\n        script = (\n            \"import json,sys; from pathlib import Path; \"\n            \"from tools.golden_render import matrix_cells,render_matrix,load_character_settings; \"\n            \"ids=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')); \"\n            \"settings=load_character_settings(Path(sys.argv[3])); \"\n            \"render_matrix(Path(sys.argv[2]),settings=settings,\"\n            \"cells=[c for c in matrix_cells(settings) if c.cell_id in ids])\"\n        )\n        arguments = [sys.executable, \"-c\", script, str(request_path), str(output), str(settings_path)]\n    environment = dict(os.environ)\n    environment[\"PYTHONPATH\"] = str(reference_root)\n    subprocess.run(\n        arguments,\n        cwd=reference_root, env=environment, check=True,\n    )\n    baseline_dir.mkdir(parents=True, exist_ok=True)\n    # Keep every unmatched rebuild so CI can upload it for a pixel-level review.\n    unrecoverable = ROOT / \".quality-tmp\" / \"golden-diff\" / \"unrecoverable\"\n    mismatched: list[str] = []\n    for cell in cells:\n        original = output / str(cell[\"file\"])\n        actual = pixel_sha256(QImage(str(original)))\n        if actual != cell[\"pixel_sha256\"]:\n            unrecoverable.mkdir(parents=True, exist_ok=True)\n            shutil.copy2(original, unrecoverable / str(cell[\"file\"]))\n            mismatched.append(f\"{cell['id']}={actual}\")\n            continue\n        shutil.copy2(original, baseline_dir / str(cell[\"file\"]))\n    if mismatched:\n        raise ValueError(\n            f\"歷史重建像素與核准雜湊不同（{len(mismatched)} 格）：{', '.join(mismatched)}；\"\n            f\"重建影像保存在 {unrecoverable.relative_to(ROOT).as_posix()}。\"\n        )\n\n\ndef _write_diff(expected: Path | None, actual: Path, target: Path) -> None:\n    target.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(actual, target / \"new.png\")\n    if expected is None or not expected.is_file():\n        (target / \"original-unavailable.txt\").write_text(\n            \"本機尚無基準 PNG；先以核准紀錄執行 --update 產生本機基準影像。\\n\",\n            encoding=\"utf-8\",\n        )\n        return\n    shutil.copy2(expected, target / \"original.png\")\n    original = Image.open(expected).convert(\"RGBA\")\n    new = Image.open(actual).convert(\"RGBA\")\n    # RGB makes equal-alpha colour changes visible; an RGBA difference would\n    # carry alpha=0 for those pixels and appear fully transparent.\n    if original.size != new.size:\n        canvas_size = (max(original.width, new.width), max(original.height, new.height))\n        old_canvas = Image.new(\"RGBA\", canvas_size)\n        new_canvas = Image.new(\"RGBA\", canvas_size)\n        old_canvas.paste(original, (0, 0))\n        new_canvas.paste(new, (0, 0))\n        original, new = old_canvas, new_canvas\n    channels = ImageChops.difference(original, new).split()\n    intensity = channels[0]\n    for channel in channels[1:]:\n        intensity = ImageChops.lighter(intensity, channel)\n    intensity.convert(\"RGB\").save(target / \"difference.png\")\n\n\ndef compare_manifest(\n    rendered: dict[str, object],\n    expected: dict[str, object],\n    *,\n    output: Path,\n    baseline_dir: Path = DEFAULT_BASELINE,\n    diff_dir: Path = DEFAULT_DIFF,\n) -> list[str]:\n    expected_by_id = {str(cell[\"id\"]): cell for cell in expected.get(\"cells\", [])}\n    actual_by_id = {str(cell[\"id\"]): cell for cell in rendered.get(\"cells\", [])}\n    changed: list[str] = []\n    originals_needed: list[dict] = []\n    for cell_id in sorted(set(expected_by_id) | set(actual_by_id)):\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        compared_fields = (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n        if old is not None and new is not None and all(\n            old.get(field) == new.get(field) for field in compared_fields\n        ):\n            continue\n        changed.append(cell_id)\n        if old is not None and new is not None:\n            original = baseline_dir / str(old[\"file\"])\n            if not original.is_file() or pixel_sha256(QImage(str(original))) != old[\"pixel_sha256\"]:\n                originals_needed.append(old)\n    if originals_needed:\n        _recover_originals(expected, originals_needed, baseline_dir)\n    for cell_id in changed:\n        old = expected_by_id.get(cell_id)\n        new = actual_by_id.get(cell_id)\n        if new is not None:\n            _write_diff(\n                baseline_dir / str(old[\"file\"]) if old is not None else None,\n                output / str(new[\"file\"]),\n                diff_dir / cell_id,\n            )\n    return changed\n\n\ndef _write_manifest(path: Path, manifest: dict[str, object]) -> None:\n    path.parent.mkdir(parents=True, exist_ok=True)\n    path.write_text(\n        json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + \"\\n\",\n        encoding=\"utf-8\",\n    )\n\n\ndef _require_committed_render_sources(\n    settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,\n) -> None:\n    changed = subprocess.check_output(\n        [\"git\", \"status\", \"--porcelain\", \"--\", \"assets\", \"domain\", \"infrastructure\", \"presentation\",\n         *settings.asset_paths()],\n        cwd=ROOT, text=True,\n    ).strip()\n    if changed:\n        raise ValueError(\"請先提交渲染程式與素材，再核准更新；source_revision 必須可重建基準。\")\n\n\ndef main(argv: Iterable[str] | None = None) -> int:\n    activate_product_character_runtime(ROOT)\n    parser = argparse.ArgumentParser(description=__doc__)\n    parser.add_argument(\"--output\", type=Path, default=DEFAULT_OUTPUT)\n    parser.add_argument(\"--manifest\", type=Path, default=MANIFEST_PATH)\n    parser.add_argument(\"--update\", action=\"store_true\")\n    parser.add_argument(\"--approval\", type=Path)\n    parser.add_argument(\"--character-settings\", type=Path)\n    parser.add_argument(\"--asset-root\", type=Path, default=ROOT)\n    args = parser.parse_args(tuple(argv) if argv is not None else None)\n    if args.update != (args.approval is not None):\n        parser.error(\"--update 必須與 --approval <核准紀錄 JSON> 同時使用\")\n    settings = load_character_settings(args.character_settings) if args.character_settings else DEFAULT_CHARACTER_SETTINGS\n    if args.character_settings and args.manifest.resolve() == MANIFEST_PATH.resolve():\n        parser.error(\"自訂角色設定必須指定獨立的 --manifest 路徑。\")\n    if args.update:\n        if args.asset_root.resolve() != ROOT:\n            parser.error(\"--update 的素材根目錄必須是目前儲存庫，才能由 Git 重建核准基準。\")\n        validate_approval(\n            args.approval, frozenset(),\n            known_ids=frozenset(cell.cell_id for cell in matrix_cells(settings)), settings=settings,\n        )\n        _require_committed_render_sources(settings)\n\n    rendered = render_matrix(args.output, asset_root=args.asset_root, settings=settings)\n    output_manifest = dict(rendered)\n    output_manifest.pop(\"elapsed_seconds\", None)\n    _write_manifest(args.output / \"render-manifest.json\", output_manifest)\n    print(\n        f\"GOLDEN_RENDER cells={rendered['matrix']['total_cells']} \"\n        f\"seconds={rendered['elapsed_seconds']:.3f} output={args.output}\"\n    )\n    if args.update:\n        cell_ids = frozenset(str(cell[\"id\"]) for cell in rendered[\"cells\"])\n        approval_path = args.approval.resolve()\n        old_cells = (\n            {cell[\"id\"]: cell for cell in _load_json(args.manifest)[\"cells\"]}\n            if args.manifest.is_file() else {}\n        )\n        changed_ids = frozenset(\n            str(cell[\"id\"]) for cell in rendered[\"cells\"]\n            if any(\n                old_cells.get(cell[\"id\"], {}).get(field) != cell.get(field)\n                for field in (\"pixel_sha256\", \"inputs\", \"width\", \"height\", \"mode\", \"file\")\n            )\n        ) | (frozenset(old_cells) - cell_ids)\n        validate_approval(approval_path, changed_ids, known_ids=cell_ids | frozenset(old_cells), settings=settings)\n        manifest = _manifest_for_commit(rendered, approval_path, settings)\n        _write_manifest(args.manifest, manifest)\n        baseline = args.output / \"baseline\" if args.character_settings else DEFAULT_BASELINE\n        baseline.mkdir(parents=True, exist_ok=True)\n        for cell in rendered[\"cells\"]:\n            shutil.copy2(args.output / str(cell[\"file\"]), baseline / str(cell[\"file\"]))\n        print(f\"GOLDEN_UPDATED manifest={args.manifest} approval={approval_path}\")\n        return 0\n\n    if not args.manifest.is_file():\n        print(f\"缺少 golden 清單：{args.manifest}\", file=sys.stderr)\n        return 2\n    changed = compare_manifest(\n        rendered, _load_json(args.manifest), output=args.output,\n        baseline_dir=args.output / \"baseline\" if args.character_settings else DEFAULT_BASELINE,\n        diff_dir=args.output / \"diff\" if args.character_settings else DEFAULT_DIFF,\n    )\n    if changed:\n        print(\"GOLDEN_CHANGED \" + \" \".join(changed), file=sys.stderr)\n        return 1\n    print(\"GOLDEN_MATCH\")\n    return 0\n\n\nif __name__ == \"__main__\":\n    raise SystemExit(main())\n"
   },
   "hash_contract": "sha256(width_be32 + height_be32 + decoded_rgba8888_pixels)",
   "matrix": {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "dc4871667250c2b76daa3140f8950e87fc91b441"
+  "source_revision": "186527bc8a9b7440a98e2c75364b184225c093a2"
 }
