@@ -28,9 +28,8 @@ lazy from domain.outfit_pack import (
     list_stale_body_profile_packs,
     resolve_active_selection,
     restore_builtin_outfit,
-    select_body_outfit,
 )
-lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT, select_body_outfit
 lazy from domain.outfit_pack_makeup import (
     ACTIVE_STATE_FILE,
     MAKEUP_STATE_FILE,

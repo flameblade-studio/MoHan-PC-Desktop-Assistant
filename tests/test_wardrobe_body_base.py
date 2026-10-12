@@ -144,17 +144,27 @@ class _Body:
         "half_body": (type("View", (), {"view_id": "front"})(),),
     })()
 
-    def __init__(self, face_core: bytes | None = None) -> None:
+    def __init__(
+        self, face_core: bytes | None = None, hole: tuple[int, int] | None = None,
+    ) -> None:
         self.calls: list[tuple[str, str, bool]] = []
         self.face_core = face_core
         self.frame_size = LAYER_SIZE
+        self.hole = hole
 
     def frame_keys(self, view: str, *, halfbody: bool = False) -> tuple[str, ...]:
         return ("rest", "closed", "neutral-rest", "neutral-closed")
 
     def load_frame(self, view: str, key: str, *, halfbody: bool = False) -> bytes:
         self.calls.append((view, key, halfbody))
-        return _png(self.frame_size, "red")
+        if self.hole is None:
+            return _png(self.frame_size, "red")
+        # Back hair sits behind the body, so it is visible only where the body is transparent.
+        output = io.BytesIO()
+        image = Image.new("RGBA", self.frame_size, "red")
+        image.putpixel(self.hole, (0, 0, 0, 0))
+        image.save(output, format="PNG")
+        return output.getvalue()
 
     def load_face_core(self, view: str) -> bytes:
         if self.face_core is not None:
@@ -255,7 +265,7 @@ def test_full_half_and_blink_reject_a_missing_plan(endpoint) -> None:
 @pytest.mark.parametrize(("hair_kind", "color"), [("hair-back", "blue"), ("hair-front", "yellow")])
 def test_each_default_hair_layer_can_support_a_view(endpoint, hair_kind, color) -> None:
     app = QApplication.instance() or QApplication([])
-    body = _Body()
+    body = _Body(hole=(3, 3))
     other = "hair-front" if hair_kind == "hair-back" else "hair-back"
     plan, assets = _hair_plan(missing=frozenset({other}))
     renderer = _renderer(body, {"front": plan}, assets)

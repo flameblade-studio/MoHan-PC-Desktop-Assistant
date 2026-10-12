@@ -703,17 +703,6 @@ def apply_ensemble(
     _atomic_json(active_path, active)
 
 
-def select_body_outfit(store: Path) -> None:
-    """Remove clothing while preserving every other saved appearance slot."""
-    active_path = Path(store) / "active.json"
-    active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
-    if not isinstance(active, dict):
-        raise OutfitPackError("Provide a supported saved appearance state.")
-    active.pop("_ensemble", None)
-    active["garment"] = {"pack_id": "builtin", "item_id": "none", "variant_id": "none"}
-    _atomic_json(active_path, active)
-
-
 def restore_builtin_outfit(store: Path) -> None:
     builtin = {category: {"pack_id": "builtin", "item_id": "builtin", "variant_id": "builtin"} for category in SELECTION_CATEGORIES}
     _atomic_json(Path(store) / "active.json", builtin)

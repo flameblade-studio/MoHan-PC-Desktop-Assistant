@@ -564,7 +564,7 @@
       "work_package": null
     },
     {
-      "bytes": 22087,
+      "bytes": 22083,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -575,7 +575,7 @@
         {
           "content_kind": "product_shell",
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
-          "line": 56,
+          "line": 55,
           "matched": "mohan.default.blue-silver",
           "path": "application/wardrobe_service.py",
           "rule": "persisted_identifier",
@@ -625,99 +625,99 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "f935688bc3eb68406536ccd327eaa846bcb4ae6d8bae1079d040a2450d388a72",
+      "sha256": "dae489bf441321af4975091f7160794e5f81164ff6b2f9238b9e072235f51868",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
       "symbols": [
         {
+          "end_line": 55,
+          "line": 55,
+          "name": "BUILTIN_OUTFIT_ID"
+        },
+        {
           "end_line": 56,
           "line": 56,
-          "name": "BUILTIN_OUTFIT_ID"
+          "name": "BODY_OUTFIT_ID"
         },
         {
           "end_line": 57,
           "line": 57,
-          "name": "BODY_OUTFIT_ID"
-        },
-        {
-          "end_line": 58,
-          "line": 58,
           "name": "BODY_OUTFIT_NAMES"
         },
         {
-          "end_line": 61,
-          "line": 59,
+          "end_line": 60,
+          "line": 58,
           "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
+        },
+        {
+          "end_line": 61,
+          "line": 61,
+          "name": "BARE_MAKEUP_ID"
         },
         {
           "end_line": 62,
           "line": 62,
-          "name": "BARE_MAKEUP_ID"
+          "name": "BUILTIN_MAKEUP_PREFIX"
         },
         {
           "end_line": 63,
           "line": 63,
-          "name": "BUILTIN_MAKEUP_PREFIX"
-        },
-        {
-          "end_line": 64,
-          "line": 64,
           "name": "SELECTION_ID_PARTS"
         },
         {
-          "end_line": 74,
-          "line": 68,
+          "end_line": 73,
+          "line": 67,
           "name": "InstalledOutfit"
         },
         {
-          "end_line": 92,
-          "line": 78,
+          "end_line": 91,
+          "line": 77,
           "name": "MakeupOption"
         },
         {
-          "end_line": 99,
-          "line": 96,
+          "end_line": 98,
+          "line": 95,
           "name": "MakeupState"
         },
         {
-          "end_line": 105,
-          "line": 102,
+          "end_line": 104,
+          "line": 101,
           "name": "_selection_id"
         },
         {
-          "end_line": 116,
-          "line": 108,
+          "end_line": 115,
+          "line": 107,
           "name": "_localized_name"
         },
         {
-          "end_line": 122,
-          "line": 119,
+          "end_line": 121,
+          "line": 118,
           "name": "_ensemble_id"
         },
         {
-          "end_line": 127,
-          "line": 125,
+          "end_line": 126,
+          "line": 124,
           "name": "_localized_pack_name"
         },
         {
-          "end_line": 142,
-          "line": 130,
+          "end_line": 141,
+          "line": 129,
           "name": "_localized_ensemble_name"
         },
         {
-          "end_line": 157,
-          "line": 145,
+          "end_line": 156,
+          "line": 144,
           "name": "_makeup_option_id"
         },
         {
-          "end_line": 163,
-          "line": 160,
+          "end_line": 162,
+          "line": 159,
           "name": "_builtin_outfit_fallback_name"
         },
         {
-          "end_line": 591,
-          "line": 166,
+          "end_line": 590,
+          "line": 165,
           "name": "WardrobeService"
         }
       ],
@@ -116705,7 +116705,7 @@
       "path": "domain/outfit_pack_official.py",
       "readers": [
         {
-          "line": 46,
+          "line": 45,
           "path": "application/wardrobe_service.py",
           "text": "lazy from domain.outfit_pack_official import ("
         },
