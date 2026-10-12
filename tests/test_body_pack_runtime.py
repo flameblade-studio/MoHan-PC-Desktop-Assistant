@@ -224,7 +224,7 @@ def test_declared_body_routes_both_factories_before_legacy_assets(tmp_path):
     assert isinstance(face_renderer, BodyPackRenderer)
     assert face_renderer is fullbody_renderer
     overlay = ports.outfit_overlay_factory()
-    frame = object()
+    frame = SimpleNamespace(view="yaw+000-pitch+00")
     assert overlay.layer_count("yaw+000-pitch+00") == 0
     assert overlay.apply(frame, "yaw+000-pitch+00") is frame
     with pytest.raises(BodyPackMismatchError, match="body_pack_renderer_required"):
