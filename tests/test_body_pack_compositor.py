@@ -375,13 +375,15 @@ def test_root_cause_witnesses_follow_premultiplied_face_formula(
     hide_alpha: int,
     face_alpha: int,
 ) -> None:
-    base = _solid(1, QColor(*body_rgba))
-    layer = _solid(1, QColor(*layer_rgba))
-    core = _sparse(1, {0: QColor(255, 255, 255, face_alpha)})
+    # A second, fully transparent pixel keeps an alpha channel even when the
+    # witness pixel is opaque; QPixmap drops alpha from fully opaque images.
+    base = _solid(2, QColor(*body_rgba))
+    layer = _solid(2, QColor(*layer_rgba))
+    core = _sparse(2, {0: QColor(255, 255, 255, face_alpha)})
     assets = {"layer.png": layer}
     mask = None
     if hide_alpha:
-        assets["hide.png"] = _sparse(1, {0: QColor(255, 255, 255, hide_alpha)})
+        assets["hide.png"] = _sparse(2, {0: QColor(255, 255, 255, hide_alpha)})
         mask = CharacterLayerMask("hide.png", "f" * 64, (0, 0))
     plan = CharacterLayerPlan(("base", kind), (_asset(kind, "layer.png"),), mask)
     result = compose_body_pack_frame(
