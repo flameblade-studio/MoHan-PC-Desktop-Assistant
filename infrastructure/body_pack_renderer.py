@@ -46,11 +46,13 @@ class BodyPackRenderer:
         self, body: BodyPackSource, views: Mapping[str, CharacterLayerPlan],
         load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
         *, apply_makeup: MakeupApplier | None = None,
+        clothing_visible: Callable[[], bool] | None = None,
     ) -> None:
         self._body = body
         self._views = views
         self._load_layer = load_layer
         self._apply_makeup = apply_makeup
+        self._clothing_visible = clothing_visible
         self._last_context: tuple[str, str, str] | None = None
         self._pixmaps: OrderedDict[tuple[object, ...], tuple[QPixmap, int]] = OrderedDict()
         self._pixmap_cache_bytes = 0
@@ -121,8 +123,17 @@ class BodyPackRenderer:
     def _compose(
         self, view: str, state: str, *, halfbody: bool = False, expression: str = "",
     ) -> QPixmap:
-        cache_key = ("composed", view, state, halfbody)
-        if self._apply_makeup is None:
+        plan = self._views.get(view)
+        if plan is None or not plan.has_default_hair:
+            raise BodyPackMismatchError(
+                "character_hair_required", "Provide the character default hair for this view", view,
+            )
+        clothed = self._clothing_visible is None or self._clothing_visible()
+        if not clothed:
+            plan = plan.without_clothing()
+        apply_makeup = self._apply_makeup if clothed else None
+        cache_key = ("composed", view, state, halfbody, clothed)
+        if apply_makeup is None:
             cached = self._cached_pixmap(cache_key)
             if cached is not None:
                 return cached
@@ -132,7 +143,7 @@ class BodyPackRenderer:
             base = self._pixmap(self._body.load_frame(view, state, halfbody=halfbody))
             self._cache_pixmap(body_key, base)
         makeup_base = None
-        if self._apply_makeup is not None:
+        if apply_makeup is not None:
             eye = state.rsplit("-", 1)[-1]
             family = state.split("-", 1)[0]
             viseme = {"a": "A", "o": "O", "small": "CONSONANT"}.get(family)
@@ -143,14 +154,13 @@ class BodyPackRenderer:
                 viseme = None
             elif halfbody and family == "small":
                 viseme = "I"
-            makeup_base = self._apply_makeup(base, makeup_view, eye, viseme)
+            makeup_base = apply_makeup(base, makeup_view, eye, viseme)
             cache_key += (makeup_base.cacheKey(),)
             cached = self._cached_pixmap(cache_key)
             if cached is not None:
                 return cached
         mask = self._body.load_face_core(view)
         core = None if mask is None else self._pixmap(mask)
-        plan = self._views.get(view)
         if mask is None and plan is not None and (plan.layers or plan.base_hide is not None):
             error = BodyPackMismatchError(
                 "face_core_required",
@@ -259,11 +269,8 @@ class BodyPackRenderer:
             LOGGER.error("Body-pack blink rejected [%s]: %s", error.code, error)
             raise error
         view, family, expression = context
-        if family == REST_ONLY_FAMILY:
-            return QPixmap(base)
-        result = self._compose(
-            view, f"{family}-{eye_state}", halfbody=True, expression=expression,
-        )
+        state = "rest" if family == REST_ONLY_FAMILY else f"{family}-{eye_state}"
+        result = self._compose(view, state, halfbody=True, expression=expression)
         if result.size() != base.size():
             result = result.scaled(base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self._remember(view, family, expression)
@@ -286,7 +293,7 @@ class BodyPackRenderer:
             LOGGER.error("Body-pack wink rejected [%s]: %s", error.code, error)
             raise error
         if eye_state == "rest":
-            return QPixmap(base)
+            return self.render_complete_blink(base, "rest")
         return self.render_complete_blink(base, eye_state)
 
 
@@ -294,8 +301,11 @@ def create_body_pack_renderer(
     body: BodyPackSource | None, views: Mapping[str, CharacterLayerPlan],
     load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
     *, apply_makeup: MakeupApplier | None = None,
+    clothing_visible: Callable[[], bool] | None = None,
 ) -> BodyPackRenderer:
     """Build a renderer from a structurally compatible body-pack source."""
     if body is None:
         raise TypeError("A resolved body-pack source is required.")
-    return BodyPackRenderer(body, views, load_layer, apply_makeup=apply_makeup)
+    return BodyPackRenderer(
+        body, views, load_layer, apply_makeup=apply_makeup, clothing_visible=clothing_visible,
+    )

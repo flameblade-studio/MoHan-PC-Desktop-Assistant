@@ -28,6 +28,7 @@ lazy from domain.outfit_pack import (
     list_stale_body_profile_packs,
     resolve_active_selection,
     restore_builtin_outfit,
+    select_body_outfit,
 )
 lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
 lazy from domain.outfit_pack_makeup import (
@@ -53,6 +54,8 @@ lazy from domain.outfit_pack_official import (
 # means "the built-in look" (today the official Blue-and-White Hanfu pack plus
 # the built-in classic makeup) and is kept stable so saved profiles keep working.
 BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"
+BODY_OUTFIT_ID = "body"
+BODY_OUTFIT_NAMES = {"zh-TW": "素體", "zh-CN": "素体", "en": "Base body", "ja": "素体"}
 BUILTIN_OUTFIT_FALLBACK_NAME = (
     f"{default_character_display_name('zh-TW')}藍白漢服"
 )
@@ -246,7 +249,10 @@ class WardrobeService:
                 official_pack_root=self.official_pack_root,
             )
         )
-        return (built_in, *ensembles, *separate_variants, *stale)
+        body_options = (() if not self._has_body_pack() else (
+            InstalledOutfit(BODY_OUTFIT_ID, BODY_OUTFIT_NAMES.get(language, "Base body"), True),
+        ))
+        return (built_in, *body_options, *ensembles, *separate_variants, *stale)
 
     def install(self, source: Path) -> OutfitPack:
         # Makeup arrives through the same single-file import as every other
@@ -254,7 +260,15 @@ class WardrobeService:
         verify_makeup_layers(Path(source))
         return install_outfit_pack(Path(source), self.install_root)
 
+    @staticmethod
+    def _has_body_pack() -> bool:
+        source = active_character_source()
+        return getattr(source.appearance, "resolved_body_pack", None) is not None
+
     def apply(self, outfit_id: str) -> InstalledOutfit:
+        if outfit_id == BODY_OUTFIT_ID and self._has_body_pack():
+            select_body_outfit(self.install_root)
+            return InstalledOutfit(BODY_OUTFIT_ID, BODY_OUTFIT_NAMES["zh-TW"], True)
         if outfit_id == BUILTIN_OUTFIT_ID:
             restore_builtin_outfit(self.install_root)
             try:

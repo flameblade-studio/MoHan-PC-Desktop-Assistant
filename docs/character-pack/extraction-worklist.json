@@ -240,7 +240,7 @@
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
           "locations": [
             {
-              "line": 55,
+              "line": 56,
               "matched": "mohan.default.blue-silver",
               "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
             }

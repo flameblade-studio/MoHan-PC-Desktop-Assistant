@@ -2,6 +2,8 @@
 
 ## 繁體中文
 
+產品規則：「素體」表示完整素體加上角色預設髮型，只保留 base 與 hair-back、hair-front、ornament，並依宣告順序合成；body-fix、makeup、garment、look-fix 及 base_hide 均不納入素體合成。光頭素體包影格供內部疊圖使用；雲裳閣、桌面全身、半身、截圖與匯出共用有髮合成畫面。載入時顯示載入提示，缺少頭髮或渲染失敗時顯示錯誤。未宣告素體包的墨寒維持原影格與原髮髻。
+
 炎劍鑄魂引擎只提供機制；素體包提供人物光頭素體的全身、半身、眨眼與嘴型影格；角色包提供髮型、服裝、身體修正與妝容圖層。引擎對衣著保持中立。墨寒素體 ID 為 `mohan-body-v2`。素體包與角色包分別下載；素體包依 lock 由 `tools/fetch_body_pack.py` 安裝。Reader 先驗證 manifest 與所有宣告檔案的 SHA-256，再記錄 PNG 畫布尺寸；只有請求影格或遮罩時才解碼像素。已驗證 PNG 位元組使用上限 16 MiB 的 LRU 快取，命中時仍核對檔案 stat。執行期快取保留量總上限為 64 MiB：素體驗證位元組 16 MiB、角色圖層位元組 8 MiB、pixmap 與合成影像 32 MiB、Alpha 區域 8 MiB；Qt 影像操作在 GUI 執行緒執行。
 
 使用者資料目錄的 `body-packs/<id>/manifest.json` 使用 schema `mohan.body-pack.v1`。必填 id、字串 version、非空 license、full_body、half_body、fingerprint。影格表以視角或姿勢 ID 為鍵，值是 `{path, sha256}`（rest）或狀態至檔案記錄的表。全身閉嘴狀態是 rest、half、closed；發聲狀態是 small、a、o 加連字號與眼睛狀態。只宣告 rest 的視角在發聲時回退至自身 rest，並記錄專用 family。此 renderer 不支援 wink；wink 請求會回報 `unsupported_wink`。半身使用 neutral、small、a、o 加連字號與眼睛狀態，例如 neutral-rest、a-closed；可用表情名稱作姿勢鍵，優先於 motion.pose。A 嘴型對應 a，O 與 U 對應 o，其餘發聲對應 small。
@@ -34,6 +36,8 @@ python tools/verify_body_pack_build.py --build-root "PATH_TO_EYES_CANDIDATE" --l
 ```
 
 ## 简体中文
+
+产品规则：「素体」表示完整素体加上角色默认发型，只保留 base、hair-back、hair-front 与 ornament，并按声明顺序合成；body-fix、makeup、garment、look-fix 及 base_hide 均不纳入素体合成。光头素体包帧供内部叠图使用；云裳阁、桌面全身、半身、截图与导出共用有发合成画面。加载时显示加载提示，缺少头发或渲染失败时显示错误。未声明素体包的墨寒维持原帧与原发髻。
 
 炎剑铸魂引擎只提供机制；素体包提供人物光头素体的全身、半身、眨眼和嘴型影格；角色包提供头发、服装、身体修正和妆容图层。引擎对衣着保持中立。墨寒素体 ID 是 `mohan-body-v2`，素体包与角色包分别下载；素体包按 lock 由 `tools/fetch_body_pack.py` 安装。Reader 先验证 manifest 和所有声明文件的 SHA-256，再记录 PNG 画布尺寸；只有请求影格或遮罩时才解码像素。已验证 PNG 字节使用上限 16 MiB 的 LRU 缓存，命中时仍检查文件 stat。运行期缓存保留量总上限为 64 MiB：素体验证字节 16 MiB、角色图层字节 8 MiB、pixmap 与合成图像 32 MiB、Alpha 区域 8 MiB；Qt 图像操作在 GUI 线程执行。
 
@@ -68,6 +72,8 @@ python tools/verify_body_pack_build.py --build-root "PATH_TO_EYES_CANDIDATE" --l
 
 ## English
 
+Product rule: Base body means the full body composed with the character default hairstyle. Keep only base, hair-back, hair-front, and ornament in their declared order; omit body-fix, makeup, garment, look-fix, and base_hide. Bald body frames are internal composition inputs. Wardrobe previews, desktop full-body, half-body, screenshots and exports share the composed character with hair. Loading shows a loading message; missing hair or rendering failure shows an error. MoHan without a declared body pack retains the original frames and bun.
+
 Soulforge owns mechanisms. Body packs own bald full-body and half-body frames, blinks and mouth states. Character packs own hair, garments, body fixes and makeup. Clothing is neutral. MoHan uses `mohan-body-v2`; Body packs and character packs are downloaded separately; `tools/fetch_body_pack.py` installs the body pack pinned by its lock. The reader verifies the manifest and every declared SHA-256 before use, records PNG canvas dimensions, and decodes pixels only when a frame or mask is requested. Verified PNG bytes use an LRU cache capped at 16 MiB, with a stat check on every cache hit. The retained runtime cache budget is 64 MiB: 16 MiB verified body bytes, 8 MiB verified layer bytes, 32 MiB pixmaps and composed images, and 8 MiB alpha regions. Qt image work runs on the GUI thread.
 
 The user data directory contains `body-packs/<id>/manifest.json`, schema `mohan.body-pack.v1`. Required fields are id, string version, nonempty license, full_body, half_body and fingerprint. Frame maps use view or pose IDs, pointing to `{path, sha256}` (rest) or state-to-file maps. Full-body neutral states use rest, half and closed; speaking uses small, a or o plus a hyphen and the eye state. A rest-only view falls back to its rest frame while speaking and records a dedicated family. This renderer does not support wink; wink requests raise `unsupported_wink`. Half-body uses neutral, small, a or o plus eye state, such as neutral-rest and a-closed. Expression names may be pose keys and precede motion.pose. A maps to a; O and U map to o; other speaking visemes map to small.
@@ -100,6 +106,8 @@ python tools/verify_body_pack_build.py --build-root "PATH_TO_EYES_CANDIDATE" --l
 ```
 
 ## 日本語
+
+製品規則：「素体」は素体フレームにキャラクターの既定髪型を重ねた表示です。base、hair-back、hair-front、ornament のみを宣言順で保持し、body-fix、makeup、garment、look-fix、base_hide は素体合成に含めません。坊主素体フレームは内部合成の入力です。衣装プレビュー、デスクトップ全身、半身、スクリーンショットと書き出しは髪を含む合成画像を共有します。読み込み中は案内を表示し、髪の欠落や描画失敗はエラーを表示します。素体パックを宣言しない墨寒は元のフレームと髷を保持します。
 
 炎剣鋳魂エンジンは仕組みを所有し、素体パックは人物の坊主素体の全身・半身・まばたき・口形フレームを所有します。キャラクターパックは髪・服・身体修正・化粧レイヤーを所有します。衣服条件は設けません。墨寒 ID は `mohan-body-v2`、素体パックとキャラクターパックは別々に取得し、素体パックは lock に従って `tools/fetch_body_pack.py` で導入します。Reader は manifest と宣言ファイルすべての SHA-256 を検証して PNG キャンバス寸法を記録し、フレームまたはマスクが要求された時にだけピクセルをデコードします。検証済み PNG バイト列は上限 16 MiB の LRU キャッシュを使い、キャッシュヒット時もファイル stat を確認します。 実行時の保持キャッシュ上限は 64 MiB です。内訳は素体の検証済みバイト列 16 MiB、検証済みレイヤーバイト列 8 MiB、pixmap と合成画像 32 MiB、Alpha 領域 8 MiB です。Qt の画像処理は GUI スレッドで行います。
 

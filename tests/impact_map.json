@@ -1339,6 +1339,7 @@
         "test_voice_prompt_integrity.py",
         "test_wardrobe_appearance_service.py",
         "test_wardrobe_appearance_ui.py",
+        "test_wardrobe_body_base.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_builtin_recovery.py",
         "test_wardrobe_context_wiring.py",
@@ -1771,6 +1772,7 @@
         "test_voice_prompt_integrity.py",
         "test_wardrobe_appearance_service.py",
         "test_wardrobe_appearance_ui.py",
+        "test_wardrobe_body_base.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_builtin_recovery.py",
         "test_wardrobe_corrupt_listing.py",
@@ -1973,6 +1975,7 @@
         "test_v4_vision_architecture_contracts.py",
         "test_vision_controller.py",
         "test_vision_fault_isolation.py",
+        "test_wardrobe_body_base.py",
         "test_wardrobe_context_wiring.py",
         "test_wardrobe_preview_composite.py",
         "test_wardrobe_ui.py",
@@ -2027,6 +2030,7 @@
         "test_source_bound_makeup.py",
         "test_wardrobe_appearance_service.py",
         "test_wardrobe_appearance_ui.py",
+        "test_wardrobe_body_base.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_builtin_recovery.py",
         "test_wardrobe_corrupt_listing.py",
@@ -2231,6 +2235,7 @@
         "test_visual_context_fusion.py",
         "test_visual_social_cues.py",
         "test_wardrobe_appearance_service.py",
+        "test_wardrobe_body_base.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_builtin_recovery.py",
         "test_wardrobe_corrupt_listing.py",
@@ -2449,7 +2454,8 @@
         "test_body_pack_reader.py",
         "test_body_pack_runtime.py",
         "test_fetch_body_pack.py",
-        "test_linkeyun_character_data.py"
+        "test_linkeyun_character_data.py",
+        "test_wardrobe_body_base.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -2569,6 +2575,7 @@
         "test_official_default_pack.py",
         "test_official_pack_ids_reservation.py",
         "test_outfit_pack_makeup.py",
+        "test_wardrobe_body_base.py",
         "test_wardrobe_body_profile_gate.py",
         "test_wardrobe_builtin_recovery.py",
         "test_wardrobe_corrupt_listing.py",
@@ -2703,7 +2710,8 @@
         "test_reviewed_native_face_rendering.py",
         "test_reviewed_pose_dynamic_source.py",
         "test_reviewed_pose_rendering.py",
-        "test_shyness.py"
+        "test_shyness.py",
+        "test_wardrobe_body_base.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4354,7 +4362,8 @@
       ],
       "tests": [
         "test_body_pack_compositor.py",
-        "test_body_pack_runtime.py"
+        "test_body_pack_runtime.py",
+        "test_wardrobe_body_base.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4426,21 +4435,22 @@
     },
     {
       "paths": [
-        "infrastructure/body_pack_renderer.py"
-      ],
-      "tests": [
-        "test_body_pack_runtime.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "infrastructure/complete_halfbody_renderer.py"
       ],
       "tests": [
         "test_body_pack_runtime.py",
         "test_character_native_frames.py",
         "test_complete_front_expressions.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "infrastructure/body_pack_renderer.py"
+      ],
+      "tests": [
+        "test_body_pack_runtime.py",
+        "test_wardrobe_body_base.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4484,6 +4494,7 @@
       "paths": [
         "assets/pose-atlas/v5-base-layered/complete_expression_manifest.json",
         "tools/build_body_pack.py",
+        "tools/lin_keyun_hair_partition.py",
         "tools/verify_body_pack_build.py"
       ],
       "tests": [

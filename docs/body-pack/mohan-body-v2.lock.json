@@ -2531,7 +2531,7 @@
   "source_manifest": {
     "bytes": 44295,
     "path": "docs/body-pack/source.json",
-    "sha256": "cebaa9dc215c77ba663503152187128537f70406703539239e7af1135d864592"
+    "sha256": "100f15f802ae2c991ca594a9f89efd430e328ca0d70d545add244ce1aaa67c58"
   },
   "validation_limits": {
     "max_archive_bytes": 1073741824,

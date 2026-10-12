@@ -56,5 +56,13 @@
     "simplified_chinese": "沿用先前批准的 28 格与林可芸三个已批准手势；本工单不重新批准或重算外观。",
     "traditional_chinese": "沿用先前核准的 28 格與林可芸三個已核准手勢；本工單不重新核准或重算外觀。"
   },
+  "semantic_cleanup": {
+    "authority": "Owner WARDROBE-BASE-1 second-round instruction, 2026-10-12",
+    "clothed_rgba_max": 0,
+    "current_layer_png_bytes": 19357039,
+    "layer_manifest_sha256": "85d484c3afb9beec5a074dd8d1a58d7040743d2a2a870560aa8f2c45dcb696da",
+    "physical_views": 31,
+    "rule": "Base mode composes body plus hair-back, hair-front and ornament only. Clothing edge pixels move from hair to garment with native RGBA unchanged."
+  },
   "ticket": "BODY-RELEASE-1"
 }

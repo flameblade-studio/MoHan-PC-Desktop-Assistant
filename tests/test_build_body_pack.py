@@ -844,3 +844,27 @@ def test_declared_missing_half_pose_is_skipped_not_failed() -> None:
     assert context.skipped == [
         {"case": "half/front-eureka", "reason": "pose declared in manifest.missing_body_poses"}
     ]
+
+
+def test_hair_cleanup_moves_clothing_edges_without_changing_rgba() -> None:
+    from tools.lin_keyun_hair_partition import clean_hair_layers
+
+    layers = {kind: builder.np.zeros((8, 8, 4), dtype=builder.np.uint8)
+              for kind in ("hair-back", "hair-front", "garment")}
+    hair = layers["hair-front"]
+    hair[0:6, 2] = (70, 45, 30, 255)
+    hair[0, 3] = (220, 220, 220, 255)  # Head highlight stays in hair.
+    hair[4, 3] = (234, 231, 239, 255)  # Connected shirt edge moves.
+    hair[7, 7] = (10, 10, 10, 255)  # Detached shoe outline moves.
+    core = builder.np.zeros((8, 8, 4), dtype=builder.np.uint8)
+    core[1, 4, 3] = 255
+    original = hair.copy()
+
+    counts = clean_hair_layers(layers, core)
+
+    assert counts == {"hair-back": 0, "hair-front": 2}
+    assert tuple(hair[0, 3]) == (220, 220, 220, 255)
+    assert builder.np.array_equal(hair[0:6, 2], original[0:6, 2])
+    assert tuple(layers["garment"][4, 3]) == (234, 231, 239, 255)
+    assert tuple(layers["garment"][7, 7]) == (10, 10, 10, 255)
+    assert builder.np.array_equal(hair + layers["garment"], original)

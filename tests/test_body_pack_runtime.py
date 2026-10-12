@@ -7,11 +7,13 @@ lazy import os
 lazy import time
 lazy from types import SimpleNamespace
 lazy import pytest
-lazy from PIL import Image
+lazy from PIL import Image, ImageColor
 lazy from PySide6.QtGui import QColor, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 lazy from domain.body_pack import BodyPackMismatchError
-lazy from domain.character_layer_plan import CharacterLayerAsset, CharacterLayerPlan
+lazy from domain.character_layer_plan import (
+    CharacterLayerAsset, CharacterLayerMask, CharacterLayerPlan, DEFAULT_CHARACTER_LAYER_ORDER,
+)
 lazy from domain.face_rig import FacePose, Viseme
 lazy from infrastructure.body_pack_renderer import (
     MAX_LAYER_BYTES_CACHE_BYTES,
@@ -41,11 +43,70 @@ def _png(color: str) -> bytes:
     return output.getvalue()
 
 
+_FAKE_LAYER_BYTES = {}
+
+
+def _layer(kind: str, color: str, size: tuple[int, int] = (4, 4)) -> CharacterLayerAsset:
+    output = io.BytesIO()
+    image = Image.new("RGBA", size, (0, 0, 0, 0))
+    image.putpixel((3, 3), ImageColor.getcolor(color, "RGBA"))
+    image.save(output, format="PNG")
+    data = output.getvalue()
+    digest = hashlib.sha256(data).hexdigest()
+    _FAKE_LAYER_BYTES[digest] = data
+    return CharacterLayerAsset(kind, f"{kind}.png", digest, (0, 0))
+
+
+def _mask(size: tuple[int, int], point: tuple[int, int]) -> CharacterLayerMask:
+    output = io.BytesIO()
+    image = Image.new("RGBA", size, (0, 0, 0, 0))
+    image.putpixel(point, (255, 255, 255, 255))
+    image.save(output, format="PNG")
+    data = output.getvalue()
+    digest = hashlib.sha256(data).hexdigest()
+    _FAKE_LAYER_BYTES[digest] = data
+    return CharacterLayerMask("base-hide.png", digest, (0, 0))
+
+
+def _hair_plan(
+    size: tuple[int, int] = (4, 4), *, missing: frozenset[str] = frozenset(),
+    garment: bool = False, base_hide: CharacterLayerMask | None = None,
+) -> CharacterLayerPlan:
+    layers = tuple(
+        _layer(kind, color, size)
+        for kind, color in (("hair-back", "blue"), ("hair-front", "yellow"))
+        if kind not in missing
+    )
+    if garment:
+        layers = (*layers, _layer("garment", "magenta", size))
+    return CharacterLayerPlan(DEFAULT_CHARACTER_LAYER_ORDER, layers, base_hide)
+
+
+class _AnyViewPlan(dict):
+    def __init__(self, plan: CharacterLayerPlan) -> None:
+        super().__init__()
+        self._plan = plan
+
+    def get(self, key, default=None):
+        return self._plan
+
+
+def _load_fake_layer(record) -> bytes:
+    return _FAKE_LAYER_BYTES[record.sha256]
+
+
+def _renderer(body, views=None, **options):
+    if views is None:
+        views = _AnyViewPlan(_hair_plan(body.frame_size))
+    return BodyPackRenderer(body, views, _load_fake_layer, **options)
+
+
 class _Body:
     manifest = SimpleNamespace(half_body=(SimpleNamespace(view_id="front"),))
 
     def __init__(self) -> None:
         self.calls = []
+        self.frame_size = (4, 4)
 
     def frame_keys(self, view: str, *, halfbody: bool = False) -> tuple[str, ...]:
         return ("rest", "half", "closed", "a-rest")
@@ -58,8 +119,10 @@ class _Body:
             raise BodyPackMismatchError("missing_frame", "Synthetic body endpoint is missing")
         return _png(colors[key])
 
-    def load_face_core(self, view: str) -> None:
-        return None
+    def load_face_core(self, view: str) -> bytes:
+        output = io.BytesIO()
+        Image.new("RGBA", self.frame_size, (0, 0, 0, 0)).save(output, format="PNG")
+        return output.getvalue()
 
 
 def _motion(viseme=Viseme.CLOSED, blink=0.0):
@@ -70,7 +133,7 @@ def _motion(viseme=Viseme.CLOSED, blink=0.0):
 
 def test_body_motion_and_halfbody_blink_use_owned_frames(qapp):
     body = _Body()
-    renderer = BodyPackRenderer(body, {}, lambda record: b"")
+    renderer = _renderer(body)
     full = renderer.render_view("back", _motion(Viseme.A))
     assert full.toImage().pixelColor(0, 0).name() == "#ffff00"
     half = renderer.render(QPixmap(), _motion(), None)
@@ -80,13 +143,43 @@ def test_body_motion_and_halfbody_blink_use_owned_frames(qapp):
                           ("front", "neutral-closed", True)]
 
 
+def test_rest_only_blink_recomposes_the_remembered_body_and_hair(qapp):
+    class RestOnlyBody(_Body):
+        def frame_keys(self, view: str, *, halfbody: bool = False) -> tuple[str, ...]:
+            return ("rest",)
+
+    renderer = _renderer(RestOnlyBody())
+    renderer.render(QPixmap(), _motion(), None)
+    caller_base = QPixmap(4, 4)
+    caller_base.fill(QColor("magenta"))
+
+    result = renderer.render_complete_blink(caller_base, "closed").toImage()
+
+    assert result.pixelColor(0, 0) == QColor("red")
+    assert result.pixelColor(3, 3) == QColor("yellow")
+
+
+def test_rest_eye_overlay_resolves_the_last_composed_body_and_hair(qapp):
+    renderer = _renderer(_Body())
+    renderer.render(QPixmap(), _motion(), None)
+    caller_base = QPixmap(4, 4)
+    caller_base.fill(QColor("magenta"))
+
+    result = renderer.render_overlay(
+        caller_base, QPixmap(), eye_state="rest",
+    ).toImage()
+
+    assert result.pixelColor(0, 0) == QColor("red")
+    assert result.pixelColor(3, 3) == QColor("yellow")
+
+
 def test_rest_only_view_keeps_speaking_and_blink_requests_on_rest(qapp):
     class RestOnlyBody(_Body):
         def frame_keys(self, view: str, *, halfbody: bool = False) -> tuple[str, ...]:
             return ("rest",)
 
     body = RestOnlyBody()
-    renderer = BodyPackRenderer(body, {}, lambda record: b"")
+    renderer = _renderer(body)
 
     frame = renderer.render(QPixmap(), _motion(Viseme.A), None)
     blink = renderer.render_complete_blink(frame, "closed")
@@ -100,7 +193,7 @@ def test_rest_only_view_keeps_speaking_and_blink_requests_on_rest(qapp):
 
 def test_composed_frame_cache_reuses_view_and_state(qapp):
     body = _Body()
-    renderer = BodyPackRenderer(body, {}, lambda record: b"")
+    renderer = _renderer(body)
 
     first = renderer.render_view("back", _motion(Viseme.A))
     second = renderer.render_view("back", _motion(Viseme.A))
@@ -113,6 +206,7 @@ def test_1024_by_1536_repeated_frame_uses_composition_cache(qapp):
     class LargeBody(_Body):
         def __init__(self, frame: bytes) -> None:
             super().__init__()
+            self.frame_size = (LARGE_FRAME_WIDTH, LARGE_FRAME_HEIGHT)
             self.frame = frame
 
         def load_frame(self, view: str, key: str, *, halfbody: bool = False) -> bytes:
@@ -122,7 +216,7 @@ def test_1024_by_1536_repeated_frame_uses_composition_cache(qapp):
     output = io.BytesIO()
     Image.new("RGBA", (LARGE_FRAME_WIDTH, LARGE_FRAME_HEIGHT), "red").save(output, format="PNG")
     body = LargeBody(output.getvalue())
-    renderer = BodyPackRenderer(body, {}, lambda record: b"")
+    renderer = _renderer(body)
 
     started = time.perf_counter()
     first = renderer.render_view("back", _motion(Viseme.A))
@@ -139,7 +233,7 @@ def test_1024_by_1536_repeated_frame_uses_composition_cache(qapp):
 
 
 def test_renderer_pixmap_and_layer_byte_caches_obey_separate_budgets(qapp):
-    renderer = BodyPackRenderer(_Body(), {}, lambda record: b"")
+    renderer = _renderer(_Body())
     pixmap = QPixmap(LARGE_FRAME_WIDTH, LARGE_FRAME_HEIGHT)
     pixmap.fill(QColor("green"))
     for index in range(6):
@@ -166,7 +260,7 @@ def test_renderer_pixmap_and_layer_byte_caches_obey_separate_budgets(qapp):
 
 def test_fullbody_render_does_not_replace_halfbody_wink_context(qapp):
     body = _Body()
-    renderer = BodyPackRenderer(body, {}, lambda record: b"")
+    renderer = _renderer(body)
 
     half = renderer.render(QPixmap(), _motion(), None)
     renderer.render_view("back", _motion())
@@ -182,7 +276,7 @@ def test_fullbody_render_does_not_replace_halfbody_wink_context(qapp):
 
 def test_last_context_applies_to_copied_and_scaled_frame(qapp):
     body = _Body()
-    renderer = BodyPackRenderer(body, {}, lambda record: b"")
+    renderer = _renderer(body)
     rendered = renderer.render(QPixmap(), _motion(), None)
     copied = QPixmap(rendered)
     scaled = rendered.scaled(8, 8)
@@ -199,7 +293,7 @@ def test_last_context_applies_to_copied_and_scaled_frame(qapp):
 
 
 def test_wink_is_rejected_by_body_pack_renderer(qapp):
-    renderer = BodyPackRenderer(_Body(), {}, lambda record: b"")
+    renderer = _renderer(_Body())
 
     assert renderer.supports_wink is False
     with pytest.raises(BodyPackMismatchError, match="unsupported_wink"):
@@ -207,7 +301,7 @@ def test_wink_is_rejected_by_body_pack_renderer(qapp):
 
 
 def test_missing_motion_endpoint_raises_without_shared_fallback(qapp):
-    renderer = BodyPackRenderer(_Body(), {}, lambda record: b"")
+    renderer = _renderer(_Body())
     with pytest.raises(BodyPackMismatchError, match="missing_frame"):
         renderer.render_view("back", _motion(Viseme.A, blink=1.0))
 
@@ -260,7 +354,7 @@ def test_undeclared_structural_source_keeps_legacy_fullbody_route(tmp_path):
 
 
 def test_unknown_halfbody_blink_endpoint_raises_before_legacy_patch(qapp):
-    renderer = BodyPackRenderer(_Body(), {}, lambda record: b"")
+    renderer = _renderer(_Body())
     with pytest.raises(BodyPackMismatchError, match="missing_frame_context"):
         renderer.render_complete_blink(QPixmap(), "closed")
 
@@ -278,8 +372,8 @@ class _FaceCoreBody(_Body):
 
     def load_face_core(self, view: str) -> bytes:
         output = io.BytesIO()
-        mask = Image.new("RGBA", (4, 4))
-        mask.paste((255, 255, 255, 255), (0, 0, 2, 4))
+        mask = Image.new("RGBA", self.frame_size)
+        mask.paste((255, 255, 255, 255), (0, 0, 2, self.frame_size[1]))
         mask.save(output, format="PNG")
         return output.getvalue()
 
@@ -305,11 +399,13 @@ class _SelectedMakeup:
 
 @pytest.mark.parametrize("with_plan", [False, True])
 def test_body_makeup_switch_changes_only_face_core_and_bare_equals_unpainted(qapp, with_plan):
-    plans = {"front": CharacterLayerPlan(("base",), ())} if with_plan else {}
+    body = _FaceCoreBody()
+    plan = _hair_plan(body.frame_size)
+    plans = {"front": plan} if with_plan else _AnyViewPlan(plan)
     selected = _SelectedMakeup()
-    renderer = BodyPackRenderer(_FaceCoreBody(), plans, lambda record: b"", apply_makeup=selected)
+    renderer = _renderer(body, plans, apply_makeup=selected)
     bare = renderer.render_view("front", _motion()).toImage()
-    unpainted = BodyPackRenderer(_FaceCoreBody(), plans, lambda record: b"").render_view(
+    unpainted = _renderer(_FaceCoreBody(), plans).render_view(
         "front", _motion(),
     ).toImage()
     assert bare == unpainted
@@ -330,7 +426,7 @@ def test_body_makeup_switch_changes_only_face_core_and_bare_equals_unpainted(qap
 
 def test_body_makeup_receives_fullbody_and_halfbody_eye_mouth_context(qapp):
     selected = _SelectedMakeup()
-    renderer = BodyPackRenderer(_FaceCoreBody(), {}, lambda record: b"", apply_makeup=selected)
+    renderer = _renderer(_FaceCoreBody(), apply_makeup=selected)
     renderer.render_view("front", _motion(Viseme.A))
     renderer.render_view("front", _motion(blink=1.0))
     frame = renderer.render(QPixmap(), _motion(Viseme.A), None)
@@ -365,7 +461,7 @@ def test_body_makeup_expression_silhouette_matches_complete_halfbody(qapp, expre
 
     body = _FaceCoreBody()
     body.load_frame = lambda *args, **kwargs: _png("red")
-    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=apply)
+    renderer = _renderer(body, apply_makeup=apply)
     motion = _motion(Viseme.A)
     motion.expression = expression
     renderer._compose(silhouette, f"a-{eye}", halfbody=True, expression=motion.expression)
@@ -381,7 +477,7 @@ def test_body_makeup_selected_pose_overrides_live_expression_during_blink(qapp):
 
     body = _FaceCoreBody()
     body.load_frame = lambda *args, **kwargs: _png("red")
-    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=apply)
+    renderer = _renderer(body, apply_makeup=apply)
     motion = _motion(Viseme.A)
     motion.expression = "attentive_front"
     frame = renderer.render(QPixmap(), motion, None)
@@ -397,7 +493,7 @@ def test_body_fullbody_makeup_keeps_yaw_view_for_a_halfbody_expression(qapp):
         calls.append((view, eye, viseme))
         return frame
 
-    renderer = BodyPackRenderer(_FaceCoreBody(), {}, lambda record: b"", apply_makeup=apply)
+    renderer = _renderer(_FaceCoreBody(), apply_makeup=apply)
     motion = _motion(Viseme.A)
     motion.expression = "attentive_front"
     renderer.render_view("yaw+000-pitch+00", motion)
@@ -416,7 +512,7 @@ def test_body_makeup_manifest_alias_uses_exact_source_frame_bindings(qapp, alias
     ))
     body.load_frame = lambda *args, **kwargs: _png("red")
     selected = _SelectedMakeup()
-    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=selected)
+    renderer = _renderer(body, apply_makeup=selected)
     renderer._compose(alias, "a-rest", halfbody=True, expression="attentive_front")
     assert selected.calls == [("front-crossed", "rest", None)]
 
@@ -425,6 +521,6 @@ def test_body_makeup_small_family_uses_product_viseme_i(qapp):
     selected = _SelectedMakeup()
     body = _FaceCoreBody()
     body.load_frame = lambda *args, **kwargs: _png("red")
-    renderer = BodyPackRenderer(body, {}, lambda record: b"", apply_makeup=selected)
+    renderer = _renderer(body, apply_makeup=selected)
     renderer._compose("front-attentive_front", "small-rest", halfbody=True)
     assert selected.calls == [("front-attentive_front", "rest", "I")]

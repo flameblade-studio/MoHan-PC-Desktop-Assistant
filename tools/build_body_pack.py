@@ -50,6 +50,8 @@ MOTION_LIMIT_PX = 6
 HAIR_SPLIT_TOP = 450
 LAYER_KINDS = ("hair-back", "body-fix", "garment", "hair-front")
 
+lazy from tools.lin_keyun_hair_partition import clean_hair_layers
+
 
 def write_json(path: Path, value: object) -> None:
     """Use sorted keys, UTF-8 and LF without timestamps or host metadata."""
@@ -203,7 +205,7 @@ def _gesture_masks(source: Path, size: tuple[int, int]) -> dict[str, np.ndarray]
 
 def _write_unweighted_layers(
     destination: Path, base: np.ndarray, approved: np.ndarray,
-    masks: dict[str, np.ndarray],
+    masks: dict[str, np.ndarray], *, face_core: Image.Image | None = None,
 ) -> dict[str, str]:
     """Partition native A with empty F; only the compositor applies face weights."""
     base = base.copy()
@@ -221,9 +223,14 @@ def _write_unweighted_layers(
     cleared[hide] = 0
     rendered = Image.fromarray(cleared)
     outputs = {}
+    layers = {}
     for kind, mask in masks.items():
         pixels = np.zeros_like(overlay)
         pixels[mask] = overlay[mask]
+        layers[kind] = pixels
+    if face_core is not None:
+        clean_hair_layers(layers, np.asarray(face_core))
+    for kind, pixels in layers.items():
         image = Image.fromarray(pixels)
         outputs[f"{kind}.png"] = write_frame(destination, f"{kind}.png", image)["sha256"]
         rendered = Image.alpha_composite(rendered, image)
@@ -248,7 +255,7 @@ def recompute_gesture_layers(source: Path, target: Path, view: str) -> Path:
     approved[approved[..., 3] == 0] = 0
     core = read_mask(source / "face-core-mask.png")
     masks = _gesture_masks(source, core.size)
-    outputs = _write_unweighted_layers(destination, base, approved, masks)
+    outputs = _write_unweighted_layers(destination, base, approved, masks, face_core=core)
     outputs["face-core-mask.png"] = write_frame(destination, "face-core-mask.png", core)["sha256"]
     delta = np.abs(np.asarray(read_image(destination / "composite.png"), dtype=np.int16)
                    - approved.astype(np.int16))
@@ -344,6 +351,7 @@ def recompute_layer_view(layers_root: Path, bald_root: Path, target: Path,
     outputs = _write_unweighted_layers(
         destination, np.asarray(read_image(bald_root / view / "bald-natural.png")),
         np.asarray(read_image(destination / approved_name)), owners,
+        face_core=read_mask(destination / "face-core-mask.png"),
     )
     metadata = _input_manifest(destination / "manifest.json")
     output_key = "files" if "files" in metadata else "outputs"
