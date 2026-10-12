@@ -55,7 +55,7 @@ lazy from domain.outfit_pack_official import (
 # the built-in classic makeup) and is kept stable so saved profiles keep working.
 BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"
 BODY_OUTFIT_ID = "body"
-BODY_OUTFIT_NAMES = {"zh-TW": "素體", "zh-CN": "素体", "en": "Base body", "ja": "素体"}
+BODY_OUTFIT_NAMES = frozendict({"zh-TW": "素體", "zh-CN": "素体", "en": "Base body", "ja": "素体"})
 BUILTIN_OUTFIT_FALLBACK_NAME = (
     f"{default_character_display_name('zh-TW')}藍白漢服"
 )
