@@ -210,12 +210,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 443,
+              "line": 456,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 444,
+              "line": 457,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }

@@ -29,7 +29,7 @@
       "sha256": "8389c8fd193219da68301111c20fd5cc9dae79183808aeec661a6c488af238f2"
     },
     {
-      "bytes": 602,
+      "bytes": 626,
       "category": "character_appearance_defaults",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -43,7 +43,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "e2e96bca1a22dec68e09665d85eaa45109588cd9c7f7e8544623b235e6f104da"
+      "sha256": "8f0074c6f21f5ed12b20b1a3656d2507b75b71e82cb55bbe57cfe4b54741c43f"
     },
     {
       "bytes": 3492,

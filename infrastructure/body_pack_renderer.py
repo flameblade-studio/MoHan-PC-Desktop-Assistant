@@ -19,6 +19,7 @@ CLOSED_APERTURE = 0.01
 MAX_PIXMAP_CACHE_BYTES = 32 * 1024 * 1024
 MAX_LAYER_BYTES_CACHE_BYTES = 8 * 1024 * 1024
 REST_ONLY_FAMILY = "rest-only"
+MakeupApplier = Callable[[QPixmap, str, str, str | None], QPixmap]
 
 
 class BodyPackRenderer:
@@ -39,10 +40,12 @@ class BodyPackRenderer:
     def __init__(
         self, body: BodyPackSource, views: Mapping[str, CharacterLayerPlan],
         load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
+        *, apply_makeup: MakeupApplier | None = None,
     ) -> None:
         self._body = body
         self._views = views
         self._load_layer = load_layer
+        self._apply_makeup = apply_makeup
         self._last_context: tuple[str, str] | None = None
         self._pixmaps: OrderedDict[tuple[object, ...], tuple[QPixmap, int]] = OrderedDict()
         self._pixmap_cache_bytes = 0
@@ -112,18 +115,29 @@ class BodyPackRenderer:
 
     def _compose(self, view: str, state: str, *, halfbody: bool = False) -> QPixmap:
         cache_key = ("composed", view, state, halfbody)
-        cached = self._cached_pixmap(cache_key)
-        if cached is not None:
-            return cached
-        base_data = self._body.load_frame(view, state, halfbody=halfbody)
-        base = self._pixmap(base_data)
+        if self._apply_makeup is None:
+            cached = self._cached_pixmap(cache_key)
+            if cached is not None:
+                return cached
+        body_key = ("body", view, state, halfbody)
+        base = self._cached_pixmap(body_key)
+        if base is None:
+            base = self._pixmap(self._body.load_frame(view, state, halfbody=halfbody))
+            self._cache_pixmap(body_key, base)
+        makeup_base = None
+        if self._apply_makeup is not None:
+            eye = state.rsplit("-", 1)[-1]
+            family = state.split("-", 1)[0]
+            viseme = {"a": "A", "o": "O", "small": "CONSONANT"}.get(family)
+            makeup_base = self._apply_makeup(base, view, eye, viseme)
+            cache_key += (makeup_base.cacheKey(),)
+            cached = self._cached_pixmap(cache_key)
+            if cached is not None:
+                return cached
         mask = self._body.load_face_core(view)
         core = None if mask is None else self._pixmap(mask)
         plan = self._views.get(view)
-        if plan is None:
-            self._cache_pixmap(cache_key, base)
-            return base
-        if mask is None and (plan.layers or plan.base_hide is not None):
+        if mask is None and plan is not None and (plan.layers or plan.base_hide is not None):
             error = BodyPackMismatchError(
                 "face_core_required",
                 "Provide a body-owned face-core mask for a view with character layers; "
@@ -135,7 +149,9 @@ class BodyPackRenderer:
         def image(record: CharacterLayerAsset | CharacterLayerMask) -> QPixmap:
             return self._pixmap(self._layer_data(record), record.sha256)
 
-        result = compose_body_pack_frame(base, plan, image, face_core=core)
+        result = compose_body_pack_frame(
+            base, plan, image, face_core=core, makeup_base=makeup_base,
+        )
         self._cache_pixmap(cache_key, result)
         return result
 
@@ -221,8 +237,9 @@ class BodyPackRenderer:
 def create_body_pack_renderer(
     body: BodyPackSource | None, views: Mapping[str, CharacterLayerPlan],
     load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
+    *, apply_makeup: MakeupApplier | None = None,
 ) -> BodyPackRenderer:
     """Build a renderer from a structurally compatible body-pack source."""
     if body is None:
         raise TypeError("A resolved body-pack source is required.")
-    return BodyPackRenderer(body, views, load_layer)
+    return BodyPackRenderer(body, views, load_layer, apply_makeup=apply_makeup)

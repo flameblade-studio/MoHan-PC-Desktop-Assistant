@@ -30,6 +30,7 @@ def compose_body_pack_frame(
     plan: CharacterLayerPlan | None,
     load_image: ImageLoader,
     face_core: QPixmap | None = None,
+    *, makeup_base: QPixmap | None = None,
 ) -> QPixmap:
     """Blend the protected body and declared character stack on the GUI thread.
 
@@ -60,8 +61,9 @@ def compose_body_pack_frame(
     素体パックだけが F_body を定義し、L と H は元の Alpha を保持し、
     顔保護は最終補間で一度適用します。
     """
-    if plan is None:
+    if plan is None and (makeup_base is None or face_core is None):
         return QPixmap(base)
+    plan = plan or CharacterLayerPlan(("base",), ())
     if base.isNull():
         raise ValueError("Body-pack composition requires a valid base frame.")
 
@@ -93,7 +95,9 @@ def compose_body_pack_frame(
 
     character = QPixmap(base.size())
     character.fill(Qt.transparent)
-    protected_body = QPixmap(base)
+    protected_body = QPixmap(base if makeup_base is None else makeup_base)
+    if protected_body.isNull() or protected_body.size() != base.size():
+        raise ValueError("Makeup body must match the decoded base canvas.")
     character_painter = QPainter(character)
     body_painter = QPainter(protected_body)
     try:

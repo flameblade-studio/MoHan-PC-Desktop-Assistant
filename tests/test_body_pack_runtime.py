@@ -8,10 +8,10 @@ lazy import time
 lazy from types import SimpleNamespace
 lazy import pytest
 lazy from PIL import Image
-lazy from PySide6.QtGui import QColor, QPixmap
+lazy from PySide6.QtGui import QColor, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 lazy from domain.body_pack import BodyPackMismatchError
-lazy from domain.character_layer_plan import CharacterLayerAsset
+lazy from domain.character_layer_plan import CharacterLayerAsset, CharacterLayerPlan
 lazy from domain.face_rig import FacePose, Viseme
 lazy from infrastructure.body_pack_renderer import (
     MAX_LAYER_BYTES_CACHE_BYTES,
@@ -263,3 +263,70 @@ def test_unknown_halfbody_blink_endpoint_raises_before_legacy_patch(qapp):
     renderer = BodyPackRenderer(_Body(), {}, lambda record: b"")
     with pytest.raises(BodyPackMismatchError, match="missing_frame_context"):
         renderer.render_complete_blink(QPixmap(), "closed")
+
+
+class _FaceCoreBody(_Body):
+    def load_face_core(self, view: str) -> bytes:
+        output = io.BytesIO()
+        mask = Image.new("RGBA", (4, 4))
+        mask.paste((255, 255, 255, 255), (0, 0, 2, 4))
+        mask.save(output, format="PNG")
+        return output.getvalue()
+
+
+class _SelectedMakeup:
+    def __init__(self) -> None:
+        self.variant = "none"
+        self.calls = []
+
+    def __call__(self, base, view, eye, viseme):
+        self.calls.append((view, eye, viseme))
+        result = QPixmap(base)
+        if self.variant != "none":
+            painter = QPainter(result)
+            try:
+                painter.fillRect(result.rect(), QColor({
+                    "classic": "magenta", "light": "pink", "glamorous": "purple",
+                }[self.variant]))
+            finally:
+                painter.end()
+        return result
+
+
+@pytest.mark.parametrize("with_plan", [False, True])
+def test_body_makeup_switch_changes_only_face_core_and_bare_equals_unpainted(qapp, with_plan):
+    plans = {"front": CharacterLayerPlan(("base",), ())} if with_plan else {}
+    selected = _SelectedMakeup()
+    renderer = BodyPackRenderer(_FaceCoreBody(), plans, lambda record: b"", apply_makeup=selected)
+    bare = renderer.render_view("front", _motion()).toImage()
+    unpainted = BodyPackRenderer(_FaceCoreBody(), plans, lambda record: b"").render_view(
+        "front", _motion(),
+    ).toImage()
+    assert bare == unpainted
+    outputs = []
+    variants = ("classic", "light", "glamorous")
+    for variant in variants:
+        selected.variant = variant
+        image = renderer.render_view("front", _motion()).toImage()
+        assert image.pixelColor(0, 0) != bare.pixelColor(0, 0)
+        for x in (2, 3):
+            for y in range(4):
+                assert image.pixelColor(x, y) == bare.pixelColor(x, y)
+        outputs.append(image.pixelColor(0, 0).name())
+    assert len(set(outputs)) == len(variants)
+    selected.variant = "none"
+    assert renderer.render_view("front", _motion()).toImage() == bare
+
+
+def test_body_makeup_receives_fullbody_and_halfbody_eye_mouth_context(qapp):
+    selected = _SelectedMakeup()
+    renderer = BodyPackRenderer(_FaceCoreBody(), {}, lambda record: b"", apply_makeup=selected)
+    renderer.render_view("front", _motion(Viseme.A))
+    renderer.render_view("front", _motion(blink=1.0))
+    frame = renderer.render(QPixmap(), _motion(Viseme.A), None)
+    renderer.render_complete_blink(frame, "half")
+    renderer.render_complete_blink(frame, "closed")
+    assert selected.calls == [
+        ("front", "rest", "A"), ("front", "closed", None),
+        ("front", "rest", "A"), ("front", "half", "A"), ("front", "closed", "A"),
+    ]

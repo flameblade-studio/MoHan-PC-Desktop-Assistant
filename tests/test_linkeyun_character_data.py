@@ -414,8 +414,8 @@ def test_linkeyun_appearance_defaults_load_with_explicitly_no_headwear() -> None
         "menu_variants": ["light", "classic", "glamorous"],
         "always_visible_variants": ["light", "classic"],
     }
-    assert defaults.makeup_pack_id == "builtin"
-    assert defaults.makeup_item_id == "none"
+    assert defaults.makeup_pack_id == "mohan.makeup.builtin"
+    assert defaults.makeup_item_id == "mohan-signature"
     assert defaults.outfit_pack_id == "linkeyun.official.modern-office"
     assert defaults.outfit_ensemble_id == "modern-office"
     assert (defaults.native_hair.item_id, defaults.native_hair.variant_id) == (

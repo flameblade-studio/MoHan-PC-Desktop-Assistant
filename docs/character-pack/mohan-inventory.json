@@ -414,7 +414,7 @@
       "work_package": null
     },
     {
-      "bytes": 30188,
+      "bytes": 30711,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -425,7 +425,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 443,
+          "line": 456,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -435,7 +435,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 444,
+          "line": 457,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -455,7 +455,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "381b464d7b503b8feaccf94e3222ce24c881737eeb05cdf4db6c746565a0a003",
+      "sha256": "55b6c3a5b8c80d9275ecab8cdff740cb9645fe34698894499318750ba5a23019",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -506,58 +506,58 @@
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 478,
+          "end_line": 491,
           "line": 325,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 484,
-          "line": 481,
+          "end_line": 497,
+          "line": 494,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 490,
-          "line": 487,
+          "end_line": 503,
+          "line": 500,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 532,
-          "line": 493,
+          "end_line": 545,
+          "line": 506,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 545,
-          "line": 535,
+          "end_line": 558,
+          "line": 548,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 565,
-          "line": 548,
+          "end_line": 578,
+          "line": 561,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 586,
-          "line": 568,
+          "end_line": 599,
+          "line": 581,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 605,
-          "line": 589,
+          "end_line": 618,
+          "line": 602,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 625,
-          "line": 608,
+          "end_line": 638,
+          "line": 621,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 645,
-          "line": 628,
+          "end_line": 658,
+          "line": 641,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 800,
-          "line": 648,
+          "end_line": 813,
+          "line": 661,
           "name": "create_default_services"
         }
       ],
@@ -2918,7 +2918,7 @@
       "sha256": "8389c8fd193219da68301111c20fd5cc9dae79183808aeec661a6c488af238f2"
     },
     {
-      "bytes": 602,
+      "bytes": 626,
       "category": "character_appearance_defaults",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -2932,7 +2932,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "e2e96bca1a22dec68e09665d85eaa45109588cd9c7f7e8544623b235e6f104da"
+      "sha256": "8f0074c6f21f5ed12b20b1a3656d2507b75b71e82cb55bbe57cfe4b54741c43f"
     },
     {
       "bytes": 3492,

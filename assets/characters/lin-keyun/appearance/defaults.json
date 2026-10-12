@@ -1,20 +1,20 @@
 {
   "makeup": {
-    "always_visible_variants": [
+    "pack_id": "mohan.makeup.builtin",
+    "item_id": "mohan-signature",
+    "variants": [
+      "classic",
       "light",
-      "classic"
+      "glamorous"
     ],
-    "item_id": "none",
     "menu_variants": [
       "light",
       "classic",
       "glamorous"
     ],
-    "pack_id": "builtin",
-    "variants": [
-      "classic",
+    "always_visible_variants": [
       "light",
-      "glamorous"
+      "classic"
     ]
   },
   "outfit": {

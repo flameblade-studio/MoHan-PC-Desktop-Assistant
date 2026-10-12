@@ -16,6 +16,8 @@ H 是 base_hide：任一 H.alpha>0 都在混合前完全清除素體 B，不讀�
 
 角色包作者契約：素體包獨佔臉部核心；H.alpha>0 不受 F_alpha 影響，會完全清除 B。依 plan.order 建立 X：base 項是 H 清除後的 B，所有非 makeup 角色層以原始 alpha 一般 SourceOver；B′ 是 B 加 makeup SourceAtop，makeup 不在 X 內。唯一合成公式為 R = B′ * F_alpha + X * (1 - F_alpha)，逐像素對預乘 RGBA 做線性插值。base 依宣告順序定位，hair-back 同樣參與公式；L 與 H 均不預乘 F_alpha。建置時以空集合 F 產生 H＝B.alpha>0 且 A.alpha<255、L 包含 A 與 B 不同處的 A，也重畫 H 清除後相同的半透明 A；保留原始分層與深度。
 
+妝容：B′ 由角色預設的妝容包依目前選擇的經典、淡妝、華麗妝或素顏套用在素體上，視角、姿勢、眨眼與嘴型狀態跟隨素體影格。素顏保留原始素體；最終公式只在 F 內使用 B′，F 外的角色圖層與服裝保持原樣。
+
 ### 建置流程
 
 以下是候選生成參考流程，採用 --mode all --recompute-layers；重用重算圖層前會核對 SHA-256。本工單使用已指定來源，不執行這套外觀重算。重算沿用核准 F1／F2／H 腳本並將輸出導向候選的 lin-keyun-layers/recomputed/。face-core 以靜止遮罩非零 Alpha 包圍盒計算頭部 ROI：左右各外擴盒寬的 40%，上方外擴盒高的 40%，下方外擴盒高的 25%，距離向上取整並裁至畫布。只在 ROI 比較各狀態與靜止原影格的 RGBA 最大通道差；差異須大於 8，兩側皆透明時忽略 RGB。S 為靜止 F 的二值核心（alpha≥128）。聯集各狀態差異後做 3×3 開運算，動作像素 M 限制在 dilate(S, 6 px) 內。先聯集 U＝S ∪ M，再以來源宣告的靜止羽化半徑（F1 為 4 px，F2／半身／三手勢為 5 px）對 U 整體做距離線性羽化；共用素體姿勢的表情先合併二值 M，最後只羽化一次。manifest 以 missing_body_poses 明列三種缺姿勢狀態。Qt 合成數值驗收比較預乘 RGB 與 Alpha：羽化帶相對公式參考最大通道差須 ≤1；F_alpha=0（臉部核心外）與核准 A 最大差須 ≤1；F_alpha=255 處與 B′ 最大差須 ≤1。羽化帶另以 3 倍圖審查額際、太陽穴、鬢角與下巴的接縫、雙影和硬切；外觀審查結果獨立記錄。核准重組使用 F_LK；原始 RGBA 差僅供診斷，完全透明像素的 RGB 不參與數值驗收。
@@ -46,6 +48,8 @@ Layer_views 含可选 order、layers、base_hide。Layer 为 `{kind, path, sha25
 H 是 base_hide：任一 H.alpha>0 都在混合前完全清除素体 B，不读取或应用 F_alpha。按 plan.order 逐项建立 X；base 项放入 H 清除后的 B，其余非 makeup 角色层以原始 alpha 一般 SourceOver 叠加。B′ 是 B 加 makeup SourceAtop，makeup 不加入 X。base 项遵循声明顺序，hair-back 没有例外；角色层 L 与遮罩 H 都不预乘 F_alpha。有图层或隐藏遮罩的视角必须有核心遮罩，无可见脸部用全透明核心遮罩明确声明。缺影格明确报错。技术验证与外观批准分开；测试、边界和 GOLDEN_MATCH 交 CI。
 
 角色包作者契约：素体包独占脸部核心；H.alpha>0 不受 F_alpha 影响，会完全清除 B。按 plan.order 建立 X：base 项是 H 清除后的 B，所有非 makeup 角色层以原始 alpha 一般 SourceOver；B′ 是 B 加 makeup SourceAtop，makeup 不在 X 内。唯一合成公式为 R = B′ * F_alpha + X * (1 - F_alpha)，逐像素对预乘 RGBA 做线性插值。base 按声明顺序定位，hair-back 同样参与公式；L 与 H 均不预乘 F_alpha。构建时以空集合 F 生成 H＝B.alpha>0 且 A.alpha<255、L 包含 A 与 B 不同处的 A，也重画 H 清除后相同的半透明 A；保留原始分层与深度。
+
+妆容：B′ 由角色默认的妆容包按当前选择的经典、淡妆、华丽妆或素颜应用在素体上，视角、姿势、眨眼与口型状态跟随素体帧。素颜保留原始素体；最终公式只在 F 内使用 B′，F 外的角色图层与服装保持原样。
 
 ### 构建流程
 
@@ -78,6 +82,8 @@ H is base_hide: any H.alpha>0 fully clears body B before blending, regardless of
 
 Character-package author contract: the body pack owns the face core. Any H.alpha>0 fully clears B, independent of F_alpha. Walk plan.order to build X: paint H-cleared B at the base stage and SourceOver every other non-makeup role layer with native alpha; B′ is B with makeup applied SourceAtop, and makeup is excluded from X. The sole composition formula is R = B′ * F_alpha + X * (1 - F_alpha), a per-pixel linear interpolation of premultiplied RGBA. The base stage follows its declared position; hair-back follows the same formula. Do not preweight role layers L or mask H by F_alpha. Build with empty F: H＝B.alpha>0 and A.alpha<255; L contains A where A differs from B and repaints identical translucent A after H clears B. Preserve semantic partitions and depth.
 
+Makeup: B′ applies the character?s default makeup pack to the body using the selected classic, light, glamorous, or bare-face option and the body frame?s view, pose, blink, and mouth state. Bare face preserves the original body. The final formula uses B′ inside F, preserving character layers and clothing outside F.
+
 ### Build workflow
 
 The following is a reference candidate-generation procedure using --mode all --recompute-layers; reused layers are checked by SHA-256. This ticket uses its designated source without recomputing appearance. Run the approved F1/F2/H scripts and redirect output to candidate lin-keyun-layers/recomputed/. Compute the head ROI from the nonzero-alpha static-mask box: expand left and right by the ceiling of 40% of its width, top by 40% of its height and bottom by 25%, clamped to the canvas. Compare each state with rest only inside the ROI; include pixels whose maximum absolute RGBA channel difference is greater than 8, ignoring RGB when both pixels are fully transparent. S is the binary static F core (alpha≥128). Union state differences, apply a 3×3 morphological opening and restrict motion M to dilate(S, 6 px). Form U = S ∪ M before applying one distance-linear feather to the entire union with the source's static radius (4 px for F1; 5 px for F2, half-body and gestures). Expressions sharing a body pose union their binary motion masks before the single feather step. The manifest lists all three missing poses under missing_body_poses. Numeric Qt composition acceptance compares premultiplied RGB and Alpha: the feather band must differ from the formula reference by at most 1; pixels outside the core (F_alpha=0) must differ from approved A by at most 1; pixels with F_alpha=255 must differ from B′ by at most 1. Review the feather band at 3x for seams, double images or hard cuts at the forehead, temples, sideburns and chin, and record appearance review separately. Approved reconstructions use F_LK. Raw RGBA differences remain diagnostic; RGB in fully transparent pixels is excluded from numeric acceptance.
@@ -108,6 +114,8 @@ Layer_views は任意の order・layers・base_hide を持ちます。レイヤ�
 H は base_hide で、H.alpha>0 の画素では F_alpha に関係なく合成前に素体 B を完全に消去します。plan.order を順にたどって X を作り、base の位置に H 消去後の B を描き、makeup 以外の各レイヤーを元の Alpha のまま通常の SourceOver で重ねます。B′ は B に makeup を SourceAtop で重ねた結果で、makeup は X に含めません。base は宣言順に従い、hair-back に例外はありません。レイヤー L とマスク H に F_alpha を事前適用しません。レイヤーか非表示マスクがある視点には核心マスクを必須とし、顔が見えない視点は全透明マスクで宣言します。欠落フレームは明示エラーです。技術検証と外観承認を分け、テスト・境界・GOLDEN_MATCH は CI で検証します。
 
 キャラクターパック作者の契約：顔核心は素体パックが所有します。H.alpha>0 は F_alpha に関係なく B を完全に消去します。plan.order に従い X を作り、base の位置に H 消去後の B を描き、makeup 以外の各レイヤーを元の Alpha のまま通常の SourceOver で重ねます。B′ は B に makeup を SourceAtop で重ねた結果で、makeup は X に含めません。唯一の合成式は R = B′ * F_alpha + X * (1 - F_alpha) で、乗算済み RGBA の画素ごとの線形補間です。base は宣言順に従い、hair-back も同じ式に従います。レイヤー L とマスク H に F_alpha を事前適用しません。空の F で H＝B.alpha>0 かつ A.alpha<255、L は A と B が異なる画素の A を含み、H 消去後に同じ半透明 A も再描画します。元の分層と深度を維持します。
+
+メイク：B′ はキャラクター既定のメイクパックを素体に適用し、選択したクラシック・薄化粧・華やか・素顔と、素体フレームの視点・姿勢・まばたき・口形に従います。素顔は元の素体を維持します。最終式は F 内で B′ を使い、F 外のキャラクターレイヤーと服装を維持します。
 
 ### ビルド手順
 
