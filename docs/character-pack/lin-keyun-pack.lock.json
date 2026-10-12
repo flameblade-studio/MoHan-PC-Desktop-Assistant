@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.3.zip",
-    "bytes": 981315328,
-    "sha256": "31f026946b26947c5030461f94f397fea91c88f9e15d4c8f4a58319622877743"
+    "bytes": 981361571,
+    "sha256": "6caffa6646168b2b17e5e1b42b276f7b7853b35e931cbbafd7d1121745912244"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -527,19 +527,19 @@
       "sha256": "ecaed2aadce22e62707cf4271daed909e9a164a769570b1843bcf5511871e6c4"
     },
     {
-      "bytes": 2098527,
+      "bytes": 2098211,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-closed.rgba.png",
-      "sha256": "c0abcb3907049970a4e6ec6c0c0a68eb4cf3bea55d70acf6eaa82cd29e322ff6"
+      "sha256": "a04af501e2c1ca51cbf3e0a6d3e0b535bc4bf837080bf39604ea34c4a3dfcaeb"
     },
     {
-      "bytes": 2100637,
+      "bytes": 2100347,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-half.rgba.png",
-      "sha256": "2cf16fd3d51874acfca65d5410b81b35cd887f120c1cab515c06deb770960f1f"
+      "sha256": "493f34e9ca7c37b16e6811157aafa6d7f740eb0cd98a13ad08ca34cc3fa4d78f"
     },
     {
-      "bytes": 2102468,
+      "bytes": 2102212,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-a-rest.rgba.png",
-      "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
+      "sha256": "28ac29acea63e31ec345e897ae1ad6a1e87f236d21884db3fa631807c7783972"
     },
     {
       "bytes": 2097700,
@@ -557,34 +557,34 @@
       "sha256": "01d7ab6c3a0b82a7b9a33e09b005c9f5bfac8340625bea43868597d73cab43ab"
     },
     {
-      "bytes": 2097958,
+      "bytes": 2097532,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-o-closed.rgba.png",
-      "sha256": "34d786ea9fd9bb1551d3ac8481602f5f93d42b54a227c5b9d432ae54d588487a"
+      "sha256": "2fa9709bd59bcbeab779e1dc80ac05e3f5fd6b365b347622ab332ed941389a56"
     },
     {
-      "bytes": 2100094,
+      "bytes": 2099677,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-o-half.rgba.png",
-      "sha256": "39b09238f0d66874f7ef7a43a7e50b794bae4fe90c8d497465b33483daff3db8"
+      "sha256": "5b698d01a09e8b653c3e0a2efff90bf04e969b8d9d7104dffd61f2b9a8619297"
     },
     {
-      "bytes": 2101976,
+      "bytes": 2101561,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-o-rest.rgba.png",
-      "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
+      "sha256": "2dcacbf412bbffe064c7f1cff9b99c3ce425c1aac8d18ffcd4453e272452b405"
     },
     {
-      "bytes": 2097916,
+      "bytes": 2097729,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-closed.rgba.png",
-      "sha256": "ee484bcff4c5127385faa8a1f1dcb72d191e99784589acf9c5b85eb59ee265a6"
+      "sha256": "9fa6dd8fb2c448976adc47e2ddbb16f7e544f6ef86b5eff4fc20432d5806454a"
     },
     {
-      "bytes": 2100063,
+      "bytes": 2099879,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-half.rgba.png",
-      "sha256": "79c14a180eba5411e9920af70531cfea668c4a73dcff3bf1df35bae60b9409f4"
+      "sha256": "b93c1699d94f34041e5fbe6f2f2c2209944724b7a4995b81b66d02633511e099"
     },
     {
-      "bytes": 2101955,
+      "bytes": 2101760,
       "path": "assets/expressions/complete-expressions/frames/front-crossed-small-rest.rgba.png",
-      "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
+      "sha256": "21fc12ace94cb59448025aba91ce0c60cee29179241871cff241348d46cb0f03"
     },
     {
       "bytes": 2098386,
@@ -1607,9 +1607,9 @@
       "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b"
     },
     {
-      "bytes": 224638,
+      "bytes": 234330,
       "path": "assets/expressions/complete-expressions/manifest.json",
-      "sha256": "9f1e68f9d714ecef2d438015dad6088ec423b8ba315f42bed3642d44e0533ab1"
+      "sha256": "8a4bf760dcb79c7cc80ec4f233fa9922ad0795bd5868bd20022707fc2b67b5ac"
     },
     {
       "bytes": 6470,
@@ -1700,6 +1700,21 @@
       "bytes": 9142,
       "path": "assets/expressions/complete-expressions/masks/front-attentive_front-oral-small.png",
       "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 6898,
+      "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-a.png",
+      "sha256": "2bb119c5c06af6a62ed920872c66ed9acad28b2e9858eb89756e57b0a7c0a751"
+    },
+    {
+      "bytes": 6582,
+      "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-o.png",
+      "sha256": "cd3c9262c97bd09da98793d5bd1a6c39df2cdfd38d078440dadd731554885ac1"
+    },
+    {
+      "bytes": 6813,
+      "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-small.png",
+      "sha256": "cda2059df58cffbb1f3f1ded43171a172f2dd3adcd9e35e9d941ea03af82ba2b"
     },
     {
       "bytes": 9188,
@@ -3997,9 +4012,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 143516,
+      "bytes": 145434,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "6426b7d580247c3003b46b9de2dbf580cb1641b158caece38dd33b2d8c479cb6"
+      "sha256": "d5c5f43c650cff3f749ad808e25e9871a2a25aaf7ca93c961ec387aa1cfd4a1f"
     },
     {
       "bytes": 6175,
@@ -4240,6 +4255,36 @@
       "bytes": 7952,
       "path": "assets/makeup-safe-regions/front-attentive_front/foundation-rest.png",
       "sha256": "15603dbf41b2e30e2217b39eaa3ca7396e90ab963ae89d6da5de4118fff7c379"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-half.png",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-rest.png",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7828,
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-half.png",
+      "sha256": "38af7ed2b9ca831988c57836d454ce945bd5ee6ae3d72b4a13630a808504ac48"
+    },
+    {
+      "bytes": 7927,
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-rest.png",
+      "sha256": "e3cf4e97eb3c426f59b3bfab2135fee1b0166a39e5acc36f0c4432a355e5bcc5"
     },
     {
       "bytes": 6175,
@@ -4607,9 +4652,9 @@
       "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
     },
     {
-      "bytes": 37183975,
+      "bytes": 37154228,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "f8871cf98d76d37f8bfb6be033590138386f3fff434d33ae98172caf2a66a4ea"
+      "sha256": "9138d49ee1ea94148660a20cfdd1b1eb619259747d8064b666c6271d137526ed"
     },
     {
       "bytes": 29245749,
@@ -9924,7 +9969,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.3",
-  "package_hash": "10d94359f0d4fdbf6e37a88fd132cbf3b2811a39b2b07832721ad879c28115e8",
+  "package_hash": "d7438b35fdbd8ece32cec00ba197c84cd2afd1cc1e48d604f857edc0df41e706",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

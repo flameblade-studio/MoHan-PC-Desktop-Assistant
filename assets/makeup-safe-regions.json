@@ -107,7 +107,7 @@
         1254,
         1254
       ],
-      "rig": "assets/expressions/layered/front",
+      "rig": "assets/front-makeup-rigs/front-crossed-neutral",
       "slots": {
         "cheeks": [
           [
@@ -158,8 +158,70 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-crossed/foundation-rest.png",
+          "sha256": "e3cf4e97eb3c426f59b3bfab2135fee1b0166a39e5acc36f0c4432a355e5bcc5",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-crossed/foundation-half.png",
+          "sha256": "38af7ed2b9ca831988c57836d454ce945bd5ee6ae3d72b4a13630a808504ac48",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-crossed/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-rest.png",
+          "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-half.png",
+          "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
     },
     "front-eureka": {
       "canvas": [

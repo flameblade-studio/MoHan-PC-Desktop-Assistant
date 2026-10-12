@@ -8622,7 +8622,7 @@
       "sha256": "ecaed2aadce22e62707cf4271daed909e9a164a769570b1843bcf5511871e6c4"
     },
     {
-      "bytes": 2098527,
+      "bytes": 2098211,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8646,10 +8646,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "c0abcb3907049970a4e6ec6c0c0a68eb4cf3bea55d70acf6eaa82cd29e322ff6"
+      "sha256": "a04af501e2c1ca51cbf3e0a6d3e0b535bc4bf837080bf39604ea34c4a3dfcaeb"
     },
     {
-      "bytes": 2100637,
+      "bytes": 2100347,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8673,10 +8673,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "2cf16fd3d51874acfca65d5410b81b35cd887f120c1cab515c06deb770960f1f"
+      "sha256": "493f34e9ca7c37b16e6811157aafa6d7f740eb0cd98a13ad08ca34cc3fa4d78f"
     },
     {
-      "bytes": 2102468,
+      "bytes": 2102212,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8700,7 +8700,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
+      "sha256": "28ac29acea63e31ec345e897ae1ad6a1e87f236d21884db3fa631807c7783972"
     },
     {
       "bytes": 2097700,
@@ -8784,7 +8784,7 @@
       "sha256": "01d7ab6c3a0b82a7b9a33e09b005c9f5bfac8340625bea43868597d73cab43ab"
     },
     {
-      "bytes": 2097958,
+      "bytes": 2097532,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8808,10 +8808,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "34d786ea9fd9bb1551d3ac8481602f5f93d42b54a227c5b9d432ae54d588487a"
+      "sha256": "2fa9709bd59bcbeab779e1dc80ac05e3f5fd6b365b347622ab332ed941389a56"
     },
     {
-      "bytes": 2100094,
+      "bytes": 2099677,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8835,10 +8835,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "39b09238f0d66874f7ef7a43a7e50b794bae4fe90c8d497465b33483daff3db8"
+      "sha256": "5b698d01a09e8b653c3e0a2efff90bf04e969b8d9d7104dffd61f2b9a8619297"
     },
     {
-      "bytes": 2101976,
+      "bytes": 2101561,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8862,10 +8862,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
+      "sha256": "2dcacbf412bbffe064c7f1cff9b99c3ce425c1aac8d18ffcd4453e272452b405"
     },
     {
-      "bytes": 2097916,
+      "bytes": 2097729,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8889,10 +8889,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "ee484bcff4c5127385faa8a1f1dcb72d191e99784589acf9c5b85eb59ee265a6"
+      "sha256": "9fa6dd8fb2c448976adc47e2ddbb16f7e544f6ef86b5eff4fc20432d5806454a"
     },
     {
-      "bytes": 2100063,
+      "bytes": 2099879,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8916,10 +8916,10 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "79c14a180eba5411e9920af70531cfea668c4a73dcff3bf1df35bae60b9409f4"
+      "sha256": "b93c1699d94f34041e5fbe6f2f2c2209944724b7a4995b81b66d02633511e099"
     },
     {
-      "bytes": 2101955,
+      "bytes": 2101760,
       "category": "halfbody_complete_expression",
       "image": {
         "height": 1254,
@@ -8943,7 +8943,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
+      "sha256": "21fc12ace94cb59448025aba91ce0c60cee29179241871cff241348d46cb0f03"
     },
     {
       "bytes": 2098386,
@@ -14454,7 +14454,7 @@
       "sha256": "be11e922639e43e334bbe95fcc65adf107f2aa28573b2c0bb136d48c1e77885b"
     },
     {
-      "bytes": 224638,
+      "bytes": 234330,
       "category": "halfbody_complete_expression",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -14468,7 +14468,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "9f1e68f9d714ecef2d438015dad6088ec423b8ba315f42bed3642d44e0533ab1"
+      "sha256": "8a4bf760dcb79c7cc80ec4f233fa9922ad0795bd5868bd20022707fc2b67b5ac"
     },
     {
       "bytes": 6470,
@@ -14955,6 +14955,87 @@
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
       "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+    },
+    {
+      "bytes": 6898,
+      "category": "halfbody_complete_expression",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/expressions/complete-expressions/manifest.json",
+          "pointer": "/poses/front-crossed/oral_masks/a/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-a.png",
+      "readers": [
+        {
+          "line": 78,
+          "path": "infrastructure/complete_halfbody_expressions.py",
+          "text": "data = path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "2bb119c5c06af6a62ed920872c66ed9acad28b2e9858eb89756e57b0a7c0a751"
+    },
+    {
+      "bytes": 6582,
+      "category": "halfbody_complete_expression",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/expressions/complete-expressions/manifest.json",
+          "pointer": "/poses/front-crossed/oral_masks/o/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-o.png",
+      "readers": [
+        {
+          "line": 78,
+          "path": "infrastructure/complete_halfbody_expressions.py",
+          "text": "data = path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "cd3c9262c97bd09da98793d5bd1a6c39df2cdfd38d078440dadd731554885ac1"
+    },
+    {
+      "bytes": 6813,
+      "category": "halfbody_complete_expression",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/expressions/complete-expressions/manifest.json",
+          "pointer": "/poses/front-crossed/oral_masks/small/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/expressions/complete-expressions/masks/front-crossed-transplant-oral-small.png",
+      "readers": [
+        {
+          "line": 78,
+          "path": "infrastructure/complete_halfbody_expressions.py",
+          "text": "data = path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "cda2059df58cffbb1f3f1ded43171a172f2dd3adcd9e35e9d941ea03af82ba2b"
     },
     {
       "bytes": 9188,
@@ -24276,6 +24357,481 @@
       },
       "manifest_references": [],
       "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a-eye-aperture-closed.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a-eye-aperture-half.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a-eye-aperture-rest.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6898,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "2bb119c5c06af6a62ed920872c66ed9acad28b2e9858eb89756e57b0a7c0a751"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-a_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 18100,
+      "category": "archive_or_support",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-brush-plan.json",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "7aefca7c2c5a350e7ad4b9d4383bc0e13c1fc257c6a55543dd12f4f2f538dcd2"
+    },
+    {
+      "bytes": 6805,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-mouth-transplant-support.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ba18d6553f5897506e095270933337da9d48e8a48a319eb4e9a8cb044274d8d8"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral-eye-aperture-closed.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral-eye-aperture-half.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral-eye-aperture-rest.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6296,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "8300005d0cf62979614b3410ce95b9686faaf26ad63d3b2656036e0d8b77906c"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o-eye-aperture-closed.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o-eye-aperture-half.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o-eye-aperture-rest.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6582,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "cd3c9262c97bd09da98793d5bd1a6c39df2cdfd38d078440dadd731554885ac1"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-o_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small-eye-aperture-closed.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small-eye-aperture-half.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small-eye-aperture-rest.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6813,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "cda2059df58cffbb1f3f1ded43171a172f2dd3adcd9e35e9d941ea03af82ba2b"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-small_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
       "path": "assets/front-makeup-rigs/front-determined_front_lip_lower.png",
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
@@ -27141,7 +27697,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 143516,
+      "bytes": 145434,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -27155,7 +27711,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "6426b7d580247c3003b46b9de2dbf580cb1641b158caece38dd33b2d8c479cb6"
+      "sha256": "d5c5f43c650cff3f749ad808e25e9871a2a25aaf7ca93c961ec387aa1cfd4a1f"
     },
     {
       "bytes": 6175,
@@ -28644,6 +29200,168 @@
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
       "sha256": "15603dbf41b2e30e2217b39eaa3ca7396e90ab963ae89d6da5de4118fff7c379"
+    },
+    {
+      "bytes": 6175,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 7697,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7828,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "38af7ed2b9ca831988c57836d454ce945bd5ee6ae3d72b4a13630a808504ac48"
+    },
+    {
+      "bytes": 7927,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "e3cf4e97eb3c426f59b3bfab2135fee1b0166a39e5acc36f0c4432a355e5bcc5"
     },
     {
       "bytes": 6175,
@@ -33615,7 +34333,7 @@
       "sha256": "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
     },
     {
-      "bytes": 37183975,
+      "bytes": 37154228,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -33629,7 +34347,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "f8871cf98d76d37f8bfb6be033590138386f3fff434d33ae98172caf2a66a4ea"
+      "sha256": "9138d49ee1ea94148660a20cfdd1b1eb619259747d8064b666c6271d137526ed"
     },
     {
       "appearance_categories": [
@@ -45250,29 +45968,6 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 41425,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/classic-closed-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "534833af4c64fdafc3061ebcdf31eec2fe90defb778800e3b756f27afb726bb4"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
       "bytes": 47505,
       "category": "appearance_pack_member",
       "image": {
@@ -45981,29 +46676,6 @@
       ],
       "scope": "runtime_data",
       "sha256": "33ecba22ef8b15656a1828d4ed2cc753d106c7c07667b4c1f19878a081fc93e5"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
-      "bytes": 42325,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/classic-half-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "da0d49fbc8ebe94a73da2d3ae448c2151aa633a29121562854219a3ccb0d0f2e"
     },
     {
       "appearance_categories": [
@@ -46786,6 +47458,420 @@
       ],
       "scope": "runtime_data",
       "sha256": "9e03afb586060e8877613698c4ac62fca76f7692bc9ab589aba741bc6372ff84"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 17657,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-classic-closed-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "2b4d8ac2ea5281281d93e713a92650a3985d323ef45a6433a7a404b00c4c40a6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 15882,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-classic-half-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "e4ce3d6ff41a38d8575a02ac4fba8256b46c41654ec6ce19b4a085c700c7f00e"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 18966,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-classic-rest-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "a4448ee597410950a2e306706af7dc6b025f70835294042b5b464e95d5869767"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 33491,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-glamorous-closed-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "321953061722f7bb38ab381ad58e68e45dfabfbcbdba632a0f008d835d861165"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 38711,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-glamorous-half-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "6a61fb2e0353a10a8f544dc8ad9541ca1de151f1b543c793eb1c5fbc3449dbad"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 65827,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-glamorous-rest-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "9583f37676e24fb372572c5b30607ee2977e70aedacadc6207c066d361a3c280"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 16984,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-light-closed-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "bd100c1bd7bbc6a4e91ae424d291eadcf52437fbd8aab5503627315d111d74a1"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 15323,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-light-half-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "cc8d05a5a06f6b2e559420238260aee820eac70f0b52ec67689f250865e4f66e"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 18317,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-rig-light-rest-eyes.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "d247340e806fcb276dfccd38c53b0b575f4d47c93b0fe152bb8295a36bdb004b"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 15537,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-classic-a-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "8a78ca6a2d1df79183e0a93e18d6912a3ea2bb236fc2624bc47775eab4cd92f9"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 14898,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-classic-o-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "835079929c9ce2cdf17a75bd3cd0e9814d38662fe3301a161c0fa1209921264b"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 15151,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-classic-small-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "659092ef1993cb59ae81197daa05f2dba02224fe91dd148e0de50f0c85c36d91"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 17344,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-glamorous-a-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "4c77454d4c2fae10d28cbe992f71107af610d16491640e6322646e30e52db3da"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 16332,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-glamorous-o-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "f4755bf36637c72612738ce8de6d7e44312892732e2b05e54f325b9332b7f2f6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 16675,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-glamorous-small-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "73d041ab9ba31568f41e72e382429a8e108ea186fae087bce67317ea14d259cf"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 14767,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-light-a-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "1c4b379b2c4c56d3fd90ca6950f0b0d3d8ce5e46df41359797c23b64059a27a1"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 14172,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-light-o-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "c4f00618e2c589b6f92a5a5057ca4bddabfed510dc90d68c87954d63f038fd03"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 14525,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/front-transplant-light-small-lips.png",
+      "readers": [
+        {
+          "line": 748,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "db30e8fbb7919028b251634ec60f4b257da600b80eaf2e564769c62532883f12"
     },
     {
       "appearance_categories": [
@@ -53990,29 +55076,6 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 31282,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/glamorous-closed-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "07d272010f2faebf000797f14465d7091f5d9615a19d7f249e63e5c2c46ae137"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
       "bytes": 50564,
       "category": "appearance_pack_member",
       "image": {
@@ -54721,29 +55784,6 @@
       ],
       "scope": "runtime_data",
       "sha256": "7b4be9cd2f50d511396f2649c92763c16f4585d52de1de4f01a5767a00c5d727"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
-      "bytes": 36499,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/glamorous-half-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "e110574b09587875aff757722a7a921932dc9b28774f426bf6c4cd9686ec1ca7"
     },
     {
       "appearance_categories": [
@@ -58452,29 +59492,6 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 42086,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/light-closed-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "b64afb0192118e229e4823339ecd3af2b8acb303b511da0af72fb0d86a87c9e7"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
       "bytes": 56686,
       "category": "appearance_pack_member",
       "image": {
@@ -59160,29 +60177,6 @@
       ],
       "scope": "runtime_data",
       "sha256": "e3297ecaa756a889eb6e0e9446e5e3d1ab59c5ee69866279f784ecf1c3b05521"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
-      "bytes": 42128,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/light-half-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "dba3af0b2355a5a04b2a07be3645102e5bc8751c2cdacd6a261193262642522d"
     },
     {
       "appearance_categories": [
@@ -59942,29 +60936,6 @@
       ],
       "scope": "runtime_data",
       "sha256": "7cd0ee19a4be0d1d5722b37b44e286a0344ecc85f837616058b3ea91a733bec9"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
-      "bytes": 36105,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/mohan-signature-classic-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "2347e0cb78f436c1fffab98c95ec99ff1bab2b8af658b00ef9b31e78e976bc0b"
     },
     {
       "appearance_categories": [
@@ -62017,29 +62988,6 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 65155,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/mohan-signature-glamorous-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "6cae4e6c6c3a7ae2df97db2eeb6aa961c18be2979752d21908f4703f1f7f8c1a"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
       "bytes": 24331,
       "category": "appearance_pack_member",
       "image": {
@@ -64082,29 +65030,6 @@
       ],
       "scope": "runtime_data",
       "sha256": "2f26e434f1673a646782e9923885ddd221bac633f01a95d5a5d264b9d4df8a60"
-    },
-    {
-      "appearance_categories": [
-        "makeup"
-      ],
-      "bytes": 26593,
-      "category": "appearance_pack_member",
-      "image": {
-        "height": 1254,
-        "mode": "RGBA",
-        "width": 1254
-      },
-      "migration": "純資料可直接搬",
-      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/mohan-signature-light-front-crossed-eyes.png",
-      "readers": [
-        {
-          "line": 748,
-          "path": "infrastructure/active_outfit_overlay.py",
-          "text": "encoded = archive.read(declaration.path)"
-        }
-      ],
-      "scope": "runtime_data",
-      "sha256": "67f45b213b062bbaf66805fcbcec41d53487bb8e8851f840bc7c08497a75bb6c"
     },
     {
       "appearance_categories": [
@@ -68547,7 +69472,7 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 718012,
+      "bytes": 722293,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!manifest.json",
@@ -68559,7 +69484,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "55a86367257dbbcbe17650f2218f60844c807a6606fd84ee909fa3e21c91e64d"
+      "sha256": "a90d34d8379dbb9006016aeef36b240256e3fcf7bee303bc908e74bda6ea967c"
     },
     {
       "bytes": 29245749,
@@ -114007,14 +114932,14 @@
     "fullbody_sidecar": 14,
     "fullbody_visible_hand": 8,
     "garment_visibility": 48,
-    "halfbody_complete_expression": 343,
+    "halfbody_complete_expression": 346,
     "halfbody_expression": 148,
     "halfbody_layer": 77,
     "hand_overlay": 40,
     "makeup_eye_aperture": 39,
     "makeup_foundation_mask": 39,
     "makeup_region_rules": 1,
-    "makeup_safe_mask": 120,
+    "makeup_safe_mask": 126,
     "native_garment_motion": 55,
     "source_bound_expression": 77,
     "ui_background": 2,
@@ -114032,9 +114957,9 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 73,
+    "excluded_support": 103,
     "product_validation_data": 48,
-    "runtime_data": 3811
+    "runtime_data": 3829
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",
