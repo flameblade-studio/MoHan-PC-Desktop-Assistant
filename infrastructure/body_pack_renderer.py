@@ -6,12 +6,12 @@ lazy import logging
 lazy from collections import OrderedDict
 lazy from collections.abc import Callable, Mapping
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QPixmap, QRegion
+lazy from PySide6.QtGui import QPixmap
 lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
 lazy from domain.character_layer_plan import CharacterLayerPlan, CharacterLayerAsset, CharacterLayerMask
 lazy from domain.face_rig import FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from domain.qt_image_io import load_pixmap_png
-lazy from infrastructure.body_pack_compositor import compose_body_pack_frame, body_pack_alpha_region
+lazy from infrastructure.body_pack_compositor import compose_body_pack_frame
 
 
 LOGGER = logging.getLogger(__name__)
@@ -88,10 +88,6 @@ class BodyPackRenderer:
         self._cache_pixmap(key, pixmap)
         return QPixmap(pixmap)
 
-    def _core_region(self, data: bytes) -> QRegion:
-        digest = hashlib.sha256(data).hexdigest()
-        return body_pack_alpha_region(self._pixmap(data, digest), digest)
-
     def _layer_data(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:
         cached = self._layer_bytes.get(record.sha256)
         if cached is not None:
@@ -122,7 +118,7 @@ class BodyPackRenderer:
         base_data = self._body.load_frame(view, state, halfbody=halfbody)
         base = self._pixmap(base_data)
         mask = self._body.load_face_core(view)
-        core = None if mask is None else self._core_region(mask)
+        core = None if mask is None else self._pixmap(mask)
         plan = self._views.get(view)
         if plan is None:
             self._cache_pixmap(cache_key, base)

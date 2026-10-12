@@ -23,7 +23,7 @@ REFERENCE_FIELDS = frozenset({"id", "version", "fingerprint"})
 MANIFEST_FIELDS = frozenset({
     "schema", "id", "version", "license", "full_body", "half_body", "fingerprint",
 })
-OPTIONAL_MANIFEST_FIELDS = frozenset({"face_core_masks"})
+OPTIONAL_MANIFEST_FIELDS = frozenset({"face_core_masks", "missing_body_poses"})
 
 
 class BodyPackError(ValueError):
@@ -76,6 +76,7 @@ class BodyPackManifest:
     half_body: tuple[BodyPackView, ...]
     face_core_masks: tuple[tuple[str, BodyPackFile], ...]
     fingerprint: str
+    missing_body_poses: tuple[str, ...] = ()
 
 
 class BodyPackSource(Protocol):
@@ -131,6 +132,15 @@ def parse_body_pack(
     full_body = _parse_views(manifest["full_body"], "full_body")
     half_body = _parse_views(manifest["half_body"], "half_body")
     masks = _parse_face_core_masks(manifest.get("face_core_masks", {}))
+    missing = _mapping(manifest.get("missing_body_poses", {}), "missing_body_poses")
+    missing_ids = []
+    available_ids = {view.view_id for view in half_body}
+    for pose, entry in missing.items():
+        pose_id = _key(pose, "missing_body_poses pose")
+        metadata = _exact_mapping(entry, frozenset({"status"}), frozenset(), "missing body pose")
+        if metadata["status"] != "missing_body_pose" or pose_id in available_ids:
+            raise BodyPackError("Missing body poses require missing_body_pose status and no half-body frames.")
+        missing_ids.append(pose_id)
     declared_fingerprint = _sha256(manifest["fingerprint"], "fingerprint")
 
     parsed = BodyPackManifest(
@@ -142,6 +152,7 @@ def parse_body_pack(
         half_body=half_body,
         face_core_masks=masks,
         fingerprint=declared_fingerprint,
+        missing_body_poses=tuple(sorted(missing_ids)),
     )
     actual_fingerprint = compute_body_pack_fingerprint(parsed)
     if declared_fingerprint != actual_fingerprint:
