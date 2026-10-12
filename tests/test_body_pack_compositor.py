@@ -442,8 +442,11 @@ def test_role_layers_keep_native_alpha_until_the_final_face_formula(
 
 def test_face_feather_weights_base_hide_clearing(qt_app: QApplication) -> None:
     core = _sparse(3, {1: QColor(255, 255, 255, 128), 2: QColor("white")})
+    # This three-pixel mask has its own digest: witness masks cover only pixel 0.
     plan = CharacterLayerPlan(
-        ("base",), (), CharacterLayerMask("hide.png", "f" * 64, (0, 0)),
+        ("base",), (), CharacterLayerMask(
+            "hide.png", hashlib.sha256(b"three-pixel-hide-alpha-one").hexdigest(), (0, 0),
+        ),
     )
     result = compose_body_pack_frame(
         _solid(3, QColor("blue")), plan,
