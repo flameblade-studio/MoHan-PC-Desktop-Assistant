@@ -33,6 +33,10 @@ def compute_body_pack_fingerprint(value: BodyPackManifest | Mapping[str, object]
 FAMILIES = ("neutral", "small", "a", "o")
 EYES = ("rest", "half", "closed")
 MISSING_POSES = frozenset({"front-eureka", "front-mock-scold", "front-mock-hit"})
+CHEEK_POSES = (
+    "cheek-rest", "cheek-happy", "cheek-worried", "cheek-caught",
+    "cheek-glance", "cheek-reminder",
+)
 HALF_BASES = ("front-crossed", "left-neutral", "cheek-rest", "exasperated")
 FULL_VIEW_COUNT = 24
 APPROVED_LAYER_VIEW_COUNT = 203
@@ -41,7 +45,7 @@ APPROVED_LAYER_DIRECTORY_COUNT = 31
 BODY_PACK_ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 EXPECTED_BODY_REFERENCE = {
     "id": "mohan-body-v2",
-    "fingerprint": "6340691bfdca8f2eb6197f6237481a550f366ddb762905353703e1a513da778c",
+    "fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
 }
 MOTION_THRESHOLD = 8
 OPAQUE_ALPHA = 255
@@ -591,16 +595,78 @@ def _copy_layer_view(source: Path, target: Path, view: str) -> tuple[dict, Image
 
 def _half_frames(root: Path, pose: str, declared: dict) -> dict:
     if pose in declared:
-        return declared[pose]["frames"]
-    # Cheek rest is a retained product frame set outside the active expression map.
-    frames = {}
-    for family in FAMILIES:
-        frames[family] = {}
-        for eye in EYES:
-            relative = f"frames/{pose}-{family}-{eye}.rgba.png"
-            payload = _safe_file(root, relative).read_bytes()
-            frames[family][eye] = {"path": relative, "sha256": hashlib.sha256(payload).hexdigest()}
-    return frames
+        frames = declared[pose].get("frames")
+        if frames:
+            return frames
+    # Release builds read cheek frames from the approved fixed-frame source first;
+    # any other caller must declare its frames instead of borrowing another pose's.
+    raise ValueError(f"No approved half-body frames declared for {pose}")
+
+
+def _locked_payload(root: Path, record: Mapping[str, object]) -> bytes:
+    relative = record.get("path")
+    expected_bytes = record.get("bytes")
+    expected_sha256 = record.get("sha256")
+    if (not isinstance(relative, str) or type(expected_bytes) is not int
+            or not isinstance(expected_sha256, str)):
+        raise ValueError("Locked frame records require path, bytes and sha256")
+    path = _safe_file(root, relative)
+    payload = path.read_bytes()
+    if len(payload) != expected_bytes or hashlib.sha256(payload).hexdigest() != expected_sha256:
+        raise ValueError(f"Approved fixed-frame SHA-256 mismatch: {relative}")
+    return payload
+
+
+def _load_approved_cheek_frames(
+    root: Path,
+) -> tuple[dict[str, dict[str, dict]], dict[str, dict]]:
+    """Validate the owner-approved fixed cheek frames before a release build."""
+    manifest = _input_manifest(root / "manifest.json")
+    if manifest.get("schema") != "mohan.approved-cheek-body.v1":
+        raise ValueError("Approved cheek source uses an unsupported manifest schema")
+    if manifest.get("payload_counts") != {"face_core": 6, "half_body": 72, "payload": 78}:
+        raise ValueError("Approved cheek source has unexpected payload counts")
+    rows = manifest.get("files")
+    if not isinstance(rows, list):
+        raise ValueError("Approved cheek source must declare its fixed files")
+    expected = {
+        *(f"face-core/{pose}.png" for pose in CHEEK_POSES),
+        *(f"half-body/{pose}/{family}-{eye}.png"
+          for pose in CHEEK_POSES for family in FAMILIES for eye in EYES),
+    }
+    by_path = {row.get("path"): row for row in rows if isinstance(row, dict)}
+    if set(by_path) != expected or len(rows) != len(expected):
+        raise ValueError("Approved cheek source does not declare the exact fixed-frame set")
+    for relative, row in by_path.items():
+        payload = _locked_payload(root, row)
+        with Image.open(BytesIO(payload)) as image:
+            if image.format != "PNG" or image.mode != "RGBA" or image.size != (1254, 1254):
+                raise ValueError(f"Approved cheek frame is not a 1254 RGBA PNG: {relative}")
+    cores = {pose: by_path[f"face-core/{pose}.png"] for pose in CHEEK_POSES}
+    frames: dict[str, dict[str, dict]] = {}
+    for pose in CHEEK_POSES:
+        pose_frames = {}
+        for family in FAMILIES:
+            for eye in EYES:
+                state = f"{family}-{eye}"
+                pose_frames[state] = by_path[f"half-body/{pose}/{state}.png"]
+        frames[pose] = pose_frames
+    return frames, cores
+
+
+def _copy_locked_frame(
+    source_root: Path,
+    record: Mapping[str, object],
+    target_root: Path,
+    relative: str,
+) -> dict[str, str]:
+    """Copy approved PNG bytes without a decode/re-encode round trip."""
+    payload = _locked_payload(source_root, record)
+    destination = _safe_file(target_root, relative)
+    _check_output_path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_bytes(payload)
+    return {"path": relative, "sha256": hashlib.sha256(payload).hexdigest()}
 
 
 def _states(frames: dict, *, halfbody: bool, mode: str) -> dict:
@@ -639,6 +705,7 @@ class BuildRequest:
     character_layers_root: Path | None = None
     source_manifest: Path | None = None
     version: str = "1.0.0"
+    fixed_half_root: Path | None = None
 
 
 class _Builder:
@@ -654,13 +721,21 @@ class _Builder:
         layer_mode = request.layer_mode
         fixed_core_root = request.fixed_core_root
         character_layers_root = request.character_layers_root
+        fixed_half_root = request.fixed_half_root
         version = request.version
         self.mode = mode
         self.fixed_core_root = fixed_core_root
         self.character_layers_root = character_layers_root
+        self.fixed_half_root = fixed_half_root
         self.direct_source = fixed_core_root is not None
         if self.direct_source != (character_layers_root is not None):
             raise ValueError("Fixed core masks and companion layer assets must be supplied together")
+        if fixed_half_root is not None and not self.direct_source:
+            raise ValueError("Fixed cheek frames require the locked release source inputs")
+        self.fixed_cheek_frames: dict[str, dict[str, dict]] = {}
+        self.fixed_cheek_cores: dict[str, dict] = {}
+        if fixed_half_root is not None:
+            self.fixed_cheek_frames, self.fixed_cheek_cores = _load_approved_cheek_frames(fixed_half_root)
         gestures_root = layers_root / "gestures3"
         self.gestures_root = gestures_root if gestures_root.is_dir() else None
         self.gestures = set()
@@ -770,12 +845,40 @@ class _Builder:
             self.inventory["full_body"][view] = {"states": sorted(states), "rest_only": group is None,
                                             "source_visemes": [] if group is None else sorted(group["frames"])}
 
+    def _build_fixed_cheek_pose(self, pose: str) -> tuple[dict, dict[str, str]]:
+        if self.fixed_half_root is None:
+            raise ValueError("Approved fixed cheek frames are required for cheek release poses")
+        core = _copy_locked_frame(
+            self.fixed_half_root, self.fixed_cheek_cores[pose], self.pack,
+            f"face-core/{pose}.png",
+        )
+        states = {}
+        for family in FAMILIES:
+            for eye in EYES:
+                state = f"{family}-{eye}"
+                states[state] = _copy_locked_frame(
+                    self.fixed_half_root, self.fixed_cheek_frames[pose][state], self.pack,
+                    f"half-body/{pose}/{state}.png",
+                )
+        return states, core
+
     def build_half_body(self) -> None:
         for pose in self.poses:
             base_pose = self.base_pose(pose)
             if base_pose is None:
                 self.inventory["missing_body_poses"].append(pose)
                 self.inventory["half_body"][pose] = {"body_pose": None, "status": "missing_body_pose"}
+                continue
+            if self.fixed_half_root is not None and pose in CHEEK_POSES:
+                states, core = self._build_fixed_cheek_pose(pose)
+                self.manifest["half_body"][pose] = states
+                self.manifest["face_core_masks"][pose] = core
+                if self.layer_views.get(pose) != self.layer_views[base_pose]:
+                    raise ValueError(f"Approved companion alias differs from the body binding: {pose}")
+                self.inventory["half_body"][pose] = {
+                    "body_pose": base_pose, "states": sorted(states), "status": "built",
+                    "source": "approved-cheek-b-body-11-fixed-frames",
+                }
                 continue
             if self.direct_source:
                 core = read_mask(_safe_file(self.fixed_core_root, f"{base_pose}.png"))
@@ -867,6 +970,7 @@ def _build_body_pack_request(request: BuildRequest) -> dict:
     fixed_core_root = request.fixed_core_root
     character_layers_root = request.character_layers_root
     source_manifest = request.source_manifest
+    fixed_half_root = request.fixed_half_root
     version = request.version
     if layer_mode not in {"copy", "recompute", "reuse"}:
         raise ValueError("Layer mode must be copy, recompute or reuse")
@@ -878,6 +982,10 @@ def _build_body_pack_request(request: BuildRequest) -> dict:
         raise ValueError("Fixed core masks and companion layer assets must be supplied together")
     if fixed_core_root is not None and source_manifest is None:
         raise ValueError("Fixed-source release builds require a source manifest")
+    if fixed_half_root is not None and source_manifest is None:
+        raise ValueError("Fixed cheek release frames require a source manifest")
+    if source_manifest is not None and fixed_half_root is None:
+        raise ValueError("Release builds require the approved fixed cheek frames")
     if not isinstance(version, str) or not version.strip():
         raise ValueError("Provide a non-empty body-pack version")
     if source_manifest is not None:
@@ -886,7 +994,7 @@ def _build_body_pack_request(request: BuildRequest) -> dict:
             raise ValueError("Requested build version differs from the release source manifest")
     _check_output_path(output)
     roots = [(product_root / "assets").resolve(), bald_root.resolve(), layers_root.resolve()]
-    roots.extend(root.resolve() for root in (fixed_core_root, character_layers_root) if root is not None)
+    roots.extend(root.resolve() for root in (fixed_core_root, character_layers_root, fixed_half_root) if root is not None)
     resolved_output = output.resolve()
     if any(resolved_output.is_relative_to(root) or root.is_relative_to(resolved_output) for root in roots):
         raise ValueError("Output must be separate from every read-only input root")
@@ -946,6 +1054,7 @@ def main() -> int:
     parser.add_argument("--fixed-core-root", type=Path)
     parser.add_argument("--character-layers-root", type=Path)
     parser.add_argument("--source-manifest", type=Path)
+    parser.add_argument("--fixed-half-root", type=Path)
     parser.add_argument("--version")
     parser.add_argument("--zip-output", type=Path)
     partition_options = parser.add_mutually_exclusive_group()
@@ -973,6 +1082,7 @@ def main() -> int:
         character_layers_root=args.character_layers_root,
         source_manifest=args.source_manifest,
         version=version,
+        fixed_half_root=args.fixed_half_root,
     ))
     archive_info = None
     archive_path = None

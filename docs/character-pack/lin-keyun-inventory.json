@@ -60,7 +60,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "d46f56003622578277f24c8139c422a5b1f63e72db0d5c7251b275302ef8c12f"
+      "sha256": "9ef006f3204f3729c831c31ad5d969ef8dfffffa50cad849d85684a3ab7b2841"
     },
     {
       "bytes": 326038,
@@ -77,7 +77,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "85d484c3afb9beec5a074dd8d1a58d7040743d2a2a870560aa8f2c45dcb696da"
+      "sha256": "b18c6f3e08c28ba83930ae803231487cdac3e7cb7b448912dd81cf08684ae664"
     },
     {
       "bytes": 12007,
@@ -8564,7 +8564,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "ddf3a3fe743ee74c0f5ef5a936644b5e069f947d62950b27fdaba82243158ac5"
+      "sha256": "f45c3fe2354857c1516d65d80bfe73dd1c5535fe2bc7d2424c0ee71c468eda85"
     },
     {
       "bytes": 2163,

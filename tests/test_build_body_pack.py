@@ -279,7 +279,9 @@ def _make_body_pack_fixture_inputs(
     for index, pose in enumerate(authored_poses):
         poses[pose] = {"frames": _write_half_body_fixture_frames(half_root, pose, index)}
     poses.update({pose: {} for pose in GESTURE_POSES})
-    _write_half_body_fixture_frames(half_root, "cheek-rest", len(authored_poses))
+    poses["cheek-rest"] = {
+        "frames": _write_half_body_fixture_frames(half_root, "cheek-rest", len(authored_poses))
+    }
     _write_body_pack_fixture_json(
         half_root / "manifest.json",
         {

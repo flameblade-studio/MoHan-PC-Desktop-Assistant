@@ -28,7 +28,7 @@ TEMP_ROOT = WORK_ROOT / "tmp"
 BUILD_ROOT = WORK_ROOT / "build"
 ARCHIVE_A = WORK_ROOT / "archive-a.zip"
 ARCHIVE_B = WORK_ROOT / "archive-b.zip"
-EXPECTED_FINGERPRINT = "6340691bfdca8f2eb6197f6237481a550f366ddb762905353703e1a513da778c"
+EXPECTED_FINGERPRINT = "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15"
 BODY_LICENSE = "CC-BY-NC-ND-4.0"
 ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 
@@ -113,6 +113,7 @@ def _build_package() -> tuple[Path, dict[str, Any], dict[str, Any]]:
         mode="all",
         layer_mode="copy",
         fixed_core_root=SOURCE_ROOT / "final-core-masks",
+        fixed_half_root=SOURCE_ROOT / "approved-cheek-b-body-11",
         character_layers_root=LAYER_ROOT,
         source_manifest=SOURCE_PATH,
         version=version,
