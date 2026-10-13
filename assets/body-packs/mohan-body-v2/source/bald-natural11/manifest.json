@@ -1,0 +1,1319 @@
+{
+  "package": "BALD-NATURAL11",
+  "neutral_count": 28,
+  "blink_state_count": 24,
+  "blink_layer_count": 24,
+  "views": [
+    {
+      "view": "cheek-rest",
+      "path": ".quality-tmp/bald-natural11/cheek-rest/bald-natural.png",
+      "sha256": "74632d7aa72b4c4d2dc2e939a712c38beb9a437c32b849d986dd2c4606786656",
+      "round10_sha256": "752ef8a4b7daa7bc9583b176ddad380632cfad9c030c1e851bbc5eae6f13dd3c",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        157,
+        257,
+        1161,
+        1240
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "exasperated",
+      "path": ".quality-tmp/bald-natural11/exasperated/bald-natural.png",
+      "sha256": "e8fd65ad7e7d2bc7a8ef81a315c73a3995e57f8e2b8199c2924f90ebfc7b592f",
+      "round10_sha256": "65736461ad75debecb4edbf37c41c3aec27d8057a2ec81de3e250c494dc99365",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        104,
+        111,
+        1190,
+        1254
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "front-crossed",
+      "path": ".quality-tmp/bald-natural11/front-crossed/bald-natural.png",
+      "sha256": "23a5152f9181a88f9520cedc80c966f041df51e9d4e287be76331206e35c4580",
+      "round10_sha256": "af931f0cb8ccd29921afeb5bf2a2af6e96e433ab36b42755103d7b369d0d53ce",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        96,
+        240,
+        1145,
+        1239
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "left-neutral",
+      "path": ".quality-tmp/bald-natural11/left-neutral/bald-natural.png",
+      "sha256": "81e70df14549d6461e949d60567285ec8ac6dbc346ffc2cd7c32e628e4bbd5f3",
+      "round10_sha256": "c4aca35ae59132d7f0b707b2ee76e16612c6cac8496bc48b1b686f37b5097e31",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        112,
+        121,
+        1144,
+        1230
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+000-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+000-pitch+00/bald-natural.png",
+      "sha256": "f8aa8d165343cbf4f53059c97c0a1d3fc884ca43b32d419465d6726b3b07f569",
+      "round10_sha256": "de8dd114c6b7df7bad85aa7cbbb7127d2a705e7707e8f031c4b2dd63e5593fb8",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 822,
+        "selected_edge_pixels": 1266,
+        "changed_pixels": 1259,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        310,
+        156,
+        696,
+        1469
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+015-pitch+00/bald-natural.png",
+      "sha256": "2ab797a3869c6b88e6bea277f34add50dc10e0915d63239ba290aae962a8103c",
+      "round10_sha256": "c3acc90e1d7053f65e76955fa2c8f5f464a25b7ccb622654a9a53727bbeb9762",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 2,
+        "selected_edge_pixels": 12,
+        "changed_pixels": 11,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        313,
+        130,
+        673,
+        1484
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+030-pitch+00/bald-natural.png",
+      "sha256": "e8abdaee73961e10a3b1a2e180805f6fc48d14c8e859122fe31757e2133f02ce",
+      "round10_sha256": "1bb6745acbce0fa1b61ce1c7219735c93611752ffcc2ded25c070eda37848c28",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        306,
+        115,
+        713,
+        1501
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+045-pitch+00/bald-natural.png",
+      "sha256": "1b6dc54001ec61dcddbc0740fbe88383f5fcc1abbc5b68afb3fc7a1fee3516b7",
+      "round10_sha256": "06a4bd209f7d1a01a51caa57ef0a5a2f72c463f9e410db6a4d2fd63d3ccfa63a",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        340,
+        123,
+        671,
+        1472
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+060-pitch+00/bald-natural.png",
+      "sha256": "0f7b20e27d871bd5f58f3d95669ef98f554dbe4f5d1c85656504f8dada877c27",
+      "round10_sha256": "3e47a6cbfaba7acc6b91d2ff8a9f21a6192084b29156c73bc57874841a63cffb",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        321,
+        104,
+        644,
+        1471
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+075-pitch+00/bald-natural.png",
+      "sha256": "5459aaf70de7007a06045dcca9724596ba81a10ac648d5b900b9d8919c2d9ee5",
+      "round10_sha256": "de0c69b85490a576550826efc80d481a6ffc9010c1db3cc4db6188310d83e2c9",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        356,
+        122,
+        620,
+        1469
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+090-pitch+00/bald-natural.png",
+      "sha256": "1f35440a425ab3152a6a42ccaf68b5803dceb4fe951fc26a92f02b5ec31cf4b9",
+      "round10_sha256": "7200dac99f0678ba9fd18478bb55136481870bf6764d113010b1cf01c56b5efc",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        398,
+        93,
+        634,
+        1460
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+105-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+105-pitch+00/bald-natural.png",
+      "sha256": "4527311f2cb7af31c5253430d357927c4f5575fb43f98463a63a425af2b7e894",
+      "round10_sha256": "5199736153f8215e5aa5a6fd480e9736247afcd9e1e29c7091bd69ff9799c5c4",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 48,
+        "selected_edge_pixels": 151,
+        "changed_pixels": 151,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        376,
+        139,
+        632,
+        1452
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+120-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+120-pitch+00/bald-natural.png",
+      "sha256": "4df1552d8a2d80317b795eba17fd25221f93eaf3a1dc3c3bf38b30a10edc9d54",
+      "round10_sha256": "4ee3ba023839e2c4f698fb9b8b4d7a2c9240fcf3dc152c992f4e851b69ad5963",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 24,
+        "selected_edge_pixels": 88,
+        "changed_pixels": 87,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        354,
+        151,
+        628,
+        1449
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+135-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+135-pitch+00/bald-natural.png",
+      "sha256": "33183497bfd5bea49e6baee1d1504901912da4b095411145d3db4adbc33aaff6",
+      "round10_sha256": "d589d9ed9c5a7ecc16a4f92fb71b1a63a1ddebb8cab85589e43f95d4e86ffa1b",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 61,
+        "selected_edge_pixels": 196,
+        "changed_pixels": 195,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        337,
+        107,
+        679,
+        1483
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+150-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+150-pitch+00/bald-natural.png",
+      "sha256": "147b57adaff2e3927ae61cbf7464ae400d29f9a3ac674591388cedc1cac47178",
+      "round10_sha256": "573d66204842d1b4a53b7fbdd1962896acc07915119d5c99f0af585d0965287f",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 57,
+        "selected_edge_pixels": 178,
+        "changed_pixels": 176,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        322,
+        110,
+        672,
+        1483
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw+165-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw+165-pitch+00/bald-natural.png",
+      "sha256": "10e730b512a087c837c3d6518c80cf474c27cb044199b8ebae7ace1b963a6acf",
+      "round10_sha256": "f5742d244d2b332b1a1769a2677b655a7f5e116121bdb04478c083800fadf618",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        328,
+        133,
+        673,
+        1484
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-015-pitch+00/bald-natural.png",
+      "sha256": "eee2345ad5273cc759cd12e9169993d592c7d9a2d13f4a8164306f58aa98b07c",
+      "round10_sha256": "df098a304b249949088abef1092102d48e18a23d4afe61f9a8e206f5f3ed860f",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        327,
+        148,
+        689,
+        1455
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-030-pitch+00/bald-natural.png",
+      "sha256": "17790117d3335960bc3c17445a8b32851707a69ddf3b9ce876aa136e9b07beac",
+      "round10_sha256": "3a37d89ae4b585c79fec89b2d3ea8dd083fb8e0ed314244a315f3a840029580f",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        347,
+        156,
+        684,
+        1454
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-045-pitch+00/bald-natural.png",
+      "sha256": "fc851ca99482b2d9eaddd69bcfbda6a589b73976767f65ff6c4eb9d53ef3a2da",
+      "round10_sha256": "16b2d71c0dad562e71aedf4ef6587f9c3405699a52af74ad3087344404211f19",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        355,
+        105,
+        672,
+        1468
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-060-pitch+00/bald-natural.png",
+      "sha256": "a89a5ca76b295c17ec5b27887ced42bc26b334d38f92132563a86d9540598733",
+      "round10_sha256": "e4159ef4cc5a4841d34e5cfdca1855f3a87b5cfa7801544aa378b7340a1468f1",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        377,
+        95,
+        630,
+        1444
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-075-pitch+00/bald-natural.png",
+      "sha256": "6195f9b0d7129706c66aea67b49ee5f32502cc7cfe4b00f561821ca6e63d3806",
+      "round10_sha256": "16182c46d4890c8c7d45c22c345d1906bb0946cf60990a10ad35bd4564b8bfcd",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        376,
+        100,
+        610,
+        1507
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-090-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-090-pitch+00/bald-natural.png",
+      "sha256": "2e44d17e94899f124be11dd581c50aad3296d9f309bb30425c6b89c8751f9694",
+      "round10_sha256": "cd52831aed71761f26702a8df98446984024a3586942fc51199d8e0c65c0fc0b",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        393,
+        101,
+        645,
+        1460
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-105-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-105-pitch+00/bald-natural.png",
+      "sha256": "8141df79facee07c0b3b3a39d5844f177bc1b1a173528b7d8e0d28b935f5f690",
+      "round10_sha256": "1e96a38af312a1cddf9dc1461059e5e83806d9fcbf02ec1fac8345752ce3dd45",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        407,
+        152,
+        631,
+        1441
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-120-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-120-pitch+00/bald-natural.png",
+      "sha256": "2eef98f7e45d2b603dd98b5776b9caf663fae7a20b1ab11a6920ecbafe8d63f1",
+      "round10_sha256": "bec38f22c24906d42a885fad7ec9518f4c42608e0863f4e82c1b7009ab53381b",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 21138,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        369,
+        155,
+        635,
+        1426
+      ],
+      "round10_original_interior_changed_pixels": 20939,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-135-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-135-pitch+00/bald-natural.png",
+      "sha256": "e31cfd8befc4d469dce274d9de89c71848dfe55fecda58192610a390c6e3c98a",
+      "round10_sha256": "5f8303a764ecedbccbc480a6a282b037ed5eb871f67f3b194a980e9e67df13fa",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        346,
+        109,
+        667,
+        1481
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-150-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-150-pitch+00/bald-natural.png",
+      "sha256": "4b6528067ca72b4740d901960934b56efdd035f2daca1d8485a8421648ebd3ee",
+      "round10_sha256": "8f0a8628bf8e802e277f0eebd45bc0ba20898814b33468d907ff0d049f32c35e",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        338,
+        113,
+        672,
+        1482
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-165-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-165-pitch+00/bald-natural.png",
+      "sha256": "779d1a4e92582ceec30372940838f55cbbc0f9bfdbcb221b0a6dbc49d4b22e07",
+      "round10_sha256": "c938b3e9ebfe318eb9c835e6177103221705e4946c80cb21a441fb4e41aac0f9",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 254,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        323,
+        140,
+        694,
+        1484
+      ],
+      "round10_original_interior_changed_pixels": 186,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    },
+    {
+      "view": "yaw-180-pitch+00",
+      "path": ".quality-tmp/bald-natural11/yaw-180-pitch+00/bald-natural.png",
+      "sha256": "4a914e6bc2a65d5ae727dabc872f0e6607e87e6f7f84baee1ac45994c634b976",
+      "round10_sha256": "0f45c8484f533d70e8acc024219d2fbe0a8c8f62b8e68ce10b2b63d11df3361e",
+      "size": [
+        1024,
+        1536
+      ],
+      "mode": "RGBA",
+      "edge": {
+        "binary_edge_seed_pixels": 150,
+        "selected_edge_pixels": 318,
+        "changed_pixels": 293,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0,
+        "round10_interior_total_changed_pixels": 0,
+        "round10_interior_outside_repair_changed_pixels": 0
+      },
+      "outline_crop": [
+        319,
+        142,
+        694,
+        1489
+      ],
+      "round10_original_interior_changed_pixels": 0,
+      "visual_status": "agent_visual_pass",
+      "owner_appearance_approved": false
+    }
+  ],
+  "blinks": [
+    {
+      "view": "yaw+000-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+000-pitch+00/bald-blink-half.png",
+      "sha256": "c745d876c2910600b4b01022ede28a33d5cbf008faf02ad248da16dd6b4d4334",
+      "layer_sha256": "1defc788303f7c843f502f4eed61db5303c2a747791b4b6cf926a8c4fb0c4de8",
+      "delta_sha256": "2988590fb82851ef23d5a63de90d11773c8be2151242b852ae534af2799d9f63",
+      "eye_pixels": 1002,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 822,
+        "selected_edge_pixels": 1266,
+        "changed_pixels": 1259,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "afb2217a24934db7b0e7a348ccd7bdffd02583f669ee0e601a5c27a03047c23b",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+000-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+000-pitch+00/bald-blink-closed.png",
+      "sha256": "d559d2da65280069b8a0c6a27f5081689d6f35cb41798a455d97279b25bac544",
+      "layer_sha256": "e5cd48392245e1f6f350bfe091d8af94d17f341141bb23ffcad79707bfb2f0c0",
+      "delta_sha256": "47393c7115afa743188b45435e925c30420235b2102ffeae2172618b61c84414",
+      "eye_pixels": 1000,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 822,
+        "selected_edge_pixels": 1266,
+        "changed_pixels": 1259,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "eb9486cbab2ee7d55d98b8dd7810929b39b174b56363204ebe23421b1dfe7588",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+015-pitch+00/bald-blink-half.png",
+      "sha256": "caf68d47909babe0115d18cb96268823441dfa55f0f552f71726bb9f5390d9af",
+      "layer_sha256": "0ebd2b1b506302c7bedf61241a5c9d2c77969117f56519bc4100450ca890a8d0",
+      "delta_sha256": "8fb209409a3e09f4f7e0b844ad4545dbde1a19d47794677eb3129120c602488d",
+      "eye_pixels": 1426,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 2,
+        "selected_edge_pixels": 12,
+        "changed_pixels": 11,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "2c9f118582817e8040256f3d149a332ac536aaa20531791edb9e24a72b05e1ad",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+015-pitch+00/bald-blink-closed.png",
+      "sha256": "092fb03b07ddf6c0dfb3a75752e97c67fb3a95723373152c0c3a82f5ec791d69",
+      "layer_sha256": "ef26bdc5ca4788da977bdd249d69b9c4fc403649f51d480a18e00b8ba18bb9ce",
+      "delta_sha256": "77c93fed7634b9ca49c9cca0d679c109e3ff71fc2a849569456ae1f3477c519a",
+      "eye_pixels": 1426,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 2,
+        "selected_edge_pixels": 12,
+        "changed_pixels": 11,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "2c9f118582817e8040256f3d149a332ac536aaa20531791edb9e24a72b05e1ad",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+030-pitch+00/bald-blink-half.png",
+      "sha256": "d3dbcdd51c52e80ec4af88cf466bc8cc26ba99b640e7df5ed116a6fdd717dbbf",
+      "layer_sha256": "1d2c24a97b23fb7ffe35082c444131e5ff198258551ffa0b5204c2a4afb46536",
+      "delta_sha256": "b2a01e2ebf1e023f1584e1660f65a9ffcdc32fef4b07b4c7b9bbf779ce3b96d9",
+      "eye_pixels": 1573,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "492e577e971db99c7a7337522581ab225efd917993cb1044d46fe07622d414f4",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+030-pitch+00/bald-blink-closed.png",
+      "sha256": "5ddcd75ec85f1036a8a9849c4c335e43dda079013048e38371fff5b333ce1a6f",
+      "layer_sha256": "df9c4a88f498dcc92fd79a1a36efff401fa68396c3a97553662deab25e36dc14",
+      "delta_sha256": "4771fac95a23fbed316a218786ae506fadb89d2d569a66ed46f9891277f8b83e",
+      "eye_pixels": 1576,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "c7893d92fca74c3237e396fe2cb5e7f58edd01141c3de3cbf98ab58c58b0ae51",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+045-pitch+00/bald-blink-half.png",
+      "sha256": "a5698a5aa2663d47a03066d7ad3ff2f5c57e01fe0a207aef8142f4bd99a06746",
+      "layer_sha256": "a22cf19f6dbcfa4f28ed32225290b670b7466cd748086ef5f374d94020b8796e",
+      "delta_sha256": "d47d0e6da6e9a240879f29713ac873243569f15362ede8a837d925b80918f7ed",
+      "eye_pixels": 1376,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "5f361badef479616b24cb7cbefbde9320dc8707ee5792c2b575543a25b65182f",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+045-pitch+00/bald-blink-closed.png",
+      "sha256": "770f1a45a6843f78d3131ebb776dc4b5e864e51f316e5998736a6aee4c93761d",
+      "layer_sha256": "9fda07688b3f19c9344d8ff8e31b313397e9aea875afab2cc1b075d5890cc022",
+      "delta_sha256": "8d533b2a915e680a9ccaa4aa118ad8a43c46352bb81b07418f1844047bdc077f",
+      "eye_pixels": 1377,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "772e239d105b18940d5ff9729ad1858223c79a51f06aac0eec99d82f685401f3",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+060-pitch+00/bald-blink-half.png",
+      "sha256": "bcf68a243f8f39994fc52faca33e33575dbe0a605430e80900202647f889b44f",
+      "layer_sha256": "0c5d220af2c48422b86926139be10123a8de38cea53d0dcc7353e9a148c13ac9",
+      "delta_sha256": "417c485c51b774ab1c247d37167a318d2360c87b25498571bde2d775cbae9154",
+      "eye_pixels": 771,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "fdea73b2061777b98b474c83e4db55ca28615aad8fac26d8062ef8e619c12db3",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+060-pitch+00/bald-blink-closed.png",
+      "sha256": "319d3757f94854a68dc81b4fcb4486805d5cf1cb4c24407dc49a4a4c8bb196f2",
+      "layer_sha256": "4c1cf1bf41c9c34438c2665f0b1fc2a04cd43c00f870658ecc9faba43aa33490",
+      "delta_sha256": "9623d37f8c968b94411b3e5d34a40b8aea4781019c407140d91c3d1b120f2b07",
+      "eye_pixels": 779,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "410e0e1c728f170b5f136396b0dc30b95b145a9824f678d2068835508a122c1b",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+075-pitch+00/bald-blink-half.png",
+      "sha256": "007ea163b4e67946c70c0c5dceeb5ba9dfe17a389cf91b3f9142fd8972b49b68",
+      "layer_sha256": "e4aa10b10fdc4de5bf292f5d1bb83be11eb230975bad9078b5e10adc4591ec46",
+      "delta_sha256": "dc978712a58833074b5891e1416711f81b707bba1c2a19ffe3e8e00d3b915d74",
+      "eye_pixels": 798,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "0e572113ee72a2ec54249125bf5a8049de43e6fc8788c67a3a3fd6a34d5c6ed4",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+075-pitch+00/bald-blink-closed.png",
+      "sha256": "e0abe4241ad77f87875e93b5e539465e7c32af4064f3d38991bc1a969154c2db",
+      "layer_sha256": "32d2a9de29e7a6495fb07bd40e2c1bbb8ed50a04425bb43f2333ab32cc31d299",
+      "delta_sha256": "480fb5494342e2316e9d4b561f11c2de18c880194e568846fa243d922fb75a33",
+      "eye_pixels": 793,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "d9523d9db31b33f25ca06f25886f2263158e4596099c77ee3a6368a6864a2b10",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw+090-pitch+00/bald-blink-half.png",
+      "sha256": "c9f5b02bcdf1fe4fea216b08c451fb27d2ff1e1ac96e7682f5970c61042eb3b0",
+      "layer_sha256": "18ba368adaf56566cb3916e141d4b7b51491cab7fa234583b0da32100dfed118",
+      "delta_sha256": "80521c55881b5060a382eaa9c111d43cd611f7281f1d01ead83c7ef2ca0e50a4",
+      "eye_pixels": 1002,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "afb2217a24934db7b0e7a348ccd7bdffd02583f669ee0e601a5c27a03047c23b",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw+090-pitch+00/bald-blink-closed.png",
+      "sha256": "c388c54eb42e7eb7606483abc2b8fafbb3b37e49bbb1d66b099789fbe10f2142",
+      "layer_sha256": "397c1e9d3e43ccdd9ef91316884dca07dc20d6c9774b0a267722c8a7daf4f552",
+      "delta_sha256": "75d257cb2995358ac9032137a9557935197d064d419dfc403b481ffef21cdaf6",
+      "eye_pixels": 1000,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "eb9486cbab2ee7d55d98b8dd7810929b39b174b56363204ebe23421b1dfe7588",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw-015-pitch+00/bald-blink-half.png",
+      "sha256": "3e3b6805659736882572cbe9540168b96cd66316bb9fb28cb427ed92a20b21ca",
+      "layer_sha256": "8660aaef0f6caac86e9bd69b388926614e64de155ba7bce8e9acec9baa1bf681",
+      "delta_sha256": "d80ef52094be27ade6322d6ff9b4ace2d6605e75e36c1a7cc84ab4c273279594",
+      "eye_pixels": 1355,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "e0b6a246b9883aad7cf5050d52d680ea176ab4d3a3d4ecc12b7ae290da7fe3b2",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw-015-pitch+00/bald-blink-closed.png",
+      "sha256": "34d87654aa0b8236f90efcebc8b31a2e2905f304bb1e0e3d101b986d2023372a",
+      "layer_sha256": "3afccca9d26cdcff483ed12bdff805e3419714bcc36594d5a26f1b464094a038",
+      "delta_sha256": "e57b153b8dd9664fd5829b39e9368c1945f87087a04ccd6d161a71748ec0fc3f",
+      "eye_pixels": 1332,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "5917c936e628af783e769288a5fb3ce97eb0caf5f53999d8494c7ae482042252",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw-030-pitch+00/bald-blink-half.png",
+      "sha256": "55273cc3fd93a683d5762a2560d8ed17d721eeaecd52dc15820910ce248b1b4c",
+      "layer_sha256": "06c6fbc3704867b6766df2d64e3da55b0e1b4068555d18c8074beed1edefc606",
+      "delta_sha256": "be140335c38d1cec362cc29026cd2ce60b7c6d09ef3e4905b3f21dad9ec89b68",
+      "eye_pixels": 1000,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "88a3915cb50d0563f97bd84009eec0d4268de9b7400737e68f80dd34bae1bbcc",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw-030-pitch+00/bald-blink-closed.png",
+      "sha256": "949b52a058ff49ec9a1dbed73e4bf69aca74051e9b02965255d458395a61cb1f",
+      "layer_sha256": "256c03d256e61ca9ef1e0d829899c3bbdff2fb2aa249abdc6840b2fda5f29b45",
+      "delta_sha256": "c1efbf29f105f2cee9a24c3fb7f6767eb2df5d3694c67bc54c4c124d579f0110",
+      "eye_pixels": 1033,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "c0807f7857bc2d29f0849609f804fe37ba36b166c86a7ba05876d2cb731cec30",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw-045-pitch+00/bald-blink-half.png",
+      "sha256": "e98446fad6c509ca0555c3b4008b8e5ead8d2377d12388b6d041bc8eb4f2d59a",
+      "layer_sha256": "b122e54bcffc5260a89282b9031610285555337c6398b02af5103fd46ed269e0",
+      "delta_sha256": "d8d5cb0e3e279a17f4a2183939e41f02247dc4072e21de30b7883f8dd715c416",
+      "eye_pixels": 912,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "a00889ea2d732ce6029efa1c9da643233dbdb24defc4aa9a41fb0bd979a1644e",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw-045-pitch+00/bald-blink-closed.png",
+      "sha256": "f67f8d8fd599dd0d99fb8001fd9a5a6ac9043d47d091048b9afd31d012f44c03",
+      "layer_sha256": "7a5c8d28f7245c312815a779cfab78e363c1b1f06b852be538bf0faa56693f61",
+      "delta_sha256": "ec618adce90cee6268ccfa103aaccf774c9c8199094b188e0710d658b8c6b6a2",
+      "eye_pixels": 912,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "ef2fc97d78d3d5ca90f154c41e19579f76139632315285e853fd86e4d35aa23f",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw-060-pitch+00/bald-blink-half.png",
+      "sha256": "c28b6961781501fdd6a2c2e398fe28a34575d7ef9a936509649c8c598635cd8e",
+      "layer_sha256": "41d0e033725bf7347fab73a36d5b724c210ad02a8018eeb4f0aadd00704b7796",
+      "delta_sha256": "64ede004dca3938bab17bcbb349518a4a77510407710868a91e40ee8258f038f",
+      "eye_pixels": 653,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "7d4a0422af43edc5018d1a9191e106de08461e880be7b82bdb4a839323e016bb",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw-060-pitch+00/bald-blink-closed.png",
+      "sha256": "a28bcea6f9b829292fdb2e2a8641546538070b637517af1a173fd49d147cffab",
+      "layer_sha256": "7b6fcc792f017a349709e1c18a7f9173f3efcc4108d7e1bd7688989a73764e8b",
+      "delta_sha256": "3cc9ec0982be66f6752d8a1a95767081358fe752b90f33167167fbcd9e115cc4",
+      "eye_pixels": 686,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "fb0289243f641263fd90c18777d26d5d5dc0252cd32e3d0e8fb130d793957dcd",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "state": "half",
+      "path": ".quality-tmp/bald-natural11/yaw-075-pitch+00/bald-blink-half.png",
+      "sha256": "8dcb2053875831e0ae08c2da75b926a20d55a560deb2f98fc035231bcc5ef128",
+      "layer_sha256": "07f793f5e78622a1be237d37cc6232f7530e4ec0145b4a18d2b88c546aaec9b2",
+      "delta_sha256": "6893c4345ea83eab59ad3d64c3d2865e189d81ce29dd57ecbf18dff244e67d46",
+      "eye_pixels": 707,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "9acb74708f1343499683b72e469cdd0f7e0d0d53b432e2e8b211e944c38f29e3",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "state": "closed",
+      "path": ".quality-tmp/bald-natural11/yaw-075-pitch+00/bald-blink-closed.png",
+      "sha256": "69f44c8a7a98cde98cbff5b8ff97d34142ffebcc5600ba629431069cb2883b5f",
+      "layer_sha256": "fefd90f845b08ef3308ac6061219733c6fbb09876eb802a40e6f0c2d0e4c7c12",
+      "delta_sha256": "7b492d9008d42ba5ff287f579e4a019f0a920f12fcfe400078335bf948a3fc2d",
+      "eye_pixels": 750,
+      "eye_RGBA_difference": 0,
+      "outside_eye_matches_finished_base": true,
+      "edge": {
+        "binary_edge_seed_pixels": 0,
+        "selected_edge_pixels": 0,
+        "changed_pixels": 0,
+        "interior_edge_stage_RGBA_difference": 0,
+        "outside_2px_band_difference": 0
+      },
+      "mask_sha256": "b97ffa484b7c89dacb8e90f5abfce91b32b4417a75b02e7aef92c90a303defc3",
+      "layer_composition": "replace RGBA inside mask; signed delta reconstructs exactly; ordinary alpha-over is not the replacement contract"
+    }
+  ],
+  "all_requested_quality_complete": false,
+  "interior_literal_zero_to_round10": false,
+  "edge_stage_interior_zero": true,
+  "note": "Head/neck repairs are explicitly recorded separately from silhouette antialiasing.",
+  "agent_visual_pass_count": 28,
+  "owner_appearance_approved_count": 0,
+  "round10_original_interior_zero_except_explicit_repairs": true,
+  "literal_zero_exceptions": [
+    {
+      "view": "yaw-120-pitch+00",
+      "changed_original_interior_pixels": 20939
+    },
+    {
+      "view": "yaw-165-pitch+00",
+      "changed_original_interior_pixels": 186
+    }
+  ]
+}

@@ -59,11 +59,14 @@ CHARACTER_DATA_LICENSE_COMPONENTS = {
     "character_rig_data": "program_data",
     "character_runtime_binding_data": "program_data",
     "character_expression_catalog": "program_data",
+    "character_layer_view": "character_art",
 }
 
 
 def _license_component(path: str, category: str) -> str:
     if path.startswith("assets/characters/"):
+        if category == "character_layer_view" and PurePosixPath(path).suffix.lower() == ".json":
+            return "program_data"
         if category not in CHARACTER_DATA_LICENSE_COMPONENTS:
             raise CharacterPackBuildError(
                 f"character data category has no license component: {category} ({path})"

@@ -26,6 +26,7 @@ lazy from infrastructure.installed_character_packs import (
     installed_character_pack_path,
     load_installed_character_pack,
 )
+lazy from tools.fetch_body_pack import BodyPackFetchError, fetch_body_pack
 lazy from tools.fetch_character_pack import CharacterPackFetchError, fetch_character_pack
 lazy from tools.verify_character_pack_lock import RELEASE_PROFILES
 
@@ -39,6 +40,11 @@ def verify_download(profile_name: str, data_root: Path) -> int:
     # same way a product cold start does before loading an installed pack.
     activate_product_character_runtime(ROOT, character_id=DEFAULT_CHARACTER_ID)
     character_id = profile.pack_id.removeprefix("flameblade.")
+    if profile_name == "lin-keyun":
+        body_result = fetch_body_pack(data_root=data_root)
+        print(f"BODY_PACK_ID={body_result.pack_id}")
+        print(f"BODY_PACK_VERSION={body_result.pack_version}")
+        print(f"BODY_PACK_FINGERPRINT={body_result.fingerprint}")
     target = installed_character_pack_path(character_id, data_root=data_root)
     result = fetch_character_pack(target, lock_path=ROOT / profile.lock_path)
     reader = load_installed_character_pack(
@@ -62,7 +68,7 @@ def main(arguments: Sequence[str] | None = None) -> int:
     with tempfile.TemporaryDirectory(prefix="mohan-pack-download-") as directory:
         try:
             checked = verify_download(parsed.profile, Path(directory))
-        except (CharacterPackFetchError, ValueError, OSError) as error:
+        except (BodyPackFetchError, CharacterPackFetchError, ValueError, OSError) as error:
             print(f"CHARACTER_PACK_DOWNLOAD_ERROR={error}", file=sys.stderr)
             return 1
     print(f"CHECKED_FILES={checked}")

@@ -174,7 +174,10 @@ class CompatibilityAudit(ast.NodeVisitor):
         ):
             self.issue(node, f"REMOVED_EMPTY_FORM {name}")
 
-        if name in {"open", "builtins.open", "io.open"}:
+        if (
+            (isinstance(node.func, ast.Name) and node.func.id == "open")
+            or name in {"builtins.open", "io.open"}
+        ):
             mode = literal_mode(node)
             if (
                 (mode is None or "b" not in mode)

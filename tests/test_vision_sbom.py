@@ -110,7 +110,8 @@ def assert_models_are_machine_verifiable() -> None:
             {"type": "distribution", "url": asset.source}
         ]
     build_script = (ROOT / "build.ps1").read_text(encoding="utf-8")
-    assert '--add-data "assets;assets"' in build_script
+    assert '--add-data "$AssetStage;assets"' in build_script
+    assert 'stage_installer_assets.py' in build_script
     assert '--add-data "THIRD_PARTY_NOTICES.md;."' in build_script
 
 

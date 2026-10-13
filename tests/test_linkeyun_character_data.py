@@ -14,6 +14,11 @@ lazy from domain.version_info import FALLBACK_VERSION
 lazy from infrastructure.character_source_pack import CharacterPackReader
 lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
 lazy from tools import build_character_pack as builder
+lazy from tests.body_pack_fixtures import (
+    bind_character_pack_to_body_fixture,
+    build_body_pack_release_fixture,
+    materialize_body_pack_fixture,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,11 +51,43 @@ RUNTIME_JSON_FILES = (
     "rig/runtime-bindings.json",
     "voice/profile.json",
 )
+EXPECTED_BODY_PHYSICAL_VIEW_COUNT = 31
+EXPECTED_BODY_FILES_PER_VIEW = 5
+EXPECTED_BODY_LAYER_COUNT = 4
+EXPECTED_BODY_PHYSICAL_VIEW_IDS = (
+    *(f"yaw{yaw:+04d}-pitch+00" for yaw in range(-180, 180, 15)),
+    "cheek-rest",
+    "exasperated",
+    "front-crossed",
+    "front-eureka",
+    "front-mock-hit",
+    "front-mock-scold",
+    "left-neutral",
+)
+EXPECTED_BODY_LAYER_FILENAMES = (
+    "base-hide-mask.png",
+    "body-fix.png",
+    "garment.png",
+    "hair-back.png",
+    "hair-front.png",
+)
+EXPECTED_BODY_LAYER_PATHS = frozenset(
+    f"body/views/{view_id}/{filename}"
+    for view_id in EXPECTED_BODY_PHYSICAL_VIEW_IDS
+    for filename in EXPECTED_BODY_LAYER_FILENAMES
+)
+EXPECTED_BODY_REPOSITORY_LAYER_PATHS = frozenset(
+    f"assets/characters/lin-keyun/{path}" for path in EXPECTED_BODY_LAYER_PATHS
+)
+EXPECTED_BODY_LAYER_VIEW_ALIAS_COUNT = 203
 EXPECTED_FILES = frozenset(
     {
         *RUNTIME_JSON_FILES,
         APPEARANCE_DEFAULTS_PATH,
         "LICENSE.md",
+        "body/approval.json",
+        "body/manifest.json",
+        *EXPECTED_BODY_LAYER_PATHS,
         "official-packs/linkeyun.official.modern-office.mohan-outfit",
         "pack-source.json",
         "README.md",
@@ -147,11 +184,37 @@ def test_linkeyun_directory_matches_the_character_data_contract() -> None:
     assert files == EXPECTED_FILES
     assert len(files) == EXPECTED_FILE_COUNT
     for relative in EXPECTED_FILES - {
-        "official-packs/linkeyun.official.modern-office.mohan-outfit"
+        "official-packs/linkeyun.official.modern-office.mohan-outfit",
+        *EXPECTED_BODY_LAYER_PATHS,
     }:
         data = (LIN_KEYUN_ROOT / relative).read_bytes()
         assert data.endswith(b"\n"), relative
         assert b"\r\n" not in data, relative
+
+
+def test_linkeyun_body_layers_cover_the_31_view_and_203_alias_contract() -> None:
+    source = _load(LIN_KEYUN_ROOT, "pack-source.json")
+    manifest = _load(LIN_KEYUN_ROOT, "body/manifest.json")
+    aliases = source["layer_views"]
+
+    assert len(EXPECTED_BODY_PHYSICAL_VIEW_IDS) == EXPECTED_BODY_PHYSICAL_VIEW_COUNT
+    assert len(EXPECTED_BODY_LAYER_PATHS) == (
+        EXPECTED_BODY_PHYSICAL_VIEW_COUNT * EXPECTED_BODY_FILES_PER_VIEW
+    )
+    assert len(aliases) == EXPECTED_BODY_LAYER_VIEW_ALIAS_COUNT
+    assert manifest["layer_views"] == aliases
+
+    referenced_paths: set[str] = set()
+    expected_layer_kinds = {"hair-back", "body-fix", "garment", "hair-front"}
+    for alias, plan in aliases.items():
+        assert set(plan["order"]) == {"base", *expected_layer_kinds}, alias
+        assert plan["base_hide"]["path"].endswith("/base-hide-mask.png"), alias
+        assert {layer["kind"] for layer in plan["layers"]} == expected_layer_kinds
+        assert len(plan["layers"]) == EXPECTED_BODY_LAYER_COUNT
+        referenced_paths.add(plan["base_hide"]["path"])
+        referenced_paths.update(layer["path"] for layer in plan["layers"])
+
+    assert referenced_paths == EXPECTED_BODY_REPOSITORY_LAYER_PATHS
 
 
 def test_linkeyun_runtime_json_shapes_match_mohan() -> None:
@@ -343,9 +406,14 @@ def test_linkeyun_appearance_defaults_load_with_explicitly_no_headwear() -> None
     defaults = load_character_appearance_defaults(
         LIN_KEYUN_ROOT / APPEARANCE_DEFAULTS_PATH
     )
-    mohan = _load(MOHAN_ROOT, APPEARANCE_DEFAULTS_PATH)
 
-    assert source["makeup"] == mohan["makeup"]
+    assert source["makeup"] == {
+        "pack_id": "mohan.makeup.builtin",
+        "item_id": "mohan-signature",
+        "variants": ["classic", "light", "glamorous"],
+        "menu_variants": ["light", "classic", "glamorous"],
+        "always_visible_variants": ["light", "classic"],
+    }
     assert defaults.makeup_pack_id == "mohan.makeup.builtin"
     assert defaults.makeup_item_id == "mohan-signature"
     assert defaults.outfit_pack_id == "linkeyun.official.modern-office"
@@ -369,7 +437,7 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     )
     assert lock["pack_version"] == source["pack_version"]
     assert lock["package_hash"] == (
-        "2b526577c3703dd6bcd4c6de6c62493819ab6725e0c6c8f22a2c01ddfdc57326"
+        "fbe823bfbde682dc962c5377339567462ac00c07099f021ccae484964045af6f"
     )
     assert source["distribution"]["access"] == "public"
     assert source["distribution"]["redistribution"] == "allowed"
@@ -413,22 +481,34 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
 def test_linkeyun_pack_builds_validates_and_reads_without_mohan_data(
     tmp_path: Path,
 ) -> None:
+    source = _load(LIN_KEYUN_ROOT, "pack-source.json")
+    body_fixture = build_body_pack_release_fixture(
+        tmp_path / "body-pack-release",
+        view_ids=source["layer_views"],
+    )
+    body_pack_root = tmp_path / "body-packs"
+    materialize_body_pack_fixture(body_fixture, body_pack_root)
+
     output = tmp_path / "flameblade.lin-keyun"
     built = builder.build_character_pack(
         output,
         output_format="directory",
         source_path="assets/characters/lin-keyun/pack-source.json",
     )
+    bind_character_pack_to_body_fixture(output, body_fixture)
     reader = CharacterPackReader(
         output,
         engine_version=FALLBACK_VERSION,
         limits=built.validation_limits,
+        body_pack_roots=(body_pack_root,),
     )
     assert reader.validation_result.valid
     assert reader.manifest.pack_id == "flameblade.lin-keyun"
     assert reader.manifest.character_id == "lin-keyun"
     assert reader.manifest.access == "public"
     assert reader.manifest.dependencies == ()
+    assert reader.resolved_body_pack is not None
+    assert reader.resolved_body_pack.reference == body_fixture.reference
     declared = {record.path for record in reader.manifest.files}
     assert any(path.startswith("assets/characters/lin-keyun/") for path in declared)
     assert not any(path.startswith("assets/characters/mohan/") for path in declared)

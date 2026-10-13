@@ -1,0 +1,1528 @@
+{
+  "build_provenance": {
+    "approval_scope": "BODY-RELEASE-1 designates the source roots and seventh-round 28-view/3-gesture approval. Historical metadata is retained as evidence and is not upgraded to a round-9 approval.",
+    "candidate_fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
+    "candidate_manifest_bytes": 447897,
+    "candidate_manifest_sha256": "2851fcdc75d9cbc05e07691ae19bda7d3a7f956bae430cdbf8ab2d7e8bfb2f46",
+    "candidate_manifest_source_id": "mohan-body-install/.quality-tmp/body-pack-build/mohan-body-v2/manifest.json",
+    "dynamic_face_core_recalculation": false,
+    "fixed_final_core_masks": 31,
+    "historical_gesture_manifest_drift_rows": 9,
+    "upstream_core_status_counts": {
+      "NUMERIC_PASS_VISUAL_REVIEW_PENDING": 9,
+      "unspecified": 19
+    },
+    "approved_cheek_fixed_frames": {
+      "approval": "托腮素體同意",
+      "candidate_manifest_sha256": "d3beaec914358f8714149bab11bc8aec62624baf4f5337bad28d84eba57951d1",
+      "source_id": "approved-cheek-b-body-11-fixed-frames",
+      "fixed_half_body_frames": 72,
+      "fixed_face_core_masks": 6,
+      "route": "fixed-frame"
+    }
+  },
+  "files": [
+    {
+      "bytes": 1985259,
+      "path": "bald-natural11/cheek-rest/bald-natural.png",
+      "sha256": "74632d7aa72b4c4d2dc2e939a712c38beb9a437c32b849d986dd2c4606786656"
+    },
+    {
+      "bytes": 1018185,
+      "path": "bald-natural11/exasperated/bald-natural.png",
+      "sha256": "e8fd65ad7e7d2bc7a8ef81a315c73a3995e57f8e2b8199c2924f90ebfc7b592f"
+    },
+    {
+      "bytes": 2028421,
+      "path": "bald-natural11/front-crossed/bald-natural.png",
+      "sha256": "23a5152f9181a88f9520cedc80c966f041df51e9d4e287be76331206e35c4580"
+    },
+    {
+      "bytes": 913162,
+      "path": "bald-natural11/left-neutral/bald-natural.png",
+      "sha256": "81e70df14549d6461e949d60567285ec8ac6dbc346ffc2cd7c32e628e4bbd5f3"
+    },
+    {
+      "bytes": 50165,
+      "path": "bald-natural11/manifest.json",
+      "sha256": "1e3b569ad342ccfeff21522076fcb9b41ce545e2bae2c9d0c0708142c17113fe"
+    },
+    {
+      "bytes": 2116507,
+      "path": "bald-natural11/yaw+000-pitch+00/bald-natural.png",
+      "sha256": "f8aa8d165343cbf4f53059c97c0a1d3fc884ca43b32d419465d6726b3b07f569"
+    },
+    {
+      "bytes": 2126821,
+      "path": "bald-natural11/yaw+015-pitch+00/bald-natural.png",
+      "sha256": "2ab797a3869c6b88e6bea277f34add50dc10e0915d63239ba290aae962a8103c"
+    },
+    {
+      "bytes": 2026145,
+      "path": "bald-natural11/yaw+030-pitch+00/bald-natural.png",
+      "sha256": "e8abdaee73961e10a3b1a2e180805f6fc48d14c8e859122fe31757e2133f02ce"
+    },
+    {
+      "bytes": 1981838,
+      "path": "bald-natural11/yaw+045-pitch+00/bald-natural.png",
+      "sha256": "1b6dc54001ec61dcddbc0740fbe88383f5fcc1abbc5b68afb3fc7a1fee3516b7"
+    },
+    {
+      "bytes": 1658363,
+      "path": "bald-natural11/yaw+060-pitch+00/bald-natural.png",
+      "sha256": "0f7b20e27d871bd5f58f3d95669ef98f554dbe4f5d1c85656504f8dada877c27"
+    },
+    {
+      "bytes": 1642898,
+      "path": "bald-natural11/yaw+075-pitch+00/bald-natural.png",
+      "sha256": "5459aaf70de7007a06045dcca9724596ba81a10ac648d5b900b9d8919c2d9ee5"
+    },
+    {
+      "bytes": 462599,
+      "path": "bald-natural11/yaw+090-pitch+00/bald-natural.png",
+      "sha256": "1f35440a425ab3152a6a42ccaf68b5803dceb4fe951fc26a92f02b5ec31cf4b9"
+    },
+    {
+      "bytes": 1815219,
+      "path": "bald-natural11/yaw+105-pitch+00/bald-natural.png",
+      "sha256": "4527311f2cb7af31c5253430d357927c4f5575fb43f98463a63a425af2b7e894"
+    },
+    {
+      "bytes": 1896824,
+      "path": "bald-natural11/yaw+120-pitch+00/bald-natural.png",
+      "sha256": "4df1552d8a2d80317b795eba17fd25221f93eaf3a1dc3c3bf38b30a10edc9d54"
+    },
+    {
+      "bytes": 1908750,
+      "path": "bald-natural11/yaw+135-pitch+00/bald-natural.png",
+      "sha256": "33183497bfd5bea49e6baee1d1504901912da4b095411145d3db4adbc33aaff6"
+    },
+    {
+      "bytes": 1920659,
+      "path": "bald-natural11/yaw+150-pitch+00/bald-natural.png",
+      "sha256": "147b57adaff2e3927ae61cbf7464ae400d29f9a3ac674591388cedc1cac47178"
+    },
+    {
+      "bytes": 1826407,
+      "path": "bald-natural11/yaw+165-pitch+00/bald-natural.png",
+      "sha256": "10e730b512a087c837c3d6518c80cf474c27cb044199b8ebae7ace1b963a6acf"
+    },
+    {
+      "bytes": 1958095,
+      "path": "bald-natural11/yaw-015-pitch+00/bald-natural.png",
+      "sha256": "eee2345ad5273cc759cd12e9169993d592c7d9a2d13f4a8164306f58aa98b07c"
+    },
+    {
+      "bytes": 1910890,
+      "path": "bald-natural11/yaw-030-pitch+00/bald-natural.png",
+      "sha256": "17790117d3335960bc3c17445a8b32851707a69ddf3b9ce876aa136e9b07beac"
+    },
+    {
+      "bytes": 1962669,
+      "path": "bald-natural11/yaw-045-pitch+00/bald-natural.png",
+      "sha256": "fc851ca99482b2d9eaddd69bcfbda6a589b73976767f65ff6c4eb9d53ef3a2da"
+    },
+    {
+      "bytes": 1484315,
+      "path": "bald-natural11/yaw-060-pitch+00/bald-natural.png",
+      "sha256": "a89a5ca76b295c17ec5b27887ced42bc26b334d38f92132563a86d9540598733"
+    },
+    {
+      "bytes": 1634343,
+      "path": "bald-natural11/yaw-075-pitch+00/bald-natural.png",
+      "sha256": "6195f9b0d7129706c66aea67b49ee5f32502cc7cfe4b00f561821ca6e63d3806"
+    },
+    {
+      "bytes": 457176,
+      "path": "bald-natural11/yaw-090-pitch+00/bald-natural.png",
+      "sha256": "2e44d17e94899f124be11dd581c50aad3296d9f309bb30425c6b89c8751f9694"
+    },
+    {
+      "bytes": 1671043,
+      "path": "bald-natural11/yaw-105-pitch+00/bald-natural.png",
+      "sha256": "8141df79facee07c0b3b3a39d5844f177bc1b1a173528b7d8e0d28b935f5f690"
+    },
+    {
+      "bytes": 1808853,
+      "path": "bald-natural11/yaw-120-pitch+00/bald-natural.png",
+      "sha256": "2eef98f7e45d2b603dd98b5776b9caf663fae7a20b1ab11a6920ecbafe8d63f1"
+    },
+    {
+      "bytes": 1875980,
+      "path": "bald-natural11/yaw-135-pitch+00/bald-natural.png",
+      "sha256": "e31cfd8befc4d469dce274d9de89c71848dfe55fecda58192610a390c6e3c98a"
+    },
+    {
+      "bytes": 1938971,
+      "path": "bald-natural11/yaw-150-pitch+00/bald-natural.png",
+      "sha256": "4b6528067ca72b4740d901960934b56efdd035f2daca1d8485a8421648ebd3ee"
+    },
+    {
+      "bytes": 1598716,
+      "path": "bald-natural11/yaw-165-pitch+00/bald-natural.png",
+      "sha256": "779d1a4e92582ceec30372940838f55cbbc0f9bfdbcb221b0a6dbc49d4b22e07"
+    },
+    {
+      "bytes": 2055005,
+      "path": "bald-natural11/yaw-180-pitch+00/bald-natural.png",
+      "sha256": "4a914e6bc2a65d5ae727dabc872f0e6607e87e6f7f84baee1ac45994c634b976"
+    },
+    {
+      "bytes": 313,
+      "path": "core-masks/cheek-rest/builder-provenance.json",
+      "sha256": "ff7c12a7833bc16544d30cc59110e43ead66a897068e940274a1295bfb3fcb57"
+    },
+    {
+      "bytes": 3414,
+      "path": "core-masks/cheek-rest/face-core-mask.png",
+      "sha256": "594e6bdac4fdba4923bc96b538ef2a9f8a52e02ae365cccda7873271504285d0"
+    },
+    {
+      "bytes": 313,
+      "path": "core-masks/exasperated/builder-provenance.json",
+      "sha256": "3d7ecff992e177fe61081786c7d41f33536dc79f9b90c2c319d29228e9da117a"
+    },
+    {
+      "bytes": 3287,
+      "path": "core-masks/exasperated/face-core-mask.png",
+      "sha256": "c2e82a97f515a6a89366bdb8f9bd3c30b25fbd017021368a8e427f79bdca806f"
+    },
+    {
+      "bytes": 313,
+      "path": "core-masks/front-crossed/builder-provenance.json",
+      "sha256": "371ef3f7c697beae5e0fe9998194b00b5289f1c2ea77e2636770e69382b4be78"
+    },
+    {
+      "bytes": 3343,
+      "path": "core-masks/front-crossed/face-core-mask.png",
+      "sha256": "c1261d3d05626d75c73362e53b13c8376ebfaeedd807c1e963579f2dd3d13d28"
+    },
+    {
+      "bytes": 313,
+      "path": "core-masks/left-neutral/builder-provenance.json",
+      "sha256": "e55255fa8fba89196906b21f8dbae3890add581102507f211e207d221c8df191"
+    },
+    {
+      "bytes": 3453,
+      "path": "core-masks/left-neutral/face-core-mask.png",
+      "sha256": "63836a53fdcdb7a44959589c7f95470bd051a39ffef3e57b0e38351bbfcbf715"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw+000-pitch+00/builder-provenance.json",
+      "sha256": "05ccf3de98aec9ce471166abe4a5c345828f26ba4a209fb23295d2944c4928b2"
+    },
+    {
+      "bytes": 3241,
+      "path": "core-masks/yaw+000-pitch+00/face-core-mask.png",
+      "sha256": "1bac6731ab8b80fdf9bbb545509b3b161cac480fdaa2e38814d81e0d6e5d2d86"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw+015-pitch+00/builder-provenance.json",
+      "sha256": "968ffdf7b9d703f2b1fb31681c9a8d451c4ba7da00a02805fdb1d42b92ce1762"
+    },
+    {
+      "bytes": 2568,
+      "path": "core-masks/yaw+015-pitch+00/face-core-mask.png",
+      "sha256": "fd55697dedc365a739a66c559adf0e6dd9f7a67d5b8e721029bc2602941fdb50"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw+030-pitch+00/builder-provenance.json",
+      "sha256": "889873c93b9a3117f225ffe2783cb4abf2ba291619a8abb64b0aa30b1613e3ea"
+    },
+    {
+      "bytes": 2493,
+      "path": "core-masks/yaw+030-pitch+00/face-core-mask.png",
+      "sha256": "b93bc0ee9ee53fa52000a062c41c5910ca94bfe079ff8911c45d6c1538b52880"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw+045-pitch+00/builder-provenance.json",
+      "sha256": "58b6943e93a81fb860db7079c8df2856f23befa15ffbd4a7ca0e3865296bd143"
+    },
+    {
+      "bytes": 2591,
+      "path": "core-masks/yaw+045-pitch+00/face-core-mask.png",
+      "sha256": "8af31ff0cd2d8b8aa0adbca1de12d9b092366a09c6749236cb6b731d248ca080"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw+060-pitch+00/builder-provenance.json",
+      "sha256": "1ac9109ec7d58774a3044b37272650a2c7f168d0e0e1f1a5613830c9ff4ca39a"
+    },
+    {
+      "bytes": 2528,
+      "path": "core-masks/yaw+060-pitch+00/face-core-mask.png",
+      "sha256": "a778282c9e8eff944736417bf8874f0986a03c38321a1eae9116bd9eea748793"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+075-pitch+00/builder-provenance.json",
+      "sha256": "7c9f5a88fa67601f1f503ca048f22b9937e8767c08c1de9155555b8c2d70b63c"
+    },
+    {
+      "bytes": 2083,
+      "path": "core-masks/yaw+075-pitch+00/face-core-mask.png",
+      "sha256": "fa464662e25df469b0692b3a34ef8a5821ab9829dd05c54b24920199d70a6356"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+090-pitch+00/builder-provenance.json",
+      "sha256": "227f4e9ba45b5de5dee5c66f629f82ec14b3ddb9aa404e996307bfb50c3b769f"
+    },
+    {
+      "bytes": 2000,
+      "path": "core-masks/yaw+090-pitch+00/face-core-mask.png",
+      "sha256": "c9503580ab4e20f1b477e16a079c42edc2a3e01f2ac60d4f8bf012d1fe9e0b32"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+105-pitch+00/builder-provenance.json",
+      "sha256": "d5a422ac8d4f87f5dffb5eaa21e53e6f0e873d847617be13d325f94b753b3a78"
+    },
+    {
+      "bytes": 1770,
+      "path": "core-masks/yaw+105-pitch+00/face-core-mask.png",
+      "sha256": "5ab67606a857af839335b4e65221ffce87dcce01b8a23b9de517c5bb16fc82c4"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+120-pitch+00/builder-provenance.json",
+      "sha256": "874732a24534a2f5b11b04168cef3c133e824d0c4e65143b3edb12a034a3900a"
+    },
+    {
+      "bytes": 1678,
+      "path": "core-masks/yaw+120-pitch+00/face-core-mask.png",
+      "sha256": "dce45dea417795637891019ce02e4ac23870588cdaa632bb98f1621d8abd4908"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+135-pitch+00/builder-provenance.json",
+      "sha256": "505da570bba6bf2334ff002119ba4b00a7156cd7161a8e90a4259c0438c6b07f"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw+135-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+150-pitch+00/builder-provenance.json",
+      "sha256": "250bb6cb13944844ce7549eabaf82fd7c16a1cacdd6888ec5c8fc2e346a66ff4"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw+150-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw+165-pitch+00/builder-provenance.json",
+      "sha256": "67a8651baf9e149cf9d8e98bde67f07071fcca57675dd62c35737aa718ccb3f1"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw+165-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw-015-pitch+00/builder-provenance.json",
+      "sha256": "39d2d11b9c7e54d8dfea0bd5ac24238ae21bd43d1b88698ba78c392c6cf1cb3f"
+    },
+    {
+      "bytes": 2532,
+      "path": "core-masks/yaw-015-pitch+00/face-core-mask.png",
+      "sha256": "38d9ddbf6a663aa73c4c22473b0857e834548bca57e045b0b2a59c9f39f906bd"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw-030-pitch+00/builder-provenance.json",
+      "sha256": "ccdc60fccbd66b18a20538817fdbd3812ceadee3b8574bd31a86b4851aae3337"
+    },
+    {
+      "bytes": 2553,
+      "path": "core-masks/yaw-030-pitch+00/face-core-mask.png",
+      "sha256": "212bcc5dcf9fdf0fde9b72157ef8b4aa728486c841090a1cf85e46b906e70f6e"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw-045-pitch+00/builder-provenance.json",
+      "sha256": "839e8569dcac6892376f62ace8311de8276964c9b08c911aba949ff5b2c3b01b"
+    },
+    {
+      "bytes": 2491,
+      "path": "core-masks/yaw-045-pitch+00/face-core-mask.png",
+      "sha256": "6561d63b2c0088dd1406ee19621f5ac37ab8c19716c8acd6988ce212022588fa"
+    },
+    {
+      "bytes": 314,
+      "path": "core-masks/yaw-060-pitch+00/builder-provenance.json",
+      "sha256": "233b28874ac3e5abe08c606f1605696c944743719d4f4ed0e576a2c4b01e2aac"
+    },
+    {
+      "bytes": 2642,
+      "path": "core-masks/yaw-060-pitch+00/face-core-mask.png",
+      "sha256": "b3b0ce06e48b5bb15671c2f7e9fbb81528ae79e69ffc36f86776b01d04a2991a"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-075-pitch+00/builder-provenance.json",
+      "sha256": "56362922d1c39b6cfd6eb68b8c51332b54737f1cd864b053bc19fe4d0b519293"
+    },
+    {
+      "bytes": 2111,
+      "path": "core-masks/yaw-075-pitch+00/face-core-mask.png",
+      "sha256": "73290ed2945229e5708107f1859e4f3adfe98247fe9a8199251bfd8de589a87b"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-090-pitch+00/builder-provenance.json",
+      "sha256": "7a8a06cb3cc8bb61cc0596d3ed3ca6f696848d8d5f9fe95e8b1478a48d321036"
+    },
+    {
+      "bytes": 1998,
+      "path": "core-masks/yaw-090-pitch+00/face-core-mask.png",
+      "sha256": "470efdc550d44ecc7b3e6b84dc3e3b29619e27c8c424fb63518d2633278bda71"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-105-pitch+00/builder-provenance.json",
+      "sha256": "a839a10ef1d3dfd0772efdb9cb780fb2935302f35265adcf1add6032a46c5561"
+    },
+    {
+      "bytes": 1674,
+      "path": "core-masks/yaw-105-pitch+00/face-core-mask.png",
+      "sha256": "a2e0bdaa11a6a9c04a3b2186ccea9f596e4daf4a0e028e6994635f41e6d15717"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-120-pitch+00/builder-provenance.json",
+      "sha256": "7a758c5bcfd7a1b1fa1118dffd9da1a041444e407d8453d0a2f9e3668eafd399"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw-120-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-135-pitch+00/builder-provenance.json",
+      "sha256": "65a3da17b168efebaf092d52c54787dc86e6c43277716c08393e77970b930a57"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw-135-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-150-pitch+00/builder-provenance.json",
+      "sha256": "e0854c5557714eaeece9b57925fcd6958e1edc9ed791af77f1213febd7dcd452"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw-150-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-165-pitch+00/builder-provenance.json",
+      "sha256": "35996a532787499d73c50840f30d175d40f36945f2928b2435fc055d5c7ef597"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw-165-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 337,
+      "path": "core-masks/yaw-180-pitch+00/builder-provenance.json",
+      "sha256": "1d930428f61c506f5ce8d1cc1f6bc74dc9b421256189ca52c3c4f74782b111e4"
+    },
+    {
+      "bytes": 1606,
+      "path": "core-masks/yaw-180-pitch+00/face-core-mask.png",
+      "sha256": "0807909bd58a9f929118935c505dde213e4d14ca6a4f9460b3cd408c6d1a6517"
+    },
+    {
+      "bytes": 10586,
+      "path": "final-core-masks/cheek-rest.png",
+      "sha256": "88a671ea3aa4b829efa899a9b3bb708d0eac155ea1bb732cba53d3eda8c1fcf3"
+    },
+    {
+      "bytes": 10529,
+      "path": "final-core-masks/exasperated.png",
+      "sha256": "b5d77e962b55dd5ad8563eed579c85f96c98b99bf4ecda4018ca0a78976dcdc3"
+    },
+    {
+      "bytes": 10215,
+      "path": "final-core-masks/front-crossed.png",
+      "sha256": "822f5f2215e8da5c56fd3f4cb7eec41264dc7271880ff089d0570dcb64208b0a"
+    },
+    {
+      "bytes": 10137,
+      "path": "final-core-masks/front-eureka.png",
+      "sha256": "e363d9200df59b08f9f1f53443a5288814436d3750ca1e7a750a2d01d204676a"
+    },
+    {
+      "bytes": 10065,
+      "path": "final-core-masks/front-mock-hit.png",
+      "sha256": "7eb2293f0591268cc1af6d5bb08f0e1d9e1ef92f47a958b6050bd5414d6936f7"
+    },
+    {
+      "bytes": 10044,
+      "path": "final-core-masks/front-mock-scold.png",
+      "sha256": "946809dee59f195af5a811c408f8d5a7da8bed62a192e068c555e7a891878d3f"
+    },
+    {
+      "bytes": 10439,
+      "path": "final-core-masks/left-neutral.png",
+      "sha256": "2f2671eef3b48c37839554c798c560b8a49532c9c988522f22fa09567ba12e49"
+    },
+    {
+      "bytes": 9665,
+      "path": "final-core-masks/yaw+000-pitch+00.png",
+      "sha256": "b8bd1b78fa3ae5060fbfea6947734125c74ffe7b9219a0b1091ef4a35bfa6176"
+    },
+    {
+      "bytes": 9437,
+      "path": "final-core-masks/yaw+015-pitch+00.png",
+      "sha256": "09dcfc19dcce8f2ac776898bbc2897ac434e08349d5b81c7be39b4ba2ffc50d9"
+    },
+    {
+      "bytes": 9372,
+      "path": "final-core-masks/yaw+030-pitch+00.png",
+      "sha256": "26382d01d2cda8449c8e2e7432f7fa80c165660f0618fa829afc74009dcaed7f"
+    },
+    {
+      "bytes": 9429,
+      "path": "final-core-masks/yaw+045-pitch+00.png",
+      "sha256": "07e461598c9ad6a865d1ae7cb70ee75440ecdcde5fec23fe1cf7c567e19f2976"
+    },
+    {
+      "bytes": 9476,
+      "path": "final-core-masks/yaw+060-pitch+00.png",
+      "sha256": "9d916a03ca33a1b3c29ed4447807d2db1d177596fec890b90487b83c762d22a6"
+    },
+    {
+      "bytes": 10201,
+      "path": "final-core-masks/yaw+075-pitch+00.png",
+      "sha256": "0417f674682f3b4ecff502f8cbd0e8b8ee7cd6365e881638ae1521ad5debb217"
+    },
+    {
+      "bytes": 10002,
+      "path": "final-core-masks/yaw+090-pitch+00.png",
+      "sha256": "69d3091a26039d0be8642c34373f7e95ed3d94b2c4828ab2d136d327e1a71b0e"
+    },
+    {
+      "bytes": 8949,
+      "path": "final-core-masks/yaw+105-pitch+00.png",
+      "sha256": "7334a15810ea3a8f0b5d5628ad632e97dabb8bca93f9296b35c143e9d5cc63f0"
+    },
+    {
+      "bytes": 8803,
+      "path": "final-core-masks/yaw+120-pitch+00.png",
+      "sha256": "d449acf056903def02578511dccca1311be9b1cad3aa806dbbf1ff35b3b6c2a6"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw+135-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw+150-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw+165-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 9167,
+      "path": "final-core-masks/yaw-015-pitch+00.png",
+      "sha256": "249a26259add6cc11baf4339d326651e44e0e57e47cf0de9bdb8b35edd990291"
+    },
+    {
+      "bytes": 9468,
+      "path": "final-core-masks/yaw-030-pitch+00.png",
+      "sha256": "3d8194fc1bab47b39fce3ff467c6097d0b33c9de8b50d8107d307a04e3d05eed"
+    },
+    {
+      "bytes": 9437,
+      "path": "final-core-masks/yaw-045-pitch+00.png",
+      "sha256": "b5835be9619c855c79f6d1f1728955633bd53469d5ca3770ebab9b26a8a76c0c"
+    },
+    {
+      "bytes": 9798,
+      "path": "final-core-masks/yaw-060-pitch+00.png",
+      "sha256": "a30e97dca72a5097757bc7a89f363f57a2be0dc198e5f6cfe7560e2d1985c0da"
+    },
+    {
+      "bytes": 9920,
+      "path": "final-core-masks/yaw-075-pitch+00.png",
+      "sha256": "948e911878b26979e518fa645b1b8b12c1869edbfe6ce1d12f67b451e4d8294b"
+    },
+    {
+      "bytes": 9875,
+      "path": "final-core-masks/yaw-090-pitch+00.png",
+      "sha256": "f012c0f44bc0506ade44d1851130b3fc057149dabdb962d04a1842e3b9370d34"
+    },
+    {
+      "bytes": 8856,
+      "path": "final-core-masks/yaw-105-pitch+00.png",
+      "sha256": "ff42155919e43bca69ade02a5c8c361b110e6b3c71feed655c027d837bf857d2"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw-120-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw-135-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw-150-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw-165-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 8492,
+      "path": "final-core-masks/yaw-180-pitch+00.png",
+      "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
+    },
+    {
+      "bytes": 1055717,
+      "path": "gestures3/front-eureka/A.png",
+      "sha256": "259e9a598a1f77002d38a454d71085478878ad2147360fcce44f6799f9db063f"
+    },
+    {
+      "bytes": 850071,
+      "path": "gestures3/front-eureka/bald-blink-closed.png",
+      "sha256": "ac070bb1857ed1cede8ebc2ac7d6fecbaa74d381f98a2672517accd0aaaa7acd"
+    },
+    {
+      "bytes": 852057,
+      "path": "gestures3/front-eureka/bald-blink-half.png",
+      "sha256": "6f5d7b565feb149148fbae15f5df7452afec8ec13bbf987d35a0a77ce1d683a6"
+    },
+    {
+      "bytes": 853969,
+      "path": "gestures3/front-eureka/bald-natural.png",
+      "sha256": "83237906cf06ca20247a6f9bdadcbb0c32622d597acb7dad51d874537e6c073e"
+    },
+    {
+      "bytes": 2631,
+      "path": "gestures3/front-eureka/F-core.png",
+      "sha256": "a49af680ffca9e05d52dfd7218303ae615b07d644f90e1f4fed6a675f5050c30"
+    },
+    {
+      "bytes": 3556,
+      "path": "gestures3/front-eureka/face-core-mask.png",
+      "sha256": "d736e0fa85bae42891a5b452b9006f9af15ff26e593a9672246708ebc0080a9f"
+    },
+    {
+      "bytes": 10976,
+      "path": "gestures3/front-eureka/garment-owned-mask.png",
+      "sha256": "1573408d3dc8b625c35046b25fe5ec60ca68ecbd41c1714d50d002d8437b6686"
+    },
+    {
+      "bytes": 12248,
+      "path": "gestures3/front-eureka/hair-owned-mask.png",
+      "sha256": "17222af6551319e1352e2207aa77d6b549e16cc3fd60404101cc3ea6d8fd73dc"
+    },
+    {
+      "bytes": 6496,
+      "path": "gestures3/front-eureka/skin-owned-mask.png",
+      "sha256": "fd9ce79ebcf93ad99500d04f29f5ebc048eebf5e4030334232afeaa06812baad"
+    },
+    {
+      "bytes": 1050086,
+      "path": "gestures3/front-mock-hit/A.png",
+      "sha256": "41fcd40dcd9ce2a226ea2722c6f6a681f39c2212d7397e77b9310689b5e48895"
+    },
+    {
+      "bytes": 880224,
+      "path": "gestures3/front-mock-hit/bald-blink-closed.png",
+      "sha256": "e108f82b5eb1e9c99bca632b5faacea4853644185ab96d82cb28816ca1d5e1c8"
+    },
+    {
+      "bytes": 882511,
+      "path": "gestures3/front-mock-hit/bald-blink-half.png",
+      "sha256": "0315b3490450edf4903d10e31f0c71cb692a62a2cad12242963a1cbac6540f9f"
+    },
+    {
+      "bytes": 884035,
+      "path": "gestures3/front-mock-hit/bald-natural.png",
+      "sha256": "d1c855bbba5ff2027eb12cf4a91ca31a41348c1974e6ece71da84c0ba864e0ce"
+    },
+    {
+      "bytes": 2631,
+      "path": "gestures3/front-mock-hit/F-core.png",
+      "sha256": "a49af680ffca9e05d52dfd7218303ae615b07d644f90e1f4fed6a675f5050c30"
+    },
+    {
+      "bytes": 3556,
+      "path": "gestures3/front-mock-hit/face-core-mask.png",
+      "sha256": "d736e0fa85bae42891a5b452b9006f9af15ff26e593a9672246708ebc0080a9f"
+    },
+    {
+      "bytes": 12338,
+      "path": "gestures3/front-mock-hit/garment-owned-mask.png",
+      "sha256": "8f0adb15f07ad48431596d5460b5bd7b21ec2e53b8d3ec190ac77d3d6017a682"
+    },
+    {
+      "bytes": 14167,
+      "path": "gestures3/front-mock-hit/hair-owned-mask.png",
+      "sha256": "0981636bad7b2c8414a5ef59d71990d93269401aae339105d5fd4ebdb6906f72"
+    },
+    {
+      "bytes": 11336,
+      "path": "gestures3/front-mock-hit/skin-owned-mask.png",
+      "sha256": "183a8a7dfce35d5449e667374487da402e54e4bb642fc977b96e08ec964d057d"
+    },
+    {
+      "bytes": 1000602,
+      "path": "gestures3/front-mock-scold/A.png",
+      "sha256": "5d27c6816212ec2a5a713cc04132cc15eef13578559e2146a124caa3cbe8a68c"
+    },
+    {
+      "bytes": 870403,
+      "path": "gestures3/front-mock-scold/bald-blink-closed.png",
+      "sha256": "6d9449b634a7e1dbeaede9dc9a9bceac73e7d4939a2a162c0442a84fa9ca3593"
+    },
+    {
+      "bytes": 873495,
+      "path": "gestures3/front-mock-scold/bald-blink-half.png",
+      "sha256": "c9dcc2e9c30189552f0ad512378248a10efc7366be406bb4ef682a64f1cd4cfd"
+    },
+    {
+      "bytes": 874707,
+      "path": "gestures3/front-mock-scold/bald-natural.png",
+      "sha256": "cb93f51bf90ddafb4e917cc6f1b50fe68aaf2b280a88afc3c46cb60c418fa4e8"
+    },
+    {
+      "bytes": 2631,
+      "path": "gestures3/front-mock-scold/F-core.png",
+      "sha256": "a49af680ffca9e05d52dfd7218303ae615b07d644f90e1f4fed6a675f5050c30"
+    },
+    {
+      "bytes": 3556,
+      "path": "gestures3/front-mock-scold/face-core-mask.png",
+      "sha256": "d736e0fa85bae42891a5b452b9006f9af15ff26e593a9672246708ebc0080a9f"
+    },
+    {
+      "bytes": 10590,
+      "path": "gestures3/front-mock-scold/garment-owned-mask.png",
+      "sha256": "b4d6f0a8a5b4b4a1d483ec3b11b8781750cb370af1023afcfba709e7e68f1027"
+    },
+    {
+      "bytes": 13387,
+      "path": "gestures3/front-mock-scold/hair-owned-mask.png",
+      "sha256": "f4ab38d935b201b4a2f7b2ccee6e0b223e62f02bed10be5a67b40c0f7cb159cf"
+    },
+    {
+      "bytes": 10986,
+      "path": "gestures3/front-mock-scold/skin-owned-mask.png",
+      "sha256": "dd054aab61d280d613ef70f06f116781a189d756aa40ed19581f8118e61dfdd3"
+    },
+    {
+      "bytes": 22346,
+      "path": "approved-cheek-b-body-11/face-core/cheek-caught.png",
+      "sha256": "c4d2d888456d31cd5ea78b0f6afb9e1ac2bd3529db4ae481bfb2be2dd6bb3139"
+    },
+    {
+      "bytes": 21240,
+      "path": "approved-cheek-b-body-11/face-core/cheek-glance.png",
+      "sha256": "07f2879e8f15b3c26f1fe5128452b6f1ac92fee5775c488e8f6bfa3ad1530535"
+    },
+    {
+      "bytes": 24442,
+      "path": "approved-cheek-b-body-11/face-core/cheek-happy.png",
+      "sha256": "d7f3fc2a4b807e454755c7650ad4f0872fc5d0cce217061fc64575f6f22ff4c5"
+    },
+    {
+      "bytes": 25666,
+      "path": "approved-cheek-b-body-11/face-core/cheek-reminder.png",
+      "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
+    },
+    {
+      "bytes": 16168,
+      "path": "approved-cheek-b-body-11/face-core/cheek-rest.png",
+      "sha256": "e91d662bc347da6cadcce98706beb02e63808745695911840326cea3308ccab1"
+    },
+    {
+      "bytes": 23949,
+      "path": "approved-cheek-b-body-11/face-core/cheek-worried.png",
+      "sha256": "aa2efae7648bf451504e1051c6d86ad24b00a0ce9bb1fa15d0a53edb3bf30abf"
+    },
+    {
+      "bytes": 1874538,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/a-closed.png",
+      "sha256": "6990e5de5cc878686308bb6db6564f7326db09d4682155140cd5b601aac9490c"
+    },
+    {
+      "bytes": 1874765,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/a-half.png",
+      "sha256": "5a3f5564c59b2941b0ed8130e3abf382be80208c1f0249be292bf670d7c73b4d"
+    },
+    {
+      "bytes": 1878925,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/a-rest.png",
+      "sha256": "b6bf784a76fd9f9cfafa49feb502e440b88e94317820de1bf4baf6f5bc187ed8"
+    },
+    {
+      "bytes": 1874061,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/neutral-closed.png",
+      "sha256": "896f2a21d38c8facf54fb63caaa3ac28770cf3d8945ef6e7781074763812e6d3"
+    },
+    {
+      "bytes": 1874200,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/neutral-half.png",
+      "sha256": "5a612139a5cf2a8aaf5f86c5a16766a670cdc5eb0347f708f267df5f4f42992c"
+    },
+    {
+      "bytes": 1878422,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/neutral-rest.png",
+      "sha256": "cffb9d539bd7a36a5839341b9f2bd8a9295a92fe2f2f4204e2aded9af3ec195f"
+    },
+    {
+      "bytes": 1872800,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/o-closed.png",
+      "sha256": "88e9a835b97d04cb7fecdc5dd8a4f5054d55d864dee73be688ecee54ee28e51f"
+    },
+    {
+      "bytes": 1873001,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/o-half.png",
+      "sha256": "8812d7c8b0c7db7aee8bec849b2830cbbd27bc8ca2deb31b476a1343e0b41c28"
+    },
+    {
+      "bytes": 1877226,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/o-rest.png",
+      "sha256": "036c2113e47c711cdc7bf704f6f4a144c866e023b4056eed384996e75211380a"
+    },
+    {
+      "bytes": 1873707,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/small-closed.png",
+      "sha256": "f149842d34b87dab139ca3e200bbe0977511d45ceb10dbb0fe6e51687bffd9d9"
+    },
+    {
+      "bytes": 1873909,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/small-half.png",
+      "sha256": "579a40f5883036070a13d20227918ebae33c01fa50b634719399d2053583f137"
+    },
+    {
+      "bytes": 1878134,
+      "path": "approved-cheek-b-body-11/half-body/cheek-caught/small-rest.png",
+      "sha256": "7e0496b3312951bb21a1387ac7cf0090f27f414d27d599f92ae1ac97f4561831"
+    },
+    {
+      "bytes": 1876067,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/a-closed.png",
+      "sha256": "7e1fdf1f965542eed4fb7dd285bc4934ca1f73a8348001bd8778cfbeba9418d7"
+    },
+    {
+      "bytes": 1877250,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/a-half.png",
+      "sha256": "32cbe490a5c09e9c655f3ed9fda0d686ad4f58dbddd081582e1a56fefa1c79ce"
+    },
+    {
+      "bytes": 1879283,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/a-rest.png",
+      "sha256": "fe8d4a51b7aa14b9fa4c063636d7aaa31ee8aeb09e03f4b7813a28dcb9d97f52"
+    },
+    {
+      "bytes": 1875113,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/neutral-closed.png",
+      "sha256": "43b1940a4ef2255bcb7337acb5c9bbfd0b7a72e352dc174c9da44c086686d122"
+    },
+    {
+      "bytes": 1876337,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/neutral-half.png",
+      "sha256": "54f74d67f5f482b7dcd14bc6b719fb2e71db548deaed6380c6a062a996e270a5"
+    },
+    {
+      "bytes": 1878388,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/neutral-rest.png",
+      "sha256": "313e340a5d74ead865cefb8fe76bf496debb117c1ea293643ea839ea3d467873"
+    },
+    {
+      "bytes": 1874759,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/o-closed.png",
+      "sha256": "f0051e32b65c2bbeae019ffaf0a5746a6fd279af457fc1270323ea8819bc5bad"
+    },
+    {
+      "bytes": 1875955,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/o-half.png",
+      "sha256": "cb42d52e76a11d2c2e6fbbb0baea0706ff92b83f4bd5860919dc4e2451f206e1"
+    },
+    {
+      "bytes": 1878002,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/o-rest.png",
+      "sha256": "5e3f71e0e9629171a084c6e3ad24cfddb851181003fb7f187c6853a37eb72d9e"
+    },
+    {
+      "bytes": 1875758,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/small-closed.png",
+      "sha256": "74b7e15bcc47ccaef338487c090d274e17af541a61417bb5f664992734f180d7"
+    },
+    {
+      "bytes": 1876969,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/small-half.png",
+      "sha256": "34d3c3e11d835e3891aeabc49c712652ca8648af129af145c466d10331977fb0"
+    },
+    {
+      "bytes": 1878959,
+      "path": "approved-cheek-b-body-11/half-body/cheek-glance/small-rest.png",
+      "sha256": "e669ec5cd8030356b64a7ffeb795205a2f2d96835abd1dc72c638470f299f42f"
+    },
+    {
+      "bytes": 1878346,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/a-closed.png",
+      "sha256": "14d900ec1afef67840391f56b58ea69da6fc6d780feb54b1ad235d21ecf6b75d"
+    },
+    {
+      "bytes": 1879515,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/a-half.png",
+      "sha256": "82b6df6e3c44f89ef241a80fc27fc9015ad5eb4cf1dfa6b8ff74543f05802cf4"
+    },
+    {
+      "bytes": 1879821,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/a-rest.png",
+      "sha256": "d1872964d50692029983b860a39f19eeb80a60ba51c254975eaf602edaf09fae"
+    },
+    {
+      "bytes": 1877222,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/neutral-closed.png",
+      "sha256": "37b377c1843d1017914af016fef906b3141adde794661e4b139128865350467c"
+    },
+    {
+      "bytes": 1878408,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/neutral-half.png",
+      "sha256": "17d4e057304255778802f790a10d327ce8ad8290eebdaf6cfbf28fd12fb93fc3"
+    },
+    {
+      "bytes": 1878712,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/neutral-rest.png",
+      "sha256": "c5bbf9353c07ce66b45da7d2a813f855a89f7fc20266426fae3783c32f21e405"
+    },
+    {
+      "bytes": 1875087,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/o-closed.png",
+      "sha256": "797759c517742829ef121cc2df347c638aad1c5757faa02616287a32cd28481e"
+    },
+    {
+      "bytes": 1876327,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/o-half.png",
+      "sha256": "b7f7e6d357f0cd181eed7b704454deade08a246c6730fa40122a8980cb703995"
+    },
+    {
+      "bytes": 1876634,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/o-rest.png",
+      "sha256": "80e326518aca3503c94f40798387a1089e3d30f16784e84a30dabc3f3571d80b"
+    },
+    {
+      "bytes": 1877241,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/small-closed.png",
+      "sha256": "4b27a2bf95d8acb4c04c542baf18216e69e020ca3e83978fa80b623490264c26"
+    },
+    {
+      "bytes": 1878422,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/small-half.png",
+      "sha256": "ac65a5cdbf2a0cdb7fe34928cc9166619c038452fd727b7a8354c1aee2e75532"
+    },
+    {
+      "bytes": 1878724,
+      "path": "approved-cheek-b-body-11/half-body/cheek-happy/small-rest.png",
+      "sha256": "c197a08b740db8a29c57daff35251c863de3ab2ac4c159d3f9494a398bbf4cf4"
+    },
+    {
+      "bytes": 1875633,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/a-closed.png",
+      "sha256": "4f568657ebd22fdd9aa8a0f67196982699a3a40ed180d4d2d682d39905f9c2c4"
+    },
+    {
+      "bytes": 1877149,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/a-half.png",
+      "sha256": "be60c010f9cc44937a89a02319ce14fe525b21c05bc77208b2f06da140b44b7b"
+    },
+    {
+      "bytes": 1880000,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/a-rest.png",
+      "sha256": "c096c453fa317b52c16762b56c959082e66ae32c960255e2f50e3c27d736aaae"
+    },
+    {
+      "bytes": 1874527,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/neutral-closed.png",
+      "sha256": "0159a8b844d9f8bfc2b197336006ccb5da1833a284440d8d344696434c4ee1ab"
+    },
+    {
+      "bytes": 1876126,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/neutral-half.png",
+      "sha256": "aa8b891fa843a870765e9a85c744a4222f07114303d4766d1411e9f27f89aeac"
+    },
+    {
+      "bytes": 1878948,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/neutral-rest.png",
+      "sha256": "8e416e54560e2a902080cec206a46eea224ca422a474d205ec11baca16e5ddf2"
+    },
+    {
+      "bytes": 1873970,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/o-closed.png",
+      "sha256": "1cc2c3b22923f32e8ea19f9d2b61e0facbb64117e09710a5785023824f9d4233"
+    },
+    {
+      "bytes": 1875480,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/o-half.png",
+      "sha256": "f71805afbac023da9e43aa7fb02710c504617901a74ad1455de6c629b05aeea7"
+    },
+    {
+      "bytes": 1878377,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/o-rest.png",
+      "sha256": "e5ad89e0b036125bee8499057f0b7535868940f3efb827e0eb45a5f6036f7c6b"
+    },
+    {
+      "bytes": 1874886,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/small-closed.png",
+      "sha256": "9440a0c13379d29286dcfc19bedccc8491f8509515ca83fb1cf578e4ab9200ac"
+    },
+    {
+      "bytes": 1876414,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/small-half.png",
+      "sha256": "845947c19e01448bfa5c85cefbdcd469a2046ea2bd5a7545cc011d65288c9034"
+    },
+    {
+      "bytes": 1879265,
+      "path": "approved-cheek-b-body-11/half-body/cheek-reminder/small-rest.png",
+      "sha256": "85a9763d182822d18253634e46202ed12936144c84c1bb2103cf293fd202ea86"
+    },
+    {
+      "bytes": 1875868,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/a-closed.png",
+      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+    },
+    {
+      "bytes": 1878433,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/a-half.png",
+      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+    },
+    {
+      "bytes": 1878433,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/a-rest.png",
+      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+    },
+    {
+      "bytes": 1875878,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/neutral-closed.png",
+      "sha256": "1eac10438737ae98664c0fed2f3cbf68ce75c4d421ea75209daf120f420a0816"
+    },
+    {
+      "bytes": 1878421,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/neutral-half.png",
+      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+    },
+    {
+      "bytes": 1878421,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/neutral-rest.png",
+      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+    },
+    {
+      "bytes": 1875868,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/o-closed.png",
+      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+    },
+    {
+      "bytes": 1878433,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/o-half.png",
+      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+    },
+    {
+      "bytes": 1878433,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/o-rest.png",
+      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+    },
+    {
+      "bytes": 1875868,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/small-closed.png",
+      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+    },
+    {
+      "bytes": 1878433,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/small-half.png",
+      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+    },
+    {
+      "bytes": 1878433,
+      "path": "approved-cheek-b-body-11/half-body/cheek-rest/small-rest.png",
+      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+    },
+    {
+      "bytes": 1875645,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/a-closed.png",
+      "sha256": "c356c2118a939fa3c830b99f44f1cd7094d84bf020e463e1a913b54764bc2691"
+    },
+    {
+      "bytes": 1876380,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/a-half.png",
+      "sha256": "fa4c6da80e8a3d6ad4e3401edeae81c39e425a0b2fa4ff372127d40393a47507"
+    },
+    {
+      "bytes": 1879234,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/a-rest.png",
+      "sha256": "b63e9c098b5cdb767821c5b1fba87482bb1f58764323897cbbd627de16530e00"
+    },
+    {
+      "bytes": 1874691,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/neutral-closed.png",
+      "sha256": "376408d3e01e81e259ee1a222a492780af5f581b4c7dc8db8a537fda17f70497"
+    },
+    {
+      "bytes": 1875444,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/neutral-half.png",
+      "sha256": "614722807473872f8a8441a29fbee3af3140c23008bc8b1b83c2580875869b5f"
+    },
+    {
+      "bytes": 1878300,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/neutral-rest.png",
+      "sha256": "1cbf15aba6d58e51bb089c7395478cfcfd0af849d17ed1036885b2ed3a5c663c"
+    },
+    {
+      "bytes": 1874378,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/o-closed.png",
+      "sha256": "4d55a4a9cd0fb88e30755c121b014e8ac24af5f380b797e8581fc2553b3d9332"
+    },
+    {
+      "bytes": 1875120,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/o-half.png",
+      "sha256": "f9397482ba9013ad4a732055eb5bff0f528bdb2cef6ddb5586471b6315dfd437"
+    },
+    {
+      "bytes": 1878023,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/o-rest.png",
+      "sha256": "aa868872ae79369e4870e02d4f83bc79b4a87c463ffcd19a401bd5dae6681827"
+    },
+    {
+      "bytes": 1875478,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/small-closed.png",
+      "sha256": "470aa63f141113e5442eae3bd9201b0679252422d535b54dc048d1c9e72f16b6"
+    },
+    {
+      "bytes": 1876196,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/small-half.png",
+      "sha256": "09c3d5f56ce7a04ade87a9a6716c34881ca564cddfb43b56f2cf3e176a953788"
+    },
+    {
+      "bytes": 1879050,
+      "path": "approved-cheek-b-body-11/half-body/cheek-worried/small-rest.png",
+      "sha256": "20e24957988e5bdf1d19ebcdfcc7aa2d1c3afab20865782c041ef88fcb808f49"
+    },
+    {
+      "bytes": 48918,
+      "path": "approved-cheek-b-body-11/manifest.json",
+      "sha256": "9486047300258a32b4d69b35425478fd30f29f5e9f25b2e7f13e1e21b07b2ac3"
+    }
+  ],
+  "layer_dependency": {
+    "body_pack": {
+      "fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
+      "id": "mohan-body-v2",
+      "version": "1.0.0"
+    },
+    "bytes": 326038,
+    "path": "assets/characters/lin-keyun/body/manifest.json",
+    "physical_view_directories": 31,
+    "sha256": "b18c6f3e08c28ba83930ae803231487cdac3e7cb7b448912dd81cf08684ae664",
+    "source_manifest_sha256": "0ba1bee016c026ce323c211bca014426941e887216cf949d7d468fead4872f1f",
+    "unique_png_bytes": 19357039,
+    "unique_pngs": 155,
+    "view_aliases": 203
+  },
+  "metadata_receipts": [
+    {
+      "absolute_path_mentions": 9,
+      "bytes": 2835,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "f0237b06f9254f81b7940659503a5439b947e0e0920922c1157677788b1b1a12",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/sources.json"
+    },
+    {
+      "absolute_path_mentions": 1,
+      "bytes": 7122,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "5aec52bdbe8ec1871b4e8c602ef8fd943a3e366e1273523c6d3fc660df79f4b6",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-eureka/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 1,
+      "bytes": 6926,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "931d3e565d20b28eaf0719c8e470ee1b9959000396f321cc5997b7c9385db146",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-hit/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 1,
+      "bytes": 6930,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "bfb3ebc2493c67e98b36c63eb5ac7a98525df145a79e94ce28ae58203f1f74c9",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-scold/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 6279,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "5b773ed86c6ba67d56bbde746509b0d995e3bb20a7b7c5e655455a2bfee8c3e9",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/cheek-rest/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 6302,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "f24366651d5e75c58c8a3bcf2bc02bc58359687271c307bdcb6650c2b5bb9ace",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/exasperated/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 6087,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "88aa6c73c925a04339c3a72e766c04e2253aa5c49442eb1bbef8561aa06d0558",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/front-crossed/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 6085,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "ae5512f2e53c6791e45632bea800fcbdd00ff2b0ad930e20c240a3d461863f0c",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/left-neutral/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4805,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "e4ef33bbf9874abb5efb8c78e638c007d49675d30bab6b15449678fa5bf733c2",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+000-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4803,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "7864f778da4f8d08fc084b7b056bd46185e348c2e912a43a762221bb99a94539",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+015-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4804,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "65a087a3560b879832ef80ef738340649c95507a1bf1c37783b8135819d744f5",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+030-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4806,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "d44411eb728529a338bee3b1f7031905575c8d6a8b64d01192048a6e4813fe7e",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+045-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4804,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "4bad66597bac1d35ac2ccc58de9edc9d8e9129f35388d019d58c9cf5763dd170",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+060-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6283,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "fe225fdd90d8f10929f89dba5d333f34a766e477979eae5ad4c18bffe0ce2bac",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+075-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6283,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "7124f30b09cfdbc42fd4d8e3f65d9951233cddf005564bf44da269031f7c4a67",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+090-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6282,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "9d0be082086b2d9f9aa597bfc19389b8d30f05623d102a7a33881872f542368a",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+105-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6279,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "52d1425f564478ebb0a9abbef6170ee2de28d50530f6d9a8726821755c669c22",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+120-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6347,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "98e5e6ea93c1ee64149491d4beedf834c73ef4d9e0e4be4e8f3b0684d7a83fcb",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+135-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6343,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "c2e9824a62bfe67950d82b64f98b0089fda561aa5c87be1fb3c8686b90b5f9d1",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+150-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6349,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "6b8e5b9160f753ab7c491b60b0640c371a5671994f1d056a09a39355b777c9a8",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw+165-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4804,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "040404cacbba4fcfa9da1d1e6f4a8a56b40abd1eef6341c7da9a3349eefdaac8",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-015-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4805,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "2dfa52fa2c844c0f4e2fb699d9dba0ddcb6a2a41e64bcbdbeaaa70fc5ef688ff",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-030-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4806,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "cfdb90e797274f38580136dfb70dacd1e0491223210e6f99d53efd40642bf80c",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-045-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 3,
+      "bytes": 4803,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "525fce68419efe1b0f072e9d7df16c89f98b228507c410c43eae05cc30562052",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-060-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6281,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "3ee81ad7cc6af0180c8f13d4bdec200c6075c3ec7a5d1d0477a3218a9b326191",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-075-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6284,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "aff17610646d2e2a4136b7487cc88a6839830ee4b2b063a6ab4e25fb868dff02",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-090-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6278,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "e3cd9496160d94a494e707ff1dd71a11f6dea7b18469b4b83ee3440be18e5e7d",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-105-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6275,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "0ee452bb30ca6fb6f3cc0e2f8ab34cac7f500a9305a531232d1f72196dfc9ba1",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-120-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6275,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "3e635b0e156b19dc44b1677d924b72aa849eecac825b67645fc5cc7f57c6ad72",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-135-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6274,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "a9b7f405fbffc41d375a2a51f1193d1a9e18159f5abc4208c99c022c5db1007f",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-150-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6274,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "4c571cfd26a5e986213cb80dfc073f92252a06f0a328861452c962131f2b3dac",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-165-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 6,
+      "bytes": 6347,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "ddd7a799f9d586f6c21cd82f3f9da47382af604bd6727f28592597901396d374",
+      "source_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers/recomputed/yaw-180-pitch+00/manifest.json"
+    },
+    {
+      "absolute_path_mentions": 0,
+      "bytes": 45021,
+      "retention": "workspace-evidence-only; not included in repository source tree",
+      "sha256": "d3beaec914358f8714149bab11bc8aec62624baf4f5337bad28d84eba57951d1",
+      "source_id": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/manifest.json"
+    }
+  ],
+  "pack": {
+    "expected_fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
+    "id": "mohan-body-v2",
+    "license": "CC-BY-NC-ND-4.0",
+    "version": "1.0.0"
+  },
+  "schema": "flameblade.body-pack-source.v1",
+  "schema_version": 1,
+  "source_manifest_drift": [
+    {
+      "actual_bytes": 853969,
+      "actual_sha256": "83237906cf06ca20247a6f9bdadcbb0c32622d597acb7dad51d874537e6c073e",
+      "declared_sha256": "e759c6cffec9c2a141283eb7b307a0e5a058745402cdebf8d507ea72c6df649d",
+      "file": "bald-natural.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-eureka/manifest.json",
+      "source_manifest_sha256": "5aec52bdbe8ec1871b4e8c602ef8fd943a3e366e1273523c6d3fc660df79f4b6"
+    },
+    {
+      "actual_bytes": 852057,
+      "actual_sha256": "6f5d7b565feb149148fbae15f5df7452afec8ec13bbf987d35a0a77ce1d683a6",
+      "declared_sha256": "02ca631d03937be02a0b2d74427d18814a1f9b01e1a898884bea96018a767d73",
+      "file": "bald-blink-half.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-eureka/manifest.json",
+      "source_manifest_sha256": "5aec52bdbe8ec1871b4e8c602ef8fd943a3e366e1273523c6d3fc660df79f4b6"
+    },
+    {
+      "actual_bytes": 850071,
+      "actual_sha256": "ac070bb1857ed1cede8ebc2ac7d6fecbaa74d381f98a2672517accd0aaaa7acd",
+      "declared_sha256": "9f22fa6e15baa3c596da89bd07a70572c77506765268b830e539c2fa62a9b892",
+      "file": "bald-blink-closed.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-eureka/manifest.json",
+      "source_manifest_sha256": "5aec52bdbe8ec1871b4e8c602ef8fd943a3e366e1273523c6d3fc660df79f4b6"
+    },
+    {
+      "actual_bytes": 884035,
+      "actual_sha256": "d1c855bbba5ff2027eb12cf4a91ca31a41348c1974e6ece71da84c0ba864e0ce",
+      "declared_sha256": "20b285a0a95199280752297f950a0d9630a85f1740fd5ebaa04c04a6cf431d6c",
+      "file": "bald-natural.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-hit/manifest.json",
+      "source_manifest_sha256": "931d3e565d20b28eaf0719c8e470ee1b9959000396f321cc5997b7c9385db146"
+    },
+    {
+      "actual_bytes": 882511,
+      "actual_sha256": "0315b3490450edf4903d10e31f0c71cb692a62a2cad12242963a1cbac6540f9f",
+      "declared_sha256": "ab86f6efb8bec32ff4f1b700d3b2fd41302a5e59294b20548a7b0ba0b1fd8300",
+      "file": "bald-blink-half.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-hit/manifest.json",
+      "source_manifest_sha256": "931d3e565d20b28eaf0719c8e470ee1b9959000396f321cc5997b7c9385db146"
+    },
+    {
+      "actual_bytes": 880224,
+      "actual_sha256": "e108f82b5eb1e9c99bca632b5faacea4853644185ab96d82cb28816ca1d5e1c8",
+      "declared_sha256": "661e4ecefd19ba2e181ac1a18a0761a3799e60417c4ede4c984d8d6b90f42b8d",
+      "file": "bald-blink-closed.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-hit/manifest.json",
+      "source_manifest_sha256": "931d3e565d20b28eaf0719c8e470ee1b9959000396f321cc5997b7c9385db146"
+    },
+    {
+      "actual_bytes": 874707,
+      "actual_sha256": "cb93f51bf90ddafb4e917cc6f1b50fe68aaf2b280a88afc3c46cb60c418fa4e8",
+      "declared_sha256": "02a3dad698e9d0779f875e36e1c477b09eddf8e2d4338baee46c69a2d5132d71",
+      "file": "bald-natural.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-scold/manifest.json",
+      "source_manifest_sha256": "bfb3ebc2493c67e98b36c63eb5ac7a98525df145a79e94ce28ae58203f1f74c9"
+    },
+    {
+      "actual_bytes": 873495,
+      "actual_sha256": "c9dcc2e9c30189552f0ad512378248a10efc7366be406bb4ef682a64f1cd4cfd",
+      "declared_sha256": "171966d7d19db1cbc45cebc793a8b3b359c7a98c4789c27c5db65919ed740e12",
+      "file": "bald-blink-half.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-scold/manifest.json",
+      "source_manifest_sha256": "bfb3ebc2493c67e98b36c63eb5ac7a98525df145a79e94ce28ae58203f1f74c9"
+    },
+    {
+      "actual_bytes": 870403,
+      "actual_sha256": "6d9449b634a7e1dbeaede9dc9a9bceac73e7d4939a2a162c0442a84fa9ca3593",
+      "declared_sha256": "739428da973459b320cb26948856210087634fde8c00d7552466ed13b205f111",
+      "file": "bald-blink-closed.png",
+      "source_id": "mohan-lk-native/.quality-tmp/gestures3/front-mock-scold/manifest.json",
+      "source_manifest_sha256": "bfb3ebc2493c67e98b36c63eb5ac7a98525df145a79e94ce28ae58203f1f74c9"
+    }
+  ],
+  "source_roots": [
+    {
+      "curated_repository_files": {
+        "bytes": 47734278,
+        "files": 29
+      },
+      "origin_id": "mohan-lk-native/.quality-tmp/bald-natural11",
+      "source_id": "bald-natural11",
+      "source_tree": {
+        "bytes": 443841908,
+        "files": 345
+      }
+    },
+    {
+      "curated_repository_files": {
+        "bytes": 11048962,
+        "files": 27
+      },
+      "origin_id": "mohan-lk-native/.quality-tmp/gestures3",
+      "source_id": "gestures3",
+      "source_tree": {
+        "bytes": 238138740,
+        "files": 258
+      }
+    },
+    {
+      "curated_repository_files": {
+        "bytes": 72431,
+        "files": 56
+      },
+      "origin_id": "mohan-body-install/.quality-tmp/body-pack-build/lin-keyun-layers",
+      "source_id": "lin-keyun-layers-core-masks",
+      "source_tree": {
+        "bytes": 235798490,
+        "files": 949
+      }
+    },
+    {
+      "curated_repository_files": {
+        "bytes": 291806,
+        "files": 31
+      },
+      "origin_id": "mohan-body-install/.quality-tmp/body-pack-build/mohan-body-v2/face-core",
+      "source_id": "candidate-final-core-masks",
+      "source_tree": {
+        "bytes": 291806,
+        "files": 31
+      }
+    },
+    {
+      "curated_repository_files": {
+        "bytes": 135313352,
+        "files": 79
+      },
+      "origin_id": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek",
+      "source_id": "approved-cheek-b-body-11-fixed-frames",
+      "source_tree": {
+        "bytes": 135313352,
+        "files": 79
+      }
+    }
+  ]
+}

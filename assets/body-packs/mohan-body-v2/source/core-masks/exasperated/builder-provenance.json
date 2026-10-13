@@ -1,0 +1,8 @@
+{
+  "adapter": "preserve approved translation",
+  "bald_sha256": "e8fd65ad7e7d2bc7a8ef81a315c73a3995e57f8e2b8199c2924f90ebfc7b592f",
+  "face_core_precleared": false,
+  "output_redirected": true,
+  "script": "build_exact.py",
+  "script_sha256": "4d05f612ad4ce5ef0ebd23b1ddc01012363749cbe51c486009d2cc4b9f4e515d"
+}

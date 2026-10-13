@@ -80,6 +80,7 @@ CATEGORY_LABELS = {
     "character_voice_data": "角色聲音偏好資料／角色声音偏好数据／Character voice preference data／キャラクターの音声設定データ",
     "character_rig_data": "角色外觀骨架資料／角色外观骨架数据／Character rig data／キャラクターのリグデータ",
     "character_expression_catalog": "角色表情狀態目錄／角色表情状态目录／Character expression state catalog／キャラクターの表情状態目録",
+    "character_layer_view": "角色分層圖與視角清冊／角色分层图与视角清单／Character layer views and view manifest／キャラクターのレイヤー画像と視点マニフェスト",
     "ui_onboarding": "初次設定角色圖／首次设置角色图／Onboarding character image／初回設定のキャラクター画像",
 }
 
@@ -118,6 +119,7 @@ GROUPS = (
     Group("assets/expressions/layered/", "halfbody_layer", "infrastructure/layered_face_assets.py", 'root / f"{pose.value}_{layer}.png"'),
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
     Group("assets/characters/lin-keyun/official-packs/", "appearance_pack", "tools/build_character_pack.py", "inspect_outfit_pack(path)"),
+    Group("assets/characters/lin-keyun/body/", "character_layer_view", "infrastructure/character_source_pack.py", "Read a manifest-declared character layer and recheck its SHA-256."),
     Group("assets/characters/mohan/appearance/", "character_appearance_defaults", "domain/character_pack/appearance_data.py", 'Path(path).read_text(encoding="utf-8")'),
     Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = active_character_data_path("persona/ui-identifiers.json")'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data_loader.py", 'root / "persona"'),
@@ -344,6 +346,8 @@ CONTENT_RULES = (
 )
 
 PRODUCT_SHELL_ALLOWLIST = {
+    "application/character_runtime_bootstrap.py": '產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。',
+    "infrastructure/installed_body_packs.py": '產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。',
     "application/character_default_look.py": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
     "application/service_container.py": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
     "application/application_bootstrap.py": "墨寒最外層組裝入口保留產品程序名稱。",
@@ -795,6 +799,11 @@ def _source_classification(path: str, evidence: list[dict[str, Any]]) -> str:
     if rules == {PERSISTED_IDENTIFIER_RULE.name}:
         return "persisted_identifier"
     shell_rules = {"character_name_literal", "character_asset_path_literal"}
+    if path in {
+        "application/character_runtime_bootstrap.py",
+        "infrastructure/installed_body_packs.py",
+    }:
+        shell_rules = shell_rules | {"character_body_profile_literal"}
     if path in PRODUCT_SHELL_ALLOWLIST and rules <= shell_rules:
         return "product_shell_allowed"
     ui_rules = {"character_name_literal", "character_title_or_dialogue_literal"}

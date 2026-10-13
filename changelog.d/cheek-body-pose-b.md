@@ -1,0 +1,2 @@
+### 托腮姿勢 B 素體接入／托腮姿势 B 素体接入／Integrate the cheek pose B body pack／頬杖姿勢 B の素体パックを統合
+- 將擁有者核准的六個托腮姿勢 B 固定影格與六個 face-core 接入墨寒二代素體包並以 SHA-256 鎖定／将所有者批准的六个托腮姿势 B 固定帧与六个 face-core 接入墨寒二代素体包并以 SHA-256 锁定／Integrate the owner-approved six cheek pose-B fixed frames and six face cores into the MoHan second-generation body pack with SHA-256 locking／所有者が承認した六つの頬杖ポーズ B の固定フレームと六つの face-core を墨寒第二世代素体パックに統合し SHA-256 で固定

@@ -279,7 +279,9 @@ def _make_body_pack_fixture_inputs(
     for index, pose in enumerate(authored_poses):
         poses[pose] = {"frames": _write_half_body_fixture_frames(half_root, pose, index)}
     poses.update({pose: {} for pose in GESTURE_POSES})
-    _write_half_body_fixture_frames(half_root, "cheek-rest", len(authored_poses))
+    poses["cheek-rest"] = {
+        "frames": _write_half_body_fixture_frames(half_root, "cheek-rest", len(authored_poses))
+    }
     _write_body_pack_fixture_json(
         half_root / "manifest.json",
         {
@@ -678,7 +680,17 @@ def test_recomputed_layer_reuse_rejects_a_different_bald_body(
     output = tmp_path / "output"
     builder.write_json(output / "lin-keyun-layers/recomputed" / view / "builder-provenance.json",
                        {"bald_sha256": "0" * 64, "face_core_precleared": False})
-    build = builder._Builder(product, bald, layers, output, "Fixture license", "all", "reuse")
+    build = builder._Builder(
+        builder.BuildRequest(
+            product_root=product,
+            bald_root=bald,
+            layers_root=layers,
+            output=output,
+            license_text="Fixture license",
+            mode="all",
+            layer_mode="reuse",
+        )
+    )
     with pytest.raises(ValueError, match="different bald body"):
         build.layer_source(view)
 
@@ -788,7 +800,17 @@ def test_reuse_rejects_layers_without_explicit_native_alpha_contract(
     output = tmp_path / "output"
     builder.write_json(output / "lin-keyun-layers/recomputed" / view / "builder-provenance.json",
                        {"bald_sha256": "0" * 64, "face_core_precleared": precleared})
-    build = builder._Builder(product, bald, layers, output, "Fixture license", "all", "reuse")
+    build = builder._Builder(
+        builder.BuildRequest(
+            product_root=product,
+            bald_root=bald,
+            layers_root=layers,
+            output=output,
+            license_text="Fixture license",
+            mode="all",
+            layer_mode="reuse",
+        )
+    )
     with pytest.raises(ValueError, match="unweighted face-core contract"):
         build.layer_source(view)
 
@@ -824,3 +846,27 @@ def test_declared_missing_half_pose_is_skipped_not_failed() -> None:
     assert context.skipped == [
         {"case": "half/front-eureka", "reason": "pose declared in manifest.missing_body_poses"}
     ]
+
+
+def test_hair_cleanup_moves_clothing_edges_without_changing_rgba() -> None:
+    from tools.lin_keyun_hair_partition import clean_hair_layers
+
+    layers = {kind: builder.np.zeros((8, 8, 4), dtype=builder.np.uint8)
+              for kind in ("hair-back", "hair-front", "garment")}
+    hair = layers["hair-front"]
+    hair[0:6, 2] = (70, 45, 30, 255)
+    hair[0, 3] = (220, 220, 220, 255)  # Head highlight stays in hair.
+    hair[4, 3] = (234, 231, 239, 255)  # Connected shirt edge moves.
+    hair[7, 7] = (10, 10, 10, 255)  # Detached shoe outline moves.
+    core = builder.np.zeros((8, 8, 4), dtype=builder.np.uint8)
+    core[1, 4, 3] = 255
+    original = hair.copy()
+
+    counts = clean_hair_layers(layers, core)
+
+    assert counts == {"hair-back": 0, "hair-front": 2}
+    assert tuple(hair[0, 3]) == (220, 220, 220, 255)
+    assert builder.np.array_equal(hair[0:6, 2], original[0:6, 2])
+    assert tuple(layers["garment"][4, 3]) == (234, 231, 239, 255)
+    assert tuple(layers["garment"][7, 7]) == (10, 10, 10, 255)
+    assert builder.np.array_equal(hair + layers["garment"], original)

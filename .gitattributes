@@ -40,3 +40,6 @@ docs/character-pack/*.json -text
 docs/media/*.json -text
 docs/release-evidence/front-expressions-*.json -text
 docs/release-evidence/makeup-gradient-*.json -text
+
+# Body release JSON is byte-hash verified on every platform.
+docs/body-pack/*.json -text

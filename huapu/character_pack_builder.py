@@ -345,6 +345,9 @@ def _manifest(
         "components": _components(source.get("components"), payload_by_path, settings),
         "package_hash": "0" * 64,
     }
+    for field in ("body_pack", "layer_views"):
+        if field in source:
+            manifest[field] = dict(_object(source[field], field))
     dependencies = _dependencies(source.get("dependencies", []))
     if dependencies:
         manifest["dependencies"] = dependencies
