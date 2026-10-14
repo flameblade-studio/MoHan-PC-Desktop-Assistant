@@ -242,3 +242,27 @@ def test_face_core_masks_are_optional() -> None:
     parsed = parse_body_pack(_with_fingerprint(manifest))
 
     assert parsed.face_core_masks == ()
+
+
+def test_missing_body_pose_metadata_preserves_frame_fingerprint() -> None:
+    payload = _with_fingerprint(_manifest())
+    payload["missing_body_poses"] = {"front-eureka": {"status": "missing_body_pose"}}
+    parsed = parse_body_pack(payload)
+    assert parsed.missing_body_poses == ("front-eureka",)
+    assert parsed.fingerprint == compute_body_pack_fingerprint(payload)
+
+
+@pytest.mark.parametrize("status", ["built", "pending", ""])
+def test_missing_body_pose_metadata_rejects_ambiguous_status(status: str) -> None:
+    payload = _with_fingerprint(_manifest())
+    payload["missing_body_poses"] = {"front-eureka": {"status": status}}
+    with pytest.raises(BodyPackError, match="missing_body_pose"):
+        parse_body_pack(payload)
+
+
+def test_missing_body_pose_metadata_rejects_existing_frame_pose() -> None:
+    payload = _with_fingerprint(_manifest())
+    pose = next(iter(payload["half_body"]))
+    payload["missing_body_poses"] = {pose: {"status": "missing_body_pose"}}
+    with pytest.raises(BodyPackError, match="no half-body frames"):
+        parse_body_pack(payload)

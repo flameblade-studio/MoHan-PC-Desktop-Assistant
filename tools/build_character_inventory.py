@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+lazy from huapu.inventory import build_lin_keyun_release_inventory, render_lin_keyun_release_inventory
 lazy from tools import mohan_character_inventory as _adapter
 
 DIRECT = _adapter.DIRECT
@@ -64,6 +65,16 @@ render_extraction_summary = _adapter.render_extraction_summary
 render_summary = _adapter.render_summary
 
 
+def build_lin_keyun_inventory(inventory: dict[str, object]) -> dict[str, object]:
+    """Select Lin Keyun files and the declared shared makeup support assets."""
+    return build_lin_keyun_release_inventory(inventory, ROOT)
+
+
+def render_lin_keyun_inventory(inventory: dict[str, object]) -> str:
+    """Serialize the dedicated Lin Keyun release inventory deterministically."""
+    return render_lin_keyun_release_inventory(inventory, ROOT)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
@@ -76,6 +87,7 @@ def main(argv: list[str] | None = None) -> int:
         "mohan-inventory-summary.md": render_summary(inventory),
         "extraction-worklist.json": render_extraction_worklist(worklist),
         "extraction-worklist.md": render_extraction_summary(worklist),
+        "lin-keyun-inventory.json": render_lin_keyun_inventory(inventory),
     }
     if args.check:
         for name, expected in outputs.items():

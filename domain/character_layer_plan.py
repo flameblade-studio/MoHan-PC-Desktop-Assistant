@@ -14,12 +14,14 @@ DEFAULT_CHARACTER_LAYER_ORDER = (
     "body-fix",
     "makeup",
     "garment",
+    "look-fix",
     "hair-front",
     "ornament",
 )
-CHARACTER_LAYER_KINDS = frozenset(
-    {"hair-back", "body-fix", "garment", "hair-front", "ornament", "makeup"}
-)
+HAIR_LAYER_KINDS = frozenset({"hair-back", "hair-front", "ornament"})
+CLOTHING_LAYER_KINDS = frozenset({"garment", "look-fix"})
+BODY_FIX_LAYER_KINDS = frozenset({"body-fix"})
+CHARACTER_LAYER_KINDS = HAIR_LAYER_KINDS | CLOTHING_LAYER_KINDS | BODY_FIX_LAYER_KINDS | {"makeup"}
 _ORDER_KINDS = frozenset((*CHARACTER_LAYER_KINDS, "base"))
 ANCHOR_COORDINATES = 2
 _SHA256 = re.compile(r"[0-9a-f]{64}\Z")
@@ -66,6 +68,21 @@ class CharacterLayerPlan:
     order: tuple[str, ...]
     layers: tuple[CharacterLayerAsset, ...]
     base_hide: CharacterLayerMask | None = None
+
+    @property
+    def has_default_hair(self) -> bool:
+        """Require authored hair, with ornaments treated as hair accessories."""
+        return any(layer.kind in {"hair-back", "hair-front"} for layer in self.layers)
+
+    def without_clothing(self) -> CharacterLayerPlan:
+        """Keep the body base and authored hair layers only."""
+        return CharacterLayerPlan(
+            tuple(
+                kind for kind in self.order
+                if kind == "base" or kind in HAIR_LAYER_KINDS
+            ),
+            tuple(layer for layer in self.layers if layer.kind in HAIR_LAYER_KINDS),
+        )
 
     def __post_init__(self) -> None:
         if not isinstance(self.order, tuple) or not self.order:

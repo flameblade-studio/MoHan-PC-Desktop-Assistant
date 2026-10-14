@@ -1,6 +1,4 @@
 {
-  "schema": "flameblade.character-appearance-defaults.v1",
-  "schema_version": 1,
   "makeup": {
     "pack_id": "mohan.makeup.builtin",
     "item_id": "mohan-signature",
@@ -20,12 +18,14 @@
     ]
   },
   "outfit": {
-    "pack_id": "linkeyun.official.modern-office",
     "ensemble_id": "modern-office",
     "native_hair": {
       "item_id": "long-hair",
       "variant_id": "dark-brown"
     },
-    "native_headwear": null
-  }
+    "native_headwear": null,
+    "pack_id": "linkeyun.official.modern-office"
+  },
+  "schema": "flameblade.character-appearance-defaults.v1",
+  "schema_version": 1
 }

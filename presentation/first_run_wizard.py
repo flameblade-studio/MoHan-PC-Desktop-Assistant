@@ -21,6 +21,7 @@ lazy from application.presentation_ports import PlatformServicePort, fallback_pl
 lazy from application.service_contracts import PresentationDatabasePort
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from domain.character_source import active_character_source
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.language_support import (
     is_english,
@@ -133,24 +134,49 @@ class FirstRunWizard(QDialog):
         self.hero_tagline.setWordWrap(True)
         self.hero_image = QLabel()
         self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
-        hero_pixmap = self.appearance_pixmap or QPixmap(
-            str(resource_path(CHARACTER_ASSET_PATHS["first_run_portrait"]))
-        )
-        portrait_width = round(hero_pixmap.width() * 0.62)
-        hero_portrait = hero_pixmap.copy(
-            (hero_pixmap.width() - portrait_width) // 2,
-            0,
-            portrait_width,
-            hero_pixmap.height(),
-        )
-        self.hero_image.setPixmap(
-            hero_portrait.scaled(
-                330,
-                520,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
+        hero_pixmap = self.appearance_pixmap
+        if hero_pixmap is None or hero_pixmap.isNull():
+            try:
+                source = active_character_source()
+            except RuntimeError:
+                source = None
+            appearance = getattr(source, "appearance", None)
+            body_pack = getattr(appearance, "resolved_body_pack", None)
+            body_reference = getattr(getattr(source, "manifest", None), "body_pack", None)
+            if body_pack is not None or body_reference is not None:
+                hero_pixmap = QPixmap()
+            elif source is None:
+                portrait_path = resource_path(
+                    CHARACTER_ASSET_PATHS["first_run_portrait"]
+                )
+                hero_pixmap = QPixmap(str(portrait_path))
+            else:
+                portrait_path = source.assets.resolve_optional_path(
+                    CHARACTER_ASSET_PATHS["first_run_portrait"]
+                )
+                hero_pixmap = (
+                    QPixmap(str(portrait_path))
+                    if portrait_path is not None
+                    else QPixmap()
+                )
+        if hero_pixmap.isNull():
+            self.hero_image.hide()
+        else:
+            portrait_width = round(hero_pixmap.width() * 0.62)
+            hero_portrait = hero_pixmap.copy(
+                (hero_pixmap.width() - portrait_width) // 2,
+                0,
+                portrait_width,
+                hero_pixmap.height(),
             )
-        )
+            self.hero_image.setPixmap(
+                hero_portrait.scaled(
+                    330,
+                    520,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation,
+                )
+            )
         hero_layout.addWidget(self.hero_brand)
         hero_layout.addWidget(self.hero_tagline)
         hero_layout.addStretch()

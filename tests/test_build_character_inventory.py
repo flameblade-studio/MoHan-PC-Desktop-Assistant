@@ -50,11 +50,50 @@ def test_inventory_rebuild_matches_committed_bytes(inventory: dict[str, Any]) ->
     expected = builder.render_inventory(inventory)
     assert builder.render_inventory(builder.build_inventory(ROOT)) == expected
     assert (ROOT / "docs/character-pack/mohan-inventory.json").read_text(encoding="utf-8") == expected
+    lin_keyun_expected = builder.render_lin_keyun_inventory(inventory)
+    assert (
+        ROOT / "docs/character-pack/lin-keyun-inventory.json"
+    ).read_text(encoding="utf-8") == lin_keyun_expected
     assert (ROOT / "docs/character-pack/mohan-inventory-summary.md").read_text(encoding="utf-8") == builder.render_summary(inventory)
     paths = [row["path"] for row in inventory["files"]]
     assert paths == sorted(set(paths))
     assert str(ROOT) not in expected
     assert "timestamp" not in inventory
+
+
+def test_lin_keyun_inventory_selects_only_owned_files() -> None:
+    inventory = {
+        "files": [
+            {
+                "path": "assets/characters/lin-keyun/body/views/front/hair-front.png",
+                "scope": "runtime_data",
+                "sha256": "a" * 64,
+                "bytes": 7,
+            },
+            {
+                "path": "assets/characters/lin-keyun/persona/profile.json",
+                "scope": "runtime_data",
+                "sha256": "b" * 64,
+                "bytes": 5,
+            },
+            {
+                "path": "assets/pose-atlas/v5-base/front.png",
+                "scope": "excluded_support",
+                "sha256": "c" * 64,
+                "bytes": 9,
+            },
+        ]
+    }
+
+    selected = builder.build_lin_keyun_inventory(inventory)
+
+    assert selected["profile"] == "lin-keyun"
+    assert [row["path"] for row in selected["files"]] == [
+        "assets/characters/lin-keyun/body/views/front/hair-front.png",
+        "assets/characters/lin-keyun/persona/profile.json",
+    ]
+    assert selected["scope_counts"] == {"runtime_data": 2}
+    assert json.loads(builder.render_lin_keyun_inventory(inventory)) == selected
 
 
 def test_worklist_rebuild_matches_committed_bytes(
@@ -161,7 +200,10 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
     assert all(not row["path"].startswith(tuple(paths)) for row in inventory["files"] if row["scope"] == "runtime_data")
 
 
-CHARACTER_DATA_FILE_COUNT = 17  # Existing 16 loose files plus appearance defaults.
+CHARACTER_DATA_FILE_COUNTS = {
+    "mohan": 17,
+    "lin-keyun": 19,  # Includes the declared body manifest and appearance approval.
+}
 
 
 @pytest.mark.parametrize("character_id", ("mohan", "lin-keyun"))
@@ -181,7 +223,7 @@ def test_character_data_files_are_runtime_data(
         for path, row in rows.items()
         if "!" not in path and path.endswith(".json") and path not in build_only
     }
-    assert len(data_rows) == CHARACTER_DATA_FILE_COUNT
+    assert len(data_rows) == CHARACTER_DATA_FILE_COUNTS[character_id]
     assert {row["scope"] for row in data_rows.values()} == {"runtime_data"}
     assert rows[f"{prefix}rig/runtime-bindings.json"]["category"] == "character_runtime_binding_data"
     assert rows[f"{prefix}dialogue/runtime.json"]["category"] == "character_runtime_dialogue_data"
@@ -191,6 +233,10 @@ def test_character_data_files_are_runtime_data(
     assert license_notice["category"] == "character_license_notice"
     assert license_notice["scope"] == "runtime_data"
     assert license_notice["readers"]
+    if character_id == "lin-keyun":
+        for relative in ("body/manifest.json", "body/approval.json"):
+            assert rows[f"{prefix}{relative}"]["category"] == "character_layer_view"
+            assert rows[f"{prefix}{relative}"]["readers"]
     assert {rows[path]["scope"] for path in build_only} == {"excluded_support"}
 
 
@@ -213,6 +259,13 @@ def test_only_actual_embedded_content_is_counted(inventory: dict[str, Any]) -> N
     } <= set(by_path)
     assert "domain/expression_system.py" not in by_path
     assert by_path["domain/constants.py"]["classification"] == "product_shell_allowed"
+    for path in (
+        "application/character_runtime_bootstrap.py",
+        "infrastructure/installed_body_packs.py",
+    ):
+        assert by_path[path]["classification"] == "product_shell_allowed"
+        assert by_path[path]["classification_reason"] == builder.PRODUCT_SHELL_ALLOWLIST[path]
+        assert by_path[path]["work_package"] is None
     for row in rows:
         assert row["migration"] == builder.EMBEDDED
         assert row["classification"] in builder.CLASSIFICATION_REASONS
@@ -440,3 +493,26 @@ def test_product_identity_exempts_only_its_own_span() -> None:
     assert ("MoHan", "product_identity_literal") in rules
     assert ("墨寒", "character_name_literal") in rules
     assert builder._source_classification("presentation/example.py", evidence) != "product_shell_allowed"
+
+
+def test_lin_keyun_inventory_keeps_declared_shared_makeup_dependencies() -> None:
+    makeup = "assets/official-packs/mohan.makeup.builtin.mohan-outfit"
+    approval = "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json"
+    unrelated = "assets/pose-atlas/v5-base/front.png"
+    inventory = {"files": [{"path": path, "scope": "runtime_data"}
+                           for path in (makeup, approval, unrelated)]}
+    selected = builder.build_lin_keyun_inventory(inventory)
+    assert {row["path"] for row in selected["files"]} == {makeup, approval}
+    assert selected["scope_counts"] == {"runtime_data": 2}
+
+
+def test_declared_makeup_exclusion_rig_is_packaged_as_runtime_support() -> None:
+    regions = json.loads((ROOT / "assets/makeup-safe-regions.json").read_text(encoding="utf-8"))
+    rig = regions["silhouettes"]["front-attentive_front"]["rig"]
+    path = f"{rig}_oral_cavity.png"
+    selected = builder.build_lin_keyun_inventory(
+        {"files": [{"path": path, "scope": "excluded_support"}]},
+    )
+    assert selected["files"][0]["path"] == path
+    assert selected["files"][0]["scope"] == "runtime_data"
+    assert selected["scope_counts"] == {"runtime_data": 1}

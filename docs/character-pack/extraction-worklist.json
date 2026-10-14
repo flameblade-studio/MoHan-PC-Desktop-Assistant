@@ -6,11 +6,11 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 20,
+    "actual_embedded_code_files": 22,
     "engine_extract_files": 0,
     "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
-    "product_shell_allowed_files": 20,
+    "product_shell_allowed_files": 22,
     "true_extraction_files": 0,
     "ui_text_reference_files": 0,
     "work_packages": 0
@@ -24,6 +24,11 @@
     {
       "path": "application/character_default_look.py",
       "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "application/character_runtime_bootstrap.py",
+      "reason": "產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。",
       "status": "allowed_content_present"
     },
     {
@@ -55,6 +60,11 @@
       "path": "infrastructure/backup_manager.py",
       "reason": "墨寒使用者備份檔名與產品資料位置屬產品殼相容契約。",
       "status": "no_current_content_evidence"
+    },
+    {
+      "path": "infrastructure/installed_body_packs.py",
+      "reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。",
+      "status": "allowed_content_present"
     },
     {
       "path": "infrastructure/profile_transfer.py",
@@ -127,6 +137,50 @@
       "classification": "product_shell_allowed",
       "content": [
         {
+          "content_kind": "rig",
+          "description": "角色身形或角色識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 151,
+              "matched": "mohan-body-v2",
+              "text": "body_path = installed_body_pack_root() / \"mohan-body-v2\""
+            },
+            {
+              "line": 155,
+              "matched": "mohan-body-v2",
+              "text": "f\"Active character {selected!r} requires body pack 'mohan-body-v2'; \""
+            }
+          ],
+          "rule": "character_body_profile_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        },
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 157,
+              "matched": "MoHan",
+              "text": "\"No character was activated, so the bundled MoHan body is not used. \""
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/character_runtime_bootstrap.py",
+      "reason": "產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json",
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
@@ -156,12 +210,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 443,
+              "line": 439,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 444,
+              "line": 440,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }
@@ -363,6 +417,31 @@
         "assets/characters/mohan/persona/profile.json",
         "assets/characters/mohan/rig/rig-manifest.json",
         "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "角色身形或角色識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 17,
+              "matched": "mohan-body-v2",
+              "text": "MOHAN_BODY_PACK_ID = \"mohan-body-v2\""
+            }
+          ],
+          "rule": "character_body_profile_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/installed_body_packs.py",
+      "reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": null
     },

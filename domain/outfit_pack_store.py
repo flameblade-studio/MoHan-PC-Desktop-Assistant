@@ -143,3 +143,14 @@ def copy_pack_archive(source: Path, store: Path, pack_id: str) -> None:
         os.replace(temporary_path, destination)
     finally:
         temporary_path.unlink(missing_ok=True)
+
+
+def select_body_outfit(store: Path) -> None:
+    """Remove clothing while preserving every other saved appearance slot."""
+    active_path = Path(store) / "active.json"
+    active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
+    if not isinstance(active, dict):
+        raise OutfitPackError("Provide a supported saved appearance state.")
+    active.pop("_ensemble", None)
+    active["garment"] = {"pack_id": "builtin", "item_id": "none", "variant_id": "none"}
+    _atomic_json(active_path, active)

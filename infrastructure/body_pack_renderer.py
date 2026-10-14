@@ -6,12 +6,17 @@ lazy import logging
 lazy from collections import OrderedDict
 lazy from collections.abc import Callable, Mapping
 lazy from PySide6.QtCore import Qt
-lazy from PySide6.QtGui import QPixmap, QRegion
+lazy from PySide6.QtGui import QPixmap
 lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
 lazy from domain.character_layer_plan import CharacterLayerPlan, CharacterLayerAsset, CharacterLayerMask
+lazy from domain.character_runtime import character_rig_manifest
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.face_rig import FaceMotionFrame, Viseme, eye_state_for_blink
 lazy from domain.qt_image_io import load_pixmap_png
-lazy from infrastructure.body_pack_compositor import compose_body_pack_frame, body_pack_alpha_region
+lazy from infrastructure.body_pack_compositor import compose_body_pack_frame
+lazy from infrastructure.complete_halfbody_expressions import (
+    COMPLETE_CHEEK_POSES, COMPLETE_FRONT_POSES, COMPLETE_POSES,
+)
 
 
 LOGGER = logging.getLogger(__name__)
@@ -19,6 +24,7 @@ CLOSED_APERTURE = 0.01
 MAX_PIXMAP_CACHE_BYTES = 32 * 1024 * 1024
 MAX_LAYER_BYTES_CACHE_BYTES = 8 * 1024 * 1024
 REST_ONLY_FAMILY = "rest-only"
+MakeupApplier = Callable[[QPixmap, str, str, str | None], QPixmap]
 
 
 class BodyPackRenderer:
@@ -39,11 +45,15 @@ class BodyPackRenderer:
     def __init__(
         self, body: BodyPackSource, views: Mapping[str, CharacterLayerPlan],
         load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
+        *, apply_makeup: MakeupApplier | None = None,
+        clothing_visible: Callable[[], bool] | None = None,
     ) -> None:
         self._body = body
         self._views = views
         self._load_layer = load_layer
-        self._last_context: tuple[str, str] | None = None
+        self._apply_makeup = apply_makeup
+        self._clothing_visible = clothing_visible
+        self._last_context: tuple[str, str, str] | None = None
         self._pixmaps: OrderedDict[tuple[object, ...], tuple[QPixmap, int]] = OrderedDict()
         self._pixmap_cache_bytes = 0
         self._layer_bytes: OrderedDict[str, bytes] = OrderedDict()
@@ -88,10 +98,6 @@ class BodyPackRenderer:
         self._cache_pixmap(key, pixmap)
         return QPixmap(pixmap)
 
-    def _core_region(self, data: bytes) -> QRegion:
-        digest = hashlib.sha256(data).hexdigest()
-        return body_pack_alpha_region(self._pixmap(data, digest), digest)
-
     def _layer_data(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:
         cached = self._layer_bytes.get(record.sha256)
         if cached is not None:
@@ -114,20 +120,48 @@ class BodyPackRenderer:
                 self._layer_bytes_cache_bytes -= len(removed)
         return data
 
-    def _compose(self, view: str, state: str, *, halfbody: bool = False) -> QPixmap:
-        cache_key = ("composed", view, state, halfbody)
-        cached = self._cached_pixmap(cache_key)
-        if cached is not None:
-            return cached
-        base_data = self._body.load_frame(view, state, halfbody=halfbody)
-        base = self._pixmap(base_data)
-        mask = self._body.load_face_core(view)
-        core = None if mask is None else self._core_region(mask)
+    def _compose(
+        self, view: str, state: str, *, halfbody: bool = False, expression: str = "",
+    ) -> QPixmap:
         plan = self._views.get(view)
-        if plan is None:
-            self._cache_pixmap(cache_key, base)
-            return base
-        if mask is None and (plan.layers or plan.base_hide is not None):
+        if plan is None or not plan.has_default_hair:
+            raise BodyPackMismatchError(
+                "character_hair_required", "Provide the character default hair for this view", view,
+            )
+        clothed = self._clothing_visible is None or self._clothing_visible()
+        if not clothed:
+            plan = plan.without_clothing()
+        apply_makeup = self._apply_makeup if clothed else None
+        cache_key = ("composed", view, state, halfbody, clothed)
+        if apply_makeup is None:
+            cached = self._cached_pixmap(cache_key)
+            if cached is not None:
+                return cached
+        body_key = ("body", view, state, halfbody)
+        base = self._cached_pixmap(body_key)
+        if base is None:
+            base = self._pixmap(self._body.load_frame(view, state, halfbody=halfbody))
+            self._cache_pixmap(body_key, base)
+        makeup_base = None
+        if apply_makeup is not None:
+            eye = state.rsplit("-", 1)[-1]
+            family = state.split("-", 1)[0]
+            viseme = {"a": "A", "o": "O", "small": "CONSONANT"}.get(family)
+            makeup_view = self._makeup_view_id(view, expression, eye) if halfbody else view
+            if halfbody and self._source_pose(view) not in COMPLETE_FRONT_POSES | COMPLETE_CHEEK_POSES:
+                # Retained legacy endpoints use their rest makeup, just as the
+                # product CompleteHalfbodyRenderer does for these exact frames.
+                viseme = None
+            elif halfbody and family == "small":
+                viseme = "I"
+            makeup_base = apply_makeup(base, makeup_view, eye, viseme)
+            cache_key += (makeup_base.cacheKey(),)
+            cached = self._cached_pixmap(cache_key)
+            if cached is not None:
+                return cached
+        mask = self._body.load_face_core(view)
+        core = None if mask is None else self._pixmap(mask)
+        if mask is None and plan is not None and (plan.layers or plan.base_hide is not None):
             error = BodyPackMismatchError(
                 "face_core_required",
                 "Provide a body-owned face-core mask for a view with character layers; "
@@ -139,9 +173,47 @@ class BodyPackRenderer:
         def image(record: CharacterLayerAsset | CharacterLayerMask) -> QPixmap:
             return self._pixmap(self._layer_data(record), record.sha256)
 
-        result = compose_body_pack_frame(base, plan, image, face_core=core)
+        result = compose_body_pack_frame(
+            base, plan, image, face_core=core, makeup_base=makeup_base,
+        )
         self._cache_pixmap(cache_key, result)
         return result
+
+    def _source_pose(self, view: str) -> str:
+        """Resolve aliases by their exact manifest frame bindings, not live emotion."""
+        views = self._body.manifest.half_body
+        selected = next((item for item in views if item.view_id == view), None)
+        if selected is not None and hasattr(selected, "frames"):
+            sources = {item.view_id for item in views
+                       if item.view_id in COMPLETE_POSES and item.frames == selected.frames}
+            if len(sources) == 1:
+                return next(iter(sources))
+            if len(sources) > 1:
+                raise BodyPackMismatchError(
+                    "ambiguous_makeup_source", "Body frame bindings require one authored makeup pose", view,
+                )
+        # A canonical pose selects its own makeup. Generic pose aliases retain
+        # the rig's authored silhouette when a minimal source omits frame metadata.
+        return character_rig_manifest().pose_silhouettes.get(view, view)
+
+    def _makeup_view_id(self, view: str, expression: str, eye: str) -> str:
+        """The selected body's source pose owns the makeup geometry."""
+        source = self._source_pose(view)
+        if source in COMPLETE_CHEEK_POSES and eye != "rest":
+            return f"{source}-{eye}"
+        return source
+
+    @staticmethod
+    def _expression_view_id(expression: str) -> str:
+        """Resolve a requested expression only while choosing its body frame."""
+        catalog = active_expression_catalog()
+        rig = character_rig_manifest()
+        expression = expression.split("_speech_", 1)[0]
+        gesture = rig.gesture_silhouettes.get(expression)
+        if gesture is not None:
+            return gesture
+        pose = catalog.state_to_pose.get(expression)
+        return f"{pose}-{expression}" if pose is not None else expression
 
     @staticmethod
     def _family(motion: FaceMotionFrame, aperture: float | None = None) -> str:
@@ -167,6 +239,10 @@ class BodyPackRenderer:
         """Render an authored half-body pose and remember its blink endpoint."""
         poses = {item.view_id for item in self._body.manifest.half_body}
         view = motion.expression if motion.expression in poses else motion.pose.value
+        if view not in poses:
+            silhouette = self._expression_view_id(motion.expression)
+            view = (silhouette if silhouette in poses
+                    else character_rig_manifest().pose_silhouettes[motion.pose.value])
         family = self._family(motion, aperture)
         keys = self._body.frame_keys(view, halfbody=True)
         if keys == ("rest",):
@@ -174,14 +250,14 @@ class BodyPackRenderer:
             state = "rest"
         else:
             state = f"{family}-rest"
-        result = self._compose(view, state, halfbody=True)
+        result = self._compose(view, state, halfbody=True, expression=motion.expression)
         if not base.isNull() and result.size() != base.size():
             result = result.scaled(base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self._remember(view, family)
+        self._remember(view, family, motion.expression)
         return result
 
-    def _remember(self, view: str, family: str) -> None:
-        self._last_context = (view, family)
+    def _remember(self, view: str, family: str, expression: str) -> None:
+        self._last_context = (view, family, expression)
 
     def render_complete_blink(self, base: QPixmap, eye_state: str) -> QPixmap:
         """Use the latest view/family for a blink, including copied or scaled frames."""
@@ -192,13 +268,12 @@ class BodyPackRenderer:
             )
             LOGGER.error("Body-pack blink rejected [%s]: %s", error.code, error)
             raise error
-        view, family = context
-        if family == REST_ONLY_FAMILY:
-            return QPixmap(base)
-        result = self._compose(view, f"{family}-{eye_state}", halfbody=True)
+        view, family, expression = context
+        state = "rest" if family == REST_ONLY_FAMILY else f"{family}-{eye_state}"
+        result = self._compose(view, state, halfbody=True, expression=expression)
         if result.size() != base.size():
             result = result.scaled(base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self._remember(view, family)
+        self._remember(view, family, expression)
         return result
 
     def render_overlay(
@@ -218,15 +293,19 @@ class BodyPackRenderer:
             LOGGER.error("Body-pack wink rejected [%s]: %s", error.code, error)
             raise error
         if eye_state == "rest":
-            return QPixmap(base)
+            return self.render_complete_blink(base, "rest")
         return self.render_complete_blink(base, eye_state)
 
 
 def create_body_pack_renderer(
     body: BodyPackSource | None, views: Mapping[str, CharacterLayerPlan],
     load_layer: Callable[[CharacterLayerAsset | CharacterLayerMask], bytes],
+    *, apply_makeup: MakeupApplier | None = None,
+    clothing_visible: Callable[[], bool] | None = None,
 ) -> BodyPackRenderer:
     """Build a renderer from a structurally compatible body-pack source."""
     if body is None:
         raise TypeError("A resolved body-pack source is required.")
-    return BodyPackRenderer(body, views, load_layer)
+    return BodyPackRenderer(
+        body, views, load_layer, apply_makeup=apply_makeup, clothing_visible=clothing_visible,
+    )

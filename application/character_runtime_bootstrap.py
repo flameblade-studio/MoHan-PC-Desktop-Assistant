@@ -11,6 +11,7 @@ lazy from dataclasses import replace
 lazy from functools import partial
 lazy from pathlib import Path
 
+lazy from domain.body_pack import BodyPackMismatchError
 lazy from domain.character_pack.models import ValidationLimits
 lazy from domain.character_pack.validation import DEFAULT_LIMITS
 lazy from domain.character_source import (
@@ -32,6 +33,7 @@ lazy from infrastructure.installed_character_packs import (
     CharacterPackInstallError,
     load_development_character_pack_archive,
     load_installed_character_pack,
+    installed_body_pack_root,
 )
 
 ACTIVE_CHARACTER_ENV = "MOHAN_ACTIVE_CHARACTER"
@@ -143,6 +145,21 @@ def activate_product_character_runtime(
             if development_archive
             else load_installed(selected)
         )
+    except BodyPackMismatchError as error:
+        activate_character_source(None)
+        activate_character_engine_profile(None)
+        body_path = installed_body_pack_root() / "mohan-body-v2"
+        location = f" at {body_path}" if error.code == "body_pack_missing" else ""
+        detail_path = f" path={error.path}" if error.path else ""
+        message = (
+            f"Active character {selected!r} requires body pack 'mohan-body-v2'; "
+            f"dependency rejected [{error.code}]{detail_path}{location}: {error}. "
+            "No character was activated, so the bundled MoHan body is not used. "
+            "Install the locked body pack and restart: from a source checkout run "
+            "'python -m tools.fetch_body_pack'."
+        )
+        _CHARACTER_SELECTION_LOGGER.exception(message)
+        raise RuntimeError(message) from error
     except (CharacterPackInstallError, OSError, ValueError) as error:
         _activate(bundled_source)
         message = (

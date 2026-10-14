@@ -269,6 +269,64 @@ def test_manifest_projects_identity_rights_components_and_original_paths(tmp_pat
     assert result.valid, result.issues
 
 
+def test_manifest_preserves_declared_body_pack_and_layer_views(tmp_path: Path) -> None:
+    inventory, source, payloads = _synthetic_inputs(tmp_path / "repo")
+    layer_path = "assets/characters/mohan/body/front.png"
+    layer_bytes = b"\x89PNG\r\n\x1a\nlayer-payload"
+    layer_hash = hashlib.sha256(layer_bytes).hexdigest()
+    payloads[layer_path] = layer_bytes
+    layer_file = tmp_path / "repo" / layer_path
+    layer_file.parent.mkdir(parents=True, exist_ok=True)
+    layer_file.write_bytes(layer_bytes)
+    inventory_document = json.loads(inventory.read_text(encoding="utf-8"))
+    inventory_document["files"].append(
+        _inventory_row(layer_path, layer_bytes, "character_layer_view")
+    )
+    _write_json(inventory, inventory_document)
+
+    source_document = json.loads(source.read_text(encoding="utf-8"))
+    body_pack = {
+        "id": "mohan-body-v2",
+        "version": "1.0.0",
+        "fingerprint": "a" * 64,
+    }
+    layer_views = {
+        "front-idle": {
+            "layers": [
+                {
+                    "kind": "garment",
+                    "path": layer_path,
+                    "sha256": layer_hash,
+                    "anchor": [0, 0],
+                }
+            ]
+        }
+    }
+    source_document["body_pack"] = body_pack
+    source_document["layer_views"] = layer_views
+    _write_json(source, source_document)
+
+    output = tmp_path / "body-aware-character"
+    built = builder.build_character_pack(
+        output,
+        output_format="directory",
+        repo_root=tmp_path / "repo",
+        inventory_path=inventory,
+        source_path=source,
+    )
+    manifest = _manifest_from_directory(output)
+
+    assert manifest["body_pack"] == body_pack
+    assert manifest["layer_views"] == layer_views
+    assert (output / layer_path).read_bytes() == layer_bytes
+    result = validate_character_pack(
+        output,
+        engine_version=FALLBACK_VERSION,
+        limits=built.validation_limits,
+    )
+    assert result.valid, result.issues
+
+
 def test_stale_inventory_fails_before_creating_output(tmp_path: Path) -> None:
     inventory, source, _payloads = _synthetic_inputs(tmp_path / "repo")
     document = json.loads(inventory.read_text(encoding="utf-8"))
@@ -335,7 +393,7 @@ def test_repository_mohan_pack_builds_and_validates(tmp_path: Path) -> None:
     manifest = _manifest_from_directory(output)
     assert manifest["pack_id"] == "flameblade.mohan"
     assert manifest["character"]["id"] == "mohan"
-    assert manifest["pack_version"] == "1.0.5"
+    assert manifest["pack_version"] == "1.0.6"
     assert manifest["distribution"]["access"] == "public"
     assert manifest["distribution"]["redistribution"] == "allowed"
     assert {entry["status"] for entry in manifest["licenses"].values()} == {
@@ -392,5 +450,8 @@ def test_character_data_categories_map_to_explicit_license_components() -> None:
     assert builder._license_component("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data") == "persona_dialogue"
     assert builder._license_component("assets/characters/mohan/voice/profile.json", "character_voice_data") == "voice"
     assert builder._license_component("assets/characters/mohan/rig/rig-manifest.json", "character_rig_data") == "program_data"
+    assert builder._license_component("assets/characters/lin-keyun/body/views/front/layer.png", "character_layer_view") == "character_art"
+    assert builder._license_component("assets/characters/lin-keyun/body/manifest.json", "character_layer_view") == "program_data"
+    assert builder._license_component("assets/characters/lin-keyun/body/approval.json", "character_layer_view") == "program_data"
     with pytest.raises(builder.CharacterPackBuildError, match="no license component"):
         builder._license_component("assets/characters/mohan/new/unknown.json", "character_unregistered_data")

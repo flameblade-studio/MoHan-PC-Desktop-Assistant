@@ -4,7 +4,6 @@ lazy import sqlite3
 lazy import threading
 lazy import os
 lazy import logging
-lazy from functools import cache
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
@@ -81,7 +80,7 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
-lazy from infrastructure.body_pack_renderer import BodyPackRenderer, create_body_pack_renderer
+lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
@@ -355,12 +354,9 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             native_frames=default_look.native_frames if default_look is not None else native_frames,
         )
 
-    @cache
-    def body_renderer() -> BodyPackRenderer:
-        return create_body_pack_renderer(
-            body_pack, character_source.appearance.character_layer_views,
-            character_source.assets.load_character_layer,
-        )
+    body_renderer = body_pack_renderer_factory(
+        character_source, body_pack, default_data_dir() / "outfits", official_pack_roots,
+    )
 
     def face_renderer_factory():
         if body_pack is not None:

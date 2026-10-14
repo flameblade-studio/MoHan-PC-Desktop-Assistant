@@ -63,5 +63,6 @@ jobs:
           python tools/check_official_qt_runtime.py
           --pip-report qt-install-report.json
 
-      - name: Download, install, and load the published ${{ matrix.profile }} pack
+      # The verifier installs the locked body dependency first for Lin Keyun.
+      - name: Download, install, and load the published ${{ matrix.profile }} pack and dependencies
         run: python tools/verify_character_pack_download.py --profile ${{ matrix.profile }}

@@ -52,7 +52,8 @@ def test_windows_release_packages_the_complete_assets_tree() -> None:
     release_workflow = (ROOT / ".github" / "workflows" / "release.yml").read_text(
         encoding="utf-8"
     )
-    assert build_script.count('--add-data "assets;assets"') == 1
+    assert build_script.count('--add-data "$AssetStage;assets"') == 1
+    assert 'stage_installer_assets.py' in build_script
     assert release_workflow.count(r".\build.ps1") == 1
     for filename in HAND_MODELS:
         model = ROOT / "assets" / "vision-models" / filename
