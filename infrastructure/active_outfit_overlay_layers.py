@@ -514,16 +514,14 @@ class ActiveOutfitLayerMixin:
             or oral_mask.size().toTuple() != (image.width(), image.height())
         ):
             raise OutfitPackError("Active oral mask must match the makeup canvas.")
-        # The mouth-state PNG can already carry its own cavity alpha. Applying
-        # this mask multiplies that source coverage by (1 - oral alpha), which
-        # keeps runtime clipping soft but can deepen an authored edge fade.
-        masked = image.convertToFormat(QImage.Format_ARGB32_Premultiplied)
-        painter = QPainter(masked)
-        if not painter.isActive():
-            raise OutfitPackError("Active oral mask could not be applied to makeup.")
-        painter.setCompositionMode(QPainter.CompositionMode_DestinationOut)
-        painter.drawPixmap(0, 0, oral_mask)
-        painter.end()
+        # Built-in mouth-state lips are baked with alpha * (1 - oral alpha);
+        # capping at (1 - oral alpha) clips the cavity once, never squared.
+        masked = rgba8888_image(image)
+        oral = rgba8888_image(oral_mask.toImage())
+        alpha = np.frombuffer(masked.bits(), dtype=np.uint8).reshape(masked.height(), masked.bytesPerLine())
+        cavity = np.frombuffer(oral.constBits(), dtype=np.uint8).reshape(oral.height(), oral.bytesPerLine())
+        width = masked.width() * 4
+        np.minimum(alpha[:, 3:width:4], 255 - cavity[:, 3:width:4], out=alpha[:, 3:width:4])
         return masked
 
     def _makeup_clip(self, view_id: str, region, slot: str, *, state: str = "rest") -> QRegion:

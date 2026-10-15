@@ -45,21 +45,21 @@ class OutfitLayerCacheMixin:
         simple = not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None
         cache = self._layers_by_view if simple else self._layers_by_view_without_makeup_slots
         cache_key = OutfitLayerCacheKey.combined(
-            view_id, suppressed, eye_state, self._active_viseme, makeup_view_id,
+            view_id, suppressed, eye_state, self._active_mouth_cache_identity, makeup_view_id,
         )
         if cache_key in cache:
             return len(cache[cache_key]) + reviewed_count
         appearance = self._phase_layers_by_view.get(
             OutfitLayerCacheKey.for_phase(
-                view_id, "appearance", suppressed, eye_state, self._active_viseme, makeup_view_id,
+                view_id, "appearance", suppressed, eye_state, self._active_mouth_cache_identity, makeup_view_id,
             ),
             self._phase_layers_by_view.get(
-                OutfitLayerCacheKey.for_phase(view_id, "appearance", active_viseme=self._active_viseme), (),
+                OutfitLayerCacheKey.for_phase(view_id, "appearance", active_viseme=self._active_mouth_cache_identity), (),
             ),
         )
         makeup = self._phase_layers_by_view.get(
             OutfitLayerCacheKey.for_phase(
-                view_id, "makeup", suppressed, eye_state, self._active_viseme, makeup_view_id,
+                view_id, "makeup", suppressed, eye_state, self._active_mouth_cache_identity, makeup_view_id,
             ),
             (),
         )
