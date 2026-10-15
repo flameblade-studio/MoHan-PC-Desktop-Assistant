@@ -3638,7 +3638,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/linkeyun-exasperated-dynamic-mid.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3659,7 +3659,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/linkeyun-exasperated-dynamic-open.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3680,7 +3680,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/linkeyun-exasperated-dynamic-round.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3701,7 +3701,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/linkeyun-exasperated-source.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3724,7 +3724,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-caught-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3747,7 +3747,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-caught-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3770,7 +3770,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-caught-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3793,7 +3793,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-caught-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3816,7 +3816,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-glance-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3839,7 +3839,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-glance-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3862,7 +3862,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-glance-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3885,7 +3885,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-glance-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3908,7 +3908,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-happy-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3931,7 +3931,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-happy-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3954,7 +3954,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-happy-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -3977,7 +3977,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-happy-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4000,7 +4000,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-reminder-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4023,7 +4023,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-reminder-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4046,7 +4046,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-reminder-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4069,7 +4069,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-reminder-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4092,7 +4092,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-rest-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4115,7 +4115,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-rest-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4138,7 +4138,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-rest-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4161,7 +4161,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-rest-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4184,7 +4184,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-worried-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4207,7 +4207,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-worried-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4230,7 +4230,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-worried-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4253,7 +4253,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-cheek-worried-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4276,7 +4276,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-crossed-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4299,7 +4299,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-crossed-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4322,7 +4322,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-crossed-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4345,7 +4345,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-crossed-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4368,7 +4368,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-eureka-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4391,7 +4391,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-eureka-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4414,7 +4414,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-eureka-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4437,7 +4437,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-eureka-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4460,7 +4460,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-hit-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4483,7 +4483,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-hit-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4506,7 +4506,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-hit-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4529,7 +4529,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-hit-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4552,7 +4552,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-scold-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4575,7 +4575,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-scold-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4598,7 +4598,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-scold-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4621,7 +4621,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-front-mock-scold-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4644,7 +4644,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-left-neutral-back-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4667,7 +4667,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-left-neutral-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4690,7 +4690,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-left-neutral-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4713,7 +4713,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-left-neutral-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4736,7 +4736,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+000-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4759,7 +4759,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+000-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4782,7 +4782,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+000-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4805,7 +4805,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+000-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4828,7 +4828,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+015-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4851,7 +4851,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+015-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4874,7 +4874,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+015-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4897,7 +4897,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+015-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4920,7 +4920,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+030-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4943,7 +4943,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+030-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4966,7 +4966,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+030-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -4989,7 +4989,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+030-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5012,7 +5012,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+045-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5035,7 +5035,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+045-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5058,7 +5058,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+045-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5081,7 +5081,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+045-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5104,7 +5104,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+060-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5127,7 +5127,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+060-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5150,7 +5150,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+060-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5173,7 +5173,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+060-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5196,7 +5196,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+075-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5219,7 +5219,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+075-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5242,7 +5242,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+075-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5265,7 +5265,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+075-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5288,7 +5288,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+090-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5311,7 +5311,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+090-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5334,7 +5334,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+090-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5357,7 +5357,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+090-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5380,7 +5380,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+105-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5403,7 +5403,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+105-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5426,7 +5426,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+105-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5449,7 +5449,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+105-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5472,7 +5472,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+120-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5495,7 +5495,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+120-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5518,7 +5518,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+120-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5541,7 +5541,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+120-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5564,7 +5564,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+135-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5587,7 +5587,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+135-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5610,7 +5610,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+135-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5633,7 +5633,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+135-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5656,7 +5656,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+150-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5679,7 +5679,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+150-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5702,7 +5702,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+150-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5725,7 +5725,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+150-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5748,7 +5748,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+165-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5771,7 +5771,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+165-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5794,7 +5794,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+165-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5817,7 +5817,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw+165-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5840,7 +5840,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-015-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5863,7 +5863,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-015-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5886,7 +5886,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-015-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5909,7 +5909,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-015-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5932,7 +5932,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-030-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5955,7 +5955,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-030-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -5978,7 +5978,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-030-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6001,7 +6001,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-030-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6024,7 +6024,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-045-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6047,7 +6047,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-045-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6070,7 +6070,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-045-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6093,7 +6093,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-045-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6116,7 +6116,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-060-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6139,7 +6139,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-060-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6162,7 +6162,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-060-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6185,7 +6185,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-060-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6208,7 +6208,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-075-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6231,7 +6231,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-075-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6254,7 +6254,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-075-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6277,7 +6277,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-075-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6300,7 +6300,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-090-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6323,7 +6323,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-090-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6346,7 +6346,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-090-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6369,7 +6369,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-090-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6392,7 +6392,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-105-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6415,7 +6415,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-105-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6438,7 +6438,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-105-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6461,7 +6461,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-105-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6484,7 +6484,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-120-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6507,7 +6507,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-120-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6530,7 +6530,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-120-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6553,7 +6553,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-120-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6576,7 +6576,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-135-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6599,7 +6599,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-135-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6622,7 +6622,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-135-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6645,7 +6645,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-135-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6668,7 +6668,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-150-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6691,7 +6691,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-150-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6714,7 +6714,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-150-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6737,7 +6737,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-150-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6760,7 +6760,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-165-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6783,7 +6783,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-165-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6806,7 +6806,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-165-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6829,7 +6829,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-165-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6852,7 +6852,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-180-pitch+00-back.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6875,7 +6875,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-180-pitch+00-front.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6898,7 +6898,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-180-pitch+00-side-left.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6921,7 +6921,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/long-hair-dark-brown-yaw-180-pitch+00-side-right.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6944,7 +6944,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-caught-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6967,7 +6967,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-caught-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -6990,7 +6990,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-glance-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7013,7 +7013,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-glance-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7036,7 +7036,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-happy-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7059,7 +7059,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-happy-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7082,7 +7082,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-reminder-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7105,7 +7105,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-reminder-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7128,7 +7128,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-rest-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7151,7 +7151,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-rest-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7174,7 +7174,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-worried-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7197,7 +7197,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-cheek-worried-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7220,7 +7220,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-crossed-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7243,7 +7243,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-crossed-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7266,7 +7266,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-eureka-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7289,7 +7289,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-eureka-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7312,7 +7312,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-mock-hit-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7335,7 +7335,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-mock-hit-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7358,7 +7358,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-mock-scold-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7381,7 +7381,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-front-mock-scold-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7404,7 +7404,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-left-neutral-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7427,7 +7427,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-left-neutral-outerwear-holes.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7450,7 +7450,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+000-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7473,7 +7473,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+000-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7496,7 +7496,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+015-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7519,7 +7519,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+015-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7542,7 +7542,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+030-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7565,7 +7565,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+030-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7588,7 +7588,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+045-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7611,7 +7611,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+045-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7634,7 +7634,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+060-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7657,7 +7657,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+060-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7680,7 +7680,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+075-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7703,7 +7703,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+075-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7726,7 +7726,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+090-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7749,7 +7749,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+090-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7772,7 +7772,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+105-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7795,7 +7795,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+105-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7818,7 +7818,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+120-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7841,7 +7841,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+120-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7864,7 +7864,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+135-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7887,7 +7887,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+135-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7910,7 +7910,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+150-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7933,7 +7933,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+150-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7956,7 +7956,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+165-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -7979,7 +7979,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw+165-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8002,7 +8002,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-015-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8025,7 +8025,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-015-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8048,7 +8048,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-030-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8071,7 +8071,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-030-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8094,7 +8094,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-045-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8117,7 +8117,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-045-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8140,7 +8140,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-060-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8163,7 +8163,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-060-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8186,7 +8186,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-075-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8209,7 +8209,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-075-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8232,7 +8232,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-090-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8255,7 +8255,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-090-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8278,7 +8278,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-105-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8301,7 +8301,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-105-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8324,7 +8324,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-120-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8347,7 +8347,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-120-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8370,7 +8370,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-135-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8393,7 +8393,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-135-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8416,7 +8416,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-150-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8439,7 +8439,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-150-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8462,7 +8462,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-165-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8485,7 +8485,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-165-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8508,7 +8508,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-180-pitch+00-base-clear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -8531,7 +8531,7 @@
       "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit!assets/modern-office-white-black-yaw-180-pitch+00-outerwear.png",
       "readers": [
         {
-          "line": 748,
+          "line": 755,
           "path": "infrastructure/active_outfit_overlay.py",
           "text": "encoded = archive.read(declaration.path)"
         }
@@ -9367,6 +9367,70 @@
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/front-makeup-rigs/front-attentive_front_teeth_tongue.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_lip_lower.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_lip_upper.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6296,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_oral_cavity.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "8300005d0cf62979614b3410ce95b9686faaf26ad63d3b2656036e0d8b77906c"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_teeth_tongue.png",
       "readers": [],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
@@ -12247,7 +12311,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 143516,
+      "bytes": 160057,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -12261,7 +12325,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "6426b7d580247c3003b46b9de2dbf580cb1641b158caece38dd33b2d8c479cb6"
+      "sha256": "fa7d7ff241f0290e99edc5df849590a1ee58d19a0372a8eb3d29348bff797c38"
     },
     {
       "bytes": 6175,
@@ -13762,6 +13826,168 @@
       "manifest_references": [
         {
           "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 7697,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7828,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "38af7ed2b9ca831988c57836d454ce945bd5ee6ae3d72b4a13630a808504ac48"
+    },
+    {
+      "bytes": 7927,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-crossed/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "e3cf4e97eb3c426f59b3bfab2135fee1b0166a39e5acc36f0c4432a355e5bcc5"
+    },
+    {
+      "bytes": 6175,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
           "pointer": "/silhouettes/front-determined_front/eye_aperture_masks/closed/path"
         }
       ],
@@ -13912,6 +14138,330 @@
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
       "sha256": "d85f00bdf72d49a480692312b8f82e34bc2c01981168f1a22cd30e694f79fb02"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-eureka/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8516,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-eureka/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "1408fd47763a2dea5b869d81838e975740ae682b80fca63a281856463310bfc7"
+    },
+    {
+      "bytes": 8534,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-eureka/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "caa3969a9a4dc2e9b98ce94a94996a704b1c29f445a5d1f999792cc6e45ff6b2"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-eureka/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-eureka/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-eureka/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-exasperated/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-exasperated/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-exasperated/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-exasperated/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-exasperated/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-exasperated/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
       "bytes": 6175,
@@ -14074,6 +14624,330 @@
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
       "sha256": "276b098f5bc67e45ef67ec40278887c057ac170daf3134aeed1d9e581b2c0959"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-hit/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8470,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-hit/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "98a027d3c7c0bfbadca7ac521c6809db7a57695d38307be24fe1683910f69575"
+    },
+    {
+      "bytes": 8527,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-hit/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "760762f364688e32b18eb582d9ce500b09d36d236f00ce10ad387735d6df48b1"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-hit/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-hit/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-hit/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-scold/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8517,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-scold/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "029ed7bacba9ef9f13779a0887b9bc0373d86d323e27c3ed72333c7c822653e6"
+    },
+    {
+      "bytes": 8529,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-scold/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "a512c4404fa3960d2b585eae047ba6c61ab686f26b9b39bddc9b24e20e3e4bf1"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-scold/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-scold/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/front-mock-scold/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
       "bytes": 6175,
@@ -15048,7 +15922,7 @@
       "sha256": "031349c6cad5bb70ddac33469bcfccde8ebedd72183f33f5ab46e2576efa8bcf"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "category": "makeup_safe_mask",
       "image": {
         "height": 1254,
@@ -15072,10 +15946,10 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6304,
+      "bytes": 8498,
       "category": "makeup_safe_mask",
       "image": {
         "height": 1254,
@@ -15099,10 +15973,10 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "5514ed82b74a6988def6f2078afcade5578dc08a69890e25bb992b4b5eac8e52"
+      "sha256": "916ea55ddcb1a8c8b403659c2ca64963fd1db8ca356bcd3ba6c9719ccc91693c"
     },
     {
-      "bytes": 6431,
+      "bytes": 8601,
       "category": "makeup_safe_mask",
       "image": {
         "height": 1254,
@@ -15126,7 +16000,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "4180f1f32458717ba84450396736d6d0679d9218eea2fce3d7f98a874cdfbe74"
+      "sha256": "053168dde10f9ad96f9f75a03e3d5475bfacda229704a6455b5907779800bcc5"
     },
     {
       "bytes": 7697,
@@ -15696,7 +16570,169 @@
       "sha256": "6da3bb4b6a26a692ccf0e3ee7f336550322123c12ef3de6da682ff8346adc1bb"
     },
     {
-      "bytes": 37183975,
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/left-neutral/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8530,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/left-neutral/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "45c1cb1215f31a8d7bf3e14debbf1140e94314d4a776e68f591dd41303c3cdff"
+    },
+    {
+      "bytes": 8554,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/left-neutral/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "86552a81973d08e67059feb5dddd3b98efe9ee6f244569d5987f1c44c21a5911"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/left-neutral/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/left-neutral/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/left-neutral/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 34666059,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -15710,7 +16746,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "f8871cf98d76d37f8bfb6be033590138386f3fff434d33ae98172caf2a66a4ea"
+      "sha256": "93c20cc8f2cb259bfa865b11be231f90b7f2d8fae1690a54ee0247487f876fae"
     },
     {
       "bytes": 6550,
@@ -19943,6 +20979,6 @@
   "schema_version": 1,
   "scope_counts": {
     "excluded_support": 2,
-    "runtime_data": 862
+    "runtime_data": 902
   }
 }

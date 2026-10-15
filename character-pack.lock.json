@@ -1,8 +1,8 @@
 {
   "archive": {
-    "asset_name": "flameblade.mohan-1.0.5.zip",
-    "bytes": 957146072,
-    "sha256": "f0573ff60137ab731a88a54bb443ceab983adfce957ed502e554f6f6810293dc"
+    "asset_name": "flameblade.mohan-1.0.6.zip",
+    "bytes": 953731349,
+    "sha256": "fedcac8c5ee08f776c2511f061c495b0cf51ea6a3b5a8635f33f5cc3818fec43"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -1302,14 +1302,14 @@
       "sha256": "2415bb4b146822424f704f0b7f87e6ca9bc1f5e7aac254c4f3d2b299151f8da9"
     },
     {
-      "bytes": 2099521,
+      "bytes": 2098525,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-a-closed.rgba.png",
-      "sha256": "cec2c85242ec691b536663e248dcad891c83eeb7ad920b98a663ee74310fa0ca"
+      "sha256": "1265686a25008dc04277fbcc9ba73f8f0d6282a2c05378c29fa79506accd5ade"
     },
     {
-      "bytes": 2101503,
+      "bytes": 2100602,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-a-half.rgba.png",
-      "sha256": "f7487aca619ee91d6fd14506b70dbb99850a57784c74ebceccf3b106147e5ea0"
+      "sha256": "ceac0eee80767ff599413845f21d6d83e3e304b9e79109379832316a9dd8f4b9"
     },
     {
       "bytes": 2102332,
@@ -1317,14 +1317,14 @@
       "sha256": "61aa36e989361d68e14b97ce4cc64b696e43ce3a191986fd7e1c749098310f23"
     },
     {
-      "bytes": 2099363,
+      "bytes": 2098368,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-neutral-closed.rgba.png",
-      "sha256": "9a643e0456d1546f9ceaa2cdb486c754a23e21e741543c3fc84cd21bf1b13d8e"
+      "sha256": "02b74ccce346cb02d2c1ac6bc4896255b91c41c35b2f31fb98d577d04c6f4140"
     },
     {
-      "bytes": 2101352,
+      "bytes": 2100452,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-neutral-half.rgba.png",
-      "sha256": "6b9fd1a638659eca3de67475c629c7e2b7acce0c728ad53c87472594fb4b39c9"
+      "sha256": "fa23fc32dae3e6e0ecfd7597485e507f7b9b1c53c72b3150cf3dd288c94413fa"
     },
     {
       "bytes": 2102157,
@@ -1332,14 +1332,14 @@
       "sha256": "9a69cfb4b7c9051bd1334bce49097d87e9fde44b80cd2bb75404360ecf264f6d"
     },
     {
-      "bytes": 2099072,
+      "bytes": 2098075,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-o-closed.rgba.png",
-      "sha256": "157d4fcf0570e7c22b83071d322af60ffd6b8845fcee5a543555ad7bc20defa1"
+      "sha256": "17a7313eec1bc73577f0fff3d87fb8981d942d85fd3e3d74be429209d274eff8"
     },
     {
-      "bytes": 2101068,
+      "bytes": 2100147,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-o-half.rgba.png",
-      "sha256": "8ddb822b8204c7b3a2c440f499dd633627ce4ca765a0de3d535eee9ba2582333"
+      "sha256": "8c8c91924a028e3007aa63af123962af7e44b462e0f644a7bd00611eba1875a8"
     },
     {
       "bytes": 2101914,
@@ -1347,14 +1347,14 @@
       "sha256": "8cc07d665b7274a54d8cb1b48f89507cbfbed27e5d6b1965775116a6d98b5bbb"
     },
     {
-      "bytes": 2098942,
+      "bytes": 2097932,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-small-closed.rgba.png",
-      "sha256": "531500b2e5ac3a6493d260162d2df937d9811aeb4531537698c0c9776d9625a5"
+      "sha256": "2843db450bcf676e7b6abdcda6d3ade74267152859a67069603143812aa90ca1"
     },
     {
-      "bytes": 2100947,
+      "bytes": 2100024,
       "path": "assets/expressions/complete-expressions/frames/front-surprised_front-small-half.rgba.png",
-      "sha256": "ca53ec4ebaa98a2bd6efb700a2fcd964b5b10e413b20e8b5a0e7631307fd4dfa"
+      "sha256": "54a9b35c0c3829d1291d406fdcce8e2f7c30439d2f66e66b089f8eeeec712ae2"
     },
     {
       "bytes": 2101814,
@@ -1604,7 +1604,7 @@
     {
       "bytes": 234330,
       "path": "assets/expressions/complete-expressions/manifest.json",
-      "sha256": "72db3a10b65696d1fc440b423cf41c2463ac8a0784789db300cec4076b31df80"
+      "sha256": "3cc7b51de848e701bad218a93beb12d8df0931d986c9ff8c5352f010a7062a0a"
     },
     {
       "bytes": 6470,
@@ -2837,9 +2837,9 @@
       "sha256": "491368634b073480e2a45153a22814ff70de5ccb343c5f9ba4ee930abc66af11"
     },
     {
-      "bytes": 2104729,
+      "bytes": 917166,
       "path": "assets/expressions/reviewed-garments/front-eureka/layer-00.rgba.png",
-      "sha256": "415042e9ceb64da4448569d2054b0c542513c7910100aeee95a029f0a5ba6537"
+      "sha256": "83e4f45f475cc0bbb4d1b15540b73de5e4c24e1f89b8bbe002c62b2433da6ca0"
     },
     {
       "bytes": 4162,
@@ -2884,7 +2884,7 @@
     {
       "bytes": 9232,
       "path": "assets/expressions/reviewed-garments/manifest.json",
-      "sha256": "5812f665ecddec7dc31450b77102c4865ef12074345d31ac43943d4d6380b443"
+      "sha256": "e455133fe2b86a727e69e99694e0b96ce84132579e7acfaefd789a9ab1ba7e49"
     },
     {
       "bytes": 730241,
@@ -4007,9 +4007,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 145434,
+      "bytes": 160057,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "d5c5f43c650cff3f749ad808e25e9871a2a25aaf7ca93c961ec387aa1cfd4a1f"
+      "sha256": "fa7d7ff241f0290e99edc5df849590a1ee58d19a0372a8eb3d29348bff797c38"
     },
     {
       "bytes": 6175,
@@ -4312,6 +4312,66 @@
       "sha256": "d85f00bdf72d49a480692312b8f82e34bc2c01981168f1a22cd30e694f79fb02"
     },
     {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8516,
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-half.png",
+      "sha256": "1408fd47763a2dea5b869d81838e975740ae682b80fca63a281856463310bfc7"
+    },
+    {
+      "bytes": 8534,
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-rest.png",
+      "sha256": "caa3969a9a4dc2e9b98ce94a94996a704b1c29f445a5d1f999792cc6e45ff6b2"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
       "bytes": 6175,
       "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-closed.png",
       "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
@@ -4340,6 +4400,66 @@
       "bytes": 7909,
       "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-rest.png",
       "sha256": "276b098f5bc67e45ef67ec40278887c057ac170daf3134aeed1d9e581b2c0959"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8470,
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-half.png",
+      "sha256": "98a027d3c7c0bfbadca7ac521c6809db7a57695d38307be24fe1683910f69575"
+    },
+    {
+      "bytes": 8527,
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-rest.png",
+      "sha256": "760762f364688e32b18eb582d9ce500b09d36d236f00ce10ad387735d6df48b1"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8517,
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-half.png",
+      "sha256": "029ed7bacba9ef9f13779a0887b9bc0373d86d323e27c3ed72333c7c822653e6"
+    },
+    {
+      "bytes": 8529,
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-rest.png",
+      "sha256": "a512c4404fa3960d2b585eae047ba6c61ab686f26b9b39bddc9b24e20e3e4bf1"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
       "bytes": 6175,
@@ -4522,19 +4642,19 @@
       "sha256": "031349c6cad5bb70ddac33469bcfccde8ebedd72183f33f5ab46e2576efa8bcf"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6304,
+      "bytes": 8498,
       "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-half.png",
-      "sha256": "5514ed82b74a6988def6f2078afcade5578dc08a69890e25bb992b4b5eac8e52"
+      "sha256": "916ea55ddcb1a8c8b403659c2ca64963fd1db8ca356bcd3ba6c9719ccc91693c"
     },
     {
-      "bytes": 6431,
+      "bytes": 8601,
       "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-rest.png",
-      "sha256": "4180f1f32458717ba84450396736d6d0679d9218eea2fce3d7f98a874cdfbe74"
+      "sha256": "053168dde10f9ad96f9f75a03e3d5475bfacda229704a6455b5907779800bcc5"
     },
     {
       "bytes": 7697,
@@ -4642,14 +4762,44 @@
       "sha256": "6da3bb4b6a26a692ccf0e3ee7f336550322123c12ef3de6da682ff8346adc1bb"
     },
     {
-      "bytes": 419110,
-      "path": "assets/mohan-halfbody.ico",
-      "sha256": "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 37173487,
+      "bytes": 8530,
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-half.png",
+      "sha256": "45c1cb1215f31a8d7bf3e14debbf1140e94314d4a776e68f591dd41303c3cdff"
+    },
+    {
+      "bytes": 8554,
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-rest.png",
+      "sha256": "86552a81973d08e67059feb5dddd3b98efe9ee6f244569d5987f1c44c21a5911"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 419110,
+      "path": "assets/mohan-halfbody.ico",
+      "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
+    },
+    {
+      "bytes": 34666059,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "3d7612988408f49a3cd5ee446b97367860eff6c9c47d8b71e36f98087bf283cd"
+      "sha256": "93c20cc8f2cb259bfa865b11be231f90b7f2d8fae1690a54ee0247487f876fae"
     },
     {
       "bytes": 29245749,
@@ -9963,12 +10113,12 @@
     }
   ],
   "pack_id": "flameblade.mohan",
-  "pack_version": "1.0.5",
-  "package_hash": "19bda667cd138e716e6ce582acd854170310d448fb0b51a5dac46f44cd887335",
+  "pack_version": "1.0.6",
+  "package_hash": "67de5a0ab253f0cd8002cffac091bd5293abb5ada74f73f9b191b2b20fcdc553",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
-    "release_tag": "mohan-pack-v1.0.5",
+    "release_tag": "mohan-pack-v1.0.6",
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "validation_limits": {

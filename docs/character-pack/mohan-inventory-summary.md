@@ -4,7 +4,7 @@
 
 這份清冊逐檔點名既有內容，供後續拆分接線。現行素體 24 張、核心圖層 600 張；衍生圖 234 張＝眨眼 24、可見手部 8、完整表情影格 156、替換遮罩 13、口腔遮罩 33。
 
-產品資料合計 2009 個實體檔案：執行期 1961 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1868 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1191 個排除檔案與 20 個程式定位檔。下表只計執行期實體檔案。
+產品資料合計 2196 個實體檔案：執行期 2148 個，產品自測必需 48 個（landmarks 與 hands 中繼資料）。兩個外觀包的 1868 個內部成員另列細項，已包含在封存包內，不重複計算實體檔案。另有 1416 個排除檔案與 22 個程式定位檔。下表只計執行期實體檔案。
 
 | 類別 | 檔案數 |
 |---|---:|
@@ -15,6 +15,7 @@
 | 角色外觀預設資料 (`character_appearance_defaults`) | 2 |
 | 角色台詞與事件資料 (`character_dialogue_data`) | 10 |
 | 角色表情狀態目錄 (`character_expression_catalog`) | 2 |
+| 角色分層圖與視角清冊 (`character_layer_view`) | 157 |
 | 角色授權通知 (`character_license_notice`) | 2 |
 | 角色身分與人格資料 (`character_persona_data`) | 10 |
 | 角色外觀骨架資料 (`character_rig_data`) | 2 |
@@ -39,7 +40,7 @@
 | 妝容眼睛開口遮罩 (`makeup_eye_aperture`) | 39 |
 | 粉底安全區 (`makeup_foundation_mask`) | 39 |
 | 妝容區域規則 (`makeup_region_rules`) | 1 |
-| 妝容安全遮罩 (`makeup_safe_mask`) | 126 |
+| 妝容安全遮罩 (`makeup_safe_mask`) | 156 |
 | 原生衣裝與動作資料 (`native_garment_motion`) | 55 |
 | 來源綁定表情與妝容 (`source_bound_expression`) | 77 |
 | 介面角色背景 (`ui_background`) | 2 |
@@ -49,7 +50,7 @@
 
 正式包內點名：服裝項目 2、髮型項目 2、髮飾項目 1、妝容項目 1。變體與四語名稱見清冊 appearance_catalog。
 
-實際內容規則找到 20 個程式檔；其中真正待搬或參數化 0 個，產品殼允許保留 20 個。舊名單另有 64 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。
+實際內容規則找到 22 個程式檔；其中真正待搬或參數化 0 個，產品殼允許保留 22 個。舊名單另有 64 個檔案只有人工提示、沒有實際內容證據，不計入進度。每筆證據都保存行號、內容與規則名。
 
 圖片、JSON 與兩個正式外觀封存包是純資料；髮型與髮飾在包內、核心圖層與正式原生衣裝中逐項列出。搬資料時仍需調整讀取路徑，這次只列清冊。
 
@@ -63,7 +64,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 本清册逐文件列出现有内容，供后续拆分接线。现行素体 24 张、核心图层 600 张；衍生图 234 张＝眨眼 24、可见手部 8、完整表情帧 156、替换遮罩 13、口腔遮罩 33。
 
-产品数据合计 2009 个实体文件：运行时 1961 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1868 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1191 个排除文件和 20 个程序定位文件。下表只计运行时实体文件。
+产品数据合计 2196 个实体文件：运行时 2148 个，产品自测必需 48 个（landmarks 与 hands 元数据）。两个外观包的 1868 个内部成员另列细项，已包含在归档包内，不重复计算实体文件。另有 1416 个排除文件和 22 个程序定位文件。下表只计运行时实体文件。
 
 | 类别 | 文件数 |
 |---|---:|
@@ -74,6 +75,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 | 角色外观默认数据 (`character_appearance_defaults`) | 2 |
 | 角色台词与事件数据 (`character_dialogue_data`) | 10 |
 | 角色表情状态目录 (`character_expression_catalog`) | 2 |
+| 角色分层图与视角清单 (`character_layer_view`) | 157 |
 | 角色授权通知 (`character_license_notice`) | 2 |
 | 角色身份与人格数据 (`character_persona_data`) | 10 |
 | 角色外观骨架数据 (`character_rig_data`) | 2 |
@@ -98,7 +100,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 | 妆容眼睛开口遮罩 (`makeup_eye_aperture`) | 39 |
 | 粉底安全区 (`makeup_foundation_mask`) | 39 |
 | 妆容区域规则 (`makeup_region_rules`) | 1 |
-| 妆容安全遮罩 (`makeup_safe_mask`) | 126 |
+| 妆容安全遮罩 (`makeup_safe_mask`) | 156 |
 | 原生衣装与动作数据 (`native_garment_motion`) | 55 |
 | 来源绑定表情与妆容 (`source_bound_expression`) | 77 |
 | 界面角色背景 (`ui_background`) | 2 |
@@ -108,7 +110,7 @@ v4 一代校準、artifacts 候選、.quality-tmp 暫存、docs/release-evidence
 
 正式包内列明：服装项目 2、发型项目 2、发饰项目 1、妆容项目 1。变体与四语名称见清册 appearance_catalog。
 
-实际内容规则找到 20 个程序文件；其中真正待迁移或参数化 0 个，产品壳允许保留 20 个。旧名单另有 64 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。
+实际内容规则找到 22 个程序文件；其中真正待迁移或参数化 0 个，产品壳允许保留 22 个。旧名单另有 64 个文件只有人工提示、没有实际内容证据，不计入进度。每条证据都保存行号、内容与规则名。
 
 图片、JSON 和两个正式外观封存包是纯数据；发型与发饰在包内、核心图层和正式原生衣装中逐项列出。搬数据时仍需调整读取路径，本次只列清册。
 
@@ -122,7 +124,7 @@ v4 一代校准、artifacts 候选、.quality-tmp 暂存、docs/release-evidence
 
 This measured index names existing content for subsequent extraction. There are 24 master views, 600 core layers and 234 derivatives: 24 blinks, 8 visible hands, 156 complete expression frames, 13 replacement masks and 33 oral masks.
 
-Product data totals 2009 physical files: 1961 runtime files and 48 required self-test sidecars (landmarks and hands). The 1868 members inside two appearance archives are indexed separately and already included in those archives. There are also 1191 excluded files and 20 source-location files. The table counts runtime physical files only.
+Product data totals 2196 physical files: 2148 runtime files and 48 required self-test sidecars (landmarks and hands). The 1868 members inside two appearance archives are indexed separately and already included in those archives. There are also 1416 excluded files and 22 source-location files. The table counts runtime physical files only.
 
 | Category | Files |
 |---|---:|
@@ -133,6 +135,7 @@ Product data totals 2009 physical files: 1961 runtime files and 48 required self
 | Character appearance defaults (`character_appearance_defaults`) | 2 |
 | Character dialogue and event data (`character_dialogue_data`) | 10 |
 | Character expression state catalog (`character_expression_catalog`) | 2 |
+| Character layer views and view manifest (`character_layer_view`) | 157 |
 | Character license notices (`character_license_notice`) | 2 |
 | Character identity and persona data (`character_persona_data`) | 10 |
 | Character rig data (`character_rig_data`) | 2 |
@@ -157,7 +160,7 @@ Product data totals 2009 physical files: 1961 runtime files and 48 required self
 | Makeup eye aperture masks (`makeup_eye_aperture`) | 39 |
 | Foundation safe regions (`makeup_foundation_mask`) | 39 |
 | Makeup region rules (`makeup_region_rules`) | 1 |
-| Makeup safe masks (`makeup_safe_mask`) | 126 |
+| Makeup safe masks (`makeup_safe_mask`) | 156 |
 | Native garment and motion data (`native_garment_motion`) | 55 |
 | Source-bound expressions and makeup (`source_bound_expression`) | 77 |
 | Character UI backgrounds (`ui_background`) | 2 |
@@ -167,7 +170,7 @@ Product data totals 2009 physical files: 1961 runtime files and 48 required self
 
 Official archives declare 2 garment, 2 hairstyle, 1 headwear and 1 makeup item. Variants and names are indexed in appearance_catalog.
 
-Actual-content rules find 20 source files: 0 require extraction or parameterization and 20 are allowed product-shell files. Another 64 files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.
+Actual-content rules find 22 source files: 0 require extraction or parameterization and 22 are allowed product-shell files. Another 64 files appear only as manual hints with no actual-content evidence and do not count toward progress. Every evidence item records a line, content and rule name.
 
 Images, JSON and two official appearance archives are data. Hairstyles and headwear are indexed within archives, core layers and native garments. Moving data still requires changing reader paths; this step only inventories it.
 
@@ -181,7 +184,7 @@ Independent download is a design requirement from inception. The public MoHan re
 
 この実測一覧は今後の分離に向け既存の内容を列挙します。主視点 24 枚、主要レイヤー 600 枚、派生画像 234 枚です。内訳は瞬き 24、可視の手 8、完全表情フレーム 156、置換マスク 13、口腔マスク 33 です。
 
-製品データは実ファイル 2009 個です。実行時に 1961 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1868 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1191 個とコード位置ファイル 20 個も記録します。下表は実行時の実ファイルのみを数えます。
+製品データは実ファイル 2196 個です。実行時に 2148 個、製品自己テストに landmarks と hands のメタデータ 48 個が必要です。外観アーカイブ 2 個に含まれる 1868 メンバーは別途列挙し、実ファイル数には重複計上しません。除外ファイル 1416 個とコード位置ファイル 22 個も記録します。下表は実行時の実ファイルのみを数えます。
 
 | 分類 | ファイル数 |
 |---|---:|
@@ -192,6 +195,7 @@ Independent download is a design requirement from inception. The public MoHan re
 | キャラクター外観の既定値 (`character_appearance_defaults`) | 2 |
 | キャラクターの台詞とイベントデータ (`character_dialogue_data`) | 10 |
 | キャラクターの表情状態目録 (`character_expression_catalog`) | 2 |
+| キャラクターのレイヤー画像と視点マニフェスト (`character_layer_view`) | 157 |
 | キャラクターライセンス通知 (`character_license_notice`) | 2 |
 | キャラクターの身元と人格データ (`character_persona_data`) | 10 |
 | キャラクターのリグデータ (`character_rig_data`) | 2 |
@@ -216,7 +220,7 @@ Independent download is a design requirement from inception. The public MoHan re
 | メイクの眼開口マスク (`makeup_eye_aperture`) | 39 |
 | ファンデーションの安全領域 (`makeup_foundation_mask`) | 39 |
 | メイク領域の規則 (`makeup_region_rules`) | 1 |
-| メイク安全マスク (`makeup_safe_mask`) | 126 |
+| メイク安全マスク (`makeup_safe_mask`) | 156 |
 | 元の衣装と動作データ (`native_garment_motion`) | 55 |
 | 出典に紐付いた表情とメイク (`source_bound_expression`) | 77 |
 | キャラクター背景 (`ui_background`) | 2 |
@@ -226,7 +230,7 @@ Independent download is a design requirement from inception. The public MoHan re
 
 正式パック内には衣装 2、髪型 2、髪飾り 1、メイク 1 項目があります。差分と四言語の名称は appearance_catalog に記録します。
 
-実内容の規則により 20 ソースファイルを検出しました。抽出またはパラメータ化が必要なのは 0、製品シェルで保持可能なのは 20 ファイルです。旧一覧のうち 64 ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。
+実内容の規則により 22 ソースファイルを検出しました。抽出またはパラメータ化が必要なのは 0、製品シェルで保持可能なのは 22 ファイルです。旧一覧のうち 64 ファイルは実内容の証拠がない人工確認専用の候補であり、進捗には数えません。各証拠に行番号、内容、規則名を保存します。
 
 画像、JSON、正式な外観アーカイブ 2 個はデータです。髪型と髪飾りはアーカイブ、主要レイヤー、正式な衣装内で列挙します。移動時には読込先の変更も必要で、この段階は一覧作成のみです。
 

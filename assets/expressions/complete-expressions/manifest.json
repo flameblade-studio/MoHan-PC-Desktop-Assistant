@@ -4604,11 +4604,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-neutral-half.rgba.png",
-            "sha256": "6b9fd1a638659eca3de67475c629c7e2b7acce0c728ad53c87472594fb4b39c9"
+            "sha256": "fa23fc32dae3e6e0ecfd7597485e507f7b9b1c53c72b3150cf3dd288c94413fa"
           },
           "closed": {
             "path": "frames/front-surprised_front-neutral-closed.rgba.png",
-            "sha256": "9a643e0456d1546f9ceaa2cdb486c754a23e21e741543c3fc84cd21bf1b13d8e"
+            "sha256": "02b74ccce346cb02d2c1ac6bc4896255b91c41c35b2f31fb98d577d04c6f4140"
           }
         },
         "small": {
@@ -4618,11 +4618,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-small-half.rgba.png",
-            "sha256": "ca53ec4ebaa98a2bd6efb700a2fcd964b5b10e413b20e8b5a0e7631307fd4dfa"
+            "sha256": "54a9b35c0c3829d1291d406fdcce8e2f7c30439d2f66e66b089f8eeeec712ae2"
           },
           "closed": {
             "path": "frames/front-surprised_front-small-closed.rgba.png",
-            "sha256": "531500b2e5ac3a6493d260162d2df937d9811aeb4531537698c0c9776d9625a5"
+            "sha256": "2843db450bcf676e7b6abdcda6d3ade74267152859a67069603143812aa90ca1"
           }
         },
         "a": {
@@ -4632,11 +4632,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-a-half.rgba.png",
-            "sha256": "f7487aca619ee91d6fd14506b70dbb99850a57784c74ebceccf3b106147e5ea0"
+            "sha256": "ceac0eee80767ff599413845f21d6d83e3e304b9e79109379832316a9dd8f4b9"
           },
           "closed": {
             "path": "frames/front-surprised_front-a-closed.rgba.png",
-            "sha256": "cec2c85242ec691b536663e248dcad891c83eeb7ad920b98a663ee74310fa0ca"
+            "sha256": "1265686a25008dc04277fbcc9ba73f8f0d6282a2c05378c29fa79506accd5ade"
           }
         },
         "o": {
@@ -4646,11 +4646,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-o-half.rgba.png",
-            "sha256": "8ddb822b8204c7b3a2c440f499dd633627ce4ca765a0de3d535eee9ba2582333"
+            "sha256": "8c8c91924a028e3007aa63af123962af7e44b462e0f644a7bd00611eba1875a8"
           },
           "closed": {
             "path": "frames/front-surprised_front-o-closed.rgba.png",
-            "sha256": "157d4fcf0570e7c22b83071d322af60ffd6b8845fcee5a543555ad7bc20defa1"
+            "sha256": "17a7313eec1bc73577f0fff3d87fb8981d942d85fd3e3d74be429209d274eff8"
           }
         }
       },
