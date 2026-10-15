@@ -122,8 +122,7 @@ def _authority(root: Path) -> None:
     document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
     document["silhouettes"]["front-crossed"]["slots"] = FRONT_SLOTS
     document_path = root / "assets" / "makeup-safe-regions.json"
-    document_path.write_text(json.dumps(document), encoding="utf-8")
-    for entry in document["silhouettes"].values():
+    for silhouette, entry in document["silhouettes"].items():
         for field in ("foundation_masks", "eye_aperture_masks"):
             for descriptor in entry.get(field, {}).values():
                 relative = Path(*descriptor["path"].split("/"))
@@ -131,6 +130,16 @@ def _authority(root: Path) -> None:
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, target)
+                if silhouette == "front-crossed" and field == "eye_aperture_masks":
+                    # The synthetic rig places its iris at EYES_PIXEL. Add that
+                    # point to each fixture-only canonical aperture mask so the
+                    # exclusion contract matches the synthetic layers.
+                    mask = QImage(str(target))
+                    assert not mask.isNull()
+                    mask.setPixelColor(*EYES_PIXEL, QColor(255, 255, 255, 255))
+                    assert mask.save(str(target), "PNG")
+                    descriptor["sha256"] = hashlib.sha256(target.read_bytes()).hexdigest()
+    document_path.write_text(json.dumps(document), encoding="utf-8", newline="\n")
 
 
 def _isolated_makeup_authority(root: Path) -> None:

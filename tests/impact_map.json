@@ -2082,6 +2082,7 @@
         "test_installed_outfit_blink_roundtrip.py",
         "test_linkeyun_character_data.py",
         "test_makeup_blink_states.py",
+        "test_makeup_safe_region_v2.py",
         "test_makeup_safe_region_visibility.py",
         "test_official_pack_ids_reservation.py",
         "test_persona_dialogue_voice_extraction.py",

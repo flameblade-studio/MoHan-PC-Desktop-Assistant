@@ -344,7 +344,7 @@
       ],
       "target_hue_angle_deg": 41.26392447836152,
       "location_method": "Manual raised-lid trace after native 3x inspection; gradient-only proposal rejected before painting because it followed right-iris texture.",
-      "glamorous_reference": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-29\\readme-media\\front-expr\\classic\\half__attentive_front__glamorous__rest.png",
+      "glamorous_reference": "../readme-media/front-expr/classic/half__attentive_front__glamorous__rest.png",
       "target_delta_e": 4.25
     },
     "half": {
@@ -669,7 +669,7 @@
       ],
       "target_hue_angle_deg": 41.26392447836152,
       "location_method": "Independent visual review of all 13 native frames; common nominal blink boundary, each expression source and complete brush coordinates retained.",
-      "glamorous_reference": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-29\\mohan-front-expr\\.quality-tmp\\front-expr-paint\\stage2-authoring\\references\\attentive_front-half-glamorous-original-eyes.png",
+      "glamorous_reference": "../mohan-front-expr/.quality-tmp/front-expr-paint/stage2-authoring/references/attentive_front-half-glamorous-original-eyes.png",
       "target_delta_e": 4.25
     },
     "closed": {
@@ -994,7 +994,7 @@
       ],
       "target_hue_angle_deg": 41.26392447836152,
       "location_method": "Independent visual review of all 13 native frames; common nominal blink boundary, each expression source and complete brush coordinates retained.",
-      "glamorous_reference": "D:\\FlamebladeStudio\\CodexProjects\\2026-09-29\\mohan-front-expr\\.quality-tmp\\front-expr-paint\\stage2-authoring\\references\\attentive_front-closed-glamorous-original-eyes.png",
+      "glamorous_reference": "../mohan-front-expr/.quality-tmp/front-expr-paint/stage2-authoring/references/attentive_front-closed-glamorous-original-eyes.png",
       "target_delta_e": 4.25
     }
   },

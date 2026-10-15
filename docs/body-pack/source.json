@@ -1,7 +1,7 @@
 {
   "build_provenance": {
     "approval_scope": "BODY-RELEASE-1 designates the source roots and seventh-round 28-view/3-gesture approval. Historical metadata is retained as evidence and is not upgraded to a round-9 approval.",
-    "candidate_fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
+    "candidate_fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
     "candidate_manifest_bytes": 447897,
     "candidate_manifest_sha256": "2851fcdc75d9cbc05e07691ae19bda7d3a7f956bae430cdbf8ab2d7e8bfb2f46",
     "candidate_manifest_source_id": "mohan-body-install/.quality-tmp/body-pack-build/mohan-body-v2/manifest.json",
@@ -1135,14 +1135,14 @@
   ],
   "layer_dependency": {
     "body_pack": {
-      "fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
+      "fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
       "id": "mohan-body-v2",
       "version": "1.0.0"
     },
     "bytes": 326038,
     "path": "assets/characters/lin-keyun/body/manifest.json",
     "physical_view_directories": 31,
-    "sha256": "b18c6f3e08c28ba83930ae803231487cdac3e7cb7b448912dd81cf08684ae664",
+    "sha256": "2f3170c41b10964336c1e6b049d14b9613ba9303c91f8363636adc544a9272a3",
     "source_manifest_sha256": "0ba1bee016c026ce323c211bca014426941e887216cf949d7d468fead4872f1f",
     "unique_png_bytes": 19357039,
     "unique_pngs": 155,
@@ -1382,7 +1382,7 @@
     }
   ],
   "pack": {
-    "expected_fingerprint": "6fa5b852c4260754f4bbb9504bed4fab0496027d62f19cad98bd163938402f15",
+    "expected_fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
     "id": "mohan-body-v2",
     "license": "CC-BY-NC-ND-4.0",
     "version": "1.0.0"

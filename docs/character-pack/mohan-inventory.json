@@ -4218,7 +4218,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "9ef006f3204f3729c831c31ad5d969ef8dfffffa50cad849d85684a3ab7b2841"
+      "sha256": "7f77c69a3a15525f59122208f27064867d2f77a84774558935460cd39728699a"
     },
     {
       "bytes": 326038,
@@ -4235,7 +4235,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "b18c6f3e08c28ba83930ae803231487cdac3e7cb7b448912dd81cf08684ae664"
+      "sha256": "2f3170c41b10964336c1e6b049d14b9613ba9303c91f8363636adc544a9272a3"
     },
     {
       "bytes": 12007,
@@ -12722,7 +12722,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "f45c3fe2354857c1516d65d80bfe73dd1c5535fe2bc7d2424c0ee71c468eda85"
+      "sha256": "a60b97b6ba0668eff840be3fcabcf7b40930396f587dfdc258570ee6c5dac08c"
     },
     {
       "bytes": 2163,
@@ -31481,7 +31481,7 @@
       "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
     },
     {
-      "bytes": 18100,
+      "bytes": 17949,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -31489,7 +31489,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "7aefca7c2c5a350e7ad4b9d4383bc0e13c1fc257c6a55543dd12f4f2f538dcd2"
+      "sha256": "c066311a2af7cea78998630d806de2c3e507a816de878b31dcbb108391022900"
     },
     {
       "bytes": 6805,

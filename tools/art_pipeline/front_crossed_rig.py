@@ -404,7 +404,7 @@ class RigBuilder:
         previous = self.evidence / "receipt.json"
         accepted = {}
         if previous.exists():
-            accepted = {r["path"]: r["after_sha256"] for r in json.loads(previous.read_text("utf-8"))["files"]}
+            accepted = {r["path"]: r["after_sha256"] for r in json.loads(previous.read_text(encoding="utf-8"))["files"]}
         for relative, data in self.changes.items():
             path = self.root / relative
             if path.exists():

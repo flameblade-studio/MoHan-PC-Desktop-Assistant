@@ -602,10 +602,11 @@ def assert_expression_speech_blink_restore(
     # HALF preserves the current eye source; sample the authored CLOSED frame.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     during_blink = QPixmap(window.character.pixmap())
+    eye_authority = complete_expression_eye_authority_rect(expression) or eye_rects["front"]
     inside, outside = changed_pixels(
         pre_blink,
         during_blink,
-        eye_rects["front"],
+        eye_authority,
     )
     if expression in EXPRESSION_POSES and not _has_bound_blink_source(expression):
         # Contract B: no endpoint is bound to this portrait, so the speaking

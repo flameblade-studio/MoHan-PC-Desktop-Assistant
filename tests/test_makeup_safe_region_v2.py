@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy from enum import Enum, auto
 
 lazy import hashlib
+lazy import json
 lazy import os
 lazy import sys
 lazy from copy import deepcopy
@@ -22,8 +23,8 @@ lazy from PySide6.QtWidgets import QApplication
 lazy from domain.outfit_pack import REQUIRED_SILHOUETTES, OutfitPackError
 lazy from domain.outfit_pack_makeup import (
     FOUNDATION_STATES,
+    SAFE_REGION_SCHEMA,
     SAFE_REGION_SCHEMA_V2,
-    load_makeup_safe_regions,
     parse_makeup_safe_regions,
     verify_makeup_layers,
 )
@@ -214,7 +215,17 @@ def test_foundation_marker_requires_matching_canonical_masks(tmp_path: Path) -> 
             poses[silhouette] = entries
         variant["eye_states"][state] = poses
     archive = _pack(tmp_path / "marker.mohan-outfit", manifest, assets)
-    regions = load_makeup_safe_regions()
+    # A v1 authority table has no canonical per-state masks. This keeps the
+    # test focused on rejecting the foundation marker when that authority is
+    # absent, while the shipped v2 table now correctly contains canonical masks.
+    legacy_document = json.loads(
+        (ROOT / "assets" / "makeup-safe-regions.json").read_text(encoding="utf-8")
+    )
+    legacy_document["schema"] = SAFE_REGION_SCHEMA
+    for silhouette in legacy_document["silhouettes"].values():
+        silhouette.pop("foundation_masks", None)
+        silhouette.pop("eye_aperture_masks", None)
+    regions = parse_makeup_safe_regions(legacy_document)
     with pytest.raises(OutfitPackError, match="canonical state masks"):
         verify_makeup_layers(archive, regions)
 

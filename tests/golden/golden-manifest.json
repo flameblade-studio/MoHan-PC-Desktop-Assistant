@@ -1,7 +1,7 @@
 {
   "approval": {
     "path": "docs/release-evidence/makeup-lash-fix-approval.json",
-    "sha256": "a77cfbb8fef72a4746ebe93b7da995dba88f0f090c31187069b30c4867595f9b"
+    "sha256": "fcf387a2595b02ad4ab4ad3628ca90307ec718259b506c3144242003ebc69c17"
   },
   "cells": [
     {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "7ea08664846f0a8f517f14b92c8d3bcdeb9de350"
+  "source_revision": "c854894a822397ece4acea0bef9339550e8a1638"
 }
