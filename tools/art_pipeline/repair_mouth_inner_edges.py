@@ -202,7 +202,7 @@ def main() -> None:
     builder.seal()
     builder.install()
     receipt_path = builder.evidence / "receipt.json"
-    receipt = json.loads(receipt_path.read_text("utf-8"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt.update(method="8x source-bound aperture contours and finite 1.5 px RGB/alpha edges",
                    mouth_stage="rejected_second_incisor_review", visual_acceptance=False,
                    installation_blocked=True, target_poses=builder.targets, roi=ROI)

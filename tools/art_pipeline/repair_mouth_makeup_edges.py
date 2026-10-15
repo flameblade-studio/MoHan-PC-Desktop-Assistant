@@ -214,7 +214,7 @@ class MakeupEdgeRepair(RigBuilder):
 def install_candidate(evidence: Path) -> None:
     """Install the already sealed candidate after checking every recorded pin."""
     receipt_path = evidence / "receipt.json"
-    receipt = json.loads(receipt_path.read_text("utf-8"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     if receipt.get("installation_blocked"):
         raise ValueError("Candidate was rejected and cannot be installed")
     builder = MakeupEdgeRepair(ROOT, evidence, True)
@@ -235,7 +235,7 @@ def install_candidate(evidence: Path) -> None:
             raise ValueError(f"Sealed candidate changed: {relative}")
         builder.changes[relative] = payload
     builder.install()
-    installed = json.loads(receipt_path.read_text("utf-8"))
+    installed = json.loads(receipt_path.read_text(encoding="utf-8"))
     installed.update({key: value for key, value in receipt.items() if key not in {"files", "inputs", "applied"}})
     installed["applied"] = True
     write_json(receipt_path, installed)
@@ -258,7 +258,7 @@ def main() -> None:
     builder.seal()
     builder.install()
     receipt_path = builder.evidence / "receipt.json"
-    receipt = json.loads(receipt_path.read_text("utf-8"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt.update(method="native teeth/cavity colour segmentation; 8x aperture alpha; complete RGB unchanged",
                    target_poses=builder.targets, roi=ROI, complete_frames_modified=0)
     write_json(receipt_path, receipt)

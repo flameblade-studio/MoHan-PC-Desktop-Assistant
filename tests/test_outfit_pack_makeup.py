@@ -425,6 +425,13 @@ def test_safe_region_document_matches_the_rigs() -> None:
         authored = document["silhouettes"][silhouette]
         expected = {key: authored[key] for key in derived}
         if silhouette == "front-crossed":
+            # tools/art_pipeline/front_crossed_rig.py re-authors the front-crossed
+            # mouth rig from the V5 portrait; the cut-outs must exist beside it.
+            authored_rig = "assets/front-makeup-rigs/front-crossed-neutral"
+            assert authored["rig"] == authored_rig
+            for role in ("oral_cavity", "lip_upper", "lip_lower", "teeth_tongue"):
+                assert (ROOT / f"{authored_rig}_{role}.png").is_file()
+            expected["rig"] = derived["rig"]
             expected["slots"] = {
                 **authored["slots"],
                 "eyes": authored["slots"]["eyes"][: len(legacy_eye_rectangles)],

@@ -180,7 +180,7 @@ def main() -> None:
     builder.seal()
     builder.install()
     receipt_path = builder.evidence / "receipt.json"
-    receipt = json.loads(receipt_path.read_text("utf-8"))
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt.update(method="attentive_front mouth ROI similarity transplant",
                    mouth_stage="round4_similarity_candidate", eyes_preserved=True)
     write_json(receipt_path, receipt)
