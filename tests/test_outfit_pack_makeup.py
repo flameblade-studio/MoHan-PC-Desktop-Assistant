@@ -385,19 +385,26 @@ def test_safe_region_document_matches_the_rigs() -> None:
                 assert x >= 0 and y >= 0 and x + width <= region.canvas[0] and y + height <= region.canvas[1]
     front = regions["front-crossed"]
     assert all(front.rects(slot) for slot in ("eyes", "cheeks", "lips"))
-    legacy_eye_rectangle_count = 2
+    legacy_eye_rectangles = ((485, 373, 113, 118), (586, 371, 135, 118))
+    assert front.rects("eyes")[:2] == legacy_eye_rectangles
     approved_exasperated_lip_rectangle_count = 2
-    legacy_eye_rectangles = front.rects("eyes")[:legacy_eye_rectangle_count]
-    measured_eye_rectangles = {
-        "front-crossed": front.rects("eyes")[legacy_eye_rectangle_count:]
+    measured_eye_rectangles = {"front-crossed": front.rects("eyes")[2:]}
+    approved_gesture_eye_rectangles = {
+        "front-mock-scold": ((480, 407, 116, 62), (602, 407, 119, 69)),
+        "front-mock-hit": ((480, 406, 109, 63), (599, 407, 122, 62)),
+        "front-eureka": ((480, 406, 116, 63), (490, 475, 20, 22), (602, 406, 121, 64)),
+        "front-exasperated": ((466, 443, 237, 122),),
+        "left-neutral": ((453, 412, 247, 109),),
+        "front-surprised_front": ((491, 385, 234, 108),),
     }
     for gesture in ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated"):
         region = regions[gesture]
         assert region.rects("cheeks") == front.rects("cheeks")
         assert region.rects("lips")[:1] == front.rects("lips")
-        assert region.rects("eyes")[:legacy_eye_rectangle_count] == legacy_eye_rectangles
-        measured_eye_rectangles[gesture] = region.rects("eyes")[legacy_eye_rectangle_count:]
-        assert len(measured_eye_rectangles[gesture]) == legacy_eye_rectangle_count
+        assert region.rects("eyes") == approved_gesture_eye_rectangles[gesture]
+        measured_eye_rectangles[gesture] = region.rects("eyes")
+    for gesture in ("left-neutral", "front-surprised_front"):
+        assert regions[gesture].rects("eyes") == approved_gesture_eye_rectangles[gesture]
     assert (
         len(regions["front-exasperated"].rects("lips"))
         == approved_exasperated_lip_rectangle_count
@@ -418,10 +425,23 @@ def test_safe_region_document_matches_the_rigs() -> None:
         authored = document["silhouettes"][silhouette]
         expected = {key: authored[key] for key in derived}
         if silhouette == "front-crossed":
+            # tools/art_pipeline/front_crossed_rig.py re-authors the front-crossed
+            # mouth rig from the V5 portrait; the cut-outs must exist beside it.
+            authored_rig = "assets/front-makeup-rigs/front-crossed-neutral"
+            assert authored["rig"] == authored_rig
+            for role in ("oral_cavity", "lip_upper", "lip_lower", "teeth_tongue"):
+                assert (ROOT / f"{authored_rig}_{role}.png").is_file()
+            expected["rig"] = derived["rig"]
             expected["slots"] = {
                 **authored["slots"],
-                "eyes": authored["slots"]["eyes"][:legacy_eye_rectangle_count],
+                "eyes": authored["slots"]["eyes"][: len(legacy_eye_rectangles)],
             }
+        elif silhouette == "yaw+000-pitch+00":
+            # Owner-approved whole-region eye layers (2026-10-15) need the eye
+            # slots widened by 6 px beyond the rig-derived bounds; every other
+            # rig-owned value must still match the generator exactly.
+            assert authored["slots"]["eyes"] == [[435, 204, 96, 84], [491, 205, 99, 84]]
+            expected["slots"] = {**authored["slots"], "eyes": derived["slots"]["eyes"]}
         assert derived == expected
         assert set(authored) - set(derived) <= {"foundation_masks", "eye_aperture_masks"}
 

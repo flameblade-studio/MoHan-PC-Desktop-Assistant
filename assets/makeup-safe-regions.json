@@ -107,7 +107,7 @@
         1254,
         1254
       ],
-      "rig": "assets/expressions/layered/front",
+      "rig": "assets/front-makeup-rigs/front-crossed-neutral",
       "slots": {
         "cheeks": [
           [
@@ -158,8 +158,70 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-crossed/foundation-rest.png",
+          "sha256": "e3cf4e97eb3c426f59b3bfab2135fee1b0166a39e5acc36f0c4432a355e5bcc5",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-crossed/foundation-half.png",
+          "sha256": "38af7ed2b9ca831988c57836d454ce945bd5ee6ae3d72b4a13630a808504ac48",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-crossed/foundation-closed.png",
+          "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-rest.png",
+          "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-half.png",
+          "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-closed.png",
+          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      }
     },
     "front-eureka": {
       "canvas": [
@@ -184,28 +246,22 @@
         ],
         "eyes": [
           [
-            485,
-            373,
-            113,
-            118
+            480,
+            406,
+            116,
+            63
           ],
           [
-            586,
-            371,
-            135,
-            118
+            490,
+            475,
+            20,
+            22
           ],
           [
-            505,
-            396,
-            92,
-            76
-          ],
-          [
-            616,
-            398,
-            95,
-            77
+            602,
+            406,
+            121,
+            64
           ]
         ],
         "lips": [
@@ -217,8 +273,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-eureka/foundation-rest.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-eureka/foundation-half.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-eureka/foundation-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-rest.png",
+          "sha256": "caa3969a9a4dc2e9b98ce94a94996a704b1c29f445a5d1f999792cc6e45ff6b2",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-half.png",
+          "sha256": "1408fd47763a2dea5b869d81838e975740ae682b80fca63a281856463310bfc7",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-eureka not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation front-eureka rest (manifest.json)"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-eureka not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation front-eureka half (manifest.json)"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-eureka not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation front-eureka closed (manifest.json)"
+          }
+        }
+      }
     },
     "front-exasperated": {
       "canvas": [
@@ -243,28 +393,10 @@
         ],
         "eyes": [
           [
-            485,
-            373,
-            113,
-            118
-          ],
-          [
-            586,
-            371,
-            135,
-            118
-          ],
-          [
-            481,
-            486,
-            91,
-            73
-          ],
-          [
-            594,
-            457,
-            93,
-            76
+            466,
+            443,
+            237,
+            122
           ]
         ],
         "lips": [
@@ -282,8 +414,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-exasperated/foundation-rest.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-exasperated/foundation-half.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-exasperated/foundation-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-rest.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-half.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-exasperated not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation front-exasperated rest (manifest.json)"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-exasperated not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation front-exasperated half (manifest.json)"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-exasperated not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation front-exasperated closed (manifest.json)"
+          }
+        }
+      }
     },
     "front-mock-hit": {
       "canvas": [
@@ -308,28 +534,16 @@
         ],
         "eyes": [
           [
-            485,
-            373,
-            113,
-            118
+            480,
+            406,
+            109,
+            63
           ],
           [
-            586,
-            371,
-            135,
-            118
-          ],
-          [
-            500,
-            397,
-            91,
-            74
-          ],
-          [
-            611,
-            398,
-            92,
-            74
+            599,
+            407,
+            122,
+            62
           ]
         ],
         "lips": [
@@ -341,8 +555,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-mock-hit/foundation-rest.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-mock-hit/foundation-half.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-mock-hit/foundation-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-rest.png",
+          "sha256": "760762f364688e32b18eb582d9ce500b09d36d236f00ce10ad387735d6df48b1",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-half.png",
+          "sha256": "98a027d3c7c0bfbadca7ac521c6809db7a57695d38307be24fe1683910f69575",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-mock-hit not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation front-mock-hit rest (manifest.json)"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-mock-hit not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation front-mock-hit half (manifest.json)"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-mock-hit not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation front-mock-hit closed (manifest.json)"
+          }
+        }
+      }
     },
     "front-mock-scold": {
       "canvas": [
@@ -367,28 +675,16 @@
         ],
         "eyes": [
           [
-            485,
-            373,
-            113,
-            118
+            480,
+            407,
+            116,
+            62
           ],
           [
-            586,
-            371,
-            135,
-            118
-          ],
-          [
-            506,
-            397,
-            90,
-            75
-          ],
-          [
-            616,
-            398,
-            92,
-            76
+            602,
+            407,
+            119,
+            69
           ]
         ],
         "lips": [
@@ -400,8 +696,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-mock-scold/foundation-rest.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-mock-scold/foundation-half.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-mock-scold/foundation-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-rest.png",
+          "sha256": "a512c4404fa3960d2b585eae047ba6c61ab686f26b9b39bddc9b24e20e3e4bf1",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-half.png",
+          "sha256": "029ed7bacba9ef9f13779a0887b9bc0373d86d323e27c3ed72333c7c822653e6",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-mock-scold not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation front-mock-scold rest (manifest.json)"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-mock-scold not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation front-mock-scold half (manifest.json)"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#front-mock-scold not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation front-mock-scold closed (manifest.json)"
+          }
+        }
+      }
     },
     "left-neutral": {
       "canvas": [
@@ -426,28 +816,10 @@
         ],
         "eyes": [
           [
-            432,
-            379,
-            111,
-            112
-          ],
-          [
-            512,
-            394,
-            145,
-            117
-          ],
-          [
-            485,
-            425,
-            87,
-            76
-          ],
-          [
-            592,
-            442,
-            96,
-            75
+            453,
+            412,
+            247,
+            109
           ]
         ],
         "lips": [
@@ -465,8 +837,102 @@
           ]
         ]
       },
-      "foundation_masks": {},
-      "eye_aperture_masks": {}
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/left-neutral/foundation-rest.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/left-neutral/foundation-half.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/left-neutral/foundation-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-rest.png",
+          "sha256": "86552a81973d08e67059feb5dddd3b98efe9ee6f244569d5987f1c44c21a5911",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-half.png",
+          "sha256": "45c1cb1215f31a8d7bf3e14debbf1140e94314d4a776e68f591dd41303c3cdff",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-closed.png",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "native_visibility": {
+        "rest": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#left-neutral not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation left-neutral rest (manifest.json)"
+          }
+        },
+        "half": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#left-neutral not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": false,
+            "evidence": "makeup-levels-10#aperture-segmentation left-neutral half (manifest.json)"
+          }
+        },
+        "closed": {
+          "foundation_coverage": {
+            "nonvisible": true,
+            "evidence": "makeup-gesture-whole-3#left-neutral not in foundation_silhouettes (candidate-packs manifest.json)"
+          },
+          "eye_aperture": {
+            "nonvisible": true,
+            "evidence": "makeup-levels-10#aperture-segmentation left-neutral closed (manifest.json)"
+          }
+        }
+      }
     },
     "yaw+000-pitch+00": {
       "canvas": [
@@ -477,16 +943,16 @@
       "slots": {
         "eyes": [
           [
-            441,
-            210,
-            84,
-            72
+            435,
+            204,
+            96,
+            84
           ],
           [
-            497,
-            211,
-            87,
-            72
+            491,
+            205,
+            99,
+            84
           ]
         ],
         "cheeks": [
@@ -5188,28 +5654,10 @@
         ],
         "eyes": [
           [
-            485,
-            373,
-            113,
-            118
-          ],
-          [
-            586,
-            371,
-            135,
-            118
-          ],
-          [
-            505,
-            396,
-            91,
-            76
-          ],
-          [
-            616,
-            398,
-            94,
-            76
+            491,
+            385,
+            234,
+            108
           ]
         ],
         "lips": [
@@ -5256,7 +5704,7 @@
       "eye_aperture_masks": {
         "rest": {
           "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-rest.png",
-          "sha256": "4180f1f32458717ba84450396736d6d0679d9218eea2fce3d7f98a874cdfbe74",
+          "sha256": "053168dde10f9ad96f9f75a03e3d5475bfacda229704a6455b5907779800bcc5",
           "width": 1254,
           "height": 1254,
           "anchor": [
@@ -5266,7 +5714,7 @@
         },
         "half": {
           "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-half.png",
-          "sha256": "5514ed82b74a6988def6f2078afcade5578dc08a69890e25bb992b4b5eac8e52",
+          "sha256": "916ea55ddcb1a8c8b403659c2ca64963fd1db8ca356bcd3ba6c9719ccc91693c",
           "width": 1254,
           "height": 1254,
           "anchor": [
@@ -5276,7 +5724,7 @@
         },
         "closed": {
           "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-closed.png",
-          "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7",
+          "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf",
           "width": 1254,
           "height": 1254,
           "anchor": [

@@ -489,9 +489,14 @@ class ActiveOutfitLayerMixin:
             if slot_opacity <= 0.0:
                 continue
             clip = self._makeup_clip(view_id, region, declaration.slot, state=escape_state)
+            layer_image = (
+                self._subtract_active_oral_mask(image)
+                if mouth_shape is not None and self._active_oral_mask is not None
+                else image
+            )
             layers.append((
                 _MAKEUP_Z_BASE + declaration.z_order,
-                (QPixmap.fromImage(image), 0, 0, clip, min(1.0, slot_opacity)),
+                (QPixmap.fromImage(layer_image), 0, 0, clip, min(1.0, slot_opacity)),
             ))
         return layers
 
@@ -499,6 +504,25 @@ class ActiveOutfitLayerMixin:
         if self._safe_regions is None:
             self._safe_regions = load_makeup_safe_regions(self._asset_root / "assets" / SAFE_REGION_FILE)
         return self._safe_regions
+
+    def _subtract_active_oral_mask(self, image: QImage) -> QImage:
+        """Keep the oral mask's fractional coverage while removing makeup."""
+        oral_mask = self._active_oral_mask
+        if (
+            oral_mask is None
+            or oral_mask.isNull()
+            or oral_mask.size().toTuple() != (image.width(), image.height())
+        ):
+            raise OutfitPackError("Active oral mask must match the makeup canvas.")
+        # Built-in mouth-state lips are baked with alpha * (1 - oral alpha);
+        # capping at (1 - oral alpha) clips the cavity once, never squared.
+        masked = rgba8888_image(image)
+        oral = rgba8888_image(oral_mask.toImage())
+        alpha = np.frombuffer(masked.bits(), dtype=np.uint8).reshape(masked.height(), masked.bytesPerLine())
+        cavity = np.frombuffer(oral.constBits(), dtype=np.uint8).reshape(oral.height(), oral.bytesPerLine())
+        width = masked.width() * 4
+        np.minimum(alpha[:, 3:width:4], 255 - cavity[:, 3:width:4], out=alpha[:, 3:width:4])
+        return masked
 
     def _makeup_clip(self, view_id: str, region, slot: str, *, state: str = "rest") -> QRegion:
         clip = QRegion()
@@ -532,7 +556,9 @@ class ActiveOutfitLayerMixin:
         the CLOSED/rest path, which always resolves no shape and so keeps its
         own, unaffected cache entries).
         """
-        cache_key = (view_id, state, self._active_viseme)
+        cache_key = (
+            view_id, state, self._active_viseme, self._active_oral_mask is not None,
+        )
         cached = self._makeup_exclusion_by_view.get(cache_key)
         if cached is not None:
             return cached
@@ -557,19 +583,16 @@ class ActiveOutfitLayerMixin:
             if image.isNull():
                 raise OutfitPackError("Eye aperture mask needs a supported value.")
             excluded = visible_alpha_region(image)
-        # Oral cavity: a mouth_states viseme substitution replaces the
-        # rest-rig closed-mouth slit with that shape's own, already-open oral
-        # mask (the same mask the renderer resolved from the complete-
-        # expression manifest to restore skin under the mouth), so makeup
-        # clips correctly to the actually-visible lip surface instead of a
-        # line authored for the closed mouth. Falls back to the rig-derived
-        # slit whenever no viseme is active, including the CLOSED/rest path.
+        # A live mouth-state oral mask is applied with DestinationOut directly
+        # to each makeup image, preserving its partial alpha coverage. Keep the
+        # legacy rig slit for CLOSED/rest renders and states without a native
+        # oral mask; those paths retain their existing QRegion behavior.
         mouth_shape = (
             VISEME_TO_MOUTH_SHAPE.get(self._active_viseme)
             if self._active_viseme is not None else None
         )
         if mouth_shape is not None and self._active_oral_mask is not None:
-            oral_region = visible_alpha_region(self._active_oral_mask.toImage())
+            oral_region = QRegion()
         else:
             painted = self._rig_union(region.rig, EXCLUSION_RIG_LAYERS[1][0])
             covering = self._rig_union(region.rig, EXCLUSION_RIG_LAYERS[1][1])

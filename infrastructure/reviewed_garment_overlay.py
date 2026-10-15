@@ -165,14 +165,14 @@ class ReviewedGarmentOverlayMixin(ReviewedPoseOverlayMixin):
         if appearance_only:
             key = OutfitLayerCacheKey.for_phase(
                 view_id, "appearance", suppressed, eye_state,
-                self._active_viseme, makeup_view_id,
+                self._active_mouth_cache_identity, makeup_view_id,
             )
             self._phase_layers_by_view[key] = layers
         elif not suppressed and eye_state == "rest" and self._active_viseme is None and makeup_view_id is None:
             self._layers_by_view[OutfitLayerCacheKey.combined(view_id)] = layers
         else:
             combined_key = OutfitLayerCacheKey.combined(
-                view_id, suppressed, eye_state, self._active_viseme, makeup_view_id,
+                view_id, suppressed, eye_state, self._active_mouth_cache_identity, makeup_view_id,
             )
             self._layers_by_view_without_makeup_slots[combined_key] = layers
         return result

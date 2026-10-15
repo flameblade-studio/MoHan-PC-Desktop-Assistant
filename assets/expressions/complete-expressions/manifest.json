@@ -41,16 +41,43 @@
         "small": {
           "rest": {
             "path": "frames/front-crossed-small-rest.rgba.png",
-            "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a",
+            "sha256": "21fc12ace94cb59448025aba91ce0c60cee29179241871cff241348d46cb0f03",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-small.candidate.v7.rgba.png",
               "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
             },
-            "eye_patch": null
+            "eye_patch": null,
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-small-rest.rgba.png",
+              "donor_sha256": "ecaed2aadce22e62707cf4271daed909e9a164a769570b1843bcf5511871e6c4",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
+            }
           },
           "half": {
             "path": "frames/front-crossed-small-half.rgba.png",
-            "sha256": "79c14a180eba5411e9920af70531cfea668c4a73dcff3bf1df35bae60b9409f4",
+            "sha256": "b93c1699d94f34041e5fbe6f2f2c2209944724b7a4995b81b66d02633511e099",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-small.candidate.v7.rgba.png",
               "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
@@ -58,11 +85,38 @@
             "eye_patch": {
               "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
+            },
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "79c14a180eba5411e9920af70531cfea668c4a73dcff3bf1df35bae60b9409f4",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-small-half.rgba.png",
+              "donor_sha256": "e2dc3f2300d6902d851d06b4b5e819fd670ffd311a4995e0c4301e63dbcb207e",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
             }
           },
           "closed": {
             "path": "frames/front-crossed-small-closed.rgba.png",
-            "sha256": "ee484bcff4c5127385faa8a1f1dcb72d191e99784589acf9c5b85eb59ee265a6",
+            "sha256": "9fa6dd8fb2c448976adc47e2ddbb16f7e544f6ef86b5eff4fc20432d5806454a",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-small.candidate.v7.rgba.png",
               "sha256": "b22e6d474fa490334c73d64ea555b986b0a46642159076af032f0cbb87ee6f6a"
@@ -70,22 +124,76 @@
             "eye_patch": {
               "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
+            },
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "ee484bcff4c5127385faa8a1f1dcb72d191e99784589acf9c5b85eb59ee265a6",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-small-closed.rgba.png",
+              "donor_sha256": "486f40e5d478fce5571c8d8295a0bdccf482a62d6515dc41c6a42364d9be6d44",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
             }
           }
         },
         "a": {
           "rest": {
             "path": "frames/front-crossed-a-rest.rgba.png",
-            "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3",
+            "sha256": "28ac29acea63e31ec345e897ae1ad6a1e87f236d21884db3fa631807c7783972",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-a.candidate.v7.rgba.png",
               "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
             },
-            "eye_patch": null
+            "eye_patch": null,
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "c089047f2834c2000d2fb33dbec879f108f046da732bbddbcfebca15796480d1",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-a-rest.rgba.png",
+              "donor_sha256": "356c121658530aefdec4e59f56d2fcf1f453809d6ad0d2fa6188008b78a3a2cf",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
+            }
           },
           "half": {
             "path": "frames/front-crossed-a-half.rgba.png",
-            "sha256": "2cf16fd3d51874acfca65d5410b81b35cd887f120c1cab515c06deb770960f1f",
+            "sha256": "493f34e9ca7c37b16e6811157aafa6d7f740eb0cd98a13ad08ca34cc3fa4d78f",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-a.candidate.v7.rgba.png",
               "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
@@ -93,11 +201,38 @@
             "eye_patch": {
               "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
+            },
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "70cbb34514df0683d75b3e443552ccdbb18467f6543a9c0186df17b2a232ece7",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-a-half.rgba.png",
+              "donor_sha256": "c60f69b5094ddc82698ad4f25d16fba9eb2139d628baef2815d2aea606d8e947",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
             }
           },
           "closed": {
             "path": "frames/front-crossed-a-closed.rgba.png",
-            "sha256": "c0abcb3907049970a4e6ec6c0c0a68eb4cf3bea55d70acf6eaa82cd29e322ff6",
+            "sha256": "a04af501e2c1ca51cbf3e0a6d3e0b535bc4bf837080bf39604ea34c4a3dfcaeb",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-a.candidate.v7.rgba.png",
               "sha256": "8404e74ebfd1ebbbd3ccbc5f771d6b66cf1b10def5690b836580a421b14ee3e3"
@@ -105,22 +240,76 @@
             "eye_patch": {
               "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
+            },
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "f695b573401be358fc0a2906d708a46209e146949f8efe0b679ed8a44bcf7d53",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-a-closed.rgba.png",
+              "donor_sha256": "642c26405fa2afa9a33ded4df279102d5e917a5c553bfdc435d52af623d00319",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
             }
           }
         },
         "o": {
           "rest": {
             "path": "frames/front-crossed-o-rest.rgba.png",
-            "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625",
+            "sha256": "2dcacbf412bbffe064c7f1cff9b99c3ce425c1aac8d18ffcd4453e272452b405",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-o.candidate.v7.rgba.png",
               "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
             },
-            "eye_patch": null
+            "eye_patch": null,
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-o-rest.rgba.png",
+              "donor_sha256": "118d2a6e6e48b2070cf7be31686d8a05bf558caa968754e1ec02c03de580ed11",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
+            }
           },
           "half": {
             "path": "frames/front-crossed-o-half.rgba.png",
-            "sha256": "39b09238f0d66874f7ef7a43a7e50b794bae4fe90c8d497465b33483daff3db8",
+            "sha256": "5b698d01a09e8b653c3e0a2efff90bf04e969b8d9d7104dffd61f2b9a8619297",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-o.candidate.v7.rgba.png",
               "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
@@ -128,11 +317,38 @@
             "eye_patch": {
               "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.half.rgba.png",
               "sha256": "fc22d7c088397aaae030c2369987c9b814d37ff62811a1625b242c5cecad2048"
+            },
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "39b09238f0d66874f7ef7a43a7e50b794bae4fe90c8d497465b33483daff3db8",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-o-half.rgba.png",
+              "donor_sha256": "f47bd77613e90e3caa8504a96b5b78c7d67734030ba8435412554777c9e52743",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
             }
           },
           "closed": {
             "path": "frames/front-crossed-o-closed.rgba.png",
-            "sha256": "34d786ea9fd9bb1551d3ac8481602f5f93d42b54a227c5b9d432ae54d588487a",
+            "sha256": "2fa9709bd59bcbeab779e1dc80ac05e3f5fd6b365b347622ab332ed941389a56",
             "base": {
               "path": "scratchpad/mohan-v2-v5-mouth-rebuild-158/front-crossed-o.candidate.v7.rgba.png",
               "sha256": "6b3735a8f91d0d421d115d739d58451be79391edcd56f22f8b9817bfdc8ae625"
@@ -140,6 +356,33 @@
             "eye_patch": {
               "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/halfbody-blink-fix-claude-01/patches/front-crossed.closed.rgba.png",
               "sha256": "c642fb77c2d03bf19c5ec4effcddb339ce28837124b615e99cbc79fb0f9df2c8"
+            },
+            "repair": {
+              "tool": "tools/art_pipeline/repair_front_crossed.py",
+              "original_sha256": "34d786ea9fd9bb1551d3ac8481602f5f93d42b54a227c5b9d432ae54d588487a",
+              "donor": "assets/expressions/complete-expressions/frames/front-attentive_front-o-closed.rgba.png",
+              "donor_sha256": "79897292141b95294992c9679ccddffe0277c97705948c8818c546e29c3fcd54",
+              "target_to_donor": [
+                [
+                  0.9998496701740691,
+                  0.004209057234445812,
+                  -2.126534933241573
+                ],
+                [
+                  -0.004209057234445812,
+                  0.9998496701740691,
+                  1.6295989696702167
+                ]
+              ],
+              "mouth_roi": [
+                558,
+                538,
+                664,
+                588
+              ],
+              "expansion_px": 6,
+              "feather_px": 8,
+              "affine_micro_adjustment": null
             }
           }
         }
@@ -156,6 +399,20 @@
         "approved_eye_report": {
           "path": "scratchpad/mohan-v2-v5-eye-state-source-discovery-148/isolated-bare-eye-patches/report.json",
           "sha256": "691aa3ac627926dd450193b88457606683b86f46a5a0442f8bc65432ca48ed0a"
+        }
+      },
+      "oral_masks": {
+        "small": {
+          "path": "masks/front-crossed-transplant-oral-small.png",
+          "sha256": "a5a6ce0285724958f3bb6b3b7f355addfde1210b8befa90b0a5c296247438862"
+        },
+        "a": {
+          "path": "masks/front-crossed-transplant-oral-a.png",
+          "sha256": "583679ae0b2d8efe03f2ae7b674bc4dadb745edfcd4dec21f26f879db9a00775"
+        },
+        "o": {
+          "path": "masks/front-crossed-transplant-oral-o.png",
+          "sha256": "6b0a6eb5e4d894b98f3d4bc32827e02eeb3ce18f1499187ed0f2b49fce962479"
         }
       }
     },
@@ -3542,15 +3799,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-proud_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-proud_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-proud_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -3654,15 +3911,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-thinking_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-thinking_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-thinking_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -3766,15 +4023,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-gentle_smile_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-gentle_smile_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-gentle_smile_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -3878,15 +4135,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-worried_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-worried_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-worried_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -3990,15 +4247,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-shy_cute_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-shy_cute_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-shy_cute_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4102,15 +4359,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-attentive_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-attentive_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-attentive_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4214,15 +4471,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-determined_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-determined_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-determined_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4326,15 +4583,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-shy_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-shy_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-shy_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4347,11 +4604,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-neutral-half.rgba.png",
-            "sha256": "6b9fd1a638659eca3de67475c629c7e2b7acce0c728ad53c87472594fb4b39c9"
+            "sha256": "fa23fc32dae3e6e0ecfd7597485e507f7b9b1c53c72b3150cf3dd288c94413fa"
           },
           "closed": {
             "path": "frames/front-surprised_front-neutral-closed.rgba.png",
-            "sha256": "9a643e0456d1546f9ceaa2cdb486c754a23e21e741543c3fc84cd21bf1b13d8e"
+            "sha256": "02b74ccce346cb02d2c1ac6bc4896255b91c41c35b2f31fb98d577d04c6f4140"
           }
         },
         "small": {
@@ -4361,11 +4618,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-small-half.rgba.png",
-            "sha256": "ca53ec4ebaa98a2bd6efb700a2fcd964b5b10e413b20e8b5a0e7631307fd4dfa"
+            "sha256": "54a9b35c0c3829d1291d406fdcce8e2f7c30439d2f66e66b089f8eeeec712ae2"
           },
           "closed": {
             "path": "frames/front-surprised_front-small-closed.rgba.png",
-            "sha256": "531500b2e5ac3a6493d260162d2df937d9811aeb4531537698c0c9776d9625a5"
+            "sha256": "2843db450bcf676e7b6abdcda6d3ade74267152859a67069603143812aa90ca1"
           }
         },
         "a": {
@@ -4375,11 +4632,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-a-half.rgba.png",
-            "sha256": "f7487aca619ee91d6fd14506b70dbb99850a57784c74ebceccf3b106147e5ea0"
+            "sha256": "ceac0eee80767ff599413845f21d6d83e3e304b9e79109379832316a9dd8f4b9"
           },
           "closed": {
             "path": "frames/front-surprised_front-a-closed.rgba.png",
-            "sha256": "cec2c85242ec691b536663e248dcad891c83eeb7ad920b98a663ee74310fa0ca"
+            "sha256": "1265686a25008dc04277fbcc9ba73f8f0d6282a2c05378c29fa79506accd5ade"
           }
         },
         "o": {
@@ -4389,11 +4646,11 @@
           },
           "half": {
             "path": "frames/front-surprised_front-o-half.rgba.png",
-            "sha256": "8ddb822b8204c7b3a2c440f499dd633627ce4ca765a0de3d535eee9ba2582333"
+            "sha256": "8c8c91924a028e3007aa63af123962af7e44b462e0f644a7bd00611eba1875a8"
           },
           "closed": {
             "path": "frames/front-surprised_front-o-closed.rgba.png",
-            "sha256": "157d4fcf0570e7c22b83071d322af60ffd6b8845fcee5a543555ad7bc20defa1"
+            "sha256": "17a7313eec1bc73577f0fff3d87fb8981d942d85fd3e3d74be429209d274eff8"
           }
         }
       },
@@ -4438,15 +4695,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-surprised_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-surprised_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-surprised_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4550,15 +4807,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-relieved_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-relieved_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-relieved_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4662,15 +4919,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-tired_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-tired_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-tired_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4774,15 +5031,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-restrained_amused_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-restrained_amused_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-restrained_amused_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     },
@@ -4886,15 +5143,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/front-protective_front-oral-small.png",
-          "sha256": "3e75641679bb9fe74e3599f7ff7add927f6c05940fe8f171956d9501a7d5fc57"
+          "sha256": "13b1619f768cd95fe83f1d8ef8c7113f781748b6b729beb0a7073372427fe6da"
         },
         "a": {
           "path": "masks/front-protective_front-oral-a.png",
-          "sha256": "275435d766c322d4420e60dc97f8518ac2d6c7c417cce9fdb7cc21c1bc7b907b"
+          "sha256": "e585860fa459c6b3b81978de859e4915d7ab615333d42cb90100e49f20db0cf5"
         },
         "o": {
           "path": "masks/front-protective_front-oral-o.png",
-          "sha256": "6737ba0ecfbcf5851b94a090e9dc61409aad9ce4795cd6ac5050be04f1214c6b"
+          "sha256": "10a7881b06f410c23a5c3b3829d6a02a00944b313d9f91a0e8127588837f3727"
         }
       }
     }

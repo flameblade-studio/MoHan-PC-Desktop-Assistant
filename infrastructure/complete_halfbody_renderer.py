@@ -240,7 +240,11 @@ class CompleteHalfbodyRenderer:
         self._pixmaps.move_to_end(key)
         while len(self._pixmaps) > MAX_DECODED_FRAMES:
             self._pixmaps.popitem(last=False)
-        if pose in COMPLETE_CHEEK_POSES or pose in COMPLETE_FRONT_POSES:
+        if (
+            pose in COMPLETE_CHEEK_POSES
+            or pose in COMPLETE_FRONT_POSES
+            or pose in self._assets.oral_masks
+        ):
             viseme = {"neutral": None, "small": "I", "a": "A", "o": "O"}[family]
             self._set_active_mouth_state(viseme, self._oral_mask(pose, family))
         else:
