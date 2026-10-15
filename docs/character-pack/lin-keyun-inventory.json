@@ -12325,7 +12325,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "fa7d7ff241f0290e99edc5df849590a1ee58d19a0372a8eb3d29348bff797c38"
+      "sha256": "1ece63b1a0c148fcc16e9225e2c4cd0b4cbd2d20e91bcc83dae4e7effa223616"
     },
     {
       "bytes": 6175,
@@ -16732,7 +16732,7 @@
       "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 34666059,
+      "bytes": 36644319,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -16746,7 +16746,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "93c20cc8f2cb259bfa865b11be231f90b7f2d8fae1690a54ee0247487f876fae"
+      "sha256": "10da32ab10fb8a98daf01c4e7b5266cb151d1a96bc431c8da8e880aaa51a5a44"
     },
     {
       "bytes": 6550,
