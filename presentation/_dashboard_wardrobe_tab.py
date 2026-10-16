@@ -69,6 +69,13 @@ def _build_package_library(shell: _DashboardWardrobeHost) -> QFrame:
     )
     shell.wardrobe_status.setWordWrap(True)
     shell.wardrobe_status.setProperty("mohanRole", "statusPill")
+    if getattr(shell.presentation_ports, "body_pack_download_hint", False):
+        shell.wardrobe_status.setText(
+            shell._t(
+                "wardrobe_body_pack_download_hint",
+                "下載素體包可取得完整標準造型。",
+            )
+        )
     shell.wardrobe_packages_loaded = False
     if not shell._defer_wardrobe_startup:
         shell._reload_wardrobe_packages()

@@ -120,6 +120,7 @@ GROUPS = (
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
     Group("assets/characters/lin-keyun/official-packs/", "appearance_pack", "tools/build_character_pack.py", "inspect_outfit_pack(path)"),
     Group("assets/characters/lin-keyun/body/", "character_layer_view", "infrastructure/character_source_pack.py", "Read a manifest-declared character layer and recheck its SHA-256."),
+    Group("assets/characters/mohan/body/", "character_layer_view", "infrastructure/bundled_character_source.py", "def load_character_layer"),
     Group("assets/characters/mohan/appearance/", "character_appearance_defaults", "domain/character_pack/appearance_data.py", 'Path(path).read_text(encoding="utf-8")'),
     Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = active_character_data_path("persona/ui-identifiers.json")'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data_loader.py", 'root / "persona"'),

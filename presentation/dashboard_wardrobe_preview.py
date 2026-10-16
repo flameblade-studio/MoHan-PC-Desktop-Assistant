@@ -214,14 +214,16 @@ class DashboardWardrobePreviewMixin:
             except (KeyError, OSError, RuntimeError, TypeError, ValueError):
                 composed = QPixmap()
         if composed.isNull():
-            if getattr(self.presentation_ports, "body_pack_required", False):
+            if (getattr(self.presentation_ports, "body_pack_required", False)
+                    or getattr(renderer, "body_pack_required", False)):
                 self._wardrobe_body_pack_error = "body_pack_render_failed"
                 return QPixmap(), STATE_ERROR
             base = self._wardrobe_base_pixmap(view_id)
             if base.isNull():
                 return base, STATE_FALLBACK
             composed = self._wardrobe_outfit_overlay.apply(base, view_id)
-        if getattr(self.presentation_ports, "body_pack_required", False):
+        if (getattr(self.presentation_ports, "body_pack_required", False)
+                    or getattr(renderer, "body_pack_required", False)):
             return composed, STATE_COMPOSITED
         dressed = self._wardrobe_outfit_overlay.layer_count(view_id) > 0
         if not dressed and self.wardrobe_service.appearance_active():
@@ -252,10 +254,18 @@ class DashboardWardrobePreviewMixin:
             if state == STATE_COMPOSING:
                 label.setText(self._t("wardrobe_preview_composing", "正在以執行期合成造型預覽……"))
             elif state == STATE_ERROR:
-                label.setText(self._t(
-                    "wardrobe_preview_body_pack_error",
-                    "素體包預覽載入失敗，請檢查角色依附的素體包。",
-                ) + " (" + getattr(self, "_wardrobe_body_pack_error", "body_pack_render_failed") + ")")
+                error_code = getattr(self, "_wardrobe_body_pack_error", "body_pack_render_failed")
+                if error_code in {"body_pack_missing", "outfit_pack_missing", "missing_file"}:
+                    message = self._t(
+                        "wardrobe_preview_body_pack_missing",
+                        '此套裝所需的素體包或服裝包缺少或損毀。請下載並安裝所需套件後再預覽。',
+                    )
+                else:
+                    message = self._t(
+                        "wardrobe_preview_body_pack_error",
+                        '素體包預覽載入失敗，請檢查角色綁定的素體包。',
+                    )
+                label.setText(f"{message} ({error_code})")
             elif state == STATE_FALLBACK:
                 label.setText(fallback)
             else:

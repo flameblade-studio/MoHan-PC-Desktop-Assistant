@@ -112,12 +112,13 @@
     }
   ],
   "embedded_code_classification_counts": {
+    "engine_extract": 2,
     "persisted_identifier": 2,
     "product_shell_allowed": 20
   },
   "files": [
     {
-      "bytes": 6614,
+      "bytes": 6702,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
@@ -162,7 +163,7 @@
       "path": "application/character_default_look.py",
       "readers": [
         {
-          "line": 110,
+          "line": 115,
           "path": "application/service_container.py",
           "text": "lazy from application.character_default_look import ("
         },
@@ -173,7 +174,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "64b0b43a71eb5db6e2b8390dbada8e560ea01afebf60fc1c723860b6bdf8282a",
+      "sha256": "e3f54dd169870394d9570c32aee47177eb92c7ee9915ee5a2112e9c56ca68264",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -199,13 +200,13 @@
           "name": "complete_fullbody_path"
         },
         {
-          "end_line": 128,
+          "end_line": 130,
           "line": 122,
           "name": "resolved_body_pack_for_source"
         },
         {
-          "end_line": 135,
-          "line": 131,
+          "end_line": 137,
+          "line": 133,
           "name": "_require_legacy_frame_source"
         }
       ],
@@ -414,7 +415,7 @@
       "work_package": null
     },
     {
-      "bytes": 30046,
+      "bytes": 32308,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -425,22 +426,22 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 439,
+          "line": 490,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
+          "text": "\"assets/expressions/complete-expressions\","
         },
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 440,
+          "line": 491,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "!= \"assets/expressions/complete-expressions\""
+          "text": ") != \"assets/expressions/complete-expressions\""
         }
       ],
       "estimated_difficulty": "high",
@@ -455,116 +456,126 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "df28bdb5b267620a0464d94e8f8f023fede2f375325f5756f1846a1f7161af97",
+      "sha256": "23e826b1001b116def1825bbaae6ecc8f836c8eaf60214d8d4f2693e21e56217",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 149,
-          "line": 149,
+          "end_line": 154,
+          "line": 154,
           "name": "_CHARACTER_SELECTION_LOGGER"
         },
         {
-          "end_line": 150,
-          "line": 150,
+          "end_line": 155,
+          "line": 155,
           "name": "SUPPORTED_CHARACTER_IDS"
         },
         {
-          "end_line": 180,
-          "line": 153,
+          "end_line": 185,
+          "line": 158,
           "name": "create_character_source"
         },
         {
-          "end_line": 187,
-          "line": 183,
+          "end_line": 192,
+          "line": 188,
           "name": "create_default_character_source"
         },
         {
-          "end_line": 211,
-          "line": 190,
+          "end_line": 216,
+          "line": 195,
           "name": "_reserve_official_pack_id_reservations"
         },
         {
-          "end_line": 235,
-          "line": 215,
+          "end_line": 240,
+          "line": 220,
           "name": "CompanionServices"
         },
         {
-          "end_line": 294,
-          "line": 238,
+          "end_line": 299,
+          "line": 243,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 315,
-          "line": 297,
+          "end_line": 320,
+          "line": 302,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 321,
-          "line": 318,
+          "end_line": 326,
+          "line": 323,
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 474,
-          "line": 324,
+          "end_line": 333,
+          "line": 329,
+          "name": "_route_face_renderer"
+        },
+        {
+          "end_line": 340,
+          "line": 336,
+          "name": "_route_full_body_renderer"
+        },
+        {
+          "end_line": 538,
+          "line": 343,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 480,
-          "line": 477,
+          "end_line": 544,
+          "line": 541,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 486,
-          "line": 483,
+          "end_line": 550,
+          "line": 547,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 528,
-          "line": 489,
+          "end_line": 592,
+          "line": 553,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 541,
-          "line": 531,
+          "end_line": 605,
+          "line": 595,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 561,
-          "line": 544,
+          "end_line": 625,
+          "line": 608,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 582,
-          "line": 564,
+          "end_line": 646,
+          "line": 628,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 601,
-          "line": 585,
+          "end_line": 665,
+          "line": 649,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 621,
-          "line": 604,
+          "end_line": 685,
+          "line": 668,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 641,
-          "line": 624,
+          "end_line": 705,
+          "line": 688,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 796,
-          "line": 644,
+          "end_line": 860,
+          "line": 708,
           "name": "create_default_services"
         }
       ],
       "work_package": null
     },
     {
-      "bytes": 22083,
+      "bytes": 22281,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -575,7 +586,7 @@
         {
           "content_kind": "product_shell",
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
-          "line": 55,
+          "line": 56,
           "matched": "mohan.default.blue-silver",
           "path": "application/wardrobe_service.py",
           "rule": "persisted_identifier",
@@ -625,99 +636,99 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "dae489bf441321af4975091f7160794e5f81164ff6b2f9238b9e072235f51868",
+      "sha256": "61e7a55864ba5bfb225de243d44061f4502c46295b46b8ec688b72cd88178556",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
       "symbols": [
         {
-          "end_line": 55,
-          "line": 55,
-          "name": "BUILTIN_OUTFIT_ID"
-        },
-        {
           "end_line": 56,
           "line": 56,
-          "name": "BODY_OUTFIT_ID"
+          "name": "BUILTIN_OUTFIT_ID"
         },
         {
           "end_line": 57,
           "line": 57,
+          "name": "BODY_OUTFIT_ID"
+        },
+        {
+          "end_line": 58,
+          "line": 58,
           "name": "BODY_OUTFIT_NAMES"
         },
         {
-          "end_line": 60,
-          "line": 58,
-          "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
-        },
-        {
           "end_line": 61,
-          "line": 61,
-          "name": "BARE_MAKEUP_ID"
+          "line": 59,
+          "name": "BUILTIN_OUTFIT_FALLBACK_NAME"
         },
         {
           "end_line": 62,
           "line": 62,
-          "name": "BUILTIN_MAKEUP_PREFIX"
+          "name": "BARE_MAKEUP_ID"
         },
         {
           "end_line": 63,
           "line": 63,
+          "name": "BUILTIN_MAKEUP_PREFIX"
+        },
+        {
+          "end_line": 64,
+          "line": 64,
           "name": "SELECTION_ID_PARTS"
         },
         {
-          "end_line": 73,
-          "line": 67,
+          "end_line": 74,
+          "line": 68,
           "name": "InstalledOutfit"
         },
         {
-          "end_line": 91,
-          "line": 77,
+          "end_line": 92,
+          "line": 78,
           "name": "MakeupOption"
         },
         {
-          "end_line": 98,
-          "line": 95,
+          "end_line": 99,
+          "line": 96,
           "name": "MakeupState"
         },
         {
-          "end_line": 104,
-          "line": 101,
+          "end_line": 105,
+          "line": 102,
           "name": "_selection_id"
         },
         {
-          "end_line": 115,
-          "line": 107,
+          "end_line": 116,
+          "line": 108,
           "name": "_localized_name"
         },
         {
-          "end_line": 121,
-          "line": 118,
+          "end_line": 124,
+          "line": 119,
           "name": "_ensemble_id"
         },
         {
-          "end_line": 126,
-          "line": 124,
+          "end_line": 129,
+          "line": 127,
           "name": "_localized_pack_name"
         },
         {
-          "end_line": 141,
-          "line": 129,
+          "end_line": 144,
+          "line": 132,
           "name": "_localized_ensemble_name"
         },
         {
-          "end_line": 156,
-          "line": 144,
+          "end_line": 159,
+          "line": 147,
           "name": "_makeup_option_id"
         },
         {
-          "end_line": 162,
-          "line": 159,
+          "end_line": 165,
+          "line": 162,
           "name": "_builtin_outfit_fallback_name"
         },
         {
-          "end_line": 590,
-          "line": 165,
+          "end_line": 595,
+          "line": 168,
           "name": "WardrobeService"
         }
       ],
@@ -12923,6 +12934,4132 @@
       "sha256": "493c65419a7ff56900dc1ce0841b61582ec316877722ba9dc5791597fa55752e"
     },
     {
+      "bytes": 3014,
+      "category": "character_layer_view",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/approval.json",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6e271a76cbdc5aba8d365ed345f11798d1da0a30c5179188ed20b9dde030ee0f"
+    },
+    {
+      "bytes": 370793,
+      "category": "character_layer_view",
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/manifest.json",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "caddce561533f1ef6d2d41f005309cd0d25dad3e07217b94542d7216653d0875"
+    },
+    {
+      "bytes": 7845,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+    },
+    {
+      "bytes": 33448,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+    },
+    {
+      "bytes": 788830,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+    },
+    {
+      "bytes": 559021,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+    },
+    {
+      "bytes": 98748,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+    },
+    {
+      "bytes": 56736,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+    },
+    {
+      "bytes": 11368,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/exasperated/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "39872b229272bc01e66362d75526b8937a413df3dfddb9c643456d837da49db1"
+    },
+    {
+      "bytes": 76050,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/exasperated/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6b6aee0076ffe81a4c02a1ce0c0ea9c09ffac8ab7e950cf4cdcb9e0f7ed4b8d2"
+    },
+    {
+      "bytes": 990291,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/exasperated/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "def622ff3ac8e7e4bd8ac8839f3bebf835880374e9ec8dbd571d080193ffb282"
+    },
+    {
+      "bytes": 70916,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/exasperated/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "4aee6e400081583e629650c7d3fb2dce7465dee0518bab398d9ef886ef7a44fe"
+    },
+    {
+      "bytes": 108120,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/exasperated/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "c8625763808773b00f15d68dc3013f84ad60f06ddd2c62cf130ad19d6d7b08c1"
+    },
+    {
+      "bytes": 179877,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/exasperated/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "06de6dc9b3092c43f5e3dcad91996f824577545cf747bcd4f1cb018bb656fd0b"
+    },
+    {
+      "bytes": 9030,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-crossed/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "fa49d75a6cb76d4197e08b1e70ad61e561ec19eb7c12f96a2cf8a6e883618b81"
+    },
+    {
+      "bytes": 28149,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-crossed/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "e12d9df2ac99e0894a0ccc89a7ceef11fd8f3ec12291329dca48d99c52d4189a"
+    },
+    {
+      "bytes": 877481,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-crossed/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "164518e787dd31553023d01bada636f826758232b4f87bfd81ac740d40a78425"
+    },
+    {
+      "bytes": 354708,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-crossed/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7ecac441b00741e171186860537f9e3ab19dab31f216f72300a6c34e9c060d27"
+    },
+    {
+      "bytes": 171849,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-crossed/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "46a2df1809c1516709044df1649e831b29038c4a8df442bf97ff646f2a829604"
+    },
+    {
+      "bytes": 53069,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-crossed/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "8b59fc346d7d94e000cbee6c1109f85e4c9e93ced6585e5714c81b4ccc06b7fb"
+    },
+    {
+      "bytes": 10379,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-eureka/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "481595174ff8f1b18091aeff3afc4719660e113796c47349dd582b1cdab3e97e"
+    },
+    {
+      "bytes": 72290,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-eureka/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "226e2bbf5bfc152556d68009edaf2ae6943d56935106c9119e0d7f09dba81d41"
+    },
+    {
+      "bytes": 988141,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-eureka/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "161b5d4f1af4076b50e054528ae32745f9c1fb880b748aa5ceb6b03f7f80ec8f"
+    },
+    {
+      "bytes": 49359,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-eureka/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "21ef58c205c82a3895ce9e5e3e325c05c6c2161f4c28e17791209574c27f1a39"
+    },
+    {
+      "bytes": 107491,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-eureka/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a71cff806136090377ed0ac57fc78c09b081208cacbcf3054581fe8da52e18f4"
+    },
+    {
+      "bytes": 178732,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-eureka/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "2bd233dce7d099a2b85c87def31e1d2f5a904e8777263a9224426f7b82b834e7"
+    },
+    {
+      "bytes": 9667,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-hit/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "9a7eb1cc910d0a513831786da76b0b94b1cc79b5b02705708e496b53547a8cbf"
+    },
+    {
+      "bytes": 66836,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-hit/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "c742285a1212582cbd2e858ccf3268c228456e81391c6c1018bd2442e981ce23"
+    },
+    {
+      "bytes": 1051793,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-hit/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "ff371bd399a8e9763dc2e02f9bf93e9ea655ba1edc52a356a8f49cca22012c42"
+    },
+    {
+      "bytes": 61423,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-hit/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "c531cab4989772684e7a7713bece627cb0247213590ce007af728c4c1906d571"
+    },
+    {
+      "bytes": 120347,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-hit/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "9a367cb3edcf2417e453bb906c47359220a0f1bb894702fe505863f321951439"
+    },
+    {
+      "bytes": 180531,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-hit/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a36ce00c205804e13f52b36132053f2d57d0d51a11f7bc626d4f8406b77198f0"
+    },
+    {
+      "bytes": 11322,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-scold/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1334a13b93a2bbdcd380f3731709191c4307016637dbdaddc18ad48ceb792939"
+    },
+    {
+      "bytes": 70889,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-scold/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "70fd6776225786403f8e815969c9e0fcd4b241a46f962ad2476c8951b07505c2"
+    },
+    {
+      "bytes": 1012878,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-scold/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "13c82cdfe538c88d017c1adca7d2007c6f627cc05fafc46aa59f01797d269a78"
+    },
+    {
+      "bytes": 49360,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-scold/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "d66b707f34d353db82d7f21c7092dbc048e75122d467d133e003d100d953ecad"
+    },
+    {
+      "bytes": 98974,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-scold/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f59df8877764353471eeb5db7b51ba21ff07f6dfa01cc624777d543b82ce5481"
+    },
+    {
+      "bytes": 188485,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/front-mock-scold/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "e5d21de6908c8c67511dcb32351838191bc1c00a1270d23c4c11f68b44229ad0"
+    },
+    {
+      "bytes": 10781,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/left-neutral/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b194dfaad2e21617ee6a357d670203b9dd2ecb2197b2cd0324c3efcbd134650d"
+    },
+    {
+      "bytes": 48799,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/left-neutral/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "9a63a97087f41d4778f97bad821191701d1998e6755519949ba479e69ceffeda"
+    },
+    {
+      "bytes": 940344,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/left-neutral/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a9ec380ed18782af2ab3cf497e76962b7a6d0c21bdec2c083f46551d03571c25"
+    },
+    {
+      "bytes": 212888,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/left-neutral/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "ecc9ed69f9b70b072b263a65a85413ef0fa01d301460e4e037a081ec17b48004"
+    },
+    {
+      "bytes": 108018,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/left-neutral/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "8b979a576153a51ffe37e11859e8129029df2c5625eac526137b5240d6de96fd"
+    },
+    {
+      "bytes": 49119,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/left-neutral/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "726a1022e688a397f5f8bf618aa0ec3aeec5455babc0a43652093d3f9b140a1e"
+    },
+    {
+      "bytes": 8591,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+000-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "06b1977b8853553e3772311e40a3e523fd3645d7b5ce276bfb22655284db9b6d"
+    },
+    {
+      "bytes": 39514,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+000-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "666f92f6fcc877c60664b94af1e6ea1d662033867c5d93a8dc2e5468962c5a7b"
+    },
+    {
+      "bytes": 721044,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+000-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "dd72da8e627c8e25c681722e20492613221b08a20651aed7aa61891fbed51a04"
+    },
+    {
+      "bytes": 44727,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+000-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a3566197e8b160e79ac14222142c5ba6d6028c4f2bdea617635ad72b3304c94e"
+    },
+    {
+      "bytes": 43110,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+000-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "0036b8e4288da2b21569c301c5aaecca54f0d3e555d429655d1903568d8577c6"
+    },
+    {
+      "bytes": 28066,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+000-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "04f8f709e98736eae69b91f86f607a77de45c0167037bec7d2e0a0a7c5e30c0c"
+    },
+    {
+      "bytes": 10093,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+015-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "32c754a16186e7d77c2657ba9d76088d2bbf2c67a9bc962d8dee72772ec49faf"
+    },
+    {
+      "bytes": 66662,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+015-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "aede1562726f221cfb5a85ae9f1879a2c3e53080caa46eab96586ef718d4a5cf"
+    },
+    {
+      "bytes": 632584,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+015-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "522d364505e1c42fde0d24ba3ac9e9dd0cd4828de0a5ce28055a67facb8b68c5"
+    },
+    {
+      "bytes": 494328,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+015-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "dbcc8ac1a595472793b64882e48d98906b0435523cebedb9cf9938901ecf5aaf"
+    },
+    {
+      "bytes": 96117,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+015-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "047f604bff1351f93f957cceb2a8f9c97380591d2abf868f66b6444ab17515f9"
+    },
+    {
+      "bytes": 16331,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+015-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b6c3395af729f9e4e78ea96c66d8a331ab7ede836cee59b9a66e518e8964bb3d"
+    },
+    {
+      "bytes": 10902,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+030-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "d0727dd406473eff74e3d02a58aa1e0f67a9e5f00087592c70489aeea4e91199"
+    },
+    {
+      "bytes": 67752,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+030-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "e2e84922feafd3c7f658f9ac2060645013cbd15e11194d19c60f026ee8010ef3"
+    },
+    {
+      "bytes": 702555,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+030-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "480893d4c7544498a0fc28d0089f3635141b18a2d49e10f013ac275334b873af"
+    },
+    {
+      "bytes": 502378,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+030-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "022e1c237e369186d14e3f883e62f7e381e96d3dd8ddd9a5b379ad9b39db23fa"
+    },
+    {
+      "bytes": 123661,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+030-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "0f243e5c2be505b7362d96fd3591a5181bbf4284c35f0db48df76d8a37a4e751"
+    },
+    {
+      "bytes": 13919,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+030-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "72486759c6ce13a9aa16217098367e50a9652d32afca9b055ff688d49de3d996"
+    },
+    {
+      "bytes": 9692,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "e5183ee4738cb9d15d38969259b3d7bf1ed012602be69b47b80def3736ddd743"
+    },
+    {
+      "bytes": 38383,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "5abc5bd194bfb86f0d8f5580de38665e31755b7361fbd93023bfaa45c3ad3804"
+    },
+    {
+      "bytes": 650722,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7cefdc88dfe60dad47aef09d8eb735d699e0877487c167cafa780626cb6937b6"
+    },
+    {
+      "bytes": 35370,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "13cc1359b06f662a257aafdeabec8c0c520fa82f02f39d6bbf2ccfac92f030ec"
+    },
+    {
+      "bytes": 37558,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "52c149a1ac37b0324b24fb7e071d0d793de46d3b5e1eea08b13ce34e1518e8f4"
+    },
+    {
+      "bytes": 29222,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "aadf9dceed2f98f12bac9d6c1f13c84f5627e37b7dae003af81906beff775c22"
+    },
+    {
+      "bytes": 9431,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+060-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "03bc3ea0310ca46321223edf4f073cde20b845845965cccccb3340f6d467e55a"
+    },
+    {
+      "bytes": 50955,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+060-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b33b5caa9fe6a25879072dd13dbfe1f0fc52c93d399d80409d393a984714db23"
+    },
+    {
+      "bytes": 618203,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+060-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f95321d4220a8ccfabe019106cb9bd9899cd5fd63d8e23d6ca26c88ccf7dfde9"
+    },
+    {
+      "bytes": 58575,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+060-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "243afbd9a30b844d664834092cfaca2a3865e2f0762cea8e60ce83d66d2d2685"
+    },
+    {
+      "bytes": 36347,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+060-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "01ab9355ef0d279997a28e9897ca93861f76109e2d6c1818728ea9cfdbebd685"
+    },
+    {
+      "bytes": 35190,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+060-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a8059d87d8d2ba3180d693d544c3ea874a7e37b3fdd9d6456ede4c2185bdf682"
+    },
+    {
+      "bytes": 10640,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+075-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "25cc57354555e82473320e3df2c8e89aad5af7eadd6ff462dc85fc39ccd4167d"
+    },
+    {
+      "bytes": 66768,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+075-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "507e1338b37bfe26388a2106801c85c969cb0d95e9d9148210297d1f6145596c"
+    },
+    {
+      "bytes": 455553,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+075-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "45c692859d6d926b9fbd519c7e93158ac2bbeb997b817ce4da3c445a4d18b267"
+    },
+    {
+      "bytes": 545015,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+075-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "220b2281673e63be7a75126f68689ffe989f68309f5ae28fcb348d97bf9e5295"
+    },
+    {
+      "bytes": 20049,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+075-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "3945a3aa26c5c936e7ebadb715191188e1d44de3fe76426932a123ada18dd364"
+    },
+    {
+      "bytes": 10717,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+075-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "24a8255399e6fb070b56a6fb5e69b39a8964f240ff76f3f4b9fdcb7c6e322ded"
+    },
+    {
+      "bytes": 10445,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+090-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "181c24eed84d49ce95d56dd509f87e0cf9a0838348c5fe58c73063a1076145ba"
+    },
+    {
+      "bytes": 60670,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+090-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7b22f688d7e4c1c38391e662278ad186a3b062dee05826a6d84df5814d3fdf13"
+    },
+    {
+      "bytes": 425813,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+090-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "39569d57e3a4f397e9724b7d931a23eec4cee9f39a8aae91d72cd8f05fb7b559"
+    },
+    {
+      "bytes": 384371,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+090-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6cf41775ebb280cafdf50d83fe4521ce92075fcba93c615ff8ce675ba23d385b"
+    },
+    {
+      "bytes": 76760,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+090-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "532dd8e1bf142a899384209a7f345ea2c70985172951fb254e3e13fba307ddea"
+    },
+    {
+      "bytes": 35420,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+090-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f024f82091ae5250ba073cce80400a8d095104f10f22f07e1e90d4e9d975e81a"
+    },
+    {
+      "bytes": 8410,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+105-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b48dcf3ed13ca6fe8631d91866f99b254552ca2018d8bee1ffc5efaca4032b17"
+    },
+    {
+      "bytes": 61635,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+105-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "68aeee88f9d3ecf355ef8839c08b0db9f121ba69c3fb598ea081ca55de61233c"
+    },
+    {
+      "bytes": 470186,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+105-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "58e5f0a2d5b7bc89d42c2b1426edc631869c59f70a4850fff1393868c8201999"
+    },
+    {
+      "bytes": 473861,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+105-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "04a32e319651164238dd9ded05e41a0a63c7786924e10b114a8381b2382d74ba"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+105-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 9787,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+105-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "bfbbdbcfbd959fa0609323869547f69026fcfc4869435e1605d3c39e7eb4a917"
+    },
+    {
+      "bytes": 8826,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+120-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "0fa23cc757c6714d574ee6bb867376485fa30f6e9d7430c9f33395952833d02f"
+    },
+    {
+      "bytes": 61322,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+120-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f73c70209ff8d6ee9b73145f834d9afdff2658ed7771e12aa8ad615780f56c2b"
+    },
+    {
+      "bytes": 498786,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+120-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "12c9c76607f8cd500f44e3b68b445c0d46906c27e3cce0a1e9782beceba8acbb"
+    },
+    {
+      "bytes": 564616,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+120-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "036b3d68090c6233b10f96d45f0e9c4d590045c77dc8cf9d39748a748a2fb3ae"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+120-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 9410,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+120-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6448884d1ec0b61942739a4dc5ad6d415728741469284fffde0f0c8acab74b7a"
+    },
+    {
+      "bytes": 9207,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+135-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "9b03e71fd4115ab3caf5a508504ed9d71416525622b836a73c3a5f4826c94282"
+    },
+    {
+      "bytes": 63798,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+135-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "058fbd080065b35f500e54c28220344baba57f6cb5feffbdbb8ffc8896230f3c"
+    },
+    {
+      "bytes": 668152,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+135-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "04d783aa6e07efd28acb32dc6dcc7ef3bba9f4e766655257e6ad43276fa48b9e"
+    },
+    {
+      "bytes": 702210,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+135-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a82f8a12fb3ebde3fae25b1b26629d578d2b47022d0455a0b7338ee87bb8bc28"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+135-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 9876,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+135-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "21b92fa9c792ef7869440b9ea4a0fd8c94226475eedac496b1e4b9de3fc712ca"
+    },
+    {
+      "bytes": 9519,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+150-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "54ee7bb64cadf1d9da8079620127456e7dc4c26709bbabf40651833fed8fd191"
+    },
+    {
+      "bytes": 55926,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+150-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "737eba002e1eaed9a52aea9d248263f6e113ad8b524a8b7fe74b3865193161c7"
+    },
+    {
+      "bytes": 649004,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+150-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b21903ee5d9fe3cfcbe535471f316c66bf466b682360b4058ca5aee0cf93ee01"
+    },
+    {
+      "bytes": 584610,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+150-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "11977ce635650523603f709992a90b4c0157fb2f16d7c382fa632c834caf6e7f"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+150-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 14643,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+150-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "5c3e6c838d7144d75f979cc78473404ae2dc51e39e7ff47e22624cac7829b882"
+    },
+    {
+      "bytes": 8620,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+165-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "5eaf42ccc5e1a54a372c0f36aaea78a81fdcf141cbfd5b28603aaee5d8b8f102"
+    },
+    {
+      "bytes": 69432,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+165-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b87dc08de7a8cb44315d780718943d3af667e4cf2c2bca565ed1765f0901c3b7"
+    },
+    {
+      "bytes": 702394,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+165-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b246b12e6a05e1b5e1b5a2d9e82504227cda53e5c53a438e316e3c5bdb052699"
+    },
+    {
+      "bytes": 690774,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+165-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "bedc1d7242dcdc2a521d2ce28919db7a32971a6c420801758fc352471857fe90"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+165-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 11923,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw+165-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "4c1a05887e07243b3774a91c0fb5545763f8d1b01d2e56599e0ebc38024e8b80"
+    },
+    {
+      "bytes": 9260,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-015-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7d1b41129db2d0e30faab920b36e3a829048bd396a3cb66e6d08903c8cf630a2"
+    },
+    {
+      "bytes": 47750,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-015-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "52ed3f89ea7a7fb537842c123ba91df85f3323ba0b21cbf0e9fbc519215d1e6a"
+    },
+    {
+      "bytes": 519904,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-015-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6041b4029318d8f00c6ec34efa715013ce14a26c5463137cdeb6a3c834c1d6be"
+    },
+    {
+      "bytes": 488592,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-015-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "5e852b767289c73d1b1569dafd7db52b342d72e339d51ea62e064a6bdb5e7265"
+    },
+    {
+      "bytes": 150678,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-015-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b41008871dd75babd56bb871747f7ea4b0d9f4ca66af2feaecb4a9508fee1e04"
+    },
+    {
+      "bytes": 14692,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-015-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "4090cd22887738ff55b6d0a90b399a9ca660236b28cd3708c8359b3f595f1641"
+    },
+    {
+      "bytes": 9460,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-030-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "2221a13894d68f1296865be67e5f710873d697e6cb0b32eda2b742a0c801a3ba"
+    },
+    {
+      "bytes": 59159,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-030-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "00c012935894de2d0c722849305a4b00015e8cb9f6e881dd0cba83bea503f58d"
+    },
+    {
+      "bytes": 516888,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-030-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7afebabb118ebd05598bd8aa533ff30d8d19e231f913d24986b5a04399171243"
+    },
+    {
+      "bytes": 413952,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-030-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b4e883af68180f3ca9a97bdd52a1efa340fbedc8a7cde5e7799a39ab074eb642"
+    },
+    {
+      "bytes": 163167,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-030-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "eb49a626b10953b7efc2ee13ea786c31532cab5345727b7aeac9eb40d6e70845"
+    },
+    {
+      "bytes": 14127,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-030-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "889e2896db11caa0b09852e688affeb86373d711bcf406afd15201786f2ca3d8"
+    },
+    {
+      "bytes": 9022,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-045-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1ebd499f46987b6b4fc69065c7f04359f96efd4bbe6094bf37f427f8d50968eb"
+    },
+    {
+      "bytes": 64394,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-045-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "19e890a5baabf2d682c4e38db2245610ff0b60ad0e98c171d1d07d0ba1adca96"
+    },
+    {
+      "bytes": 566823,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-045-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "6e070e3c9db6a6913c11d628e08de565b411329181f2469f3a6dbf727ff82179"
+    },
+    {
+      "bytes": 365060,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-045-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f98c5ae70de2aa8995be775bd7ae32c09a9beef69e46c5c945369292661892c5"
+    },
+    {
+      "bytes": 137423,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-045-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "54ec695d4ad420ea561b01aaff6e4b05da09bc1f8a2a302f4e391cdc37eebb68"
+    },
+    {
+      "bytes": 15625,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-045-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "99d77269aa045428214ee7b0ad5e6b6fdbd25807e69224c60cd73fe58579f881"
+    },
+    {
+      "bytes": 9676,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-060-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "9bdaed2ace74ebc4a698c046a869485eaf3eefb9775863b9a54e66df565dd8fb"
+    },
+    {
+      "bytes": 74832,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-060-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "4e33c8fad649f1ac42b1abcbf9e286c1bf520acd67ba8d6266bebedce9eb99ad"
+    },
+    {
+      "bytes": 506828,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-060-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "cff9afa245139fba0c3b77ea6ff6cf971a1622170660bb5fe8029f8059cd59ee"
+    },
+    {
+      "bytes": 326105,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-060-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "4648b4c093da4b57ddc57d80ffe90c262ce87e5ed0daa63febe6725658258324"
+    },
+    {
+      "bytes": 126095,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-060-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f4612939496c6b2591dd1174bd74cd1c54a63077ec960b53eae5cbb341347e80"
+    },
+    {
+      "bytes": 15076,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-060-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "3966d21f7fd6ed5f82ada9722d165a5d54bebde58aacc5bc39677aca2a9e28d0"
+    },
+    {
+      "bytes": 9350,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-075-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "c7750ddab4b8e1e9fe79cd626e226cdfa0ef499133d7c6fb0986d19919d29dd3"
+    },
+    {
+      "bytes": 76392,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-075-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "e61e609a765a811f074201abc1466f6db6af246b8e1d5059912d1007fadd0cbc"
+    },
+    {
+      "bytes": 490241,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-075-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "e2f2fc325e559ac35a8a7115031c15f4238cf0d67718a664b18c7da31a922dfc"
+    },
+    {
+      "bytes": 377889,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-075-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "20dfea4f676614794975d7f377a3232859c3ea66c3a5a03b050aae316843ca3a"
+    },
+    {
+      "bytes": 157340,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-075-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "c15e5eef98f603889b13dbf1ff8e025a9c25c5264e671de44bdcd70765ab23f1"
+    },
+    {
+      "bytes": 12978,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-075-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a25f8e650e882bceb63a4f59e0f1711c39c69e72455119661ccec5321f210d90"
+    },
+    {
+      "bytes": 9167,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-090-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "21bce92d02c88e43783dc602498237f3bf72159d01a216761c056bb20c05c1d6"
+    },
+    {
+      "bytes": 68652,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-090-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "68769fb9cb479f428f35a3004cc98820bd2e2f082805f2b06c391161e0f3888b"
+    },
+    {
+      "bytes": 468955,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-090-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "7d53c302425f77a5b208abdedb1f2157013c3be32e8c5264e25f76ac70e368e6"
+    },
+    {
+      "bytes": 339662,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-090-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "d557d0afb9383250b99f279e2f56a9b99b346f3adb13a41f40a7ec3bf28ad4dd"
+    },
+    {
+      "bytes": 165829,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-090-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "648b45a48ee4c79d1e4a830693b340336eb7b0350b5eb0f2b080686438df199b"
+    },
+    {
+      "bytes": 13357,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-090-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "fd6a1c27927bb94030f1b0ea31be32c830a91d043f8a930239e34b5011371c1e"
+    },
+    {
+      "bytes": 8794,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-105-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "163b1976ce8c908c1e4393aff080370f143f23214bf694dab2d810b18b6af44c"
+    },
+    {
+      "bytes": 57608,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-105-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a3f4d7d6a90e2f2fce1ec14ac33f665d7176c9d560680355f477de58ab3e0f1e"
+    },
+    {
+      "bytes": 468019,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-105-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f3dc7b4accfabd20b67239b6830f82b33674a55a3f0f6473ca93e3341aa40d70"
+    },
+    {
+      "bytes": 100374,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-105-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "66289790acb5be90f4def0079ca837f6752ae682450e46e143f12613d6596089"
+    },
+    {
+      "bytes": 9288,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-105-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "14496b45ac449648ba13df583766afa4ae8e87d0d53714f70ca28a1f5f1862da"
+    },
+    {
+      "bytes": 27957,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-105-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f332b4d425eec10cad00d04089ebd7236f4dcbea6cdd63276f27d7871fa4671e"
+    },
+    {
+      "bytes": 8266,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-120-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "378720267783a9f78f3a6d9684b142c733ad832a7d6a594aa70d9adc2dcb7cff"
+    },
+    {
+      "bytes": 40282,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-120-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "5c76d8c21245f29c563de689e0f1e7804a39c130e5698dbf47da0f79c65fa6c9"
+    },
+    {
+      "bytes": 405826,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-120-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "90d3733ea67bcf177227d94015aa43acdc0223e55af5d0595eb3cfe24785073f"
+    },
+    {
+      "bytes": 403082,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-120-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "de4edbc3d08ca1692906b46820ca5491b3a2537fe109473f243fcd124743c2d7"
+    },
+    {
+      "bytes": 239773,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-120-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1bac789aedc097a3b4c1c492265de70e5192b1d2cde081c055483957557a22a5"
+    },
+    {
+      "bytes": 12788,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-120-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1c5390dd526c962870afe574c876d92b727e0a654dc197820fccd0256c8856df"
+    },
+    {
+      "bytes": 9590,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-135-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a838d5e7f82c24edf8d3f829826db0f18dab574aa17586c7f6a6ec96781024a4"
+    },
+    {
+      "bytes": 63797,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-135-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "fa79405ec835fdb105a2aaec4743fd0274958b162002d5c27c22e5b950eb615d"
+    },
+    {
+      "bytes": 707266,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-135-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "35b85db424ac668ce90bead8335efc76a82a326890a623973770da8fbb759195"
+    },
+    {
+      "bytes": 644948,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-135-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "122c731bfb7131acabe35dee8edf2d30553d674cedcee6af7dc85c88cd282006"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-135-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 10605,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-135-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "79e4d8f0d5e60525c7b42c9730b85519072afc8119f63c4231775d9470b57686"
+    },
+    {
+      "bytes": 9498,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-150-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "b7111878a4fe134bdaa5ce34f4116dcccf812f5dfd7ad8b1edf66e49e9ded4af"
+    },
+    {
+      "bytes": 57069,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-150-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "03fb37dd21f13c95d62a74048de41ad55a88028b752b48c1216a9ea590e89198"
+    },
+    {
+      "bytes": 641697,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-150-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "540c3358edeb2a6a0daf274c4ec713c28b9d8f3928e00450fdce921720c03b42"
+    },
+    {
+      "bytes": 575934,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-150-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "97112da72a1e8c4e01ed35060516223fca36a1d05423e4ce24a11380a0616419"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-150-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 10701,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-150-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "a8da8476f7bee9afd16d9bd0cf83a1574585a47befb5d01dceab90beec7d0b02"
+    },
+    {
+      "bytes": 9310,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-165-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "c48a71dc9deeb00c46af2a7e149b1ceaf6f507620576d588897ba452fab2d9da"
+    },
+    {
+      "bytes": 60257,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-165-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "769d64f2811eea591163538053118cceb929d090c9406aa2218d89c984d84303"
+    },
+    {
+      "bytes": 739777,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-165-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "66fd91e3e67520564146f8f3bd1e8e410711c4c009a25ac019c87d6994f8f710"
+    },
+    {
+      "bytes": 678966,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-165-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "19c7bc8c42d604348bc213878f3795dd9a10abe3460061b70b0fd48b2dab56d8"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-165-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 11458,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-165-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "03312720b213cfd8b82b936abb696db817a76567055599f6f402999b0430e9ad"
+    },
+    {
+      "bytes": 8578,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-180-pitch+00/base-hide-mask.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "f0d826d9a311999d1d99125d1c4cd40ea396969ac6a298217d4578ed9e3bd967"
+    },
+    {
+      "bytes": 40410,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-180-pitch+00/body-fix.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "bfe2e5e1ade1fe5413cc96f90f2f8be4b1c6613e0715103758a233ce28a6d2be"
+    },
+    {
+      "bytes": 718057,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-180-pitch+00/garment.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "821d0748c227eb3068658b80bb33073be1bbad63f284ed4b855d0e02aef30406"
+    },
+    {
+      "bytes": 777349,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-180-pitch+00/hair-back.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "60343f4b5d008a55b58706ddd46323d800625cf35addc1a28db42ecc12ad7455"
+    },
+    {
+      "bytes": 6178,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-180-pitch+00/hair-front.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 15524,
+      "category": "character_layer_view",
+      "image": {
+        "height": 1536,
+        "mode": "RGBA",
+        "width": 1024
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/characters/mohan/body/views/yaw-180-pitch+00/ornament.png",
+      "readers": [
+        {
+          "line": 241,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:"
+        }
+      ],
+      "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
+      "scope": "runtime_data",
+      "sha256": "2c7b106cee6c402f6114bd3991b8e20425e13e686a42f67b861c1ceae2cb12d4"
+    },
+    {
       "bytes": 12637,
       "category": "character_dialogue_data",
       "manifest_references": [],
@@ -13042,7 +17179,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 8247,
+      "bytes": 379442,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -13050,7 +17187,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "761ddf66eb9548db575f9bf3a054e5725204fdeb5487d7e19ee8f199a39981fe"
+      "sha256": "36b38d009d20bd46e2ff1c8f58b6138a979c9d2cbb8f9177787d715441af394c"
     },
     {
       "bytes": 3149,
@@ -13179,7 +17316,7 @@
       "path": "assets/characters/mohan/rig/runtime-bindings.json",
       "readers": [
         {
-          "line": 55,
+          "line": 80,
           "path": "infrastructure/bundled_character_source.py",
           "text": "self._character_root / \"rig\" / \"runtime-bindings.json\""
         }
@@ -43444,6 +47581,102 @@
       "sha256": "b84c800c546af3793c69c414cf09d6fc0761a14225f7a07a8804ff3fe8c93422"
     },
     {
+      "bytes": 1428856,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/front-crossed/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "d1986cea0ccae399f62d5b9bf3b31f1bd09b66e9c8469a65ca90073d6124fba8"
+    },
+    {
+      "bytes": 1368601,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/front-eureka/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "356c4bf6f8f5ea742ac76d0b37b09552130d37786fcf2195a753c66067a40f88"
+    },
+    {
+      "bytes": 1388732,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/front-exasperated/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "8ba52f25d3a4f818e11019b528070b6986a98ba1e5484973e0ede49fad1c7d79"
+    },
+    {
+      "bytes": 1466058,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/front-mock-hit/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0e862821c2734a3a3140b168efbfcba17701dc342225577dd0bdccbb7ac63fe9"
+    },
+    {
+      "bytes": 1392175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/front-mock-scold/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "82e91ff2eaf4a22bd8f555de47ef92b3037260c273d8a470dcf9d80a453cccce"
+    },
+    {
+      "bytes": 1351496,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/left-neutral/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "3f11fcddfb321c3c370cbd9113e72955c50cc103a26aad203747d46700ccd4e5"
+    },
+    {
       "bytes": 23292261,
       "category": "appearance_pack",
       "manifest_references": [],
@@ -43451,7 +47684,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 327,
+          "line": 346,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -78605,7 +82838,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 327,
+          "line": 346,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -120984,7 +125217,7 @@
           "text": "lazy from domain.outfit_pack_official import ("
         },
         {
-          "line": 32,
+          "line": 39,
           "path": "domain/outfit_pack.py",
           "text": "from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations"
         },
@@ -121478,6 +125711,191 @@
       "work_package": null
     },
     {
+      "bytes": 5885,
+      "category": "embedded_character_content",
+      "classification": "engine_extract",
+      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "content_categories": [
+        "rig"
+      ],
+      "content_locations": [
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "line": 38,
+          "matched": "cheek-rest",
+          "path": "infrastructure/body_pack_presentation.py",
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+        },
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "line": 39,
+          "matched": "cheek-rest",
+          "path": "infrastructure/body_pack_presentation.py",
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "and \"cheek-rest\" not in self._views"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "migration": "被程式寫死需先改",
+      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
+      "path": "infrastructure/body_pack_presentation.py",
+      "readers": [
+        {
+          "line": 83,
+          "path": "application/service_container.py",
+          "text": "lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory"
+        },
+        {
+          "line": 20,
+          "path": "infrastructure/ensemble_body_pack.py",
+          "text": "lazy from infrastructure.body_pack_presentation import _body_pack_makeup_applier"
+        }
+      ],
+      "scope": "embedded_code",
+      "sha256": "11e3751dff91e4a749b09c8f0cffec703b21361b4c0f63dec81b9f917ef47770",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "symbols": [
+        {
+          "end_line": 83,
+          "line": 18,
+          "name": "_BodyPackWithCheekFallback"
+        },
+        {
+          "end_line": 101,
+          "line": 86,
+          "name": "_body_pack_makeup_applier"
+        },
+        {
+          "end_line": 151,
+          "line": 104,
+          "name": "body_pack_renderer_factory"
+        }
+      ],
+      "work_package": "rig-and-asset-parameterization"
+    },
+    {
+      "bytes": 16073,
+      "category": "embedded_character_content",
+      "classification": "engine_extract",
+      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "content_categories": [
+        "rig"
+      ],
+      "content_locations": [
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "line": 71,
+          "matched": "front-exasperated",
+          "path": "infrastructure/ensemble_body_pack.py",
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "if \"exasperated\" in half_views and \"front-exasperated\" in layer_views:"
+        },
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "line": 72,
+          "matched": "front-exasperated",
+          "path": "infrastructure/ensemble_body_pack.py",
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "aliases[\"exasperated\"] = \"front-exasperated\""
+        },
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "line": 285,
+          "matched": "cheek-rest",
+          "path": "infrastructure/ensemble_body_pack.py",
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+        },
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "line": 286,
+          "matched": "cheek-rest",
+          "path": "infrastructure/ensemble_body_pack.py",
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
+          "text": "and \"cheek-rest\" not in selected.render.layer_views"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "migration": "被程式寫死需先改",
+      "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
+      "path": "infrastructure/ensemble_body_pack.py",
+      "readers": [
+        {
+          "line": 84,
+          "path": "application/service_container.py",
+          "text": "lazy from infrastructure.ensemble_body_pack import ("
+        }
+      ],
+      "scope": "embedded_code",
+      "sha256": "9321c429c77f7a067bdf3e7d12079e5d63af393e7785c8fac4c4223ecdff3a8e",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "symbols": [
+        {
+          "end_line": 27,
+          "line": 27,
+          "name": "_UNSET"
+        },
+        {
+          "end_line": 40,
+          "line": 30,
+          "name": "FaceRendererProtocol"
+        },
+        {
+          "end_line": 46,
+          "line": 43,
+          "name": "FullBodyRendererProtocol"
+        },
+        {
+          "end_line": 54,
+          "line": 49,
+          "name": "_file_token"
+        },
+        {
+          "end_line": 73,
+          "line": 57,
+          "name": "_layer_view_aliases"
+        },
+        {
+          "end_line": 287,
+          "line": 76,
+          "name": "EnsembleBodyPackRouter"
+        },
+        {
+          "end_line": 351,
+          "line": 290,
+          "name": "EnsembleFaceRenderer"
+        },
+        {
+          "end_line": 367,
+          "line": 354,
+          "name": "EnsembleFullBodyRenderer"
+        },
+        {
+          "end_line": 374,
+          "line": 370,
+          "name": "__all__"
+        }
+      ],
+      "work_package": "rig-and-asset-parameterization"
+    },
+    {
       "bytes": 4974,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
@@ -121502,6 +125920,16 @@
       "note": "只有 content_locations 的具名規則證據構成計數；人工提示、識別碼、註解與 docstring 均不單獨計入。",
       "path": "infrastructure/installed_body_packs.py",
       "readers": [
+        {
+          "line": 46,
+          "path": "infrastructure/bundled_character_source.py",
+          "text": "lazy from infrastructure.installed_body_packs import installed_body_pack_root"
+        },
+        {
+          "line": 23,
+          "path": "infrastructure/ensemble_body_pack.py",
+          "text": "lazy from infrastructure.installed_body_packs import installed_body_pack_root"
+        },
         {
           "line": 24,
           "path": "infrastructure/installed_character_packs.py",
@@ -121583,7 +126011,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 127,
+          "line": 132,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -121753,7 +126181,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 129,
+          "line": 134,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -123090,7 +127518,7 @@
       "work_package": null
     },
     {
-      "bytes": 51481,
+      "bytes": 52122,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -123101,7 +127529,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 540,
+          "line": 542,
           "matched": "墨寒",
           "path": "presentation/ui_localization.py",
           "rule": "product_identity_literal",
@@ -123111,7 +127539,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 542,
+          "line": 544,
           "matched": "墨寒",
           "path": "presentation/ui_localization.py",
           "rule": "product_identity_literal",
@@ -123121,7 +127549,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 543,
+          "line": 545,
           "matched": "MoHan",
           "path": "presentation/ui_localization.py",
           "rule": "product_identity_literal",
@@ -123196,7 +127624,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "0202ebafe4db922214169c72087ee4304f4073db7eb444f8948ee06daeb5e2f9",
+      "sha256": "09580561bd6b0a222e9fc467d7ec21b82df59f5c782f275949d9aa64b29087b6",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -123207,35 +127635,35 @@
           "name": "_CHARACTER_DIALOGUES"
         },
         {
-          "end_line": 567,
+          "end_line": 569,
           "line": 14,
           "name": "_SIMPLIFIED_CHINESE"
         },
         {
-          "end_line": 693,
-          "line": 569,
+          "end_line": 697,
+          "line": 571,
           "name": "_JAPANESE"
         },
         {
-          "end_line": 734,
-          "line": 708,
+          "end_line": 738,
+          "line": 712,
           "name": "ui_text"
         },
         {
-          "end_line": 750,
-          "line": 737,
+          "end_line": 754,
+          "line": 741,
           "name": "display_label"
         },
         {
-          "end_line": 767,
-          "line": 753,
+          "end_line": 771,
+          "line": 757,
           "name": "__all__"
         }
       ],
       "work_package": null
     },
     {
-      "bytes": 41840,
+      "bytes": 42109,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -123246,7 +127674,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 730,
+          "line": 732,
           "matched": "MoHan",
           "path": "presentation/ui_localization_en.py",
           "rule": "product_identity_literal",
@@ -123256,7 +127684,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 732,
+          "line": 734,
           "matched": "MoHan",
           "path": "presentation/ui_localization_en.py",
           "rule": "product_identity_literal",
@@ -123276,7 +127704,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "4ccdeefb674503ef6c02ff49a1ded049f9467bc41a609bbba0f45ac31eb0797b",
+      "sha256": "eae727c68fc91b1e7344a24ae5545bf5916e313899f820b49671f81aa35aef5e",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -123287,13 +127715,13 @@
           "name": "_DIALOGUE"
         },
         {
-          "end_line": 761,
+          "end_line": 763,
           "line": 10,
           "name": "ENGLISH_UI_TEXT"
         },
         {
-          "end_line": 763,
-          "line": 763,
+          "end_line": 765,
+          "line": 765,
           "name": "__all__"
         }
       ],
@@ -124114,7 +128542,7 @@
     "character_appearance_defaults": 2,
     "character_dialogue_data": 10,
     "character_expression_catalog": 2,
-    "character_layer_view": 157,
+    "character_layer_view": 345,
     "character_license_notice": 2,
     "character_persona_data": 10,
     "character_rig_data": 2,
@@ -124150,16 +128578,16 @@
   "schema": "mohan.character-inventory.v1",
   "schema_version": 1,
   "scope_counts": {
-    "embedded_code": 22,
+    "embedded_code": 24,
     "excluded_authoring_mirror": 187,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 408,
+    "excluded_support": 414,
     "product_validation_data": 48,
-    "runtime_data": 4016
+    "runtime_data": 4204
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

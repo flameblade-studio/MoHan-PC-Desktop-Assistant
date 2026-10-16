@@ -15,6 +15,7 @@ lazy from domain.character_layer_plan import (
     CharacterLayerAsset, CharacterLayerMask, CharacterLayerPlan, DEFAULT_CHARACTER_LAYER_ORDER,
 )
 lazy from domain.face_rig import FacePose, Viseme
+lazy from infrastructure.ensemble_body_pack import EnsembleFaceRenderer
 lazy from infrastructure.body_pack_renderer import (
     MAX_LAYER_BYTES_CACHE_BYTES,
     MAX_PIXMAP_CACHE_BYTES,
@@ -141,6 +142,51 @@ def test_body_motion_and_halfbody_blink_use_owned_frames(qapp):
     assert blink.toImage().pixelColor(0, 0).name() == "#0000ff"
     assert body.calls == [("back", "a-rest", False), ("front", "neutral-rest", True),
                           ("front", "neutral-closed", True)]
+
+
+def test_shared_layer_silhouette_aliases_follow_the_active_body_pose(qapp):
+    renderer = BodyPackRenderer(
+        _Body(), {}, lambda record: b"",
+        view_aliases={"front": "front-crossed", "idle_front": "front-crossed"},
+    )
+
+    assert renderer._alias_body_views["front-crossed"] == ("front", "idle_front")
+    assert renderer._body_view_for_alias("front-crossed", "front") == "front"
+    assert renderer._body_view_for_alias("front-crossed", "idle_front") == "idle_front"
+    with pytest.raises(BodyPackMismatchError, match="ambiguous_layer_view"):
+        renderer._body_view_for_alias("front-crossed", None)
+
+
+def test_explicit_body_view_layer_plan_precedes_pose_silhouette(qapp, monkeypatch):
+    body = _Body()
+    body.manifest = SimpleNamespace(half_body=(
+        SimpleNamespace(view_id="front"),
+        SimpleNamespace(view_id="front-eureka"),
+    ))
+    plan = CharacterLayerPlan(("base",), ())
+    renderer = BodyPackRenderer(
+        body,
+        {"front-eureka": plan, "front-crossed": plan},
+        lambda record: b"",
+        view_aliases={"front-eureka": "front-crossed"},
+    )
+    captured = {}
+
+    def compose(view, state, *, halfbody=False, expression="", layer_view=None):
+        captured.update(view=view, state=state, halfbody=halfbody, layer_view=layer_view)
+        result = QPixmap(4, 4)
+        result.fill(QColor("red"))
+        return result
+
+    monkeypatch.setattr(renderer, "_compose", compose)
+    motion = _motion()
+    motion.expression = "front-eureka"
+
+    renderer.render(QPixmap(), motion, None)
+
+    assert captured["view"] == "front-eureka"
+    assert captured["layer_view"] == "front-eureka"
+    assert captured["halfbody"] is True
 
 
 def test_rest_only_blink_recomposes_the_remembered_body_and_hair(qapp):
@@ -304,6 +350,21 @@ def test_missing_motion_endpoint_raises_without_shared_fallback(qapp):
     renderer = _renderer(_Body())
     with pytest.raises(BodyPackMismatchError, match="missing_frame"):
         renderer.render_view("back", _motion(Viseme.A, blink=1.0))
+
+
+def test_ensemble_face_renderer_preserves_legacy_outfit_overlay_identity():
+    overlay = sentinel('legacy_overlay')
+    legacy = SimpleNamespace(_outfit_overlay=overlay)
+
+    class FixedRouter:
+        current = legacy
+
+        def renderer_for(self, _legacy):
+            return self.current
+
+    renderer = EnsembleFaceRenderer(legacy, FixedRouter())
+
+    assert renderer._outfit_overlay is overlay
 
 
 def test_declared_body_routes_both_factories_before_legacy_assets(tmp_path):

@@ -1,0 +1,64 @@
+{
+  "approval_phrases": {
+    "six_half_body_poses": {
+      "english": "The six official-look half-body poses are approved.",
+      "japanese": "公式外観の六つの半身ポーズに同意します。",
+      "simplified_chinese": "官方造型六个半身同意",
+      "traditional_chinese": "官方造型六個半身同意"
+    },
+    "stage_one_official_look": {
+      "english": "Half-body direction approved; split into two stages.",
+      "japanese": "半身方向に同意し、二段階に分ける。",
+      "simplified_chinese": "半身方向同意，分两个阶段",
+      "traditional_chinese": "半身方向同意，分兩階段"
+    }
+  },
+  "body_pack": {
+    "fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+    "id": "mohan-body-v2",
+    "version": "1.0.0"
+  },
+  "character_pack": {
+    "id": "flameblade.mohan",
+    "version": "1.0.6"
+  },
+  "layer_source": {
+    "candidate_member_count": 311,
+    "layer_png_bytes": 38368362,
+    "layer_png_files": 186,
+    "layer_view_aliases": 196,
+    "physical_views": 31,
+    "png_profiles": {
+      "1024x1536 RGBA": 144,
+      "1254x1254 RGBA": 42
+    },
+    "repository_manifest_path": "assets/characters/mohan/body/manifest.json",
+    "repository_manifest_sha256": "caddce561533f1ef6d2d41f005309cd0d25dad3e07217b94542d7216653d0875",
+    "source_archive": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
+    "source_archive_sha256_before_move": "9059a2feeb7d34178d9ea8091dbc13ca96a1b9abfee85ec2bd93eccf9c812f68",
+    "source_candidate_body_pack": {
+      "fingerprint": "6340691bfdca8f2eb6197f6237481a550f366ddb762905353703e1a513da778c",
+      "id": "mohan-body-v2",
+      "version": "1.0.0"
+    }
+  },
+  "release_authorization": {
+    "license": "CC BY-NC-ND 4.0",
+    "recorded_authority": "Project-owner Stage 1 appearance approval dated 2026-10-16; this work item only relocates existing pixels.",
+    "source_quote": "半身方向同意，分兩階段",
+    "translations": {
+      "english": "Half-body direction approved; split into two stages.",
+      "japanese": "半身方向に同意し、二段階に分ける。",
+      "simplified_chinese": "半身方向同意，分两个阶段",
+      "traditional_chinese": "半身方向同意，分兩階段"
+    }
+  },
+  "schema": "flameblade.release-evidence.character-body-layers.v1",
+  "scope": {
+    "english": "Move the existing Stage 1 official-look layers; retain current main cheek pixels without redrawing or recomputing them.",
+    "japanese": "既存の第1段階公式外観レイヤーを移動し、頬杖は現在の main 製品画素を維持して再描画・再計算しない。",
+    "simplified_chinese": "搬移既有第一阶段官方造型图层；托腮维持当前 main 产品画面，不重新绘制或重算像素。",
+    "traditional_chinese": "搬移既有第一階段官方造型圖層；托腮維持目前 main 產品畫面，不重新繪製或重算像素。"
+  },
+  "ticket": "OFFICIAL-LOOK-V2-3"
+}

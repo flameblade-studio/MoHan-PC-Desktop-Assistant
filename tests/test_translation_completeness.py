@@ -53,6 +53,7 @@ WARDROBE_SOURCES = {
     "wardrobe_validator_pending": "套件尚未通過完整安全驗證，因此未安裝。",
     "wardrobe_assets_pending": '請補齊每個視角的完整素材後套用此服裝。',
     "wardrobe_body_profile_outdated": '這套服裝需要二代素體素材；請用一鍵製衣重新生成',
+    "wardrobe_body_pack_download_hint": "下載素體包可取得完整標準造型。",
     "wardrobe_builtin_applied": "已套用內建預設服裝。",
     "wardrobe_outfit_applied": "已套用所選完整服裝。",
     "wardrobe_autonomous_enabled": "允許墨寒自主選裝",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy import hashlib
 lazy import json
 lazy import os
 lazy import re
@@ -11,9 +12,15 @@ lazy from domain.outfit_pack_store import (
     copy_pack_archive, inspect_cached_pack,
 )
 lazy from domain import _outfit_pack_models
+lazy from domain.body_pack import BodyPackError, parse_body_pack_reference
+lazy from domain.character_layer_plan import (
+    CharacterLayerPlanError,
+    parse_character_layer_views,
+)
 # Resolve the public facade now so ``from ... import`` callers receive dataclasses.
 AppearanceAsset = _outfit_pack_models.AppearanceAsset
 AppearanceEnsemble = _outfit_pack_models.AppearanceEnsemble
+EnsembleRender = _outfit_pack_models.EnsembleRender
 AppearanceItem = _outfit_pack_models.AppearanceItem
 AppearanceVariant = _outfit_pack_models.AppearanceVariant
 AutonomousStyleProfile = _outfit_pack_models.AutonomousStyleProfile
@@ -476,11 +483,43 @@ def _ensemble_selection(
     return EnsembleSelection(*identity)
 
 
+def _ensemble_render(
+    value: object,
+    archive: zipfile.ZipFile,
+    names: set[str],
+) -> EnsembleRender:
+    if not isinstance(value, dict) or set(value) != {"type", "body_pack", "layer_views"}:
+        raise OutfitPackError("Provide a supported ensemble render declaration.")
+    if value["type"] != "body_pack":
+        raise OutfitPackError("Only the body_pack ensemble renderer is supported.")
+    try:
+        body_pack = parse_body_pack_reference(value["body_pack"])
+        layer_views = parse_character_layer_views(value["layer_views"])
+    except (BodyPackError, CharacterLayerPlanError) as error:
+        raise OutfitPackError(f"Ensemble render declaration is invalid: {error}") from None
+    for plan in layer_views.values():
+        for asset in (*plan.layers, *((plan.base_hide,) if plan.base_hide is not None else ())):
+            if not asset.path.lower().endswith(".png") or asset.path not in names:
+                raise OutfitPackError("Every body-pack layer must reference a declared PNG member.")
+            payload = archive.read(asset.path)
+            if hashlib.sha256(payload).hexdigest() != asset.sha256:
+                raise OutfitPackError(
+                    "Body-pack layer integrity check requires attention.",
+                    reason="manifest_asset_hash_mismatch",
+                    asset_path=asset.path,
+                )
+    return EnsembleRender("body_pack", body_pack, layer_views)
+
+
 def _ensemble(
     entry: object,
     available: set[tuple[str, str, str]],
+    archive: zipfile.ZipFile,
+    names: set[str],
 ) -> AppearanceEnsemble:
-    if not isinstance(entry, dict) or set(entry) != {"id", "display_names", "selections", "autonomous_profile"}:
+    required = {"id", "display_names", "selections", "autonomous_profile"}
+    allowed = required | {"render"}
+    if not isinstance(entry, dict) or not required <= set(entry) or set(entry) - allowed:
         raise OutfitPackError("Provide a supported ensemble declaration.")
     selections = entry["selections"]
     required = set(SELECTION_CATEGORIES) - OPTIONAL_ENSEMBLE_CATEGORIES
@@ -494,11 +533,13 @@ def _ensemble(
         if category in selections
     )
     profile = _autonomous_profile(entry["autonomous_profile"])
+    render = _ensemble_render(entry["render"], archive, names) if "render" in entry else None
     return AppearanceEnsemble(
         _identifier(entry["id"], "ensemble"),
         _names(entry["display_names"]),
         typed,
         profile,
+        render,
     )
 
 
@@ -530,11 +571,16 @@ def _autonomous_profile(value: object) -> AutonomousStyleProfile:
     )
 
 
-def _ensembles(value: object, items: list[AppearanceItem]) -> tuple[AppearanceEnsemble, ...]:
+def _ensembles(
+    value: object,
+    items: list[AppearanceItem],
+    archive: zipfile.ZipFile,
+    names: set[str],
+) -> tuple[AppearanceEnsemble, ...]:
     if not isinstance(value, list):
         raise OutfitPackError("Ensembles must be a list.")
     available = _available_variants(items)
-    parsed = tuple(_ensemble(entry, available) for entry in value)
+    parsed = tuple(_ensemble(entry, available, archive, names) for entry in value)
     if len({ensemble.ensemble_id for ensemble in parsed}) != len(parsed):
         raise OutfitPackError("Duplicate ensemble identifier.")
     return parsed
@@ -553,8 +599,17 @@ def _parse_outfit_pack(
         names,
     )
     validate_source_bound_bindings(source_bound, items)
-    ensembles = _ensembles(manifest["ensembles"], items)
-    validate_declared_assets(items, names, source_bound_asset_paths(source_bound))
+    ensembles = _ensembles(manifest["ensembles"], items, archive, names)
+    render_layer_paths = tuple(dict.fromkeys(
+        asset.path
+        for ensemble in ensembles
+        if ensemble.render is not None
+        for plan in ensemble.render.layer_views.values()
+        for asset in (*plan.layers, *((plan.base_hide,) if plan.base_hide is not None else ()))
+    ))
+    validate_declared_assets(
+        items, names, (*source_bound_asset_paths(source_bound), *render_layer_paths),
+    )
     pack_id = _identifier(manifest["id"], "pack")
     pack_version_value, app_range = pack_version(manifest)
     return OutfitPack(
@@ -628,7 +683,10 @@ def list_installed_ensembles(
     store: Path, *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> tuple[InstalledEnsemble, ...]:
     return tuple(
-        InstalledEnsemble(pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names, ensemble.selections, ensemble.autonomous_profile)
+        InstalledEnsemble(
+            pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names,
+            ensemble.selections, ensemble.autonomous_profile, ensemble.render,
+        )
         for pack in list_installed_outfits(store, official_pack_root=official_pack_root)
         for ensemble in pack.ensembles
     )
@@ -655,7 +713,8 @@ def apply_appearance_selection(
         raise OutfitPackError("The selected appearance variant is not installed.")
     active_path = Path(store) / "active.json"
     active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
-    active.pop("_ensemble", None)
+    if selection.category != "makeup":
+        active.pop("_ensemble", None)
     active[selection.category] = {"pack_id": selection.pack_id, "item_id": selection.item_id, "variant_id": selection.variant_id}
     _atomic_json(active_path, active)
 
@@ -667,9 +726,49 @@ def clear_appearance_selection(store: Path, category: str) -> None:
     active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
     if not isinstance(active, dict):
         raise OutfitPackError("Provide a supported saved appearance state.")
-    active.pop("_ensemble", None)
+    if category != "makeup":
+        active.pop("_ensemble", None)
     active[category] = {"pack_id": "builtin", "item_id": "none", "variant_id": "none"}
     _atomic_json(active_path, active)
+
+
+def resolve_active_ensemble(
+    store: Path,
+    *,
+    official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
+) -> InstalledEnsemble | None:
+    """Resolve only the explicitly selected ensemble marker; built-in sentinels stay legacy."""
+    active_path = Path(store) / "active.json"
+    if not active_path.is_file():
+        return None
+    try:
+        active = json.loads(active_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        raise OutfitPackError("Provide a supported saved appearance state.") from None
+    if not isinstance(active, dict):
+        raise OutfitPackError("Provide a supported saved appearance state.")
+    selected = active.get("_ensemble")
+    if selected is None:
+        return None
+    if (
+        not isinstance(selected, dict)
+        or set(selected) != {"pack_id", "ensemble_id"}
+        or any(not isinstance(selected[key], str) for key in selected)
+    ):
+        raise OutfitPackError("Provide a supported active ensemble marker.")
+    identity = (selected["pack_id"], selected["ensemble_id"])
+    match = next(
+        (
+            item for item in list_installed_ensembles(
+                store, official_pack_root=official_pack_root,
+            )
+            if (item.pack_id, item.ensemble_id) == identity
+        ),
+        None,
+    )
+    if match is None:
+        raise OutfitPackError("The explicitly selected ensemble is no longer installed.")
+    return match
 
 
 def apply_ensemble(

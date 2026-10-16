@@ -464,6 +464,15 @@ def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(
     select_builtin_makeup(
         store, "light", official_pack_root=official_pack_root
     )
+    active_path = store / "active.json"
+    active = json.loads(active_path.read_text(encoding="utf-8"))
+    marker = {"pack_id": "official-pack", "ensemble_id": "official-body-pack"}
+    active["_ensemble"] = marker
+    active_path.write_text(json.dumps(active), encoding="utf-8")
+    select_builtin_makeup(
+        store, "light", official_pack_root=official_pack_root
+    )
+    assert json.loads(active_path.read_text(encoding="utf-8"))["_ensemble"] == marker
     assert _identity(
         resolve_active_selection(
             store, "makeup", official_pack_root=official_pack_root
@@ -474,6 +483,7 @@ def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(
             store, "glitter", official_pack_root=official_pack_root
         )
     clear_appearance_selection(store, "makeup")
+    assert json.loads(active_path.read_text(encoding="utf-8"))["_ensemble"] == marker
     cleared = resolve_active_selection(
         store, "makeup", official_pack_root=official_pack_root
     )
@@ -503,9 +513,15 @@ def test_removed_makeup_pack_falls_back_to_builtin_classic(
         )
         if item.pack_id == "festival-makeup"
     )
+    active_path = store / "active.json"
+    active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.exists() else {}
+    marker = {"pack_id": "official-pack", "ensemble_id": "official-body-pack"}
+    active["_ensemble"] = marker
+    active_path.write_text(json.dumps(active), encoding="utf-8")
     apply_appearance_selection(
         store, festival, official_pack_root=official_pack_root
     )
+    assert json.loads(active_path.read_text(encoding="utf-8"))["_ensemble"] == marker
     assert _identity(
         resolve_active_selection(
             store, "makeup", official_pack_root=official_pack_root
@@ -525,6 +541,7 @@ def test_removed_makeup_pack_falls_back_to_builtin_classic(
     )
     service.apply_makeup(state.option_id)
     assert service.active_makeup().fallback is False
+    assert json.loads(active_path.read_text(encoding="utf-8"))["_ensemble"] == marker
 
 
 def test_makeup_intensity_state_round_trips(tmp_path: Path) -> None:

@@ -2,9 +2,21 @@
 
 from __future__ import annotations
 
+lazy import hashlib
+lazy import json
+lazy import logging
 lazy from collections.abc import Mapping
+lazy from collections.abc import Iterable
 lazy from pathlib import Path, PurePosixPath
+lazy from types import MappingProxyType, SimpleNamespace
+lazy from typing import cast
 
+lazy from domain.body_pack import BodyPackMismatchError, parse_body_pack_reference
+lazy from domain.character_layer_plan import (
+    CharacterLayerAsset,
+    CharacterLayerMask,
+    parse_character_layer_views,
+)
 lazy from domain.character_expression_data_loader import load_expression_catalog
 lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_pack.character_data_models import canonical_character_locale
@@ -30,6 +42,12 @@ lazy from domain.character_source import (
     CharacterVoice,
 )
 lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
+lazy from infrastructure.body_pack_reader import BodyPackReader, resolve_character_body_binding
+lazy from infrastructure.installed_body_packs import installed_body_pack_root
+
+
+_UNRESOLVED_BODY_PACK = object()
+LOGGER = logging.getLogger(__name__)
 
 
 class BundledCharacterSource(
@@ -40,7 +58,14 @@ class BundledCharacterSource(
 ):
     """Load the one character intentionally bundled with the MoHan product."""
 
-    def __init__(self, asset_root: Path, character_id: str) -> None:
+    def __init__(
+        self,
+        asset_root: Path,
+        character_id: str,
+        *,
+        body_pack_roots: Iterable[Path] | None = None,
+        load_body_layers: bool = True,
+    ) -> None:
         self._asset_root = Path(asset_root).resolve(strict=True)
         self._character_id = _character_id(character_id)
         if self._character_id != "mohan":
@@ -59,6 +84,44 @@ class BundledCharacterSource(
         )
         if self._expressions.character_id != self._rig.character_id:
             raise ValueError("Bundled character rig and expressions must identify the same character.")
+        self._body_pack_roots = tuple(
+            Path(root) for root in (
+                body_pack_roots
+                if body_pack_roots is not None
+                else (installed_body_pack_root(),)
+            )
+        )
+        self._body_pack_reference = None
+        self._character_layer_views = MappingProxyType({})
+        self._resolved_body_pack: BodyPackReader | object | None = _UNRESOLVED_BODY_PACK
+        self._body_pack_resolution_error: BodyPackMismatchError | None = None
+        if load_body_layers:
+            self._load_character_body_manifest()
+        else:
+            self._resolved_body_pack = None
+
+    def _load_character_body_manifest(self) -> None:
+        """Load the bundled body declaration without resolving its download yet."""
+
+        manifest_path = self._character_root / "body" / "manifest.json"
+        if not manifest_path.is_file():
+            self._resolved_body_pack = None
+            return
+        try:
+            raw = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self._body_pack_reference = parse_body_pack_reference(raw["body_pack"])
+            self._character_layer_views = parse_character_layer_views(raw["layer_views"])
+        except (OSError, UnicodeError, json.JSONDecodeError, KeyError, TypeError, ValueError) as error:
+            raise ValueError(f"Bundled character body manifest is invalid: {manifest_path}: {error}") from None
+
+    def _character_body_path(self, relative_path: str) -> Path:
+        normalized = _character_relative_path(relative_path)
+        candidate = (self._asset_root / Path(*normalized.parts)).resolve(strict=True)
+        if not candidate.is_relative_to(self._character_root):
+            raise BodyPackMismatchError(
+                "unsafe_path", "Bundled character layer paths must remain below the character root.", relative_path,
+            )
+        return candidate
 
     @property
     def character_id(self) -> str:
@@ -113,6 +176,83 @@ class BundledCharacterSource(
     @property
     def official_pack_roots(self) -> tuple[Path, ...]:
         return (self._asset_root / "assets" / "official-packs",)
+
+    @property
+    def manifest(self) -> object:
+        """Expose the body dependency in the same shape as CharacterPackReader."""
+
+        return SimpleNamespace(body_pack=self._body_pack_reference)
+
+    @property
+    def resolved_body_pack(self) -> BodyPackReader | None:
+        """Resolve MoHan's optional body pack without breaking the legacy route."""
+
+        if self._body_pack_reference is None:
+            return None
+        if self._resolved_body_pack is _UNRESOLVED_BODY_PACK:
+            try:
+                binding = resolve_character_body_binding(
+                    self._body_pack_reference,
+                    self._rig,
+                    self._body_pack_roots,
+                    self._character_layer_views,
+                )
+            except BodyPackMismatchError as error:
+                self._body_pack_resolution_error = error
+                self._resolved_body_pack = None
+                LOGGER.warning(
+                    "mohan_body_pack_fallback code=%s path=%s message=%s",
+                    error.code,
+                    error.path or self._body_pack_reference.id,
+                    error,
+                )
+            else:
+                self._resolved_body_pack = binding.resolved_body_pack
+        return cast(BodyPackReader | None, self._resolved_body_pack)
+
+    @property
+    def body_pack_fallback_active(self) -> bool:
+        """Return whether MoHan is intentionally using the established look."""
+
+        return (
+            self._body_pack_reference is not None
+            and self._body_pack_resolution_error is not None
+            and self._resolved_body_pack is None
+        )
+
+    @property
+    def body_pack_download_required(self) -> bool:
+        """Expose a presentation-safe download hint without exposing raw paths."""
+
+        return self.body_pack_fallback_active
+
+    @property
+    def body_pack_resolution_error(self) -> BodyPackMismatchError | None:
+        """Expose the retained validation diagnostic to composition and evidence."""
+
+        return self._body_pack_resolution_error
+
+    @property
+    def character_layer_views(self) -> Mapping[str, object]:
+        """Return the manifest-bound scattered layer plans."""
+
+        return self._character_layer_views
+
+    def load_character_layer(self, record: CharacterLayerAsset | CharacterLayerMask) -> bytes:
+        """Read a scattered layer and recheck its manifest-bound SHA-256."""
+
+        try:
+            path = self._character_body_path(record.path)
+        except FileNotFoundError:
+            raise BodyPackMismatchError("missing_file", "A bundled character layer is missing.", record.path) from None
+        try:
+            payload = path.read_bytes()
+        except OSError as error:
+            raise BodyPackMismatchError("read_error", str(error), record.path) from None
+        digest = hashlib.sha256(payload).hexdigest()
+        if digest != record.sha256:
+            raise BodyPackMismatchError("file_hash_mismatch", f"Character layer changed: {record.path}", record.path)
+        return payload
 
     def resolve_path(self, relative_path: str) -> Path:
         normalized = _character_relative_path(relative_path)
@@ -227,8 +367,19 @@ class BundledCharacterSource(
 class LegacyMohanCharacterSource(BundledCharacterSource):
     """Preserve the established MoHan source API while using strict data files."""
 
-    def __init__(self, asset_root: Path) -> None:
-        super().__init__(asset_root, "mohan")
+    def __init__(
+        self,
+        asset_root: Path,
+        *,
+        body_pack_roots: Iterable[Path] | None = None,
+        load_body_layers: bool = True,
+    ) -> None:
+        super().__init__(
+            asset_root,
+            "mohan",
+            body_pack_roots=body_pack_roots,
+            load_body_layers=load_body_layers,
+        )
 
     def display_name(self, language: str) -> str:
         canonical_character_locale(language)

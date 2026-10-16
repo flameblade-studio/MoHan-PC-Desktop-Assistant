@@ -766,6 +766,8 @@ class PresentationPorts:
     outfit_overlay_factory: OutfitOverlayFactory = no_outfit_overlay_factory
     full_body_renderer_factory: FullBodyRendererFactory = no_full_body_renderer_factory
     body_pack_required: bool = False
+    body_pack_download_hint: bool = False
+    body_pack_diagnostic: str | None = None
 
 
 _PORTABLE_SECRET_IDS = frozenset(

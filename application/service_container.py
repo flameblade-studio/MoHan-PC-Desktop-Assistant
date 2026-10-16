@@ -81,6 +81,11 @@ lazy from domain.vision_provider_contracts import (
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
 lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory
+lazy from infrastructure.ensemble_body_pack import (
+    EnsembleBodyPackRouter,
+    FaceRendererProtocol,
+    FullBodyRendererProtocol,
+)
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
@@ -321,13 +326,33 @@ def create_presentation_ports() -> PresentationPorts:
     return _create_presentation_ports(active_character_source())
 
 
+def _route_face_renderer(
+    router: EnsembleBodyPackRouter | None,
+    legacy: FaceRendererProtocol,
+) -> FaceRendererProtocol:
+    return legacy if router is None else router.face_renderer(legacy)
+
+
+def _route_full_body_renderer(
+    router: EnsembleBodyPackRouter | None,
+    legacy: FullBodyRendererProtocol,
+) -> FullBodyRendererProtocol:
+    return legacy if router is None else router.full_body_renderer(legacy)
+
+
 def _create_presentation_ports(character_source: CharacterSource) -> PresentationPorts:
     """Build presentation adapters from the already selected character source."""
     asset_root = character_source.assets.asset_root
     official_pack_roots = getattr(
         character_source.assets, "official_pack_roots", (asset_root / "assets" / "official-packs",),
     )
-    body_pack = resolved_body_pack_for_source(character_source)
+    body_pack, (body_pack_fallback_active, body_pack_error) = (
+        resolved_body_pack_for_source(character_source),
+        (
+            bool(getattr(character_source, "body_pack_fallback_active", False)),
+            getattr(character_source, "body_pack_resolution_error", None),
+        ),
+    )
     bindings, native_frames = _character_frame_paths(character_source)
     default_look = (CharacterDefaultLook(
         character_source, default_data_dir() / "outfits", official_pack_roots,
@@ -356,6 +381,22 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
 
     body_renderer = body_pack_renderer_factory(
         character_source, body_pack, default_data_dir() / "outfits", official_pack_roots,
+        cheek_fallback_factory=(
+            _create_presentation_ports(
+                LegacyMohanCharacterSource(asset_root, load_body_layers=False),
+            ).face_renderer_factory
+            if body_pack is not None
+            and getattr(character_source, "character_id", None) == DEFAULT_CHARACTER_ID
+            else None
+        ),
+    )
+    ensemble_body_router = (
+        EnsembleBodyPackRouter(
+            character_source, default_data_dir() / "outfits", official_pack_roots,
+        )
+        if body_pack is None and hasattr(character_source, "appearance")
+        and not body_pack_fallback_active
+        else None
     )
 
     def face_renderer_factory():
@@ -422,27 +463,41 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             candidate_appearance.store = default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
-        return LayeredParametricFaceRenderer(
-            manifest=face_manifest,
-            outfit_overlay=outfit_overlay_factory(),
-            authority_dir=authority_dir,
-            detachable_dir=detachable_dir,
-            use_detachable=detachable_dir is not None,
-            exasperated_candidate_dir=candidate_dir,
-            exasperated_source_bindings=ExasperatedSourceBindings(
-                complete_halfbody_supplement=complete_halfbody_supplement,
-                complete_halfbody_root=complete_halfbody_root,
-                complete_halfbody_provider=default_look.halfbody_root if default_look is not None else None,
-                native_frames=default_look.native_frames if default_look is not None else None,
-                require_complete_halfbody=(
-                    default_look.halfbody_root()[1] if default_look is not None else
-                    bindings.get("halfbody_complete", "assets/expressions/complete-expressions")
-                    != "assets/expressions/complete-expressions"
-                ),
-                appearance_overlay=candidate_appearance,
-                expression_provider=None if native_frames and default_look is None else OutfitSourceBoundExpressionProvider(
-                    default_data_dir() / "outfits",
-                    official_pack_root=official_pack_roots,
+        return _route_face_renderer(
+            ensemble_body_router,
+            LayeredParametricFaceRenderer(
+                manifest=face_manifest,
+                outfit_overlay=outfit_overlay_factory(),
+                authority_dir=authority_dir,
+                detachable_dir=detachable_dir,
+                use_detachable=detachable_dir is not None,
+                exasperated_candidate_dir=candidate_dir,
+                exasperated_source_bindings=ExasperatedSourceBindings(
+                    complete_halfbody_supplement=complete_halfbody_supplement,
+                    complete_halfbody_root=complete_halfbody_root,
+                    complete_halfbody_provider=(
+                        default_look.halfbody_root
+                        if default_look is not None else None
+                    ),
+                    native_frames=(
+                        default_look.native_frames
+                        if default_look is not None else None
+                    ),
+                    require_complete_halfbody=(
+                        default_look.halfbody_root()[1] if default_look is not None else
+                        bindings.get(
+                            "halfbody_complete",
+                            "assets/expressions/complete-expressions",
+                        ) != "assets/expressions/complete-expressions"
+                    ),
+                    appearance_overlay=candidate_appearance,
+                    expression_provider=(
+                        None if native_frames and default_look is None else
+                        OutfitSourceBoundExpressionProvider(
+                            default_data_dir() / "outfits",
+                            official_pack_root=official_pack_roots,
+                        )
+                    ),
                 ),
             ),
         )
@@ -450,11 +505,14 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
     def full_body_renderer_factory(outfit_overlay=None):
         if body_pack is not None:
             return body_renderer()
-        return create_character_fullbody_renderer(
-            character_source, bindings, outfit_overlay, default_look,
-            renderer_factory=LayeredFullBodyRenderer,
-            manifest_loader=load_layered_full_body_assets,
-            placement_loader=load_full_body_display_placement,
+        return _route_full_body_renderer(
+            ensemble_body_router,
+            create_character_fullbody_renderer(
+                character_source, bindings, outfit_overlay, default_look,
+                renderer_factory=LayeredFullBodyRenderer,
+                manifest_loader=load_layered_full_body_assets,
+                placement_loader=load_full_body_display_placement,
+            ),
         )
 
     return PresentationPorts(
@@ -471,6 +529,12 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=full_body_renderer_factory,
         body_pack_required=body_pack is not None,
+        body_pack_download_hint=bool(
+            getattr(character_source, "body_pack_download_required", False)
+        ),
+        body_pack_diagnostic=(
+            getattr(body_pack_error, "code", None) if body_pack_error is not None else None
+        ),
     )
 
 

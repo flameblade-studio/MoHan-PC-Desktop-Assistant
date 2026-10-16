@@ -698,7 +698,6 @@ def select_builtin_makeup(
         raise OutfitPackError("Provide a supported saved appearance state.") from None
     if not isinstance(active, dict):
         raise OutfitPackError("Provide a supported saved appearance state.")
-    active.pop("_ensemble", None)
     active["makeup"] = {"pack_id": "builtin", "item_id": "builtin", "variant_id": variant_id}
     _atomic_json(active_path, active)
 

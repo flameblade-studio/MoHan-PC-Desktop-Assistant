@@ -1,0 +1,58 @@
+{
+  "schema": "mohan.official-look-halfbody-approval.v1",
+  "owner_quote": "官方造型六個半身同意",
+  "date": "2026-10-13",
+  "owner_quotes": [
+    {
+      "date": "2026-10-12",
+      "quote": "5個半身姿勢同意，繼續"
+    },
+    {
+      "date": "2026-10-13",
+      "quote": "官方造型六個半身同意"
+    },
+    {
+      "date": "2026-10-16",
+      "quote": "半身方向同意，分兩階段"
+    }
+  ],
+  "approved_scope": "appearance",
+  "poses": [
+    {
+      "pose": "front-crossed",
+      "source_path": "assets/official-look-targets/halfbody/front-crossed/R.png",
+      "source_sha256": "d1986cea0ccae399f62d5b9bf3b31f1bd09b66e9c8469a65ca90073d6124fba8"
+    },
+    {
+      "pose": "front-eureka",
+      "source_path": "assets/official-look-targets/halfbody/front-eureka/R.png",
+      "source_sha256": "356c4bf6f8f5ea742ac76d0b37b09552130d37786fcf2195a753c66067a40f88"
+    },
+    {
+      "pose": "front-mock-scold",
+      "source_path": "assets/official-look-targets/halfbody/front-mock-scold/R.png",
+      "source_sha256": "82e91ff2eaf4a22bd8f555de47ef92b3037260c273d8a470dcf9d80a453cccce"
+    },
+    {
+      "pose": "left-neutral",
+      "source_path": "assets/official-look-targets/halfbody/left-neutral/R.png",
+      "source_sha256": "3f11fcddfb321c3c370cbd9113e72955c50cc103a26aad203747d46700ccd4e5"
+    },
+    {
+      "pose": "front-mock-hit",
+      "source_path": "assets/official-look-targets/halfbody/front-mock-hit/R.png",
+      "source_sha256": "0e862821c2734a3a3140b168efbfcba17701dc342225577dd0bdccbb7ac63fe9"
+    },
+    {
+      "pose": "front-exasperated",
+      "source_path": "assets/official-look-targets/halfbody/front-exasperated/R.png",
+      "source_sha256": "8ba52f25d3a4f818e11019b528070b6986a98ba1e5484973e0ede49fad1c7d79"
+    }
+  ],
+  "description": {
+    "zh-TW": "擁有者核准六個半身姿勢的外觀；前 5 張的半透明外緣已做灰底前景色還原，擁有者已在核准時看過。",
+    "zh-CN": "所有者批准六个半身姿势的外观；前 5 张的半透明外缘已做灰底前景色还原，所有者已在批准时看过。",
+    "en": "The owner approved the appearance of six half-body poses. The semi-transparent outer edges of the first five images had their foreground colors restored from a gray background; the owner saw these images when approving them.",
+    "ja-JP": "所有者は六つの半身ポーズの外観を承認しました。先の5枚は半透明の外縁の前景色を灰色背景から復元済みで、所有者は承認時にそれらを確認しています。"
+  }
+}
