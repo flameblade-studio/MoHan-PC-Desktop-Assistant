@@ -19,7 +19,6 @@ lazy from domain.outfit_pack_official import OFFICIAL_BODY_PACK_ENSEMBLE_ID
 lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT, OfficialPackRoots
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.body_pack_renderer import BodyPackRenderer, MakeupApplier, create_body_pack_renderer
-lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from typing import cast
 
 
@@ -326,14 +325,20 @@ def legacy_mohan_presentation_ports(
 def create_body_pack_outfit_overlay_factory(
     body_pack: Any,
     selection_aware: bool,
-    no_outfit_overlay: Callable[[], Any],
+    overlay_callbacks: tuple[Callable[..., Any], ...],
     outfit_dir: Path,
     asset_root: Path,
     official_pack_roots: OfficialPackRoots,
     frame_state: tuple[Any, Any],
 ) -> Callable[..., Any]:
-    """Create the shared overlay route without duplicating hand-region state."""
+    """Create the shared overlay route without duplicating hand-region state.
 
+    ``overlay_callbacks`` is ``(no_outfit_overlay, overlay_class,
+    hand_region_loader)``; the composition root injects the last two so it
+    stays the single seam where callers and tests replace them.
+    """
+
+    no_outfit_overlay, overlay_class, hand_region_loader = overlay_callbacks
     default_look, native_frames = frame_state
     hand_regions: Any = None
     hand_regions_loaded = False
@@ -341,14 +346,14 @@ def create_body_pack_outfit_overlay_factory(
     def shared_hand_regions() -> Any:
         nonlocal hand_regions, hand_regions_loaded
         if not hand_regions_loaded:
-            hand_regions = load_core_hand_regions(asset_root)
+            hand_regions = hand_region_loader(asset_root)
             hand_regions_loaded = True
         return hand_regions
 
     def outfit_overlay_factory(on_stale_body_profile: Any = None) -> Any:
         if body_pack is not None and not selection_aware:
             return no_outfit_overlay()
-        return ActiveOutfitOverlay(
+        return overlay_class(
             outfit_dir,
             asset_root,
             on_stale_body_profile=on_stale_body_profile,
@@ -373,9 +378,13 @@ def create_body_pack_rendering_state(
     cheek_fallback_factory: Callable[[], Any],
     render_callbacks: tuple[Callable[..., Any], ...],
 ) -> tuple[Any, ...]:
-    """Assemble body routing state before the composition root builds ports."""
+    """Assemble body routing state before the composition root builds ports.
 
-    frame_paths, default_look_factory, no_outfit_overlay = render_callbacks
+    ``render_callbacks`` is ``(frame_paths, default_look_factory,
+    no_outfit_overlay, overlay_class, hand_region_loader)``.
+    """
+
+    frame_paths, default_look_factory, *overlay_callbacks = render_callbacks
     asset_root = character_source.assets.asset_root
     (
         outfit_dir, official_selection, body_pack, _fallback_active,
@@ -392,7 +401,7 @@ def create_body_pack_rendering_state(
         if body_pack is None and "default_look_fullbody" in bindings else None
     )
     outfit_overlay_factory = create_body_pack_outfit_overlay_factory(
-        body_pack, selection_aware_body_pack, no_outfit_overlay,
+        body_pack, selection_aware_body_pack, tuple(overlay_callbacks),
         outfit_dir, asset_root, official_pack_roots, (default_look, native_frames),
     )
     return (

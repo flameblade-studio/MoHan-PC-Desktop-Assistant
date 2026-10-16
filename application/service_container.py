@@ -79,16 +79,8 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
-lazy from infrastructure.ensemble_body_pack import (
-    create_body_pack_presentation_context,
-    route_face_renderer,
-    route_full_body_renderer,
-)
-lazy from infrastructure.body_pack_presentation import (
-    create_body_pack_rendering_state,
-    create_body_pack_routes,
-    legacy_mohan_presentation_ports,
-)
+lazy from infrastructure.ensemble_body_pack import create_body_pack_presentation_context, route_face_renderer, route_full_body_renderer
+lazy from infrastructure.body_pack_presentation import create_body_pack_rendering_state, create_body_pack_routes, legacy_mohan_presentation_ports
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
@@ -99,6 +91,7 @@ lazy from infrastructure.installed_character_packs import (
 )
 lazy from infrastructure.db import StudioDB
 lazy from infrastructure.face_assets import validate_face_assets
+lazy from infrastructure.core_hand_regions import load_core_hand_regions
 lazy from infrastructure.layered_face_renderer import (
     ExasperatedSourceBindings,
     LayeredParametricFaceRenderer,
@@ -112,6 +105,7 @@ lazy from infrastructure.outfit_source_bound_expressions import (
     OutfitSourceBoundExpressionProvider,
 )
 lazy from infrastructure.full_body_display_placement import load_full_body_display_placement
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from application.appearance_ports import no_outfit_overlay_factory
 lazy from application.character_default_look import (
     CharacterDefaultLook,
@@ -343,7 +337,13 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         cheek_fallback_factory=lambda: legacy_mohan_presentation_ports(
             asset_root, _create_presentation_ports,
         ).face_renderer_factory(),
-        render_callbacks=(_character_frame_paths, CharacterDefaultLook, no_outfit_overlay_factory),
+        # The overlay class and hand-region loader resolve at call time so
+        # this composition root stays their one replaceable seam.
+        render_callbacks=(
+            _character_frame_paths, CharacterDefaultLook, no_outfit_overlay_factory,
+            lambda *args, **kwargs: ActiveOutfitOverlay(*args, **kwargs),
+            lambda root: load_core_hand_regions(root),
+        ),
     )
     body_face_route, body_full_route = create_body_pack_routes(
         body_pack, body_renderer, asset_root, _create_presentation_ports,

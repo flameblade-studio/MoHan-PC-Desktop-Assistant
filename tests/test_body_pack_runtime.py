@@ -571,7 +571,7 @@ def test_selection_aware_body_source_keeps_active_outfit_overlay(monkeypatch):
     )
     source = SimpleNamespace(assets=assets, appearance=appearance, resolved_body_pack=body)
     monkeypatch.setattr(service_container, "default_data_dir", lambda: tmp_path)
-    monkeypatch.setattr(body_pack_presentation, "load_core_hand_regions", lambda _root: None)
+    monkeypatch.setattr(service_container, "load_core_hand_regions", lambda _root: None)
 
     ports = service_container._create_presentation_ports(source)
     overlay = ports.outfit_overlay_factory()
