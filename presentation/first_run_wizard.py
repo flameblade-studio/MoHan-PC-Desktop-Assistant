@@ -142,8 +142,7 @@ class FirstRunWizard(QDialog):
                 source = None
             appearance = getattr(source, "appearance", None)
             body_pack = getattr(appearance, "resolved_body_pack", None)
-            body_reference = getattr(getattr(source, "manifest", None), "body_pack", None)
-            if body_pack is not None or body_reference is not None:
+            if body_pack is not None:
                 hero_pixmap = QPixmap()
             elif source is None:
                 portrait_path = resource_path(

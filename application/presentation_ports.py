@@ -760,9 +760,7 @@ class PresentationPorts:
     face_renderer_factory: FaceRendererFactory
     visible_windows: VisibleWindowsProvider
     official_pack_roots: OfficialPackRoots = OFFICIAL_PACK_ROOT
-    realtime_output_config_factory: RealtimeSpeechOutputConfigFactory = (
-        create_realtime_output_config
-    )
+    realtime_output_config_factory: RealtimeSpeechOutputConfigFactory = create_realtime_output_config
     outfit_overlay_factory: OutfitOverlayFactory = no_outfit_overlay_factory
     full_body_renderer_factory: FullBodyRendererFactory = no_full_body_renderer_factory
     body_pack_required: bool = False

@@ -126,22 +126,22 @@
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 71,
+              "line": 72,
               "matched": "front-exasperated",
               "text": "if \"exasperated\" in half_views and \"front-exasperated\" in layer_views:"
             },
             {
-              "line": 72,
+              "line": 73,
               "matched": "front-exasperated",
               "text": "aliases[\"exasperated\"] = \"front-exasperated\""
             },
             {
-              "line": 285,
+              "line": 286,
               "matched": "cheek-rest",
               "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
             },
             {
-              "line": 286,
+              "line": 287,
               "matched": "cheek-rest",
               "text": "and \"cheek-rest\" not in selected.render.layer_views"
             }
@@ -281,14 +281,14 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 490,
+              "line": 437,
               "matched": "assets/expressions/",
-              "text": "\"assets/expressions/complete-expressions\","
+              "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 491,
+              "line": 438,
               "matched": "assets/expressions/",
-              "text": ") != \"assets/expressions/complete-expressions\""
+              "text": "!= \"assets/expressions/complete-expressions\""
             }
           ],
           "rule": "character_asset_path_literal",

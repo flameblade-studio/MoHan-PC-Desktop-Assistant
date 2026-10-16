@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-lazy import hashlib
 lazy import json
 lazy import os
 lazy import re
@@ -12,11 +11,7 @@ lazy from domain.outfit_pack_store import (
     copy_pack_archive, inspect_cached_pack,
 )
 lazy from domain import _outfit_pack_models
-lazy from domain.body_pack import BodyPackError, parse_body_pack_reference
-lazy from domain.character_layer_plan import (
-    CharacterLayerPlanError,
-    parse_character_layer_views,
-)
+lazy from domain.outfit_pack_ensembles import EnsembleParser, parse_ensembles, render_layer_paths
 # Resolve the public facade now so ``from ... import`` callers receive dataclasses.
 AppearanceAsset = _outfit_pack_models.AppearanceAsset
 AppearanceEnsemble = _outfit_pack_models.AppearanceEnsemble
@@ -455,94 +450,6 @@ def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str
     return AppearanceItem(actual_category, _identifier(value["id"], "item"), _names(value["display_names"]), parsed, attachment, safe_mask)
 
 
-def _available_variants(items: list[AppearanceItem]) -> set[tuple[str, str, str]]:
-    return {
-        *((item.category, item.item_id, variant.variant_id) for variant in item.variants)
-        for item in items
-    }
-
-
-def _ensemble_selection(
-    category: str,
-    selection: object,
-    available: set[tuple[str, str, str]],
-) -> EnsembleSelection:
-    if selection is None:
-        if category not in {"headwear", "makeup", *ACCESSORY_KINDS}:
-            raise OutfitPackError("Garment and hairstyle require a selected variant.")
-        return EnsembleSelection(category, None, None)
-    if not isinstance(selection, dict) or set(selection) != {"item_id", "variant_id"}:
-        raise OutfitPackError("Provide a supported ensemble selection.")
-    identity = (
-        category,
-        _identifier(selection["item_id"], "ensemble item"),
-        _identifier(selection["variant_id"], "ensemble variant"),
-    )
-    if identity not in available:
-        raise OutfitPackError("Ensemble must reference an item in the same pack.")
-    return EnsembleSelection(*identity)
-
-
-def _ensemble_render(
-    value: object,
-    archive: zipfile.ZipFile,
-    names: set[str],
-) -> EnsembleRender:
-    if not isinstance(value, dict) or set(value) != {"type", "body_pack", "layer_views"}:
-        raise OutfitPackError("Provide a supported ensemble render declaration.")
-    if value["type"] != "body_pack":
-        raise OutfitPackError("Only the body_pack ensemble renderer is supported.")
-    try:
-        body_pack = parse_body_pack_reference(value["body_pack"])
-        layer_views = parse_character_layer_views(value["layer_views"])
-    except (BodyPackError, CharacterLayerPlanError) as error:
-        raise OutfitPackError(f"Ensemble render declaration is invalid: {error}") from None
-    for plan in layer_views.values():
-        for asset in (*plan.layers, *((plan.base_hide,) if plan.base_hide is not None else ())):
-            if not asset.path.lower().endswith(".png") or asset.path not in names:
-                raise OutfitPackError("Every body-pack layer must reference a declared PNG member.")
-            payload = archive.read(asset.path)
-            if hashlib.sha256(payload).hexdigest() != asset.sha256:
-                raise OutfitPackError(
-                    "Body-pack layer integrity check requires attention.",
-                    reason="manifest_asset_hash_mismatch",
-                    asset_path=asset.path,
-                )
-    return EnsembleRender("body_pack", body_pack, layer_views)
-
-
-def _ensemble(
-    entry: object,
-    available: set[tuple[str, str, str]],
-    archive: zipfile.ZipFile,
-    names: set[str],
-) -> AppearanceEnsemble:
-    required = {"id", "display_names", "selections", "autonomous_profile"}
-    allowed = required | {"render"}
-    if not isinstance(entry, dict) or not required <= set(entry) or set(entry) - allowed:
-        raise OutfitPackError("Provide a supported ensemble declaration.")
-    selections = entry["selections"]
-    required = set(SELECTION_CATEGORIES) - OPTIONAL_ENSEMBLE_CATEGORIES
-    # An ensemble that stays silent about makeup leaves the user's makeup alone;
-    # an explicit ``null`` means a bare face.
-    if not isinstance(selections, dict) or not required <= set(selections) <= set(SELECTION_CATEGORIES):
-        raise OutfitPackError("Ensemble must declare every appearance category.")
-    typed = tuple(
-        _ensemble_selection(category, selections[category], available)
-        for category in SELECTION_CATEGORIES
-        if category in selections
-    )
-    profile = _autonomous_profile(entry["autonomous_profile"])
-    render = _ensemble_render(entry["render"], archive, names) if "render" in entry else None
-    return AppearanceEnsemble(
-        _identifier(entry["id"], "ensemble"),
-        _names(entry["display_names"]),
-        typed,
-        profile,
-        render,
-    )
-
-
 def _autonomous_profile(value: object) -> AutonomousStyleProfile:
     keys = {"thermal_bands", "weather", "moods", "occasions", "priority"}
     if not isinstance(value, dict) or set(value) != keys:
@@ -571,21 +478,6 @@ def _autonomous_profile(value: object) -> AutonomousStyleProfile:
     )
 
 
-def _ensembles(
-    value: object,
-    items: list[AppearanceItem],
-    archive: zipfile.ZipFile,
-    names: set[str],
-) -> tuple[AppearanceEnsemble, ...]:
-    if not isinstance(value, list):
-        raise OutfitPackError("Ensembles must be a list.")
-    available = _available_variants(items)
-    parsed = tuple(_ensemble(entry, available, archive, names) for entry in value)
-    if len({ensemble.ensemble_id for ensemble in parsed}) != len(parsed):
-        raise OutfitPackError("Duplicate ensemble identifier.")
-    return parsed
-
-
 def _parse_outfit_pack(
     archive: zipfile.ZipFile,
     names: set[str],
@@ -599,16 +491,19 @@ def _parse_outfit_pack(
         names,
     )
     validate_source_bound_bindings(source_bound, items)
-    ensembles = _ensembles(manifest["ensembles"], items, archive, names)
-    render_layer_paths = tuple(dict.fromkeys(
-        asset.path
-        for ensemble in ensembles
-        if ensemble.render is not None
-        for plan in ensemble.render.layer_views.values()
-        for asset in (*plan.layers, *((plan.base_hide,) if plan.base_hide is not None else ()))
-    ))
+    ensembles = parse_ensembles(
+        manifest["ensembles"], items, archive, names,
+        EnsembleParser(
+            identifier=_identifier,
+            localized_names=_names,
+            autonomous_profile=_autonomous_profile,
+            selection_categories=SELECTION_CATEGORIES,
+            optional_categories=OPTIONAL_ENSEMBLE_CATEGORIES,
+        ),
+    )
+    render_paths = render_layer_paths(ensembles)
     validate_declared_assets(
-        items, names, (*source_bound_asset_paths(source_bound), *render_layer_paths),
+        items, names, (*source_bound_asset_paths(source_bound), *render_paths),
     )
     pack_id = _identifier(manifest["id"], "pack")
     pack_version_value, app_range = pack_version(manifest)

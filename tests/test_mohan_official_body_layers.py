@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import hashlib
-import json
-from pathlib import Path
+lazy import hashlib
+lazy import json
+lazy from pathlib import Path
 
-import pytest
-from PIL import Image
+lazy from PIL import Image
 
-from domain.body_pack import BodyPackMismatchError
-from infrastructure.bundled_character_source import LegacyMohanCharacterSource
+lazy from infrastructure.bundled_character_source import LegacyMohanCharacterSource
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,10 +49,13 @@ def test_bundled_source_reads_a_manifest_bound_scattered_layer() -> None:
     assert hashlib.sha256(payload).hexdigest() == record.sha256
 
 
-def test_bundled_source_requires_the_declared_body_pack_without_fallback() -> None:
+def test_bundled_source_falls_back_to_current_look_when_body_pack_missing() -> None:
     source = LegacyMohanCharacterSource(ROOT, body_pack_roots=())
-    with pytest.raises(BodyPackMismatchError, match="body_pack_missing"):
-        _ = source.resolved_body_pack
+    assert source.resolved_body_pack is None
+    assert source.body_pack_fallback_active
+    assert source.body_pack_download_required
+    assert source.body_pack_resolution_error is not None
+    assert source.body_pack_resolution_error.code == "body_pack_missing"
 
 
 def test_mohan_builtin_default_remains_the_official_blue_white_ensemble() -> None:

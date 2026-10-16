@@ -3,7 +3,7 @@ from __future__ import annotations
 
 lazy import zipfile
 lazy from builtins import sentinel
-lazy from collections.abc import Iterable, Mapping
+lazy from collections.abc import Callable, Iterable, Mapping
 lazy from pathlib import Path
 lazy from typing import Protocol, cast, overload
 
@@ -18,7 +18,8 @@ lazy from domain.character_renderer_compatibility import validated_renderer_rig
 lazy from domain.outfit_pack import InstalledEnsemble, OutfitPackError, installed_pack_path, resolve_active_ensemble
 lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from infrastructure.body_pack_presentation import _body_pack_makeup_applier
-lazy from infrastructure.body_pack_reader import resolve_body_pack, validate_body_pack_binding
+lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory
+lazy from infrastructure.body_pack_reader import BodyPackReader, resolve_body_pack, validate_body_pack_binding
 lazy from infrastructure.body_pack_renderer import BodyPackRenderer, create_body_pack_renderer
 lazy from infrastructure.installed_body_packs import installed_body_pack_root
 lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
@@ -367,8 +368,63 @@ class EnsembleFullBodyRenderer:
         return renderer.render_view(view_id, motion, **options)
 
 
+def route_face_renderer(
+    router: EnsembleBodyPackRouter | None,
+    legacy: FaceRendererProtocol,
+) -> FaceRendererProtocol:
+    return legacy if router is None else router.face_renderer(legacy)
+
+
+def route_full_body_renderer(
+    router: EnsembleBodyPackRouter | None,
+    legacy: object,
+) -> FullBodyRendererProtocol:
+    return cast(
+        FullBodyRendererProtocol,
+        legacy if router is None else router.full_body_renderer(
+            cast(FullBodyRendererProtocol, legacy),
+        ),
+    )
+
+
+def create_body_pack_context(
+    source: CharacterSource,
+    data_root: Path,
+    official_pack_roots: OfficialPackRoots,
+    *,
+    default_character_id: str,
+    cheek_fallback_factory: Callable[[], object],
+) -> tuple[BodyPackReader | None, bool, BodyPackMismatchError | None, Callable[[], BodyPackRenderer], EnsembleBodyPackRouter | None]:
+    body_pack = cast(BodyPackReader | None, getattr(source, "resolved_body_pack", None))
+    if callable(body_pack):
+        body_pack = body_pack()
+    fallback_active = bool(getattr(source, "body_pack_fallback_active", False))
+    body_pack_error = getattr(source, "body_pack_resolution_error", None)
+    pack_roots = tuple(Path(root) for root in (official_pack_roots if isinstance(official_pack_roots, tuple) else (official_pack_roots,)))
+    body_renderer = body_pack_renderer_factory(
+        source,
+        body_pack,
+        data_root / "outfits",
+        pack_roots,
+        cheek_fallback_factory=(
+            cast(Callable[[], FaceRendererProtocol], cheek_fallback_factory)
+            if body_pack is not None and getattr(source, "character_id", None) == default_character_id
+            else None
+        ),
+    )
+    router = (
+        EnsembleBodyPackRouter(source, data_root / "outfits", official_pack_roots)
+        if body_pack is None and hasattr(source, "appearance") and not fallback_active
+        else None
+    )
+    return body_pack, fallback_active, body_pack_error, body_renderer, router
+
+
 __all__ = (
     "EnsembleBodyPackRouter",
     "EnsembleFaceRenderer",
     "EnsembleFullBodyRenderer",
+    "create_body_pack_context",
+    "route_face_renderer",
+    "route_full_body_renderer",
 )

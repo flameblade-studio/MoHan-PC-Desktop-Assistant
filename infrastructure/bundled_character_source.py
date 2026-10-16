@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import json
 lazy import logging
+lazy from builtins import sentinel
 lazy from collections.abc import Mapping
 lazy from collections.abc import Iterable
 lazy from pathlib import Path, PurePosixPath
@@ -46,7 +47,7 @@ lazy from infrastructure.body_pack_reader import BodyPackReader, resolve_charact
 lazy from infrastructure.installed_body_packs import installed_body_pack_root
 
 
-_UNRESOLVED_BODY_PACK = object()
+_UNRESOLVED_BODY_PACK = sentinel("_UNRESOLVED_BODY_PACK")
 LOGGER = logging.getLogger(__name__)
 
 

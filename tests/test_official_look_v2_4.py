@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-from types import SimpleNamespace
+lazy from types import SimpleNamespace
+lazy from builtins import sentinel
 
-import pytest
+lazy import pytest
 
-from application.character_default_look import resolved_body_pack_for_source
-from domain.body_pack import BodyPackMismatchError
-from infrastructure import bundled_character_source
-from infrastructure.app_resources import resource_path
-from infrastructure.bundled_character_source import LegacyMohanCharacterSource
+lazy from application.character_default_look import resolved_body_pack_for_source
+lazy from domain.body_pack import BodyPackMismatchError
+lazy from infrastructure import bundled_character_source
+lazy from infrastructure.app_resources import resource_path
+lazy from infrastructure.bundled_character_source import LegacyMohanCharacterSource
 
 
 def _mohan_source(*, body_pack_roots=()):
@@ -19,7 +20,7 @@ def _mohan_source(*, body_pack_roots=()):
 
 
 def test_mohan_with_verified_body_pack_uses_body_renderer(monkeypatch) -> None:
-    verified_body = object()
+    verified_body = sentinel("verified_body")
 
     def resolve(*_args):
         return SimpleNamespace(resolved_body_pack=verified_body)

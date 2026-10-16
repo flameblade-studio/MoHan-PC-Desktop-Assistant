@@ -116,8 +116,11 @@ def halfbody_owner_approval(approved: np.ndarray, view: str) -> dict | None:
 def approved_target_path(source: Path, view: str, *, candidate: bool) -> Path:
     """Prefer the repository snapshot of an owner-approved half-body target."""
     pose = "front-exasperated" if view == "exasperated" else view
+    local = source / ("R.png" if candidate else "A.png")
+    if local.is_file():
+        return local
     fixed = ROOT / "assets/official-look-targets/halfbody" / pose / "R.png"
-    return fixed if fixed.is_file() else source / ("R.png" if candidate else "A.png")
+    return fixed if fixed.is_file() else local
 
 
 def build_view(body: BodyPackReader, source: Path, target: Path, view: str,

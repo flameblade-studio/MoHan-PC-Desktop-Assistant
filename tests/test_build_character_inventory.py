@@ -201,7 +201,7 @@ def test_non_product_roots_are_structured_and_outside_payload(inventory: dict[st
 
 
 CHARACTER_DATA_FILE_COUNTS = {
-    "mohan": 17,
+    "mohan": 19,
     "lin-keyun": 19,  # Includes the declared body manifest and appearance approval.
 }
 
