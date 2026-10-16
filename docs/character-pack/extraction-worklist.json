@@ -438,12 +438,12 @@
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 149,
+              "line": 148,
               "matched": "cheek-rest",
               "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
             },
             {
-              "line": 150,
+              "line": 149,
               "matched": "cheek-rest",
               "text": "and \"cheek-rest\" not in self._views"
             }

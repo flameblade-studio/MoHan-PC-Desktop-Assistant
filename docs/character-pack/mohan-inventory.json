@@ -162,7 +162,7 @@
       "path": "application/character_default_look.py",
       "readers": [
         {
-          "line": 116,
+          "line": 110,
           "path": "application/service_container.py",
           "text": "lazy from application.character_default_look import ("
         },
@@ -414,7 +414,7 @@
       "work_package": null
     },
     {
-      "bytes": 30123,
+      "bytes": 30529,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -455,59 +455,59 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "84f51da31747eb9d66e5c68e857683e9e764132af3e4c3ba4ba7bcad981d68be",
+      "sha256": "ad66b69ba85e6c32dcceda62206c68d31492b5d9076331456eadf43d81c8fffa",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 154,
-          "line": 154,
+          "end_line": 148,
+          "line": 148,
           "name": "_CHARACTER_SELECTION_LOGGER"
         },
         {
-          "end_line": 155,
-          "line": 155,
+          "end_line": 149,
+          "line": 149,
           "name": "SUPPORTED_CHARACTER_IDS"
         },
         {
-          "end_line": 185,
-          "line": 158,
+          "end_line": 179,
+          "line": 152,
           "name": "create_character_source"
         },
         {
-          "end_line": 192,
-          "line": 188,
+          "end_line": 186,
+          "line": 182,
           "name": "create_default_character_source"
         },
         {
-          "end_line": 216,
-          "line": 195,
+          "end_line": 210,
+          "line": 189,
           "name": "_reserve_official_pack_id_reservations"
         },
         {
-          "end_line": 240,
-          "line": 220,
+          "end_line": 234,
+          "line": 214,
           "name": "CompanionServices"
         },
         {
-          "end_line": 299,
-          "line": 243,
+          "end_line": 293,
+          "line": 237,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 320,
-          "line": 302,
+          "end_line": 314,
+          "line": 296,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 326,
-          "line": 323,
+          "end_line": 320,
+          "line": 317,
           "name": "create_presentation_ports"
         },
         {
           "end_line": 475,
-          "line": 329,
+          "line": 323,
           "name": "_create_presentation_ports"
         },
         {
@@ -47673,7 +47673,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 332,
+          "line": 326,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -82827,7 +82827,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 332,
+          "line": 326,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -125710,7 +125710,7 @@
       "work_package": null
     },
     {
-      "bytes": 19413,
+      "bytes": 19772,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
@@ -125721,7 +125721,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 149,
+          "line": 148,
           "matched": "cheek-rest",
           "path": "infrastructure/body_pack_presentation.py",
           "rule": "character_pose_name_literal",
@@ -125731,7 +125731,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 150,
+          "line": 149,
           "matched": "cheek-rest",
           "path": "infrastructure/body_pack_presentation.py",
           "rule": "character_pose_name_literal",
@@ -125745,9 +125745,9 @@
       "path": "infrastructure/body_pack_presentation.py",
       "readers": [
         {
-          "line": 87,
+          "line": 83,
           "path": "application/service_container.py",
-          "text": "lazy from infrastructure.body_pack_presentation import ("
+          "text": "lazy from infrastructure.body_pack_presentation import create_body_pack_rendering_state, create_body_pack_routes, legacy_mohan_presentation_ports"
         },
         {
           "line": 20,
@@ -125756,94 +125756,94 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "4045f5109b196af6183ff23ba778687e1104f37b716613a485f3c3797b76c4a5",
+      "sha256": "15d48f0feb5ebd901a12511a958b1811c1ae729e7d45ea050ac802e7fbcbf2ba",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 41,
-          "line": 26,
+          "end_line": 40,
+          "line": 25,
           "name": "outfit_selection_token"
         },
         {
-          "end_line": 73,
-          "line": 44,
+          "end_line": 72,
+          "line": 43,
           "name": "_official_body_pack_selection"
         },
         {
-          "end_line": 96,
-          "line": 76,
+          "end_line": 95,
+          "line": 75,
           "name": "body_pack_selection_factory"
         },
         {
-          "end_line": 126,
-          "line": 99,
+          "end_line": 125,
+          "line": 98,
           "name": "active_selection_matches_ensemble"
         },
         {
-          "end_line": 195,
-          "line": 129,
+          "end_line": 194,
+          "line": 128,
           "name": "_BodyPackWithCheekFallback"
         },
         {
-          "end_line": 252,
-          "line": 198,
+          "end_line": 251,
+          "line": 197,
           "name": "_SelectionAwareFaceRenderer"
         },
         {
-          "end_line": 281,
-          "line": 255,
+          "end_line": 280,
+          "line": 254,
           "name": "_SelectionAwareFullBodyRenderer"
         },
         {
-          "end_line": 297,
-          "line": 284,
+          "end_line": 296,
+          "line": 283,
           "name": "selection_aware_face_renderer"
         },
         {
-          "end_line": 313,
-          "line": 300,
+          "end_line": 312,
+          "line": 299,
           "name": "selection_aware_full_body_renderer"
         },
         {
-          "end_line": 323,
-          "line": 316,
+          "end_line": 322,
+          "line": 315,
           "name": "legacy_mohan_presentation_ports"
         },
         {
-          "end_line": 363,
-          "line": 326,
+          "end_line": 368,
+          "line": 325,
           "name": "create_body_pack_outfit_overlay_factory"
         },
         {
-          "end_line": 402,
-          "line": 366,
+          "end_line": 411,
+          "line": 371,
           "name": "create_body_pack_rendering_state"
         },
         {
-          "end_line": 420,
-          "line": 405,
+          "end_line": 429,
+          "line": 414,
           "name": "create_body_pack_face_renderer"
         },
         {
-          "end_line": 438,
-          "line": 423,
+          "end_line": 447,
+          "line": 432,
           "name": "create_body_pack_full_body_renderer"
         },
         {
-          "end_line": 479,
-          "line": 441,
+          "end_line": 488,
+          "line": 450,
           "name": "create_body_pack_routes"
         },
         {
-          "end_line": 497,
-          "line": 482,
+          "end_line": 506,
+          "line": 491,
           "name": "_body_pack_makeup_applier"
         },
         {
-          "end_line": 531,
-          "line": 500,
+          "end_line": 540,
+          "line": 509,
           "name": "body_pack_renderer_factory"
         }
       ],
@@ -125907,7 +125907,7 @@
         {
           "line": 82,
           "path": "application/service_container.py",
-          "text": "lazy from infrastructure.ensemble_body_pack import ("
+          "text": "lazy from infrastructure.ensemble_body_pack import create_body_pack_presentation_context, route_face_renderer, route_full_body_renderer"
         }
       ],
       "scope": "embedded_code",
@@ -126100,7 +126100,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 132,
+          "line": 126,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -126270,7 +126270,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 134,
+          "line": 128,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
