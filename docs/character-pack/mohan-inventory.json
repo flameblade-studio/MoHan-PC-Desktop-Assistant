@@ -35998,7 +35998,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 166201,
+      "bytes": 165949,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -36012,7 +36012,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "2a36f9c594a85e6cefa73a134ff4dc42094ceedb185f2cafcadf904a0329f7a0"
+      "sha256": "b4921475c1186ad04f4b66ae511f46129f0616f2278f70b20ba2ff81d94b5e8d"
     },
     {
       "bytes": 8375,

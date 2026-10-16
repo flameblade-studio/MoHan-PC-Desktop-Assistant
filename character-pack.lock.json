@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.6.zip",
-    "bytes": 942418320,
-    "sha256": "be908966b0adc6254710b19fbb00683e8c070bc1ec8ae446c5ce55a3f83fcd65"
+    "bytes": 942418068,
+    "sha256": "963f26221591ece47a29de3f759599af78e2c208f8a3d4a8cb69a4537ebdfacf"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -4007,9 +4007,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 166201,
+      "bytes": 165949,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "2a36f9c594a85e6cefa73a134ff4dc42094ceedb185f2cafcadf904a0329f7a0"
+      "sha256": "b4921475c1186ad04f4b66ae511f46129f0616f2278f70b20ba2ff81d94b5e8d"
     },
     {
       "bytes": 8375,
@@ -10114,7 +10114,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.6",
-  "package_hash": "f8694f0e858dd4aba8623a41602ebc9787ee7d30b9c13fd2f7dab07adf977f35",
+  "package_hash": "c470810ce1ed7df336e37dc3eddae98000fed4ee87ffab10407415d1faa654c9",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
