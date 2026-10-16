@@ -89,13 +89,29 @@ def semantic_owners(source: Path, shape: tuple[int, ...]) -> np.ndarray:
     return owner
 
 
-def halfbody_owner_approval(approved: np.ndarray, view: str) -> dict | None:
+def halfbody_owner_approval(
+    approved: np.ndarray,
+    view: str,
+    *,
+    approved_path: Path | None = None,
+) -> dict | None:
+    """Validate owner approval only for repository-owned formal targets.
+
+    The builder also accepts isolated authoring fixtures. Those fixtures must
+    use their supplied target pixels, while the formal repository route keeps
+    the hash-bound owner approval check.
+    """
+    formal_pose = "front-exasperated" if view == "exasperated" else view
+    formal_target = (
+        ROOT / "assets/official-look-targets/halfbody" / formal_pose / "R.png"
+    ).resolve()
+    if approved_path is not None and approved_path.resolve() != formal_target:
+        return None
     approval_record = None
     approval_path = ROOT / "docs/release-evidence/mohan-official-look-halfbody-approval.json"
     if approval_path.is_file():
         approval = json.loads(approval_path.read_text(encoding="utf-8"))
-        pose = "front-exasperated" if view == "exasperated" else view
-        record = next((item for item in approval.get("poses", []) if item["pose"] == pose), None)
+        record = next((item for item in approval.get("poses", []) if item["pose"] == formal_pose), None)
         if record is not None and approval.get("approved_scope") == "appearance":
             relative = Path(record["source_path"])
             if relative.is_absolute() or ".." in relative.parts:
@@ -157,7 +173,10 @@ def build_view(body: BodyPackReader, source: Path, target: Path, view: str,
             order = ["base", "body-fix", "hair-back", "hair-front", "garment", "ornament"]
     plan = {"order": order, "layers": records, "base_hide": mask_record}
     parse_character_layer_views({view: plan})
-    approval_record = halfbody_owner_approval(approved, view) if halfbody else None
+    approval_record = (
+        halfbody_owner_approval(approved, view, approved_path=approved_path)
+        if halfbody else None
+    )
     if approval_record is not None:
         candidate = False
     return plan, {"view": view, "source_target_sha256": hashlib.sha256(approved_path.read_bytes()).hexdigest(),

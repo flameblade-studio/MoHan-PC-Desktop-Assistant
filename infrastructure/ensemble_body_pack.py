@@ -5,7 +5,7 @@ lazy import zipfile
 lazy from builtins import sentinel
 lazy from collections.abc import Callable, Iterable, Mapping
 lazy from pathlib import Path
-lazy from typing import Protocol, cast, overload
+lazy from typing import Any, Protocol, cast, overload
 
 lazy from PySide6.QtGui import QPixmap
 lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
@@ -17,8 +17,11 @@ lazy from domain.face_rig import FaceMotionFrame
 lazy from domain.character_renderer_compatibility import validated_renderer_rig
 lazy from domain.outfit_pack import InstalledEnsemble, OutfitPackError, installed_pack_path, resolve_active_ensemble
 lazy from domain.outfit_pack_store import OfficialPackRoots
-lazy from infrastructure.body_pack_presentation import _body_pack_makeup_applier
-lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory
+lazy from infrastructure.body_pack_presentation import (
+    _body_pack_makeup_applier,
+    body_pack_renderer_factory,
+    body_pack_selection_factory,
+)
 lazy from infrastructure.body_pack_reader import BodyPackReader, resolve_body_pack, validate_body_pack_binding
 lazy from infrastructure.body_pack_renderer import BodyPackRenderer, create_body_pack_renderer
 lazy from infrastructure.installed_body_packs import installed_body_pack_root
@@ -387,6 +390,39 @@ def route_full_body_renderer(
     )
 
 
+def create_body_pack_presentation_context(
+    character_source: CharacterSource,
+    data_root: Path,
+    official_pack_roots: OfficialPackRoots,
+    *,
+    default_character_id: str,
+    cheek_fallback_factory: Callable[[], object],
+) -> tuple[Path, Callable[[], bool], Any, bool, Any, Callable[[], Any], Any, bool]:
+    """Build the shared body route and its official-selection predicate."""
+
+    outfit_dir = data_root / "outfits"
+    pack_roots = tuple(Path(root) for root in (
+        official_pack_roots if isinstance(official_pack_roots, tuple)
+        else (official_pack_roots,)
+    ))
+    official_selection = body_pack_selection_factory(
+        character_source, outfit_dir, pack_roots,
+    )
+    body_pack, fallback_active, body_error, body_renderer, ensemble_router = create_body_pack_context(
+        character_source, data_root, official_pack_roots,
+        default_character_id=default_character_id,
+        cheek_fallback_factory=cheek_fallback_factory,
+        official_selection=official_selection,
+    )
+    selection_aware = body_pack is not None and hasattr(
+        getattr(character_source, "appearance", None), "appearance_defaults",
+    )
+    return (
+        outfit_dir, official_selection, body_pack, fallback_active, body_error,
+        body_renderer, ensemble_router, selection_aware,
+    )
+
+
 def create_body_pack_context(
     source: CharacterSource,
     data_root: Path,
@@ -394,6 +430,7 @@ def create_body_pack_context(
     *,
     default_character_id: str,
     cheek_fallback_factory: Callable[[], object],
+    official_selection: Callable[[], bool] | None = None,
 ) -> tuple[BodyPackReader | None, bool, BodyPackMismatchError | None, Callable[[], BodyPackRenderer], EnsembleBodyPackRouter | None]:
     body_pack = cast(BodyPackReader | None, getattr(source, "resolved_body_pack", None))
     if callable(body_pack):
@@ -411,6 +448,7 @@ def create_body_pack_context(
             if body_pack is not None and getattr(source, "character_id", None) == default_character_id
             else None
         ),
+        official_selection=official_selection,
     )
     router = (
         EnsembleBodyPackRouter(source, data_root / "outfits", official_pack_roots)

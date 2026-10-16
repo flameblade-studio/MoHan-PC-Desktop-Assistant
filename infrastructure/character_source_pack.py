@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-lazy import logging
 lazy from collections.abc import Iterable, Mapping
 lazy from pathlib import Path, PurePosixPath
 
@@ -56,11 +55,9 @@ lazy from infrastructure.character_pack_files import (
 )
 lazy from infrastructure.body_pack_reader import (
     BodyPackReader,
-    resolve_character_body_binding,
 )
+lazy from infrastructure.character_source_body_pack import resolve_body_binding_with_fallback
 
-
-LOGGER = logging.getLogger(__name__)
 
 IDENTITY_SCHEMA = "flameblade.character-identity-profile.v1"
 PERSONA_SCHEMA = "flameblade.character-persona.v1"
@@ -183,7 +180,7 @@ class CharacterPackReader(
                 "The character rig requires a body-profile binding.",
                 rig_component.path,
             )
-        body_binding, body_pack_resolution_error = self._resolve_body_binding(
+        body_binding, body_pack_resolution_error = resolve_body_binding_with_fallback(
             manifest, rig, body_pack_roots,
         )
 
@@ -221,29 +218,6 @@ class CharacterPackReader(
         self._resolved_body_pack = body_binding.resolved_body_pack
         self._body_pack_resolution_error = body_pack_resolution_error
         self._character_layer_views = manifest.layer_views
-
-    @staticmethod
-    def _resolve_body_binding(
-        manifest: CharacterPackManifest,
-        rig: CharacterRigManifest,
-        body_pack_roots: Iterable[str | Path],
-    ) -> tuple[object, BodyPackMismatchError | None]:
-        try:
-            return resolve_character_body_binding(
-                manifest.body_pack, rig, body_pack_roots, manifest.layer_views,
-            ), None
-        except BodyPackMismatchError as error:
-            if manifest.character_id != "mohan":
-                raise
-            LOGGER.warning(
-                "mohan_body_pack_fallback code=%s path=%s message=%s",
-                error.code,
-                error.path or getattr(manifest.body_pack, "id", None),
-                error,
-            )
-            return resolve_character_body_binding(
-                None, rig, (), manifest.layer_views,
-            ), error
 
     @property
     def validation_result(self) -> CharacterPackValidationResult:

@@ -7,13 +7,13 @@
   },
   "counts": {
     "actual_embedded_code_files": 24,
-    "engine_extract_files": 2,
+    "engine_extract_files": 0,
     "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
-    "product_shell_allowed_files": 22,
-    "true_extraction_files": 2,
+    "product_shell_allowed_files": 24,
+    "true_extraction_files": 0,
     "ui_text_reference_files": 0,
-    "work_packages": 1
+    "work_packages": 0
   },
   "declared_product_shell_allowlist": [
     {
@@ -62,6 +62,16 @@
       "status": "no_current_content_evidence"
     },
     {
+      "path": "infrastructure/body_pack_presentation.py",
+      "reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "infrastructure/ensemble_body_pack.py",
+      "reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
+      "status": "allowed_content_present"
+    },
+    {
       "path": "infrastructure/installed_body_packs.py",
       "reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。",
       "status": "allowed_content_present"
@@ -87,78 +97,7 @@
       "status": "allowed_content_present"
     }
   ],
-  "extraction_items": [
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 38,
-              "matched": "cheek-rest",
-              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
-            },
-            {
-              "line": 39,
-              "matched": "cheek-rest",
-              "text": "and \"cheek-rest\" not in self._views"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/body_pack_presentation.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    },
-    {
-      "classification": "engine_extract",
-      "content": [
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "locations": [
-            {
-              "line": 72,
-              "matched": "front-exasperated",
-              "text": "if \"exasperated\" in half_views and \"front-exasperated\" in layer_views:"
-            },
-            {
-              "line": 73,
-              "matched": "front-exasperated",
-              "text": "aliases[\"exasperated\"] = \"front-exasperated\""
-            },
-            {
-              "line": 286,
-              "matched": "cheek-rest",
-              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
-            },
-            {
-              "line": 287,
-              "matched": "cheek-rest",
-              "text": "and \"cheek-rest\" not in selected.render.layer_views"
-            }
-          ],
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
-        }
-      ],
-      "estimated_difficulty": "high",
-      "path": "infrastructure/ensemble_body_pack.py",
-      "reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
-      "suggested_data_targets": [
-        "assets/characters/mohan/rig/rig-manifest.json"
-      ],
-      "work_package": "rig-and-asset-parameterization"
-    }
-  ],
+  "extraction_items": [],
   "owner_decisions": {
     "art_tool_license": "MIT",
     "character_asset_license": "CC-BY-NC-ND-4.0",
@@ -281,12 +220,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 437,
+              "line": 434,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 438,
+              "line": 435,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }
@@ -488,6 +427,76 @@
         "assets/characters/mohan/persona/profile.json",
         "assets/characters/mohan/rig/rig-manifest.json",
         "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "locations": [
+            {
+              "line": 149,
+              "matched": "cheek-rest",
+              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+            },
+            {
+              "line": 150,
+              "matched": "cheek-rest",
+              "text": "and \"cheek-rest\" not in self._views"
+            }
+          ],
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/body_pack_presentation.py",
+      "reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "locations": [
+            {
+              "line": 75,
+              "matched": "front-exasperated",
+              "text": "if \"exasperated\" in half_views and \"front-exasperated\" in layer_views:"
+            },
+            {
+              "line": 76,
+              "matched": "front-exasperated",
+              "text": "aliases[\"exasperated\"] = \"front-exasperated\""
+            },
+            {
+              "line": 289,
+              "matched": "cheek-rest",
+              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+            },
+            {
+              "line": 290,
+              "matched": "cheek-rest",
+              "text": "and \"cheek-rest\" not in selected.render.layer_views"
+            }
+          ],
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/ensemble_body_pack.py",
+      "reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": null
     },
@@ -1200,22 +1209,5 @@
   "schema": "mohan.character-extraction-worklist.v1",
   "schema_version": 1,
   "source_inventory": "docs/character-pack/mohan-inventory.json",
-  "work_packages": [
-    {
-      "exclusions": "不移動或修改正式素材，不改產品殼品牌與更新設定。",
-      "exclusive_files": [
-        "infrastructure/body_pack_presentation.py",
-        "infrastructure/ensemble_body_pack.py"
-      ],
-      "file_count": 2,
-      "id": "rig-and-asset-parameterization",
-      "objective": "把角色專屬畫布、姿勢、表情、圖層與素材路徑接到 rig 或表情資料。",
-      "titles": [
-        "Rig 與素材路徑參數化",
-        "Rig 与素材路径参数化",
-        "Rig and asset parameterization",
-        "Rig と素材パスのパラメータ化"
-      ]
-    }
-  ]
+  "work_packages": []
 }

@@ -112,9 +112,8 @@
     }
   ],
   "embedded_code_classification_counts": {
-    "engine_extract": 2,
     "persisted_identifier": 2,
-    "product_shell_allowed": 20
+    "product_shell_allowed": 22
   },
   "files": [
     {
@@ -163,7 +162,7 @@
       "path": "application/character_default_look.py",
       "readers": [
         {
-          "line": 110,
+          "line": 116,
           "path": "application/service_container.py",
           "text": "lazy from application.character_default_look import ("
         },
@@ -264,7 +263,7 @@
           "text": "lazy from application.character_runtime_bootstrap import ("
         },
         {
-          "line": 26,
+          "line": 25,
           "path": "application/service_container.py",
           "text": "lazy from application.character_runtime_bootstrap import ("
         },
@@ -415,7 +414,7 @@
       "work_package": null
     },
     {
-      "bytes": 30707,
+      "bytes": 30123,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -426,7 +425,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 437,
+          "line": 434,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -436,7 +435,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 438,
+          "line": 435,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -456,109 +455,109 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "5c009e450855172a644ce86c36de40c0d5ad16440831cfa01149ec6cc8244b9c",
+      "sha256": "84f51da31747eb9d66e5c68e857683e9e764132af3e4c3ba4ba7bcad981d68be",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 148,
-          "line": 148,
+          "end_line": 154,
+          "line": 154,
           "name": "_CHARACTER_SELECTION_LOGGER"
         },
         {
-          "end_line": 149,
-          "line": 149,
+          "end_line": 155,
+          "line": 155,
           "name": "SUPPORTED_CHARACTER_IDS"
         },
         {
-          "end_line": 179,
-          "line": 152,
+          "end_line": 185,
+          "line": 158,
           "name": "create_character_source"
         },
         {
-          "end_line": 186,
-          "line": 182,
+          "end_line": 192,
+          "line": 188,
           "name": "create_default_character_source"
         },
         {
-          "end_line": 210,
-          "line": 189,
+          "end_line": 216,
+          "line": 195,
           "name": "_reserve_official_pack_id_reservations"
         },
         {
-          "end_line": 234,
-          "line": 214,
+          "end_line": 240,
+          "line": 220,
           "name": "CompanionServices"
         },
         {
-          "end_line": 293,
-          "line": 237,
+          "end_line": 299,
+          "line": 243,
           "name": "_ProductionVoiceCatalog"
         },
         {
-          "end_line": 314,
-          "line": 296,
+          "end_line": 320,
+          "line": 302,
           "name": "_create_ai_worker"
         },
         {
-          "end_line": 320,
-          "line": 317,
+          "end_line": 326,
+          "line": 323,
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 478,
-          "line": 323,
+          "end_line": 475,
+          "line": 329,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 484,
-          "line": 481,
+          "end_line": 481,
+          "line": 478,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 490,
-          "line": 487,
+          "end_line": 487,
+          "line": 484,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 532,
-          "line": 493,
+          "end_line": 529,
+          "line": 490,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 545,
-          "line": 535,
+          "end_line": 542,
+          "line": 532,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 565,
-          "line": 548,
+          "end_line": 562,
+          "line": 545,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 586,
-          "line": 568,
+          "end_line": 583,
+          "line": 565,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 605,
-          "line": 589,
+          "end_line": 602,
+          "line": 586,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 625,
-          "line": 608,
+          "end_line": 622,
+          "line": 605,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 645,
-          "line": 628,
+          "end_line": 642,
+          "line": 625,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 800,
-          "line": 648,
+          "end_line": 797,
+          "line": 645,
           "name": "create_default_services"
         }
       ],
@@ -4212,7 +4211,7 @@
       "path": "assets/characters/lin-keyun/body/approval.json",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4229,7 +4228,7 @@
       "path": "assets/characters/lin-keyun/body/manifest.json",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4251,7 +4250,7 @@
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4273,7 +4272,7 @@
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4295,7 +4294,7 @@
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4317,7 +4316,7 @@
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4339,7 +4338,7 @@
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4361,7 +4360,7 @@
       "path": "assets/characters/lin-keyun/body/views/exasperated/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4383,7 +4382,7 @@
       "path": "assets/characters/lin-keyun/body/views/exasperated/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4405,7 +4404,7 @@
       "path": "assets/characters/lin-keyun/body/views/exasperated/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4427,7 +4426,7 @@
       "path": "assets/characters/lin-keyun/body/views/exasperated/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4449,7 +4448,7 @@
       "path": "assets/characters/lin-keyun/body/views/exasperated/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4471,7 +4470,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-crossed/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4493,7 +4492,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-crossed/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4515,7 +4514,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-crossed/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4537,7 +4536,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-crossed/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4559,7 +4558,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-crossed/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4581,7 +4580,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-eureka/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4603,7 +4602,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-eureka/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4625,7 +4624,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-eureka/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4647,7 +4646,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-eureka/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4669,7 +4668,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-eureka/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4691,7 +4690,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-hit/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4713,7 +4712,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-hit/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4735,7 +4734,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-hit/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4757,7 +4756,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-hit/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4779,7 +4778,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-hit/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4801,7 +4800,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-scold/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4823,7 +4822,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-scold/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4845,7 +4844,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-scold/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4867,7 +4866,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-scold/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4889,7 +4888,7 @@
       "path": "assets/characters/lin-keyun/body/views/front-mock-scold/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4911,7 +4910,7 @@
       "path": "assets/characters/lin-keyun/body/views/left-neutral/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4933,7 +4932,7 @@
       "path": "assets/characters/lin-keyun/body/views/left-neutral/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4955,7 +4954,7 @@
       "path": "assets/characters/lin-keyun/body/views/left-neutral/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4977,7 +4976,7 @@
       "path": "assets/characters/lin-keyun/body/views/left-neutral/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -4999,7 +4998,7 @@
       "path": "assets/characters/lin-keyun/body/views/left-neutral/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5021,7 +5020,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5043,7 +5042,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5065,7 +5064,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5087,7 +5086,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5109,7 +5108,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5131,7 +5130,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5153,7 +5152,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5175,7 +5174,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5197,7 +5196,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5219,7 +5218,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5241,7 +5240,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5263,7 +5262,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5285,7 +5284,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5307,7 +5306,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5329,7 +5328,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5351,7 +5350,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5373,7 +5372,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5395,7 +5394,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5417,7 +5416,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5439,7 +5438,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5461,7 +5460,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5483,7 +5482,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5505,7 +5504,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5527,7 +5526,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5549,7 +5548,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5571,7 +5570,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5593,7 +5592,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5615,7 +5614,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5637,7 +5636,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5659,7 +5658,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5681,7 +5680,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5703,7 +5702,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5725,7 +5724,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5747,7 +5746,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5769,7 +5768,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5791,7 +5790,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5813,7 +5812,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5835,7 +5834,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5857,7 +5856,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5879,7 +5878,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5901,7 +5900,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5923,7 +5922,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5945,7 +5944,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5967,7 +5966,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -5989,7 +5988,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6011,7 +6010,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6033,7 +6032,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6055,7 +6054,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6077,7 +6076,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6099,7 +6098,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6121,7 +6120,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6143,7 +6142,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6165,7 +6164,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6187,7 +6186,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6209,7 +6208,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6231,7 +6230,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6253,7 +6252,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6275,7 +6274,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6297,7 +6296,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6319,7 +6318,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6341,7 +6340,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6363,7 +6362,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6385,7 +6384,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6407,7 +6406,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6429,7 +6428,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6451,7 +6450,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6473,7 +6472,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6495,7 +6494,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6517,7 +6516,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6539,7 +6538,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6561,7 +6560,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6583,7 +6582,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6605,7 +6604,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6627,7 +6626,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6649,7 +6648,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6671,7 +6670,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6693,7 +6692,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6715,7 +6714,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6737,7 +6736,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6759,7 +6758,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6781,7 +6780,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6803,7 +6802,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6825,7 +6824,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6847,7 +6846,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6869,7 +6868,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6891,7 +6890,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6913,7 +6912,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6935,7 +6934,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6957,7 +6956,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -6979,7 +6978,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7001,7 +7000,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7023,7 +7022,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7045,7 +7044,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7067,7 +7066,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7089,7 +7088,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7111,7 +7110,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7133,7 +7132,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7155,7 +7154,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7177,7 +7176,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7199,7 +7198,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7221,7 +7220,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7243,7 +7242,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7265,7 +7264,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7287,7 +7286,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7309,7 +7308,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7331,7 +7330,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7353,7 +7352,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7375,7 +7374,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7397,7 +7396,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7419,7 +7418,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7441,7 +7440,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7463,7 +7462,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7485,7 +7484,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7507,7 +7506,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7529,7 +7528,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7551,7 +7550,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/base-hide-mask.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7573,7 +7572,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/body-fix.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7595,7 +7594,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/garment.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7617,7 +7616,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/hair-back.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7639,7 +7638,7 @@
       "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/hair-front.png",
       "readers": [
         {
-          "line": 379,
+          "line": 353,
           "path": "infrastructure/character_source_pack.py",
           "text": "\"\"\"Read a manifest-declared character layer and recheck its SHA-256.\"\"\""
         }
@@ -7656,7 +7655,7 @@
       "path": "assets/characters/lin-keyun/dialogue/en.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -7673,7 +7672,7 @@
       "path": "assets/characters/lin-keyun/dialogue/events.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -7690,7 +7689,7 @@
       "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -7724,7 +7723,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -7741,7 +7740,7 @@
       "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -7758,7 +7757,7 @@
       "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
       "readers": [
         {
-          "line": 138,
+          "line": 135,
           "path": "infrastructure/character_source_pack.py",
           "text": "expression_catalog = _load_expression_catalog(root, expression_component)"
         }
@@ -12733,7 +12732,7 @@
       "path": "assets/characters/lin-keyun/persona/en.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -12750,7 +12749,7 @@
       "path": "assets/characters/lin-keyun/persona/ja-JP.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -12767,7 +12766,7 @@
       "path": "assets/characters/lin-keyun/persona/profile.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -12801,7 +12800,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-CN.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -12818,7 +12817,7 @@
       "path": "assets/characters/lin-keyun/persona/zh-TW.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -12835,7 +12834,7 @@
       "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
       "readers": [
         {
-          "line": 137,
+          "line": 134,
           "path": "infrastructure/character_source_pack.py",
           "text": "rig = _load_rig(root, rig_component)"
         }
@@ -12869,7 +12868,7 @@
       "path": "assets/characters/lin-keyun/voice/profile.json",
       "readers": [
         {
-          "line": 136,
+          "line": 133,
           "path": "infrastructure/character_source_pack.py",
           "text": "character_data = _load_character_data(root.joinpath(*character_root.parts), character_root.as_posix())"
         }
@@ -47674,7 +47673,7 @@
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
       "readers": [
         {
-          "line": 326,
+          "line": 332,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -82828,7 +82827,7 @@
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
       "readers": [
         {
-          "line": 326,
+          "line": 332,
           "path": "application/service_container.py",
           "text": "official_pack_roots = getattr("
         }
@@ -124512,7 +124511,7 @@
           "text": "lazy from domain.constants import ("
         },
         {
-          "line": 67,
+          "line": 66,
           "path": "application/service_container.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
@@ -124987,7 +124986,7 @@
           "text": "lazy from domain.contracts import ("
         },
         {
-          "line": 46,
+          "line": 45,
           "path": "application/service_container.py",
           "text": "lazy from domain.contracts import ("
         },
@@ -125177,7 +125176,7 @@
       "work_package": null
     },
     {
-      "bytes": 11766,
+      "bytes": 11820,
       "category": "embedded_character_content",
       "classification": "persisted_identifier",
       "classification_reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
@@ -125227,13 +125226,18 @@
           "text": "lazy from domain.outfit_pack_official import official_outfit_pack_id"
         },
         {
+          "line": 18,
+          "path": "infrastructure/body_pack_presentation.py",
+          "text": "lazy from domain.outfit_pack_official import OFFICIAL_BODY_PACK_ENSEMBLE_ID"
+        },
+        {
           "line": 14,
           "path": "presentation/dashboard_wardrobe_categories.py",
           "text": "lazy from domain.outfit_pack_official import official_native_hair_alias"
         }
       ],
       "scope": "embedded_code",
-      "sha256": "2cd8d3c635a04a15e66b872bd84442ae7a054ab62563ce74aee2b83327257235",
+      "sha256": "f43ec447334538eb6f12e4628bf6bfee32a0adb9d5fcb193728c3610dadc3d05",
       "suggested_data_targets": [
         "application/wardrobe_service.py"
       ],
@@ -125294,153 +125298,158 @@
           "name": "OFFICIAL_OUTFIT_ENSEMBLE_ID"
         },
         {
-          "end_line": 76,
-          "line": 72,
-          "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
+          "end_line": 69,
+          "line": 69,
+          "name": "OFFICIAL_BODY_PACK_ENSEMBLE_ID"
         },
         {
           "end_line": 77,
-          "line": 77,
+          "line": 73,
+          "name": "OFFICIAL_NATIVE_HAIR_ALIAS"
+        },
+        {
+          "end_line": 78,
+          "line": 78,
           "name": "_NATIVE_HEADWEAR"
         },
         {
-          "end_line": 84,
-          "line": 80,
+          "end_line": 85,
+          "line": 81,
           "name": "OFFICIAL_NATIVE_HEADWEAR_ALIAS"
         },
         {
-          "end_line": 86,
-          "line": 86,
+          "end_line": 87,
+          "line": 87,
           "name": "OFFICIAL_OUTFIT_CATEGORIES"
-        },
-        {
-          "end_line": 88,
-          "line": 88,
-          "name": "OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 89,
           "line": 89,
-          "name": "_PACK_IDENTIFIER"
+          "name": "OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 90,
           "line": 90,
-          "name": "_RESERVED_OFFICIAL_PACK_IDS"
+          "name": "_PACK_IDENTIFIER"
         },
         {
           "end_line": 91,
           "line": 91,
-          "name": "_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE"
+          "name": "_RESERVED_OFFICIAL_PACK_IDS"
         },
         {
           "end_line": 92,
           "line": 92,
-          "name": "BARE_SELECTION"
+          "name": "_OFFICIAL_PACK_ID_RESERVATIONS_COMPLETE"
         },
         {
-          "end_line": 94,
-          "line": 94,
-          "name": "Identity"
+          "end_line": 93,
+          "line": 93,
+          "name": "BARE_SELECTION"
         },
         {
           "end_line": 95,
           "line": 95,
+          "name": "Identity"
+        },
+        {
+          "end_line": 96,
+          "line": 96,
           "name": "Resolution"
         },
         {
-          "end_line": 99,
-          "line": 98,
+          "end_line": 100,
+          "line": 99,
           "name": "official_outfit_pack_id"
         },
         {
-          "end_line": 103,
-          "line": 102,
+          "end_line": 104,
+          "line": 103,
           "name": "official_outfit_ensemble_id"
         },
         {
-          "end_line": 107,
-          "line": 106,
+          "end_line": 108,
+          "line": 107,
           "name": "builtin_makeup_pack_id"
         },
         {
-          "end_line": 112,
-          "line": 110,
+          "end_line": 113,
+          "line": 111,
           "name": "official_pack_ids"
         },
         {
-          "end_line": 129,
-          "line": 115,
+          "end_line": 130,
+          "line": 116,
           "name": "set_official_pack_id_reservations"
         },
         {
-          "end_line": 135,
-          "line": 132,
+          "end_line": 136,
+          "line": 133,
           "name": "official_pack_id_reservations_complete"
         },
         {
-          "end_line": 143,
-          "line": 138,
+          "end_line": 144,
+          "line": 139,
           "name": "reserved_official_pack_ids"
         },
         {
-          "end_line": 154,
-          "line": 146,
+          "end_line": 155,
+          "line": 147,
           "name": "official_native_hair_alias"
         },
         {
-          "end_line": 164,
-          "line": 157,
+          "end_line": 165,
+          "line": 158,
           "name": "official_native_headwear_alias"
         },
         {
-          "end_line": 174,
-          "line": 167,
+          "end_line": 175,
+          "line": 168,
           "name": "is_official_native_alias"
         },
         {
-          "end_line": 185,
-          "line": 177,
+          "end_line": 186,
+          "line": 178,
           "name": "_PLUS090_FACE_SAFE_HEADWEAR_SHA256"
         },
         {
-          "end_line": 201,
-          "line": 188,
+          "end_line": 202,
+          "line": 189,
           "name": "native_overlay_is_redundant"
         },
         {
-          "end_line": 207,
-          "line": 204,
+          "end_line": 208,
+          "line": 205,
           "name": "SelectionLike"
         },
         {
-          "end_line": 213,
-          "line": 210,
+          "end_line": 214,
+          "line": 211,
           "name": "EnsembleSelectionLike"
         },
         {
-          "end_line": 219,
-          "line": 216,
+          "end_line": 220,
+          "line": 217,
           "name": "EnsembleLike"
         },
         {
-          "end_line": 239,
-          "line": 222,
+          "end_line": 240,
+          "line": 223,
           "name": "official_outfit_ensemble"
         },
         {
-          "end_line": 249,
-          "line": 242,
+          "end_line": 250,
+          "line": 243,
           "name": "builtin_makeup_resolution"
         },
         {
-          "end_line": 273,
-          "line": 252,
+          "end_line": 274,
+          "line": 253,
           "name": "builtin_outfit_resolution"
         },
         {
-          "end_line": 291,
-          "line": 276,
+          "end_line": 292,
+          "line": 277,
           "name": "resolve_builtin_sentinel"
         }
       ],
@@ -125629,7 +125638,7 @@
           "text": "lazy from infrastructure.app_resources import APP_ICON_PATH, resource_path"
         },
         {
-          "line": 81,
+          "line": 80,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.app_resources import resource_path, set_autostart"
         }
@@ -125701,10 +125710,10 @@
       "work_package": null
     },
     {
-      "bytes": 5885,
+      "bytes": 19413,
       "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
       "content_categories": [
         "rig"
       ],
@@ -125712,7 +125721,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 38,
+          "line": 149,
           "matched": "cheek-rest",
           "path": "infrastructure/body_pack_presentation.py",
           "rule": "character_pose_name_literal",
@@ -125722,7 +125731,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 39,
+          "line": 150,
           "matched": "cheek-rest",
           "path": "infrastructure/body_pack_presentation.py",
           "rule": "character_pose_name_literal",
@@ -125736,45 +125745,115 @@
       "path": "infrastructure/body_pack_presentation.py",
       "readers": [
         {
-          "line": 20,
-          "path": "infrastructure/ensemble_body_pack.py",
-          "text": "lazy from infrastructure.body_pack_presentation import _body_pack_makeup_applier"
+          "line": 87,
+          "path": "application/service_container.py",
+          "text": "lazy from infrastructure.body_pack_presentation import ("
         },
         {
-          "line": 21,
+          "line": 20,
           "path": "infrastructure/ensemble_body_pack.py",
-          "text": "lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory"
+          "text": "lazy from infrastructure.body_pack_presentation import ("
         }
       ],
       "scope": "embedded_code",
-      "sha256": "11e3751dff91e4a749b09c8f0cffec703b21361b4c0f63dec81b9f917ef47770",
+      "sha256": "4045f5109b196af6183ff23ba778687e1104f37b716613a485f3c3797b76c4a5",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 83,
-          "line": 18,
+          "end_line": 41,
+          "line": 26,
+          "name": "outfit_selection_token"
+        },
+        {
+          "end_line": 73,
+          "line": 44,
+          "name": "_official_body_pack_selection"
+        },
+        {
+          "end_line": 96,
+          "line": 76,
+          "name": "body_pack_selection_factory"
+        },
+        {
+          "end_line": 126,
+          "line": 99,
+          "name": "active_selection_matches_ensemble"
+        },
+        {
+          "end_line": 195,
+          "line": 129,
           "name": "_BodyPackWithCheekFallback"
         },
         {
-          "end_line": 101,
-          "line": 86,
+          "end_line": 252,
+          "line": 198,
+          "name": "_SelectionAwareFaceRenderer"
+        },
+        {
+          "end_line": 281,
+          "line": 255,
+          "name": "_SelectionAwareFullBodyRenderer"
+        },
+        {
+          "end_line": 297,
+          "line": 284,
+          "name": "selection_aware_face_renderer"
+        },
+        {
+          "end_line": 313,
+          "line": 300,
+          "name": "selection_aware_full_body_renderer"
+        },
+        {
+          "end_line": 323,
+          "line": 316,
+          "name": "legacy_mohan_presentation_ports"
+        },
+        {
+          "end_line": 363,
+          "line": 326,
+          "name": "create_body_pack_outfit_overlay_factory"
+        },
+        {
+          "end_line": 402,
+          "line": 366,
+          "name": "create_body_pack_rendering_state"
+        },
+        {
+          "end_line": 420,
+          "line": 405,
+          "name": "create_body_pack_face_renderer"
+        },
+        {
+          "end_line": 438,
+          "line": 423,
+          "name": "create_body_pack_full_body_renderer"
+        },
+        {
+          "end_line": 479,
+          "line": 441,
+          "name": "create_body_pack_routes"
+        },
+        {
+          "end_line": 497,
+          "line": 482,
           "name": "_body_pack_makeup_applier"
         },
         {
-          "end_line": 151,
-          "line": 104,
+          "end_line": 531,
+          "line": 500,
           "name": "body_pack_renderer_factory"
         }
       ],
-      "work_package": "rig-and-asset-parameterization"
+      "work_package": null
     },
     {
-      "bytes": 18247,
+      "bytes": 19674,
       "category": "embedded_character_content",
-      "classification": "engine_extract",
-      "classification_reason": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+      "classification": "product_shell_allowed",
+      "classification_reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
       "content_categories": [
         "rig"
       ],
@@ -125782,7 +125861,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 72,
+          "line": 75,
           "matched": "front-exasperated",
           "path": "infrastructure/ensemble_body_pack.py",
           "rule": "character_pose_name_literal",
@@ -125792,7 +125871,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 73,
+          "line": 76,
           "matched": "front-exasperated",
           "path": "infrastructure/ensemble_body_pack.py",
           "rule": "character_pose_name_literal",
@@ -125802,7 +125881,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 286,
+          "line": 289,
           "matched": "cheek-rest",
           "path": "infrastructure/ensemble_body_pack.py",
           "rule": "character_pose_name_literal",
@@ -125812,7 +125891,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 287,
+          "line": 290,
           "matched": "cheek-rest",
           "path": "infrastructure/ensemble_body_pack.py",
           "rule": "character_pose_name_literal",
@@ -125826,79 +125905,84 @@
       "path": "infrastructure/ensemble_body_pack.py",
       "readers": [
         {
-          "line": 83,
+          "line": 82,
           "path": "application/service_container.py",
-          "text": "lazy from infrastructure.ensemble_body_pack import create_body_pack_context, route_face_renderer, route_full_body_renderer"
+          "text": "lazy from infrastructure.ensemble_body_pack import ("
         }
       ],
       "scope": "embedded_code",
-      "sha256": "8f7c14dccc3887f6ebdba59a05daac97a2cab7cc13246023c1a86ae155eba769",
+      "sha256": "eed4a595da309b3af540a4d7df0aa568fdda5901924feb347c31c55de94070ef",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 28,
-          "line": 28,
+          "end_line": 31,
+          "line": 31,
           "name": "_UNSET"
         },
         {
-          "end_line": 41,
-          "line": 31,
+          "end_line": 44,
+          "line": 34,
           "name": "FaceRendererProtocol"
         },
         {
-          "end_line": 47,
-          "line": 44,
+          "end_line": 50,
+          "line": 47,
           "name": "FullBodyRendererProtocol"
         },
         {
-          "end_line": 55,
-          "line": 50,
+          "end_line": 58,
+          "line": 53,
           "name": "_file_token"
         },
         {
-          "end_line": 74,
-          "line": 58,
+          "end_line": 77,
+          "line": 61,
           "name": "_layer_view_aliases"
         },
         {
-          "end_line": 288,
-          "line": 77,
+          "end_line": 291,
+          "line": 80,
           "name": "EnsembleBodyPackRouter"
         },
         {
-          "end_line": 352,
-          "line": 291,
+          "end_line": 355,
+          "line": 294,
           "name": "EnsembleFaceRenderer"
         },
         {
-          "end_line": 368,
-          "line": 355,
+          "end_line": 371,
+          "line": 358,
           "name": "EnsembleFullBodyRenderer"
         },
         {
-          "end_line": 375,
-          "line": 371,
+          "end_line": 378,
+          "line": 374,
           "name": "route_face_renderer"
         },
         {
-          "end_line": 387,
-          "line": 378,
+          "end_line": 390,
+          "line": 381,
           "name": "route_full_body_renderer"
         },
         {
-          "end_line": 420,
-          "line": 390,
+          "end_line": 423,
+          "line": 393,
+          "name": "create_body_pack_presentation_context"
+        },
+        {
+          "end_line": 458,
+          "line": 426,
           "name": "create_body_pack_context"
         },
         {
-          "end_line": 430,
-          "line": 423,
+          "end_line": 468,
+          "line": 461,
           "name": "__all__"
         }
       ],
-      "work_package": "rig-and-asset-parameterization"
+      "work_package": null
     },
     {
       "bytes": 4974,
@@ -125931,7 +126015,7 @@
           "text": "lazy from infrastructure.installed_body_packs import installed_body_pack_root"
         },
         {
-          "line": 24,
+          "line": 27,
           "path": "infrastructure/ensemble_body_pack.py",
           "text": "lazy from infrastructure.installed_body_packs import installed_body_pack_root"
         },
@@ -126016,7 +126100,7 @@
       "path": "infrastructure/profile_transfer.py",
       "readers": [
         {
-          "line": 126,
+          "line": 132,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.profile_transfer import PortableProfileManager"
         }
@@ -126186,7 +126270,7 @@
       "path": "infrastructure/updater.py",
       "readers": [
         {
-          "line": 128,
+          "line": 134,
           "path": "application/service_container.py",
           "text": "lazy from infrastructure.updater import UpdateManager"
         }
@@ -128516,6 +128600,14 @@
     {
       "path": "infrastructure/backup_manager.py",
       "reason": "墨寒使用者備份檔名與產品資料位置屬產品殼相容契約。"
+    },
+    {
+      "path": "infrastructure/body_pack_presentation.py",
+      "reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。"
+    },
+    {
+      "path": "infrastructure/ensemble_body_pack.py",
+      "reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。"
     },
     {
       "path": "infrastructure/installed_body_packs.py",

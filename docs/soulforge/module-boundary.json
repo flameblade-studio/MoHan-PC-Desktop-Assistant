@@ -179,6 +179,7 @@
       "infrastructure.body_pack_renderer",
       "infrastructure.character_native_frames",
       "infrastructure.character_pack_files",
+      "infrastructure.character_source_body_pack",
       "infrastructure.character_source_pack",
       "infrastructure.companion_proactivity_preferences_store",
       "infrastructure.complete_halfbody_expressions",
