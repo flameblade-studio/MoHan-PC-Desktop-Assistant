@@ -6,10 +6,10 @@ the same fresh-store ``ActiveOutfitOverlay`` path as
 canonical full-body yaw views, the two requested yaw scenes use the runtime
 ``LayeredFullBodyRenderer`` with that same overlay.
 
-The first committed baseline is the current ``main`` state and therefore
-intentionally includes known defects. After issue ``#185`` is merged into
-this branch, rerun ``QT_QPA_PLATFORM=offscreen py -3.15
-tools/render_visual_baseline.py --write`` to update the baseline deliberately.
+The committed baseline represents the current approved ``main`` state and
+must be regenerated after an approved runtime, official-pack, or compositor
+change with ``QT_QPA_PLATFORM=offscreen python -I
+tools/render_visual_baseline.py --write``.
 """
 
 from __future__ import annotations
@@ -33,6 +33,9 @@ lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice
 lazy from PySide6.QtGui import QImage, QPainter, QPixmap
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
@@ -90,7 +93,9 @@ BASE_SCENE_SPECS = (
     SceneSpec(
         "speaking_open",
         "張嘴畫面，抓嘴角殘留、口腔邊界與嘴型不動。",
-        expression="speaking_front",
+        # The layered product renderer opens the mouth through a speech frame;
+        # the legacy ``speaking_front`` sprite name now renders the closed idle.
+        expression="attentive_front_speech_open",
     ),
     SceneSpec(
         "speaking_closed",
@@ -130,6 +135,7 @@ def _has_runtime_yaw_variants() -> bool:
 def scene_specs() -> tuple[SceneSpec, ...]:
     """Return the fixed scenes, adding yaw probes only when runtime has them."""
 
+    activate_product_character_runtime(ROOT)
     if not _has_runtime_yaw_variants():
         return BASE_SCENE_SPECS
     return BASE_SCENE_SPECS + tuple(
@@ -581,7 +587,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             artifacts = write_baseline()
             print(
                 "BASELINE_POLICY source=main includes_known_defects=true "
-                "rerun=--write after #185 merge"
+                "rerun=--write after approved runtime/official-pack/compositor change"
             )
             for artifact in artifacts:
                 print(

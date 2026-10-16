@@ -1335,6 +1335,7 @@
         "test_vision_runtime.py",
         "test_vision_sbom.py",
         "test_visual_acceptance_regressions.py",
+        "test_visual_baseline.py",
         "test_visual_context_fusion.py",
         "test_visual_social_cues.py",
         "test_voice_prompt_integrity.py",
@@ -8991,6 +8992,15 @@
       ],
       "tests": [
         "test_vision_sbom.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/render_visual_baseline.py"
+      ],
+      "tests": [
+        "test_visual_baseline.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
