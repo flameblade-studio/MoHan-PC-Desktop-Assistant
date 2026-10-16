@@ -19,6 +19,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from presentation.dashboard_dialogs import (
@@ -74,7 +75,6 @@ class DashboardTodayMemoryMixin:
         entry.addWidget(idea)
         return entry, add, idea
 
-
     def _today_todo_pane(self) -> QWidget:
         self.todo_feedback = QLabel("")
         self.todo_feedback.setObjectName("entryFeedback")
@@ -108,7 +108,6 @@ class DashboardTodayMemoryMixin:
         pane_layout.addLayout(todo_header)
         pane_layout.addWidget(self.todo_scroll, 1)
         return todo_pane
-
 
     def _today_idea_pane(
         self,
@@ -157,7 +156,6 @@ class DashboardTodayMemoryMixin:
         idea_pane_layout.addWidget(self.idea_list, 1)
         return idea_pane, edit_idea, delete_ideas
 
-
     def _today_tab(self) -> QWidget:
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -185,7 +183,6 @@ class DashboardTodayMemoryMixin:
         self.idea_list.itemDoubleClicked.connect(self.edit_idea_item)
         self.todo_input.returnPressed.connect(self.add_todo)
         return tab
-
 
     def _memory_tab(self) -> QWidget:
         tab = QWidget()
@@ -217,18 +214,16 @@ class DashboardTodayMemoryMixin:
         )
         return tab
 
-
     def _memory_intro(self) -> QLabel:
         intro = QLabel(
             self._t(
                 "memory_intro",
-                "墨寒只保存主上允許留下的人物、偏好、目標、工作流程與"
+                "{character_name}只保存{user_title}允許留下的人物、偏好、目標、工作流程與"
                 "重要日期。記憶存於本機，可分類瀏覽、逐項編輯或刪除。",
             )
         )
         intro.setWordWrap(True)
         return intro
-
 
     def _memory_entry_row(self) -> tuple[QHBoxLayout, QPushButton]:
         entry = QHBoxLayout()
@@ -236,7 +231,7 @@ class DashboardTodayMemoryMixin:
         self.memory_input.setPlaceholderText(
             self._t(
                 "memory_input_placeholder",
-                "例如：主上偏好先完成漫畫，再處理行政工作",
+                "例如：{user_title}偏好先完成漫畫，再處理行政工作",
             )
         )
         self.memory_category = QComboBox()
@@ -252,7 +247,6 @@ class DashboardTodayMemoryMixin:
         entry.addWidget(self.memory_category)
         entry.addWidget(add_button)
         return entry, add_button
-
 
     def _memory_filter_row(
         self,
@@ -287,10 +281,10 @@ class DashboardTodayMemoryMixin:
                 "只刪除已勾選的記憶，執行前會再次確認",
             )
         )
+        delete_button.setMinimumWidth(delete_button.sizeHint().width())
         filter_row.addWidget(edit_button)
         filter_row.addWidget(delete_button)
         return filter_row, edit_button, delete_button
-
 
     @staticmethod
     def _memory_list_widget() -> QListWidget:
@@ -298,7 +292,6 @@ class DashboardTodayMemoryMixin:
         memory_list.setObjectName("memoryList")
         memory_list.setSpacing(3)
         return memory_list
-
 
     def _memory_action_row(
         self,
@@ -330,7 +323,6 @@ class DashboardTodayMemoryMixin:
             archives_button,
         )
 
-
     def _memory_auto_checkbox(self) -> QCheckBox:
         checkbox = QCheckBox(
             self._t(
@@ -340,7 +332,6 @@ class DashboardTodayMemoryMixin:
         )
         checkbox.setChecked(bool(self.db.setting("auto_memory", True)))
         return checkbox
-
 
     def _connect_memory_actions(self, actions: MemoryTabActions) -> None:
         actions.add.clicked.connect(self.add_memory)
@@ -352,7 +343,6 @@ class DashboardTodayMemoryMixin:
         actions.clear.clicked.connect(self.clear_memories)
         actions.optimize.clicked.connect(self.optimize_memories)
         actions.archives.clicked.connect(self.show_archived_memories)
-
 
     def refresh_memories(self, *_args) -> None:
         if not hasattr(self, "memory_list"):
@@ -368,7 +358,7 @@ class DashboardTodayMemoryMixin:
             category=selected_category or None,
         )
         all_rows = self.db.list_memories(limit=1000)
-        counts = dict.fromkeys(MEMORY_CATEGORIES, 0)
+        counts: dict[str, int] = dict.fromkeys(MEMORY_CATEGORIES, 0)
         for row in all_rows:
             category = to_taiwan_traditional(str(row["category"]))
             counts[category] = counts.get(category, 0) + 1
@@ -443,12 +433,12 @@ class DashboardTodayMemoryMixin:
             item.setToolTip(str(row["content"]))
             self.memory_list.addItem(item)
 
-
     def refresh_todos(self) -> None:
         while self.todo_list.count():
             item = self.todo_list.takeAt(0)
-            if item.widget():
-                item.widget().deleteLater()
+            widget = item.widget() if item is not None else None
+            if widget is not None:
+                widget.deleteLater()
         rows = self.db.list_todos()
         self.todo_count.setText(
             self._t("todo_count", "{count} 件未完成", count=len(rows))
@@ -457,7 +447,7 @@ class DashboardTodayMemoryMixin:
             empty = QLabel(
                 self._t(
                     "todo_empty",
-                    "今日卷冊尚空。\n主上先寫下一件真正重要的事。",
+                    "今日卷冊尚空。\n{user_title}先寫下一件真正重要的事。",
                 )
             )
             empty.setObjectName("emptyState")
@@ -470,7 +460,6 @@ class DashboardTodayMemoryMixin:
             # 動態重建的待辦卡片按鈕會重新取得 autoDefault=True；
             # 必須立刻套用與建構時相同的 Enter 鍵防護。
             self._disable_implicit_default_buttons(widget)
-
 
     def refresh_ideas(self) -> None:
         self.idea_list.clear()
@@ -509,7 +498,6 @@ class DashboardTodayMemoryMixin:
             )
             self.idea_list.addItem(item)
 
-
     def add_todo(self) -> None:
         text = self.todo_input.text().strip()
         if not text:
@@ -530,9 +518,8 @@ class DashboardTodayMemoryMixin:
         )
         self.todo_input.setFocus()
         self.speak_requested.emit(
-            self._t("todo_added_speech", "已收入今日卷冊。"), "happy"
+            self._t("todo_added_speech", ""), "happy"
         )
-
 
     def add_idea(self) -> None:
         text = self.todo_input.text().strip()
@@ -555,11 +542,10 @@ class DashboardTodayMemoryMixin:
         self.speak_requested.emit(
             self._t(
                 "idea_added_speech",
-                "靈光稍縱即逝，妾已替主上收好。",
+                "",
             ),
             "happy",
         )
-
 
     def edit_selected_idea(self) -> None:
         item = self.idea_list.currentItem()
@@ -573,7 +559,6 @@ class DashboardTodayMemoryMixin:
             return
         self.edit_idea_item(item)
 
-
     def edit_idea_item(self, item: QListWidgetItem) -> None:
         idea_id = item.data(Qt.UserRole)
         if idea_id is None:
@@ -583,14 +568,14 @@ class DashboardTodayMemoryMixin:
             self.todo_feedback.setText(
                 self._t(
                     "idea_not_found",
-                    "找不到這則靈感，請重新整理後再試。",
+                    '請重新整理靈感清單並選擇現有項目。',
                 )
             )
             return
         editor = IdeaEditorDialog(
             str(row["title"] or row["text"]),
             str(row["content"] or ""),
-            self,
+            require_qwidget(self),
             language=self.ui_language,
         )
         if editor.exec() != QDialog.Accepted:
@@ -606,7 +591,6 @@ class DashboardTodayMemoryMixin:
             )
         )
 
-
     def checked_idea_ids(self) -> list[int]:
         checked: list[int] = []
         for index in range(self.idea_list.count()):
@@ -615,7 +599,6 @@ class DashboardTodayMemoryMixin:
             if idea_id is not None and item.checkState() == Qt.Checked:
                 checked.append(int(idea_id))
         return checked
-
 
     def delete_checked_ideas(self) -> None:
         idea_ids = self.checked_idea_ids()
@@ -628,7 +611,7 @@ class DashboardTodayMemoryMixin:
             )
             return
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("idea_delete_title", "刪除創作靈感"),
             self._t(
                 "idea_delete_confirm",
@@ -650,7 +633,6 @@ class DashboardTodayMemoryMixin:
             )
         )
 
-
     def add_memory(self) -> None:
         text = self.memory_input.text().strip()
         if not text:
@@ -667,17 +649,16 @@ class DashboardTodayMemoryMixin:
         self.speak_requested.emit(
             self._t(
                 "memory_added_speech",
-                "妾已記下。主上日後若要更改，也可逐項整理。",
+                "",
             ),
             "happy",
         )
-
 
     def edit_selected_memory(self) -> None:
         item = self.memory_list.currentItem()
         if item is None or item.data(Qt.UserRole) is None:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("memory_select_edit_title", "尚未選取"),
                 self._t(
                     "memory_select_edit",
@@ -687,7 +668,6 @@ class DashboardTodayMemoryMixin:
             return
         self.edit_memory_item(item)
 
-
     def edit_memory_item(self, item: QListWidgetItem) -> None:
         memory_id = item.data(Qt.UserRole)
         if memory_id is None:
@@ -695,8 +675,8 @@ class DashboardTodayMemoryMixin:
         row = self.db.memory(int(memory_id))
         if row is None:
             QMessageBox.information(
-                self,
-                self._t("memory_not_found_title", "找不到記憶"),
+                require_qwidget(self),
+                self._t("memory_not_found_title", '請重新整理記憶清單'),
                 self._t(
                     "memory_not_found",
                     "這則記憶已不存在，清單將重新整理。",
@@ -716,19 +696,18 @@ class DashboardTodayMemoryMixin:
             int(memory_id), title, content, category, importance
         ):
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t(
                     "memory_save_failed_title",
-                    "無法保存記憶",
+                    '儲存記憶需要處理',
                 ),
                 self._t(
                     "memory_save_failed",
-                    "可能已有內容完全相同的記憶。原有資料未被變更。",
+                    '相同的記憶可能已存在；既有資料保持完整。',
                 ),
             )
             return
         self.refresh_memories()
-
 
     def checked_memory_ids(self) -> list[int]:
         checked: list[int] = []
@@ -739,12 +718,11 @@ class DashboardTodayMemoryMixin:
                 checked.append(int(memory_id))
         return checked
 
-
     def delete_checked_memories(self) -> None:
         memory_ids = self.checked_memory_ids()
         if not memory_ids:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t(
                     "memory_select_delete_title",
                     "尚未勾選",
@@ -756,7 +734,7 @@ class DashboardTodayMemoryMixin:
             )
             return
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("memory_delete_title", "刪除長期記憶"),
             self._t(
                 "memory_delete_confirm",
@@ -771,7 +749,6 @@ class DashboardTodayMemoryMixin:
         self.db.delete_memories(memory_ids)
         self.refresh_memories()
 
-
     def delete_memory(self) -> None:
         item = self.memory_list.currentItem()
         if not item or item.data(Qt.UserRole) is None:
@@ -779,26 +756,24 @@ class DashboardTodayMemoryMixin:
         self.db.delete_memory(int(item.data(Qt.UserRole)))
         self.refresh_memories()
 
-
     def clear_memories(self) -> None:
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("memory_clear_title", "清除長期記憶"),
             self._t(
                 "memory_clear_confirm",
-                "確定要刪除墨寒保存的全部長期記憶嗎？此動作無法復原。",
+                '確定永久刪除{character_name}保存的全部長期記憶嗎？',
             ),
         )
         if answer == QMessageBox.Yes:
             self.db.clear_memories()
             self.refresh_memories()
 
-
     def optimize_memories(self) -> None:
         result = self.db.optimize_memories()
         self.refresh_memories()
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("memory_optimize_title", "記憶整理完成"),
             self._t(
                 "memory_optimize_result",
@@ -809,7 +784,6 @@ class DashboardTodayMemoryMixin:
                 **result,
             ),
         )
-
 
     def show_archived_memories(self) -> None:
         dialog = ArchivedMemoryDialog(

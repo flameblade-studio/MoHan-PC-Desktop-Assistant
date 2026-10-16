@@ -141,12 +141,11 @@ def assert_custom_templates_are_translation_scale_and_mirror_invariant() -> None
 
 
 def assert_left_handed_recordings_match_either_hand() -> None:
-    """Ruling 2026-08-27: recordings carry no handedness, so both must work.
+    """Ruling 2026-08-27: recordings support both handedness normalizations.
 
-    A template recorded with the LEFT hand kept its left-hand geometry while
-    template preparation normalized it as RIGHT without mirroring — neither
-    hand could ever match it afterwards.  Templates are now prepared in both
-    normalizations.
+    Recordings omit handedness. Previously, a LEFT-hand template retained
+    left geometry while preparation treated it as RIGHT, causing both hands
+    to miss the match. Templates now prepare both normalizations.
     """
     right_template = hand("open-palm", 0.0).landmarks
     left_recorded = tuple(

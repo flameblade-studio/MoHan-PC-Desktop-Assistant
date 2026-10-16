@@ -17,7 +17,6 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from application.presentation_ports import (
-    DEFAULT_TRANSCRIPTION_MODEL,
     REALTIME_OUTPUT_AZURE,
     REALTIME_OUTPUT_AZURE_HD,
     REALTIME_OUTPUT_OPENAI,
@@ -28,10 +27,12 @@ lazy from application.presentation_ports import (
     azure_region_options,
     azure_region_supports_hd_flash,
 )
+lazy from domain.core_constants import DEFAULT_TRANSCRIPTION_MODEL
 lazy from domain.app_profile import profile_setting
 lazy from domain.language_support import localized_transcription_prompt
 lazy from domain.speech_configuration import (
     DEFAULT_VOICE_VOLUME_PERCENT,
+    MOHAN_VOICE_DEFAULTS,
     REALTIME_VOICES,
     TTS_VOICES,
     VOICE_ENGINE_AZURE,
@@ -180,7 +181,7 @@ class DashboardVoiceMixin:
         fallback = QCheckBox(
             self._t(
                 "openai_fallback",
-                "OpenAI 失敗時使用 Windows 離線辨識",
+                '以 Windows 離線辨識作為 OpenAI 的恢復路徑',
             )
         )
         available = capabilities.offline_speech_recognition
@@ -233,13 +234,13 @@ class DashboardVoiceMixin:
             str(
                 self.db.setting(
                     "tts_voice",
-                    self.db.setting("cloud_voice", "coral"),
+                    self.db.setting("cloud_voice", MOHAN_VOICE_DEFAULTS.default_cloud_voice),
                 )
             ),
         )
         self.realtime_voice = self._editable_combo(
             REALTIME_VOICES,
-            str(self.db.setting("realtime_voice", "coral")),
+            str(self.db.setting("realtime_voice", MOHAN_VOICE_DEFAULTS.default_realtime_voice)),
         )
         self._initialize_azure_voice_controls(capabilities)
         self.cloud_voice = self.tts_voice
@@ -331,7 +332,7 @@ class DashboardVoiceMixin:
         if capabilities.system_local_speech:
             return self._t(
                 "no_female_voice",
-                "未偵測到已確認的女性 Windows 聲音",
+                '請安裝已驗證的 Windows 女性語音',
             )
         return self._t(
             "platform_local_voice_unavailable",
@@ -586,9 +587,8 @@ class DashboardVoiceMixin:
         return combo
 
     def _apply_realtime_output_mode_state(self, mode: str) -> None:
-        # The selected output route decides which provider speaks; it must not
-        # prevent the user from preselecting the native Realtime voice that
-        # will be used after switching back to OpenAI output.
+        # The output route decides which provider speaks without blocking a
+        # native Realtime voice choice for a later switch back to OpenAI.
         self.realtime_voice.setEnabled(True)
         if mode == REALTIME_OUTPUT_AZURE:
             note = self._t(
@@ -668,14 +668,14 @@ class DashboardVoiceMixin:
         checkbox = QCheckBox(
             self._t(
                 "echo_guard_option",
-                "防止墨寒把自己的聲音誤認成主上（推薦）",
+                "防止{character_name}把自己的聲音誤認成{user_title}（推薦）",
             )
         )
         checkbox.setChecked(bool(self.db.setting("realtime_echo_guard", True)))
         checkbox.setToolTip(
             self._t(
                 "echo_guard_tooltip",
-                "墨寒說話時暫停上傳麥克風，播放結束後再恢復；"
+                "{character_name}說話時暫停上傳麥克風，播放結束後再恢復；"
                 "啟用時無法在她說話途中插話。",
             )
         )
@@ -700,7 +700,7 @@ class DashboardVoiceMixin:
             self._t(
                 "hybrid_transcript_tooltip",
                 "Realtime 保留原生音訊理解；每句說完後，畫面文字改用"
-                "完整錄音的 OpenAI 高精度轉錄。成功後才允許墨寒回答。",
+                "完整錄音的 OpenAI 高精度轉錄。成功後才允許{character_name}回答。",
             )
         )
         return checkbox
@@ -708,7 +708,7 @@ class DashboardVoiceMixin:
     def _initialize_voice_rate_control(self) -> QWidget:
         self.voice_rate = QSpinBox()
         self.voice_rate.setRange(-5, 5)
-        self.voice_rate.setValue(int(self.db.setting("voice_rate", -1)))
+        self.voice_rate.setValue(int(self.db.setting("voice_rate", MOHAN_VOICE_DEFAULTS.default_rate)))
         self.voice_rate.setSuffix(self._t("level_suffix", " 級"))
         self.voice_rate.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.voice_rate.lineEdit().setReadOnly(True)
@@ -770,11 +770,11 @@ class DashboardVoiceMixin:
             )
         )
         self.voice_preview_button = QPushButton(
-            self._t("preview_voice", "試聽：主上，妾在。")
+            self._t("preview_voice", MOHAN_VOICE_DEFAULTS.preview_text["zh-TW"])
         )
         self.voice_preview_button.clicked.connect(self._preview_voice)
         self.realtime_status = QLabel(
-            self._t("realtime_disconnected", "Realtime：未連線")
+            self._t("realtime_disconnected", 'Realtime：等待連線')
         )
         self.realtime_btn = QPushButton(
             self._t("start_realtime", "啟動 Realtime 自然對話")
@@ -795,15 +795,14 @@ class DashboardVoiceMixin:
         if capabilities.offline_speech_recognition:
             text = self._t(
                 "recognition_note",
-                "單次麥克風預設使用 gpt-4o-mini-transcribe 與墨寒專用繁中詞庫；"
+                "單次麥克風預設使用 gpt-4o-mini-transcribe 與{character_name}專用繁中詞庫；"
                 "停止說話約 0.85 秒即送出，最長 10 秒；收音時再次點擊"
                 "麥克風可立即送出。Windows 備援可自行關閉。",
             )
         else:
             text = self._t(
                 "recognition_note_no_offline",
-                "單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識尚未"
-                "完成實機驗證，因此不會顯示或假裝提供離線備援。",
+                '單次麥克風使用 OpenAI 高準確辨識；此平台的離線辨識等待實機驗證，完成驗證後才可提供離線備援。',
             )
         return self._voice_note(text)
 
@@ -815,7 +814,7 @@ class DashboardVoiceMixin:
             text = self._t(
                 "female_voice_note",
                 "離線聲音僅列出 Windows 已明確標示為女性的聲音；"
-                "台灣繁中仍優先使用 Yating（zh-TW）。",
+                f"台灣繁中仍優先使用 {MOHAN_VOICE_DEFAULTS.system_local.preferred_name_markers['zh-TW'][0]}（zh-TW）。",
             )
         else:
             text = self._t(
@@ -833,17 +832,12 @@ class DashboardVoiceMixin:
         if capabilities.system_local_speech:
             text = self._t(
                 "azure_speech_note",
-                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                "只列官方標示為女性的繁中、簡中或英文聲線；失敗時"
-                "立即回到 Windows 本機女聲。F0 免費額度及計費以"
-                " Microsoft 當期規則為準。",
+                '預覽功能；請自備 Azure Speech 資源金鑰與相符區域，聲線僅列出已驗證女性聲線。設定需要補齊或服務出現錯誤時，回退至 Windows 本機女性語音。用量與計費依 Microsoft 規則。',
             )
         else:
             text = self._t(
                 "azure_speech_note_no_local_fallback",
-                "預覽功能；需自備 Azure Speech 資源金鑰與相符區域。"
-                "此平台尚無已驗證的本機語音，服務失敗時會安全停止播放，"
-                "不會假裝已切換到離線聲音。",
+                '預覽功能；請自備 Azure Speech 資源金鑰與相符區域。此平台的本機語音等待驗證；服務出現錯誤時，播放會安全停止。',
             )
         return self._voice_note(text)
 
@@ -851,11 +845,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "azure_hd_speech_note",
-                "可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。"
-                "Dragon HD 不提供 viseme，因此墨寒會使用既有音訊分析維持"
-                "嘴型同步。發話前等待時間取決於網路與區域距離。若 HD 失敗，"
-                "依序退回一般 Azure，再退回 Windows "
-                "本機語音；每一層只嘗試一次，避免重複計費。",
+                '可選預覽功能；請使用獨立的 S0 語音資源、金鑰與相符區域。{character_name}以音訊分析維持 Dragon HD 嘴型同步，發話等待時間取決於網路與區域距離。合成出現錯誤時，依序回退至一般 Azure 與 Windows 本機語音，每層各嘗試一次。',
             )
         )
 
@@ -873,9 +863,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "echo_guard_note",
-                "防回音開啟時，墨寒說話期間會停止上傳麥克風，並清除本機"
-                "與伺服器端殘留音訊；結束約一秒後才恢復。對話頁只顯示"
-                "高精度整句轉錄的最終結果，不顯示辨識中的暫定文字。",
+                '防回音開啟時，{character_name}說話期間會暫停上傳麥克風，並清除本機與伺服器端殘留音訊，結束約一秒後恢復。對話頁僅顯示高精度整句轉錄的最終結果。',
             )
         )
 
@@ -883,13 +871,7 @@ class DashboardVoiceMixin:
         return self._voice_note(
             self._t(
                 "realtime_note",
-                "Realtime 會持續使用麥克風。預設以穩定切段保留句首 500 毫秒，"
-                "停止約 0.85 秒後才判定說完。高精度整句轉錄開啟時，"
-                "Realtime 原生模型負責理解聲音，螢幕文字則使用與單次"
-                "麥克風相同的 gpt-4o-mini-transcribe 與繁中詞庫；"
-                "不會同時收取 Realtime 內建字幕的第二筆轉錄費。"
-                "啟動時才會傳送聲音；關閉後立即停止。"
-                "mini 較省費用並已設為預設；完整版適合品質優先時使用。",
+                'Realtime 持續使用麥克風；穩定切段保留句首 500 毫秒，停頓約 0.85 秒後判定句子完成。啟用高精度整句轉錄時，原生模型負責理解聲音，螢幕文字僅由 gpt-4o-mini-transcribe 與繁中詞庫轉錄，字幕轉錄費僅計此一路。聲音僅在啟動期間傳送，關閉即停止。mini 為較省費用的預設，完整版適合品質優先時使用。',
             )
         )
 
@@ -1006,10 +988,10 @@ class DashboardVoiceMixin:
             ),
             self.realtime_transcription_model,
         )
-        form.addRow(
-            self._t("realtime_noise", "Realtime 麥克風降噪"),
-            self.realtime_noise_reduction,
-        )
+        noise_label = QLabel(self._t("realtime_noise", "Realtime 麥克風降噪"))
+        noise_label.setWordWrap(True)
+        noise_label.setMinimumHeight(noise_label.fontMetrics().lineSpacing() * 4)
+        form.addRow(noise_label, self.realtime_noise_reduction)
         form.addRow(
             self._t("realtime_turn", "Realtime 發言切段"),
             self.realtime_turn_detection,
@@ -1039,7 +1021,7 @@ class DashboardVoiceMixin:
             rate_control,
         )
         form.addRow(
-            self._t("mohan_volume", "墨寒專屬音量"),
+            self._t("mohan_volume", ""),
             volume_control,
         )
         form.addRow(

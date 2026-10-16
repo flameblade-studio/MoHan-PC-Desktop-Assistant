@@ -1,0 +1,197 @@
+{
+  "schema": "mohan.reviewed-pose-motion.v3",
+  "source_sha256": "1e6a1cfaaca55e37f602f4f1672adbe3dd71df06a42ea359ded40315d7cb6d50",
+  "native_body_sha256": "d73525ef11f63c89d68296666e99fc30814bf7a78600f6db3fa422d8519fed13",
+  "cosmetics": {
+    "light": {
+      "rest": {
+        "foundation": {
+          "path": "four-look-06/light/rest/foundation.rgba.png",
+          "sha256": "b7b8e422ac5e9eac650fb2c494d692d09f60bf5da22635b4a4fb4ed26bdd24c7"
+        },
+        "eyes": {
+          "path": "four-look-06/light/rest/eyes.rgba.png",
+          "sha256": "c64aeb6537d5fc88b2c0b059967204098d38a7c1c34fddf21af23964056c1941"
+        },
+        "cheeks": {
+          "path": "four-look-06/light/rest/cheeks.rgba.png",
+          "sha256": "ae4af50d3731eef872176b62b0e2f378ecd0ad41d66cb773fd96815690b91c15"
+        },
+        "lips": {
+          "path": "four-look-06/light/rest/lips.rgba.png",
+          "sha256": "97471c82ce5f4cf019fbfca251fd57ce38d86bee0877a9e758458e8d3a64d8c6"
+        }
+      },
+      "closed": {
+        "foundation": {
+          "path": "four-look-06/light/closed/foundation.rgba.png",
+          "sha256": "d222716e0947d3412f555f26072a4167cca1eaf8b05b5c4483967d5bd8b6ea3c"
+        },
+        "eyes": {
+          "path": "four-look-06/light/closed/eyes.rgba.png",
+          "sha256": "1bac17413fa9b59c6403e1222e3d83b981d2ff12d62517d6536c36435a3633fd"
+        },
+        "cheeks": {
+          "path": "four-look-06/light/closed/cheeks.rgba.png",
+          "sha256": "c8d8ae9a54238a7fde1c014c58275f983584001355bb8093e777c301096a9e52"
+        },
+        "lips": {
+          "path": "four-look-06/light/closed/lips.rgba.png",
+          "sha256": "a0bb2669fe3315f1929bc5dee76d4c7c2f79091058b8221327b06c34879db07b"
+        }
+      },
+      "speech": {
+        "foundation": {
+          "path": "four-look-06/light/speech/foundation.rgba.png",
+          "sha256": "fa6b2dd63b35028098cb921f87153696dbfb1699cbe411a3581f60a0bf018352"
+        },
+        "eyes": {
+          "path": "four-look-06/light/speech/eyes.rgba.png",
+          "sha256": "10f2dae974818899c39722c14a6eaae1e1ba6b6b314e337ae774a3bdc372101b"
+        },
+        "cheeks": {
+          "path": "four-look-06/light/speech/cheeks.rgba.png",
+          "sha256": "c8d8ae9a54238a7fde1c014c58275f983584001355bb8093e777c301096a9e52"
+        },
+        "lips": {
+          "path": "four-look-06/light/speech/lips.rgba.png",
+          "sha256": "be9463c04505a55c98138dcd7021389887354cc8abe83ae4d01249cf95248b6d"
+        }
+      }
+    },
+    "classic": {
+      "rest": {
+        "foundation": {
+          "path": "four-look-06/classic/rest/foundation.rgba.png",
+          "sha256": "7eb946bd998d0c790ae2ca32082c8b0f91b6a0c8d476cea7ba544ae80c732225"
+        },
+        "eyes": {
+          "path": "four-look-06/classic/rest/eyes.rgba.png",
+          "sha256": "d6af6c9bd3e574ecad979e43c3b4456e2f2f2f6b344bc5da754a8c2f6e331836"
+        },
+        "cheeks": {
+          "path": "four-look-06/classic/rest/cheeks.rgba.png",
+          "sha256": "b772ca4ee75c5061d5cf0708aa1cb97914b1bf3c530b2d54b3cca8d82fa3decb"
+        },
+        "lips": {
+          "path": "four-look-06/classic/rest/lips.rgba.png",
+          "sha256": "3624796525f3d42f375fa3ed676507d6b68f13c1c2ba35e0080789520ccc37f3"
+        }
+      },
+      "closed": {
+        "foundation": {
+          "path": "four-look-06/classic/closed/foundation.rgba.png",
+          "sha256": "89a8cb5b3a48d773415fb8c358b77c82ed87a557fd4998c32bbe9a59ff53593c"
+        },
+        "eyes": {
+          "path": "four-look-06/classic/closed/eyes.rgba.png",
+          "sha256": "79b48dc9730089a4e1656e61af6fbcd81addbf55a26c2175c23f63b51fbbace7"
+        },
+        "cheeks": {
+          "path": "four-look-06/classic/closed/cheeks.rgba.png",
+          "sha256": "4094e7928562a4c43189391cace22e00ff1beb479b38733d325312e02cad3272"
+        },
+        "lips": {
+          "path": "four-look-06/classic/closed/lips.rgba.png",
+          "sha256": "2b1d9bac85affe18454b2aa96414a0a2a59f206af80085511ab9dd117334a9ef"
+        }
+      },
+      "speech": {
+        "foundation": {
+          "path": "four-look-06/classic/speech/foundation.rgba.png",
+          "sha256": "9554bdc3124fefb143afe7868825cae9f1a192171a3ef84eaef11552a6e86909"
+        },
+        "eyes": {
+          "path": "four-look-06/classic/speech/eyes.rgba.png",
+          "sha256": "a2ee5624021949ad5fd29775f575e492e383e7824ebbd0d02d3224b4f24773b0"
+        },
+        "cheeks": {
+          "path": "four-look-06/classic/speech/cheeks.rgba.png",
+          "sha256": "4094e7928562a4c43189391cace22e00ff1beb479b38733d325312e02cad3272"
+        },
+        "lips": {
+          "path": "four-look-06/classic/speech/lips.rgba.png",
+          "sha256": "784c259d55aed9e4d5874626d1310bde44e87333f36eb10df0100ffa1c122c9c"
+        }
+      }
+    },
+    "glamorous": {
+      "rest": {
+        "foundation": {
+          "path": "four-look-06/glamorous/rest/foundation.rgba.png",
+          "sha256": "8a68b8472302f3aaf1cffc742aeb3545bc6cb6e160718dbdfa552bbc51f3ab92"
+        },
+        "eyes": {
+          "path": "four-look-06/glamorous/rest/eyes.rgba.png",
+          "sha256": "f42ee47ac3c40d4b444f86737f340228d9d8eb1d78fd5448d15befeb462ebf94"
+        },
+        "cheeks": {
+          "path": "four-look-06/glamorous/rest/cheeks.rgba.png",
+          "sha256": "e0c887f5b155e7ebde8a0ea05107e4cee9881548a4e96ba0c5b2596dfb8dcee8"
+        },
+        "lips": {
+          "path": "four-look-06/glamorous/rest/lips.rgba.png",
+          "sha256": "f8d7cb262dd37223cfe170e2bde62dfd05e93defd13686085799329ab7fecfba"
+        }
+      },
+      "closed": {
+        "foundation": {
+          "path": "four-look-06/glamorous/closed/foundation.rgba.png",
+          "sha256": "59949760dc605ddb6a59c3ec522580ff5de76e0c913fdbb4a29712e52e102677"
+        },
+        "eyes": {
+          "path": "four-look-06/glamorous/closed/eyes.rgba.png",
+          "sha256": "b0539ee1d9a85b03e2652f22d1b60d793c48628d6ee4400e84f4e974a177c62e"
+        },
+        "cheeks": {
+          "path": "four-look-06/glamorous/closed/cheeks.rgba.png",
+          "sha256": "6706bff78330944dcb6eb745c3011d80fc5e60d037a0bc486856d9b917d45918"
+        },
+        "lips": {
+          "path": "four-look-06/glamorous/closed/lips.rgba.png",
+          "sha256": "70311a8ef71f1d64dd10eb0e97adec6e7b1fbe5871fa8d2066c040204088b360"
+        }
+      },
+      "speech": {
+        "foundation": {
+          "path": "four-look-06/glamorous/speech/foundation.rgba.png",
+          "sha256": "e7e0105599c1eb50f1aac543afc00ad4b63dda2d15eb6b568a13fc9e798b248c"
+        },
+        "eyes": {
+          "path": "four-look-06/glamorous/speech/eyes.rgba.png",
+          "sha256": "36657e5cc9d52c7a1c0a79c22aa1881c78d4a7064fb5cafa1f55d400dadae3b4"
+        },
+        "cheeks": {
+          "path": "four-look-06/glamorous/speech/cheeks.rgba.png",
+          "sha256": "6706bff78330944dcb6eb745c3011d80fc5e60d037a0bc486856d9b917d45918"
+        },
+        "lips": {
+          "path": "four-look-06/glamorous/speech/lips.rgba.png",
+          "sha256": "81f6e8e9f8371ce2fd8c3f30b78cc7a21b44f60a161218b999d3ebbf62359c3d"
+        }
+      }
+    }
+  },
+  "closed": {
+    "path": "closed.patch.rgba.png",
+    "sha256": "57ec0404db13da41a06439226d177ef7d1f72f7e3a7d1fef9f8cc08419dfb13d"
+  },
+  "speech": {
+    "path": "speech.patch.rgba.png",
+    "sha256": "fafa5fd44f91a63be0f1427229bbe6c6f1d1d91f3b084040869c71aed6df953b"
+  },
+  "gray_material_lineage": {
+    "approved_gray_whole_source": {
+      "view": "cheek-rest",
+      "path": "./scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/approved-two-piece-gray-alignment-01/cheek-rest.gray-source.png",
+      "sha256": "1e6a1cfaaca55e37f602f4f1672adbe3dd71df06a42ea359ded40315d7cb6d50",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    "previous_native_body_sha256": "21bbff8f3f506276e6140b9966e4a35bbf36bffcda0289e4320524186cc5cb2b",
+    "reused_motion_source_sha256": "bcc8def1ed4dd4cad179951a3733b31addaca97f81bd5211bebce5ea6ca368fe",
+    "method": "Existing native face motion and cosmetics retain their canvas coordinates; actual composed fitting is required before installation."
+  }
+}

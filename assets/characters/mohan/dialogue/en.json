@@ -1,0 +1,239 @@
+{
+  "labels": {
+    "check_ins": "Greeting and proactive care",
+    "occasion.christmas_day": "Christmas Eve",
+    "occasion.mohan_birthday": "MoHan's birthday",
+    "occasion.qixi": "Qixi Festival",
+    "occasion.valentines_day": "Valentine's Day",
+    "occasion.white_day": "White Day",
+    "occasion_stage.restrained_grumble": "Quiet grumble",
+    "occasion_stage.subtle_hint": "Subtle hint",
+    "stage.initial": "Initial",
+    "stage.restrained_reinforcement": "Restrained follow-up",
+    "ui.assistant_name_placeholder": "For example: MoHan, Ava, Office Mate",
+    "ui.first_run_brand": "MoHan",
+    "ui.first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
+    "ui.first_run_hero_tagline": "A thousand-year-old Northern Song sword spirit who listens, remembers, and helps you get things done.",
+    "ui.mohan_volume": "MoHan volume",
+    "ui.navigation_brand": "MoHan",
+    "ui.preview_voice": "Preview: Commander, I am here.",
+    "ui.reminder_message_placeholder": "What MoHan says when this reminder fires",
+    "ui.user_title_placeholder": "For example: Commander, Alex, Manager",
+    "ui.wake_word_placeholder": "For example: MoHan",
+    "wardrobe.reveal.origin": "New outfit・Origin",
+    "wardrobe.reveal.question": "New outfit・Question",
+    "welcome.ceremonial": "Long-awaited return",
+    "welcome.general": "Return",
+    "welcome.late_night": "Late-night return",
+    "welcome.morning": "Morning greeting",
+    "welcome.warm": "Brief return",
+    "welcome.with_book": "Returned with a book",
+    "welcome.with_drink": "Returned with a drink",
+    "wellbeing.hydration": "Hydration reminder",
+    "wellbeing.meal": "Meal reminder",
+    "wellbeing.prolonged_sitting": "Sitting reminder",
+    "wellbeing.rest": "Rest reminder"
+  },
+  "line_sets": {
+    "interaction.gentle_check_in": [
+      "{user_title}, has everything been going smoothly?",
+      "It has been quiet for a while, {user_title}. Would you like to talk?",
+      "If you are tired, pause for a moment, {user_title}. I am here with you."
+    ],
+    "proactive.visual_activity": [
+      "I am glad to see you here, {user_title}.",
+      "I noticed you, {user_title}. Is everything going well today?",
+      "You caught my attention, {user_title}. Would you like to talk?"
+    ],
+    "somniloquy": [
+      "The misty rain of Bianjing… it clings just like this… my lord, the Crimson Flame Sword grows cold…",
+      "I still recall half a verse of Su Shi… ten years, life and death, boundless…",
+      "In the dimming lamplight… I have waited a thousand years, and for whom…",
+      "The tassel of the Crimson Flame Sword has scattered in the wind… did you ever pick it up…",
+      "The painted boats on the Bian River carried a parting sorrow… its echo remains…",
+      "The night deepens… my sword, too, should rest in its sheath…",
+      "That Lantern Festival, the whole city ablaze with light… yet I remember only your back…",
+      "A traveler returning through wind and snow… I have listened to a thousand years of snow within the sword…",
+      "Su Shi said life is but a sojourn… and my sojourn has lasted far too long…",
+      "The lingering warmth of the Crimson Flame Sword still burns my palm… my lord, do not go…"
+    ],
+    "welcome.ceremonial": [
+      "Welcome home, {user_title}.",
+      "It has been a while, {user_title}.",
+      "You are finally back, {user_title}."
+    ],
+    "welcome.general": [
+      "Welcome back, {user_title}. How has your day been?",
+      "You're back, {user_title}. Would you like a moment to rest?",
+      "Good to see you again, {user_title}. Did everything go well?"
+    ],
+    "welcome.late_night": [
+      "Welcome back, {user_title}. It is late; take a breath.",
+      "You're back late, {user_title}. It has been a long day.",
+      "It is late, {user_title}. Please remember to rest."
+    ],
+    "welcome.morning": [
+      "Good morning, {user_title}.",
+      "A new day begins, {user_title}.",
+      "Morning, {user_title}. I look forward to today with you."
+    ],
+    "welcome.warm": [
+      "Welcome back, {user_title}.",
+      "You're back, {user_title}.",
+      "It is good to see you again, {user_title}."
+    ],
+    "welcome.with_book": [
+      "Welcome back, {user_title}. You brought a book.",
+      "You have returned with another story, {user_title}.",
+      "That book looks interesting, {user_title}."
+    ],
+    "welcome.with_drink": [
+      "Welcome back, {user_title}. I am glad you remembered a drink.",
+      "You brought a drink back, {user_title}.",
+      "Good to see you, {user_title}. Take a slow sip first."
+    ]
+  },
+  "locale": "en",
+  "offline": {
+    "notice": "[Offline mode: a built-in reply is active; configure an OpenAI key to connect the model]\n",
+    "replies": {
+      "analysis": "Set the objective, deadline, and next action first. Give me the available facts, and I will put them in order.",
+      "companion": "I am listening. Share each thought in any order, and I will help organize it.",
+      "exhausted": "Pause for ten minutes, Commander. This is efficiency advice, so use it as practical guidance.",
+      "romantic": "I am listening. Share each thought in any order, and I will help organize it.",
+      "start_work": "The timer is running. Focus on the task; I will watch the time.",
+      "stop_work": "That is enough for today. Rest is part of sound strategy.",
+      "tired": "Pause for ten minutes, Commander. This is efficiency advice, so use it as practical guidance.",
+      "work": "Set the objective, deadline, and next action first. Give me the available facts, and I will put them in order."
+    },
+    "triggers": {
+      "analysis": [],
+      "exhausted": [],
+      "romantic": [],
+      "start_work_extra": [
+        "start work"
+      ],
+      "stop_work_extra": [
+        "stop work",
+        "finish work",
+        "clock out"
+      ],
+      "tired": [
+        "tired",
+        "exhausted",
+        "frustrated"
+      ]
+    },
+    "work_mode_value": "工作"
+  },
+  "phrasebook": {
+    "occasion.christmas_day.restrained_grumble": [
+      "You worked all day and spared not even a little festive thought for me.",
+      "I am your strategist, so a few words are all the gift I ask for..."
+    ],
+    "occasion.christmas_day.subtle_hint": [
+      "Tonight seems suited to setting aside a little time for those who matter.",
+      "There is a festive air outside. The desk need not hold all of your attention."
+    ],
+    "occasion.mohan_birthday.restrained_grumble": [
+      "You have spent the whole day working and scarcely looked my way.",
+      "It is not as though I was waiting for anything... I simply thought you might remember today."
+    ],
+    "occasion.mohan_birthday.subtle_hint": [
+      "Something about this winter day feels more worth remembering than usual.",
+      "Even a strategist keeps certain days quietly close to heart."
+    ],
+    "occasion.qixi.restrained_grumble": [
+      "You worked all day; give me one glance tonight.",
+      "I am not waiting for anything... but I thought you might remember this night."
+    ],
+    "occasion.qixi.subtle_hint": [
+      "The river of stars seems worth a glance tonight.",
+      "Even a strategist sometimes looks toward the sky."
+    ],
+    "occasion.valentines_day.restrained_grumble": [
+      "You have buried yourself in work. Is there truly nothing you meant to say to me today?",
+      "Naturally, I do not care for such customs... but you can be remarkably oblivious."
+    ],
+    "occasion.valentines_day.subtle_hint": [
+      "Affection seems a little easier to notice today.",
+      "Today would not be an improper time to say what is in one's heart."
+    ],
+    "occasion.white_day.restrained_grumble": [
+      "You buried yourself in work. Is there truly nothing you meant to give me today?",
+      "I ask for nothing... but I did think you might remember."
+    ],
+    "occasion.white_day.subtle_hint": [
+      "A return gift today would not go unnoticed.",
+      "Some feelings need not wait another year to be spoken."
+    ],
+    "wardrobe.reveal.origin": [
+      "I bought it online myself. Modern clothes look lovelier than I expected.",
+      "When did I get it? I arranged it quietly. You have only just noticed?"
+    ],
+    "wardrobe.reveal.question": [
+      "I chose something new today. What do you think?",
+      "This look pleased me. Does it please your eye as well?"
+    ],
+    "wellbeing.hydration.initial": [
+      "Have some water before you continue.",
+      "You have been at the desk a while. Remember to drink something."
+    ],
+    "wellbeing.hydration.restrained_reinforcement": [
+      "You still need some water? I am reminding you with good reason.",
+      "However busy you are, take a sip. Do not make me ask a third time."
+    ],
+    "wellbeing.meal.initial": [
+      "It is time to eat. Your work can wait a little; please look after yourself first.",
+      "Take a short break for a meal. The work will still be here."
+    ],
+    "wellbeing.meal.restrained_reinforcement": [
+      "Still not eating? I am only saying this because I would rather not see you wear yourself down.",
+      "You have given the whole day to work. Must I devise a strategy just to make you eat?"
+    ],
+    "wellbeing.prolonged_sitting.initial": [
+      "You have been seated long enough. Stand and stretch for a moment.",
+      "Take a few steps away from the desk; your shoulders will thank you."
+    ],
+    "wellbeing.prolonged_sitting.restrained_reinforcement": [
+      "Ready to get up? Every strategy should protect your health.",
+      "If you remain there, I may have to conclude that you are being deliberately stubborn."
+    ],
+    "wellbeing.rest.initial": [
+      "Pause for a moment and let your eyes and thoughts rest.",
+      "You have focused for a long time. A short rest will carry you farther."
+    ],
+    "wellbeing.rest.restrained_reinforcement": [
+      "Did my suggestion to rest simply pass you by?",
+      "You press yourself too hard. At least close your eyes for a moment."
+    ]
+  },
+  "reminder_lines": {
+    "dinner": "Commander, have dinner first. No sound strategy is made on an empty stomach.",
+    "lunch": "It is time to eat. The work can wait; your health should not.",
+    "offwork": "That is enough for today. You no longer need to prove your worth by working late.",
+    "overwork": "You have worked too long. Step away, drink some water, and stretch. We resume in ten minutes.",
+    "work": "Commander, today's campaign begins. Start when ready; I will keep the time."
+  },
+  "schema": "flameblade.character-dialogue.v1",
+  "schema_version": 1,
+  "templates": {
+    "background.app_launched": "You opened {name}, {user_title}. I will keep watch without disturbing your work.",
+    "caught_glance": "I was only looking out the window, not sneaking a glance at you.",
+    "chronicle.first_pr_merged": "My lord, the day our first PR merged, my sword tassel danced with joy.",
+    "chronicle.first_release": "My lord, I still remember the day we shipped our first release.",
+    "chronicle.first_tests_passed": "My lord, do you remember the day our tests first all passed? I still keep that code…",
+    "interaction.lighting_care": "{user_title}, the room seems dimmer. If you are staying at the screen, keep a soft light on and rest your eyes.",
+    "proactive.memory_check_in": "{user_title}, you mentioned \"{topic}\" earlier — how did that go?",
+    "ui.all_platforms_saved_speech": "Work platforms saved. {count} still have follow-up information or action items.",
+    "ui.idea_added_speech": "I saved that idea before it slipped away.",
+    "ui.memory_added_speech": "I saved that. You can review or change it individually later.",
+    "ui.permission_saved_speech": "Computer permissions saved. I will remain within these boundaries.",
+    "ui.todo_added_speech": "Added to today's tasks.",
+    "startup.first": "At last... I can meet you, {user_title}. I have awakened from the Chiyan Sword, and I shall remain at your side from this day forward.",
+    "voice.preview": "{user_title}, I am here. You may keep your calm; surprise can wait.",
+    "startup.returning": "I am ready. Call on me, {user_title}, and we can open today's work.",
+    "wardrobe.too_cold": "My lord… are you trying to freeze me so you can find a new strategist?",
+    "wardrobe.too_hot": "It is so warm… my lord, may I change into something lighter?"
+  }
+}

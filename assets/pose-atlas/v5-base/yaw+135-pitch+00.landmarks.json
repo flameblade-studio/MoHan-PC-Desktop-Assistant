@@ -2,39 +2,53 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      538,
-      91
+      524,
+      62
     ],
     "left_ankle": [
-      488,
-      1406
+      494,
+      1388
     ],
     "left_heel": [
-      484,
-      1490
+      489,
+      1472
     ],
     "left_hip": [
-      585,
-      878
+      581,
+      855
     ],
     "left_knee": [
-      518,
-      1187
+      556,
+      1150
     ],
     "left_sole": [
-      488,
-      1496
+      494,
+      1478
     ],
     "left_toe": [
-      492,
-      1490
+      500,
+      1472
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "613f212720a0353e28538870b0d7493722bb9eb85a11c1ec49c0654c9dfc70db",
-    "target_subject_height": 1406
+    "source_sha256": "5c4345d1a8987faeff2ea5f5a643c85c7953c732e3a5f093d8070cd5311ff458",
+    "target_subject_height": 1417
+  },
+  "native_face_landmarks": {
+    "coordinates": null,
+    "landmark_count": 0,
+    "reason": "No single-face result from the bundled native 478-point provider; no prior coordinates reused.",
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw+135-pitch+00.png",
+      "sha256": "5c4345d1a8987faeff2ea5f5a643c85c7953c732e3a5f093d8070cd5311ff458"
+    },
+    "status": "missing_no_single_face_result"
   },
   "occluded_landmarks": [
     {

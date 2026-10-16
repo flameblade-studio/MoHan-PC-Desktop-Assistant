@@ -34,9 +34,24 @@ def test_python_alpha_over_matches_existing_integer_contract() -> None:
     target = _rgba((20, 40, 60, 80), (7, 8, 9, 10))
     source = _rgba((200, 100, 50, 128), (255, 0, 255, 0))
     assert alpha_over_rgba_python(target, source) == _rgba(
-        (110, 70, 54, 167),
+        (157, 86, 52, 168),
         (7, 8, 9, 10),
     )
+
+
+def test_python_alpha_over_uses_straight_alpha_source_over() -> None:
+    transparent_target = _rgba((0, 0, 0, 0))
+    half_blue_target = _rgba((0, 0, 255, 128))
+    half_red_source = _rgba((255, 0, 0, 128))
+
+    assert alpha_over_rgba_python(
+        transparent_target,
+        half_red_source,
+    ) == _rgba((255, 0, 0, 128))
+    assert alpha_over_rgba_python(
+        half_blue_target,
+        half_red_source,
+    ) == _rgba((170, 0, 85, 192))
 
 
 def test_python_crossfade_is_exact_at_boundaries_and_midpoint() -> None:
@@ -81,6 +96,22 @@ def test_python_region_composite_honors_masks_and_transparent_bounds() -> None:
         b"\x00",
     )
     assert transparent_off_canvas == _rgba((0, 0, 0, 0))
+
+
+def test_python_region_composite_uses_straight_alpha_on_transparent_target() -> None:
+    output = composite_region_rgba_python(
+        _rgba((0, 0, 0, 0)),
+        1,
+        1,
+        _rgba((255, 0, 0, 128)),
+        1,
+        1,
+        0,
+        0,
+        b"\x01",
+        b"\x00",
+    )
+    assert output == _rgba((255, 0, 0, 128))
 
 
 @pytest.mark.parametrize(

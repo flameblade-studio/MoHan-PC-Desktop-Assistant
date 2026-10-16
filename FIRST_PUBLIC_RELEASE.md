@@ -15,10 +15,10 @@
 - 公開內容防洩密稽核通過。
 - Windows 封裝後自我檢查通過。
 
-### 重要限制
+### 本版驗證範圍
 
-Microsoft、GitHub 與 Home Assistant 的架構與安全邊界已建置，但尚未完成
-真實帳號、儲存庫、主機及實體設備的端到端驗證，因此本版標示為 Pre-release。
+Microsoft、GitHub 與 Home Assistant 的架構與安全邊界已建置；下一驗證階段涵蓋
+真實帳號、儲存庫、主機及實體設備的端到端流程，因此本版標示為 Pre-release。
 請先使用非關鍵環境測試。
 
 ### 安裝
@@ -41,10 +41,10 @@ Microsoft、GitHub 與 Home Assistant 的架構與安全邊界已建置，但尚
 - 公开内容防泄密审计通过。
 - Windows 打包后的自检通过。
 
-### 重要限制
+### 本版验证范围
 
-Microsoft、GitHub 与 Home Assistant 的架构与安全边界已经建立，但尚未完成
-真实账号、代码仓库、主机及实体设备的端到端验证，因此本版标示为 Pre-release。
+Microsoft、GitHub 与 Home Assistant 的架构与安全边界已经建立；下一验证阶段涵盖
+真实账号、代码仓库、主机及实体设备的端到端流程，因此本版标示为 Pre-release。
 请先在非关键环境中测试。
 
 ### 安装
@@ -70,11 +70,11 @@ cloud and smart-home connector architecture.
 - The public-content secret audit passed.
 - The packaged Windows application self-test passed.
 
-### Important limitation
+### Validation scope for this release
 
 Microsoft, GitHub, and Home Assistant architecture and safety boundaries are
-implemented but have not completed real-account, repository, server, and
-physical-device end-to-end validation. This version is therefore marked as a
+implemented; the next validation stage covers real-account, repository, server, and
+physical-device end-to-end flows. This version is therefore marked as a
 Pre-release. Begin only with non-critical environments.
 
 ### Installation

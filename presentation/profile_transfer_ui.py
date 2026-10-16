@@ -64,7 +64,7 @@ MIN_PASSWORD_CATEGORIES = 3
 
 @dataclass(frozen=True, slots=True)
 class SensitiveProfileCallbacks:
-    """Injected sensitive-data boundary; the UI never owns secret stores."""
+    """Injected sensitive-data boundary; secret stores stay within their owning service."""
 
     collect: SensitiveCollector
     restore: SensitiveRestorer
@@ -122,7 +122,7 @@ class ProfileArchiveInspection:
 
 
 def is_strong_profile_password(password: str) -> bool:
-    """Require a practical local encryption password without retaining it."""
+    """Require a practical local encryption password while keeping it scoped to the operation."""
 
     categories = (
         any(character.islower() for character in password),
@@ -137,7 +137,7 @@ def localized_profile_failure(
     language: str,
     error: BaseException,
 ) -> str:
-    """Return a four-language profile error without external error detail."""
+    """Return a four-language profile boundary result while keeping external detail private."""
 
     safe: SafeError | None = None
     safe = safe_error_from_exception(error)
@@ -151,7 +151,7 @@ def localized_profile_failure(
     else:
         safe = sanitize_error(error)
     if safe is None:
-        raise AssertionError("profile failure is missing safe metadata")
+        raise AssertionError("profile attention event needs safe metadata")
     return localized_operation_error(
         language,
         safe,
@@ -603,8 +603,8 @@ class PortableProfilePanel(QWidget):
                 self.manager.restore_import(result)
             except RuntimeError:
                 raise ProfileTransferError(
-                    "Sensitive-data restore and database rollback failed."
+                    "Sensitive-data restore and database rollback requires attention; retry the operation."
                 ) from None
             raise ProfileTransferError(
-                "Sensitive-data restore failed; database rollback completed."
+                "Sensitive-data restore requires attention; database rollback completed."
             ) from None

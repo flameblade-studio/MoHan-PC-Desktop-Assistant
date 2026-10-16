@@ -1,5 +1,8 @@
 # Development-only test and quality gates; keep exact for reproducible results.
 pytest==9.1.1
 ruff==0.16.0
-# Raster gates for the PoseAtlas golden-template and layer-pack audits.
-Pillow==12.3.0
+deptry==0.25.1
+pyright==1.1.414
+pip-audit==2.10.1
+pip-licenses==5.5.5
+vulture==2.16

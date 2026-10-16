@@ -14,6 +14,7 @@ lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from presentation.companion_window import CompanionWindow
 
 POSES = (
@@ -81,7 +82,7 @@ def capture_face_frame(window: CompanionWindow, crop: QRect) -> QImage:
         round(frame_rect.width() * ratio),
         round(frame_rect.height() * ratio),
     )
-    return (
+    frame = (
         captured
         .toImage()
         .copy(physical_rect)
@@ -91,6 +92,8 @@ def capture_face_frame(window: CompanionWindow, crop: QRect) -> QImage:
             Qt.SmoothTransformation,
         )
     )
+    frame.setDevicePixelRatio(1.0)
+    return frame
 
 
 def render_viseme_frame(
@@ -199,6 +202,7 @@ def render(output: Path) -> None:
 
 
 if __name__ == "__main__":
+    activate_product_character_runtime(ROOT)
     target = (
         Path(sys.argv[1])
         if len(sys.argv) > 1

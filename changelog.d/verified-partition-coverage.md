@@ -1,0 +1,3 @@
+### 可驗證的分區進度／可验证的分区进度／Verified partition coverage／検証可能な領域進捗
+
+- 新增唯讀分區進度指令，先核對完成收據、來源、證據及原生像素，再列出缺少的可見分區；半身姿勢與 yaw 識別碼分開計數，完整視角、600 層與正式換裝完成度仍分別以正式驗收為準。／新增只读分区进度命令，先核对完成收据、来源、证据及原始像素，再列出缺少的可见分区；半身姿势与 yaw 标识分开计数，完整视角、600 层与正式换装完成度仍分别以正式验收为准。／Add a read-only coverage command that verifies completion receipts, sources, evidence and native pixels before listing missing visible partitions. Other pose identifiers remain separate from yaw identifiers; complete views, 600 layers, and production wardrobe readiness remain separate formal acceptance gates.／完了記録、原画、証拠、原寸画素を照合してから不足する可視領域を示す読み取り専用コマンドを追加。姿勢と yaw の識別子を分けて集計し、全視点、600 層、正式な着せ替えの完成度は、それぞれ別の正式な承認対象です。

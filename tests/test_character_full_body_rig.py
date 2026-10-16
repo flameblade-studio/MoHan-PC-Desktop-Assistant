@@ -88,7 +88,7 @@ def assert_fixed_proportions_and_frozen_models() -> None:
     except ValueError as error:
         assert "body_proportions" in str(error)
     else:
-        raise AssertionError("Official body proportions must not be replaceable.")
+        raise AssertionError('Official body proportions must remain fixed.')
 
 
 def assert_left_right_geometry_is_mirrored() -> None:

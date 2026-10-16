@@ -25,7 +25,7 @@ body:
     id: safety
     attributes:
       label: Permission, privacy, and compatibility / 權限、隱私與相容性
-      description: Mention external effects, personal data, costs, or existing features that must remain unchanged.
+      description: Mention external effects, personal data, costs, and existing features that remain unchanged.
     validations:
       required: true
   - type: checkboxes
@@ -33,5 +33,5 @@ body:
     attributes:
       label: Scope confirmation / 範圍確認
       options:
-        - label: This request is not asking MoHan to bypass confirmations or safety controls. 此建議不要求墨寒繞過確認或安全控制。
+        - label: This request keeps MoHan confirmations and safety controls active. 此建議保留墨寒的確認與安全控制。
           required: true

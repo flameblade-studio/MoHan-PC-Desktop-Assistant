@@ -18,6 +18,7 @@ lazy from domain.companion_animation_contract import (
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_FRAMES,
     EXPRESSION_VISEME_FRAMES,
+    outfit_silhouette,
 )
 lazy from presentation.companion_window import CompanionWindow
 
@@ -39,24 +40,31 @@ def mouth_region_unchanged(
     *,
     channel_tolerance: int = 64,
 ) -> bool:
-    """Return True when the mouth region has no substantive change.
+    """Return True when the mouth region preserves its substantive shape.
 
-    The parametric renderer re-composes the whole portrait on a speaking blink,
-    so the mouth pixels can drift by a few ARGB units from the 1254→465
-    downscale even though the mouth shape is unchanged. The eyelid layers are
-    painted after the lips and their semi-transparent edges bleed into the
-    adjacent mouth region after downscaling (up to ~56 units per channel on the
-    cheek/lean poses), so the tolerance is wide enough to absorb that bleed
-    while still failing on a real mouth deformation (a viseme change moves the
-    lips by far more than 64 units per channel).
+    Speaking blinks recompose the portrait. Downscaling from 1254 to 465
+    blends semitransparent eyelid edges into adjacent mouth pixels, with
+    changes up to about 56 channel units on cheek/lean poses. The tolerance
+    absorbs that bleed while detecting viseme deformations above 64 units.
     """
     if len(before) != len(after):
         return False
-    for old, new in zip(before, after):
+    for old, new in zip(before, after, strict=True):
         for shift in (24, 16, 8, 0):
             if abs(((old >> shift) & 0xFF) - ((new >> shift) & 0xFF)) > channel_tolerance:
                 return False
     return True
+
+
+def native_mouth_endpoints_active(window: CompanionWindow, expression: str) -> bool:
+    """Whether the reviewed native source owns every mouth of this expression's pose."""
+    renderer = getattr(window, "face_renderer", None)
+    overlay = getattr(renderer, "_outfit_overlay", None)
+    capability = getattr(overlay, "has_native_motion", None)
+    pose = window.physics_expression_poses.get(
+        expression, getattr(window, "idle_pose", "front"),
+    )
+    return callable(capability) and bool(capability(outfit_silhouette(expression, pose)))
 
 
 def stop_automatic_timers(window: CompanionWindow) -> None:
@@ -67,25 +75,27 @@ def stop_automatic_timers(window: CompanionWindow) -> None:
 def assert_blink_mask_contract(window: CompanionWindow) -> None:
     # Idle, speech and expression blinks share the same wide eye mask.
     assert window.dedicated_blink_masks is window.blink_masks
+    # Owner-approved round14g redraw v4 (owner-final-approval-20260928.json) for
+    # lean/front; cheek-rest is not on the complete-expression route (owner ruling
+    # 2026-09-29), so cheek keeps the main formal region.
     assert window.dedicated_blink_regions == {
         "cheek": (
             QRect(160, 153, 55, 34),
             QRect(198, 153, 61, 34),
         ),
         "lean": (
-            QRect(153, 153, 55, 34),
-            QRect(191, 153, 61, 34),
+            QRect(153, 153, 55, 35),
+            QRect(191, 153, 68, 40),
         ),
         "front": (
-            QRect(180, 153, 53, 34),
-            QRect(220, 153, 56, 34),
+            QRect(178, 146, 55, 41),
+            QRect(220, 146, 56, 41),
         ),
     }
 
 
 def assert_face_parallax_cutouts(window: CompanionWindow) -> None:
-    # Face parallax must not redraw neutral eyes or a closed mouth over the
-    # canonical blink and viseme layers.
+    # Face parallax preserves canonical blink and viseme layer ownership.
     for pose, regions in window.face_parallax_cutouts.items():
         face = window.face_sources[pose].toImage().convertToFormat(
             QImage.Format_ARGB32
@@ -123,8 +133,7 @@ def assert_idle_pose_blink(
     open_frame = QPixmap(window.character.pixmap())
     window._blink()
     assert window.idle_blinking
-    # Discrete blink contract: HALF frames stay untouched without a half-eye
-    # source, so sample the CLOSED authority frame.
+    # HALF preserves the current eye source; sample the authored CLOSED frame.
     window._set_half_body_blink(window.blink_generation, 1.0)
     blink_frame = QPixmap(window.character.pixmap())
     for eye_region in window.dedicated_blink_regions[pose]:
@@ -168,8 +177,7 @@ def assert_speaking_pose_blink(
     mouth_before = signature(clean_speech, mouth_region)
     window._blink()
     assert window.speech_blinking
-    # Discrete blink contract: HALF frames stay untouched without a half-eye
-    # source, so sample the CLOSED authority frame.
+    # HALF preserves the current eye source; sample the authored CLOSED frame.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     blink_speech = QPixmap(window.character.pixmap())
     for eye_region in window.dedicated_blink_regions[pose]:
@@ -230,7 +238,7 @@ def assert_five_vowel_states(
     # images. Each vowel frame must still produce a non-null composition at the
     # caller's canvas size.
     expression = "happy"
-    for _vowel, frame in EXPRESSION_VISEME_FRAMES[expression].items():
+    for frame in EXPRESSION_VISEME_FRAMES[expression].values():
         composed = window._mouth_aperture_pixmap(frame, 0.9)
         assert not composed.isNull()
         assert composed.size() == window.expression_pixmaps["happy"].size()
@@ -241,33 +249,46 @@ def assert_audio_advances_during_blink(
     window: CompanionWindow,
     mouth_rect: QRect,
 ) -> None:
+    native_endpoints = native_mouth_endpoints_active(window, "happy")
     before_blink_clean = QPixmap(window.speech_visual_pixmap)
     before_mouth = signature(before_blink_clean, mouth_rect)
     window._blink()
     assert window.speech_blinking
 
-    # Audio keeps advancing under the eyelids and must not restore the old A.
+    # Audio keeps advancing under the eyelids and retains the current viseme.
     for _ in range(3):
         window._audio_viseme_cue(0.60, "O")
-    assert signature(window.mouth_transition_to, mouth_rect) != before_mouth
+    assert window.speech_current_expression == EXPRESSION_VISEME_FRAMES["happy"]["O"]
+    assert not window.mouth_transition_to.isNull()
+    if not native_endpoints:
+        assert signature(window.mouth_transition_to, mouth_rect) != before_mouth
     window.mouth_transition_started -= window.mouth_transition_duration + 0.01
     window._render_audio_mouth_transition()
     app.processEvents()
     during_blink_clean = QPixmap(window.speech_visual_pixmap)
-    assert signature(during_blink_clean, mouth_rect) != before_mouth
+    target_mouth = signature(window.mouth_transition_to, mouth_rect)
+    if native_endpoints:
+        # The reviewed cheek-rest source owns one open mouth for every vowel:
+        # audio advances as viseme state while the pixels hold that endpoint.
+        assert signature(during_blink_clean, mouth_rect) == target_mouth
+    else:
+        assert signature(during_blink_clean, mouth_rect) != before_mouth
 
     generation = window.blink_generation
     window._finish_speaking_blink(generation)
     assert not window.speech_blinking
-    # The parametric renderer re-composes the whole portrait on blink end, so
-    # the frame is not bit-identical to the pre-blink clean frame; the mouth
-    # region must still match (within the eyelid-bleed tolerance) and must have
-    # advanced past the original A viseme.
+    # Blink end recomposes the portrait and may change its exact bytes. The
+    # mouth still matches within eyelid-bleed tolerance and advances beyond A.
     assert mouth_region_unchanged(
         signature(window.speech_visual_pixmap, mouth_rect),
         signature(window.character.pixmap(), mouth_rect),
     )
-    assert signature(window.character.pixmap(), mouth_rect) != before_mouth
+    if native_endpoints:
+        assert mouth_region_unchanged(
+            target_mouth, signature(window.character.pixmap(), mouth_rect),
+        )
+    else:
+        assert signature(window.character.pixmap(), mouth_rect) != before_mouth
     assert not window.hair_left_overlay.isHidden()
     assert not window.sleeve_left_overlay.isHidden()
 

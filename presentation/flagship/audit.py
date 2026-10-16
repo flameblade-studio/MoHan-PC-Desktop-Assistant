@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import html
 lazy import json
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtWidgets import (
     QHBoxLayout,
@@ -48,13 +49,9 @@ class FlagshipAuditMixin:
                 summary = json.dumps(payload, ensure_ascii=False)[:500]
             except json.JSONDecodeError:
                 summary = str(row["payload"])[:500]
-            # 稽核 payload 含外部來源內容——郵件寄件者、主旨、bodyPreview、
-            # 行事曆資料、Home Assistant attributes。json.dumps 會跳脫引號與
-            # 反斜線，但**不會跳脫 < > &**，所以一封主旨帶 HTML 標籤的郵件會
-            # 在墨寒自己的稽核畫面裡被渲染。QTextBrowser 沒有 JS，但會載入
-            # 遠端圖片：一個 <img src="http://…"> 就足以讓外部得知使用者何時
-            # 查看稽核紀錄並取得其 IP。稽核畫面正是用來檢查有沒有出事的地方，
-            # 它自己不能成為注入點。
+            # 稽核資料含郵件、行事曆與 Home Assistant 等外部內容。
+            # JSON 處理引號與反斜線；HTML 輸出另以 html.escape 處理 < > &，
+            # 讓 QTextBrowser 將來源內容顯示為文字，維持本機稽核的隱私界線。
             lines.append(
                 "<p><b>{stamp}｜{event}</b><br>{summary}</p>".format(
                     stamp=html.escape(str(row["created_at"])),
@@ -73,7 +70,7 @@ class FlagshipAuditMixin:
         title = (
             self._t("高風險操作二次確認")
             if decision.confirmation_count > 1 and index > 1
-            else self._t("墨寒請求執行工具")
+            else self._t("{character_name}請求執行工具")
         )
         detail = json.dumps(
             request.arguments,
@@ -82,7 +79,7 @@ class FlagshipAuditMixin:
             default=str,
         )
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             title,
             self._t(
                 "風險：{risk}\n來源：{source}\n操作：{description}\n\n"
@@ -111,7 +108,7 @@ class FlagshipAuditMixin:
             "worried",
         )
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("緊急停止"),
             self._t("所有進行中的工具任務與遠端服務均已停止。"),
         )

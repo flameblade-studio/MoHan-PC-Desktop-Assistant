@@ -11,6 +11,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from domain.safe_error_localization import safe_error_message
 lazy from infrastructure.backup_manager import BackupManager
@@ -28,7 +29,7 @@ class FlagshipOverviewMixin:
     def _overview_tab(self) -> QWidget:
         page = QWidget()
         layout = QVBoxLayout(page)
-        title = QLabel(self._t("<b>墨寒旗艦任務中心</b>"))
+        title = QLabel(self._t("<b>{character_name}旗艦任務中心</b>"))
         title.setStyleSheet("font-size:18px;color:#2f6987;")
         note = QLabel(
             self._t(
@@ -73,8 +74,7 @@ class FlagshipOverviewMixin:
     def _accessibility_section(self) -> QWidget:
         """Visible writers for theme and accessibility settings.
 
-        Both keys were read by the flagship and dashboard themes but had no
-        writer anywhere in the UI, so the accessibility options were dead.
+        Both keys were read by the flagship and dashboard themes but lacked a writer in the UI, so the accessibility options stayed inactive.
         """
 
         section = QWidget()
@@ -100,7 +100,7 @@ class FlagshipOverviewMixin:
         for theme_id, label in (
             (THEME_IDS[0], self._t("墨金・凌霄")),
             (THEME_IDS[1], self._t("霧靄青瓷")),
-            (THEME_IDS[2], self._t("赤焰劍光")),
+            (THEME_IDS[2], self._t("{signature_weapon_theme_label}")),
         ):
             self.flagship_theme.addItem(label, theme_id)
         self.flagship_theme.setAccessibleName(self._t("凌霄主題"))
@@ -140,16 +140,16 @@ class FlagshipOverviewMixin:
             ).create("manual")
         except Exception as exc:
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t("資料備份"),
                 self._t(
-                    "備份失敗：{error}",
+                    '備份需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 ),
             )
             return
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("資料備份"),
             self._t(
                 "備份與完整性雜湊已建立：\n{target}",
@@ -166,9 +166,7 @@ class FlagshipOverviewMixin:
             "運作中" if self.remote_server and self.remote_server.running else "未啟用"
         )
         summary = self._t(
-            "Home Assistant：{home}\n遠端服務：{remote}\n"
-            "已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n"
-            "安全狀態：高風險操作不允許免確認；任意命令列與付款永久禁止。",
+            'Home Assistant：{home}\n遠端服務：{remote}\n已啟用工作流程：{workflows}\n有效配對裝置：{devices}\n安全狀態：高風險操作須確認；任意命令列與付款永久排除於執行範圍。',
             home=ha_text,
             remote=remote_text,
             workflows=workflow_count,
@@ -179,5 +177,5 @@ class FlagshipOverviewMixin:
             "automatic_backup_failed",
             False,
         ):
-            summary += "\n" + self._t("自動備份失敗")
+            summary += "\n" + self._t('自動備份需要處理')
         self.health_summary.setText(summary)

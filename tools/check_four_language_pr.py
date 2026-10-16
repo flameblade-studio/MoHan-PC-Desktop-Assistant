@@ -52,7 +52,7 @@ def audit_pull_request(payload: object) -> list[str]:
         return ["GitHub event payload must be a JSON object"]
     pull_request = payload.get("pull_request")
     if not isinstance(pull_request, dict):
-        return ["GitHub event payload is missing pull_request metadata"]
+        return ["GitHub event payload requires pull_request metadata"]
 
     errors = _title_errors(pull_request.get("title"))
     if _is_release_please_pull_request(pull_request):
@@ -68,7 +68,7 @@ def audit_pull_request(payload: object) -> list[str]:
 def main() -> int:
     event_value = os.environ.get("GITHUB_EVENT_PATH")
     if not event_value:
-        print("FAIL: GITHUB_EVENT_PATH is not set", file=sys.stderr)
+        print("FAIL: Set GITHUB_EVENT_PATH before validation", file=sys.stderr)
         return 2
 
     event_path = Path(event_value)

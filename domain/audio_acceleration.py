@@ -38,7 +38,7 @@ class PcmAccelerationPort(Protocol):
 
 
 class PythonPcmAcceleration:
-    """Reference implementation and mandatory native-failure fallback."""
+    """Reference implementation and mandatory native-recovery fallback."""
 
     __slots__ = ()
 

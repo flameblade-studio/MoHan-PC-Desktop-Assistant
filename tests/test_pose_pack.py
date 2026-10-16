@@ -122,7 +122,7 @@ def _reject(path: Path) -> None:
         inspect_pose_pack(path)
     except PosePackError:
         return
-    raise AssertionError("invalid pose pack must fail closed")
+    raise AssertionError('pose packs must satisfy the acceptance contract')
 
 
 @dataclass(frozen=True, slots=True)
@@ -362,7 +362,7 @@ def _assert_invalid_update_is_atomic(fixture: _Fixture, store: Path) -> None:
     except PosePackError:
         pass
     else:
-        raise AssertionError("invalid update must not install")
+        raise AssertionError('update installation requires valid inputs')
     assert destination.read_bytes() == before
 
 

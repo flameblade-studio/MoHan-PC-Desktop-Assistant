@@ -19,7 +19,7 @@ def _defined_names(node: ast.stmt) -> frozenset[str]:
 def _span(source: str, node: ast.AST) -> str:
     end_line = getattr(node, "end_lineno", None)
     if end_line is None:
-        raise RuntimeError("Definition has no end line")
+        raise RuntimeError("Definition requires an end line")
     starts = [node.lineno]
     starts.extend(item.lineno for item in getattr(node, "decorator_list", ()))
     lines = source.splitlines(keepends=True)
@@ -67,7 +67,7 @@ def extract_definitions(
         starts = [node.lineno]
         starts.extend(item.lineno for item in getattr(node, "decorator_list", ()))
         if node.end_lineno is None:
-            raise RuntimeError("Definition has no end line")
+            raise RuntimeError("Definition requires an end line")
         removed.update(range(min(starts), node.end_lineno + 1))
     lines = source.splitlines(keepends=True)
     rewritten = "".join(

@@ -1,0 +1,15 @@
+{
+  "schema": "mohan.ui-artwork-provenance.v1",
+  "asset": "assets/ui/mohan-celestial-palace-v1.png",
+  "sha256": "bbc90b85fac457e691431dc525f3f82906f11099a22b5c9ad241422b616190b3",
+  "created_on": "2026-09-09",
+  "creation_method": "OpenAI image-generation tool, edited from the preceding generated backplate 07",
+  "generation_output_name": "exec-11e420b6-fba5-455d-86e8-49359f42302b.png",
+  "source_evidence": "scratchpad/dashboard-xianxia-20260909/celestial-dashboard-backplate-08.png",
+  "prompt_evidence": "scratchpad/dashboard-xianxia-20260909/backplate-08-prompt.txt",
+  "prompt_sha256": "6667839c1d233e8ef9119221f5723b9df224720c64c58dcebf978eaa36bbd5c7",
+  "owner_direction_approval": "可以，沿著第 8 版落地",
+  "scope": "Scenery and decorative frames only. Character appearance and all interactive controls are composed independently at runtime.",
+  "final_product_visual_acceptance": false,
+  "distribution_authorized": false
+}

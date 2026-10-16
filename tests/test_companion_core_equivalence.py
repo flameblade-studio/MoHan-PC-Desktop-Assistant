@@ -6,6 +6,8 @@ lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
 
+lazy from presentation.companion_core import CompanionCoreMixin
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WINDOW_PATH = PROJECT_ROOT / "presentation" / "companion_window.py"
 CORE_PATH = PROJECT_ROOT / "presentation" / "companion_core.py"
@@ -154,6 +156,9 @@ lazy import sys
 assert sys.version_info[:2] == (3, 15), sys.version
 sys.path.insert(0, sys.argv[1])
 assert "app" not in sys.modules
+# The product composition root activates the character before the mixin loads.
+from tests.character_runtime_support import activate_bundled_character_runtime
+activate_bundled_character_runtime()
 from presentation import companion_core
 
 mixin = companion_core.CompanionCoreMixin
@@ -188,6 +193,31 @@ assert "app" not in sys.modules
     assert completed.returncode == 0, completed.stderr or completed.stdout
 
 
+def test_full_body_publish_hides_the_same_legacy_overlays() -> None:
+    hidden: list[str] = []
+    subject = CompanionCoreMixin()
+    attributes = (
+        "expression_overlay",
+        "sleeve_left_overlay",
+        "sleeve_right_overlay",
+        "hair_left_overlay",
+        "hair_right_overlay",
+        "physics_overlay",
+        "face_overlay",
+        "eye_overlay",
+    )
+    for attribute in attributes:
+        setattr(
+            subject,
+            attribute,
+            type("Overlay", (), {"hide": lambda self, name=attribute: hidden.append(name)})(),
+        )
+
+    subject._hide_legacy_character_overlays()
+
+    assert hidden == list(attributes)
+
+
 def test_companion_window_uses_the_unique_core_owner_in_canonical_order() -> None:
     window_tree = _module_tree(WINDOW_PATH)
     core_tree = _module_tree(CORE_PATH)
@@ -195,7 +225,7 @@ def test_companion_window_uses_the_unique_core_owner_in_canonical_order() -> Non
     core = _class_node(core_tree, "CompanionCoreMixin")
     assert frozenset(_method_map(core)) == EXPECTED_METHODS
     assert not EXPECTED_METHODS.intersection(_method_map(companion)), (
-        "CompanionWindow must not shadow CompanionCoreMixin behavior"
+        'CompanionWindow must delegate behavior to CompanionCoreMixin'
     )
     assert _imports_name(
         window_tree,

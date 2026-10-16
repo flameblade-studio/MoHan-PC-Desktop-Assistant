@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from dataclasses import replace
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -52,6 +53,7 @@ class FlagshipCompanionMixin:
         layout.addStretch(1)
         scroll.setWidget(content)
         return scroll
+
     def _companion_preference_card(self) -> QFrame:
         preferences = self._proactivity_draft.value
         preference_card = QFrame()
@@ -91,7 +93,7 @@ class FlagshipCompanionMixin:
             self._t("特殊節日提醒"), preferences.special_occasions_enabled
         )
         self.companion_birthday_enabled = self._preference_checkbox(
-            self._t("墨寒生日提醒"), preferences.birthday_enabled
+            self._t("{character_name}生日提醒"), preferences.birthday_enabled
         )
         self.companion_focus_protection = self._preference_checkbox(
             self._t("專注時暫停主動提醒"),
@@ -121,11 +123,12 @@ class FlagshipCompanionMixin:
         self._add_companion_numeric_controls(preference_form, preferences)
         self._add_proactive_interaction_controls(preference_form)
         return preference_card
+
     def _add_proactive_interaction_controls(self, form: QFormLayout) -> None:
         """Visible owners of the proactive-mode and welcome-timing settings.
 
         These three controls used to be constructed for the remote tab but were
-        never added to any layout, so every flagship save silently overwrote the
+        remained outside the layout, so every flagship save silently overwrote the
         user's values with the ones read at construction time.  They now live on
         the companion tab, and ``save_draft_settings`` persists each key only
         after the user actually changed its control (see
@@ -198,6 +201,7 @@ class FlagshipCompanionMixin:
                 "companionConversationSilenceMinutes",
             ),
         )
+
     def _refresh_proactive_interaction_controls(self) -> None:
         """Re-read the persisted values and mark every control untouched."""
 
@@ -237,6 +241,7 @@ class FlagshipCompanionMixin:
             )
         )
         self._proactive_interaction_touched.clear()
+
     def _performance_preference_card(self) -> QFrame:
         preferences = self._performance_draft.value
         card = QFrame()
@@ -289,6 +294,7 @@ class FlagshipCompanionMixin:
             ),
         )
         return card
+
     def _refresh_performance_controls(self) -> None:
         preferences = self._performance_draft.value
         self.performance_view_360.setChecked(preferences.view_360_enabled)
@@ -300,6 +306,7 @@ class FlagshipCompanionMixin:
             preferences.camera_context_enabled
         )
         self.performance_intensity.setValue(preferences.intensity_percent)
+
     def _staged_performance_preferences(self) -> PerformancePreferences:
         return replace(
             self._performance_draft.value,
@@ -311,6 +318,7 @@ class FlagshipCompanionMixin:
             camera_context_enabled=self.performance_camera_context.isChecked(),
             intensity_percent=self.performance_intensity.value(),
         )
+
     def _add_companion_numeric_controls(
         self,
         form: QFormLayout,
@@ -393,6 +401,7 @@ class FlagshipCompanionMixin:
         row.addWidget(down_button)
         row.addWidget(up_button)
         return container
+
     def _companion_phrasebook_card(self) -> QFrame:
         phrase_card = QFrame()
         phrase_card.setObjectName("companionPhrasebookCard")
@@ -420,14 +429,16 @@ class FlagshipCompanionMixin:
         )
         phrase_layout.addWidget(self.companion_phrasebook_button)
         return phrase_card
+
     def _keep_companion_thresholds_separate(self, brief_minutes: int) -> None:
         minimum = max(5, int(brief_minutes) + 1)
         self.companion_long_wait_minutes.setMinimum(minimum)
         if self.companion_long_wait_minutes.value() < minimum:
             self.companion_long_wait_minutes.setValue(minimum)
+
     def edit_companion_phrasebook(self) -> None:
         phrasebook = self._phrasebook_draft
-        dialog = QDialog(self)
+        dialog = QDialog(require_qwidget(self))
         dialog.setWindowTitle(self._t("多情境陪伴詞庫"))
         root = QVBoxLayout(dialog)
         groups = QTabWidget()

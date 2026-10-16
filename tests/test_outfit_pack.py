@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+lazy import binascii
 lazy import copy
 lazy import hashlib
 lazy import json
+lazy import pytest
 lazy import struct
 lazy import sys
 lazy import zipfile
+lazy import zlib
 lazy from contextlib import contextmanager
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
@@ -13,10 +16,11 @@ lazy from tempfile import TemporaryDirectory
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 lazy from application.outfit_pack_builder import build_outfit_pack
-lazy from domain import outfit_pack
+lazy from domain.outfit_pack_archive import SUPPORTED_SOURCE_LICENSES
 lazy from domain.outfit_pack import (
     EXPRESSION_SILHOUETTE_ALIASES,
     GESTURE_SILHOUETTES,
+    OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES,
     POSE_ATLAS_SILHOUETTES,
     REQUIRED_SILHOUETTES,
     OutfitPackError,
@@ -39,17 +43,28 @@ EXPECTED_INSTALLED_SELECTIONS = 7
 
 @contextmanager
 def pending_official_root(root: Path):
-    """Point OFFICIAL_PACK_ROOT at an empty directory: these contracts describe one store on its own."""
-    previous = outfit_pack.OFFICIAL_PACK_ROOT
-    outfit_pack.OFFICIAL_PACK_ROOT = root / "official"
-    try:
-        yield
-    finally:
-        outfit_pack.OFFICIAL_PACK_ROOT = previous
+    """Yield an empty official root for contracts that describe one store on its own."""
+    yield root / "official"
 
 
 def _png() -> bytes:
-    return b"\x89PNG\r\n\x1a\n" + b"\0\0\0\rIHDR" + struct.pack(">II", 512, 768)
+    width, height = 512, 768
+    transparent = b"\0" * (width * 4 - 4)
+    first_row = b"\0\x10\x20\x30\xff" + transparent
+    other_row = b"\0" + b"\0" * (width * 4)
+    raw = first_row + other_row * (height - 1)
+
+    def chunk(kind: bytes, payload: bytes) -> bytes:
+        crc = binascii.crc32(kind + payload) & 0xFFFFFFFF
+        return struct.pack(">I", len(payload)) + kind + payload + struct.pack(">I", crc)
+
+    header = struct.pack(">IIBBBBB", width, height, 8, 6, 0, 0, 0)
+    return (
+        b"\x89PNG\r\n\x1a\n"
+        + chunk(b"IHDR", header)
+        + chunk(b"IDAT", zlib.compress(raw, 9))
+        + chunk(b"IEND", b"")
+    )
 
 
 def _names(name: str) -> dict[str, str]:
@@ -200,6 +215,48 @@ def _pack(path: Path, manifest: dict, assets: dict[str, bytes]) -> Path:
     return path
 
 
+def test_source_license_allowlist_accepts_supported_values(tmp_path: Path) -> None:
+    supported = (
+        "All Rights Reserved",
+        "All Rights Reserved - see ASSETS-LICENSE.md",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "CC BY 4.0",
+        "CC BY-NC-ND 4.0",
+        "CC-BY-4.0",
+        "CC-BY-NC-ND-4.0",
+        "CC0-1.0",
+        "MIT",
+        "Project License",
+    )
+    # The archive allowlist is the single source of truth; keep this list in step.
+    assert frozenset(supported) == SUPPORTED_SOURCE_LICENSES
+    for index, license_name in enumerate(supported):
+        manifest, assets = _manifest(_png())
+        manifest["source"]["license"] = license_name
+        pack = inspect_outfit_pack(
+            _pack(tmp_path / f"supported-{index}.mohan-outfit", manifest, assets)
+        )
+        assert pack.license_name == license_name
+
+
+def test_legacy_generated_outfit_license_still_loads(tmp_path: Path) -> None:
+    manifest, assets = _manifest(_png())
+    manifest["source"]["license"] = "Project License"
+    pack = inspect_outfit_pack(_pack(tmp_path / "legacy.mohan-outfit", manifest, assets))
+    assert pack.license_name == "Project License"
+
+
+def test_source_license_allowlist_rejects_unknown_value(tmp_path: Path) -> None:
+    manifest, assets = _manifest(_png())
+    manifest["source"]["license"] = "MadeUp-Unknown-9.0"
+    archive = _pack(tmp_path / "unknown-license.mohan-outfit", manifest, assets)
+
+    with pytest.raises(OutfitPackError, match="supported source declaration"):
+        inspect_outfit_pack(archive)
+
+
 def _assert_authoring_builder(
     root: Path,
     manifest: dict,
@@ -232,7 +289,7 @@ def _assert_authoring_builder(
     except OutfitPackError:
         pass
     else:
-        raise AssertionError("the builder must not overwrite an existing package")
+        raise AssertionError('the builder must preserve an existing package')
 
 
 def _reject(path: Path) -> None:
@@ -240,7 +297,7 @@ def _reject(path: Path) -> None:
         inspect_outfit_pack(path)
     except OutfitPackError:
         return
-    raise AssertionError("invalid appearance pack must fail closed")
+    raise AssertionError('appearance packs must satisfy the acceptance contract')
 
 
 def _expect_remove_error(store: Path, pack_id: str, message: str) -> None:
@@ -287,18 +344,31 @@ def _assert_pack_contract(valid: Path) -> None:
     assert exact.exact_pose_atlas_match
 
 
-def _prepare_store(root: Path, valid: Path) -> Path:
+def _prepare_store(root: Path, valid: Path, official_pack_root: Path) -> Path:
     store = root / "store"
     install_outfit_pack(valid, store)
     assert not (store / "active.json").exists()
-    assert len(list_installed_selections(store)) == EXPECTED_INSTALLED_SELECTIONS
-    assert len(list_installed_selections(store, "hairstyle")) == 1
-    assert len(list_installed_ensembles(store)) == 1
+    assert len(
+        list_installed_selections(store, official_pack_root=official_pack_root)
+    ) == EXPECTED_INSTALLED_SELECTIONS
+    assert len(
+        list_installed_selections(
+            store, "hairstyle", official_pack_root=official_pack_root
+        )
+    ) == 1
+    assert len(
+        list_installed_ensembles(store, official_pack_root=official_pack_root)
+    ) == 1
     return store
 
 
-def _assert_ensemble_contract(store: Path) -> None:
-    apply_ensemble(store, "modern-collection", "city-day")
+def _assert_ensemble_contract(store: Path, official_pack_root: Path) -> None:
+    apply_ensemble(
+        store,
+        "modern-collection",
+        "city-day",
+        official_pack_root=official_pack_root,
+    )
     active = json.loads((store / "active.json").read_text(encoding="utf-8"))
     assert active["headwear"]["item_id"] == "none"
     assert active["weapon"]["item_id"] == "short-sword"
@@ -319,8 +389,12 @@ def _assert_ensemble_contract(store: Path) -> None:
         "modern-collection",
         "an active ensemble must block removal",
     )
-    headwear = list_installed_selections(store, "headwear")[0]
-    apply_appearance_selection(store, headwear)
+    headwear = list_installed_selections(
+        store, "headwear", official_pack_root=official_pack_root
+    )[0]
+    apply_appearance_selection(
+        store, headwear, official_pack_root=official_pack_root
+    )
     saved = json.loads((store / "active.json").read_text(encoding="utf-8"))
     assert saved["headwear"]["item_id"] == "silver-pin"
     assert "_ensemble" not in saved
@@ -381,12 +455,16 @@ def _assert_removal_guards(
     mismatch.unlink()
 
 
-def _assert_removal_fails_closed(store: Path, valid: Path) -> None:
+def _assert_removal_fails_closed(
+    store: Path, valid: Path, official_pack_root: Path
+) -> None:
     removed = remove_outfit_pack(store, "modern-collection")
     assert removed.pack_id == "modern-collection"
     assert all(
         pack.pack_id != "modern-collection"
-        for pack in list_installed_outfits(store)
+        for pack in list_installed_outfits(
+            store, official_pack_root=official_pack_root
+        )
     )
     missing_state = {
         "garment": {
@@ -397,11 +475,13 @@ def _assert_removal_fails_closed(store: Path, valid: Path) -> None:
     }
     (store / "active.json").write_text(json.dumps(missing_state), encoding="utf-8")
     try:
-        resolve_active_selection(store, "garment")
+        resolve_active_selection(
+            store, "garment", official_pack_root=official_pack_root
+        )
     except OutfitPackError:
         pass
     else:
-        raise AssertionError("a missing selected outfit must never be replaced")
+        raise AssertionError('a selected outfit awaiting recovery must preserve its selection')
     install_outfit_pack(valid, store)
 
 
@@ -447,6 +527,107 @@ def _assert_pose_rejections(
     _reject(_pack(root / "missing-hair-layer.zip", invalid, assets))
 
 
+def _assert_full_body_candidate_scope(
+    root: Path,
+    manifest: dict,
+    assets: dict[str, bytes],
+) -> None:
+    candidate = copy.deepcopy(manifest)
+    candidate["headwear"] = []
+    candidate["accessories"] = []
+    selections = candidate["ensembles"][0]["selections"]
+    selections.update({
+        "headwear": None,
+        "weapon": None,
+        "handheld": None,
+        "jewelry": None,
+        "foreground-effect": None,
+    })
+    for group in ("looks", "hairstyles"):
+        variant = candidate[group][0]["variants"][0]
+        variant["silhouette_scope"] = "full-body"
+        variant["poses"] = {
+            silhouette: entries
+            for silhouette, entries in variant["poses"].items()
+            if silhouette in POSE_ATLAS_SILHOUETTES
+        }
+        for field in (
+            "body_visibility",
+            "face_occlusion_masks",
+            "hand_occlusion",
+            "garment_occlusion",
+        ):
+            if field in variant:
+                variant[field] = {
+                    silhouette: rule
+                    for silhouette, rule in variant[field].items()
+                    if silhouette in POSE_ATLAS_SILHOUETTES
+                }
+    candidate_assets = _referenced_assets(candidate, assets)
+    archive = _pack(root / "full-body-candidate.zip", candidate, candidate_assets)
+    parsed = inspect_outfit_pack(archive)
+    garment = next(item for item in parsed.items if item.category == "garment")
+    resolution = resolve_variant_for_view(garment.variants[0], GESTURE_SILHOUETTES[0])
+    assert resolution.resolved_silhouette is None
+    assert resolution.assets == ()
+    assert not resolution.exact_pose_atlas_match
+
+    invalid = copy.deepcopy(candidate)
+    del invalid["looks"][0]["variants"][0]["poses"][POSE_ATLAS_SILHOUETTES[0]]
+    _reject(_pack(root / "full-body-candidate-missing-view.zip", invalid, candidate_assets))
+
+    invalid = copy.deepcopy(candidate)
+    invalid["hairstyles"][0]["variants"][0]["silhouette_scope"] = "pose-atlas"
+    _reject(_pack(root / "full-body-candidate-invalid-scope.zip", invalid, candidate_assets))
+
+
+def _assert_optional_expression_appearance_views(
+    root: Path,
+    data: bytes,
+    manifest: dict,
+    assets: dict[str, bytes],
+) -> None:
+    candidate = copy.deepcopy(manifest)
+    candidate_assets = dict(assets)
+    garment = candidate["looks"][0]["variants"][0]
+    hairstyle = candidate["hairstyles"][0]["variants"][0]
+    for silhouette in OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES:
+        garment_path = f"assets/robe-{silhouette}-outerwear.png"
+        hair_paths = {
+            slot: f"assets/hair-{silhouette}-{slot}.png"
+            for slot in ("back", "front", "bangs")
+        }
+        candidate_assets[garment_path] = data
+        garment["poses"][silhouette] = [
+            _asset(garment_path, data, "outerwear")
+        ]
+        garment["body_visibility"][silhouette] = dict(
+            garment["body_visibility"]["cheek-rest"]
+        )
+        hairstyle["poses"][silhouette] = []
+        for slot, path in hair_paths.items():
+            candidate_assets[path] = data
+            hairstyle["poses"][silhouette].append(_asset(path, data, slot))
+        hairstyle["face_occlusion_masks"][silhouette] = "bangs-safe"
+        hairstyle["hand_occlusion"][silhouette] = "behind-hands"
+        hairstyle["garment_occlusion"][silhouette] = "behind-collar"
+    parsed = inspect_outfit_pack(
+        _pack(root / "optional-expression-appearance.zip", candidate, candidate_assets)
+    )
+    for category in ("garment", "hairstyle"):
+        item = next(item for item in parsed.items if item.category == category)
+        for silhouette in OPTIONAL_EXPRESSION_APPEARANCE_SILHOUETTES:
+            resolution = resolve_variant_for_view(item.variants[0], silhouette)
+            assert resolution.resolved_silhouette == silhouette
+            assert resolution.assets
+
+    invalid = copy.deepcopy(candidate)
+    invalid["looks"][0]["variants"][0]["poses"]["cheek-unknown"] = list(
+        invalid["looks"][0]["variants"][0]["poses"]["cheek-glance"]
+    )
+    _reject(_pack(root / "optional-expression-unknown.zip", invalid, candidate_assets))
+
+
 def _assert_visual_contract_rejections(
     root: Path,
     manifest: dict,
@@ -463,6 +644,68 @@ def _assert_visual_contract_rejections(
     hair_pose = invalid["hairstyles"][0]["variants"][0]["poses"]
     hair_pose["front-crossed"][0]["slot"] = "face"
     _reject(_pack(root / "core.zip", invalid, assets))
+
+
+def _assert_base_clear_contract(
+    root: Path,
+    data: bytes,
+    manifest: dict,
+    assets: dict[str, bytes],
+) -> None:
+    candidate = copy.deepcopy(manifest)
+    candidate_assets = dict(assets)
+    poses = candidate["looks"][0]["variants"][0]["poses"]
+    for silhouette, entries in poses.items():
+        path = f"assets/base-clear-{silhouette}.png"
+        declaration = _asset(path, data, "garment-occluder")
+        declaration["clears_base"] = True
+        entries.append(declaration)
+        candidate_assets[path] = data
+    parsed = inspect_outfit_pack(
+        _pack(root / "base-clear-valid.zip", candidate, candidate_assets)
+    )
+    garment = next(item for item in parsed.items if item.category == "garment")
+    assert all(
+        sum(asset.clears_base for asset in declarations) == 1
+        for declarations in garment.variants[0].poses.values()
+    )
+
+    invalid = copy.deepcopy(manifest)
+    invalid["looks"][0]["variants"][0]["poses"]["front-crossed"][0][
+        "clears_base"
+    ] = True
+    _reject(_pack(root / "base-clear-wrong-slot.zip", invalid, assets))
+
+    invalid = copy.deepcopy(manifest)
+    invalid["looks"][0]["variants"][0]["poses"]["front-crossed"][0][
+        "slot"
+    ] = "garment-occluder"
+    _reject(_pack(root / "base-clear-missing-flag.zip", invalid, assets))
+
+    invalid = copy.deepcopy(candidate)
+    next(
+        entry
+        for entry in invalid["looks"][0]["variants"][0]["poses"][
+            "front-crossed"
+        ]
+        if entry["slot"] == "garment-occluder"
+    )["clears_base"] = False
+    _reject(_pack(root / "base-clear-disabled.zip", invalid, candidate_assets))
+
+    invalid = copy.deepcopy(candidate)
+    duplicate_path = "assets/base-clear-duplicate.png"
+    declaration = _asset(duplicate_path, data, "garment-occluder")
+    declaration["clears_base"] = True
+    invalid["looks"][0]["variants"][0]["poses"]["front-crossed"].append(
+        declaration
+    )
+    _reject(
+        _pack(
+            root / "base-clear-duplicate.zip",
+            invalid,
+            {**candidate_assets, duplicate_path: data},
+        )
+    )
 
 
 def _assert_accessory_rejections(
@@ -542,18 +785,23 @@ def _assert_invalid_update_is_atomic(
 def run() -> None:
     with TemporaryDirectory() as temporary:
         root, data = Path(temporary), _png()
-        with pending_official_root(root):
+        with pending_official_root(root) as official_pack_root:
             manifest, assets = _manifest(data)
             _assert_authoring_builder(root, manifest, assets)
             valid = _pack(root / "valid.mohan-appearance", manifest, assets)
             _assert_pack_contract(valid)
-            store = _prepare_store(root, valid)
-            _assert_ensemble_contract(store)
+            store = _prepare_store(root, valid, official_pack_root)
+            _assert_ensemble_contract(store, official_pack_root)
             _assert_removal_guards(root, store, manifest, assets)
-            _assert_removal_fails_closed(store, valid)
+            _assert_removal_fails_closed(store, valid, official_pack_root)
             _assert_single_category_packs(root, manifest, assets)
+            _assert_full_body_candidate_scope(root, manifest, assets)
+            _assert_optional_expression_appearance_views(
+                root, data, manifest, assets,
+            )
             _assert_pose_rejections(root, manifest, assets)
             _assert_visual_contract_rejections(root, manifest, assets)
+            _assert_base_clear_contract(root, data, manifest, assets)
             _assert_accessory_rejections(root, manifest, assets)
             _assert_asset_rejections(root, data, manifest, assets)
             _assert_invalid_update_is_atomic(root, store, manifest, assets)

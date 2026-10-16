@@ -1,62 +1,27 @@
 from __future__ import annotations
 
 lazy import math
+lazy from itertools import product
 
 lazy from PySide6.QtCore import QRect
 
+lazy from domain.character_runtime import character_rig_manifest
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.lip_sync import VISEME_CLOSE_TRANSITION_SECONDS
 
-NEUTRAL_VISEME_ASSET_STEMS = frozendict({
-    "A": "mouth_wide",
-    "I": "mouth_i",
-    "U": "mouth_round",
-    "E": "mouth_mid",
-    "O": "mouth_o",
-})
-SPEAKING_BLINK_PREFIXES = (
-    ("mouth_mid", "blink_mid"),
-    ("mouth_wide", "blink_wide"),
-    ("mouth_round", "blink_round"),
-    ("mouth_i", "blink_i"),
-    ("mouth_o", "blink_o"),
-    ("speaking", "blink_open"),
-)
-PHYSICS_POSE_SUFFIXES = (
-    ("", "cheek"),
-    ("_lean", "lean"),
-    ("_front", "front"),
-)
-PHYSICS_SPEECH_FRAME_PREFIXES = (
-    "idle", "speaking", "blink", "mouth_mid", "mouth_wide",
-    "mouth_round", "mouth_i", "mouth_o", "blink_mid", "blink_open",
-    "blink_wide", "blink_round", "blink_i", "blink_o",
-)
-EXPRESSION_POSES = frozendict({
-    "glance": "cheek", "caught": "cheek", "happy": "cheek",
-    "worried": "cheek", "reminder": "cheek", "thinking_front": "front",
-    "gentle_smile_front": "front", "worried_front": "front",
-    "shy_front": "front", "mock_scold": "front",
-    "surprised_front": "front", "relieved_front": "front",
-    "tired_front": "front", "proud_front": "front",
-    "shy_cute_front": "front", "mock_hit_front": "front",
-    "attentive_front": "front", "determined_front": "front",
-    "restrained_amused_front": "front", "exasperated_front": "front",
-    "eureka_front": "front", "protective_front": "front",
-})
-NEW_EXPRESSION_ASSETS = (
-    "shy_cute_front", "mock_hit_front", "attentive_front",
-    "determined_front", "restrained_amused_front", "exasperated_front",
-    "eureka_front", "protective_front",
-)
-EYES_CLOSED_EXPRESSIONS = frozenset({"exasperated_front"})
-GESTURE_SPEECH_EXPRESSIONS = frozenset(
-    {
-        "mock_scold",
-        "mock_hit_front",
-        "exasperated_front",
-        "eureka_front",
-    }
-)
+_RIG_MANIFEST = character_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
+if _RIG_MANIFEST.character_id != _EXPRESSION_CATALOG.character_id:
+    raise ValueError("Bundled expression catalog targets a different character.")
+
+NEUTRAL_VISEME_ASSET_STEMS = _EXPRESSION_CATALOG.neutral_viseme_asset_stems
+SPEAKING_BLINK_PREFIXES = _EXPRESSION_CATALOG.speaking_blink_prefixes
+PHYSICS_POSE_SUFFIXES = _RIG_MANIFEST.physics.pose_suffixes
+PHYSICS_SPEECH_FRAME_PREFIXES = _RIG_MANIFEST.physics.speech_frame_prefixes
+EXPRESSION_POSES = _EXPRESSION_CATALOG.state_to_pose
+NEW_EXPRESSION_ASSETS = _EXPRESSION_CATALOG.new_expression_assets
+EYES_CLOSED_EXPRESSIONS = _EXPRESSION_CATALOG.eyes_closed_expressions
+GESTURE_SPEECH_EXPRESSIONS = _EXPRESSION_CATALOG.gesture_speech_expressions
 EXPRESSION_SPEECH_EXPRESSIONS = frozenset(EXPRESSION_POSES)
 # Appearance-pack silhouette rendered under each half-body pose, and the four
 # gesture silhouettes whose body differs from the neutral pose: the official
@@ -64,15 +29,8 @@ EXPRESSION_SPEECH_EXPRESSIONS = frozenset(EXPRESSION_POSES)
 # the runtime must both draw the gesture portrait and dress it with its own
 # layers.  Speech (``_speech_*``) and blink (``_speech_blink``) frames of a
 # gesture inherit its silhouette.
-POSE_OUTFIT_SILHOUETTES = frozendict({
-    "cheek": "cheek-rest", "lean": "left-neutral", "front": "front-crossed",
-})
-GESTURE_OUTFIT_SILHOUETTES = frozendict({
-    "mock_scold": "front-mock-scold",
-    "mock_hit_front": "front-mock-hit",
-    "eureka_front": "front-eureka",
-    "exasperated_front": "front-exasperated",
-})
+POSE_OUTFIT_SILHOUETTES = _RIG_MANIFEST.pose_silhouettes
+GESTURE_OUTFIT_SILHOUETTES = _RIG_MANIFEST.gesture_silhouettes
 SPEECH_FRAME_MARKER = "_speech_"
 
 
@@ -93,7 +51,7 @@ def outfit_silhouette(expression: str, pose: str) -> str:
 EXPRESSION_SPEECH_FRAMES = frozendict({
     expression: frozendict({
         frame: f"{expression}_speech_{frame}"
-        for frame in ("mid", "open", "round")
+        for frame in _EXPRESSION_CATALOG.speech_frame_suffixes
     })
     for expression in EXPRESSION_SPEECH_EXPRESSIONS
 })
@@ -103,10 +61,15 @@ GESTURE_SPEECH_FRAMES = frozendict({
 })
 EXPRESSION_DERIVED_VISEME_FRAMES = frozendict({
     expression: frozendict({
-        "I": f"{expression}_speech_i", "U": f"{expression}_speech_u",
+        viseme: f"{expression}_speech_{suffix}"
+        for viseme, suffix in _EXPRESSION_CATALOG.derived_viseme_suffixes.items()
     })
     for expression in EXPRESSION_SPEECH_EXPRESSIONS
 })
+HALF_BLINK_NEUTRAL_FRAME_PREFIXES = tuple(
+    prefix for prefix in PHYSICS_SPEECH_FRAME_PREFIXES
+    if not prefix.startswith("blink")
+)
 EXPRESSION_VISEME_FRAMES = frozendict({
     expression: frozendict({
         "A": EXPRESSION_SPEECH_FRAMES[expression]["open"],
@@ -120,73 +83,87 @@ EXPRESSION_VISEME_FRAMES = frozendict({
 EXPRESSION_SPEECH_ASSETS = tuple(
     asset for frames in EXPRESSION_SPEECH_FRAMES.values() for asset in frames.values()
 )
-EXPRESSION_BLINK_FRAMES = frozendict({
-    "thinking_front": "thinking_front_speech_blink",
-    "glance": "glance_speech_blink", "happy": "happy_speech_blink",
-    "worried": "worried_speech_blink", "reminder": "reminder_speech_blink",
-})
+EXPRESSION_BLINK_FRAMES = _EXPRESSION_CATALOG.blink_frames
 EXPRESSION_BLINK_ASSETS = tuple(EXPRESSION_BLINK_FRAMES.values())
-BLUSH_PRESERVING_BLINK_EXPRESSIONS = frozenset({"shy_front", "shy_cute_front"})
+EXPRESSION_HALF_BLINK_FRAMES = _EXPRESSION_CATALOG.half_blink_frames
+
+
+def _half_blink_frame_sources() -> dict[str, str]:
+    sources: dict[str, str] = {}
+    for prefix, (suffix, _pose) in product(
+        HALF_BLINK_NEUTRAL_FRAME_PREFIXES, PHYSICS_POSE_SUFFIXES
+    ):
+        if f"idle{suffix}" in EXPRESSION_HALF_BLINK_FRAMES:
+            sources[f"{prefix}{suffix}"] = EXPRESSION_HALF_BLINK_FRAMES[f"idle{suffix}"]
+    for expression, source in EXPRESSION_HALF_BLINK_FRAMES.items():
+        if expression not in EXPRESSION_SPEECH_FRAMES:
+            continue
+        for frame in (
+            expression,
+            *EXPRESSION_SPEECH_FRAMES[expression].values(),
+            *EXPRESSION_DERIVED_VISEME_FRAMES[expression].values(),
+        ):
+            sources[frame] = source
+    return sources
+
+
+EXPRESSION_HALF_BLINK_FRAME_SOURCES = frozendict(_half_blink_frame_sources())
+EXPRESSION_HALF_BLINK_ASSETS = tuple(EXPRESSION_HALF_BLINK_FRAMES.values())
+EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES = frozendict({
+    expression: source.removesuffix("_half") + "_closed"
+    for expression, source in EXPRESSION_HALF_BLINK_FRAME_SOURCES.items()
+})
+EXPRESSION_NATIVE_CLOSED_BLINK_ASSETS = tuple(dict.fromkeys(
+    EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES.values(),
+))
+BLUSH_PRESERVING_BLINK_EXPRESSIONS = (
+    _EXPRESSION_CATALOG.blush_preserving_blink_expressions
+)
 EXPRESSION_IMAGE_ASSETS = (
-    "idle", "idle_lean", "idle_front", "blink", "blink_lean", "blink_front",
-    "glance", "caught", "speaking", "speaking_lean", "speaking_front",
-    "happy", "worried", "reminder", "thinking_front", "gentle_smile_front",
-    "worried_front", "shy_front", "mock_scold", "surprised_front",
-    "relieved_front", "tired_front", "proud_front", *NEW_EXPRESSION_ASSETS,
-    *EXPRESSION_SPEECH_ASSETS, *EXPRESSION_BLINK_ASSETS, "viseme_mid_front",
-    "viseme_wide_front", "viseme_round", "viseme_round_lean",
-    "viseme_round_front", "viseme_i", "viseme_i_lean", "viseme_i_front",
-    "viseme_o", "viseme_o_lean", "viseme_o_front",
+    *_EXPRESSION_CATALOG.base_image_assets, *NEW_EXPRESSION_ASSETS,
+    *EXPRESSION_SPEECH_ASSETS, *EXPRESSION_BLINK_ASSETS,
+    *EXPRESSION_HALF_BLINK_ASSETS, *EXPRESSION_NATIVE_CLOSED_BLINK_ASSETS,
+    *_EXPRESSION_CATALOG.legacy_viseme_assets,
 )
 GESTURE_SPEECH_ASSETS = tuple(
     asset
     for frames in GESTURE_SPEECH_FRAMES.values()
     for asset in frames.values()
 )
+
 EXPRESSION_SPEECH_MOUTH_RECTS = frozendict({
-    expression: (
-        QRect(170, 194, 60, 42) if pose == "cheek"
-        else QRect(158, 194, 62, 42) if pose == "lean"
-        else QRect(202, 195, 62, 43)
-    )
+    expression: QRect(*_EXPRESSION_CATALOG.mouth_rect_by_pose[pose])
     for expression, pose in EXPRESSION_POSES.items()
 } | {
-    "mock_scold": QRect(202, 196, 53, 44),
-    "mock_hit_front": QRect(201, 190, 56, 50),
-    "exasperated_front": QRect(199, 201, 58, 47),
-    "eureka_front": QRect(197, 190, 58, 48),
+    expression: QRect(*rect)
+    for expression, rect in _EXPRESSION_CATALOG.mouth_rect_overrides.items()
 })
 GESTURE_SPEECH_MOUTH_RECTS = frozendict({
     expression: EXPRESSION_SPEECH_MOUTH_RECTS[expression]
     for expression in GESTURE_SPEECH_EXPRESSIONS
 })
-CHEEK_SPEECH_CLOSED_EXPRESSION = "idle_speech_neutral"
-HAPPY_SPEECH_CLOSED_EXPRESSION = "happy_speech_neutral"
-EXPRESSION_FACE_OFFSETS = frozendict({
-    "glance": (0, 0), "caught": (0, 0), "happy": (0, 0),
-    "worried": (0, 0), "reminder": (0, 0), "thinking_front": (0, 0),
-    "gentle_smile_front": (0, 0), "worried_front": (0, 0), "shy_front": (0, 0),
-    "mock_scold": (0, 0), "surprised_front": (0, 0), "relieved_front": (0, 0),
-    "tired_front": (0, 0), "proud_front": (0, 0), "shy_cute_front": (0, 0),
-    "mock_hit_front": (0, 2), "attentive_front": (0, 0), "determined_front": (0, 1),
-    "restrained_amused_front": (0, 0), "exasperated_front": (-1, 1), "eureka_front": (0, 0),
-    "protective_front": (0, 0),
-})
-EXPRESSION_EYE_OFFSETS = frozendict({**EXPRESSION_FACE_OFFSETS})
-EXPRESSION_MOUTH_OFFSETS = frozendict({**EXPRESSION_FACE_OFFSETS})
-CHARACTER_CANVAS_WIDTH = 470
-CHARACTER_IMAGE_SIZE = 465
-CHARACTER_BASE_Y = 215
-CHARACTER_SCALE_MIN = 75
-CHARACTER_SCALE_MAX = 180
-CHARACTER_SCALE_DEFAULT = 100
+CHEEK_SPEECH_CLOSED_EXPRESSION = (
+    _EXPRESSION_CATALOG.closed_speech_expressions["cheek"]
+)
+HAPPY_SPEECH_CLOSED_EXPRESSION = (
+    _EXPRESSION_CATALOG.closed_speech_expressions["happy"]
+)
+EXPRESSION_FACE_OFFSETS = _EXPRESSION_CATALOG.face_offsets
+EXPRESSION_EYE_OFFSETS = _EXPRESSION_CATALOG.eye_offsets
+EXPRESSION_MOUTH_OFFSETS = _EXPRESSION_CATALOG.mouth_offsets
+CHARACTER_CANVAS_WIDTH = _RIG_MANIFEST.viewport.canvas_width
+CHARACTER_IMAGE_SIZE = _RIG_MANIFEST.viewport.image_size
+CHARACTER_BASE_Y = _RIG_MANIFEST.viewport.base_y
+CHARACTER_SCALE_MIN = _RIG_MANIFEST.viewport.scale_min
+CHARACTER_SCALE_MAX = _RIG_MANIFEST.viewport.scale_max
+CHARACTER_SCALE_DEFAULT = _RIG_MANIFEST.viewport.scale_default
 MOUTH_CLOSE_DEADLINE_MS = max(
     110, math.ceil(VISEME_CLOSE_TRANSITION_SECONDS * 1000) + 32,
 )
 MOTION_FRAME_INTERVAL_MS = 16
 SPEECH_MOTION_RELEASE_LIMIT = 12
 # Attention (gaze/blink) and physics (breath/sleeve) timers run on their own
-# cadence so the pointer tracking and fabric motion never fight the 60 Hz
+# cadence so pointer tracking and fabric motion share the 60 Hz
 # motion clock.  These are named so a future cadence change stays in one place.
 ATTENTION_FRAME_INTERVAL_MS = 40
 PHYSICS_FRAME_INTERVAL_MS = 33

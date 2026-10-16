@@ -4,7 +4,7 @@ lazy from PySide6.QtCore import QObject, Signal
 
 
 class UnavailableSystemTTS(QObject):
-    """Fail closed when a platform has no verified local speech adapter."""
+    """Report the configured reason when no verified local speech adapter exists."""
 
     failed = Signal(str)
     finished = Signal()
@@ -31,4 +31,4 @@ class UnavailableSystemTTS(QObject):
         self.finished.emit()
 
     def stop(self) -> None:
-        """Match the local speech contract when no adapter is available."""
+        """Complete the local speech contract when no adapter is available."""

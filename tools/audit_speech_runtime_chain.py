@@ -1,6 +1,6 @@
 """Deterministic pre-package audit of the local speech-to-mouth chain.
 
-The audit never opens a real audio device.  It drives the production PCM
+The audit uses a recording audio sink exclusively. It drives the production PCM
 streaming, viseme dynamics, speech lifecycle, and face-motion code through a
 recording PortAudio-compatible sink.  This makes it safe in CI while still
 proving that a non-empty TTS payload starts playback and produces a non-zero
@@ -9,6 +9,8 @@ binary, which catches PyInstaller builds that collected only ``sounddevice.py``.
 """
 
 from __future__ import annotations
+
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 
 lazy import io
 lazy import json
@@ -133,11 +135,8 @@ def _portaudio_binary_present() -> bool:
 def audit_event_trace(events: tuple[RuntimeEvent, ...]) -> tuple[str, ...]:
     """Prove audio, speaking phase, viseme and frame share one ordered chain."""
 
-    issues: list[str] = []
     kinds = tuple(event.kind for event in events)
-    for required in ("first-audio", "mouth-frame", "audio-write", "mouth-closed"):
-        if required not in kinds:
-            issues.append(f"missing-event:{required}")
+    issues: list[str] = [f"missing-event:{required}" for required in ("first-audio", "mouth-frame", "audio-write", "mouth-closed") if required not in kinds]
     first_audio = next((event for event in events if event.kind == "first-audio"), None)
     first_write = next((event for event in events if event.kind == "audio-write"), None)
     active_frames = tuple(
@@ -145,12 +144,18 @@ def audit_event_trace(events: tuple[RuntimeEvent, ...]) -> tuple[str, ...]:
         for event in events
         if event.kind == "mouth-frame" and event.cue_level > 0.0
     )
-    if first_audio is not None and active_frames:
-        if active_frames[0].ordinal <= first_audio.ordinal:
-            issues.append("mouth-frame-before-first-audio")
-    if first_audio is not None and first_write is not None:
-        if first_write.ordinal <= first_audio.ordinal:
-            issues.append("audio-write-before-first-audio")
+    if (
+        first_audio is not None
+        and active_frames
+        and active_frames[0].ordinal <= first_audio.ordinal
+    ):
+        issues.append("mouth-frame-before-first-audio")
+    if (
+        first_audio is not None
+        and first_write is not None
+        and first_write.ordinal <= first_audio.ordinal
+    ):
+        issues.append("audio-write-before-first-audio")
     writes = tuple(event for event in events if event.kind == "audio-write")
     for frame in active_frames:
         next_event = (
@@ -300,7 +305,7 @@ def run_audit() -> SpeechRuntimeAudit:
     microtiming_issues = audit_runtime_microtiming()
     # Microtiming issue names are "blink:...", "blink-duration:...",
     # "attention-gaze:..." and "saccade-gaze:...": every blink-family issue
-    # starts with "blink", not only the bare "blink:" interval label.
+    # starts with "blink", covering both the interval label and its variants.
     blink_issues = tuple(
         issue for issue in microtiming_issues if issue.startswith("blink")
     )
@@ -332,6 +337,7 @@ def run_audit() -> SpeechRuntimeAudit:
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     result = run_audit()
     print(json.dumps(asdict(result), ensure_ascii=False, indent=2))
     return 0 if result.passed else 1

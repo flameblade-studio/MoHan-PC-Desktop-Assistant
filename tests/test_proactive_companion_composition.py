@@ -51,11 +51,9 @@ def run() -> None:
             second=0,
             microsecond=0,
         )
-        # The occasion service reads the real wall clock (not the injected
-        # ``now``), so on a special-occasion day such as Qixi it would outrank
-        # the lunch reminder and change the submitted speech state.  Neutralise
-        # the occasion lookup so this test deterministically exercises the
-        # reminder path regardless of the calendar date.
+        # The occasion service uses real wall-clock time; Qixi could outrank lunch
+        # and change the submitted speech state. Neutralize occasion lookup so
+        # this fixture consistently exercises the reminder path.
         with patch(
             "application.wellbeing_runtime.active_occasion",
             return_value=None,

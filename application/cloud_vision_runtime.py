@@ -70,11 +70,11 @@ class SavedVisionAuthorization:
 
     def __post_init__(self) -> None:
         if not isinstance(self.preferences, OpenAIVisionPreferences):
-            raise TypeError("Saved cloud vision preferences are invalid.")
+            raise TypeError("Saved cloud vision preferences need supported values.")
         if type(self.settings_version) is not int or self.settings_version < 1:
-            raise ValueError("Saved cloud vision settings version is invalid.")
+            raise ValueError("Saved cloud vision settings version needs a supported value.")
         if type(self.generation) is not int or self.generation < 0:
-            raise ValueError("Saved cloud vision generation is invalid.")
+            raise ValueError("Saved cloud vision generation needs a supported value.")
         if type(self.saved) is not bool:
             raise TypeError("Saved cloud vision state must be boolean.")
 
@@ -147,7 +147,7 @@ _NON_NETWORK_STATUS_VALUES = frozenset({
 
 
 class CloudVisionRuntime:
-    """Coordinate persisted cloud authorization without retaining private frames."""
+    """Coordinate persisted cloud authorization while keeping private frames in memory only."""
 
     def __init__(
         self,
@@ -229,7 +229,7 @@ class CloudVisionRuntime:
         return self._complete(frame.operation_id, authorization, provider_result)
 
     def suggest_web_lookup(self) -> CloudVisionResult:
-        """Never search automatically; request explicit user direction instead."""
+        """Start search after explicit user direction."""
 
         authorization = self.authorization
         return CloudVisionResult(

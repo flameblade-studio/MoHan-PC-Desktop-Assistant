@@ -1,9 +1,9 @@
 """Fail-closed semantic audit for the 24-view full-body layer set.
 
 This tool is deliberately read-only.  It verifies that the 600 registered PNG
-layers contain the kind of pixels their filenames claim to contain.  A
-geometrically valid PNG is not enough: a face pasted into ``ornament`` or an
-empty teeth set would otherwise pass the ordinary package asset check.
+layers contain the kind of pixels their filenames claim to contain.  Acceptance requires
+both valid PNG geometry and the correct semantic role, including the intended
+contents of ``ornament`` and each teeth layer.
 
 Package preflight command::
 
@@ -26,6 +26,14 @@ lazy from typing import Any
 lazy import cv2
 lazy import numpy as np
 
+ROOT = Path(__file__).resolve().parents[1]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
+
 lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
@@ -33,7 +41,6 @@ lazy from domain.constants import (
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
 
 
-ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
 DEFAULT_AUTHORITY_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_DETECTOR_MODEL = (
@@ -47,8 +54,8 @@ ALPHA_THRESHOLD = 16
 AUDIT_SCHEMA = "mohan.layered-full-body-semantic-audit.v1"
 EXIT_CODE_CONTRACT = {
     "0": "all semantic checks passed",
-    "1": "one or more file-level semantic checks failed",
-    "2": "audit configuration or execution failed closed",
+    "1": "one or more file-level semantic checks require correction",
+    "2": "audit stopped with the acceptance gate closed; review configuration and execution",
 }
 SKIN_LUMA_MIN = 35
 SKIN_CR_MIN = 133
@@ -76,7 +83,7 @@ NON_SKIN_LAYERS = frozenset(
 )
 # Face semantic layers that are expected to actually carry pixels.  A fully
 # transparent iris or base is a silent packaging defect: the PNG exists, so
-# geometric checks pass, but the runtime face is missing that feature.
+# geometric checks pass, but the runtime face still requires that feature.
 FACE_SEMANTIC_LAYERS = frozenset(
     {
         "iris_left", "iris_right", "eyelid_left", "eyelid_right",
@@ -86,7 +93,7 @@ FACE_SEMANTIC_LAYERS = frozenset(
         "base", "jaw",
     }
 )
-# Speech-mouth contract: back views (|yaw| > 90) legitimately have no lips,
+# Speech-mouth contract: back views (|yaw| > 90) keep lips outside the visible surface,
 # oral cavity, or teeth/tongue pixels.  teeth_tongue is additionally exempt at
 # every view (ruling 2026-08-27 below: the neutral set is all-empty).
 BACK_VIEW_EMPTY_MOUTH_LAYERS = frozenset(
@@ -102,7 +109,7 @@ YAW_PATTERN = re.compile(r"^yaw(?P<yaw>[+-]\d{3})-pitch[+-]\d{2}$")
 
 @dataclass(frozen=True, slots=True)
 class AuditIssue:
-    """One file-specific semantic failure."""
+    """One file-specific semantic issue requiring correction."""
 
     code: str
     path: str
@@ -126,9 +133,9 @@ class AuditReport:
     issue_count: int
     issues_by_code: dict[str, int]
     issues: tuple[AuditIssue, ...]
-    # Advisory findings never affect ``passed`` or the exit code.  The empty
+    # Advisory findings are informational; gates alone determine ``passed`` and the exit code. The empty
     # face-layer rule is currently advisory-only because the shipped v4
-    # layered assets violate it in a few places the owner has not ruled on.
+    # layered assets have several cases awaiting the owner's ruling.
     advisory_count: int = 0
     advisories_by_code: dict[str, int] | None = None
     advisories: tuple[AuditIssue, ...] = ()
@@ -150,9 +157,9 @@ def _yaw(view_id: str) -> int:
 def _load_rgba(path: Path, expected_size: tuple[int, int]) -> np.ndarray:
     image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
     if image is None:
-        raise ValueError("not a decodable PNG")
+        raise ValueError("provide a decodable PNG")
     if image.ndim != IMAGE_DIMENSIONS or image.shape[2] != RGBA_CHANNELS:
-        raise ValueError("not an RGBA PNG")
+        raise ValueError("provide an RGBA PNG")
     width, height = expected_size
     if image.shape[:2] != (height, width):
         raise ValueError(
@@ -169,18 +176,18 @@ def _detect_face(authority: np.ndarray, model: Path) -> FaceBox:
     )
     _status, faces = detector.detect(authority[:, :, :3])
     if faces is None:
-        raise ValueError("YuNet did not detect the visible authority face")
+        raise ValueError("visible authority face detection requires review")
     candidates = [face for face in faces if float(face[1]) < height * 0.35]
     if not candidates:
-        raise ValueError("YuNet did not detect the visible authority face")
+        raise ValueError("visible authority face detection requires review")
     face = max(candidates, key=lambda item: float(item[14]))
-    x, y, box_width, box_height = (int(round(float(value))) for value in face[:4])
+    x, y, box_width, box_height = (round(float(value)) for value in face[:4])
     x = max(0, x)
     y = max(0, y)
     box_width = min(width - x, box_width)
     box_height = min(height - y, box_height)
     if box_width <= 0 or box_height <= 0:
-        raise ValueError("YuNet returned an invalid authority face box")
+        raise ValueError("YuNet authority face box requires valid coordinates")
     return x, y, box_width, box_height
 
 
@@ -227,7 +234,7 @@ def _issue(
     )
 
 
-def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
+def audit_layered_full_body_semantics(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements]
     asset_root: Path,
     authority_root: Path,
     detector_model: Path,
@@ -236,7 +243,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
     expected_size: tuple[int, int] = EXPECTED_SIZE,
     face_boxes: Mapping[str, FaceBox] | None = None,
 ) -> AuditReport:
-    """Audit layer semantics without modifying any input file."""
+    """Audit layer semantics through read-only inspection of input files."""
 
     issues: list[AuditIssue] = []
     advisories: list[AuditIssue] = []
@@ -255,7 +262,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
             if not path.is_file():
                 _issue(
                     issues, "missing_layer", path, view_id, layer,
-                    "required semantic layer is missing",
+                    "provide the required semantic layer",
                 )
                 continue
             files_checked += 1
@@ -273,12 +280,12 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
 
         # Empty transparent face-layer policy — BLOCKING (ruling 2026-08-28).
         # A regression that writes an all-transparent iris/eyelid/lip layer
-        # must not ship.  Licensed-empty exemptions, each backed by an
+        # requires correction before shipment. Licensed-empty exemptions, each backed by an
         # existing owner-ratified ruling:
         #   1. teeth_tongue at every view (all-empty neutral set,
         #      ruling 2026-08-27);
-        #   2. every face layer on back views (|yaw| > 90): the face is not
-        #      visible from behind, exactly the state of the accepted
+        #   2. every face layer on back views (|yaw| > 90): the face points
+        #      away from the camera, exactly the state of the accepted
         #      shipped assets;
         #   3. oral_cavity at |yaw| >= 75: the near-profile oral pixels were
         #      formally returned to the lip layers (golden-batch ruling
@@ -294,7 +301,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
             if layer == "oral_cavity" and abs(yaw) >= NEAR_PROFILE_MIN_ABS_YAW:
                 continue
             if yaw != 0 and (
-                layer.endswith("_left") or layer.endswith("_right")
+                layer.endswith(("_left", "_right"))
             ):
                 continue
             image = view_images.get(layer)
@@ -302,7 +309,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
                 _issue(
                     issues, "face_semantic_layer_fully_transparent",
                     asset_root / f"{view_id}_{layer}.png", view_id, layer,
-                    "face semantic layer exists but contains no opaque pixels",
+                    "face semantic layer requires visible pixels",
                     yaw=yaw,
                 )
 
@@ -317,14 +324,14 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
             elif not authority_path.is_file():
                 _issue(
                     issues, "missing_authority", authority_path, view_id, "authority",
-                    "authority PoseAtlas image is missing",
+                    "provide the authority PoseAtlas image",
                 )
             else:
                 authority = cv2.imread(str(authority_path), cv2.IMREAD_UNCHANGED)
                 if authority is None:
                     _issue(
                         issues, "invalid_authority", authority_path, view_id,
-                        "authority", "authority PoseAtlas image cannot be decoded",
+                        "authority", "provide a decodable authority PoseAtlas image",
                     )
                 else:
                     try:
@@ -346,7 +353,7 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
                 path = asset_root / f"{view_id}_base.png"
                 _issue(
                     issues, "base_face_coverage_low", path, view_id, "base",
-                    "base does not cover enough of the authority face",
+                    "base requires fuller coverage of the authority face",
                     coverage=round(coverage, 6), minimum=BASE_FACE_COVERAGE_MIN,
                 )
 
@@ -424,10 +431,10 @@ def audit_layered_full_body_semantics(  # noqa: PLR0912, PLR0914, PLR0915
                     )
 
     # Ruling 2026-08-27: an all-empty teeth_tongue set is the valid neutral
-    # state, not a defect.  Every authority portrait is closed-mouth, so there
-    # are no licensed tooth pixels to package, and the mouth rebuild tool
-    # (tools/rebuild_pose_atlas_mouth_layers.py) deliberately never paints
-    # teeth.  Speech renders the licensed oral-cavity aperture instead, which
+    # state with valid provenance. Every authority portrait is closed-mouth.
+    # The mouth rebuild tool (tools/rebuild_pose_atlas_mouth_layers.py) therefore
+    # preserves transparent neutral teeth layers. Speech renders the licensed
+    # oral-cavity aperture, which
     # is the look the owner accepted in the shipped v4.4.2 build.
     _ = teeth_nonempty
 

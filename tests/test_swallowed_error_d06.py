@@ -50,7 +50,7 @@ def assert_draft_read_failure_is_visible() -> None:
     assert result == expected == "error"
     assert chip.text == "讀取失敗"
     assert chip.state == "bad"
-    assert message.text == "設定無法讀取，請稍後再試"
+    assert message.text == '讀取設定需要處理，請重新嘗試。'
 
 
 def run() -> None:

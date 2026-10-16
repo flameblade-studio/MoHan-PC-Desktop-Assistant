@@ -14,6 +14,12 @@ _WORD_PATTERN = re.compile(r"[\w]+", re.UNICODE)
 MAX_INDEXED_TEXT_CHARS = 8000
 
 
+def _integer(value: object) -> int:
+    if isinstance(value, int | float | str | bytes | bytearray):
+        return int(value)
+    raise TypeError("Memory numeric fields require a scalar value.")
+
+
 def _features(text: str) -> list[str]:
     normalized = " ".join(str(text).casefold().split())[:MAX_INDEXED_TEXT_CHARS]
     words = _WORD_PATTERN.findall(normalized)
@@ -81,7 +87,7 @@ class MemoryVectorIndex:
         active: set[int] = set()
         with self._lock:
             for row in rows:
-                memory_id = int(row["id"])
+                memory_id = _integer(row["id"])
                 active.add(memory_id)
                 text = self._document_text(row)
                 fingerprint = hashlib.sha256(text.encode("utf-8")).hexdigest()
@@ -116,12 +122,15 @@ class MemoryVectorIndex:
         ranked: list[RankedMemory] = []
         with self._lock:
             for row in rows:
-                memory_id = int(row["id"])
+                memory_id = _integer(row["id"])
                 semantic = cosine_similarity(
                     query_vector,
                     self._vectors.get(memory_id, {}),
                 )
-                importance = max(1, min(5, int(row.get("importance") or 3))) / 5
+                importance = max(
+                    1,
+                    min(5, _integer(row.get("importance") or 3)),
+                ) / 5
                 updated_raw = str(row.get("updated_at") or "")
                 status = "ok"
                 try:

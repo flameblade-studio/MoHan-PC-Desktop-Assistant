@@ -11,7 +11,7 @@ lazy from unittest.mock import MagicMock, patch
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-lazy from PySide6.QtCore import QAbstractAnimation, QPoint, QTimer
+lazy from PySide6.QtCore import QAbstractAnimation, QEventLoop, QPoint, QTimer
 lazy from PySide6.QtWidgets import QApplication, QLabel
 
 lazy from presentation.companion_window import CompanionWindow
@@ -248,7 +248,7 @@ def _assert_timer_order_contract(
                 _run_timer_action(window, callback, action, context)
 
         assert not _completion_is_active(window, path), (
-            f"{path}/{order_name}: completion did not converge"
+            f'{path}/{order_name}: completion must converge'
         )
         assert not timer.isActive()
         assert window.state == FINAL_STATE, (
@@ -295,6 +295,47 @@ def _assert_timer_order_contract(
         ) <= MAX_VISIBLE_FRAME_DELTA_PIXELS
 
 
+def _assert_shutdown_callbacks_are_ignored(
+    app: QApplication,
+    window: CompanionWindow,
+) -> None:
+    """A queued speech callback closes safely and preserves the DB lifecycle boundary."""
+
+    _reset_window(window)
+    window.speech_playing = True
+    window.speech_queue.append(QueuedSpeech("關窗後的佇列語音", "idle"))
+    errors: list[BaseException] = []
+    invoked: list[str] = []
+
+    def invoke(callback: Callable[[], None]) -> None:
+        invoked.append(callback.__name__)
+        try:
+            callback()
+        except BaseException as error:  # pragma: no cover - regression trap
+            errors.append(error)
+
+    def invoke_queued_next() -> None:
+        window.speech_playing = False
+        invoke(window._start_next_speech)
+
+    completion_loop = QEventLoop()
+
+    def invoke_shutdown_callbacks() -> None:
+        invoke(window._speech_audio_finished)
+        invoke(window._complete_speech_audio_finished)
+        invoke_queued_next()
+        completion_loop.quit()
+
+    QTimer.singleShot(0, invoke_shutdown_callbacks)
+    window.close()
+    completion_loop.exec()
+    app.processEvents()
+
+    assert errors == [], errors
+    assert invoked == ["_speech_audio_finished", "_complete_speech_audio_finished", "_start_next_speech"]
+    assert len(window.speech_queue) == 1
+
+
 def run() -> None:
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         app, window = _create_window(temp_dir)
@@ -306,6 +347,7 @@ def run() -> None:
                         path,
                         order_name,
                     )
+            _assert_shutdown_callbacks_are_ignored(app, window)
         finally:
             window.speech_queue.clear()
             window.speech_playing = False

@@ -22,7 +22,7 @@
 - 已實作：25 圖層合成（18 五官 + 7 身體/頭髮/服裝）
 - 已具備動態：眨眼（eyelid/eyeliner opacity）、嘴巴（oral_cavity/teeth_tongue/lips）、
   表情（brow/blush/corner）、視線（iris）
-- 尚未接入：正式渲染流程
+- 待完成：正式渲染流程接入
 
 ---
 

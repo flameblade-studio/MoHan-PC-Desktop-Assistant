@@ -104,7 +104,7 @@ def test_failed_preview_restores_last_good_visual() -> None:
     except ThemeSessionError:
         pass
     else:
-        raise AssertionError("a failed preview must be reported")
+        raise AssertionError('preview errors must be reported')
     assert harness.visual == "moonlit-style"
     assert session.preview_theme_id == "moonlit-blue"
 
@@ -119,7 +119,7 @@ def test_failed_save_does_not_change_persisted_state() -> None:
     except ThemeSessionError:
         pass
     else:
-        raise AssertionError("a failed commit must be reported")
+        raise AssertionError('commit errors must be reported')
     assert session.persisted_theme_id == BUILTIN_THEME_ID
     assert session.preview_theme_id == "moonlit-blue"
 

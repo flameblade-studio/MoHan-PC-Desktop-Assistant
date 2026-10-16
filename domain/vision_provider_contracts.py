@@ -76,7 +76,7 @@ class VisualUnderstanding:
         if any(not item.strip() or len(item) > MAX_CLAIM_LENGTH for item in self.uncertainties):
             raise ValueError("Uncertainty entries must contain 1 to 500 characters.")
         if not self.model_reported or self.independently_verified:
-            raise ValueError("Remote vision output cannot be marked independently verified.")
+            raise ValueError("Remote vision output requires independent verification before it receives that mark.")
 
 
 @dataclass(frozen=True, slots=True)

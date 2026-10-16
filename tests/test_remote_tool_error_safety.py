@@ -185,10 +185,10 @@ def run() -> None:
         "en-US",
         "ja-JP",
     )
-    assert remote_file_unavailable("zh-TW") == "檔案目前無法提供"
-    assert remote_file_unavailable("zh-CN") == "文件目前无法提供"
-    assert remote_file_unavailable("en") == "The file is currently unavailable."
-    assert remote_file_unavailable("ja-JP") == "現在このファイルを提供できません。"
+    assert remote_file_unavailable("zh-TW") == "請選擇遠端白名單中的檔案"
+    assert remote_file_unavailable("zh-CN") == "请选择远程白名单中的文件"
+    assert remote_file_unavailable("en") == "Choose a file from the remote allowlist."
+    assert remote_file_unavailable("ja-JP") == "リモート許可リスト内のファイルを選択してください。"
     with TemporaryDirectory(dir=Path.cwd()) as temporary:
         _assert_remote_file_boundary(Path(temporary).resolve())
     _assert_tool_error_boundary()

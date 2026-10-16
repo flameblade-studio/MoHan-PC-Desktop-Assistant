@@ -7,17 +7,16 @@ anxiety — MoHan's idle breathing quickens and her blink rate rises, as if she
 senses the user's agitation through the sword.  This is a quiet, non-verbal act
 of empathy: "主上，妾感受到您的殺氣/焦慮了".
 
-This module is pure domain logic with no Qt dependency.  It only computes a
+This module is pure domain logic with Qt outside the domain boundary.  It only computes a
 smooth, bounded resonance level from cheap scalar inputs (brow tension and a
 typing-rate estimate); the presentation layer samples it on its existing timer,
 so nothing here ever blocks the Qt main thread.
 
 The key tuning concerns, per the user's direction:
 
-- The resonance level must ease smoothly (exponential approach), never snap, so
+- The resonance level eases smoothly (exponential approach), so
   the breathing period shortens gradually instead of jittering frame to frame.
-- The breathing period and blink interval must stay within safe bounds so the
-  companion never looks like a twitching zombie.
+- The breathing period and blink interval must stay within safe bounds so the companion keeps a calm, natural appearance.
 """
 
 lazy import math
@@ -34,7 +33,7 @@ BROW_TENSION_THRESHOLD = 0.55
 TYPING_RATE_FULL_KPS = 6.0
 
 # Resonance eases toward its target with this per-second rate.  A smaller value
-# means a slower, smoother transition (no snapping).
+# means a slower, smoother transition.
 RESONANCE_EASE_RATE = 0.8
 
 # Breathing period (in idle-phase ticks) at rest and at full resonance.

@@ -25,7 +25,7 @@ SnapshotT = TypeVar("SnapshotT")
 
 
 class OpenAIVisionPreferencesStoreError(RuntimeError):
-    """A fixed-detail persistence error without backend content."""
+    """A fixed-detail persistence boundary result with backend content kept private."""
 
 
 @dataclass(slots=True)
@@ -41,7 +41,7 @@ class OpenAIVisionPreferencesDraft[SnapshotT]:
             self.value = replace(self.value, **changes)
         except (TypeError, ValueError):
             raise OpenAIVisionPreferencesStoreError(
-                "OpenAI vision draft is invalid."
+                "OpenAI vision draft needs a supported value."
             ) from None
         return self
 
@@ -72,9 +72,9 @@ class OpenAIVisionPreferencesStore[SnapshotT]:
         try:
             raw = self._settings.read(PORTABLE_SETTING_KEYS)
         except _BOUNDARY_ERRORS:
-        # 後端讀不到不是「從未保存」：回預設值會讓排程端把已送達的提醒再送一次，
-        # 偏好編輯器也會拿預設值開啟、一存就覆蓋掉原有設定。寫入路徑早就拋
-        # 型別化錯誤，讀取路徑比照。
+            # 後端讀不到不是「從未保存」：回預設值會讓排程端把已送達的提醒再送一次，
+            # 偏好編輯器也會拿預設值開啟、一存就覆蓋掉原有設定。寫入路徑早就拋
+            # 型別化錯誤，讀取路徑比照。
             raise OpenAIVisionPreferencesStoreError(
                 "OpenAI vision preferences could not be read."
             ) from None
@@ -107,7 +107,7 @@ class OpenAIVisionPreferencesStore[SnapshotT]:
     def save(self, preferences: OpenAIVisionPreferences) -> None:
         if not isinstance(preferences, OpenAIVisionPreferences):
             raise OpenAIVisionPreferencesStoreError(
-                "OpenAI vision preferences are invalid."
+                "OpenAI vision preferences need supported values."
             )
         values = settings_payload(preferences)
         values[STORE_SCHEMA_KEY] = STORE_SCHEMA_VERSION
@@ -124,10 +124,10 @@ class OpenAIVisionPreferencesStore[SnapshotT]:
                 self._settings.restore(before)
             except _BOUNDARY_ERRORS:
                 raise OpenAIVisionPreferencesStoreError(
-                    "OpenAI vision save failed and rollback was incomplete."
+                    "OpenAI vision save requires attention and rollback requires attention."
                 ) from None
             raise OpenAIVisionPreferencesStoreError(
-                "OpenAI vision save failed; previous values were restored."
+                "OpenAI vision save requires attention; previous values were restored."
             ) from None
 
     def export_portable(self) -> dict[str, object]:

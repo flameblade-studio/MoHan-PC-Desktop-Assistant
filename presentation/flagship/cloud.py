@@ -5,9 +5,11 @@ lazy import mimetypes
 lazy import time
 lazy from datetime import datetime, timedelta
 lazy from email.message import EmailMessage
+lazy from threading import RLock
 lazy from typing import Any
 
 lazy from collections.abc import Callable
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import QObject, QRunnable, Signal
 lazy from PySide6.QtWidgets import (
@@ -82,13 +84,18 @@ class _CloudTokenHealthWorker(QRunnable):
 
 class FlagshipCloudMixin:
     def _cloud_tab(self) -> QWidget:
+        # Workers use this locked snapshot; SQLite belongs to the UI thread.
+        self._cloud_auth_lock = RLock()
+        self._cloud_authorizations = {
+            provider: (bool(row and row["enabled"]), object())
+            for provider in PROVIDERS if (row := self.db.connector(provider)) is not None
+        }
         scroll, form = self._scroll_form()
         if self.platform_services.capabilities.secure_secret_storage:
             secret_note = self._t("權杖由作業系統安全加密保存，不寫入資料庫或設定檔。")
         else:
             secret_note = self._t(
-                "{platform} 的原生安全金鑰保存尚未完成實機驗證，因此 OAuth 連線暫停；"
-                "墨寒不會改用明文保存。",
+                '{platform} 的原生安全金鑰保存等待實機驗證；OAuth 連線保持暫停，權杖僅採已驗證的加密保存。',
                 platform=self.platform_services.capabilities.display_name,
             )
         intro = QLabel(
@@ -147,6 +154,7 @@ class FlagshipCloudMixin:
         self._cloud_provider_changed()
         self.refresh_cloud_connections()
         return scroll
+
     def _cloud_provider_changed(self, _index: int = 0) -> None:
         provider_id = str(self.cloud_provider.currentData())
         provider = PROVIDERS[provider_id]
@@ -157,11 +165,13 @@ class FlagshipCloudMixin:
             "\n".join(config.get("scopes", provider.default_scopes))
         )
         self.cloud_client_secret.clear()
+
     def _oauth_store(self, provider_id: str) -> SecretStorePort:
         return self.secret_store_factory(
             self.data_path / f"oauth-{provider_id}.dpapi",
             f"MoHan {provider_id} OAuth token",
         )
+
     def connect_cloud(self) -> None:
         if not self.platform_services.capabilities.secure_secret_storage:
             self.cloud_status.setText(
@@ -178,7 +188,7 @@ class FlagshipCloudMixin:
         client_id = self.cloud_client_id.text().strip()
         if not client_id:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("雲端連接器"),
                 self._t("請先填入服務商後台建立的 OAuth Client ID。"),
             )
@@ -188,7 +198,7 @@ class FlagshipCloudMixin:
             for line in self.cloud_scopes.toPlainText().splitlines()
             if line.strip()
         ]
-        self.cloud_status.setText(self._t("等待瀏覽器授權，請勿關閉墨寒……"))
+        self.cloud_status.setText(self._t("等待瀏覽器授權，請勿關閉{character_name}……"))
         worker = OAuthWorker(
             provider_id,
             client_id,
@@ -197,9 +207,10 @@ class FlagshipCloudMixin:
         )
         # 完成回呼必須使用發起當下的 scopes 快照；瀏覽器授權期間使用者
         # 可能已切換供應商，直接讀 UI 會把 A 供應商的 scopes 寫進 B。
+        authorization = self._cloud_authorizations.get(provider_id)
         worker.signals.done.connect(
             lambda done_provider, token, snapshot=tuple(scopes): (
-                self._cloud_connected(done_provider, token, snapshot)
+                self._cloud_connected(done_provider, token, snapshot, authorization)
             )
         )
         worker.signals.failed.connect(self._cloud_failed)
@@ -210,6 +221,7 @@ class FlagshipCloudMixin:
         self._oauth_worker = worker
         self.cloud_connect_button.setEnabled(False)
         self.thread_pool.start(worker)
+
     def _finish_cloud_connect_attempt(self) -> None:
         self._cloud_connecting = False
         self._oauth_worker = None
@@ -217,22 +229,28 @@ class FlagshipCloudMixin:
             self.cloud_connect_button.setEnabled(
                 self.platform_services.capabilities.secure_secret_storage
             )
+
     def _cloud_connected(
         self,
         provider_id: str,
         token: dict[str, Any],
         scopes: tuple[str, ...] = (),
+        authorization: tuple[bool, object] | None = None,
     ) -> None:
         self._oauth_worker = None
         if self._closed:
             return
         self._finish_cloud_connect_attempt()
         try:
-            self._oauth_store(provider_id).save(json.dumps(token, ensure_ascii=False))
+            with self._cloud_auth_lock:
+                if authorization != self._cloud_authorizations.get(provider_id):
+                    return
+                self._oauth_store(provider_id).save(json.dumps(token, ensure_ascii=False))
+                self._cloud_authorizations[provider_id] = (True, object())
         except OSError as exc:
             self.cloud_status.setText(
                 self._t(
-                    "無法安全保存 OAuth 權杖：{error}",
+                    "請檢查設定後安全保存 OAuth 權杖：{error}",
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -243,26 +261,17 @@ class FlagshipCloudMixin:
             return
         provider = PROVIDERS[provider_id]
         self.db.save_connector(
-            provider_id,
-            provider.display_name,
-            True,
-            {
-                "client_id": token.get("client_id", ""),
-                "scopes": list(scopes),
-            },
+            provider_id, provider.display_name, True,
+            {"client_id": token.get("client_id", ""), "scopes": list(scopes)},
             # Stored language-neutral (canonical zh-TW catalog source); the
             # list view translates it to the active UI language on display.
             last_health="OAuth 已連線",
         )
         self.cloud_client_secret.clear()
-        self.cloud_status.setText(
-            self._t(
-                "{provider} 已安全連線",
-                provider=provider.display_name,
-            )
-        )
+        self.cloud_status.setText(self._t("{provider} 已安全連線", provider=provider.display_name))
         self._register_cloud_tools()
         self.refresh_cloud_connections()
+
     def _cloud_failed(self, provider_id: str, error: str) -> None:
         self._oauth_worker = None
         if self._closed:
@@ -270,35 +279,40 @@ class FlagshipCloudMixin:
         self._finish_cloud_connect_attempt()
         self.cloud_status.setText(
             self._t(
-                "{provider} 連線失敗：{error}",
+                "{provider} 連線需要注意：{error}，請檢查設定後重試",
                 provider=PROVIDERS[provider_id].display_name,
                 error=safe_error_message(self.language, error),
             )
         )
+
     def _cloud_token(self, provider_id: str) -> str:
-        raw = self._oauth_store(provider_id).load()
-        if not raw:
-            raise PermissionError(self._t("尚未完成 OAuth 連線"))
+        with self._cloud_auth_lock:
+            authorization = self._cloud_authorizations.get(provider_id)
+            raw = self._oauth_store(provider_id).load()
+            if not authorization or not authorization[0] or not raw:
+                raise PermissionError(self._t('請完成 OAuth 連線'))
         payload = json.loads(raw)
         expires_in = int(payload.get("expires_in", 0) or 0)
         obtained_at = int(payload.get("obtained_at", 0) or 0)
-        if expires_in and obtained_at and time.time() >= obtained_at + expires_in - 90:
+        refresh = expires_in and obtained_at and time.time() >= obtained_at + expires_in - 90
+        if refresh:
             payload = refresh_oauth_token(PROVIDERS[provider_id], payload)
-            try:
-                self._oauth_store(provider_id).save(
-                    json.dumps(payload, ensure_ascii=False)
-                )
-            except OSError as exc:
-                raise PermissionError(
-                    self._t(
-                        "無法安全更新 OAuth 權杖：{error}",
+        with self._cloud_auth_lock:
+            if authorization != self._cloud_authorizations.get(provider_id):
+                raise PermissionError(self._t('請完成 OAuth 連線'))
+            if refresh:
+                try:
+                    self._oauth_store(provider_id).save(json.dumps(payload, ensure_ascii=False))
+                except OSError as exc:
+                    raise PermissionError(self._t(
+                        "請檢查設定後安全更新 OAuth 權杖：{error}",
                         error=safe_error_message(self.language, exc),
-                    )
-                ) from exc
-        token = str(payload.get("access_token", ""))
-        if not token:
-            raise PermissionError(self._t("OAuth 權杖資料不完整"))
-        return token
+                    )) from exc
+            token = str(payload.get("access_token", ""))
+            if not token:
+                raise PermissionError(self._t("OAuth 權杖資料不完整"))
+            return token
+
     def _register_cloud_tools(self) -> None:
         if any(
             self._oauth_store(provider_id).load()
@@ -319,6 +333,7 @@ class FlagshipCloudMixin:
                 "cloud_file_write",
                 self._action_cloud_file_write,
             )
+
     def _provider_from_request(self, request: ActionRequest) -> str:
         provider_value = (
             request.arguments.get("provider")
@@ -345,11 +360,12 @@ class FlagshipCloudMixin:
                 )
             else:
                 raise ValueError(
-                    self._t("尚未連線 Google 或 Microsoft，或工具計畫未指定供應商")
+                    self._t('請連線 Google 或 Microsoft，並在工具計畫指定供應商')
                 )
         if provider not in {"google", "microsoft"}:
             raise ValueError(self._t("此工具目前只支援 google 或 microsoft"))
         return provider
+
     @staticmethod
     def _calendar_read_bounds(
         arguments: dict[str, Any],
@@ -398,6 +414,7 @@ class FlagshipCloudMixin:
         }
         days = aliases.get(range_name, 7)
         return day_start.isoformat(), (day_start + timedelta(days=days)).isoformat()
+
     def _action_email_read(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         token = self._cloud_token(provider)
@@ -416,6 +433,7 @@ class FlagshipCloudMixin:
             self._t("已讀取 {count} 封郵件摘要", count=len(rows)),
             {"messages": rows},
         )
+
     def _action_email_send(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         recipient = str(request.arguments.get("to", "")).strip()
@@ -449,6 +467,7 @@ class FlagshipCloudMixin:
             self._t("郵件已寄給 {recipient}", recipient=recipient),
             {"message_id": message_id, "recipient": recipient},
         )
+
     def _action_calendar_read(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         start, end = self._calendar_read_bounds(request.arguments)
@@ -466,6 +485,7 @@ class FlagshipCloudMixin:
             self._t("已讀取 {count} 個行程", count=len(rows)),
             {"events": rows},
         )
+
     def _action_calendar_create(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         title = str(request.arguments.get("title", "")).strip()
@@ -502,6 +522,7 @@ class FlagshipCloudMixin:
             self._t("已建立行程：{title}", title=title),
             {"event": result},
         )
+
     def _action_cloud_file_read(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         name = str(
@@ -526,6 +547,7 @@ class FlagshipCloudMixin:
             self._t("找到 {count} 個符合的雲端檔案", count=len(rows)),
             {"files": rows},
         )
+
     def _action_cloud_file_write(self, request: ActionRequest) -> ActionResult:
         provider = self._provider_from_request(request)
         raw_path = str(request.arguments.get("path", ""))
@@ -553,6 +575,7 @@ class FlagshipCloudMixin:
             self._t("已上傳：{name}", name=path.name),
             {"file": result, "source": str(path)},
         )
+
     def test_cloud(self) -> None:
         provider_id = str(self.cloud_provider.currentData())
         self._cloud_test_generation += 1
@@ -593,6 +616,7 @@ class FlagshipCloudMixin:
         )
         self.cloud_test_timeout.start()
         self.thread_pool.start(worker)
+
     def _cloud_test_failed(
         self,
         _provider_id: str,
@@ -606,8 +630,9 @@ class FlagshipCloudMixin:
         self.cloud_test_button.setEnabled(True)
         self.cloud_test_button.setText(self._t("測試選取服務"))
         self.cloud_status.setText(
-            self._t("測試失敗：{error}", error=message)
+            self._t('測試需要處理：{error}', error=message)
         )
+
     def _cloud_test_done(
         self,
         provider_id: str,
@@ -624,7 +649,7 @@ class FlagshipCloudMixin:
             self._t(
                 "{name}：{status}（{detail}）",
                 name=name,
-                status=self._t("正常" if value.get("ok") else "失敗"),
+                status=self._t("正常" if value.get("ok") else "需要處理"),
                 detail=value.get("detail", ""),
             )
             for name, value in results.items()
@@ -665,18 +690,19 @@ class FlagshipCloudMixin:
             "Google 三項服務測試" if provider_id == "google" else "雲端服務測試"
         )
         if all_ok:
-            QMessageBox.information(self, title, "\n".join(lines))
+            QMessageBox.information(require_qwidget(self), title, "\n".join(lines))
         else:
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 title,
                 "\n".join(lines)
                 + "\n\n"
                 + self._t(
-                    "失敗項目通常代表該 API 尚未啟用、OAuth 範圍不足，"
-                    "或網路暫時無法連線。"
+                    "需要處理的項目通常與 API 啟用狀態、OAuth 授權範圍"
+                    "或網路連線有關；請檢查後重試。"
                 ),
             )
+
     def _cloud_test_timed_out(self) -> None:
         if self._closed:
             return
@@ -693,11 +719,12 @@ class FlagshipCloudMixin:
             "cloud_health_timeout",
             {"timeout_seconds": 35},
         )
+
     def revoke_cloud(self) -> None:
         provider_id = str(self.cloud_provider.currentData())
         if (
             QMessageBox.question(
-                self,
+                require_qwidget(self),
                 self._t("撤銷雲端服務"),
                 self._t(
                     "確定移除 {provider} 的本機權杖？",
@@ -707,19 +734,26 @@ class FlagshipCloudMixin:
             != QMessageBox.Yes
         ):
             return
-        self._oauth_store(provider_id).clear()
-        row = self.db.connector(provider_id)
-        config = json.loads(row["configuration"]) if row else {}
-        self.db.save_connector(
-            provider_id,
-            PROVIDERS[provider_id].display_name,
-            False,
-            config,
-            last_health="已撤銷",
-        )
+        with self._cloud_auth_lock:
+            self._cloud_authorizations[provider_id] = (False, object())
+            self._cloud_test_generation += 1
+            try:
+                row = self.db.connector(provider_id)
+                config = json.loads(row["configuration"]) if row else {}
+                self.db.save_connector(
+                    provider_id, PROVIDERS[provider_id].display_name, False, config,
+                    last_health="已撤銷",
+                )
+            finally:
+                self._oauth_store(provider_id).clear()
+        self.cloud_test_timeout.stop()
+        self._cloud_test_worker = None
+        self.cloud_test_button.setEnabled(True)
+        self.cloud_test_button.setText(self._t("測試選取服務"))
         self._configure_executor()
         self.refresh_cloud_connections()
         self.cloud_status.setText(self._t("本機權杖已移除"))
+
     def _health_summary(self, record: object) -> str:
         """Render one stored ``last_health`` value in the active UI language.
 
@@ -730,7 +764,7 @@ class FlagshipCloudMixin:
 
         value = str(record or "")
         if not value:
-            return self._t("尚未測試")
+            return self._t('等待測試')
         try:
             payload = json.loads(value)
         except ValueError:
@@ -741,13 +775,14 @@ class FlagshipCloudMixin:
             self._t(
                 "{name}：{status}（{detail}）",
                 name=str(service.get("name", "")),
-                status=self._t("正常" if service.get("ok") else "失敗"),
+                status=self._t("正常" if service.get("ok") else "需要處理"),
                 detail=str(service.get("detail", "")),
             )
             for service in payload["services"]
         ]
         prefix = self._t("全部正常" if payload.get("all_ok") else "部分功能異常")
         return prefix + "｜" + "；".join(lines)
+
     def refresh_cloud_connections(self) -> None:
         self.cloud_connections.clear()
         for provider_id, provider in PROVIDERS.items():

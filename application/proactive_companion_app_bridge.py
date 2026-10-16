@@ -56,15 +56,15 @@ class ProactiveAppState:
 
     def __post_init__(self) -> None:
         if self.generation < 0:
-            raise ValueError("Proactive app generation must not be negative.")
+            raise ValueError("Proactive app generation accepts zero or greater.")
         if self.now.tzinfo is None:
             raise ValueError("Proactive app time must be timezone-aware.")
         if self.camera_absence_seconds < 0.0:
-            raise ValueError("Camera absence duration must not be negative.")
+            raise ValueError("Camera absence duration accepts zero or greater.")
         if self.seconds_since_user_interaction < 0.0:
-            raise ValueError("User interaction age must not be negative.")
+            raise ValueError("User interaction age accepts zero or greater.")
         if not self.language.strip() or not self.user_title.strip():
-            raise ValueError("App language and user title must not be empty.")
+            raise ValueError("App language and user title require content.")
         if self.recognized_user and (
             not self.camera_enabled
             or self.camera_presence is not PresenceState.PRESENT
@@ -90,7 +90,7 @@ class ProactiveAppEvent:
 
     def __post_init__(self) -> None:
         if self.timer_trigger is not None and self.scheduled_request is not None:
-            raise ValueError("A proactive event cannot contain two timer requests.")
+            raise ValueError("A proactive event supports one timer request.")
 
 
 @dataclass(frozen=True, slots=True)

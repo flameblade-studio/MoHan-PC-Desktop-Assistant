@@ -65,9 +65,9 @@ class PerformanceContextEvent:
 
     def __post_init__(self) -> None:
         if self.behavior_generation < 0:
-            raise ValueError("Behavior generation must not be negative.")
+            raise ValueError("Behavior generation accepts zero or greater.")
         if not self.provider_id.strip():
-            raise ValueError("Provider identifier must not be empty.")
+            raise ValueError("Provider identifier requires content.")
         if not 0.0 <= self.level <= 1.0:
             raise ValueError("Speech level must be within 0..1.")
 
@@ -108,7 +108,7 @@ class PerformanceRuntimeOptions:
 
 
 class PerformanceRuntime:
-    """Provider-neutral facade for one atomic, fail-closed performance frame."""
+    """Provider-neutral facade for one atomic, protective performance frame."""
 
     def __init__(
         self,
@@ -176,7 +176,7 @@ class PerformanceRuntime:
         *,
         available_corrections: frozenset[str],
     ) -> AtomicPerformanceFrame | None:
-        """Process one typed event; every failure preserves the last full frame."""
+        """Process one typed event; each recovery path preserves the last complete frame."""
 
         try:
             candidate = self._candidate(event, available_corrections)

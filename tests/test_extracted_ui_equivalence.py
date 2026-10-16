@@ -32,7 +32,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 APP_PATH = PROJECT_ROOT / "app.py"
-APP_PROFILE_PATH = PROJECT_ROOT / "domain" / "app_profile.py"
 DASHBOARD_DIALOGS_PATH = PROJECT_ROOT / "presentation" / "dashboard_dialogs.py"
 FIRST_RUN_WIZARD_PATH = PROJECT_ROOT / "presentation" / "first_run_wizard.py"
 
@@ -70,17 +69,17 @@ WORK_TYPES = (
 )
 
 CORE_TEXT = {
-    "zh-TW": ("首次啟動設定", "助理名稱", "尚缺必要資料"),
-    "zh-CN": ("首次启动设置", "助手名称", "缺少必要信息"),
+    "zh-TW": ("首次啟動設定", "助理名稱", '完成必要資料'),
+    "zh-CN": ("首次启动设置", "助手名称", '完成必要信息'),
     "en": (
         "First-run setup",
         "Assistant name",
-        "Required information missing",
+        'Complete the required information',
     ),
     "ja-JP": (
         "初回セットアップ",
         "アシスタント名",
-        "必須情報がありません",
+        '必要な情報を入力',
     ),
 }
 
@@ -153,21 +152,21 @@ def _assignment_value(
         ):
             value = value.args[0]
         return ast.literal_eval(value)
-    raise AssertionError(f"Missing literal assignment: {name}")
+    raise AssertionError(f'provide the literal assignment: {name}')
 
 
 def _class_node(tree: ast.Module, name: str) -> ast.ClassDef:
     for node in tree.body:
         if isinstance(node, ast.ClassDef) and node.name == name:
             return node
-    raise AssertionError(f"Missing class: {name}")
+    raise AssertionError(f'provide the class: {name}')
 
 
 def _method_node(class_node: ast.ClassDef, name: str) -> ast.FunctionDef:
     for node in class_node.body:
         if isinstance(node, ast.FunctionDef) and node.name == name:
             return node
-    raise AssertionError(f"Missing method: {class_node.name}.{name}")
+    raise AssertionError(f'provide the method: {class_node.name}.{name}')
 
 
 def _language_choices(wizard_class: ast.ClassDef) -> tuple[tuple[str, str], ...]:
@@ -202,8 +201,7 @@ def _require_runtime_modules() -> tuple[object, object]:
         importlib.import_module("PySide6")
     except ModuleNotFoundError as exc:
         raise AssertionError(
-            "PySide6 is required for the extracted UI equivalence gate; "
-            "the gate must not be skipped."
+            'Install PySide6 to run the required extracted UI equivalence gate.'
         ) from exc
     return (
         importlib.import_module("presentation.dashboard_dialogs"),
@@ -240,8 +238,7 @@ def test_extracted_ui_classes_have_one_true_owner() -> None:
     }
     duplicates = sorted(locally_defined.intersection(EXTRACTED_UI_CLASSES))
     assert duplicates == [], (
-        "app.py must not define extracted UI classes: "
-        f"{duplicates!r}"
+        f'app.py must delegate extracted UI classes: {duplicates!r}'
     )
     for name in DASHBOARD_DIALOG_CLASSES:
         assert _class_node(dialogs_tree, name).name == name
@@ -269,14 +266,14 @@ def test_owner_modules_resolve_exact_extracted_classes() -> None:
 
 def test_first_run_wizard_pure_defaults_and_four_language_values() -> None:
     wizard_tree = _module_tree(FIRST_RUN_WIZARD_PATH)
-    profile_tree = _module_tree(APP_PROFILE_PATH)
+    profile_module = importlib.import_module("domain.app_profile")
     assert _assignment_value(wizard_tree, "__all__") == ("FirstRunWizard",)
-    assert _assignment_value(profile_tree, "DEFAULT_PROFILE") == DEFAULT_PROFILE
+    assert dict(profile_module.DEFAULT_PROFILE) == DEFAULT_PROFILE
     wizard_class = _class_node(wizard_tree, "FirstRunWizard")
     assert _assignment_value(wizard_class, "WORK_TYPES") == WORK_TYPES
     assert _language_choices(wizard_class) == LANGUAGE_CHOICES
 
-    fallback_text = ("首次啟動設定", "助理名稱", "尚缺必要資料")
+    fallback_text = ("首次啟動設定", "助理名稱", '完成必要資料')
     keys = ("first_run_title", "assistant_name", "required_title")
     for language, expected in CORE_TEXT.items():
         actual = tuple(

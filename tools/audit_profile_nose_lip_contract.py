@@ -63,7 +63,7 @@ def _proper_similarity(source: np.ndarray, target: np.ndarray) -> tuple[np.ndarr
         raise ValueError("reflection is forbidden by the identity contract")
     scale = float(singular.sum() / variance)
     if not np.isfinite(scale) or scale <= 0.0:
-        raise ValueError("invalid similarity scale")
+        raise ValueError("similarity scale requires a finite positive value")
     aligned = (source - source_center) @ rotation * scale + target_center
     return aligned, scale
 
@@ -91,9 +91,9 @@ def audit_nose_lip_contract(
 ) -> NoseLipContractReport:
     """Audit candidate landmarks, returning a report for valid inputs.
 
-    Invalid dimensions, non-finite data, reflections, and degenerate geometry
-    raise ``ValueError``.  Callers must treat that exception as a rejected
-    frame; there is intentionally no permissive fallback.
+    Dimensions, finite data, orientation, and geometry must satisfy the contract.
+    A violation raises ``ValueError``; callers must reject that frame and
+    require corrected input before proceeding.
     """
 
     reference = _points(authority, "authority")

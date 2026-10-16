@@ -3,6 +3,7 @@ from __future__ import annotations
 lazy import ast
 lazy import importlib
 lazy import os
+lazy import subprocess
 lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
@@ -41,6 +42,9 @@ lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.flagship_ui import (
     ControlCenterDependencies,
     FlagshipControlCenter,
+)
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
 )
 
 
@@ -180,7 +184,7 @@ def _assert_platform_detection() -> None:
     except RuntimeError:
         pass
     else:
-        raise AssertionError("generic posix must not be misidentified as Linux")
+        raise AssertionError('generic posix must retain its own platform identity')
 
 
 def _assert_autostart_fails_closed(
@@ -276,6 +280,18 @@ def _assert_core_modules_import() -> None:
         importlib.import_module(module_name)
 
 
+def _assert_activation_independent_imports() -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import domain.speech_providers; import application.service_container",
+        ],
+        cwd=PROJECT,
+        check=True,
+    )
+
+
 def _assert_non_windows_composition_fails_closed(
     linux: PlatformServicePort,
 ) -> None:
@@ -353,7 +369,7 @@ def _assert_linux_dashboard_fails_closed(
         assert path.resolve() in protected
 
     center._cloud_connected("google", {"access_token": "test-value"})
-    assert "無法安全保存" in center.cloud_status.text()
+    assert "請檢查設定後安全保存 OAuth 權杖" in center.cloud_status.text()
     assert services.db.connector("google") is None
     center.ha_url.setText("http://homeassistant.local:8123")
     center.ha_token.setText("test-value")
@@ -411,6 +427,8 @@ def _assert_qt_widget_smoke(qt: QApplication) -> None:
 
 
 def run() -> None:
+    activate_product_character_runtime(PROJECT)
+    _assert_activation_independent_imports()
     # Windows keeps the exact public-build profile location.
     _assert_windows_platform_contract()
     linux = _create_linux_platform()
@@ -424,7 +442,7 @@ def run() -> None:
     # Taiwan Windows defaults remain Yating first, then Hanhan.
     _assert_windows_voice_contract()
     _assert_autostart_delegation()
-    # Platform-only modules must never load eagerly from core modules.
+    # Core modules load platform-only modules lazily at their usage boundary.
     _assert_platform_modules_are_lazy()
     _assert_core_modules_import()
     # Non-Windows composition must fail closed for secrets and system speech.

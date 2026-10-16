@@ -7,12 +7,17 @@ hot she suggests lighter clothes; if the user forces her into summer wear during
 a cold snap, her affection dips a little and she complains — a playful extension
 of the jealousy logic.
 
-This is pure domain logic with no Qt dependency.  It maps a temperature to a
+This is pure domain logic with Qt outside the domain boundary.  It maps a temperature to a
 comfort verdict and a suggested outfit weight, so the presentation layer can
-surface a suggestion or a complaint without blocking the UI.
+surface a suggestion or a complaint while keeping the UI responsive.
 """
 
 lazy from enum import StrEnum
+
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
+
+_DIALOGUES = active_character_data().dialogues
 
 # Temperature thresholds (Celsius) for comfort verdicts.
 HOT_THRESHOLD_C = 28.0
@@ -75,18 +80,7 @@ def comfort_verdict(
 
 def complaint_line(language: str, verdict: ComfortVerdict) -> str:
     """Return a four-language complaint for an uncomfortable outfit."""
-    if verdict is ComfortVerdict.TOO_COLD:
-        return {
-            "zh-TW": "主上……你是想把妾身凍壞，好找新策士嗎？",
-            "zh-CN": "主上……你是想把妾身冻坏，好找新策士吗？",
-            "en": "My lord… are you trying to freeze me so you can find a new strategist?",
-            "ja-JP": "主上……妾を凍えさせて、新しい策士を探すおつもりですか？",
-        }.get(language, "主上……你是想把妾身凍壞，好找新策士嗎？")
-    if verdict is ComfortVerdict.TOO_HOT:
-        return {
-            "zh-TW": "好熱……主上，妾想換件輕便些的衣裳。",
-            "zh-CN": "好热……主上，妾想换件轻便些的衣裳。",
-            "en": "It is so warm… my lord, may I change into something lighter?",
-            "ja-JP": "暑いです……主上、もっと軽い衣装に着替えたいです。",
-        }.get(language, "好熱……主上，妾想換件輕便些的衣裳。")
-    return ""
+    if verdict is ComfortVerdict.COMFORTABLE:
+        return ""
+    locale = canonical_character_locale(language)
+    return _DIALOGUES[locale].templates[f"wardrobe.{verdict.value}"]

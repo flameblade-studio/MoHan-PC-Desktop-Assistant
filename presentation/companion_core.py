@@ -2,14 +2,15 @@ from __future__ import annotations
 
 lazy import sys
 lazy import time
+lazy import logging
 lazy from collections import deque
 lazy from collections.abc import Callable
 lazy from contextlib import suppress
 lazy from dataclasses import replace
 
-lazy from PySide6.QtCore import QPoint, Qt, QTimer
-lazy from PySide6.QtGui import QImage, QPainter, QPixmap
-
+lazy from PySide6.QtCore import QPoint, QTimer
+lazy from PySide6.QtGui import QImage, QPixmap
+lazy from presentation.qt_parent import require_qobject
 lazy from application.adaptive_character_composition import (
     DEFAULT_CHARACTER_IMAGE_SIZE as CHARACTER_IMAGE_SIZE,
     AdaptiveCharacterComposition,
@@ -18,7 +19,6 @@ lazy from application.adaptive_character_composition import (
 )
 lazy from application.adaptive_character_runtime import AdaptiveCharacterRequest
 lazy from application.background_agents import ManagerWorkerScheduler
-lazy from application.body_pose_renderer import BodyPoseFrame
 lazy from application.character_framing_app_bridge import AppFramingState
 lazy from application.gesture_action_router import GestureActionDecision
 lazy from application.gesture_application_adapter import (
@@ -28,7 +28,7 @@ lazy from application.gesture_application_adapter import (
 lazy from application.gesture_controller import GestureController
 lazy from application.multimodal_fusion_hub import MultimodalFusionResult
 lazy from application.presentation_ports import fallback_platform_services
-lazy from application.service_container import CompanionServices
+lazy from application.service_contracts import CompanionServicesPort
 lazy from application.speech_performance import (
     SpeechPerformancePhase,
     SpeechPerformanceTimeline,
@@ -37,12 +37,15 @@ lazy from domain.affective_state import AffectiveState
 lazy from domain.affinity_state import AffinityState
 lazy from domain.chronicle import Chronicle, Milestone, MilestoneKind
 lazy from domain.companion_animation_contract import EXPRESSION_POSES
-lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.constants import CHARACTER_LAYER_ROLES, POSE_ATLAS_RELATIVE_ROOT
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.emotional_resonance import EmotionalResonanceState
 lazy from domain.favor_exclusive import FavorExclusiveState
 lazy from domain.personality_state import PersonalityMirrorState
 lazy from domain.satiety import SatietyState
-lazy from domain.sensory_synesthesia import WeatherMood
+lazy from domain.scalar_conversion import scalar_float as _float_value, scalar_int as _integer_value
+lazy from domain.safe_error import SafeError, sanitize_error
+lazy from domain.sensory_synesthesia import WeatherMood, runtime_dialogue_locale
 lazy from domain.sword_soul_resonance import SwordSoulResonanceState
 
 WAVE_ACKNOWLEDGE_COOLDOWN_SECONDS = 6.0
@@ -92,46 +95,17 @@ lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.companion_vad_status import notify_vad_degradation
 lazy from presentation.first_run_wizard import FirstRunWizard
 lazy from presentation.performance_composition import create_performance_app_bridge
+lazy from presentation.companion_legacy_frame import current_legacy_character_frame
 lazy from presentation.pose_atlas_assets import PoseAtlasAssets
-lazy from presentation.presentation_resources import resource_path
+lazy from presentation.dashboard_shared import resource_path
 
 __all__ = ("CompanionCoreMixin",)
+_LOGGER = logging.getLogger(__name__)
 
-# Framing modes that publish the v4 full-body photograph.  HALF/CLOSE keep the
-# legacy half-body poses (cheek-rest, left-neutral, front-crossed) instead.
+# Full-body framing retains legacy half-body poses for HALF and CLOSE.
 _FULL_BODY_MODES = PUBLISHABLE_BODY_MODES
+_EXPRESSIONS = active_expression_catalog().emotion_to_expression
 
-def _current_legacy_character_frame(window: object, generation: int) -> BodyPoseFrame:
-    """Snapshot the proven renderer for the adaptive fallback boundary."""
-
-    size = CHARACTER_IMAGE_SIZE
-    canvas = QImage(size, size, QImage.Format_RGBA8888)
-    canvas.fill(Qt.transparent)
-    pixmap = window.character.pixmap()
-    if pixmap is not None and not pixmap.isNull():
-        image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
-        image = image.scaled(
-            size,
-            size,
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation,
-        )
-        painter = QPainter(canvas)
-        painter.drawImage(
-            (size - image.width()) // 2,
-            (size - image.height()) // 2,
-            image,
-        )
-        painter.end()
-    return BodyPoseFrame(
-        size,
-        size,
-        bytes(canvas.constBits()),
-        generation,
-        ("legacy-current",),
-        ("legacy-current",),
-        False,
-    )
 
 class CompanionCoreMixin:
     """Compose the companion's core services, state, and application bridges."""
@@ -140,9 +114,9 @@ class CompanionCoreMixin:
         factory: AdaptiveCharacterFactory | None,
         enabled: bool | None,
     ) -> None:
-        """Open the v4 composition gate without touching legacy rendering."""
-
+        """Open the v4 composition gate while preserving legacy rendering."""
         self._adaptive_character_composition: AdaptiveCharacterComposition | None = None
+        self._adaptive_character_startup_error: SafeError | None = None
         self._performance_app_bridge = None
         self._adaptive_character_generation = 0
         self._staged_adaptive_frame = None
@@ -163,18 +137,23 @@ class CompanionCoreMixin:
                 assets=PoseAtlasAssets(
                     resource_path(POSE_ATLAS_RELATIVE_ROOT), image_size=CHARACTER_IMAGE_SIZE,
                     outfit_overlay=self.presentation_ports.outfit_overlay_factory(on_stale_body_profile=self._on_stale_outfit_pack),
+                    display_scale=True,
                 ),
             )
         try:
+            if getattr(self.presentation_ports, "body_pack_required", False):
+                raise ValueError("body_pack_renderer_required: adaptive PoseAtlas composition requires a legacy source")
             composition = composition_factory(self._stage_adaptive_character_frame)
             generation = composition.runtime.begin_operation()
-        except ImportError, LookupError, RuntimeError, TypeError, ValueError:
+        except (ImportError, LookupError, OSError, RuntimeError, TypeError, ValueError) as error:
             self._adaptive_character_enabled = False
+            self._adaptive_character_startup_error = sanitize_error(error)
+            _LOGGER.warning("adaptive_character_startup_failed %s", self._adaptive_character_startup_error)
             return
         self._adaptive_character_composition = composition
         self._adaptive_character_generation = generation
         self._performance_app_bridge = create_performance_app_bridge(
-            lambda frame_generation: _current_legacy_character_frame(self, frame_generation),
+            lambda frame_generation: current_legacy_character_frame(self, frame_generation),
             self._dispatch_adaptive_character_frame,
         )
         self._publish_adaptive_idle_frame()
@@ -199,7 +178,7 @@ class CompanionCoreMixin:
             )
         except LookupError, RuntimeError, TypeError, ValueError:
             # The proven legacy surface remains available if an optional v4
-            # frame cannot be assembled during startup.
+            # frame requires supported startup assets.
             return
 
     def _stage_adaptive_character_frame(self, frame: object) -> None:
@@ -217,7 +196,7 @@ class CompanionCoreMixin:
         if not self._adaptive_character_enabled or composition is None or self._closing:
             return None
         # Remember the last atomic frame so the gaze timer can re-compose the
-        # full body when the pointer/saccade/shy-aversion moves the eyes without
+        # full body when the pointer/saccade/shy-aversion moves the eyes while preserving
         # a new speech or behavior event.
         self._last_atomic_frame = atomic_frame
         performance = atomic_frame.performance
@@ -229,12 +208,12 @@ class CompanionCoreMixin:
         phase = getattr(performance, "phase", None)
         speech_active = (
             phase
-            in (
+            in {
                 SpeechPerformancePhase.PREPARING,
                 SpeechPerformancePhase.SPEAKING,
                 SpeechPerformancePhase.PAUSING,
                 SpeechPerformancePhase.SETTLING,
-            )
+            }
             if phase is not None
             else not performance.mouth_closed
         )
@@ -362,7 +341,7 @@ class CompanionCoreMixin:
         )
 
     def _refresh_full_body(self) -> None:
-        """Re-compose the full body when live state moved without a new event.
+        """Re-compose the full body when live state moved between events.
 
         The full-body composition is event-driven, but the gaze, blink, breath
         and expression update on their own timers.  When the full body owns the
@@ -391,7 +370,7 @@ class CompanionCoreMixin:
         self._render_attention_layers(force=True)
 
     def _publish_adaptive_character_frame(self, frame: object) -> None:
-        """Publish approved RGBA without resizing the character widget."""
+        """Publish approved RGBA while preserving the character widget size."""
 
         if frame is not self._staged_adaptive_frame:
             return
@@ -420,10 +399,9 @@ class CompanionCoreMixin:
 
         for attribute in (
             "expression_overlay",
-            "sleeve_left_overlay",
-            "sleeve_right_overlay",
-            "hair_left_overlay",
-            "hair_right_overlay",
+            *(f"{CHARACTER_LAYER_ROLES[role]}_overlay" for role in (
+                "left_sleeve", "right_sleeve", "left_side_hair", "right_side_hair",
+            )),
             "physics_overlay",
             "face_overlay",
             "eye_overlay",
@@ -433,7 +411,7 @@ class CompanionCoreMixin:
                 overlay.hide()
 
     def _cancel_adaptive_character_composition(self) -> None:
-        """Close the active v4 generation without disturbing legacy shutdown."""
+        """Close the active v4 generation while preserving legacy shutdown."""
 
         composition = getattr(self, "_adaptive_character_composition", None)
         generation = getattr(self, "_adaptive_character_generation", 0)
@@ -446,7 +424,7 @@ class CompanionCoreMixin:
 
     def _initialize_runtime_services(
         self,
-        services: CompanionServices,
+        services: CompanionServicesPort,
     ) -> None:
         self.db = services.db
         self.platform_services = (
@@ -495,8 +473,7 @@ class CompanionCoreMixin:
             ).exec()
 
     def _create_dashboard(
-        self,
-        gesture_controller: GestureController | None = None,
+        self, gesture_controller: GestureController | None = None, *, defer_wardrobe_startup: bool = False,
     ) -> Dashboard:
         return Dashboard(
             self.db,
@@ -509,12 +486,13 @@ class CompanionCoreMixin:
                 azure_hd_speech=self.azure_hd_tts,
                 secret_store_factory=self.secret_store_factory,
                 platform_services=self.platform_services,
-                cloud_vision_service_factory=(self.cloud_vision_service_factory),
+                cloud_vision_service_factory=self.cloud_vision_service_factory,
                 dense_face_provider_factory=self.dense_face_provider_factory,
                 presentation_ports=self.presentation_ports,
                 backup_manager=self.backup_manager,
             ),
             gesture_controller=gesture_controller,
+            defer_wardrobe_startup=defer_wardrobe_startup,
         )
 
     def _create_gesture_application(self) -> GestureApplicationAdapter:
@@ -550,7 +528,7 @@ class CompanionCoreMixin:
     def _set_gesture_audio_muted(self, muted: bool) -> None:
         """Apply a camera gesture mute for this process only.
 
-        Visual recognition is probabilistic.  It must never rewrite the
+        Visual recognition is probabilistic.  It keeps the
         user's persisted global mute preference merely because one camera
         frame looked like the silence gesture.
         """
@@ -560,7 +538,7 @@ class CompanionCoreMixin:
             return
         self._gesture_audio_muted = bool(muted)
         self._apply_voice_volume(
-            int(
+            _integer_value(
                 self.db.setting(
                     "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
                 )
@@ -609,7 +587,7 @@ class CompanionCoreMixin:
         except AttributeError as exc:
             # A deferred visual startup deliberately does not allocate pose
             # assets. It can still acknowledge a gesture through the status
-            # card and voice path, but cannot animate until assets are ready.
+            # card and voice path, but animates once assets are ready.
             if "physics_expression_poses" not in str(exc):
                 raise
 
@@ -645,50 +623,30 @@ class CompanionCoreMixin:
         self._last_wave_acknowledged_at = now
         if hasattr(self, "expression_arbiter"):
             try:
-                self.set_state("happy", source="visual", intensity=0.6)
+                self.set_state(
+                    _EXPRESSIONS["happy"],
+                    source="visual",
+                    intensity=0.6,
+                )
             except AttributeError as exc:
                 # A deferred visual startup can still acknowledge a wave
                 # through the voice path while pose assets are unavailable.
                 if "physics_expression_poses" not in str(exc):
                     raise
         language = str(self.db.setting("ui_language", "zh-TW"))
-        responses = {
-            "zh-TW": (
-                "嗨，我在這裡！",
-                "主上喚我麼？妾一直都在。",
-                "你揮手，妾便來了。",
-                "許久不見，近來可好？",
-            ),
-            "zh-CN": (
-                "嗨，我在这里！",
-                "主上唤我么？妾一直都在。",
-                "你挥手，妾便来了。",
-                "许久不见，近来可好？",
-            ),
-            "en": (
-                "Hi there, I'm here!",
-                "You called? I have been here all along.",
-                "You waved, so here I am.",
-                "It has been a while. How have you been?",
-            ),
-            "ja-JP": (
-                "こんにちは、ここにいますよ。",
-                "お呼びですか？妾はずっとここに。",
-                "手を振ってくれたので、参りました。",
-                "お久しぶりです。お元気でしたか？",
-            ),
-        }
-        lines = responses.get(language, responses["zh-TW"])
+        lines = runtime_dialogue_locale(language)["wave_greetings"]
+        if not isinstance(lines, tuple):
+            raise TypeError("Character wave greetings are unavailable.")
         index = getattr(self, "_wave_greeting_index", 0)
         self._wave_greeting_index = (index + 1) % len(lines)
-        self.speak(lines[index], "happy")
+        self.speak(lines[index], _EXPRESSIONS["happy"])
 
     def _open_dashboard_from_gesture(self) -> None:
         """Open the keyboard conversation surface and acknowledge a wave."""
         self.open_dashboard()
         self._acknowledge_wave()
         # The status card is informative only.  Its transient widget lifecycle
-        # must never prevent the real companion from opening the keyboard
+        # keeps the real companion's keyboard path available
         # conversation or answering a recognized wave.
         with suppress(Exception):
             self.dashboard.set_desktop_companion_gesture_status("wave")
@@ -734,7 +692,7 @@ class CompanionCoreMixin:
         )
         self.dashboard.human_interaction.connect(self._note_human_interaction)
         self._apply_voice_volume(
-            int(
+            _integer_value(
                 self.db.setting(
                     "voice_volume_percent", DEFAULT_VOICE_VOLUME_PERCENT
                 )
@@ -752,7 +710,7 @@ class CompanionCoreMixin:
         # the performance/framing preference caches must follow the stores.
         self.dashboard.settings_saved.connect(self._refresh_multisensory_config)
         self.dashboard.settings_saved.connect(self._reload_preference_caches)
-        self.proactive_presence_timer = QTimer(self)
+        self.proactive_presence_timer = QTimer(require_qobject(self))
         self.proactive_presence_timer.setInterval(60_000)
         self.proactive_presence_timer.timeout.connect(self._consider_desktop_presence)
         self.proactive_presence_timer.start()
@@ -781,7 +739,7 @@ class CompanionCoreMixin:
         """Feed the recent conversation window into the personality mirror.
 
         The mirror reads the full recent dialogue (up to the 1M-token context)
-        but reduces it to cheap scalar signals, so it never blocks the UI.
+        but reduces it to cheap scalar signals, so it keeps the UI responsive.
         """
         mirror = getattr(self, "personality_mirror_state", None)
         if mirror is None:
@@ -799,7 +757,7 @@ class CompanionCoreMixin:
         outfit-weight suggestion and comfort verdict, and refreshes the
         satiety-driven blink interval so a hungry companion blinks sluggishly.
         """
-        temperature_c = float(
+        temperature_c = _float_value(
             self.db.setting(
                 "weather_temperature_c", DEFAULT_WEATHER_TEMPERATURE_C
             )
@@ -866,8 +824,8 @@ class CompanionCoreMixin:
             self._sensory_gaze_expires_at = now + 0.90
         # Shy gaze aversion: when the user stares at the companion for a
         # sustained stretch, she glances down and away for a few seconds.  The
-        # offset is small and downward so it reads as bashful, never an eye-roll.
-        # It is kept in a separate field so it never pollutes the raw sensory
+        # offset is small and downward so it reads as bashful, with a measured, bashful glance.
+        # It is kept in a separate field so it stays separate from the raw sensory
         # gaze target; the visual dynamics layer applies it on top.
         shy = getattr(self, "shy_gaze_state", None)
         if shy is not None and face is not None:
@@ -898,7 +856,7 @@ class CompanionCoreMixin:
         ):
             self._last_multimodal_smile_at = now
             self.set_state(
-                "gentle_smile_front",
+                _EXPRESSIONS["gentle"],
                 source="visual",
                 intensity=0.35,
             )
@@ -912,7 +870,7 @@ class CompanionCoreMixin:
         ):
             self._last_multimodal_chin_at = now
             self.set_state(
-                "thinking_front",
+                _EXPRESSIONS["thinking"],
                 source="visual",
                 intensity=0.30,
             )
@@ -926,7 +884,7 @@ class CompanionCoreMixin:
         ):
             self._last_multimodal_brow_at = now
             self.set_state(
-                "worried_front",
+                _EXPRESSIONS["worried"],
                 source="visual",
                 intensity=0.30,
             )
@@ -980,7 +938,11 @@ class CompanionCoreMixin:
             and now - getattr(self, "_last_multimodal_pinch_at", 0.0) >= PINCH_COOLDOWN_SECONDS
         ):
             self._last_multimodal_pinch_at = now
-            self.set_state("happy", source="visual", intensity=0.65)
+            self.set_state(
+                _EXPRESSIONS["happy"],
+                source="visual",
+                intensity=0.65,
+            )
             affinity = getattr(self, "affinity_state", None)
             if affinity is not None:
                 snapshot = affinity.note_affection_boost()
@@ -994,13 +956,8 @@ class CompanionCoreMixin:
                 self.db.set_setting("favor_value", favor.note_gesture())
             self._persist_affection()
             language = str(self.db.setting("ui_language", "zh-TW"))
-            responses = {
-                "zh-TW": "主上餵妾的……妾、妾便收下了。",
-                "zh-CN": "主上喂妾的……妾、妾便收下了。",
-                "en": "A treat from you… I shall accept it.",
-                "ja-JP": "主上から頂いたもの……妾、頂戴いたします。",
-            }
-            self.speak(responses.get(language, responses["zh-TW"]), "happy")
+            reply = str(runtime_dialogue_locale(language)["pinch_reply"])
+            self.speak(reply, _EXPRESSIONS["happy"])
 
     def _connect_speech_service_signals(self) -> None:
         self.tts.finished.connect(self._speech_audio_finished)
@@ -1055,9 +1012,9 @@ class CompanionCoreMixin:
         )
         self.affective_state = AffectiveState()
         self.affinity_state = AffinityState(
-            affinity=float(self.db.setting("affinity_value", 0.0)),
-            jealousy=float(self.db.setting("jealousy_value", 0.0)),
-            interaction_count=int(self.db.setting("affinity_interaction_count", 0)),
+            affinity=_float_value(self.db.setting("affinity_value", 0.0)),
+            jealousy=_float_value(self.db.setting("jealousy_value", 0.0)),
+            interaction_count=_integer_value(self.db.setting("affinity_interaction_count", 0)),
         )
         self.shy_gaze_state = ShyGazeState()
         self._shy_gaze_offset: tuple[float, float] | None = None
@@ -1084,10 +1041,10 @@ class CompanionCoreMixin:
         self._wardrobe_complaint: str = ""
         self.personality_mirror_state = PersonalityMirrorState()
         self.satiety_state = SatietyState(
-            satiety=float(self.db.setting("satiety_value", 1.0)),
+            satiety=_float_value(self.db.setting("satiety_value", 1.0)),
         )
         self.favor_exclusive_state = FavorExclusiveState(
-            favor=float(self.db.setting("favor_value", 0.0)),
+            favor=_float_value(self.db.setting("favor_value", 0.0)),
         )
         self.active_ai_wait_generation = 0
         self.active_ai_wait_expression = ""
@@ -1113,9 +1070,8 @@ class CompanionCoreMixin:
         self.multisensory_arbiter = self._new_multisensory_arbiter(
             self._multisensory_config
         )
-        # Typed preference stores are the single source of truth for the
-        # performance and framing preferences (domain defaults apply when the
-        # user never saved them).  The caches refresh on every settings save.
+        # Typed stores own performance and framing preferences; domain defaults
+        # apply when the user left them unchanged. Caches refresh on every settings save.
         settings_port = StudioDBSettingsPort(self.db)
         self._performance_preferences_store = PerformancePreferencesStore(
             settings_port
@@ -1125,6 +1081,4 @@ class CompanionCoreMixin:
         self._latest_visual_scene = None
         self._recognized_scene_streak = 0
         self._last_wave_acknowledged_at = float("-inf")
-        self._multisensory_variation_index = int(
-            self.db.setting("multisensory_variation_index", 0)
-        )
+        self._multisensory_variation_index = _integer_value(self.db.setting("multisensory_variation_index", 0))

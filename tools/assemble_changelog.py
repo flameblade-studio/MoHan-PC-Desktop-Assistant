@@ -41,7 +41,7 @@ class ChangelogAssemblyError(ValueError):
 
 
 class FragmentFormatError(ChangelogAssemblyError):
-    """Raised when a fragment is not a supported four-language format."""
+    """Signals that a fragment requires the supported four-language format."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -158,7 +158,7 @@ def _validate_legacy_fragment(
 
 
 def parse_fragment(text: str) -> ParsedFragment:
-    """Parse one fragment, raising a descriptive error on invalid content."""
+    """Parse one fragment, raising a descriptive error when content requires correction."""
 
     normalized = text.replace("\r\n", "\n")
     headings = _fragment_headings(normalized)
@@ -171,7 +171,7 @@ def parse_fragment(text: str) -> ParsedFragment:
     elif normalized.strip():
         errors.append("fragment must begin with its title heading")
     if LOWER_HEADING_PATTERN.search(normalized):
-        errors.append("fragment may not contain H1 or H2 headings")
+        errors.append("fragment headings must use H3 or deeper levels")
 
     if len(headings) == 1:
         titles, bullet_rows, preferred_errors = _validate_preferred_fragment(
@@ -207,7 +207,7 @@ def parse_fragment(text: str) -> ParsedFragment:
 
 
 def validate_fragment(text: str) -> tuple[str, ...]:
-    """Return all format errors without mutating or raising for bad input."""
+    """Return all format errors as data while preserving the input."""
 
     try:
         parse_fragment(text)
@@ -356,7 +356,7 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Print the assembled changelog without writing or deleting files.",
+        help="Print the assembled changelog to standard output; preserve all files.",
     )
     return parser.parse_args(argv)
 

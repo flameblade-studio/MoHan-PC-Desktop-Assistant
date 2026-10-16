@@ -39,9 +39,8 @@ class FullBodyGoldenBatchTests(unittest.TestCase):
             record for record in manifest["views"]
             if record["view_id"] == "yaw+000-pitch+00"
         )
-        # Fail closed: an approved master without a pinned SHA-256 cannot
-        # prove it is the owner-approved bytes, so it must block instead of
-        # silently skipping the hash comparison.
+        # Acceptance requires a pinned SHA-256 proving the exact owner-approved
+        # bytes, followed by a successful digest comparison.
         self.assertEqual("blocked_invalid_approved_master", view["status"])
         self.assertIn("authority_sha256_missing", view["failures"])
         self.assertFalse(manifest["promotable"])
@@ -50,8 +49,8 @@ class FullBodyGoldenBatchTests(unittest.TestCase):
         repo = Path(__file__).resolve().parents[1]
         registry = repo / "work/full-body-layer-golden-batch/authority-registry.json"
         if not registry.is_file():
-            # The registry is a local work product (git-ignored).  A checkout
-            # without it must still fail closed instead of inventing a state.
+            # The registry is a git-ignored local work product. Acceptance requires its
+            # presence and verification; an absent registry closes the gate.
             with self.assertRaises(FileNotFoundError):
                 build_manifest(repo, registry)
             self.skipTest("local golden-batch registry not present in this checkout")

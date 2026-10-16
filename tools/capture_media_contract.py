@@ -35,7 +35,7 @@ SECURITY_SUBPAGE_INDEX = 6
 
 
 def preview_font_family() -> str:
-    """Load a real CJK font when the isolated Qt runtime has no font database."""
+    """Load a real CJK font for an isolated Qt runtime with an empty font database."""
 
     candidates = (
         Path(r"C:\Windows\Fonts\msjh.ttc"),

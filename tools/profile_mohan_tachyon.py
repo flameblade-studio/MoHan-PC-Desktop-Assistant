@@ -8,9 +8,11 @@ lazy import platform
 lazy import re
 lazy import subprocess
 lazy import sys
+lazy import shutil
 lazy import tempfile
 lazy import time
-lazy from collections.abc import Iterator, Mapping
+lazy import winreg
+lazy from collections.abc import Callable, Iterator, Mapping
 lazy from dataclasses import dataclass
 lazy from datetime import UTC, datetime
 lazy from pathlib import Path
@@ -18,6 +20,13 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PROFILE_TARGETS = ("startup", "lipsync", "expression")
 MAX_PERCENT = 100.0
+# Leave room for the final complete soak and runtime evidence before timeout.
+EXPRESSION_WORKLOAD_DURATION_FRACTION = 0.9
+# Performance evidence requires valid stack reads. Keep
+# the quality threshold strict, but allow two fresh captures to outlast a
+# transient runner or unwinder interruption.
+MAX_CAPTURE_RETRIES = 2
+MAX_CAPTURE_ATTEMPTS = MAX_CAPTURE_RETRIES + 1
 TARGET_SCRIPTS = frozendict(
     {
         "startup": ROOT / "app.py",
@@ -107,12 +116,26 @@ class ProfileArtifacts:
             summary=self.summary,
         )
 
+    def in_attempt_directory(self, directory: Path) -> ProfileArtifacts:
+        return ProfileArtifacts(
+            binary=directory / self.binary.name,
+            flamegraph=directory / self.flamegraph.name,
+            jsonl=directory / self.jsonl.name,
+            pstats=directory / self.pstats.name,
+            runtime=directory / self.runtime.name,
+            summary=self.summary,
+        )
+
 
 @dataclass(frozen=True, slots=True)
 class TargetSpec:
     script: Path
     arguments: tuple[str, ...]
     repetitions: int
+    minimum_seconds: float = 0.0
+    # Test targets need the product character that the app composition root
+    # would otherwise activate; activation runs once before the workload.
+    activate_character: bool = False
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,6 +170,24 @@ class ProfileOutcome:
     target: str
     summary: Path
     violations: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class CaptureAttempt:
+    number: int
+    sample_read_error_percent: float | None
+    runtime_evidence_written: bool
+    artifacts: ProfileArtifacts | None = None
+    output: str = ""
+    elapsed_seconds: float = 0.0
+
+    def as_json(self) -> dict[str, object]:
+        return {
+            "attempt": self.number,
+            "sample_read_error_percent": self.sample_read_error_percent,
+            "runtime_evidence_written": self.runtime_evidence_written,
+            "sample_read_errors": _sample_read_errors(self.output),
+        }
 
 
 def arguments() -> argparse.Namespace:
@@ -271,12 +312,20 @@ def _target_spec(
     target: str,
     temp_dir: Path,
     full_session: bool,
+    duration_seconds: int = 12,
 ) -> TargetSpec:
     if target != "startup":
         return TargetSpec(
             TARGET_SCRIPTS[target],
             (),
             TARGET_REPETITIONS[target],
+            # Finish complete eight-hour soaks until the wall-time budget is
+            # covered. Reserve 10% for the last soak and runtime evidence.
+            (
+                duration_seconds * EXPRESSION_WORKLOAD_DURATION_FRACTION
+                if target == "expression" else 0.0
+            ),
+            activate_character=True,
         )
     if full_session:
         return TargetSpec(TARGET_SCRIPTS[target], (), 1)
@@ -296,6 +345,8 @@ def _runner_source(spec: TargetSpec, runtime_path: Path) -> str:
     script_arguments = json.dumps(spec.arguments, ensure_ascii=False)
     repetitions = spec.repetitions
     runtime = json.dumps(str(runtime_path))
+    activate_character = spec.activate_character
+    project_root = json.dumps(str(ROOT))
     return f"""from __future__ import annotations
 import gc
 import json
@@ -317,9 +368,20 @@ gc_before = gc.get_stats()
 exit_code = 0
 error_type = ""
 pending_error = None
+completed_repetitions = 0
+minimum_seconds = {spec.minimum_seconds!r}
+minimum_repetitions = {repetitions}
 try:
-    for _iteration in range({repetitions}):
+    if {activate_character!r}:
+        sys.path.insert(0, {project_root})
+        from tests.character_runtime_support import activate_bundled_character_runtime
+        activate_bundled_character_runtime()
+    while (
+        completed_repetitions < minimum_repetitions
+        or time.perf_counter() - started_wall < minimum_seconds
+    ):
         runpy.run_path(target, run_name="__main__")
+        completed_repetitions += 1
 except SystemExit as exc:
     exit_code = exc.code if isinstance(exc.code, int) else int(exc.code is not None)
 except BaseException as exc:
@@ -338,6 +400,8 @@ finally:
         "allocated_blocks_before": allocated_before,
         "allocated_blocks_after": sys.getallocatedblocks(),
         "active_threads_at_end": threading.active_count(),
+        "completed_repetitions": completed_repetitions,
+        "minimum_workload_seconds": minimum_seconds,
         "gc_before": gc_before,
         "gc_after": gc.get_stats(),
         "exit_code": exit_code,
@@ -402,7 +466,7 @@ def _capture_command(
     command = [
         sys.executable,
         "-m",
-        "profiling.sampling",
+        "tools.tachyon_capture",
         "run",
         "--native",
         "--opcodes",
@@ -519,7 +583,7 @@ def _write_pstats(
     )
     if completed.returncode:
         raise RuntimeError(
-            _strip_ansi(completed.stderr) or "Tachyon pstats replay failed."
+            _strip_ansi(completed.stderr) or "Tachyon pstats replay requires attention; review the replay output."
         )
     output.write_text(
         _strip_ansi(completed.stdout),
@@ -790,7 +854,7 @@ def _frame_statistics(
         and record.get("scope") == "final"
     )
     if not aggregates:
-        raise ValueError("Tachyon has no final frame aggregate.")
+        raise ValueError("Tachyon requires a final frame aggregate.")
     aggregate_totals = {
         int(record["samples_total"]) for record in aggregates
     }
@@ -895,6 +959,155 @@ def _capture_statistics(
     }
 
 
+def _capture_once(
+    args: argparse.Namespace,
+    target: str,
+    attempt_number: int,
+    artifacts: ProfileArtifacts,
+    runner: Path,
+    environment: Mapping[str, str],
+) -> CaptureAttempt:
+    completed, elapsed = _run_capture(
+        _capture_command(args, target, artifacts, runner),
+        environment,
+    )
+    combined_output = _strip_ansi(
+        f"{completed.stdout}\n{completed.stderr}"
+    )
+    # Persist every attempt outside the temporary binary directory, including
+    # failed captures. The observer emits categories and source basenames only.
+    _write_json(
+        artifacts.summary.with_name(
+            f"{artifacts.summary.stem}.attempt-{attempt_number}.diagnostics.json"
+        ),
+        {
+            "attempt": attempt_number,
+            "host": _host_evidence(),
+            "profiler_exit_code": completed.returncode,
+            "capture": _capture_statistics(combined_output, elapsed),
+            "sample_read_errors": _sample_read_errors(combined_output),
+        },
+    )
+    if completed.returncode:
+        raise RuntimeError(
+            f"Tachyon target {target} failed with "
+            f"exit code {completed.returncode}."
+        )
+    capture = _capture_statistics(combined_output, elapsed)
+    raw_error = capture.get("sample_read_error_percent")
+    sample_read_error = (
+        float(raw_error) if isinstance(raw_error, int | float) else None
+    )
+    return CaptureAttempt(
+        number=attempt_number,
+        sample_read_error_percent=sample_read_error,
+        runtime_evidence_written=artifacts.runtime.is_file(),
+        artifacts=artifacts,
+        output=combined_output,
+        elapsed_seconds=elapsed,
+    )
+
+
+def _capture_requires_retry(
+    args: argparse.Namespace,
+    attempt: CaptureAttempt,
+) -> bool:
+    if not attempt.runtime_evidence_written:
+        return True
+    return (
+        attempt.sample_read_error_percent is not None
+        and attempt.sample_read_error_percent
+        > args.max_sample_read_error_percent
+    )
+
+
+def _capture_retry_reason(
+    args: argparse.Namespace,
+    attempt: CaptureAttempt,
+) -> str:
+    if not attempt.runtime_evidence_written:
+        return "runtime evidence required"
+    error = attempt.sample_read_error_percent
+    if error is not None and error > args.max_sample_read_error_percent:
+        return (
+            f"sample-read error {error:.2f}% above "
+            f"{args.max_sample_read_error_percent:.2f}%"
+        )
+    return "capture requires the retryable evidence contract"
+
+
+def _sample_read_error_history(
+    attempts: tuple[CaptureAttempt, ...],
+) -> str:
+    return ", ".join(
+        (
+            f"{attempt.number}={attempt.sample_read_error_percent:.2f}%"
+            if attempt.sample_read_error_percent is not None
+            else f"{attempt.number}=unreported"
+        )
+        for attempt in attempts
+    )
+
+
+def _runtime_evidence_history(
+    attempts: tuple[CaptureAttempt, ...],
+) -> str:
+    return ", ".join(
+        f"{attempt.number}="
+        f"{'written' if attempt.runtime_evidence_written else 'missing'}"
+        for attempt in attempts
+    )
+
+
+def _capture_retry_exhausted_message(
+    target: str,
+    attempts: tuple[CaptureAttempt, ...],
+) -> str:
+    return (
+        f"Tachyon target {target} exhausted {MAX_CAPTURE_RETRIES} retries "
+        f"after {len(attempts)} invalid captures; "
+        "sample-read error rates by attempt: "
+        f"{_sample_read_error_history(attempts)}; "
+        "runtime evidence by attempt: "
+        f"{_runtime_evidence_history(attempts)}."
+    )
+
+
+def _capture_with_retries(
+    args: argparse.Namespace,
+    target: str,
+    capture_attempt: Callable[[int], CaptureAttempt],
+) -> tuple[CaptureAttempt, ...]:
+    attempts: list[CaptureAttempt] = []
+    for attempt_number in range(1, MAX_CAPTURE_ATTEMPTS + 1):
+        attempt = capture_attempt(attempt_number)
+        attempts.append(attempt)
+        if not _capture_requires_retry(args, attempt):
+            return tuple(attempts)
+        if attempt_number < MAX_CAPTURE_ATTEMPTS:
+            print(
+                "MOHAN_TACHYON_PROFILE_RETRY "
+                f"target={target} "
+                f"attempt={attempt_number}/{MAX_CAPTURE_ATTEMPTS} "
+                f"reason={_capture_retry_reason(args, attempt)}",
+                file=sys.stderr,
+            )
+            continue
+        message = _capture_retry_exhausted_message(target, tuple(attempts))
+        if not attempt.runtime_evidence_written:
+            raise RuntimeError(message)
+        print(
+            "MOHAN_TACHYON_CAPTURE_RETRIES_EXHAUSTED "
+            f"target={target} "
+            f"sample-read-error-rates={_sample_read_error_history(tuple(attempts))}",
+            file=sys.stderr,
+        )
+        return tuple(attempts)
+    raise RuntimeError(
+        f"Tachyon target {target} did not produce a capture attempt."
+    )
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -912,14 +1125,38 @@ def _artifact_evidence(path: Path) -> dict[str, object]:
 
 
 def _host_evidence() -> dict[str, object]:
+    processor_name = platform.processor()
+    processor_lookup_error = None
+    if os.name == "nt":
+        try:
+            with winreg.OpenKey(
+                winreg.HKEY_LOCAL_MACHINE,
+                r"HARDWARE\DESCRIPTION\System\CentralProcessor\0",
+            ) as key:
+                processor_name = str(
+                    winreg.QueryValueEx(key, "ProcessorNameString")[0]
+                ).strip()
+        except OSError as error:
+            processor_lookup_error = type(error).__name__
     return {
         "system": platform.system(),
         "release": platform.release(),
         "machine": platform.machine(),
         "python": sys.version.split()[0],
+        "python_build": sys.version,
         "implementation": sys.implementation.name,
         "logical_cpu_count": os.cpu_count(),
+        "processor_name": processor_name,
+        "processor_lookup_error": processor_lookup_error,
     }
+
+
+def _sample_read_errors(output: str) -> list[dict[str, object]] | None:
+    prefix = "MOHAN_TACHYON_SAMPLE_ERRORS="
+    for line in output.splitlines():
+        if line.startswith(prefix):
+            return _json_object_list(json.loads(line.removeprefix(prefix)), prefix)
+    return None
 
 
 def _quality_violations(
@@ -935,7 +1172,7 @@ def _quality_violations(
         )
     sample_read_error_percent = capture.get("sample_read_error_percent")
     if sample_read_error_percent is None:
-        violations.append("profiler did not report a sample-read error rate")
+        violations.append("profiler output requires a sample-read error rate")
     if (
         isinstance(sample_read_error_percent, int | float)
         and sample_read_error_percent > args.max_sample_read_error_percent
@@ -958,7 +1195,7 @@ def _quality_violations(
             f"target exit code was {runtime.get('exit_code')!r}"
         )
     if runtime.get("jit_available") is not True:
-        violations.append("target runtime did not expose the CPython JIT")
+        violations.append("target runtime requires an exposed CPython JIT")
     # Evidence must match the shipped JIT policy (off by default since the
     # 2026-08-29 0xC0000409 crash; MOHAN_ENABLE_JIT=1 profiles the experiment).
     expect_jit = os.environ.get("MOHAN_ENABLE_JIT") == "1"
@@ -977,6 +1214,7 @@ def _build_summary(
     artifacts: ProfileArtifacts,
     capture_output: str,
     capture_elapsed: float,
+    capture_attempts: tuple[CaptureAttempt, ...] = (),
 ) -> tuple[dict[str, object], tuple[str, ...]]:
     records = _load_jsonl(artifacts.jsonl)
     total_samples, frames = _frame_statistics(records)
@@ -1015,12 +1253,16 @@ def _build_summary(
             "workload_repetitions": (
                 1 if args.full_session else TARGET_REPETITIONS[target]
             ),
+            "minimum_workload_seconds": runtime.get("minimum_workload_seconds", 0.0),
             "isolated_user_profile": not args.use_user_profile,
         },
         "host": _host_evidence(),
         "runtime": runtime,
         "capture": {
             **capture,
+            "attempts": [
+                attempt.as_json() for attempt in capture_attempts
+            ],
             "stored_samples": total_samples,
             "gc_direct_samples": gc_samples,
             "project_direct_samples": sum(
@@ -1070,6 +1312,20 @@ def _write_json(path: Path, value: Mapping[str, object]) -> None:
     )
 
 
+def _publish_profile_outputs(
+    source: ProfileArtifacts,
+    destination: ProfileArtifacts,
+) -> None:
+    for source_path, destination_path in zip(
+        source.published_outputs(),
+        destination.published_outputs(),
+        strict=True,
+    ):
+        destination_path.parent.mkdir(parents=True, exist_ok=True)
+        # shutil.move 支援跨磁碟機，適用於 CI runner 的 Temp（C:）與工作區（D:）搬移。
+        shutil.move(str(source_path), str(destination_path))
+
+
 def _profile_target(
     args: argparse.Namespace,
     target: str,
@@ -1080,44 +1336,68 @@ def _profile_target(
         args.output,
     )
     artifacts.summary.parent.mkdir(parents=True, exist_ok=True)
+    accepted: tuple[dict[str, object], tuple[str, ...]] | None = None
     with tempfile.TemporaryDirectory(
-        prefix=f"mohan-tachyon-{target}-"
+        prefix=f"mohan-tachyon-{target}-",
+        dir=artifacts.summary.parent,
     ) as raw_temp_dir:
         temp_dir = Path(raw_temp_dir)
-        artifacts = artifacts.with_temporary_binary(
-            temp_dir / f"mohan-tachyon-{target}.profile.bin"
-        )
-        spec = _target_spec(target, temp_dir, args.full_session)
-        runner = _write_runner(spec, artifacts.runtime, temp_dir)
-        environment = _profile_environment(
-            temp_dir,
-            args.use_user_profile,
-        )
-        completed, elapsed = _run_capture(
-            _capture_command(args, target, artifacts, runner),
+        attempt_contexts: dict[int, tuple[Path, Mapping[str, str]]] = {}
+
+        def capture_attempt(attempt_number: int) -> CaptureAttempt:
+            attempt_dir = temp_dir / f"attempt-{attempt_number}"
+            attempt_dir.mkdir(parents=True, exist_ok=True)
+            attempt_artifacts = artifacts.in_attempt_directory(attempt_dir)
+            spec = _target_spec(
+                target, attempt_dir, args.full_session, args.duration,
+            )
+            runner = _write_runner(
+                spec,
+                attempt_artifacts.runtime,
+                attempt_dir,
+            )
+            environment = _profile_environment(
+                attempt_dir,
+                args.use_user_profile,
+            )
+            attempt_contexts[attempt_number] = (attempt_dir, environment)
+            return _capture_once(
+                args,
+                target,
+                attempt_number,
+                attempt_artifacts,
+                runner,
+                environment,
+            )
+
+        attempts = _capture_with_retries(args, target, capture_attempt)
+        final_attempt = attempts[-1]
+        if final_attempt.artifacts is None:
+            raise RuntimeError(
+                f"Tachyon target {target} produced an incomplete capture."
+            )
+        attempt_dir, environment = attempt_contexts[final_attempt.number]
+        _replay_profile(final_attempt.artifacts, environment)
+        _sanitize_profile_outputs(
+            final_attempt.artifacts,
+            attempt_dir,
             environment,
         )
-        combined_output = _strip_ansi(
-            f"{completed.stdout}\n{completed.stderr}"
+        summary, violations = _build_summary(
+            args,
+            target,
+            final_attempt.artifacts,
+            final_attempt.output,
+            final_attempt.elapsed_seconds,
+            tuple(attempts),
         )
-        if completed.returncode:
-            raise RuntimeError(
-                f"Tachyon target {target} failed with "
-                f"exit code {completed.returncode}."
-            )
-        if not artifacts.runtime.is_file():
-            raise RuntimeError(
-                f"Tachyon target {target} did not write runtime evidence."
-            )
-        _replay_profile(artifacts, environment)
-        _sanitize_profile_outputs(artifacts, temp_dir, environment)
-    summary, violations = _build_summary(
-        args,
-        target,
-        artifacts,
-        combined_output,
-        elapsed,
-    )
+        _publish_profile_outputs(final_attempt.artifacts, artifacts)
+        accepted = (summary, violations)
+    if accepted is None:
+        raise RuntimeError(
+            f"Tachyon target {target} did not produce an accepted capture."
+        )
+    summary, violations = accepted
     _write_json(artifacts.summary, summary)
     print(
         "MOHAN_TACHYON_PROFILE_"

@@ -3,102 +3,102 @@
     {
       "landmarks": [
         [
-          383,
-          784
+          434,
+          799
         ],
         [
-          370,
-          805
+          414,
+          817
         ],
         [
-          365,
-          825
+          407,
+          838
         ],
         [
-          367,
-          841
+          407,
+          855
         ],
         [
-          372,
-          854
-        ],
-        [
-          358,
-          834
-        ],
-        [
-          360,
-          863
-        ],
-        [
-          367,
-          877
-        ],
-        [
-          373,
-          885
-        ],
-        [
-          361,
-          835
-        ],
-        [
-          364,
-          867
-        ],
-        [
-          370,
-          882
-        ],
-        [
-          378,
-          890
-        ],
-        [
-          370,
-          835
-        ],
-        [
-          371,
+          413,
           866
         ],
         [
-          376,
-          880
+          401,
+          852
         ],
         [
-          380,
+          402,
+          884
+        ],
+        [
+          411,
+          896
+        ],
+        [
+          419,
+          902
+        ],
+        [
+          411,
+          855
+        ],
+        [
+          413,
+          889
+        ],
+        [
+          422,
+          902
+        ],
+        [
+          431,
+          908
+        ],
+        [
+          424,
+          855
+        ],
+        [
+          425,
+          887
+        ],
+        [
+          433,
+          900
+        ],
+        [
+          439,
+          906
+        ],
+        [
+          438,
+          852
+        ],
+        [
+          440,
+          878
+        ],
+        [
+          443,
           890
         ],
         [
-          383,
-          834
-        ],
-        [
-          383,
-          858
-        ],
-        [
-          385,
-          871
-        ],
-        [
-          386,
-          881
+          447,
+          897
         ]
       ],
       "model_evidence": {
         "augmentation": "rotate-clockwise",
-        "confidence": 0.942014,
+        "confidence": 0.98216,
         "model_handedness": "left",
         "pixel_refinement": "nearest-skin-within-8px"
       },
       "occlusions": [],
       "roi": [
-        350,
-        776,
-        45,
-        123
+        393,
+        791,
+        63,
+        126
       ],
       "side": "left",
       "thumb_side_check": false
@@ -115,7 +115,7 @@
     "hand_confidence_threshold": 0.65,
     "palm_threshold": 0.45,
     "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
-    "source_sha256": "d8b7f0a94f117afc3fae80bd92d2e360e83af4c704598255cc9aeadca5dd93a4"
+    "source_sha256": "04704ab4dcdae52ab9b4702e4f2effedfd37f6b65e57ace59bdc1a76578f4d60"
   },
   "occluded_hands": [
     {
@@ -123,9 +123,9 @@
       "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
       "region": [
         0,
-        56,
+        89,
         1024,
-        1431
+        1359
       ],
       "side": "right",
       "status": "occluded"
@@ -137,7 +137,7 @@
       "label": "face",
       "rect": [
         412,
-        136,
+        169,
         200,
         220
       ]
@@ -146,7 +146,7 @@
       "label": "body",
       "rect": [
         412,
-        316,
+        349,
         200,
         220
       ]

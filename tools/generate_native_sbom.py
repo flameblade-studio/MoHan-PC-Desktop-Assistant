@@ -277,7 +277,7 @@ def build_native_sbom(
     if evidence.get("schema") != "mohan.native-release-evidence.v1":
         raise ValueError("Native release evidence schema is unsupported.")
     if evidence.get("status") != "pass":
-        raise ValueError("Native release evidence did not pass.")
+        raise ValueError("Native release evidence requires a passing validation result.")
     if SHA256_PATTERN.fullmatch(identity.evidence_sha256) is None:
         raise ValueError("Native release evidence hash must be SHA-256.")
     root_id, nodes, packages, reachable = _resolved_graph(metadata)

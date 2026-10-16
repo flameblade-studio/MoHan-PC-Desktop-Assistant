@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from PySide6.QtWidgets import QLineEdit, QMessageBox
+lazy from presentation.qt_parent import optional_qwidget, require_qwidget
 
 lazy from application.presentation_ports import (
     REALTIME_OUTPUT_OPENAI,
@@ -170,7 +171,7 @@ class DashboardVoiceRuntimeMethods:
             return
         platform = self.platform_services.capabilities
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("azure_remove_key", "移除 Azure Speech 金鑰"),
             self._t(
                 "azure_remove_key_confirm",
@@ -194,7 +195,7 @@ class DashboardVoiceRuntimeMethods:
             return
         platform = self.platform_services.capabilities
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("azure_hd_remove_key", "移除 Dragon HD S0 金鑰"),
             self._t(
                 "azure_hd_remove_key_confirm",
@@ -374,7 +375,7 @@ class DashboardVoiceRuntimeMethods:
         except OSError as exc:
             if not silent:
                 QMessageBox.warning(
-                    self,
+                    optional_qwidget(self),
                     self._t(policy.title_key, policy.title_fallback),
                     self._t(
                         policy.error_key,

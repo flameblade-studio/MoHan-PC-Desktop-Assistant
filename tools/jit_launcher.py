@@ -33,7 +33,7 @@ def main() -> int:
     }
     # Stability-first default (2026-08-29): the JIT-enabled runtime crashed
     # with 0xC0000409 mid-session on a user machine (Windows event log,
-    # 03:13:24) — the same 3.15rc1 JIT/Qt failure family as the CI history,
+    # 03:13:24) — the same 3.15rc1 JIT/Qt diagnostic family as the CI history,
     # now during live operation rather than finalization.  The JIT stays
     # available as an explicit experiment via MOHAN_ENABLE_JIT=1.
     if environment.get("MOHAN_ENABLE_JIT") == "1":

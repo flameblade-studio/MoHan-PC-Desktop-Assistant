@@ -21,10 +21,9 @@ lazy from domain.contracts import CloudSpeechEnginePort
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech import OpenAITTS
 
-# Coarse non-blocking gate, not a performance benchmark (relaxed 0.10 -> 0.5
-# on 2026-08-27): stop() must return promptly instead of draining playback.
-# The blocked worker stubs hold their gates for 2.0 s, so 0.5 s still proves
-# stop() never waited for playback while absorbing slow-runner jitter.
+# Coarse prompt-return gate: the budget changed from 0.10 to 0.5 s on
+# 2026-08-27. Worker stubs block for 2.0 s, so stop() returning within
+# 0.5 s proves prompt cancellation with room for CI scheduling jitter.
 STOP_TIMEOUT_SECONDS = 0.5
 EXPECTED_WRITE_COUNT = 6
 EXPECTED_VISEME_COUNT = 7
@@ -134,7 +133,7 @@ class _BlockingRawOutputStream:
             raise AssertionError("playback worker was not released")
 
     def stop(self) -> None:
-        raise AssertionError("cancelled playback must not drain to completion")
+        raise AssertionError('cancelled playback must stop promptly')
 
     def abort(self) -> None:
         self.aborted.set()
@@ -162,7 +161,7 @@ class _CompletingRawOutputStream:
         self.stopped = True
 
     def abort(self) -> None:
-        raise AssertionError("completed playback must not be aborted")
+        raise AssertionError('completed playback must retain its completed status')
 
     def close(self) -> None:
         self.closed = True
@@ -318,8 +317,8 @@ def _assert_deleted_receiver_rejects_late_provider_callbacks() -> None:
     generation = tts._begin_generation()
     delete_qt_object(tts)
 
-    # Closing the dashboard must not leave a provider worker crashing while it
-    # tries to publish a queued failure, completion, or mouth cue.
+    # Closing the dashboard releases provider workers safely while they
+    # publish queued error, completion, or mouth cues.
     tts._emit_failed(generation, "private late failure")
     tts._emit_finished(generation)
     tts._emit_viseme(generation, 0.8, "A")

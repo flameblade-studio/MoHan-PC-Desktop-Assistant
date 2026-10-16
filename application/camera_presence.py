@@ -38,7 +38,7 @@ class PresenceDebouncer:
 
     def __post_init__(self) -> None:
         if self.dropout_grace_seconds < 0.0:
-            raise ValueError("Presence dropout grace must not be negative.")
+            raise ValueError("Presence dropout grace accepts zero or greater.")
 
     def stabilize(self, observation: VisualObservation) -> VisualObservation:
         presence = observation.presence
@@ -64,7 +64,7 @@ class PresenceDebouncer:
 
 
 class CameraPresenceController(QObject):
-    """Local-only coarse presence detection. Frames are never persisted."""
+    """Local-only coarse presence detection. Frames stay in memory for the current observation."""
 
     presence_changed = Signal(bool)
     status_changed = Signal(str)
@@ -93,7 +93,7 @@ class CameraPresenceController(QObject):
         self._last_gesture_sample = 0.0
         self._gesture_sampling_enabled = False
         self._active = False
-        # Idle throttling: when no presence has been observed for a sustained
+        # Idle throttling: when presence remains unobserved for a sustained
         # period, the sampling interval grows to save CPU and power.  Presence
         # returns to the normal cadence as soon as motion is detected again.
         self._idle_sample_interval = 0.45
@@ -184,7 +184,7 @@ class CameraPresenceController(QObject):
         )
 
     def configure_gesture_sampling(self, enabled: bool) -> None:
-        """Enable transient gesture frames without starting another camera loop."""
+        """Enable transient gesture frames while preserving the current camera loop."""
 
         if type(enabled) is not bool:
             raise TypeError("Gesture sampling state must be boolean.")
@@ -220,7 +220,7 @@ class CameraPresenceController(QObject):
             self.presence_changed.emit(present)
         # Grow the sampling interval only after a sustained absence (several
         # consecutive absent observations), and snap back to the normal cadence
-        # the moment presence is detected.  A single absent frame never widens
+        # the moment presence is detected.  A single frame away from presence keeps
         # the interval, so the deterministic sampling-rate contract is kept.
         if present:
             self._last_presence_at = now
@@ -274,7 +274,13 @@ def _transient_rgb_frame(image: QImage) -> tuple[bytes, int, int]:
     )
     width = rgb.width()
     height = rgb.height()
-    if rgb.bytesPerLine() != width * 3:
-        return b"", 0, 0
-    byte_count = rgb.bytesPerLine() * height
-    return bytes(rgb.constBits()[:byte_count]), width, height
+    row_bytes = width * 3
+    stride = rgb.bytesPerLine()
+    bits = rgb.constBits()
+    if stride == row_bytes:
+        return bytes(bits[:stride * height]), width, height
+    raw = b"".join(
+        bytes(bits[row * stride : row * stride + row_bytes])
+        for row in range(height)
+    )
+    return raw, width, height

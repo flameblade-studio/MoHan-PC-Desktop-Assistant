@@ -105,7 +105,7 @@ def main() -> None:
             generator=torch.Generator(device="cpu").manual_seed(7),
         ).images[0]
         tag = "tinted" if label == "染色" else "tinted-hair"
-        image.save(OUT / f"{tag}-s{int(strength*100):03d}.png")
+        image.save(OUT / f"{tag}-s{int(strength * 100):03d}.png")
         mask, colour = masks(image)
         union = np.logical_or(mask, control).sum()
         value = float(np.logical_and(mask, control).sum()) / union if union else 0.0

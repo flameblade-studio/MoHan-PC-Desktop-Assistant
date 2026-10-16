@@ -1,0 +1,181 @@
+{
+  "defaults": {
+    "cloud_voice": "coral",
+    "provider": "system-local",
+    "rate": -1,
+    "realtime_voice": "coral",
+    "tts_voice": "coral",
+    "volume_percent": 125
+  },
+  "fallback_provider_order": {
+    "azure-speech": [
+      "system-local"
+    ],
+    "azure-speech-hd": [
+      "azure-speech",
+      "system-local"
+    ],
+    "openai-realtime": [
+      "openai-speech",
+      "system-local"
+    ],
+    "openai-speech": [
+      "system-local"
+    ],
+    "system-local": []
+  },
+  "instructions": {
+    "en": "Speak natural international English with the clear, steady voice of a woman in her twenties. Sound modern, warm, and dependable; avoid a childlike, theatrical, archaic, or overly sweet delivery.",
+    "ja-JP": "二十代女性の落ち着いた自然な日本語で話してください。現代的で穏やか、頼れる口調を保ち、子どもっぽい声、芝居がかった古風な話し方、過度に甘い話し方を避けてください。",
+    "zh-CN": "请使用自然清晰的普通话，以沉稳清楚的二十多岁女性声线说话。语气现代、温和、可靠，避免古风、播报腔、儿童声与过度甜腻。",
+    "zh-TW": "請使用台灣繁體中文，以自然的台灣中文口音說話。聲線是沉穩清楚的二十多歲女性，語氣現代、溫和、可靠，避免古風、播報腔、兒童聲與過度甜膩。"
+  },
+  "preview_text": {
+    "en": "Preview: I am here, Swordmaster.",
+    "ja-JP": "試聴：剣主、ここにいます。",
+    "zh-CN": "试听：剑主，我在。",
+    "zh-TW": "試聽：劍主，我在。"
+  },
+  "providers": {
+    "azure": {
+      "hd_voices": {
+        "en": [
+          "en-US-Ava:DragonHDLatestNeural",
+          "en-US-Aria:DragonHDLatestNeural",
+          "en-US-Emma:DragonHDLatestNeural",
+          "en-US-Emma2:DragonHDLatestNeural",
+          "en-US-Jenny:DragonHDLatestNeural",
+          "en-US-Nova:DragonHDLatestNeural",
+          "en-US-Phoebe:DragonHDLatestNeural",
+          "en-US-Serena:DragonHDLatestNeural"
+        ],
+        "ja-JP": [
+          "ja-JP-Nanami:DragonHDLatestNeural"
+        ],
+        "zh-CN": [
+          "zh-CN-Xiaochen:DragonHDLatestNeural",
+          "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
+          "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
+          "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoyou:DragonHDFlashLatestNeural"
+        ],
+        "zh-TW": [
+          "zh-CN-Xiaochen:DragonHDLatestNeural",
+          "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
+          "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
+          "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
+          "zh-CN-Xiaoyou:DragonHDFlashLatestNeural"
+        ]
+      },
+      "voices": {
+        "en": [
+          "en-US-AvaMultilingualNeural",
+          "en-US-AmandaMultilingualNeural",
+          "en-US-CoraMultilingualNeural",
+          "en-US-JennyMultilingualNeural"
+        ],
+        "ja-JP": [
+          "ja-JP-NanamiNeural",
+          "ja-JP-AoiNeural",
+          "ja-JP-MayuNeural",
+          "ja-JP-ShioriNeural"
+        ],
+        "zh-CN": [
+          "zh-CN-XiaoxiaoNeural",
+          "zh-CN-XiaoyiNeural",
+          "zh-CN-XiaochenNeural",
+          "zh-CN-XiaohanNeural",
+          "zh-CN-XiaomengNeural",
+          "zh-CN-XiaomoNeural",
+          "zh-CN-XiaoqiuNeural",
+          "zh-CN-XiaorouNeural",
+          "zh-CN-XiaoruiNeural",
+          "zh-TW-HsiaoChenNeural",
+          "zh-TW-HsiaoYuNeural"
+        ],
+        "zh-TW": [
+          "zh-TW-HsiaoChenNeural",
+          "zh-TW-HsiaoYuNeural",
+          "zh-CN-XiaoxiaoNeural",
+          "zh-CN-XiaoyiNeural",
+          "zh-CN-XiaochenNeural",
+          "zh-CN-XiaohanNeural",
+          "zh-CN-XiaomengNeural",
+          "zh-CN-XiaomoNeural",
+          "zh-CN-XiaoqiuNeural",
+          "zh-CN-XiaorouNeural",
+          "zh-CN-XiaoruiNeural"
+        ]
+      }
+    },
+    "openai": {
+      "realtime_unsupported": [
+        "fable",
+        "nova",
+        "onyx"
+      ],
+      "voice_order": [
+        "coral",
+        "marin",
+        "cedar",
+        "shimmer",
+        "sage",
+        "verse",
+        "alloy",
+        "ash",
+        "ballad",
+        "echo",
+        "nova",
+        "fable",
+        "onyx"
+      ]
+    },
+    "system_local": {
+      "excluded_name_markers": [
+        "david",
+        "mark",
+        "zhiwei",
+        "yunxi",
+        "yunyang"
+      ],
+      "female_compatibility_markers": [
+        "yating",
+        "hanhan"
+      ],
+      "male_markers": [
+        "zhiwei"
+      ],
+      "onecore_prefix": "OneCore::",
+      "preferred_name_markers": {
+        "en": [],
+        "ja-JP": [],
+        "zh-CN": [],
+        "zh-TW": [
+          "Yating",
+          "Hanhan"
+        ]
+      },
+      "preferred_voice_ids": {
+        "en": "",
+        "ja-JP": "",
+        "zh-CN": "",
+        "zh-TW": "OneCore::Microsoft Yating"
+      }
+    }
+  },
+  "schema": "flameblade.character-voice-profile.v1",
+  "schema_version": 1,
+  "user_selection_wins": true
+}

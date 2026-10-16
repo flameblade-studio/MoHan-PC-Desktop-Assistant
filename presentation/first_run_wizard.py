@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from collections.abc import Mapping
+
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPixmap
 lazy from PySide6.QtWidgets import (
@@ -15,11 +17,11 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-lazy from application.presentation_ports import (
-    PlatformServicePort,
-    PresentationDatabasePort,
-    fallback_platform_services,
-)
+lazy from application.presentation_ports import PlatformServicePort, fallback_platform_services
+lazy from application.service_contracts import PresentationDatabasePort
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from domain.character_source import active_character_source
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.language_support import (
     is_english,
@@ -50,8 +52,15 @@ lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
 
 __all__ = ("FirstRunWizard",)
 
+_CHARACTER_DATA = load_mohan_character_data()
+
+
 class FirstRunWizard(QDialog):
-    """Collect identity and workflow choices without assuming one profession."""
+    """Collect identity and workflow choices while supporting every profession."""
+
+    LOCALIZED_DEFAULT_KEYS = frozenset(
+        {"assistant_name", "user_title", "window_title", "wake_word"}
+    )
 
     WORK_TYPES = (
         "一般辦公／行政",
@@ -78,6 +87,8 @@ class FirstRunWizard(QDialog):
         self.platform_services = (
             platform_services or fallback_platform_services()
         )
+        self._applying_localized_defaults = False
+        self._unsaved_default_keys = self._find_unsaved_default_keys()
         self.language = profile_setting(db, "ui_language")
         self._configure_window()
         root = QHBoxLayout(self)
@@ -102,7 +113,7 @@ class FirstRunWizard(QDialog):
         hero_panel.setObjectName("onboardingHero")
         hero_panel.setFixedWidth(360)
         hero_background = resource_path(
-            "assets/onboarding/first-run-ink-tech.png"
+            CHARACTER_ASSET_PATHS["onboarding_artwork"]
         ).as_posix()
         hero_panel.setStyleSheet(
             f"""
@@ -116,31 +127,56 @@ class FirstRunWizard(QDialog):
         hero_layout = QVBoxLayout(hero_panel)
         hero_layout.setContentsMargins(16, 24, 16, 14)
         hero_layout.setSpacing(10)
-        self.hero_brand = QLabel("墨寒  MoHan")
+        self.hero_brand = QLabel(self._t("first_run_brand", ""))
         self.hero_brand.setObjectName("onboardingBrand")
         self.hero_tagline = QLabel()
         self.hero_tagline.setObjectName("onboardingTagline")
         self.hero_tagline.setWordWrap(True)
         self.hero_image = QLabel()
         self.hero_image.setAlignment(Qt.AlignHCenter | Qt.AlignBottom)
-        hero_pixmap = self.appearance_pixmap or QPixmap(
-            str(resource_path("assets/expressions/idle_front.png"))
-        )
-        portrait_width = round(hero_pixmap.width() * 0.62)
-        hero_portrait = hero_pixmap.copy(
-            (hero_pixmap.width() - portrait_width) // 2,
-            0,
-            portrait_width,
-            hero_pixmap.height(),
-        )
-        self.hero_image.setPixmap(
-            hero_portrait.scaled(
-                330,
-                520,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation,
+        hero_pixmap = self.appearance_pixmap
+        if hero_pixmap is None or hero_pixmap.isNull():
+            try:
+                source = active_character_source()
+            except RuntimeError:
+                source = None
+            appearance = getattr(source, "appearance", None)
+            body_pack = getattr(appearance, "resolved_body_pack", None)
+            body_reference = getattr(getattr(source, "manifest", None), "body_pack", None)
+            if body_pack is not None or body_reference is not None:
+                hero_pixmap = QPixmap()
+            elif source is None:
+                portrait_path = resource_path(
+                    CHARACTER_ASSET_PATHS["first_run_portrait"]
+                )
+                hero_pixmap = QPixmap(str(portrait_path))
+            else:
+                portrait_path = source.assets.resolve_optional_path(
+                    CHARACTER_ASSET_PATHS["first_run_portrait"]
+                )
+                hero_pixmap = (
+                    QPixmap(str(portrait_path))
+                    if portrait_path is not None
+                    else QPixmap()
+                )
+        if hero_pixmap.isNull():
+            self.hero_image.hide()
+        else:
+            portrait_width = round(hero_pixmap.width() * 0.62)
+            hero_portrait = hero_pixmap.copy(
+                (hero_pixmap.width() - portrait_width) // 2,
+                0,
+                portrait_width,
+                hero_pixmap.height(),
             )
-        )
+            self.hero_image.setPixmap(
+                hero_portrait.scaled(
+                    330,
+                    520,
+                    Qt.KeepAspectRatio,
+                    Qt.SmoothTransformation,
+                )
+            )
         hero_layout.addWidget(self.hero_brand)
         hero_layout.addWidget(self.hero_tagline)
         hero_layout.addStretch()
@@ -153,11 +189,11 @@ class FirstRunWizard(QDialog):
             profile_setting(db, "assistant_name")
         )
         self.assistant_name.setPlaceholderText(
-            "例如：墨寒、Ava、Office Mate"
+            self._t("assistant_name_placeholder", "")
         )
         self.user_title = QLineEdit(profile_setting(db, "user_title"))
         self.user_title.setPlaceholderText(
-            "助理如何稱呼你，例如：主上、Alex、主管"
+            self._t("user_title_placeholder", "")
         )
         self.organization_name = QLineEdit(
             profile_setting(db, "organization_name")
@@ -175,8 +211,35 @@ class FirstRunWizard(QDialog):
         self._initialize_language()
         self.wake_word = QLineEdit(profile_setting(db, "wake_word"))
         self.wake_word.setPlaceholderText(
-            "語音喚醒詞，例如：墨寒"
+            self._t("wake_word_placeholder", "")
         )
+        for key, editor in self._localized_default_editors().items():
+            editor.textChanged.connect(
+                lambda _value, field=key: self._mark_default_as_modified(field)
+            )
+
+    def _find_unsaved_default_keys(self) -> set[str]:
+        if bool(self.db.setting("onboarding_complete", False)):
+            return set()
+        snapshotter = getattr(self.db, "settings_snapshot", None)
+        if not callable(snapshotter):
+            return set()
+        snapshot = snapshotter()
+        if not isinstance(snapshot, Mapping):
+            return set()
+        return set(self.LOCALIZED_DEFAULT_KEYS).difference(snapshot)
+
+    def _localized_default_editors(self) -> dict[str, QLineEdit]:
+        return {
+            "assistant_name": self.assistant_name,
+            "user_title": self.user_title,
+            "window_title": self.window_title,
+            "wake_word": self.wake_word,
+        }
+
+    def _mark_default_as_modified(self, key: str) -> None:
+        if not self._applying_localized_defaults:
+            self._unsaved_default_keys.discard(key)
 
     def _initialize_work_type(self) -> None:
         self.work_type = QComboBox()
@@ -267,40 +330,42 @@ class FirstRunWizard(QDialog):
 
     def _apply_localized_identity_defaults(self) -> None:
         if is_english(self.language):
-            replacements = (
-                (self.assistant_name, {"墨寒"}, "MoHan"),
-                (self.user_title, {"主上", "主様"}, "Commander"),
-                (self.wake_word, {"墨寒"}, "MoHan"),
-            )
+            locale = "en"
         elif is_japanese(self.language):
-            replacements = (
-                (self.assistant_name, {"MoHan"}, "墨寒"),
-                (self.user_title, {"主上", "Commander"}, "主様"),
-                (self.wake_word, {"MoHan"}, "墨寒"),
-            )
+            locale = "ja-JP"
         else:
-            replacements = (
-                (self.assistant_name, {"MoHan"}, "墨寒"),
-                (self.user_title, {"Commander", "主様"}, "主上"),
-                (self.wake_word, {"MoHan"}, "墨寒"),
-            )
-        for editor, defaults, replacement in replacements:
-            if editor.text().strip() in defaults:
-                editor.setText(replacement)
+            locale = "zh-CN" if self.language in {"zh-CN", "zh-SG", "zh-Hans"} else "zh-TW"
+        identities = tuple(persona.identity for persona in _CHARACTER_DATA.personas.values())
+        target = _CHARACTER_DATA.personas[locale].identity
+        replacements = (
+            ("assistant_name", {value.display_name for value in identities}, target.display_name),
+            ("user_title", {value.default_user_title for value in identities}, target.default_user_title),
+            ("window_title", {value.display_name for value in identities}, target.display_name),
+            ("wake_word", {value.default_wake_word for value in identities}, target.default_wake_word),
+        )
+        editors = self._localized_default_editors()
+        self._applying_localized_defaults = True
+        try:
+            for key, defaults, replacement in replacements:
+                editor = editors[key]
+                if (
+                    key in self._unsaved_default_keys
+                    and editor.text().strip() in defaults
+                ):
+                    editor.setText(replacement)
+        finally:
+            self._applying_localized_defaults = False
 
     def _apply_language(self, _index: int | None = None) -> None:
-        previous = self.language
         self.language = str(self.ui_language.currentData() or "zh-TW")
-        if previous != self.language:
-            self._apply_localized_identity_defaults()
+        self._apply_localized_identity_defaults()
         self._update_wizard_headings()
         self._update_wizard_form()
         self._update_work_type_labels()
         self.note_label.setText(
             self._t(
                 "first_run_note",
-                "工作平台頁一開始保持空白，由你自行新增公司系統、"
-                "協作工具、客戶後台或網站。程式不會替你建立特定商業平台。",
+                '工作平台頁由你新增公司系統、協作工具、客戶後台或網站。',
             )
         )
         self.save_button.setText(
@@ -309,24 +374,23 @@ class FirstRunWizard(QDialog):
 
     def _update_wizard_headings(self) -> None:
         self.setWindowTitle(self._t("first_run_title", "首次啟動設定"))
-        self.hero_brand.setText(self._t("first_run_brand", "墨寒  MoHan"))
+        self.hero_brand.setText(self._t("first_run_brand", ""))
         self.hero_tagline.setText(
             self._t(
                 "first_run_hero_tagline",
-                "北宋千年女劍魂，陪你說話、記憶，也陪你把工作做好。",
+                "",
             )
         )
         self.title_label.setText(
             self._t(
                 "first_run_heading",
-                "<b>歡迎使用墨寒桌面陪伴工作助理</b>",
+                "",
             )
         )
         self.intro_label.setText(
             self._t(
                 "first_run_intro",
-                "先建立你的使用者設定。以下內容日後都能在「設定」頁修改，"
-                "不會綁定特定公司、職業或工作平台。",
+                '先建立你的使用者設定，依自己的公司、職業與工作平台自由調整；日後也能在「設定」頁修改。',
             )
         )
 
@@ -343,12 +407,12 @@ class FirstRunWizard(QDialog):
         for key, chinese in labels.items():
             self.form_labels[key].setText(self._t(key, chinese))
         self.assistant_name.setPlaceholderText(
-            self._t("assistant_name_placeholder", "例如：墨寒、Ava、Office Mate")
+            self._t("assistant_name_placeholder", "")
         )
         self.user_title.setPlaceholderText(
             self._t(
                 "user_title_placeholder",
-                "助理如何稱呼你，例如：主上、Alex、主管",
+                "",
             )
         )
         self.organization_name.setPlaceholderText(
@@ -364,7 +428,7 @@ class FirstRunWizard(QDialog):
             )
         )
         self.wake_word.setPlaceholderText(
-            self._t("wake_word_placeholder", "語音喚醒詞，例如：墨寒")
+            self._t("wake_word_placeholder", "")
         )
 
     def _update_work_type_labels(self) -> None:

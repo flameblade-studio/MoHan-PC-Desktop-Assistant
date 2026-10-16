@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import inspect
+lazy import json
 lazy import re
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
@@ -18,7 +19,7 @@ type _Classification = tuple["SafeErrorType", "SafeDiagnostic"]
 # HTTP status-code bounds for sanitization and classification.
 # Re-exported from the centralized constants module so every module shares
 # one source of truth; the local names are kept for backward compatibility.
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     HTTP_CLIENT_ERROR_BOUNDARY as CLIENT_ERROR_BOUNDARY,
     HTTP_MAX_STATUS as MAX_HTTP_STATUS,
     HTTP_MIN_STATUS as MIN_HTTP_STATUS,
@@ -28,7 +29,7 @@ lazy from domain.constants import (
 
 
 class SafeErrorType(StrEnum):
-    """Approved, language-independent error types exposed outside services."""
+    """Approved, language-independent boundary result types exposed outside services."""
 
     HTTP_ERROR = "http_error"
     TIMEOUT_ERROR = "timeout_error"
@@ -67,7 +68,7 @@ class SafeDiagnostic(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class SafeError:
-    """A sanitized error value that never retains the original error text."""
+    """A sanitized diagnostic value that keeps original error text outside the value."""
 
     error_type: SafeErrorType
     diagnostic: SafeDiagnostic
@@ -112,6 +113,7 @@ _EXCEPTION_CLASSIFICATIONS: tuple[
         SafeErrorType.DECODING_ERROR,
         SafeDiagnostic.INVALID_RESPONSE,
     ),
+    (json.JSONDecodeError, SafeErrorType.DECODING_ERROR, SafeDiagnostic.INVALID_RESPONSE),
     (ValueError, SafeErrorType.VALIDATION_ERROR, SafeDiagnostic.INVALID_INPUT),
     (TypeError, SafeErrorType.VALIDATION_ERROR, SafeDiagnostic.INVALID_INPUT),
 )
@@ -323,10 +325,7 @@ def sanitize_error(
     *,
     http_status: int | None = None,
 ) -> SafeError:
-    """Return only approved metadata; discard all untrusted error detail.
-
-    The returned value never stores or echoes the original exception, message,
-    response body, URL, headers, credentials, email address, or local path.
+    """Return only approved metadata; keep untrusted error detail outside the value. The returned value stores approved fields while the original exception, message, response body, URL, headers, credentials, email address, and local path remain private.
     User-facing layers should localize ``error_type`` and ``diagnostic`` rather
     than display provider text.
     """

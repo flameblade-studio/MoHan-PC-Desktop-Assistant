@@ -10,7 +10,7 @@ MoHan Desktop Assistant 採用 MIT License，但其原始碼及 Release 安裝�
 
 | 元件 | 目前固定版本 | 授權 |
 | --- | ---: | --- |
-| [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [PySide6_Essentials／PySide6_Addons／shiboken6（Qt for Python）](https://doc.qt.io/qtforpython-6/) | 6.12.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
 | [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License（Microsoft Speech SDK 條款） |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -18,6 +18,10 @@ MoHan Desktop Assistant 採用 MIT License，但其原始碼及 Release 安裝�
 | [cryptography](https://cryptography.io/) | 50.0.0 | Apache-2.0 OR BSD-3-Clause |
 | [NumPy](https://numpy.org/) | 2.5.2 | BSD-3-Clause |
 | [OpenCV Python](https://pypi.org/project/opencv-python/) | 5.0.0.93 | Apache-2.0 |
+
+### MPL 元件與原始碼取得
+
+certifi 2026.7.22（MPL-2.0）是 Azure 相依鏈的間接元件，現已明確固定版本並列入 Windows SBOM。tqdm 4.70.0（MPL-2.0 AND MIT）及 orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）用於本機美術工具。完整授權、原通知、對應原始碼 ZIP 與逐檔雜湊見 [MPL 原始碼說明](third_party_licenses/mpl/README.md) 及 `third_party_licenses/mpl/components.json`；收件者可直接解開隨附 ZIP 取得源碼。墨寒的 MIT 授權不取代或限制這些第三方條款。套件更新、修改或封裝前必須通過 `tools/mpl_compliance.py`。
 
 ### 建置專用工具鏈
 
@@ -67,7 +71,7 @@ Face Mesh、虹膜與 Silero VAD 已隨 Windows 正式封裝提供；它們由 O
 
 ### Preview 封裝工具
 
-Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 組裝。建置流程會下載上游 `continuous` x86_64 資產，但只有在其 SHA-256 等於 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` 時才接受。所記錄的上游來源 commit 為 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 資產 ID 為 `324406882`。
+Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 組裝。建置流程會下載上游固定正式版 `1.9.1` 的 x86_64 資產，但只有在其 SHA-256 等於 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` 時才接受。所記錄的上游來源 commit 為 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 資產 ID 為 `324406736`。
 
 `appimagetool` 仍受其自身的上游授權條款約束。
 
@@ -99,7 +103,7 @@ MoHan Desktop Assistant 采用 MIT License，但其源代码及 Release 安装�
 
 | 组件 | 当前固定版本 | 许可 |
 | --- | ---: | --- |
-| [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [PySide6_Essentials／PySide6_Addons／shiboken6（Qt for Python）](https://doc.qt.io/qtforpython-6/) | 6.12.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
 | [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License（Microsoft Speech SDK 条款） |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -107,6 +111,10 @@ MoHan Desktop Assistant 采用 MIT License，但其源代码及 Release 安装�
 | [cryptography](https://cryptography.io/) | 50.0.0 | Apache-2.0 OR BSD-3-Clause |
 | [NumPy](https://numpy.org/) | 2.5.2 | BSD-3-Clause |
 | [OpenCV Python](https://pypi.org/project/opencv-python/) | 5.0.0.93 | Apache-2.0 |
+
+### MPL 组件与源代码获取
+
+certifi 2026.7.22（MPL-2.0）是 Azure 依赖链的间接组件，现已明确固定版本并列入 Windows SBOM。tqdm 4.70.0（MPL-2.0 AND MIT）及 orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）用于本地美术工具。完整授权、原通知、对应源代码 ZIP 与逐文件哈希见 [MPL 源代码说明](third_party_licenses/mpl/README.md) 及 `third_party_licenses/mpl/components.json`；接收者可直接解开附带 ZIP 获取源代码。墨寒的 MIT 授权不取代或限制这些第三方条款。组件更新、修改或打包前必须通过 `tools/mpl_compliance.py`。
 
 ### 构建专用工具链
 
@@ -156,7 +164,7 @@ Face Mesh、虹膜与 Silero VAD 已随 Windows 正式封装提供；它们由 O
 
 ### Preview 封装工具
 
-Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 组装。构建流程会下载上游 `continuous` x86_64 资产，但只有在其 SHA-256 等于 `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` 时才接受。所记录的上游源 commit 为 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 资产 ID 为 `324406882`。
+Linux x86_64 功能受限 Preview 使用官方 [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) 组装。构建流程会下载上游固定正式版 `1.9.1` 的 x86_64 资产，但只有在其 SHA-256 等于 `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` 时才接受。所记录的上游源 commit 为 `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`，GitHub 资产 ID 为 `324406736`。
 
 `appimagetool` 仍受其自身的上游许可条款约束。
 
@@ -188,7 +196,7 @@ MoHan Desktop Assistant is MIT licensed, but its source and Release packages use
 
 | Component | Current pinned version | License |
 | --- | ---: | --- |
-| [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [PySide6_Essentials / PySide6_Addons / shiboken6 (Qt for Python)](https://doc.qt.io/qtforpython-6/) | 6.12.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
 | [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License (Microsoft Speech SDK terms) |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -196,6 +204,10 @@ MoHan Desktop Assistant is MIT licensed, but its source and Release packages use
 | [cryptography](https://cryptography.io/) | 50.0.0 | Apache-2.0 OR BSD-3-Clause |
 | [NumPy](https://numpy.org/) | 2.5.2 | BSD-3-Clause |
 | [OpenCV Python](https://pypi.org/project/opencv-python/) | 5.0.0.93 | Apache-2.0 |
+
+### MPL components and source access
+
+certifi 2026.7.22 (MPL-2.0) is a transitive Azure dependency, now explicitly pinned and included in the Windows SBOM. tqdm 4.70.0 (MPL-2.0 AND MIT) and orjson 3.12.0 (MPL-2.0 AND (Apache-2.0 OR MIT)) serve local art tooling. Complete licenses, original notices, corresponding source ZIPs and per-file hashes are available in [MPL source instructions](third_party_licenses/mpl/README.md) and `third_party_licenses/mpl/components.json`; recipients can obtain sources by directly unpacking the included ZIPs. MoHan's MIT license does not replace or restrict these third-party terms. Updates, modifications and packaging must pass `tools/mpl_compliance.py`.
 
 ### Build-only toolchain
 
@@ -245,7 +257,7 @@ An outfit pack may contain multiple garments, colorways, and accessories, but ma
 
 ### Preview packaging tool
 
-The Linux x86_64 limited Preview is assembled with the official [AppImage `appimagetool`](https://github.com/AppImage/appimagetool). The build downloads the upstream `continuous` x86_64 asset but accepts it only when its SHA-256 equals `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0`. The recorded upstream source commit is `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, and the GitHub asset ID is `324406882`.
+The Linux x86_64 limited Preview is assembled with the official [AppImage `appimagetool`](https://github.com/AppImage/appimagetool). The build downloads the upstream immutable `1.9.1` release x86_64 asset but accepts it only when its SHA-256 equals `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0`. The recorded upstream source commit is `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`, and the GitHub asset ID is `324406736`.
 
 `appimagetool` remains governed by its own upstream license.
 
@@ -277,7 +289,7 @@ MoHan Desktop Assistant は MIT License で提供されますが、そのソー�
 
 | コンポーネント | 現在の固定バージョン | ライセンス |
 | --- | ---: | --- |
-| [PySide6 / Qt for Python](https://doc.qt.io/qtforpython-6/) | 6.11.1 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
+| [PySide6_Essentials／PySide6_Addons／shiboken6（Qt for Python）](https://doc.qt.io/qtforpython-6/) | 6.12.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only |
 | [Microsoft Azure Cognitive Services Speech SDK](https://pypi.org/project/azure-cognitiveservices-speech/) | 1.50.0 | Other/Proprietary License（Microsoft Speech SDK 条件） |
 | [python-sounddevice](https://python-sounddevice.readthedocs.io/) | 0.5.5 | MIT |
 | [websocket-client](https://github.com/websocket-client/websocket-client) | 1.9.0 | Apache-2.0 |
@@ -285,6 +297,10 @@ MoHan Desktop Assistant は MIT License で提供されますが、そのソー�
 | [cryptography](https://cryptography.io/) | 50.0.0 | Apache-2.0 OR BSD-3-Clause |
 | [NumPy](https://numpy.org/) | 2.5.2 | BSD-3-Clause |
 | [OpenCV Python](https://pypi.org/project/opencv-python/) | 5.0.0.93 | Apache-2.0 |
+
+### MPL コンポーネントとソースの取得
+
+certifi 2026.7.22（MPL-2.0）は Azure の間接依存であり、バージョンを明示的に固定し Windows SBOM に登録しました。tqdm 4.70.0（MPL-2.0 AND MIT）と orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）はローカル美術ツールで使用します。ライセンス全文、元の通知、対応ソース ZIP とファイル別ハッシュは [MPL ソース説明](third_party_licenses/mpl/README.md) および `third_party_licenses/mpl/components.json` にあります。受領者は同梱 ZIP を展開してソースを取得できます。墨寒の MIT ライセンスは第三者の条件を置換または制限しません。更新、変更、パッケージ化の前に `tools/mpl_compliance.py` を通過する必要があります。
 
 ### ビルド専用ツールチェーン
 
@@ -334,7 +350,7 @@ Face Mesh、虹彩、Silero VAD は正式な Windows パッケージに同梱さ
 
 ### Preview パッケージ作成ツール
 
-Linux x86_64 の機能制限付き Preview は、公式の [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) で組み立てられます。ビルドは上流の `continuous` x86_64 アセットをダウンロードしますが、その SHA-256 が `a6d71e2b6cd66f8e8d16c37ad164658985e0cf5fcaa950c90a482890cb9d13e0` と一致する場合にのみ受け入れます。記録されている上流ソースの commit は `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、GitHub アセット ID は `324406882` です。
+Linux x86_64 の機能制限付き Preview は、公式の [AppImage `appimagetool`](https://github.com/AppImage/appimagetool) で組み立てられます。ビルドは上流の固定正式版 `1.9.1` の x86_64 アセットをダウンロードしますが、その SHA-256 が `ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0` と一致する場合にのみ受け入れます。記録されている上流ソースの commit は `8c8c91f762b412a19f4e8d2c4b35afb98f2d7c81`、GitHub アセット ID は `324406736` です。
 
 `appimagetool` には、引き続き上流独自のライセンスが適用されます。
 

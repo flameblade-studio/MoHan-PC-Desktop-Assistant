@@ -5,7 +5,12 @@ lazy import os
 lazy from ctypes import wintypes
 lazy from pathlib import Path
 
-lazy from domain.contracts import SecretStoreFactoryPort, SecretStorePort
+lazy from domain.contracts import (
+    DEFAULT_PROTECTED_SECRET_DESCRIPTION,
+    SecretStoreFactoryPort,
+    SecretStorePort,
+    default_character_display_name,
+)
 lazy from infrastructure.platform_contracts import PlatformServicePort
 
 
@@ -19,7 +24,7 @@ def _blob(data: bytes) -> tuple[DATA_BLOB, object]:
 
 
 class SecretDecryptError(OSError):
-    """The protected blob exists but cannot be decrypted in this context."""
+    """The protected blob exists and requires the matching decryption context."""
 
 
 class SecretStore:
@@ -28,7 +33,9 @@ class SecretStore:
     def __init__(
         self,
         path: Path,
-        description: str = "MoHan OpenAI API key",
+        description: str = (
+            f"{default_character_display_name('en')} OpenAI API key"
+        ),
     ):
         self.path = path
         self.description = description
@@ -129,7 +136,7 @@ class UnavailableSecretStore:
 class PlatformSecretStoreFactory:
     """Create only the secure store verified for the active platform.
 
-    Unsupported platforms receive a fail-closed store.  Keeping this choice in
+    Supported platforms receive a protective store.  Keeping this choice in
     one injectable factory prevents individual features from silently falling
     back to plaintext or constructing a Windows-only DPAPI store themselves.
     """
@@ -140,14 +147,15 @@ class PlatformSecretStoreFactory:
     def __call__(
         self,
         path: Path,
-        description: str = "MoHan protected secret",
+        description: str = DEFAULT_PROTECTED_SECRET_DESCRIPTION,
     ) -> SecretStorePort:
         capabilities = self.platform_services.capabilities
         if capabilities.secure_secret_storage:
             return SecretStore(path, description)
         reason = (
             f"{capabilities.display_name} 的原生安全金鑰保存"
-            "尚未完成實機驗證；墨寒不會退回明文保存。"
+            f"尚未完成實機驗證；{default_character_display_name('zh-TW')}"
+            "不會退回明文保存。"
         )
         return UnavailableSecretStore(path.with_suffix(".unavailable"), reason)
 

@@ -7,6 +7,7 @@ lazy import tempfile
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
+lazy from domain.character_source import active_character_data
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import ServiceStatus, service_status
 lazy from integrations.speech_audio import (
@@ -14,6 +15,10 @@ lazy from integrations.speech_audio import (
 )
 
 CREATE_NO_WINDOW = 0x08000000
+_SYSTEM_LOCAL = active_character_data().voice.system_local
+_DEFAULT_ONECORE_VOICE = _SYSTEM_LOCAL.preferred_voice_ids["zh-TW"].removeprefix(
+    _SYSTEM_LOCAL.onecore_prefix
+)
 
 __all__ = (
     "OneCoreVoiceSelection",
@@ -86,17 +91,17 @@ def synthesize_windows_speech_to_wave(
     text: str,
     output: Path,
     *,
-    voice_name: str = "Microsoft Yating",
+    voice_name: str = _DEFAULT_ONECORE_VOICE,
 ) -> OneCoreVoiceSelection:
     """Write one WAV through the same OneCore path used by ``_run_onecore``.
 
-    This file-producing seam is for offline tools.  It never contacts a
-    provider, reads an API key, invokes SAPI, or applies a speech-rate change;
-    an unavailable requested OneCore voice is a hard failure.
+    This file-producing seam is for offline tools. It uses the OneCore path;
+    provider calls, API key reads, SAPI, and speech-rate changes stay outside
+    this route. A concrete installed OneCore voice is required for synthesis.
     """
 
     if not text.strip():
-        raise ValueError("Windows speech text must not be empty.")
+        raise ValueError("Provide non-empty Windows speech text.")
     if not voice_name.strip():
         raise ValueError("A concrete OneCore voice name is required.")
     output = Path(output)
@@ -106,7 +111,7 @@ def synthesize_windows_speech_to_wave(
         text,
         voice_name,
         output,
-        f"OneCore voice was not found: {voice_name}",
+        f"Select an installed OneCore voice: {voice_name}",
     )
     try:
         result = subprocess.run(
@@ -118,13 +123,13 @@ def synthesize_windows_speech_to_wave(
         )
     except (OSError, subprocess.SubprocessError) as exc:
         output.unlink(missing_ok=True)
-        raise RuntimeError(f"Windows local speech could not start: {exc}") from exc
+        raise RuntimeError(f"Windows local speech start needs a retry: {exc}") from exc
     if result.returncode or not output.is_file():
         output.unlink(missing_ok=True)
         detail = result.stderr.decode("utf-8", errors="replace").strip()
         raise RuntimeError(
             detail[:400]
-            or "OneCore speech did not produce a WAV file."
+            or "OneCore speech produced no WAV file."
         )
     metadata = result.stdout.decode("utf-8", errors="replace").strip()
     try:
@@ -134,7 +139,7 @@ def synthesize_windows_speech_to_wave(
         display_name, separator, voice_id = "", "", ""
     if not separator or not display_name.strip() or not voice_id.strip():
         output.unlink(missing_ok=True)
-        raise RuntimeError("OneCore speech did not report the selected voice metadata.")
+        raise RuntimeError("OneCore speech returned no selected voice metadata.")
     return OneCoreVoiceSelection(display_name.strip(), voice_id.strip())
 
 

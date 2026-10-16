@@ -47,6 +47,7 @@ lazy from presentation.lingxiao_tokens import (
     palette_for,
     reduced_motion_requested,
 )
+lazy from presentation.qt_parent import clear_graphics_effect
 
 __all__ = (
     "CornerOrnaments",
@@ -65,7 +66,7 @@ _MOTION_OVERRIDE: list[bool | None] = [None]
 
 
 def set_motion_override(value: bool | None) -> None:
-    """測試與偏好頁用：True 強制開、False 強制關、None 回到系統設定。"""
+    """測試與偏好頁用：True 強制開、False 強制關、None 採用系統設定。"""
 
     _MOTION_OVERRIDE[0] = value
 
@@ -101,8 +102,8 @@ class CornerOrnaments(QWidget):
         self._fit()
         self.raise_()
 
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:  # noqa: N802 - Qt API
-        if event.type() in (QEvent.Resize, QEvent.Show):
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if event.type() in {QEvent.Resize, QEvent.Show}:
             self._fit()
             self.raise_()
         return False
@@ -112,7 +113,7 @@ class CornerOrnaments(QWidget):
         if parent is not None:
             self.setGeometry(parent.rect())
 
-    def paintEvent(self, _event) -> None:  # noqa: N802 - Qt API
+    def paintEvent(self, _event) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         pen = QPen(_qcolor(self._color, 190), 1.5)
@@ -183,7 +184,7 @@ class PulseDot(QWidget):
         self._phase = (self._phase + (MOTION["motes_frame_ms"] / MOTION["pulse_ms"])) % 1.0
         self.update()
 
-    def paintEvent(self, _event) -> None:  # noqa: N802 - Qt API
+    def paintEvent(self, _event) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         center = QPointF(self.width() / 2, self.height() / 2)
@@ -222,7 +223,6 @@ class SealButton(QPushButton):
         self.pressed.connect(lambda: self._animate(1.0))
         self.released.connect(lambda: self._animate(0.0))
 
-
     def sizeHint(self) -> QSize:  # QSS 的 min-height 會改寫 minimumSize，這裡把尺寸釘死
         return QSize(132, 132)
 
@@ -250,9 +250,9 @@ class SealButton(QPushButton):
         self._press = float(value)
         self.update()
 
-    pressDepth = Property(float, _get_press, _set_press)  # noqa: N815 - Qt property
+    pressDepth = Property(float, _get_press, _set_press)
 
-    def paintEvent(self, _event) -> None:  # noqa: N802 - Qt API
+    def paintEvent(self, _event) -> None:
         p = self._palette
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
@@ -327,7 +327,7 @@ class GlowOnHover(QObject):
         danger = self._button.property("mohanAction") == "danger"
         self._effect.setColor(_qcolor(palette.cinnabar if danger else palette.gold, 170))
 
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:  # noqa: N802 - Qt API
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() == QEvent.Enter:
             self._to(22.0)
         elif event.type() == QEvent.Leave:
@@ -366,16 +366,17 @@ class PageTransition(QObject):
         self._release_effect()
         self._effect = QGraphicsOpacityEffect(page)
         page.setGraphicsEffect(self._effect)
-        self._animation = QPropertyAnimation(self._effect, b"opacity", self)
-        self._animation.setDuration(MOTION["page_transition_ms"])
-        self._animation.setStartValue(0.0)
-        self._animation.setEndValue(1.0)
-        self._animation.setEasingCurve(QEasingCurve.OutCubic)
-        self._animation.finished.connect(self._release_effect)
-        self._animation.start()
+        animation = QPropertyAnimation(self._effect, b"opacity", self)
+        self._animation = animation
+        animation.setDuration(MOTION["page_transition_ms"])
+        animation.setStartValue(0.0)
+        animation.setEndValue(1.0)
+        animation.setEasingCurve(QEasingCurve.OutCubic)
+        animation.finished.connect(self._release_effect)
+        animation.start()
 
     def _release_effect(self) -> None:
-        """卸下上一頁的透明效果。setGraphicsEffect(None) 會刪掉 C++ 物件，所以引用也要清。"""
+        """清理上一頁的透明效果。setGraphicsEffect(None) 會刪掉 C++ 物件，因此同步清理引用。"""
 
         effect, self._effect = self._effect, None
         if effect is None:
@@ -385,7 +386,7 @@ class PageTransition(QObject):
         except RuntimeError:  # 頁面已先一步銷毀，效果跟著沒了
             return
         if isinstance(owner, QWidget):
-            owner.setGraphicsEffect(None)
+            clear_graphics_effect(owner)
 
 
 # ---------------------------------------------------------------- 金塵粒子與背景
@@ -437,8 +438,8 @@ class MotesLayer(QWidget):
         r = self._random
         return _Mote(r.random(), r.random(), 0.8 + r.random() * 1.8, 0.02 + r.random() * 0.05, r.uniform(-0.01, 0.01), r.random())
 
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:  # noqa: N802 - Qt API
-        if event.type() in (QEvent.Resize, QEvent.Show):
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
+        if event.type() in {QEvent.Resize, QEvent.Show}:
             self._fit()
             self.lower()
         return False
@@ -459,7 +460,7 @@ class MotesLayer(QWidget):
                 mote.x = self._random.random()
         self.update()
 
-    def paintEvent(self, _event) -> None:  # noqa: N802 - Qt API
+    def paintEvent(self, _event) -> None:
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
         w, h = self.width(), self.height()

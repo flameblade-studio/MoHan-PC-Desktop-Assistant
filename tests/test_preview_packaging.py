@@ -4,10 +4,13 @@ lazy import ast
 lazy import importlib
 lazy import os
 lazy import re
+lazy import shutil
 lazy import subprocess
 lazy import sys
 lazy import tempfile
 lazy from pathlib import Path
+lazy from typing import Any
+lazy from PIL import Image
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -36,6 +39,7 @@ lazy from tools.build_preview_package import (
     APPIMAGETOOL_SHA256,
     APPIMAGETOOL_SOURCE_COMMIT,
     APPIMAGETOOL_URL,
+    DASHBOARD_ARTWORK_RELATIVE,
     _validate_version,
 )
 lazy from tools.check_layered_imports import inspect_layered_imports
@@ -178,14 +182,14 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
             f"--preview-smoke-output={marker}",
         ]
         valid = subprocess.run(
-            command + [f"--preview-expected-version={APP_VERSION}"],
+            [*command, f"--preview-expected-version={APP_VERSION}"],
             check=False,
             env={**os.environ, "QT_QPA_PLATFORM": "offscreen"},
         )
         assert valid.returncode == 0
         assert marker.read_text(encoding="utf-8") == "PREVIEW_PACKAGE_SMOKE_OK"
         invalid = subprocess.run(
-            command + ["--preview-expected-version=0.0.0-invalid"],
+            [*command, "--preview-expected-version=0.0.0-invalid"],
             check=False,
             env={**os.environ, "QT_QPA_PLATFORM": "offscreen"},
         )
@@ -195,7 +199,7 @@ def test_source_smoke_rejects_wrong_embedded_version() -> None:
 
 def test_build_tool_is_pinned() -> None:
     assert re.fullmatch(r"[0-9a-f]{40}", APPIMAGETOOL_SOURCE_COMMIT)
-    assert APPIMAGETOOL_ASSET_ID == "324406882"
+    assert APPIMAGETOOL_ASSET_ID == "324406736"
     assert re.fullmatch(r"[0-9a-f]{64}", APPIMAGETOOL_SHA256)
     assert APPIMAGETOOL_URL.startswith(
         "https://github.com/AppImage/appimagetool/releases/download/"
@@ -221,6 +225,7 @@ def test_build_tool_is_pinned() -> None:
     assert "POSE_ATLAS_LAYERED_RELATIVE_ROOT" in build_source
     assert "assets/pose-atlas/v4" not in build_source
     assert "assets/expressions" in build_source
+    assert "assets/characters/mohan" in build_source
     assert "expected_full_body_layers = VIEW_RING_COUNT * FULL_BODY_LAYER_COUNT" in build_source
     assert "expected_half_body_layers = HALF_BODY_POSE_COUNT * FULL_BODY_LAYER_COUNT" in build_source
     assert "--require-pose-atlas" in build_source
@@ -237,7 +242,7 @@ def test_build_tool_is_pinned() -> None:
         except ValueError:
             pass
         else:
-            raise AssertionError(f"invalid Preview version was accepted: {invalid}")
+            raise AssertionError(f'Preview versions must satisfy validation: {invalid}')
 
 
 def test_release_gate_is_pinned() -> None:
@@ -288,7 +293,8 @@ def test_release_gate_is_pinned() -> None:
     assert "--expected-version 2.3.0-rc.0" in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
     assert release.count("--require-pose-atlas") == POSE_ATLAS_FLAG_COUNT
-    assert "Preview package omitted PoseAtlas {POSE_ATLAS_ROOT_NAME} assets" in read(
+    # This asserts the source template, so braces must remain literal.
+    assert "Preview package omitted PoseAtlas {POSE_ATLAS_ROOT_NAME} assets" in read(  # ruff: ignore[missing-f-string-syntax]
         "tools/smoke_preview_package.py"
     )
 
@@ -298,7 +304,7 @@ def test_release_gate_is_pinned() -> None:
             if reference.startswith("./"):
                 continue
             assert re.fullmatch(r"[^@]+@[0-9a-f]{40}", reference), (
-                f"GitHub Action is not pinned to a full commit: {workflow.name}: {reference}"
+                f'GitHub Action must be pinned to a full commit: {workflow.name}: {reference}'
             )
 
 
@@ -346,7 +352,6 @@ def test_four_language_release_notes_and_boundaries() -> None:
         assert forbidden_claim not in guide
 
 
-
 def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path) -> None:
     for duplicate in ("Contents/Resources", "Contents/Frameworks"):
         atlas = tmp_path / duplicate / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
@@ -358,6 +363,160 @@ def test_pose_atlas_smoke_accepts_complete_duplicate_bundle_roots(tmp_path: Path
             (atlas / f"{stem}.hands.json").write_text("{}", encoding="utf-8")
 
     _require_pose_atlas(tmp_path)
+
+
+def test_packaged_native_overrides_remain_loadable_with_atlas(
+    tmp_path: Path, monkeypatch: Any,
+) -> None:
+    _check_packaged_native_overrides_remain_loadable(tmp_path, monkeypatch, True)
+
+
+def test_packaged_native_overrides_remain_loadable_without_atlas(
+    tmp_path: Path, monkeypatch: Any,
+) -> None:
+    _check_packaged_native_overrides_remain_loadable(tmp_path, monkeypatch, False)
+
+
+def _check_packaged_native_overrides_remain_loadable(
+    tmp_path: Path, monkeypatch: Any, include_atlas: bool,
+) -> None:
+    from infrastructure.core_hand_regions import load_core_hand_regions
+    from tools import build_preview_package as builder
+
+    application = QApplication.instance() or QApplication([])
+    assert application is not None
+
+    project = tmp_path / "project"
+    bundle = tmp_path / "bundle"
+    view = "yaw+045-pitch+00"
+    files = [
+        f"v5-body-overlays/{view}.png",
+        f"v5-hand-overlays/{view}_left.png",
+        f"v5-hand-overlays/{view}_right.png",
+        f"v5-appearance-silhouettes/mohan.official.blue-white-hanfu/{view}.png",
+        f"v5-appearance-replacement-masks/mohan.official.blue-white-hanfu/{view}.png",
+    ]
+    for name in files:
+        path = project / "assets/pose-atlas" / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        pixels = Image.new("RGBA", (1024, 1536))
+        pixels.putpixel((610, 800), (200, 150, 120, 255))
+        pixels.save(path)
+
+    def package(command: list[str]) -> None:
+        for index, argument in enumerate(command[:-1]):
+            if argument != "--add-data":
+                continue
+            source_text, destination = command[index + 1].rsplit(os.pathsep, 1)
+            source = Path(source_text)
+            if source.is_dir() and source.is_relative_to(project):
+                shutil.copytree(source, bundle / destination, dirs_exist_ok=True)
+
+    monkeypatch.setattr(builder, "ROOT", project)
+    monkeypatch.setattr(builder, "_run", package)
+    monkeypatch.setattr(builder, "_write_build_info", lambda *_args: None)
+    monkeypatch.setattr(builder, "verify_policy", lambda *_args: [])
+    monkeypatch.setattr(builder, "verify_environment", lambda *_args: [])
+    builder._pyinstaller(
+        name="MoHanPreview", version="1.0.0", target="linux",
+        icon=project / "icon.png", temp_root=tmp_path,
+        pose_atlas_root=project / "assets/pose-atlas/v5-base" if include_atlas else None,
+    )
+    if not include_atlas:
+        assert not (bundle / "assets/pose-atlas").exists()
+        return
+    for name in files:
+        relative = Path("assets/pose-atlas") / name
+        assert (bundle / relative).read_bytes() == (project / relative).read_bytes()
+    region_for_view = load_core_hand_regions(bundle)
+    assert region_for_view is not None
+    assert region_for_view(view).boundingRect().getRect() == (610, 800, 1, 1)
+
+
+def test_packaged_dashboard_artwork_is_loadable(
+    tmp_path: Path, monkeypatch: Any,
+) -> None:
+    from tools import build_preview_package as builder
+
+    project = tmp_path / "project"
+    bundle = tmp_path / "bundle"
+    relative = DASHBOARD_ARTWORK_RELATIVE
+    source = project / relative
+    source.parent.mkdir(parents=True)
+    source.write_bytes((ROOT / relative).read_bytes())
+    observed: list[tuple[Path, str]] = []
+
+    def package(command: list[str]) -> None:
+        for index, argument in enumerate(command[:-1]):
+            if argument != "--add-data":
+                continue
+            source_text, destination = command[index + 1].rsplit(os.pathsep, 1)
+            packaged_source = Path(source_text)
+            observed.append((packaged_source, destination))
+            if packaged_source != source:
+                continue
+            target = bundle / destination / packaged_source.name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(packaged_source, target)
+
+    monkeypatch.setattr(builder, "ROOT", project)
+    monkeypatch.setattr(builder, "_run", package)
+    monkeypatch.setattr(builder, "_write_build_info", lambda *_args: None)
+    monkeypatch.setattr(builder, "verify_policy", lambda *_args: [])
+    monkeypatch.setattr(builder, "verify_environment", lambda *_args: [])
+    builder._pyinstaller(
+        name="MoHanPreview", version="1.0.0", target="linux",
+        icon=project / "icon.png", temp_root=tmp_path, pose_atlas_root=None,
+    )
+
+    assert (source, relative.parent.as_posix()) in observed
+    packaged = bundle / relative
+    assert packaged.read_bytes() == source.read_bytes()
+    with Image.open(packaged) as image, Image.open(source) as expected:
+        assert image.size == expected.size
+        assert image.mode == expected.mode
+
+
+def test_preview_package_contains_only_the_bundled_mohan_character(
+    tmp_path: Path,
+    monkeypatch: Any,
+) -> None:
+    from tools import build_preview_package as builder
+
+    bundle = tmp_path / "bundle"
+    observed: list[tuple[Path, str]] = []
+
+    def package(command: list[str]) -> None:
+        for index, argument in enumerate(command[:-1]):
+            if argument != "--add-data":
+                continue
+            source_text, destination = command[index + 1].rsplit(os.pathsep, 1)
+            source = Path(source_text)
+            observed.append((source, destination))
+            if destination != "assets/characters/mohan":
+                continue
+            shutil.copytree(source, bundle / destination)
+
+    monkeypatch.setattr(builder, "_run", package)
+    monkeypatch.setattr(builder, "_write_build_info", lambda *_args: None)
+    monkeypatch.setattr(builder, "verify_policy", lambda *_args: [])
+    monkeypatch.setattr(builder, "verify_environment", lambda *_args: [])
+    builder._pyinstaller(
+        name="MoHanPreview",
+        version="1.0.0",
+        target="linux",
+        icon=tmp_path / "icon.png",
+        temp_root=tmp_path,
+        pose_atlas_root=None,
+    )
+
+    expected_source = ROOT / "assets" / "characters" / "mohan"
+    assert (expected_source, "assets/characters/mohan") in observed
+    assert (bundle / "assets/characters/mohan/persona/profile.json").is_file()
+    packaged_characters = bundle / "assets/characters"
+    assert tuple(path.name for path in packaged_characters.iterdir()) == ("mohan",)
+    assert not (bundle / "assets/characters/lin-keyun").exists()
+
 
 def main() -> None:
     test_preview_ui_contract()
@@ -375,3 +534,49 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def test_packaged_makeup_state_masks_remain_verifiable(
+    tmp_path: Path, monkeypatch: Any,
+) -> None:
+    from domain.outfit_pack_makeup import load_makeup_safe_regions, verify_makeup_layers
+    from tools import build_preview_package as builder
+
+    bundle = tmp_path / "bundle"
+
+    def package(command: list[str]) -> None:
+        for index, argument in enumerate(command[:-1]):
+            if argument != "--add-data":
+                continue
+            source_text, destination = command[index + 1].rsplit(os.pathsep, 1)
+            source = Path(source_text)
+            if not source.is_relative_to(ROOT / "assets"):
+                continue
+            if source.name not in {
+                "makeup-safe-regions.json", "makeup-foundation-safe-regions",
+                "makeup-eye-apertures", "makeup-safe-regions", "official-packs",
+            }:
+                continue
+            target = bundle / destination
+            if source.is_dir():
+                shutil.copytree(source, target)
+            else:
+                target.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, target / source.name)
+
+    monkeypatch.setattr(builder, "_run", package)
+    monkeypatch.setattr(builder, "_write_build_info", lambda *_args: None)
+    monkeypatch.setattr(builder, "verify_policy", lambda *_args: [])
+    monkeypatch.setattr(builder, "verify_environment", lambda *_args: [])
+    builder._pyinstaller(
+        name="MoHanPreview", version="1.0.0", target="linux",
+        icon=tmp_path / "icon.png", temp_root=tmp_path,
+        pose_atlas_root=None,
+    )
+    regions = load_makeup_safe_regions(bundle / "assets/makeup-safe-regions.json")
+    front = regions["yaw+000-pitch+00"]
+    assert set(front.foundation_masks) == {"rest", "half", "closed"}
+    assert set(front.eye_aperture_masks) == {"rest", "half", "closed"}
+    verify_makeup_layers(
+        bundle / "assets/official-packs/mohan.makeup.builtin.mohan-outfit", regions,
+    )

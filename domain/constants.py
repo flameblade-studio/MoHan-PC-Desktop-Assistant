@@ -1,12 +1,8 @@
-"""Centralized, cross-module constants for MoHan.
+"""Compatibility facade for MoHan-owned and character-neutral constants.
 
-This single module is the project's "constant island": every shared,
-domain-agnostic value lives here with a single source of truth. It contains
-only pure literals (numbers, strings, booleans) and never imports any project
-module, which physically prevents circular imports.
-
-Every constant is declared with :data:`typing.Final` so any accidental
-reassignment is rejected by the type checker.
+Domain-agnostic values are re-exported from :mod:`domain.core_constants`.
+Character-owned asset geometry is adapted from the strict bundled rig
+manifest while the long-standing public constant names stay compatible.
 
 Import style::
 
@@ -15,62 +11,134 @@ Import style::
     from domain.constants import HOURS_PER_DAY, SECONDS_PER_DAY
 """
 
+lazy import json
+lazy from pathlib import Path, PurePosixPath
 lazy from typing import Final
 
-# ---------------------------------------------------------------------------
-# HTTP status codes and classification boundaries (RFC 9110).
-# ---------------------------------------------------------------------------
-HTTP_MIN_STATUS: Final = 100
-HTTP_MAX_STATUS: Final = 599
-HTTP_CLIENT_ERROR_BOUNDARY: Final = 400
-HTTP_SERVER_ERROR_BOUNDARY: Final = 500
-HTTP_SERVER_ERROR_MAX: Final = 600
+lazy from domain.character_runtime_bindings import load_character_runtime_bindings
+lazy from domain.character_runtime_data import default_rig_manifest
+lazy from domain import core_constants as _core_constants
 
-HTTP_OK: Final = 200
-HTTP_UNAUTHORIZED: Final = 401
-HTTP_FORBIDDEN: Final = 403
-HTTP_NOT_FOUND: Final = 404
-HTTP_TOO_MANY_REQUESTS: Final = 429
-HTTP_BAD_GATEWAY: Final = 502
-HTTP_SERVICE_UNAVAILABLE: Final = 503
-HTTP_GATEWAY_TIMEOUT: Final = 504
+BYTES_PER_PIXEL = _core_constants.BYTES_PER_PIXEL
+BYTE_MAX = _core_constants.BYTE_MAX
+FLOAT_COMPARISON_EPSILON = _core_constants.FLOAT_COMPARISON_EPSILON
+HOURS_PER_DAY = _core_constants.HOURS_PER_DAY
+HTTP_BAD_GATEWAY = _core_constants.HTTP_BAD_GATEWAY
+HTTP_CLIENT_ERROR_BOUNDARY = _core_constants.HTTP_CLIENT_ERROR_BOUNDARY
+HTTP_FORBIDDEN = _core_constants.HTTP_FORBIDDEN
+HTTP_GATEWAY_TIMEOUT = _core_constants.HTTP_GATEWAY_TIMEOUT
+HTTP_MAX_STATUS = _core_constants.HTTP_MAX_STATUS
+HTTP_MIN_STATUS = _core_constants.HTTP_MIN_STATUS
+HTTP_NOT_FOUND = _core_constants.HTTP_NOT_FOUND
+HTTP_OK = _core_constants.HTTP_OK
+HTTP_SERVER_ERROR_BOUNDARY = _core_constants.HTTP_SERVER_ERROR_BOUNDARY
+HTTP_SERVER_ERROR_MAX = _core_constants.HTTP_SERVER_ERROR_MAX
+HTTP_SERVICE_UNAVAILABLE = _core_constants.HTTP_SERVICE_UNAVAILABLE
+HTTP_TOO_MANY_REQUESTS = _core_constants.HTTP_TOO_MANY_REQUESTS
+HTTP_UNAUTHORIZED = _core_constants.HTTP_UNAUTHORIZED
+MINUTES_PER_HOUR = _core_constants.MINUTES_PER_HOUR
+PCM16_MAX_SAMPLE = _core_constants.PCM16_MAX_SAMPLE
+PCM16_MIN_SAMPLE = _core_constants.PCM16_MIN_SAMPLE
+PCM16_SAMPLE_WIDTH = _core_constants.PCM16_SAMPLE_WIDTH
+PNG_BIT_DEPTH = _core_constants.PNG_BIT_DEPTH
+PNG_COLOR_TYPE_RGBA = _core_constants.PNG_COLOR_TYPE_RGBA
+PNG_MIN_HEADER_LENGTH = _core_constants.PNG_MIN_HEADER_LENGTH
+PNG_SIGNATURE = _core_constants.PNG_SIGNATURE
+RGB_CHANNELS = _core_constants.RGB_CHANNELS
+RGB_MAX = _core_constants.RGB_MAX
+SECONDS_PER_DAY = _core_constants.SECONDS_PER_DAY
+SECONDS_PER_HOUR = _core_constants.SECONDS_PER_HOUR
+SECONDS_PER_MINUTE = _core_constants.SECONDS_PER_MINUTE
+SHA256_HEX_LENGTH = _core_constants.SHA256_HEX_LENGTH
+SHA256_RAW_LENGTH = _core_constants.SHA256_RAW_LENGTH
+SYMLINK_FILE_TYPE = _core_constants.SYMLINK_FILE_TYPE
 
-# ---------------------------------------------------------------------------
-# Cryptographic / hash lengths.
-# ---------------------------------------------------------------------------
-SHA256_HEX_LENGTH: Final = 64
-SHA256_RAW_LENGTH: Final = 32
+__all__ = (
+    "BROW_LIFT_FACTOR",
+    "BROW_TENSION_FACTOR",
+    "BYTES_PER_PIXEL",
+    "BYTE_MAX",
+    "CHARACTER_ASSET_PATHS",
+    "CHARACTER_EXPRESSION_ROLES",
+    "CHARACTER_LAYER_ROLES",
+    "CHARACTER_POSE_ROLES",
+    "CORNER_SMILE_FACTOR",
+    "CORNER_SMILE_LIFT_FACTOR",
+    "DEFAULT_WEATHER_CONDITION",
+    "DEFAULT_WEATHER_TEMPERATURE_C",
+    "FLOAT_COMPARISON_EPSILON",
+    "FULL_BODY_LAYER_COUNT",
+    "FULL_BODY_LAYER_Z_ORDER",
+    "HOURS_PER_DAY",
+    "HTTP_BAD_GATEWAY",
+    "HTTP_CLIENT_ERROR_BOUNDARY",
+    "HTTP_FORBIDDEN",
+    "HTTP_GATEWAY_TIMEOUT",
+    "HTTP_MAX_STATUS",
+    "HTTP_MIN_STATUS",
+    "HTTP_NOT_FOUND",
+    "HTTP_OK",
+    "HTTP_SERVER_ERROR_BOUNDARY",
+    "HTTP_SERVER_ERROR_MAX",
+    "HTTP_SERVICE_UNAVAILABLE",
+    "HTTP_TOO_MANY_REQUESTS",
+    "HTTP_UNAUTHORIZED",
+    "INTERPOLATION_EPSILON",
+    "JAW_TRANSLATION_FACTOR",
+    "LAYER_OPACITY_BLUSH",
+    "LAYER_OPACITY_EYELINER",
+    "LAYER_OPACITY_EYE_LID",
+    "LAYER_OPACITY_IRIS",
+    "MINUTES_PER_HOUR",
+    "MOUTH_APERTURE_NORMALIZER",
+    "MOUTH_HEIGHT_RATIO",
+    "MOUTH_ROUNDING_RATIO",
+    "MOUTH_STRETCH_RATIO",
+    "PCM16_MAX_SAMPLE",
+    "PCM16_MIN_SAMPLE",
+    "PCM16_SAMPLE_WIDTH",
+    "PNG_BIT_DEPTH",
+    "PNG_COLOR_TYPE_RGBA",
+    "PNG_MIN_HEADER_LENGTH",
+    "PNG_SIGNATURE",
+    "POSE_ATLAS_GENERATION",
+    "POSE_ATLAS_LAYERED_RELATIVE_ROOT",
+    "POSE_ATLAS_LAYERED_ROOT_NAME",
+    "POSE_ATLAS_RELATIVE_ROOT",
+    "POSE_ATLAS_ROOT_NAME",
+    "RGB_CHANNELS",
+    "RGB_MAX",
+    "SECONDS_PER_DAY",
+    "SECONDS_PER_HOUR",
+    "SECONDS_PER_MINUTE",
+    "SHA256_HEX_LENGTH",
+    "SHA256_RAW_LENGTH",
+    "SHYNESS_BLUSH_WEIGHT",
+    "SHYNESS_GAZE_WEIGHT",
+    "SHYNESS_LIP_WEIGHT",
+    "SYMLINK_FILE_TYPE",
+    "VISEME_FRAME_INTERVAL_MS",
+    "Final",
+    "Path",
+    "PurePosixPath",
+    "default_rig_manifest",
+    "json",
+)
 
-# ---------------------------------------------------------------------------
-# Media / asset constants (PNG, RGBA, color channels).
-# ---------------------------------------------------------------------------
-PNG_SIGNATURE: Final = b"\x89PNG\r\n\x1a\n"
-PNG_BIT_DEPTH: Final = 8
-PNG_COLOR_TYPE_RGBA: Final = 6
-PNG_MIN_HEADER_LENGTH: Final = 33
+_RIG_MANIFEST = default_rig_manifest()
 
-BYTES_PER_PIXEL: Final = 4
-RGB_CHANNELS: Final = 3
-BYTE_MAX: Final = 255
-RGB_MAX: Final = 255
-
-SYMLINK_FILE_TYPE: Final = 0o120000
-
-# ---------------------------------------------------------------------------
-# PCM16 audio constants.
-# ---------------------------------------------------------------------------
-PCM16_MIN_SAMPLE: Final = -32_768
-PCM16_MAX_SAMPLE: Final = 32_767
-PCM16_SAMPLE_WIDTH: Final = 2
-
-# ---------------------------------------------------------------------------
-# Time units.
-# ---------------------------------------------------------------------------
-SECONDS_PER_MINUTE: Final = 60
-MINUTES_PER_HOUR: Final = 60
-SECONDS_PER_HOUR: Final = 3_600
-HOURS_PER_DAY: Final = 24
-SECONDS_PER_DAY: Final = 86_400
+_RUNTIME_BINDINGS = load_character_runtime_bindings(
+    Path(__file__).resolve().parents[1]
+    / "assets"
+    / "characters"
+    / "mohan"
+    / "rig"
+    / "runtime-bindings.json"
+)
+CHARACTER_ASSET_PATHS: Final = _RUNTIME_BINDINGS.asset_paths
+CHARACTER_POSE_ROLES: Final = _RUNTIME_BINDINGS.pose_roles
+CHARACTER_EXPRESSION_ROLES: Final = _RUNTIME_BINDINGS.expression_roles
+CHARACTER_LAYER_ROLES: Final = _RUNTIME_BINDINGS.layer_roles
 
 # ---------------------------------------------------------------------------
 # Parametric 2.5D face gradient parameters.
@@ -80,39 +148,38 @@ SECONDS_PER_DAY: Final = 86_400
 # :class:`~domain.face_rig.FaceMotionFrame` control onto one authored layer.
 # ---------------------------------------------------------------------------
 # Layer opacity ceilings for independent facial features.
-LAYER_OPACITY_EYE_LID: Final = 1.0
-LAYER_OPACITY_EYELINER: Final = 1.0
-LAYER_OPACITY_BLUSH: Final = 1.0
-LAYER_OPACITY_IRIS: Final = 1.0
+LAYER_OPACITY_EYE_LID: Final = _RIG_MANIFEST.face_calibration.layer_opacity_eye_lid
+LAYER_OPACITY_EYELINER: Final = (
+    _RIG_MANIFEST.face_calibration.layer_opacity_eyeliner
+)
+LAYER_OPACITY_BLUSH: Final = _RIG_MANIFEST.face_calibration.layer_opacity_blush
+LAYER_OPACITY_IRIS: Final = _RIG_MANIFEST.face_calibration.layer_opacity_iris
 
 # Mouth articulation stretch/scale ratios.
-MOUTH_STRETCH_RATIO: Final = 0.08
-MOUTH_ROUNDING_RATIO: Final = 0.02
-MOUTH_HEIGHT_RATIO: Final = 0.04
-MOUTH_APERTURE_NORMALIZER: Final = 0.18
+MOUTH_STRETCH_RATIO: Final = _RIG_MANIFEST.face_calibration.mouth_stretch_ratio
+MOUTH_ROUNDING_RATIO: Final = _RIG_MANIFEST.face_calibration.mouth_rounding_ratio
+MOUTH_HEIGHT_RATIO: Final = _RIG_MANIFEST.face_calibration.mouth_height_ratio
+MOUTH_APERTURE_NORMALIZER: Final = (
+    _RIG_MANIFEST.face_calibration.mouth_aperture_normalizer
+)
 
 # Jaw / brow / corner translation factors (pixels per unit control).
-JAW_TRANSLATION_FACTOR: Final = 3.0
-BROW_LIFT_FACTOR: Final = 3.0
-BROW_TENSION_FACTOR: Final = 1.5
-CORNER_SMILE_FACTOR: Final = 2.0
-CORNER_SMILE_LIFT_FACTOR: Final = 1.0
+JAW_TRANSLATION_FACTOR: Final = _RIG_MANIFEST.face_calibration.jaw_translation_factor
+BROW_LIFT_FACTOR: Final = _RIG_MANIFEST.face_calibration.brow_lift_factor
+BROW_TENSION_FACTOR: Final = _RIG_MANIFEST.face_calibration.brow_tension_factor
+CORNER_SMILE_FACTOR: Final = _RIG_MANIFEST.face_calibration.corner_smile_factor
+CORNER_SMILE_LIFT_FACTOR: Final = (
+    _RIG_MANIFEST.face_calibration.corner_smile_lift_factor
+)
 
 # Micro-expression chain weights (shyness cascade: blush → gaze → lips).
-SHYNESS_BLUSH_WEIGHT: Final = 0.15
-SHYNESS_GAZE_WEIGHT: Final = 0.10
-SHYNESS_LIP_WEIGHT: Final = 0.05
+SHYNESS_BLUSH_WEIGHT: Final = _RIG_MANIFEST.face_calibration.shyness_blush_weight
+SHYNESS_GAZE_WEIGHT: Final = _RIG_MANIFEST.face_calibration.shyness_gaze_weight
+SHYNESS_LIP_WEIGHT: Final = _RIG_MANIFEST.face_calibration.shyness_lip_weight
 
 # Sub-frame interpolation timing (50 Hz speech clock).
 VISEME_FRAME_INTERVAL_MS: Final = 20
 INTERPOLATION_EPSILON: Final = 1e-4
-
-# Absolute tolerance for zero/boundary float comparisons.  Values produced by
-# ``clamped()`` are exact, but computed values (gaze confidence, normalized
-# vectors, cosine similarity) can drift by a few ULPs; this tolerance makes
-# ``== 0.0`` / ``== 1.0`` checks robust without treating a near-zero value as
-# exactly zero.
-FLOAT_COMPARISON_EPSILON: Final = 1e-9
 
 # ---------------------------------------------------------------------------
 # Full-body 25-layer depth order (Z-order, bottom to top).
@@ -120,36 +187,10 @@ FLOAT_COMPARISON_EPSILON: Final = 1e-9
 # The full-body parametric renderer composes 25 authored layers per view. This
 # tuple is the single source of truth for paint order so that, when the
 # character turns, back hair stays behind the body, front hair stays in front of
-# the face, and sleeves stay in front of the torso — no clothing clipping.
+# the face, and sleeves stay in front of the torso — clothing clipping stays outside the visible result.
 # ---------------------------------------------------------------------------
-FULL_BODY_LAYER_COUNT: Final = 25
-FULL_BODY_LAYER_Z_ORDER: Final = (
-    "body",            # torso + clothing base (face region left transparent)
-    "hair_back",       # back hair, behind the face
-    "base",            # face base
-    "jaw",             # jaw influence region
-    "oral_cavity",     # dark oral cavity (open mouth)
-    "teeth_tongue",    # teeth / tongue (open mouth)
-    "lip_lower",       # lower lip
-    "lip_upper",       # upper lip
-    "corner_left",     # left mouth corner
-    "corner_right",    # right mouth corner
-    "blush_left",      # left cheek blush
-    "blush_right",     # right cheek blush
-    "iris_left",       # left iris
-    "iris_right",      # right iris
-    "eyelid_left",     # left eyelid
-    "eyelid_right",    # right eyelid
-    "eyeliner_left",   # left eyeliner
-    "eyeliner_right",  # right eyeliner
-    "brow_left",       # left brow
-    "brow_right",      # right brow
-    "hair_left",       # front hair, left side (in front of face)
-    "hair_right",      # front hair, right side (in front of face)
-    "sleeve_left",     # left sleeve (in front of torso)
-    "sleeve_right",    # right sleeve (in front of torso)
-    "ornament",        # hair ornament / accessory (topmost)
-)
+FULL_BODY_LAYER_Z_ORDER: Final = _RIG_MANIFEST.layer_z_order
+FULL_BODY_LAYER_COUNT: Final = len(FULL_BODY_LAYER_Z_ORDER)
 
 # ---------------------------------------------------------------------------
 # Full-body PoseAtlas generation (runtime switch ratified 2026-09-02).
@@ -173,7 +214,7 @@ POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = "assets/pose-atlas/v5-base-layered"
 # ``weather_temperature_c``/``weather_condition``, every reader must assume the
 # same comfortable indoor scene.  24 °C sits in the "warm" thermal band and
 # "indoor" fits every outfit profile, so nothing complains or changes clothes
-# based on weather that was never observed.
+# based on observed weather data.
 # ---------------------------------------------------------------------------
-DEFAULT_WEATHER_TEMPERATURE_C: Final = 24.0
-DEFAULT_WEATHER_CONDITION: Final = "indoor"
+DEFAULT_WEATHER_TEMPERATURE_C: Final = _core_constants.DEFAULT_WEATHER_TEMPERATURE_C
+DEFAULT_WEATHER_CONDITION: Final = _core_constants.DEFAULT_WEATHER_CONDITION

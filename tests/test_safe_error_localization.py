@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 lazy from domain import safe_error_localization as localization
 lazy from domain.safe_error import SafeDiagnostic, SafeError, SafeErrorType
 lazy from domain.safe_error_localization import safe_error_message
+lazy from domain.service_status_localization import render_character_ui_template
 
 SUPPORTED_LANGUAGES = ("zh-TW", "zh-CN", "en", "ja-JP")
 
@@ -79,7 +80,10 @@ def _assert_every_error_type_renders() -> None:
         status = 502 if error_type is SafeErrorType.HTTP_ERROR else None
         safe = SafeError(error_type, diagnostic, status)
         for language in SUPPORTED_LANGUAGES:
-            expected = localization._MESSAGES[diagnostic][language]
+            expected = render_character_ui_template(
+                language,
+                localization._MESSAGES[diagnostic][language],
+            )
             metadata = (
                 f"type={error_type.value}; diagnostic={diagnostic.value}"
             )
@@ -93,7 +97,10 @@ def _assert_every_error_type_renders() -> None:
 def _assert_http_statuses_render_safely() -> None:
     for status, diagnostic in HTTP_DIAGNOSTICS.items():
         for language in SUPPORTED_LANGUAGES:
-            expected = localization._MESSAGES[diagnostic][language]
+            expected = render_character_ui_template(
+                language,
+                localization._MESSAGES[diagnostic][language],
+            )
             expected = (
                 f"{expected} [type=http_error; "
                 f"diagnostic={diagnostic.value}; HTTP {status}]"

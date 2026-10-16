@@ -97,7 +97,7 @@ def run() -> None:
     absent = director.decide(context(), ())
     assert absent.outfit_id == "formal" and absent.reason == "no-complete-match"
 
-    # Source is intentionally not part of WardrobeCandidate or its score.
+    # WardrobeCandidate and its score use source-independent inputs.
     # Official, user-authored, and cloud-generated packs share one neutral
     # candidate pool; context/profile quality alone determines the winner.
     neutral_profile = profile(

@@ -3,15 +3,14 @@
 Walks the current layered PoseAtlas root (24 views × 25 layers), computes each
 PNG's alpha-trimmed bounding box, and reports:
 
-* missing layers per view,
+* layers still required per view,
 * per-layer relative center offsets against the ``body`` (torso) reference,
 * cross-view symmetry outliers (a layer whose center drifts more than
   ``OUTLIER_THRESHOLD_PIXELS`` from the median across views),
 * crop coordinates for every image so Codex can re-align the outliers.
 
 Output is a JSON report written to ``--output`` (default
-``layered_asset_analysis.json``). This is a standalone diagnostic tool; it does
-not modify any asset.
+``layered_asset_analysis.json``). This standalone diagnostic tool reads assets and writes its report only.
 """
 
 from __future__ import annotations
@@ -116,8 +115,8 @@ def _repo_relative(path: Path) -> str:
 
     先前寫的是絕對路徑，於是 assets/pose-atlas/v4-layered/ 底下兩個會被打包
     進安裝檔的 JSON，帶著作者機器的磁碟機代號、專案目錄與 Windows 使用者
-    名稱一起發給每一位下載者。那不是憑證外洩，但既無意義又不可攜——換一台
-    機器重建就對不上。
+    名稱一起發給每一位下載者。這些屬於機器特定的路徑資訊；採用 repo-relative 路徑可保護個人目錄
+    資訊，並讓其他機器重建時取得一致結果。
     """
     root = Path(__file__).resolve().parent.parent
     resolved = Path(path).resolve()
@@ -128,7 +127,7 @@ def _repo_relative(path: Path) -> str:
         return "/".join(resolved.parts[-2:])
 
 
-def analyze(asset_dir: Path) -> dict:
+def analyze(asset_dir: Path, threshold: float = OUTLIER_THRESHOLD_PIXELS) -> dict:
     """Analyze all layered assets and return a JSON-serializable report."""
     # Ensure a QApplication exists so QImage can decode pixels offscreen.
     QApplication.instance() or QApplication([])
@@ -154,7 +153,7 @@ def analyze(asset_dir: Path) -> dict:
             continue
         bounds[view_id][layer] = box
 
-    # Missing layers per view.
+    # Layers still required per view.
     missing_layers: dict[str, list[str]] = {}
     for view_id in VIEW_IDS:
         present = set(bounds.get(view_id, {}))
@@ -212,7 +211,7 @@ def analyze(asset_dir: Path) -> dict:
             expected_x = prev_x + (next_x - prev_x) * t
             expected_y = prev_y + (next_y - prev_y) * t
             jump = max(abs(curr_x - expected_x), abs(curr_y - expected_y))
-            if jump > OUTLIER_THRESHOLD_PIXELS:
+            if jump > threshold:
                 outliers.append(
                     {
                         "view_id": curr_view,
@@ -235,7 +234,7 @@ def analyze(asset_dir: Path) -> dict:
     return {
         "asset_dir": _repo_relative(asset_dir),
         "reference_layer": REFERENCE_LAYER,
-        "outlier_threshold_pixels": OUTLIER_THRESHOLD_PIXELS,
+        "outlier_threshold_pixels": threshold,
         "total_views": len(VIEW_IDS),
         "total_layers_per_view": len(LAYER_NAMES),
         "views_found": sorted(bounds.keys()),
@@ -269,10 +268,9 @@ def main(argv: list[str] | None = None) -> int:
         default=OUTLIER_THRESHOLD_PIXELS,
         help="Outlier drift threshold in pixels.",
     )
-    arguments = parser.parse_args(tuple(argv or ()))
+    arguments = parser.parse_args(tuple(argv) if argv is not None else None)
 
-    report = analyze(arguments.asset_dir)
-    report["outlier_threshold_pixels"] = arguments.threshold
+    report = analyze(arguments.asset_dir, threshold=arguments.threshold)
 
     arguments.output.write_text(
         json.dumps(report, ensure_ascii=False, indent=2),

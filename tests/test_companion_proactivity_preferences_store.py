@@ -159,7 +159,7 @@ def assert_atomic_failure_rolls_back_and_hides_backend_content() -> None:
             CompanionProactivityPreferences(enabled=False)
         )
     except CompanionProactivityPreferencesStoreError as exc:
-        assert "rollback was incomplete" in str(exc)
+        assert "rollback requires attention" in str(exc)
         assert "PRIVATE" not in str(exc)
     else:
         raise AssertionError("failing rollback unexpectedly succeeded")

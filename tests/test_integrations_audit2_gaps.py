@@ -1,7 +1,7 @@
-"""第 2 發 integrations 重驗（2026-09-02）找到的九項缺口，全部以行為測試釘住。
+"""2026-09-02 第 2 批 integrations 重驗的九項行為契約。
 
-重驗明講：不可再用原始碼字串搜尋替代付費呼叫次數、socket 關閉與稽核持久化
-結果的驗證。這裡每一條都數實際發生的事。
+實際計算付費呼叫、驗證 socket 關閉與稽核持久化結果，
+每一條皆核對真正發生的行為。
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ lazy from integrations.realtime_session import RealtimeSessionMethods
 lazy from integrations.speech_audio import PcmAudioError, apply_wav_volume
 
 
-# ---- 1. 被 URLError 包裝的 timeout 不得重送付費請求 ----
+# ---- 1. URLError 包裝的 timeout 維持付費請求的單次送出 ----
 
 
 def test_wrapped_timeout_is_not_retried(monkeypatch) -> None:
@@ -92,7 +92,7 @@ def test_cancel_between_garment_and_handheld_stops_before_second_paid_call(
     assert paid["n"] == 1, f"停手後仍送出了 {paid['n'] - 1} 次 handheld 付費呼叫"
 
 
-# ---- 3. 郵件預覽與 Home Assistant 個資不得原樣進稽核 ----
+# ---- 3. 郵件預覽與 Home Assistant 個資先遮蔽再進稽核 ----
 
 
 def test_audit_redaction_covers_mail_preview_and_home_assistant_attributes() -> None:
@@ -109,7 +109,7 @@ def test_audit_redaction_covers_mail_preview_and_home_assistant_attributes() -> 
     assert redacted["state"]["state"] == "home"
 
 
-# ---- 4. 非 16-bit WAV 在靜音時不得原音播出 ----
+# ---- 4. 所有 WAV 位元深度均遵守靜音設定 ----
 
 
 def _wav(sampwidth: int) -> bytes:
@@ -171,7 +171,7 @@ def test_non_json_realtime_frame_emits_failed_and_closes_socket() -> None:
     callbacks = RealtimeSessionMethods._websocket_callbacks(fake, object(), lambda: True)
     ws = _Ws()
     callbacks["on_message"](ws, b"\x00\x01 not json")
-    assert fake.failed.messages, "failed Signal 沒有被通知"
+    assert fake.failed.messages, '須發出 failed Signal 回報錯誤'
     assert ws.closed, "非 JSON frame 之後 websocket 沒有被關閉"
 
 
@@ -187,7 +187,7 @@ def test_home_assistant_empty_state_object_is_an_error() -> None:
     assert client.state("light.office")["state"] == "unknown"
 
 
-# ---- 9. 登錄檔項目讀不到且沒有任何語音，必須是查詢失敗而非「未安裝」 ----
+# ---- 9. 登錄檔讀取異常且語音清單為空時，回報查詢錯誤 ----
 
 
 @pytest.mark.skipif(os.name != "nt", reason="Windows 語音登錄檔只在 Windows 上")
@@ -207,4 +207,4 @@ def test_all_voice_tokens_unreadable_is_a_catalog_error(monkeypatch) -> None:
 
     fake_registry_voices_ok.last_skipped = 0
     monkeypatch.setattr(catalog, "_registry_voices", fake_registry_voices_ok)
-    assert catalog.windows_voice_catalog() == []  # 真的沒有語音：正常的空清單
+    assert catalog.windows_voice_catalog() == []  # 語音數為零時，回傳合法的空清單。

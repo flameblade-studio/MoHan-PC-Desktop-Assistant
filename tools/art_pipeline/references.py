@@ -1,4 +1,4 @@
-"""從指定 git 物件取出參考圖，禁止把工作樹 assets 當參考來源。"""
+"""僅從明確指定的 git 物件取得參考圖。"""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ lazy import tempfile
 lazy from contextlib import contextmanager
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
-lazy from typing import Iterator
+lazy from collections.abc import Iterator
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,11 +20,11 @@ class GitReference:
 
     def __post_init__(self) -> None:
         if not self.ref.strip():
-            raise ValueError("reference ref 不可為空")
+            raise ValueError("請提供 reference ref")
         normalised = self.path.replace("\\", "/")
         pure = PurePosixPath(normalised)
         if not normalised or pure.is_absolute() or ".." in pure.parts:
-            raise ValueError("reference path 必須是 repo-relative 且不可含 ..")
+            raise ValueError("reference path 請使用 repo-relative 路徑，並以目前目錄及子目錄為範圍")
         object.__setattr__(self, "path", normalised)
 
     def materialize(self, temporary_directory: Path) -> Path:
@@ -37,8 +37,7 @@ class GitReference:
             result = subprocess.run(
                 ["git", "-C", str(self.repository), "show", object_name],
                 check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
             )
         except subprocess.CalledProcessError as error:
             detail = error.stderr.decode("utf-8", errors="replace").strip()

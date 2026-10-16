@@ -100,6 +100,11 @@ def _assert_large_pose_transition_race(
     window._finish_pose_transition("idle_front", first_generation)
     assert window.pose_transition_active
     assert window.pose_transition_expression == "idle_lean"
+    # A periodic idle pose request preserves an in-flight transition.
+    window._rotate_idle_pose()
+    assert window.pose_transition_generation == latest_generation
+    assert window.pose_transition_expression == "idle_lean"
+    assert window.idle_pose == "lean"
     QTest.qWait(140)
     app.processEvents()
     assert not window.pose_transition_active
@@ -224,20 +229,24 @@ def run() -> None:
     with TemporaryDirectory() as temp_dir:
         app, window = _create_test_window(temp_dir)
 
-        # A stale cross-fade must not overwrite a newer immediate frame.
-        _assert_stale_crossfade_is_ignored(app, window)
-        # Coalescing and stale callbacks must preserve the newest large pose.
-        _assert_large_pose_transition_race(app, window)
-        # Speech may interrupt a large-pose transition without a late swap.
-        _assert_speech_interrupts_pose_transition(app, window)
-        # Every visual layer must follow emotional gesture motion as one unit.
-        _assert_layered_gesture_motion(app, window)
-        # Interrupting a gesture must not leave a late misalignment callback.
-        _assert_interrupted_gesture_alignment(app, window)
-        # A delayed blink callback from a prior utterance must be ignored.
-        _assert_delayed_blink_is_ignored(app, window)
-        # Closing with every animation family active must be harmless.
-        _assert_close_cancels_active_animations(app, window)
+        try:
+            # A newer immediate frame retains ownership over a stale cross-fade.
+            _assert_stale_crossfade_is_ignored(app, window)
+            # Coalescing and stale callbacks must preserve the newest large pose.
+            _assert_large_pose_transition_race(app, window)
+            # Speech interrupts a large-pose transition and cancels its pending swap.
+            _assert_speech_interrupts_pose_transition(app, window)
+            # Every visual layer must follow emotional gesture motion as one unit.
+            _assert_layered_gesture_motion(app, window)
+            # Interrupting a gesture clears its pending alignment callback.
+            _assert_interrupted_gesture_alignment(app, window)
+            # A delayed blink callback from a prior utterance must be ignored.
+            _assert_delayed_blink_is_ignored(app, window)
+            # Closing with every animation family active must be harmless.
+            _assert_close_cancels_active_animations(app, window)
+        finally:
+            window.close()
+            app.processEvents()
 
     print("ANIMATION_RACE_AND_CLOSE_OK")
 

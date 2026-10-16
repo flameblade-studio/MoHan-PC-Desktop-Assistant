@@ -63,17 +63,27 @@ class WellbeingRuntimePort(Protocol):
         self,
         kind: WellbeingKind,
         attention: RuntimeAttention,
+        *,
+        event_id: str | None = None,
     ) -> RuntimeCue | None: ...
 
-    def record_delivery(self, cue: RuntimeCue, *, succeeded: bool) -> bool: ...
+    def record_delivery(self, runtime_cue: RuntimeCue, *, succeeded: bool) -> bool: ...
 
-    def acknowledge_wellbeing(self, kind: WellbeingKind) -> None: ...
+    def acknowledge_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None: ...
 
-    def complete_wellbeing(self, kind: WellbeingKind) -> None: ...
+    def complete_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None: ...
 
-    def snooze_wellbeing(self, kind: WellbeingKind, until: datetime) -> None: ...
+    def snooze_wellbeing(
+        self, kind: WellbeingKind, until: datetime, *, event_id: str | None = None
+    ) -> None: ...
 
-    def dismiss_wellbeing(self, kind: WellbeingKind) -> None: ...
+    def dismiss_wellbeing(
+        self, kind: WellbeingKind, *, event_id: str | None = None
+    ) -> None: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -84,9 +94,9 @@ class SpeakRequest:
 
     def __post_init__(self) -> None:
         if not self.text.strip():
-            raise ValueError("Speak request text cannot be empty.")
+            raise ValueError("Speak request text requires content.")
         if not self.source or not self.cue_token:
-            raise ValueError("Speak request identifiers cannot be empty.")
+            raise ValueError("Speak request identifiers require content.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,7 +108,7 @@ class _PendingDelivery:
 
 
 class WellbeingAppBridgeError(RuntimeError):
-    """A safe app-boundary error without phrase or persistence content."""
+    """A safe app-boundary result while keeping phrase and persistence content private."""
 
 
 class WellbeingAppBridge:
@@ -131,7 +141,9 @@ class WellbeingAppBridge:
             occurrence = normalize_occurrence(normalized, now)
             if occurrence.event_id in self._pending_event_ids:
                 return None
-            cue = self._runtime.decide_wellbeing(occurrence.kind, attention)
+            cue = self._runtime.decide_wellbeing(
+                occurrence.kind, attention, event_id=occurrence.event_id
+            )
             if cue is None:
                 return None
             if cue.delivery_token in self._pending:
@@ -152,7 +164,7 @@ class WellbeingAppBridge:
 
     def report_spoken(self, cue_token: str, *, succeeded: bool) -> bool:
         if not isinstance(cue_token, str) or not cue_token:
-            raise WellbeingAppBridgeError("Cue token is invalid.")
+            raise WellbeingAppBridgeError("Cue token needs a supported value.")
         if type(succeeded) is not bool:
             raise WellbeingAppBridgeError("Spoken result must be boolean.")
         with self._lock:
@@ -193,19 +205,20 @@ class WellbeingAppBridge:
             raise WellbeingAppBridgeError("Reminder enabled state must be boolean.")
         if not enabled:
             return
-        kind = TRIGGER_KINDS[normalized]
+        occurrence = normalize_occurrence(normalized, self._now())
+        kind, event_id = occurrence.kind, occurrence.event_id
         if normalized_command is ReminderCommand.ACKNOWLEDGE:
-            self._runtime.acknowledge_wellbeing(kind)
+            self._runtime.acknowledge_wellbeing(kind, event_id=event_id)
         elif normalized_command is ReminderCommand.COMPLETE:
-            self._runtime.complete_wellbeing(kind)
+            self._runtime.complete_wellbeing(kind, event_id=event_id)
         elif normalized_command is ReminderCommand.DISMISS:
-            self._runtime.dismiss_wellbeing(kind)
+            self._runtime.dismiss_wellbeing(kind, event_id=event_id)
         elif normalized_command is ReminderCommand.SNOOZE:
             if snooze_until is None:
                 raise WellbeingAppBridgeError("Snooze requires a deadline.")
-            self._runtime.snooze_wellbeing(kind, snooze_until)
+            self._runtime.snooze_wellbeing(kind, snooze_until, event_id=event_id)
         else:
-            raise WellbeingAppBridgeError("Reminder command is invalid.")
+            raise WellbeingAppBridgeError("Reminder command needs a supported value.")
 
     def _discard_stale(self, now: datetime) -> None:
         stale = tuple(
@@ -221,7 +234,7 @@ class WellbeingAppBridge:
         try:
             now = self._clock()
         except _CALLBACK_ERRORS:
-            raise WellbeingAppBridgeError("Reminder bridge clock failed.") from None
+            raise WellbeingAppBridgeError("Reminder bridge clock requires attention; retry the operation.") from None
         if not isinstance(now, datetime) or now.tzinfo is None:
             raise WellbeingAppBridgeError(
                 "Reminder bridge clock must be timezone-aware."
@@ -237,7 +250,7 @@ def normalize_occurrence(
     if not isinstance(now, datetime) or now.tzinfo is None:
         raise WellbeingAppBridgeError("Occurrence time must be timezone-aware.")
     return ReminderOccurrence(
-        event_id=f"{now.date().isoformat()}:{normalized.value}",
+        event_id=f"{now.date().isoformat()}:trigger:{normalized.value}",
         kind=TRIGGER_KINDS[normalized],
     )
 
@@ -246,11 +259,11 @@ def _trigger(value: ReminderTrigger | str) -> ReminderTrigger:
     try:
         return value if isinstance(value, ReminderTrigger) else ReminderTrigger(value)
     except TypeError, ValueError:
-        raise WellbeingAppBridgeError("Reminder trigger is invalid.") from None
+        raise WellbeingAppBridgeError("Reminder trigger needs a supported value.") from None
 
 
 def _command(value: ReminderCommand | str) -> ReminderCommand:
     try:
         return value if isinstance(value, ReminderCommand) else ReminderCommand(value)
     except TypeError, ValueError:
-        raise WellbeingAppBridgeError("Reminder command is invalid.") from None
+        raise WellbeingAppBridgeError("Reminder command needs a supported value.") from None

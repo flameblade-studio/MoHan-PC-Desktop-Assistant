@@ -12,10 +12,7 @@ lazy from PySide6.QtCore import QRect, QTimer
 lazy from PySide6.QtGui import QImage
 lazy from PySide6.QtWidgets import QApplication
 
-lazy from domain.companion_animation_contract import (
-    CHEEK_SPEECH_CLOSED_EXPRESSION,
-    EXPRESSION_SPEECH_MOUTH_RECTS,
-)
+lazy from domain.companion_animation_contract import EXPRESSION_HALF_BLINK_FRAME_SOURCES
 lazy from presentation.companion_window import CompanionWindow
 
 MIN_CHANGED_PIXELS = 24
@@ -35,22 +32,6 @@ def region_signature(image: QImage, rect: QRect) -> tuple[int, ...]:
         for y in range(rect.top(), rect.bottom() + 1)
         for x in range(rect.left(), rect.right() + 1)
     )
-
-
-def mean_region_difference(first: QImage, second: QImage, rect: QRect) -> float:
-    total = 0
-    samples = 0
-    for y in range(rect.top(), rect.bottom() + 1):
-        for x in range(rect.left(), rect.right() + 1):
-            first_color = first.pixelColor(x, y)
-            second_color = second.pixelColor(x, y)
-            total += (
-                abs(first_color.red() - second_color.red())
-                + abs(first_color.green() - second_color.green())
-                + abs(first_color.blue() - second_color.blue())
-            )
-            samples += 3
-    return total / max(1, samples)
 
 
 def _assert_blush_survives_front_blink(window: CompanionWindow) -> None:
@@ -87,25 +68,36 @@ def _assert_blink_uses_discrete_authority_frames(
         changed_pixel_count(base_image, closed, region)
         for region in eye_regions
     )
-    assert partial_change == 0
+    half_key = EXPRESSION_HALF_BLINK_FRAME_SOURCES.get(expression, "blink_half_front")
+    half_source = window.expression_pixmaps.get(half_key)
+    half_authority = half_source is not None and not half_source.isNull()
     assert closed_change > 0
-    assert all(
-        region_signature(partial, region)
-        == region_signature(base_image, region)
-        for region in eye_regions
-    ), "missing half authority must preserve rest instead of faking a blend"
+    if half_authority:
+        # A registered HALF authority draws its own eyelids: distinct from the
+        # rest frame and from the CLOSED authority.
+        assert partial_change > 0
+        assert any(
+            region_signature(partial, region)
+            != region_signature(base_image, region)
+            for region in eye_regions
+        ), "a registered half authority must draw its eyelids"
+    else:
+        assert partial_change == 0
+        assert all(
+            region_signature(partial, region)
+            == region_signature(base_image, region)
+            for region in eye_regions
+        ), 'an absent half authority must preserve the rest frame'
     assert any(
         region_signature(partial, region)
         != region_signature(closed, region)
         for region in eye_regions
-    ), "closed authority must remain distinct from fail-closed HALF"
+    ), "closed authority must remain distinct from HALF"
 
     # The runtime consumes a distinct registered HALF authority when present;
     # inject the already registered closed pixmap under the HALF key only to
-    # prove routing (not to assert that the two authored states look alike).
-    window.expression_pixmaps["blink_half_front"] = window.expression_pixmaps[
-        "blink_front"
-    ]
+    # prove routing while leaving each authored appearance to visual review.
+    window.expression_pixmaps[half_key] = window.expression_pixmaps["blink_front"]
     try:
         authored_half = window._blink_composite(base, expression, 0.5).toImage()
         assert all(
@@ -114,7 +106,10 @@ def _assert_blink_uses_discrete_authority_frames(
             for region in eye_regions
         )
     finally:
-        window.expression_pixmaps.pop("blink_half_front", None)
+        if half_source is None:
+            window.expression_pixmaps.pop(half_key, None)
+        else:
+            window.expression_pixmaps[half_key] = half_source
 
 
 def _assert_chin_rest_smile_uses_neutral_speech_mouth(
@@ -128,25 +123,9 @@ def _assert_chin_rest_smile_uses_neutral_speech_mouth(
     speech_closed = window.expression_pixmaps[
         window.speech_closed_expression
     ].toImage()
-    mouth_rect = EXPRESSION_SPEECH_MOUTH_RECTS["happy"]
-    eye_rect = QRect(158, 145, 105, 45)
-    assert changed_pixel_count(happy, speech_closed, mouth_rect) > 0
-    assert region_signature(happy, eye_rect) == region_signature(
-        speech_closed,
-        eye_rect,
-    ), "neutral speech mouth must retain the smiling eyes"
-    neutral = window.expression_pixmaps[
-        CHEEK_SPEECH_CLOSED_EXPRESSION
-    ].toImage()
-    corner_regions = (
-        QRect(174, 202, 18, 20),
-        QRect(208, 202, 18, 20),
-    )
-    assert all(
-        mean_region_difference(speech_closed, neutral, region)
-        < mean_region_difference(happy, neutral, region) * 0.72
-        for region in corner_regions
-    ), "speech corners did not move sufficiently toward the neutral mouth"
+    # Complete-expression happy owns its whole closed frame; the speech alias
+    # preserves that exact endpoint instead of synthesizing a legacy mouth.
+    assert speech_closed == happy
 
 
 def _assert_left_facing_mouth_replaces_right_corner(

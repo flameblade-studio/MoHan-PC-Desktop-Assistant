@@ -7,11 +7,13 @@ lazy from ctypes import wintypes
 lazy from PySide6.QtCore import QPoint, Qt, QTimer
 lazy from PySide6.QtGui import QAction, QMouseEvent
 lazy from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon
+lazy from presentation.qt_parent import require_qobject, require_qwidget
 
 lazy from application.proactive_companion_app_bridge import ProactiveAppDisposition
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import profile_setting, profile_window_title
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.language_support import localized_reminder_line
 lazy from domain.time_utils import local_wall_time
 lazy from presentation.presentation_resources import LIGHT_MENU_STYLE, application_icon
@@ -25,13 +27,7 @@ __all__ = (
 
 MIN_OVERLAP_AREA = 256
 
-REMINDER_LINES = frozendict({
-    "work": "主上，今日之局已開。若要開始，妾替你計時。",
-    "lunch": "到吃飯時間了。工作可以稍候，主上的身體不能。",
-    "dinner": "主上，先去用晚膳。空著腹談什麼長策。",
-    "offwork": "你已經不需要向任何老闆證明自己肯加班了。",
-    "overwork": "主上已連續工作太久。離席、飲水、伸展，十分鐘後再戰。",
-})
+REMINDER_LINES = load_mohan_character_data().dialogues["zh-TW"].reminder_lines
 
 
 def reminder_line(language: str, kind: str) -> str:
@@ -46,11 +42,12 @@ class CompanionPlatformMixin:
     """Own the companion window's desktop shell and shutdown lifecycle."""
 
     def _setup_tray(self) -> None:
-        self.tray = QSystemTrayIcon(application_icon(), self)
+        parent = require_qobject(self)
+        self.tray = QSystemTrayIcon(application_icon(), parent)
         self.tray.setToolTip(profile_window_title(self.db))
         # Parent the menu to the window so it is destroyed with it instead of
         # surviving as a parentless top-level widget after shutdown.
-        menu = QMenu(self)
+        menu = QMenu(require_qwidget(self))
         # The tray menu is a system-level popup that does not inherit the
         # dashboard's flagship theme.  Apply the shared light palette so its
         # items stay readable instead of falling back to the OS dark theme
@@ -64,14 +61,16 @@ class CompanionPlatformMixin:
                 "tray_open_today",
                 "開啟今日卷冊",
             ),
-            self,
+            parent,
         )
         quit_action = QAction(
             ui_text(language, "tray_quit", "讓寒歸劍"),
-            self,
+            parent,
         )
         open_action.triggered.connect(self.open_dashboard)
-        quit_action.triggered.connect(QApplication.instance().quit)
+        application = QApplication.instance()
+        if application is not None:
+            quit_action.triggered.connect(application.quit)
         menu.addAction(open_action)
         menu.addSeparator()
         menu.addAction(quit_action)
@@ -412,6 +411,11 @@ class CompanionPlatformMixin:
 
     def closeEvent(self, event) -> None:
         self._closing = True
+        # Invalidate visual-only completion callbacks that were queued with
+        # the previous playback generation.  QTimer.singleShot callbacks do
+        # not appear in _stop_window_timers, so the generation is the only
+        # cancellation boundary available during shutdown.
+        self.speech_playback_generation += 1
         self._close_proactive_companion_app_bridge()
         self._cancel_adaptive_character_composition()
         self._close_runtime_services()

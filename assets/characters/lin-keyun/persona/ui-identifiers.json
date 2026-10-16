@@ -1,0 +1,22 @@
+{
+  "locales": {
+    "en": {
+      "self_reference": "I",
+      "signature_weapon_theme_label": "Clear Translation"
+    },
+    "ja-JP": {
+      "self_reference": "私",
+      "signature_weapon_theme_label": "明晰な言葉"
+    },
+    "zh-CN": {
+      "self_reference": "我",
+      "signature_weapon_theme_label": "清澈转译"
+    },
+    "zh-TW": {
+      "self_reference": "我",
+      "signature_weapon_theme_label": "清澈轉譯"
+    }
+  },
+  "schema": "flameblade.character-ui-identifiers.v1",
+  "schema_version": 1
+}

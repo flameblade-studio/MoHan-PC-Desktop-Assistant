@@ -2,12 +2,11 @@ from __future__ import annotations
 
 lazy from dataclasses import dataclass, replace
 
-lazy from domain.constants import (
-    FLOAT_COMPARISON_EPSILON,
-    SHYNESS_BLUSH_WEIGHT,
-    SHYNESS_GAZE_WEIGHT,
-    SHYNESS_LIP_WEIGHT,
+lazy from domain.character_runtime import (
+    CHARACTER_EXPRESSION_ROLES,
+    character_face_calibration,
 )
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 lazy from domain.face_rig import (
     ExpressionShape,
     FaceMotionFrame,
@@ -35,25 +34,34 @@ VISEME_MOUTH_TARGETS = frozendict(
 HAPPY_EXPRESSIONS = frozenset(
     {
         "happy",
-        "gentle_smile_front",
-        "proud_front",
-        "relieved_front",
-        "restrained_amused_front",
+        CHARACTER_EXPRESSION_ROLES["gentle"],
+        CHARACTER_EXPRESSION_ROLES["pride"],
+        CHARACTER_EXPRESSION_ROLES["relief"],
+        CHARACTER_EXPRESSION_ROLES["amusement"],
     }
 )
-BLUSH_EXPRESSIONS = frozenset({"shy_front", "shy_cute_front"})
+BLUSH_EXPRESSIONS = frozenset(
+    {
+        CHARACTER_EXPRESSION_ROLES["bashful"],
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    }
+)
 LIFTED_BROW_EXPRESSIONS = frozenset(
-    {"surprised_front", "eureka_front", "attentive_front"}
+    {
+        CHARACTER_EXPRESSION_ROLES["surprise"],
+        CHARACTER_EXPRESSION_ROLES["insight"],
+        CHARACTER_EXPRESSION_ROLES["attention"],
+    }
 )
 TENSE_BROW_EXPRESSIONS = frozenset(
     {
-        "determined_front",
+        CHARACTER_EXPRESSION_ROLES["resolve"],
         "worried",
-        "worried_front",
-        "exasperated_front",
-        "mock_scold",
-        "mock_hit_front",
-        "protective_front",
+        CHARACTER_EXPRESSION_ROLES["concern"],
+        CHARACTER_EXPRESSION_ROLES["exasperation"],
+        CHARACTER_EXPRESSION_ROLES["gentle_scold"],
+        CHARACTER_EXPRESSION_ROLES["mock_strike"],
+        CHARACTER_EXPRESSION_ROLES["protection"],
     }
 )
 
@@ -173,27 +181,16 @@ def _approach(current: float, target: float, response: float) -> float:
 
 
 def shyness_expression(shyness_level: float) -> ExpressionShape:
-    """Map a shyness level onto a cascading micro-expression.
-
-    The cascade layers the subtle cues of a blush:
-
-    1. blush rises (``SHYNESS_BLUSH_WEIGHT``),
-    2. the eyes soften into a shy squint (``SHYNESS_GAZE_WEIGHT``
-       drives ``eye_smile``; the owner-accepted look keeps the gaze
-       itself steady — an earlier draft of this docstring promised a
-       lowered gaze that was never implemented),
-    3. the lips purse (``SHYNESS_LIP_WEIGHT``, via ``shyness_mouth``).
-
-    ``shyness_level`` is clamped to ``[0, 1]``.
-    """
+    """Map a shyness level onto a cascading micro-expression. The cascade layers the subtle cues of a blush: 1. blush rises (``SHYNESS_BLUSH_WEIGHT``), 2. the eyes soften into a shy squint (``SHYNESS_GAZE_WEIGHT`` drives ``eye_smile``; the owner-accepted look keeps the gaze itself steady), 3. the lips purse (``SHYNESS_LIP_WEIGHT``, via ``shyness_mouth``). ``shyness_level`` is clamped to ``[0, 1]``. """
 
     level = max(0.0, min(1.0, float(shyness_level)))
+    calibration = character_face_calibration()
     return ExpressionShape(
         blink=0.0,
-        eye_smile=level * SHYNESS_GAZE_WEIGHT,
+        eye_smile=level * calibration.shyness_gaze_weight,
         brow_lift=0.0,
         brow_tension=0.0,
-        blush=level * SHYNESS_BLUSH_WEIGHT,
+        blush=level * calibration.shyness_blush_weight,
     )
 
 
@@ -201,12 +198,13 @@ def shyness_mouth(shyness_level: float) -> MouthShape:
     """Return the lip-purse component of the shyness cascade."""
 
     level = max(0.0, min(1.0, float(shyness_level)))
+    calibration = character_face_calibration()
     return MouthShape(
         aperture=0.0,
         width=0.5,
         rounding=0.0,
         jaw=0.0,
-        corner_smile=level * SHYNESS_LIP_WEIGHT,
+        corner_smile=level * calibration.shyness_lip_weight,
         u_inward=0.0,
     )
 
@@ -215,14 +213,7 @@ def blend_shyness(
     frame: FaceMotionFrame,
     shyness_level: float,
 ) -> FaceMotionFrame:
-    """Blend the shyness cascade into an existing face frame.
-
-    The shyness micro-expression (blush → lowered gaze → pursed lips) is mixed
-    with the frame's existing expression by ``shyness_level`` so the companion's
-    current emotion never vanishes — she grows shy *on top of* whatever she was
-    already feeling. At ``shyness_level == 0`` the frame is returned unchanged;
-    at ``1`` the shyness cascade fully dominates the blush/gaze/lip controls.
-    """
+    """Blend the shyness cascade into an existing face frame. The shyness micro-expression (blush → lowered gaze → pursed lips) is mixed with the frame's existing expression by ``shyness_level`` so the companion's current emotion remains visible while shyness is layered over it. At ``shyness_level == 0`` the frame is returned unchanged; at ``1`` the shyness cascade fully dominates the blush/gaze/lip controls. """
 
     level = max(0.0, min(1.0, float(shyness_level)))
     if level < FLOAT_COMPARISON_EPSILON:

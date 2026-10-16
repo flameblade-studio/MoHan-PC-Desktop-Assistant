@@ -2,6 +2,7 @@ from __future__ import annotations
 
 lazy import queue
 lazy from typing import Any
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice, Qt
 lazy from PySide6.QtWidgets import (
@@ -20,7 +21,9 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.safe_error_localization import safe_error_message
+lazy from domain.service_status_localization import character_ui_values
 lazy from domain.time_utils import local_wall_time
+lazy from domain.qt_image_io import save_image_png
 lazy from integrations.remote_control import (
     RemoteControlServer,
     RemoteServerConfig,
@@ -58,6 +61,7 @@ class FlagshipRemoteMixin:
         port_line.addWidget(self.remote_port_up)
         port_line.addWidget(self.remote_port_down)
         return port_control
+
     def _initialize_remote_fields(self) -> None:
         self.remote_enabled = QCheckBox(self._t("啟用手機／私人網路遠端服務"))
         self.remote_host = QComboBox()
@@ -75,10 +79,10 @@ class FlagshipRemoteMixin:
         self.remote_commands = QCheckBox(self._t("允許傳送文字指令"))
         self.remote_commands.setChecked(True)
         self.remote_screen = QCheckBox(
-            self._t("允許查看墨寒程式視窗（不擷取整個桌面）")
+            self._t("允許查看{character_name}程式視窗（不擷取整個桌面）")
         )
         self.remote_files = QCheckBox(self._t("允許下載白名單內的非敏感檔案"))
-        self.camera_enabled = QCheckBox(self._t("啟用墨寒本機視覺感知"))
+        self.camera_enabled = QCheckBox(self._t("啟用{character_name}本機視覺感知"))
         self.face_identity = QCheckBox(
             self._t("辨識我已明確登錄的臉部身分")
         )
@@ -98,12 +102,13 @@ class FlagshipRemoteMixin:
         self.camera_status = QLabel(self._t("攝影機已關閉"))
         self.camera_status.setWordWrap(True)
         self.local_perception_status = QLabel(
-            self._t("本機臉部、虹膜與手勢模型尚未啟動")
+            self._t('本機臉部、虹膜與手勢模型等待啟動')
         )
         self.local_perception_status.setWordWrap(True)
         self.remote_status = QLabel(self._t("遠端功能預設關閉"))
         self.remote_status.setWordWrap(True)
         self.device_list = QListWidget()
+
     def _remote_action_controls(self) -> QWidget:
         controls = QWidget()
         line = QHBoxLayout(controls)
@@ -118,6 +123,7 @@ class FlagshipRemoteMixin:
         stop.clicked.connect(self.stop_remote)
         pair.clicked.connect(self.pair_device)
         return controls
+
     def _populate_remote_form(
         self,
         form: QFormLayout,
@@ -152,8 +158,7 @@ class FlagshipRemoteMixin:
         form.addRow(self._t("本機感知模型"), self.local_perception_status)
         camera_note = QLabel(
             self._t(
-                "攝影機預設關閉；啟用時必須顯示狀態。畫面不會默默上傳，"
-                "也不會辨識未登錄的陌生人。"
+                '攝影機預設關閉，啟用時持續顯示狀態；影像上傳須明確授權，身分辨識僅適用已登錄人物。'
             )
         )
         camera_note.setWordWrap(True)
@@ -175,6 +180,7 @@ class FlagshipRemoteMixin:
         enroll_face.clicked.connect(self.enroll_face_identity)
         clear_faces.clicked.connect(self.clear_face_identities)
         delete_face.clicked.connect(self.delete_selected_face_identity)
+
     def _remote_tab(self) -> QWidget:
         scroll, form = self._scroll_form()
         self._initialize_remote_fields()
@@ -183,6 +189,7 @@ class FlagshipRemoteMixin:
         self._populate_remote_form(form, port_control, controls)
         self.refresh_devices()
         return scroll
+
     def start_remote(self) -> None:
         self.stop_remote(silent=True)
         if not self.remote_enabled.isChecked():
@@ -221,7 +228,7 @@ class FlagshipRemoteMixin:
             self.remote_server = None
             self.remote_status.setText(
                 self._t(
-                    "啟動失敗：{error}",
+                    '啟動需要處理：{error}',
                     error=safe_error_message(self.language, exc),
                 )
             )
@@ -240,16 +247,18 @@ class FlagshipRemoteMixin:
             )
         )
         self.refresh_health()
+
     def stop_remote(self, _checked=False, *, silent: bool = False) -> None:
         if self.remote_server:
             self.remote_server.stop()
             self.remote_server = None
         if hasattr(self, "remote_status") and not silent:
             self.remote_status.setText(
-                self._t("遠端服務已停止，既有權杖未刪除但無法連線。")
+                self._t('遠端服務已停止，既有權杖保持保存；重新啟動服務後才可連線。')
             )
         if hasattr(self, "health_summary"):
             self.refresh_health()
+
     def pair_device(self) -> None:
         name, ok = self._simple_text_dialog(
             self._t("配對新裝置"),
@@ -266,14 +275,15 @@ class FlagshipRemoteMixin:
             permissions.append("files")
         token = TokenRegistry(self.db).pair(name, permissions)
         QMessageBox.information(
-            self,
+            require_qwidget(self),
             self._t("一次性配對權杖"),
             self._t(
-                "請只在可信任裝置輸入下列權杖。關閉視窗後不會再次顯示：\n\n{token}",
+                '請只在可信任裝置輸入下列權杖；權杖僅在目前視窗顯示一次：\n\n{token}',
                 token=token,
             ),
         )
         self.refresh_devices()
+
     def refresh_devices(self) -> None:
         self.device_list.clear()
         for row in self.db.paired_devices():
@@ -287,17 +297,25 @@ class FlagshipRemoteMixin:
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.device_list.addItem(item)
+
     def revoke_device(self) -> None:
         item = self.device_list.currentItem()
         if item is None:
             return
         self.db.revoke_paired_device(int(item.data(Qt.UserRole)))
         self.refresh_devices()
+
     def _remote_status_payload(self) -> dict[str, Any]:
         return dict(self._remote_status_cache)
+
     def _update_remote_status_cache(self) -> None:
         self._remote_status_cache = {
-            "assistant": str(self.db.setting("assistant_name", "墨寒")),
+            "assistant": str(
+                self.db.setting(
+                    "assistant_name",
+                    character_ui_values(self.language)["character_name"],
+                )
+            ),
             "mode": str(self.db.setting("mode", "工作")),
             "work_seconds": self.db.today_work_seconds(),
             "todos": [
@@ -306,6 +324,7 @@ class FlagshipRemoteMixin:
             ],
             "timestamp": local_wall_time().isoformat(timespec="seconds"),
         }
+
     def _queue_remote_command(self, text: str, device_name: str) -> dict[str, Any]:
         try:
             self._remote_commands.put_nowait((text, device_name))
@@ -316,8 +335,9 @@ class FlagshipRemoteMixin:
             }
         return {
             "accepted": True,
-            "message": self._t("已送交墨寒並等待本機權限判斷"),
+            "message": self._t("已送交{character_name}並等待本機權限判斷"),
         }
+
     def _drain_remote_commands(self) -> None:
         if self._closed:
             return
@@ -337,6 +357,7 @@ class FlagshipRemoteMixin:
                     text=text,
                 )
             )
+
     def _refresh_screen_cache(self) -> None:
         if self._closed:
             return
@@ -352,8 +373,9 @@ class FlagshipRemoteMixin:
         data = QByteArray()
         buffer = QBuffer(data)
         buffer.open(QIODevice.WriteOnly)
-        pixmap.save(buffer, "PNG")
-        self._screen_cache = bytes(data)
+        save_image_png(pixmap, buffer)
+        self._screen_cache = bytes(data.data())
+
     def _screen_bytes(self) -> bytes:
         if not self._screen_cache:
             raise PermissionError(self._t("尚無可用的程式視窗畫面"))

@@ -2,38 +2,46 @@ from __future__ import annotations
 
 """Presentation-facing contracts and immutable request data.
 
-This module is the inward-facing seam used by Qt presentation code.  It owns
-no GUI objects and imports no adapter implementation; infrastructure and
-integration implementations are supplied only by the composition root.
+This module is the inward-facing seam used by Qt presentation code. It keeps GUI objects and adapter implementations outside this boundary; infrastructure and integration implementations are supplied only by the composition root.
 """
 
 lazy import os
 lazy import re
 lazy import sqlite3
 lazy import sys
-lazy from collections.abc import Callable, Mapping
+lazy from collections.abc import Callable, Mapping, Sequence
 lazy from dataclasses import dataclass, field
 lazy from difflib import SequenceMatcher
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
-
+lazy from application.appearance_ports import OutfitOverlayFactory, no_outfit_overlay_factory
+lazy from application.service_contracts import (
+    PlatformProgressUpdate,
+    PresentationDatabasePort,
+)
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL, DEFAULT_TRANSCRIPTION_MODEL
 lazy from domain.contracts import (
     AzureSpeechEnginePort,
-    ProfileDatabasePort,
     SecretStoreFactoryPort,
     SecretStorePort,
     SignalPort,
     SpeechListenerPort,
 )
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.version_info import PROFILE_APP_DIRECTORY, PROFILE_VENDOR_DIRECTORY
 lazy from domain.prompt_cache import PromptCacheTelemetry, PromptCacheTokenEvidence
 lazy from domain.safe_error import SafeError
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT, OfficialPackRoots
 lazy from domain.speech_providers import (
     AZURE_HD_SPEECH_PROVIDER,
     AZURE_SPEECH_PROVIDER,
     OPENAI_REALTIME_PROVIDER,
 )
-
+_CHARACTER_DATA = load_mohan_character_data()
+_VOICE_PROFILE = _CHARACTER_DATA.voice
+_VOICE_PROFILE_DEFAULTS = _CHARACTER_DATA.identity.defaults
+_CHARACTER_DISPLAY_NAME = _CHARACTER_DATA.personas["en"].identity.display_name
 # Transcription-prompt heuristics.
 MAX_TERM_LENGTH = 40
 MAX_TERMS = 16
@@ -41,13 +49,11 @@ MIN_COMPARISON_LENGTH = 16
 MIN_SUBSTRING_LENGTH = 20
 SIMILARITY_THRESHOLD = 0.82
 
-DEFAULT_TEXT_MODEL = "gpt-5.6-luna"
 TEXT_MODELS = (
     "gpt-5.6-luna",
     "gpt-5.6-sol",
     "gpt-5.6-terra",
 )
-DEFAULT_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"
 DEFAULT_TRANSCRIPTION_PROMPT = (
     "請將使用者語音準確轉寫為文字，保留專有名詞、數字與其他語言，"
     "不要翻譯或改寫原意。"
@@ -61,18 +67,6 @@ PROFILE_EXTENSION = ".mohan-profile"
 MANIFEST_FILENAME = "manifest.json"
 SENSITIVE_FILENAME = "sensitive.enc"
 SENSITIVE_MANIFEST_KEY = "sensitive"
-
-
-class PresentationDatabasePort(ProfileDatabasePort, Protocol):
-    """Database operations consumed by the desktop presentation."""
-
-    def close(self) -> None: ...
-
-    def settings_snapshot(self) -> object: ...
-
-    def restore_settings_snapshot(self, snapshot: object) -> None: ...
-
-    def __getattr__(self, name: str) -> Callable[..., Any]: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -120,25 +114,21 @@ class _PresentationFallbackPlatformService:
 
     def __init__(self) -> None:
         platform_id = (
-            "windows"
-            if sys.platform.startswith("win")
-            else "macos"
-            if sys.platform == "darwin"
-            else "linux"
+            "windows" if sys.platform.startswith("win") else "macos" if sys.platform == "darwin" else "linux"
         )
         home = Path.home()
         if platform_id == "windows":
-            root = Path(os.environ.get("LOCALAPPDATA") or home) / "YanJianStudio" / "MoHan"
+            root = Path(os.environ.get("LOCALAPPDATA") or home) / PROFILE_VENDOR_DIRECTORY / PROFILE_APP_DIRECTORY
             config = root
             cache = root / "cache"
             display_name = "Windows"
         elif platform_id == "macos":
-            root = home / "Library" / "Application Support" / "YanJianStudio" / "MoHan"
+            root = home / "Library" / "Application Support" / PROFILE_VENDOR_DIRECTORY / PROFILE_APP_DIRECTORY
             config = root
-            cache = home / "Library" / "Caches" / "YanJianStudio" / "MoHan"
+            cache = home / "Library" / "Caches" / PROFILE_VENDOR_DIRECTORY / PROFILE_APP_DIRECTORY
             display_name = "macOS"
         else:
-            suffix = Path("YanJianStudio") / "MoHan"
+            suffix = Path(PROFILE_VENDOR_DIRECTORY) / PROFILE_APP_DIRECTORY
             root = Path(os.environ.get("XDG_DATA_HOME") or home / ".local" / "share") / suffix
             config = Path(os.environ.get("XDG_CONFIG_HOME") or home / ".config") / suffix
             cache = Path(os.environ.get("XDG_CACHE_HOME") or home / ".cache") / suffix
@@ -174,12 +164,11 @@ class _PresentationFallbackPlatformService:
 
 def fallback_platform_services() -> PlatformServicePort:
     """Return immutable platform facts for backwards-compatible UI creation."""
-
     return _PresentationFallbackPlatformService()
 
 
 def default_data_dir(platform: PlatformServicePort | None = None) -> Path:
-    """Resolve the historical profile location without an outer-layer import."""
+    """Resolve the historical profile location with imports contained within this layer."""
 
     override = str(os.environ.get("MOHAN_DATA_DIR", "")).strip()
     root = Path(override).expanduser() if override else (
@@ -187,29 +176,6 @@ def default_data_dir(platform: PlatformServicePort | None = None) -> Path:
     ).paths.data
     root.mkdir(parents=True, exist_ok=True)
     return root
-
-
-@dataclass(frozen=True, slots=True)
-class PlatformProgressUpdate:
-    platform: str
-    status: str
-    missing: str
-    item_name: str = ""
-    next_action: str = ""
-    notes: str = ""
-    url: str = ""
-
-    def database_row(self, updated_at: str) -> tuple[str, ...]:
-        return (
-            self.platform.strip(),
-            self.status.strip() or "尚未開始",
-            self.missing.strip(),
-            self.item_name.strip(),
-            self.next_action.strip(),
-            self.notes.strip(),
-            self.url.strip(),
-            updated_at,
-        )
 
 
 _DURATION_FORMATS = frozendict(
@@ -241,13 +207,11 @@ class AIWorkerRequest:
     memories: str = ""
     model: str = DEFAULT_TEXT_MODEL
     persona: str = ""
-    assistant_name: str = "墨寒"
-    user_title: str = "主上"
-    response_language: str = "zh-TW"
+    assistant_name: str = _VOICE_PROFILE_DEFAULTS["assistant_name"]
+    user_title: str = _VOICE_PROFILE_DEFAULTS["user_title"]
+    response_language: str = _VOICE_PROFILE_DEFAULTS["ui_language"]
     prompt_cache_telemetry: Callable[[PromptCacheTelemetry], None] | None = field(
-        default=None,
-        repr=False,
-        compare=False,
+        default=None, repr=False, compare=False,
     )
     prompt_cache_token_evidence: PromptCacheTokenEvidence | None = field(
         default=None,
@@ -257,13 +221,15 @@ class AIWorkerRequest:
 
 
 class AIWorkerSignalsPort(Protocol):
-    done: SignalPort
-    failed: SignalPort
+    @property
+    def done(self) -> SignalPort: ...
+    @property
+    def failed(self) -> SignalPort: ...
 
 
 class AIWorkerPort(Protocol):
-    signals: AIWorkerSignalsPort
-
+    @property
+    def signals(self) -> AIWorkerSignalsPort: ...
     def run(self) -> None: ...
 
 
@@ -273,7 +239,7 @@ AIWorkerFactory = Callable[[AIWorkerRequest], AIWorkerPort]
 @dataclass(frozen=True, slots=True)
 class RealtimeSessionConfig:
     model: str = "gpt-realtime-2.1-mini"
-    voice: str = "coral"
+    voice: str = _VOICE_PROFILE.default_realtime_voice
     transcription_model: str = DEFAULT_TRANSCRIPTION_MODEL
     transcription_language: str = "zh"
     transcription_prompt: str = ""
@@ -309,7 +275,7 @@ class AzureRealtimeVoice:
 class LocalRealtimeVoice:
     available: bool = False
     voice: str = ""
-    rate: int = -1
+    rate: int = _VOICE_PROFILE.default_rate
 
 
 @dataclass(frozen=True, slots=True)
@@ -368,7 +334,7 @@ def create_realtime_output_config(request: RealtimeSpeechOutputConfigRequest) ->
 
 
 def sanitize_realtime_transcription_prompt(prompt: str) -> str:
-    """Keep ASR hints short so instructions cannot become a transcript."""
+    """Keep ASR hints short so instructions stay within transcript-safe bounds."""
 
     raw = (prompt or "").strip()
     if not raw:
@@ -521,56 +487,12 @@ def azure_region_supports_hd_flash(identifier: str) -> bool:
     )
 
 
-_AZURE_FEMALE_VOICES = frozendict(
-    {
-        "zh-TW": ("zh-TW-HsiaoChenNeural", "zh-TW-HsiaoYuNeural"),
-        "zh-CN": (
-            "zh-CN-XiaoxiaoNeural", "zh-CN-XiaoyiNeural", "zh-CN-XiaochenNeural",
-            "zh-CN-XiaohanNeural", "zh-CN-XiaomengNeural", "zh-CN-XiaomoNeural",
-            "zh-CN-XiaoqiuNeural", "zh-CN-XiaorouNeural", "zh-CN-XiaoruiNeural",
-        ),
-        "en": (
-            "en-US-AvaMultilingualNeural", "en-US-AmandaMultilingualNeural",
-            "en-US-CoraMultilingualNeural", "en-US-JennyMultilingualNeural",
-        ),
-        "ja-JP": (
-            "ja-JP-NanamiNeural", "ja-JP-AoiNeural", "ja-JP-MayuNeural",
-            "ja-JP-ShioriNeural",
-        ),
-    }
-)
-_AZURE_HD_FEMALE_VOICES = frozendict(
-    {
-        "zh-CN": (
-            "zh-CN-Xiaochen:DragonHDLatestNeural",
-            "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
-            "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
-            "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
-            "zh-CN-Xiaoyou:DragonHDFlashLatestNeural",
-        ),
-        "en": (
-            "en-US-Ava:DragonHDLatestNeural", "en-US-Aria:DragonHDLatestNeural",
-            "en-US-Emma:DragonHDLatestNeural", "en-US-Emma2:DragonHDLatestNeural",
-            "en-US-Jenny:DragonHDLatestNeural", "en-US-Nova:DragonHDLatestNeural",
-            "en-US-Phoebe:DragonHDLatestNeural", "en-US-Serena:DragonHDLatestNeural",
-        ),
-        "ja-JP": ("ja-JP-Nanami:DragonHDLatestNeural",),
-    }
-)
+_AZURE_FEMALE_VOICES = _VOICE_PROFILE.azure.voices
+_AZURE_HD_FEMALE_VOICES = _VOICE_PROFILE.azure.hd_voices
 
 
 def azure_female_voices(language: str) -> tuple[str, ...]:
     locale = canonical_ui_language(language)
-    if locale == "zh-CN":
-        return (*_AZURE_FEMALE_VOICES["zh-CN"], *_AZURE_FEMALE_VOICES["zh-TW"])
-    if locale == "zh-TW":
-        return (*_AZURE_FEMALE_VOICES["zh-TW"], *_AZURE_FEMALE_VOICES["zh-CN"])
     return _AZURE_FEMALE_VOICES[locale]
 
 
@@ -580,7 +502,7 @@ def azure_hd_female_voices(
     include_flash: bool = True,
 ) -> tuple[str, ...]:
     locale = canonical_ui_language(language)
-    voices = _AZURE_HD_FEMALE_VOICES[locale if locale in {"en", "ja-JP"} else "zh-CN"]
+    voices = _AZURE_HD_FEMALE_VOICES[locale]
     return voices if include_flash else tuple(
         voice for voice in voices if ":DragonHDFlash" not in voice
     )
@@ -604,13 +526,13 @@ def female_windows_voices_for_language(
         if culture.lower().split("-", 1)[0] == family
         and not any(
             marker in name.casefold()
-            for marker in ("david", "mark", "zhiwei", "yunxi", "yunyang")
+            for marker in _VOICE_PROFILE.system_local.excluded_name_markers
         )
     ]
 
 
 def preferred_windows_voice(
-    voices: list[tuple[str, str]],
+    voices: Sequence[tuple[str, str]],
     saved: str = "",
     target_language: str = "zh-TW",
 ) -> str:
@@ -619,7 +541,7 @@ def preferred_windows_voice(
         for name, culture in voices
         if not any(
             marker in name.casefold()
-            for marker in ("david", "mark", "zhiwei", "yunxi", "yunyang")
+            for marker in _VOICE_PROFILE.system_local.excluded_name_markers
         )
     ]
     installed = dict(filtered)
@@ -628,7 +550,7 @@ def preferred_windows_voice(
     target = str(target_language or "").strip().lower()
     family = target.split("-", 1)[0]
     if target in {"zh", "zh-tw"}:
-        for keyword in ("Yating", "Hanhan"):
+        for keyword in _VOICE_PROFILE.system_local.preferred_name_markers["zh-TW"]:
             for name, culture in filtered:
                 if keyword.casefold() in name.casefold() and culture.lower() == "zh-tw":
                     return name
@@ -689,6 +611,8 @@ class FaceRendererPort(Protocol):
         *,
         mask: Any | None = None,
         opacity: float = 1.0,
+        eye_state: str = "rest",
+        view_id: str | None = None,
     ) -> Any: ...
 
 
@@ -722,7 +646,7 @@ PortableProfileManagerFactory = Callable[[PresentationDatabasePort, Path], Porta
 
 
 class ProfileTransferError(RuntimeError):
-    """Safe failure shared by every portable-profile boundary."""
+    """Safe boundary result shared by every portable-profile boundary."""
 
     def __init__(self, message: str, *, safe_error: SafeError | None = None) -> None:
         self.safe_error = safe_error
@@ -730,7 +654,7 @@ class ProfileTransferError(RuntimeError):
 
 
 class _UnavailableProfileManager:
-    """Patchable fail-closed fallback for directly constructed UI tests."""
+    """Patchable protective fallback for directly constructed UI tests."""
 
     @staticmethod
     def _unavailable(*args: Any, **kwargs: Any) -> Any:
@@ -808,40 +732,13 @@ FaceRendererFactory = Callable[[], FaceRendererPort]
 VisibleWindowsProvider = Callable[[], list[dict[str, Any]]]
 
 
-class OutfitOverlayPort(Protocol):
-    """Apply the currently selected, validated appearance to one authored view."""
-
-    def apply(self, frame: Any, view_id: str) -> Any: ...
-
-    def layer_count(self, view_id: str) -> int: ...
-
-
-class _NoOutfitOverlay:
-    @staticmethod
-    def apply(frame: Any, view_id: str) -> Any:
-        del view_id
-        return frame
-
-    @staticmethod
-    def layer_count(view_id: str) -> int:
-        del view_id
-        return 0
-
-
-OutfitOverlayFactory = Callable[..., OutfitOverlayPort]
-
-
-def no_outfit_overlay_factory(**_options: object) -> OutfitOverlayPort:
-    return _NoOutfitOverlay()
-
-
 class FullBodyRendererPort(Protocol):
     """Compose one authored 24-view-ring full-body frame from a face-motion frame."""
 
     def render_view(self, view_id: str, motion: Any, **options: Any) -> Any: ...
 
 
-# ``None`` means no full-body compositor was injected (offline dashboards).
+# The sentinel identifies the offline dashboard compositor slot.
 FullBodyRendererFactory = Callable[..., FullBodyRendererPort | None]
 
 
@@ -862,11 +759,13 @@ class PresentationPorts:
     validate_face_assets: FaceAssetValidator
     face_renderer_factory: FaceRendererFactory
     visible_windows: VisibleWindowsProvider
+    official_pack_roots: OfficialPackRoots = OFFICIAL_PACK_ROOT
     realtime_output_config_factory: RealtimeSpeechOutputConfigFactory = (
         create_realtime_output_config
     )
     outfit_overlay_factory: OutfitOverlayFactory = no_outfit_overlay_factory
     full_body_renderer_factory: FullBodyRendererFactory = no_full_body_renderer_factory
+    body_pack_required: bool = False
 
 
 _PORTABLE_SECRET_IDS = frozenset(
@@ -893,7 +792,7 @@ class PortableSecretBinding:
         for secret_id in sorted(self.stores):
             value = self.stores[secret_id].load()
             if not isinstance(value, str):
-                raise TypeError("A protected secret has an invalid type.")
+                raise TypeError("A protected secret requires a supported type.")
             if value:
                 secrets[secret_id] = value
         return {
@@ -909,17 +808,17 @@ class PortableSecretBinding:
             or payload.get("version") != 1
             or not isinstance(payload.get("secrets"), Mapping)
         ):
-            raise RuntimeError("The protected-secret payload is invalid.")
+            raise RuntimeError("The protected-secret payload requires the supported format, version, and secret mapping.")
         secrets = payload["secrets"]
         assert isinstance(secrets, Mapping)
         if not set(secrets) <= set(self.stores):
-            raise RuntimeError("A protected-secret store is unavailable.")
+            raise RuntimeError("The protected-secret payload requires recognized store identifiers.")
         previous = {secret_id: self.stores[secret_id].load() for secret_id in secrets}
         attempted: list[str] = []
         try:
             for secret_id, value in secrets.items():
                 if not isinstance(secret_id, str) or not isinstance(value, str) or not value:
-                    raise RuntimeError("A protected-secret value is invalid.")
+                    raise RuntimeError("A protected-secret value requires non-empty supported content.")
                 attempted.append(secret_id)
                 self.stores[secret_id].save(value)
         except (OSError, RuntimeError, TypeError, ValueError):
@@ -934,9 +833,9 @@ class PortableSecretBinding:
                 except (OSError, RuntimeError, TypeError, ValueError):
                     rollback_complete = False
             message = (
-                "Protected-secret import failed; previous values were restored."
+                "Protected-secret import requires attention; previous values were restored."
                 if rollback_complete
-                else "Protected-secret import failed and rollback was incomplete."
+                else "Protected-secret import and rollback require attention; retry the operation."
             )
             raise RuntimeError(message) from None
 
@@ -945,7 +844,7 @@ def bind_dashboard_portable_secrets(
     dependencies: DashboardServices,
     data_path: Path,
 ) -> PortableSecretBinding:
-    """Create isolated protected stores without exposing adapter types to UI."""
+    """Create isolated protected stores while keeping adapter types inside the infrastructure boundary."""
 
     factory = dependencies.secret_store_factory
     if (
@@ -953,17 +852,17 @@ def bind_dashboard_portable_secrets(
         or dependencies.azure_hd_secret_store is None
         or factory is None
     ):
-        raise RuntimeError("Dashboard secret boundaries are incomplete.")
+        raise RuntimeError("Dashboard secret boundaries require complete stores.")
     root = Path(data_path)
     generated = {
         secret_id: factory(root / filename, description)
         for secret_id, filename, description in (
-            ("home_assistant", "home-assistant-token.dpapi", "MoHan Home Assistant token"),
-            ("oauth_google", "oauth-google.dpapi", "MoHan google OAuth token"),
-            ("oauth_microsoft", "oauth-microsoft.dpapi", "MoHan microsoft OAuth token"),
-            ("oauth_github", "oauth-github.dpapi", "MoHan github OAuth token"),
-            ("face_identities", "face-identities.dpapi", "MoHan local face identity templates"),
-            ("gesture_templates", "gesture-templates.dpapi", "MoHan local gesture skeleton templates"),
+            ("home_assistant", "home-assistant-token.dpapi", f"{_CHARACTER_DISPLAY_NAME} Home Assistant token"),
+            ("oauth_google", "oauth-google.dpapi", f"{_CHARACTER_DISPLAY_NAME} google OAuth token"),
+            ("oauth_microsoft", "oauth-microsoft.dpapi", f"{_CHARACTER_DISPLAY_NAME} microsoft OAuth token"),
+            ("oauth_github", "oauth-github.dpapi", f"{_CHARACTER_DISPLAY_NAME} github OAuth token"),
+            ("face_identities", "face-identities.dpapi", f"{_CHARACTER_DISPLAY_NAME} local face identity templates"),
+            ("gesture_templates", "gesture-templates.dpapi", f"{_CHARACTER_DISPLAY_NAME} local gesture skeleton templates"),
         )
     }
     stores = {
@@ -973,7 +872,7 @@ def bind_dashboard_portable_secrets(
         **generated,
     }
     if set(stores) != _PORTABLE_SECRET_IDS or len({id(store) for store in stores.values()}) != len(stores):
-        raise RuntimeError("Dashboard secret boundaries are invalid.")
+        raise RuntimeError("Dashboard secret boundaries require complete, distinct stores.")
     return PortableSecretBinding(stores)
 
 
@@ -994,7 +893,7 @@ class DashboardServices:
     presentation_ports: PresentationPorts | None = None
     backup_manager: object | None = None
 
-def safe_error_from_exception(error: BaseException) -> SafeError | None:
+def safe_error_from_exception(error: BaseException) -> SafeError | None:  # ruff: ignore[blank-lines-top-level]
     value = getattr(error, "safe_error", None)
     return value if isinstance(value, SafeError) else None
 

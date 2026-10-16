@@ -34,7 +34,7 @@ class AppFramingState:
 
     def __post_init__(self) -> None:
         if self.generation < 0:
-            raise ValueError("Framing generation must not be negative.")
+            raise ValueError("Framing generation accepts zero or greater.")
         if self.available_width_px <= 0 or self.available_height_px <= 0:
             raise ValueError("Available desktop viewport must be positive.")
 
@@ -57,9 +57,9 @@ class AtomicFramingCommand:
 
     def __post_init__(self) -> None:
         if self.generation < 0:
-            raise ValueError("Framing command generation must not be negative.")
+            raise ValueError("Framing command generation accepts zero or greater.")
         if self.transition_ms < 0:
-            raise ValueError("Framing transition must not be negative.")
+            raise ValueError("Framing transition accepts zero or greater.")
         if not self.reason_chain:
             raise ValueError("Framing command requires an audit reason chain.")
 

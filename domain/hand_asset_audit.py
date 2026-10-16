@@ -10,7 +10,7 @@ lazy from itertools import pairwise
 lazy from pathlib import Path
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     BYTES_PER_PIXEL,
     BYTE_MAX,
     PNG_BIT_DEPTH,
@@ -53,11 +53,7 @@ FINGERS = frozendict({
     "ring": (13, 14, 15, 16),
     "pinky": (17, 18, 19, 20),
 })
-BONES = ((0, 1), (0, 5), (0, 9), (0, 13), (0, 17)) + tuple(
-    (indices[position], indices[position + 1])
-    for indices in FINGERS.values()
-    for position in range(3)
-)
+BONES = ((0, 1), (0, 5), (0, 9), (0, 13), (0, 17), *tuple((indices[position], indices[position + 1]) for indices in FINGERS.values() for position in range(3)))
 
 
 class HandAuditError(RuntimeError):
@@ -132,7 +128,7 @@ class HandAuditReport:
     issues: tuple[AuditIssue, ...]
     fingers: tuple[FingerEvidence, ...]
     # Checks that were deliberately not run for this asset, with the reason.
-    # A skipped check is reported, never silently counted as a pass.
+    # A skipped check is reported with its explicit status.
     skipped_checks: tuple[str, ...] = ()
 
 
@@ -302,12 +298,9 @@ def audit_hand_asset(
     """Audit one hand canvas.
 
     ``skin_background`` declares that the pixels around the hand are
-    legitimately skin (bare forearm, bare thigh behind a hanging hand).  The
-    extra-digit heuristic counts skin inside the hand ROI that no skeleton
-    bone explains; it was calibrated on a long-sleeved body where that skin
+    legitimately skin (bare forearm, bare thigh behind a hanging hand).  The extra-digit heuristic counts skin inside the hand ROI beyond the skeleton bones; it was calibrated on a long-sleeved body where that skin
     could only be a sixth finger.  Against a bare body it flags the forearm
-    and thigh on most views, so under the declaration it is not run and the
-    skip is reported in ``skipped_checks`` for a human to cover.
+    and thigh on most views, so under the declaration it stays outside the run and the skip is reported in ``skipped_checks`` for a human to cover.
     """
 
     try:

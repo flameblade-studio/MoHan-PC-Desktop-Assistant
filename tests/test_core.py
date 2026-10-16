@@ -150,11 +150,10 @@ def _assert_ai_worker_defaults() -> None:
 
 
 def _assert_ai_worker_timeout_emits_failed() -> None:
-    # v4.5.1 regression (2026-08-29): a mid-read socket timeout raises
-    # TimeoutError, which the old (URLError, HTTPError, ValueError) tuple let
-    # escape — the runnable died silently, ai_busy never released, and the
-    # dashboard froze on "thinking" until restart.  Any exception must reach
-    # signals.failed instead.
+    # v4.5.1 regression (2026-08-29): mid-read TimeoutError escaped the old
+    # URLError/HTTPError/ValueError handler and left ai_busy set with the
+    # dashboard stuck on thinking. Every exception must reach signals.failed
+    # to release the busy state and report its cause.
     failures: list[str] = []
     replies: list[str] = []
     worker = AIWorker(
@@ -177,7 +176,7 @@ def _assert_ai_worker_timeout_emits_failed() -> None:
 
 def _assert_ai_worker_bad_history_emits_failed() -> None:
     # Companion regression to the timeout fix: payload assembly ran OUTSIDE
-    # the old try block, so a poisoned history row (missing keys) raised
+    # the old try block, so a history row requiring keys raised
     # before the request and froze the dashboard across restarts — the bad
     # history reloads from the DB on every attempt.
     failures: list[str] = []
@@ -337,13 +336,13 @@ def _assert_offline_reply_contract() -> None:
         "為什麼墨寒剛才回答計時已啟？",
         "陪伴",
     )
-    assert "加班" not in offline_reply(
+    assert "此事先定目標" in offline_reply(
         "如果我下班之後還有精神，再整理靈感。",
         "工作",
     )
-    assert "加班" in offline_reply("我下班了", "工作")
+    assert "把時間留給休息" in offline_reply("我下班了", "工作")
     assert "優先順序" in offline_reply("幫我分析這件事", "工作")
-    assert "絕非心疼" in offline_reply("我好累", "陪伴")
+    assert "也願主上照顧自己" in offline_reply("我好累", "陪伴")
     assert "妾" in offline_reply("我想你", "陪伴")
 
 
@@ -520,10 +519,9 @@ def _assert_windows_voice_selection() -> None:
         ("OneCore::Microsoft Ayumi", "ja-JP"),
     ]
     installed = windows_voices()
-    # GitHub's clean Windows runners do not guarantee that optional language
-    # packs are installed.  The deterministic list above verifies that Yating
-    # is preferred when available; this live registry probe only verifies the
-    # shape and companion-voice filtering of the current host.
+    # Optional language packs vary across GitHub Windows runners. The fixed
+    # list above verifies Yating preference; this live registry probe verifies
+    # the current host catalog shape and companion-voice filtering.
     assert all(
         isinstance(name, str) and isinstance(culture, str)
         for name, culture in installed
@@ -595,7 +593,7 @@ def _assert_realtime_audio_lifecycle() -> RealtimeVoiceClient:
     # The 0.25 s watchdog normally clears the flag well within 0.4 s, but a
     # fixed sleep exploded on slow runners.  Poll with a generous 2 s
     # deadline instead: the behavior (idle audio is finished by the
-    # watchdog) is still verified, without the wall-clock trap.
+    # watchdog) is still verified through deterministic timing.
     watchdog_deadline = time.monotonic() + 2.0
     while (
         realtime._assistant_audio_active.is_set()

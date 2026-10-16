@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy import io
+lazy import json
 lazy import sys
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
@@ -18,6 +19,20 @@ HTTP_BAD_GATEWAY = 502
 HTTP_TOO_MANY_REQUESTS = 429
 HTTP_GATEWAY_TIMEOUT = 504
 HTTP_SERVICE_UNAVAILABLE = 503
+
+
+def test_json_decoding_precedes_generic_value_error() -> None:
+    try:
+        json.loads('{"private_payload":')
+    except json.JSONDecodeError as error:
+        result = sanitize_error(error)
+    else:
+        raise AssertionError("Malformed JSON must fail decoding")
+    assert result.error_type is SafeErrorType.DECODING_ERROR
+    assert result.diagnostic is SafeDiagnostic.INVALID_RESPONSE
+    assert "private_payload" not in str(result)
+    generic = sanitize_error(ValueError("invalid input"))
+    assert generic.error_type is SafeErrorType.VALIDATION_ERROR
 
 
 @dataclass(frozen=True)
@@ -233,6 +248,7 @@ def _assert_unicode_is_opaque() -> None:
 
 
 def run() -> None:
+    test_json_decoding_precedes_generic_value_error()
     _assert_bait_secrets_are_discarded()
     _assert_http_status_is_preserved_safely()
     _assert_invalid_status_is_not_exposed()

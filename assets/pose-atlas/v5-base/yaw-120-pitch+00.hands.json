@@ -3,207 +3,104 @@
     {
       "landmarks": [
         [
-          371,
-          795
+          600,
+          802
         ],
         [
-          378,
+          616,
           818
         ],
         [
-          390,
+          621,
           838
         ],
         [
-          395,
-          855
-        ],
-        [
-          399,
-          866
-        ],
-        [
-          375,
-          857
-        ],
-        [
-          376,
-          876
-        ],
-        [
-          381,
-          888
-        ],
-        [
-          388,
-          897
-        ],
-        [
-          369,
-          856
-        ],
-        [
-          370,
-          880
-        ],
-        [
-          377,
-          892
-        ],
-        [
-          385,
-          900
-        ],
-        [
-          362,
+          618,
           853
         ],
         [
-          362,
-          877
+          611,
+          863
         ],
         [
-          370,
-          888
-        ],
-        [
-          379,
-          893
-        ],
-        [
-          355,
-          847
-        ],
-        [
-          354,
-          866
-        ],
-        [
-          361,
-          877
-        ],
-        [
-          369,
-          882
-        ]
-      ],
-      "model_evidence": {
-        "augmentation": "rotate-counterclockwise",
-        "confidence": 0.934993,
-        "model_handedness": "left",
-        "pixel_refinement": "nearest-skin-within-8px"
-      },
-      "occlusions": [],
-      "roi": [
-        346,
-        787,
-        62,
-        122
-      ],
-      "side": "left",
-      "thumb_side_check": false
-    },
-    {
-      "landmarks": [
-        [
-          648,
-          804
-        ],
-        [
-          657,
-          824
-        ],
-        [
-          660,
-          847
-        ],
-        [
-          658,
-          864
-        ],
-        [
-          652,
-          876
-        ],
-        [
-          671,
-          856
-        ],
-        [
-          664,
-          886
-        ],
-        [
-          654,
-          900
-        ],
-        [
-          643,
-          908
-        ],
-        [
-          666,
-          855
-        ],
-        [
-          659,
-          889
-        ],
-        [
-          646,
-          903
-        ],
-        [
-          634,
-          909
-        ],
-        [
-          656,
-          853
-        ],
-        [
-          650,
-          885
-        ],
-        [
-          638,
-          899
-        ],
-        [
-          628,
-          906
-        ],
-        [
-          643,
+          625,
           849
         ],
         [
-          639,
-          874
+          619,
+          876
         ],
         [
-          633,
-          886
+          611,
+          889
         ],
         [
-          626,
-          893
+          603,
+          898
+        ],
+        [
+          615,
+          850
+        ],
+        [
+          608,
+          879
+        ],
+        [
+          599,
+          892
+        ],
+        [
+          591,
+          900
+        ],
+        [
+          602,
+          849
+        ],
+        [
+          597,
+          876
+        ],
+        [
+          589,
+          888
+        ],
+        [
+          583,
+          896
+        ],
+        [
+          589,
+          846
+        ],
+        [
+          586,
+          866
+        ],
+        [
+          582,
+          876
+        ],
+        [
+          578,
+          883
         ]
       ],
       "model_evidence": {
         "augmentation": "flip-horizontal",
-        "confidence": 0.979711,
+        "confidence": 0.986676,
         "model_handedness": "left",
         "pixel_refinement": "nearest-skin-within-8px"
       },
       "occlusions": [],
       "roi": [
-        618,
-        796,
-        62,
-        122
+        570,
+        794,
+        64,
+        115
       ],
-      "side": "right",
+      "side": "left",
       "thumb_side_check": false
     }
   ],
@@ -218,16 +115,29 @@
     "hand_confidence_threshold": 0.65,
     "palm_threshold": 0.45,
     "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
-    "source_sha256": "dbb80c9eed6e9e32f5ec31a0222a773b8ca4489324d8ba7fda8a9d60bb0bf6f4"
+    "source_sha256": "ffa58ec7c568630aad453da86dc926c7956cab4e75faae96fdf3b1f8c77bf911"
   },
-  "occluded_hands": [],
+  "occluded_hands": [
+    {
+      "occluder_id": "robe-or-view-occlusion",
+      "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
+      "region": [
+        0,
+        114,
+        1024,
+        1308
+      ],
+      "side": "right",
+      "status": "occluded"
+    }
+  ],
   "occluders": [],
   "protected_regions": [
     {
       "label": "face",
       "rect": [
         412,
-        140,
+        194,
         200,
         220
       ]
@@ -236,7 +146,7 @@
       "label": "body",
       "rect": [
         412,
-        320,
+        374,
         200,
         220
       ]

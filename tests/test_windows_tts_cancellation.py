@@ -67,7 +67,7 @@ class BlockingPowerShell:
         del timeout
         self.communicating.set()
         if not self.terminated.wait(timeout=2.0):
-            raise AssertionError("PowerShell cancellation was not delivered")
+            raise AssertionError('PowerShell cancellation must be delivered')
         return b"", b"cancelled"
 
     def poll(self) -> int | None:
@@ -94,10 +94,10 @@ class BlockingRawOutputStream:
     def write(self, _chunk: bytes) -> None:
         self.writing.set()
         if not self.aborted.wait(timeout=2.0):
-            raise AssertionError("audio playback cancellation was not delivered")
+            raise AssertionError('audio playback cancellation must be delivered')
 
     def stop(self) -> None:
-        raise AssertionError("cancelled playback must not drain to completion")
+        raise AssertionError('cancelled playback must stop promptly')
 
     def abort(self) -> None:
         self.aborted.set()
@@ -125,7 +125,7 @@ class CompletingRawOutputStream:
         self.stopped = True
 
     def abort(self) -> None:
-        raise AssertionError("completed playback must not be aborted")
+        raise AssertionError('completed playback must retain its completed status')
 
     def close(self) -> None:
         self.closed = True

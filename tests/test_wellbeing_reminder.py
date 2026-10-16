@@ -174,7 +174,7 @@ def assert_invalid_history_is_rejected() -> None:
     except ValueError:
         pass
     else:
-        raise AssertionError("A reinforcement cannot precede its first reminder.")
+        raise AssertionError('A reinforcement must follow its first reminder.')
 
 
 def run() -> None:

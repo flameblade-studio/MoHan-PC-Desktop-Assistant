@@ -4,11 +4,18 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime
 lazy from enum import StrEnum
 
+lazy from domain.character_source import active_character_data
 lazy from domain.lunar_calendar import qixi_gregorian
 
-MOHAN_BIRTHDAY_MONTH = 1
-MOHAN_BIRTHDAY_DAY = 8
-MOHAN_ZODIAC = "capricorn"
+_EVENTS = active_character_data().events
+_BIRTHDAY = next(
+    occasion
+    for occasion in _EVENTS.fixed_occasions
+    if occasion.kind == "mohan_birthday"
+)
+MOHAN_BIRTHDAY_MONTH = _BIRTHDAY.month
+MOHAN_BIRTHDAY_DAY = _BIRTHDAY.day
+MOHAN_ZODIAC = _EVENTS.zodiac
 MAX_MONTH = 12
 MAX_DAY = 31
 MAX_HOUR = 23
@@ -71,46 +78,23 @@ class OccasionDefinition:
 
     def __post_init__(self) -> None:
         if not 1 <= self.month <= MAX_MONTH or not 1 <= self.day <= MAX_DAY:
-            raise ValueError("Occasion date is invalid.")
+            raise ValueError("Occasion date needs a supported value.")
         if not 0 <= self.hint_hour < self.grumble_hour <= MAX_HOUR:
             raise ValueError("Occasion hours must be ordered within one day.")
         if self.minimum_grumble_delay_seconds < 60.0 * 60.0:
-            raise ValueError("A restrained grumble must never follow immediately.")
+            raise ValueError("A restrained grumble follows the configured interval.")
 
 
-OCCASIONS = (
+OCCASIONS = tuple(
     OccasionDefinition(
-        OccasionKind.MOHAN_BIRTHDAY,
-        MOHAN_BIRTHDAY_MONTH,
-        MOHAN_BIRTHDAY_DAY,
-        8,
-        18,
-        4.0 * 60.0 * 60.0,
-    ),
-    OccasionDefinition(
-        OccasionKind.VALENTINES_DAY,
-        2,
-        14,
-        10,
-        19,
-        4.0 * 60.0 * 60.0,
-    ),
-    OccasionDefinition(
-        OccasionKind.WHITE_DAY,
-        3,
-        14,
-        10,
-        19,
-        4.0 * 60.0 * 60.0,
-    ),
-    OccasionDefinition(
-        OccasionKind.CHRISTMAS_DAY,
-        12,
-        24,
-        10,
-        20,
-        4.0 * 60.0 * 60.0,
-    ),
+        OccasionKind(occasion.kind),
+        occasion.month,
+        occasion.day,
+        occasion.hint_hour,
+        occasion.grumble_hour,
+        occasion.minimum_grumble_delay_seconds,
+    )
+    for occasion in _EVENTS.fixed_occasions
 )
 
 
@@ -133,7 +117,7 @@ class OccasionContext:
             OccasionStage.RESTRAINED_GRUMBLE in self.delivered_stages
             and OccasionStage.SUBTLE_HINT not in self.delivered_stages
         ):
-            raise ValueError("An occasion cannot grumble before giving a subtle hint.")
+            raise ValueError("An occasion gives a subtle hint before a grumble.")
         if (
             OccasionStage.SUBTLE_HINT in self.delivered_stages
             and self.first_hint_at is None
@@ -240,8 +224,8 @@ def active_occasion(moment: datetime) -> OccasionDefinition | None:
             OccasionKind.QIXI,
             qixi[0],
             qixi[1],
-            10,
-            19,
-            4.0 * 60.0 * 60.0,
+            _EVENTS.qixi_hint_hour,
+            _EVENTS.qixi_grumble_hour,
+            _EVENTS.qixi_minimum_grumble_delay_seconds,
         )
     return None

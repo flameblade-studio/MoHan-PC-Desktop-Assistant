@@ -13,6 +13,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
 __all__ = ("FlagshipUiHelpersMixin",)
 
@@ -46,7 +47,7 @@ class FlagshipUiHelpersMixin:
         title: str,
         label: str,
     ) -> tuple[str, bool]:
-        dialog = QDialog(self)
+        dialog = QDialog(require_qwidget(self))
         dialog.setWindowTitle(title)
         root = QVBoxLayout(dialog)
         root.addWidget(QLabel(label))

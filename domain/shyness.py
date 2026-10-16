@@ -13,10 +13,11 @@ rather than a binary on/off:
 3. **Context** (情境): an explicit shy expression (``shy`` / ``shy_cute_front``)
    raises the baseline shyness.
 
-The level eases toward its target with a bounded lerp so it never snaps, and it
-decays back to zero when the drivers relax. This is pure domain logic with no
-Qt dependency.
+The level eases toward its target with a bounded lerp so it eases smoothly, and it
+decays back to zero when the drivers relax. This is pure domain logic with Qt outside the domain boundary.
 """
+
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 
 # How strongly each driver contributes to the shyness target.
 GAZE_WEIGHT = 0.5
@@ -30,7 +31,13 @@ GAZE_CONFIDENCE_THRESHOLD = 0.35
 EASE_RESPONSE = 0.18
 
 # Expressions that signal an explicit shy context.
-SHY_EXPRESSIONS = frozenset({"shy", "shy_cute_front", "shy_front"})
+SHY_EXPRESSIONS = frozenset(
+    {
+        "shy",
+        CHARACTER_EXPRESSION_ROLES["bashful"],
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    }
+)
 
 
 class ShynessState:

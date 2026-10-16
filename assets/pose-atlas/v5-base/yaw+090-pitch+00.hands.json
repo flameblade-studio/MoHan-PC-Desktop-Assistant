@@ -3,104 +3,105 @@
     {
       "landmarks": [
         [
-          512,
-          804
-        ],
-        [
-          489,
-          824
-        ],
-        [
-          482,
-          845
-        ],
-        [
-          488,
-          863
-        ],
-        [
-          493,
-          873
-        ],
-        [
-          488,
-          867
-        ],
-        [
-          487,
-          898
-        ],
-        [
-          488,
-          914
-        ],
-        [
-          488,
-          926
-        ],
-        [
-          505,
-          868
-        ],
-        [
-          502,
-          902
-        ],
-        [
-          501,
-          921
-        ],
-        [
-          499,
-          933
-        ],
-        [
-          520,
-          867
-        ],
-        [
-          517,
-          899
-        ],
-        [
-          514,
-          915
+          535,
+          805
         ],
         [
           511,
-          926
+          822
         ],
         [
-          532,
-          862
+          500,
+          845
         ],
         [
-          530,
+          499,
+          866
+        ],
+        [
+          501,
+          881
+        ],
+        [
+          506,
+          865
+        ],
+        [
+          505,
+          897
+        ],
+        [
+          507,
+          913
+        ],
+        [
+          510,
+          923
+        ],
+        [
+          522,
+          866
+        ],
+        [
+          521,
+          902
+        ],
+        [
+          522,
+          919
+        ],
+        [
+          522,
+          929
+        ],
+        [
+          539,
+          865
+        ],
+        [
+          537,
+          898
+        ],
+        [
+          536,
+          914
+        ],
+        [
+          536,
+          923
+        ],
+        [
+          553,
+          860
+        ],
+        [
+          552,
           886
         ],
         [
-          528,
-          900
+          550,
+          898
         ],
         [
-          525,
-          910
+          549,
+          907
         ]
       ],
       "model_evidence": {
-        "augmentation": "native",
-        "confidence": 0.978291,
-        "model_handedness": "left",
+        "augmentation": "flip-horizontal",
+        "confidence": 0.986248,
+        "derivation": "coordinate_mirror_of_source_observation_not_new_inference",
+        "model_handedness": "right",
         "pixel_refinement": "nearest-skin-within-8px"
       },
       "occlusions": [],
       "roi": [
-        474,
-        796,
-        67,
-        146
+        491,
+        797,
+        71,
+        141
       ],
-      "side": "left",
+      "side": "right",
       "thumb_side_check": false
     }
   ],
@@ -112,22 +113,23 @@
       "rotate-clockwise",
       "rotate-counterclockwise"
     ],
+    "derivation": "exact_horizontal_mirror_of_minus090_hand_observation",
     "hand_confidence_threshold": 0.65,
     "palm_threshold": 0.45,
     "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
-    "source_sha256": "bc7f1bc1f536c74d35ba53af74205f0e1ab29de1c4e77db20da06b663c1448a0"
+    "source_sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152"
   },
   "occluded_hands": [
     {
       "occluder_id": "robe-or-view-occlusion",
-      "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
+      "reason": "The approved fixed augmentations require a reliable 21-point hand observation to proceed.",
       "region": [
         0,
-        95,
+        61,
         1024,
-        1361
+        1395
       ],
-      "side": "right",
+      "side": "left",
       "status": "occluded"
     }
   ],
@@ -137,7 +139,7 @@
       "label": "face",
       "rect": [
         412,
-        175,
+        141,
         200,
         220
       ]
@@ -146,7 +148,7 @@
       "label": "body",
       "rect": [
         412,
-        355,
+        321,
         200,
         220
       ]

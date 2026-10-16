@@ -40,7 +40,7 @@ def similarity_matrix(source: np.ndarray, target: np.ndarray) -> np.ndarray:
         method=cv2.LMEDS,
     )
     if matrix is None:
-        raise ValueError("相似變換估計失敗")
+        raise ValueError("請提供可估計相似變換的對應點")
     return matrix
 
 

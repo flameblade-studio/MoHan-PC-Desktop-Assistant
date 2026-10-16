@@ -6,6 +6,7 @@ lazy from typing import Any
 
 lazy from PySide6.QtCore import QRunnable, QThreadPool, QTimer
 lazy from PySide6.QtWidgets import QApplication, QComboBox
+lazy from presentation.qt_parent import require_qobject
 
 lazy from application.camera_presence import CameraPresenceController
 lazy from application.cloud_vision_ui_bridge import (
@@ -21,6 +22,7 @@ lazy from domain.cloud_scene_interpreter import CloudSceneInterpreter
 lazy from domain.contracts import SecretStoreFactoryPort
 lazy from domain.flagship_action_models import ActionRequest, ActionResult
 lazy from domain.flagship_action_policy import PolicyEngine
+lazy from domain.service_status_localization import character_ui_values
 lazy from domain.vision_domain import SceneUnderstanding
 lazy from infrastructure.face_identity_store import FaceIdentityStore
 lazy from infrastructure.flagship_windows_toolbox import WindowsToolbox
@@ -71,15 +73,16 @@ class FlagshipRuntimeMixin:
         )
 
     def _initialize_runtime_state(self) -> None:
+        parent = require_qobject(self)
         # 工作執行緒限制為三個，避免背景 AI 與雲端工作阻塞桌面互動。
         # Gmail 等連接器仍由個別工作項目管理逾時與錯誤。
-        self.thread_pool = QThreadPool(self)
+        self.thread_pool = QThreadPool(parent)
         self.thread_pool.setMaxThreadCount(3)
         self.planner_busy = False
         self._planner_worker: ActionPlannerWorker | None = None
         self._oauth_worker = None
         self._planner_generation = 0
-        self.planner_timeout = QTimer(self)
+        self.planner_timeout = QTimer(parent)
         self.planner_timeout.setSingleShot(True)
         self.planner_timeout.setInterval(50_000)
         self.planner_timeout.timeout.connect(self._planner_timed_out)
@@ -92,18 +95,18 @@ class FlagshipRuntimeMixin:
         self._cloud_connecting = False
         self._oauth_worker: OAuthWorker | None = None
         self._home_probe_worker: QRunnable | None = None
-        self.cloud_test_timeout = QTimer(self)
+        self.cloud_test_timeout = QTimer(parent)
         self.cloud_test_timeout.setSingleShot(True)
         self.cloud_test_timeout.setInterval(35_000)
         self.cloud_test_timeout.timeout.connect(self._cloud_test_timed_out)
-        self.camera_restore_timer = QTimer(self)
+        self.camera_restore_timer = QTimer(parent)
         self.camera_restore_timer.setSingleShot(True)
         self.camera_restore_timer.timeout.connect(
             self._restore_camera_if_enabled
         )
         self.remote_server: RemoteControlServer | None = None
         self.camera_presence = CameraPresenceController(
-            self,
+            parent,
             language=self.language,
         )
         self.camera_presence.visual_observation.connect(
@@ -114,10 +117,10 @@ class FlagshipRuntimeMixin:
         self.face_identities = FaceIdentityStore(self.face_identity_secret)
         self.vision_controller = VisionController(
             self.face_identities,
-            self,
+            parent,
             dense_provider_factory=self._dense_face_provider_factory,
         )
-        self.multimodal_controller = MultimodalController(self)
+        self.multimodal_controller = MultimodalController(parent)
         self._latest_multimodal_face: tuple[FaceMeshFrame, float] | None = None
         self._latest_multimodal_hands: tuple[
             tuple[AirHandSample, ...],
@@ -166,7 +169,12 @@ class FlagshipRuntimeMixin:
         self._screen_cache = b""
         self._closed = False
         self._remote_status_cache: dict[str, Any] = {
-            "assistant": str(self.db.setting("assistant_name", "墨寒")),
+            "assistant": str(
+                self.db.setting(
+                    "assistant_name",
+                    character_ui_values(self.language)["character_name"],
+                )
+            ),
             "status": "starting",
         }
         self._remote_commands: queue.Queue[tuple[str, str]] = queue.Queue(maxsize=128)
@@ -231,17 +239,18 @@ class FlagshipRuntimeMixin:
         except (OSError, RuntimeError, TypeError, ValueError):
             self.cloud_vision_service = None
             self.openai_vision_status.setText(
-                self._t("● 雲端視覺服務目前無法使用")
+                self._t('● 雲端視覺服務需要處理')
             )
 
     def _start_control_center_timers(self) -> None:
-        self.remote_poll = QTimer(self)
+        parent = require_qobject(self)
+        self.remote_poll = QTimer(parent)
         self.remote_poll.timeout.connect(self._drain_remote_commands)
         self.remote_poll.start(250)
-        self.screen_timer = QTimer(self)
+        self.screen_timer = QTimer(parent)
         self.screen_timer.timeout.connect(self._refresh_screen_cache)
         self.screen_timer.start(2000)
-        self.workflow_timer = QTimer(self)
+        self.workflow_timer = QTimer(parent)
         self.workflow_timer.timeout.connect(self.run_due_workflows)
         self.workflow_timer.start(30000)
 

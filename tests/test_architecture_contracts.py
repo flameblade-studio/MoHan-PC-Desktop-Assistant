@@ -47,13 +47,13 @@ def assert_acyclic(graph: dict[str, set[str]]) -> None:
     def visit(node: str, trail: tuple[str, ...]) -> None:
         if node in visiting:
             raise AssertionError(
-                "local import cycle: " + " -> ".join(trail + (node,))
+                "local import cycle: " + " -> ".join((*trail, node))
             )
         if node in visited:
             return
         visiting.add(node)
         for dependency in sorted(graph[node]):
-            visit(dependency, trail + (node,))
+            visit(dependency, (*trail, node))
         visiting.remove(node)
         visited.add(node)
 

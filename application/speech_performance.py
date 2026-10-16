@@ -5,7 +5,7 @@ lazy from collections.abc import Callable
 lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 
 BOUNDARY_ESTIMATION_THRESHOLD = 0.32
 GESTURE_EMPHASIS_THRESHOLD = 0.42
@@ -34,7 +34,7 @@ class SpeechEventKind(StrEnum):
 
 @dataclass(frozen=True, slots=True)
 class SpeechEvent:
-    """Provider-neutral event; spoken text and secrets are never retained."""
+    """Provider-neutral event; spoken text and secrets stay outside event state."""
 
     generation: int
     provider_id: str
@@ -82,7 +82,7 @@ class SpeechPerformanceTimeline:
 
     Providers may expose rich boundaries or only audio-derived visemes. The
     latter use restrained, rate-limited estimated segment beats so body motion
-    remains synchronized without pretending exact word timing is available.
+    remains synchronized while representing timing at the precision supplied by the provider.
     """
 
     def __init__(
@@ -111,7 +111,7 @@ class SpeechPerformanceTimeline:
     def prepare(self, provider_id: str) -> tuple[SpeechEvent, SpeechPerformanceDirective]:
         provider = str(provider_id).strip()
         if not provider:
-            raise ValueError("Speech provider identifier must not be empty.")
+            raise ValueError("Speech provider identifier requires content.")
         now = self._now()
         self._generation += 1
         self._last_gesture_at = now - self.minimum_gesture_gap_seconds
@@ -218,7 +218,7 @@ class SpeechPerformanceTimeline:
             # The close event already settled this generation.  Provider
             # volume cues arrive through queued signals and can land after
             # it; letting one through flipped the timeline back to SPEAKING
-            # with the mouth open and no second close ever came.
+            # with the mouth open and only the first close event recorded.
             return None
         self._ensure_audio_started()
         now = self._now()
@@ -405,21 +405,44 @@ class SpeechPerformanceTimeline:
         self,
         kind: SpeechEventKind,
         timestamp: float,
-        **changes: object,
+        *,
+        level: float = 0.0,
+        viseme: str = "CLOSED",
+        segment_index: int = 0,
+        estimated: bool = False,
     ) -> SpeechEvent:
         return SpeechEvent(
             self._generation,
             self._snapshot.provider_id,
             kind,
             timestamp,
-            **changes,
+            level=level,
+            viseme=viseme,
+            segment_index=segment_index,
+            estimated=estimated,
         )
 
-    def _directive(self, **values: object) -> SpeechPerformanceDirective:
+    def _directive(
+        self,
+        *,
+        body_energy: float,
+        breath: float,
+        emphasis: float,
+        gesture_beat: bool,
+        allow_large_turn: bool,
+        hold_current_pose: bool,
+        reason: str,
+    ) -> SpeechPerformanceDirective:
         return SpeechPerformanceDirective(
             generation=self._generation,
             phase=self._snapshot.phase,
-            **values,
+            body_energy=body_energy,
+            breath=breath,
+            emphasis=emphasis,
+            gesture_beat=gesture_beat,
+            allow_large_turn=allow_large_turn,
+            hold_current_pose=hold_current_pose,
+            reason=reason,
         )
 
     def _now(self) -> float:

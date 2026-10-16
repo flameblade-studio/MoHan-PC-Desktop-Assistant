@@ -69,7 +69,7 @@ def run() -> None:
         "請幫我讀取郵件",
         api_key="sk-test",
         model="gpt-5.4-mini",
-        available_targets="（目前沒有白名單目標）",
+        available_targets='（請先加入白名單目標）',
     )
     timeout_worker.signals.failed.connect(errors.append)
     with patch(

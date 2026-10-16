@@ -1,0 +1,8 @@
+{
+  "adapter": "repaint H even when A equals B",
+  "bald_sha256": "fc851ca99482b2d9eaddd69bcfbda6a589b73976767f65ff6c4eb9d53ef3a2da",
+  "face_core_precleared": false,
+  "output_redirected": true,
+  "script": "build_exact.py",
+  "script_sha256": "1c1c47d9f409ab607324b33f88daed53abde0c132a2887a8a329cbcd14e846dc"
+}

@@ -91,6 +91,10 @@ def test_composition_modules_import_without_loading_app() -> None:
 import sys
 
 from application import application_bootstrap
+from application.character_runtime_bootstrap import activate_product_character_runtime
+
+# The product composition root activates the character before window modules load.
+activate_product_character_runtime()
 import presentation.companion_window
 import presentation.dashboard_window
 

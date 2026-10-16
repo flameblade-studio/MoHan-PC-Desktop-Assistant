@@ -39,7 +39,7 @@ SnapshotT = TypeVar("SnapshotT")
 
 
 class FramingPreferencesStoreError(RuntimeError):
-    """A fixed-detail persistence error without backend information."""
+    """A fixed-detail persistence boundary result with backend information kept private."""
 
 
 @dataclass(slots=True)
@@ -55,7 +55,7 @@ class FramingPreferencesDraft[SnapshotT]:
             self.value = replace(self.value, **changes)
         except (TypeError, ValueError):
             raise FramingPreferencesStoreError(
-                "Framing preference draft is invalid."
+                "Framing preference draft needs a supported value."
             ) from None
         return self
 
@@ -113,7 +113,7 @@ class FramingPreferencesStore[SnapshotT]:
 
     def save(self, preferences: FramingPreferences) -> None:
         if not isinstance(preferences, FramingPreferences):
-            raise FramingPreferencesStoreError("Framing preferences are invalid.")
+            raise FramingPreferencesStoreError("Framing preferences need supported values.")
         self._atomic_write(_persisted_values(preferences))
 
     def migrate(self) -> FramingPreferences:
@@ -150,10 +150,10 @@ class FramingPreferencesStore[SnapshotT]:
                 self._settings.restore(before)
             except _BOUNDARY_ERRORS:
                 raise FramingPreferencesStoreError(
-                    "Framing preference persistence failed and rollback was incomplete."
+                    "Framing preference persistence requires attention and rollback requires attention."
                 ) from None
             raise FramingPreferencesStoreError(
-                "Framing preference persistence failed; previous values were restored."
+                "Framing preference persistence requires attention; previous values were restored."
             ) from None
 
 

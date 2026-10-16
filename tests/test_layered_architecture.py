@@ -46,9 +46,9 @@ def imported_layers(path: Path) -> set[str]:
 def test_layer_packages_exist() -> None:
     for layer in LAYER_NAMES:
         package = PROJECT_ROOT / layer
-        assert package.is_dir(), f"Missing layer package: {layer}"
+        assert package.is_dir(), f'provide the layer package: {layer}'
         assert (package / "__init__.py").is_file(), (
-            f"Missing package marker: {layer}/__init__.py"
+            f'provide the package marker: {layer}/__init__.py'
         )
 
 

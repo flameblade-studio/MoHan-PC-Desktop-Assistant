@@ -1,10 +1,9 @@
-"""The Wardrobe Pavilion preview shows the composed look through the runtime path.
+"""The Wardrobe Pavilion preview composes its look through the runtime path.
 
-The preview composes each of its four views with the same full-body renderer
-and active-outfit overlay the desktop companion uses, honouring the selected
-outfit, makeup choice and intensity; composites are cached per appearance
-signature and built on a short timer once the tab is visible.  Without a
-compositor (offline dashboards) it falls back to the bare base and says so.
+Turntable views use the desktop full-body renderer and active-outfit overlay,
+honouring outfit, makeup, and intensity. Composites cache by appearance
+signature and build on a short timer after the tab becomes visible. Offline
+dashboards with the compositor absent show the bare base and state that status.
 """
 
 from __future__ import annotations
@@ -46,11 +45,12 @@ lazy from test_global_settings_actions import (
 WARDROBE_TAB = "雲裳閣"
 POSE_ATLAS = ROOT / "assets" / "pose-atlas" / "v5-base"
 FULL_BODY_SIZE = (1024, 1536)
-FRONT_BUTTON, BACK_BUTTON = 0, 3
-# Probe pixels recorded by tools/assemble_official_default_pack.py for yaw+000: a robe
-# pixel over the grey base and the strongest lip pixel of the built-in classic makeup.
-TORSO = (488, 585)
-LIPS = (552, 292)
+FRONT_VIEW, BACK_VIEW = "yaw+000-pitch+00", "yaw-180-pitch+00"
+# Inspect the garment area rather than an old embroidery pixel that can be white.
+FRONT_BAND = (350, 350, 320, 450)
+MIN_FRONT_ROBE_PIXELS = 500
+# Current approved native-front lip region, including the lipstick's alpha bounds.
+LIPS_REGION = (470, 285, 81, 55)
 # Back view: the robe covers the lower back below the loose hair.
 BACK_BAND = (380, 700, 260, 200)
 MIN_BACK_ROBE_PIXELS = 500
@@ -137,19 +137,17 @@ def test_preview_composites_the_active_look_through_the_runtime() -> None:
             front = dashboard._wardrobe_pose_source
             assert front.size().toTuple() == FULL_BODY_SIZE
             bare_front = QImage(str(POSE_ATLAS / "yaw+000-pitch+00.png"))
-            assert _is_grey(bare_front.pixelColor(*TORSO))
-            torso = front.toImage().pixelColor(*TORSO)
-            assert torso.blue() - torso.red() >= BLUE_MARGIN
+            assert _robe_over_grey(bare_front, front.toImage(), FRONT_BAND) >= MIN_FRONT_ROBE_PIXELS
             shown = dashboard.wardrobe_character_preview.pixmap()
             assert shown is not None and not shown.isNull()
             assert dashboard.wardrobe_preview_state_label.text() == ""
-            # A cached view is re-shown at once, without scheduling another composite.
-            dashboard.wardrobe_pose_buttons[FRONT_BUTTON].click()
+            # A cached view is shown immediately and reuses the existing composite.
+            dashboard.wardrobe_character_preview.set_view(FRONT_VIEW)
             application.processEvents()
             assert not dashboard._wardrobe_preview_pending
             assert dashboard._wardrobe_preview_state == STATE_COMPOSITED
-            # The back view is not the bare base either.
-            dashboard.wardrobe_pose_buttons[BACK_BUTTON].click()
+            # The back view also includes the composed outfit.
+            dashboard.wardrobe_character_preview.set_view(BACK_VIEW)
             application.processEvents()
             _wait_composited(dashboard)
             back = dashboard._wardrobe_pose_source.toImage()
@@ -157,27 +155,27 @@ def test_preview_composites_the_active_look_through_the_runtime() -> None:
             assert back != bare_back
             assert _robe_over_grey(bare_back, back, BACK_BAND) >= MIN_BACK_ROBE_PIXELS
             # Makeup "none" versus "classic" changes the lip region of the composed preview.
-            dashboard.wardrobe_pose_buttons[FRONT_BUTTON].click()
+            dashboard.wardrobe_character_preview.set_view(FRONT_VIEW)
             application.processEvents()
             _wait_composited(dashboard)
-            classic_lips = dashboard._wardrobe_pose_source.toImage().pixelColor(*LIPS)
+            classic_lips = dashboard._wardrobe_pose_source.toImage().copy(*LIPS_REGION)
             selector = dashboard.wardrobe_makeup_selector
             assert selector.currentData() == CLASSIC_MAKEUP
             selector.setCurrentIndex(selector.findData(BARE_MAKEUP))
             application.processEvents()
             _wait_composited(dashboard)
-            bare_lips = dashboard._wardrobe_pose_source.toImage().pixelColor(*LIPS)
+            bare_lips = dashboard._wardrobe_pose_source.toImage().copy(*LIPS_REGION)
             assert bare_lips != classic_lips
             selector.setCurrentIndex(selector.findData(CLASSIC_MAKEUP))
             application.processEvents()
             _wait_composited(dashboard)
-            assert dashboard._wardrobe_pose_source.toImage().pixelColor(*LIPS) == classic_lips
+            assert dashboard._wardrobe_pose_source.toImage().copy(*LIPS_REGION) == classic_lips
         finally:
             close_dashboard(dashboard, db)
 
 
 def test_offline_dashboard_without_compositor_flags_the_bare_preview() -> None:
-    """No compositor injected: the bare base is shown synchronously and the status says so."""
+    """With the compositor absent, show the bare base synchronously and state that status."""
     QApplication.instance() or QApplication([])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp:
         root = Path(temp)
@@ -190,7 +188,7 @@ def test_offline_dashboard_without_compositor_flags_the_bare_preview() -> None:
             assert dashboard.wardrobe_service.appearance_active()
             assert dashboard.wardrobe_status.text() == dashboard._t(
                 "wardrobe_preview_fallback",
-                "造型預覽暫時無法合成，目前顯示素體；桌面伴侶不受影響。",
+                '外觀合成需要處理，預覽目前顯示素體；桌面角色維持目前外觀。',
             )
             shown = dashboard.wardrobe_character_preview.pixmap()
             assert shown is not None and not shown.isNull()

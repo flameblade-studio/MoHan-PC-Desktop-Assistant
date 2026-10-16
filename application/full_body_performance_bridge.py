@@ -39,7 +39,7 @@ class FramingCommand:
 
     def __post_init__(self) -> None:
         if self.generation < 0:
-            raise ValueError("Framing generation must not be negative.")
+            raise ValueError("Framing generation accepts zero or greater.")
 
 
 class LoadedV4Assets(Protocol):
@@ -81,7 +81,7 @@ class FullBodyBridgeRequest:
 
     def __post_init__(self) -> None:
         if self.operation_generation < 0:
-            raise ValueError("Operation generation must not be negative.")
+            raise ValueError("Operation generation accepts zero or greater.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -100,7 +100,7 @@ class _PreparedLayers:
 
 
 class FullBodyPerformanceBridge:
-    """Join atomic performance, framing, and loaded v4 assets without UI state."""
+    """Join atomic performance, framing, and loaded v4 assets with UI state outside this boundary."""
 
     def __init__(self, adapter: FullBodyRenderAdapter) -> None:
         self._adapter = adapter
@@ -413,7 +413,7 @@ def face_motion_signature(motion: FaceMotionFrame | None) -> tuple[object, ...]:
 
     The full-body renderer deforms the mouth, eyelids, brows, irises, blush and
     lips from the continuous controls in :class:`FaceMotionFrame`.  Two frames
-    that differ only in those controls must not be deduplicated, so the
+    that differ only in those controls receive separate signatures when controls differ, so the
     signature captures every continuous value (rounded to a stable precision)
     alongside the discrete pose/expression/viseme labels.
     """
@@ -430,8 +430,8 @@ def face_motion_signature(motion: FaceMotionFrame | None) -> tuple[object, ...]:
         round(mouth.rounding, 6),
         round(mouth.jaw, 6),
         round(mouth.corner_smile, 6),
-        # u_inward was the one continuous control missing from this tuple,
-        # freezing the U-vowel pull-in tail whenever no other control moved.
+        # u_inward is included as the continuous control for this tuple,
+        # keeping the U-vowel pull-in tail current whenever the other controls stay still.
         round(mouth.u_inward, 6),
         round(shape.blink, 6),
         round(shape.eye_smile, 6),

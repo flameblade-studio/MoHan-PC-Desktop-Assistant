@@ -1,0 +1,3 @@
+### README 配圖同步 V5 外觀／README 配图同步 V5 外观／Sync README media with the V5 appearance／README 画像を V5 の外観に同期
+
+- 行銷肖像改用產品完整表情渲染器、官方預設服裝與經典妝，並以已核准的 golden 做逐像素回歸檢查；README 肖像、贊助圖、首頁大圖與介面截圖全部依此重產。／营销肖像改用产品完整表情渲染器、官方默认服装与经典妆，并以已批准的 golden 做逐像素回归检查；README 肖像、赞助图、首页大图与界面截图全部据此重新生成。／Marketing portraits now use the product complete-expression renderer, the official default outfit and classic makeup, with pixel regression coverage against the approved golden; README portraits, support images, the hero image and UI screenshots were all regenerated from it.／マーケティング用ポートレートは製品の完全表情レンダラー、公式デフォルト衣装、クラシックメイクを使用し、承認済み golden との画素単位の回帰検査を備えます。README のポートレート、支援画像、ヒーロー画像、UI スクリーンショットはすべてこれで再生成しました。

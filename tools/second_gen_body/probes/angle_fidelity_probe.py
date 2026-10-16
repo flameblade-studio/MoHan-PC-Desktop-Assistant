@@ -78,7 +78,7 @@ def main() -> None:
         )
         negative = orientation_negative(yaw) + NEG_ARMS + NEG
         for strength in STAGE1_LADDER:
-            target = OUT / f"yaw{yaw:+04d}-s1_{int(strength*100):03d}.png"
+            target = OUT / f"yaw{yaw:+04d}-s1_{int(strength * 100):03d}.png"
             if target.exists():
                 continue
             first = pipe(
@@ -94,7 +94,7 @@ def main() -> None:
                 generator=torch.Generator(device="cpu").manual_seed(11),
             ).images[0]
             second.save(target)
-            first.save(OUT / f"yaw{yaw:+04d}-s1_{int(strength*100):03d}-stage1.png")
+            first.save(OUT / f"yaw{yaw:+04d}-s1_{int(strength * 100):03d}-stage1.png")
             verdict, _ok = check(target, yaw, control)
             iou = float(verdict.split("頸下IoU")[1].split()[0])
             eye = float(verdict.split("眼距比")[1].split()[0])

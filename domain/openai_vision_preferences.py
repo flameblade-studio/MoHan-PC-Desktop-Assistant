@@ -67,11 +67,11 @@ SETTING_KEYS: Final = (
 
 
 class OpenAIVisionPreferencesError(RuntimeError):
-    """A fixed-detail preference boundary error."""
+    """A fixed-detail preference boundary result."""
 
 
 class UnsupportedOpenAIVisionPreferencesVersion(OpenAIVisionPreferencesError):
-    """The portable preference version cannot be interpreted safely."""
+    """The portable preference version requires supported values for safe interpretation."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -98,21 +98,21 @@ class OpenAIVisionPreferences:
         if any(type(value) is not bool for value in flags):
             raise TypeError("OpenAI vision flags must be boolean.")
         if self.model_id not in OPENAI_VISION_MODEL_IDS:
-            raise ValueError("OpenAI vision model is unsupported.")
+            raise ValueError("OpenAI vision model needs a supported value.")
         if not isinstance(self.detail, VisionDetail):
-            raise TypeError("OpenAI vision detail is invalid.")
+            raise TypeError("OpenAI vision detail needs a supported value.")
         if not isinstance(self.trigger_policy, VisionTriggerPolicy):
-            raise TypeError("OpenAI vision trigger policy is invalid.")
+            raise TypeError("OpenAI vision trigger policy needs a supported value.")
         if type(self.daily_limit) is not int or not 1 <= self.daily_limit <= MAX_DAILY_LIMIT:
-            raise ValueError("OpenAI vision daily limit is invalid.")
+            raise ValueError("OpenAI vision daily limit needs a supported value.")
         if (
             type(self.per_minute_limit) is not int
             or not 1 <= self.per_minute_limit <= MAX_PER_MINUTE_LIMIT
             or self.per_minute_limit > self.daily_limit
         ):
-            raise ValueError("OpenAI vision per-minute limit is invalid.")
+            raise ValueError("OpenAI vision per-minute limit needs a supported value.")
         if self.raw_image_storage_enabled:
-            raise ValueError("Raw image storage is forbidden.")
+            raise ValueError("Raw image storage requires the approved protected boundary.")
 
     def permits_cloud_frame(self) -> bool:
         """Report whether saved settings may authorize cloud frames."""
@@ -201,7 +201,7 @@ def import_openai_vision_preferences(
     version = payload.get("version")
     if type(version) is not int or version != PREFERENCES_VERSION:
         raise UnsupportedOpenAIVisionPreferencesVersion(
-            "OpenAI vision preference version is unsupported."
+            "OpenAI vision preference version needs a supported value."
         )
     return preferences_from_mapping(payload.get("preferences"))
 
@@ -209,7 +209,7 @@ def import_openai_vision_preferences(
 def _require_preferences(preferences: OpenAIVisionPreferences) -> None:
     if not isinstance(preferences, OpenAIVisionPreferences):
         raise OpenAIVisionPreferencesError(
-            "OpenAI vision preferences are invalid."
+            "OpenAI vision preferences need supported values."
         )
 
 

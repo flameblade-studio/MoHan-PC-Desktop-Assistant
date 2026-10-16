@@ -54,7 +54,7 @@ class GestureTrigger:
 
     def __post_init__(self) -> None:
         if not self.gesture_id.strip():
-            raise ValueError("Gesture trigger identifier must not be empty.")
+            raise ValueError("Gesture trigger identifier requires content.")
         if not math.isfinite(self.confidence) or not 0.0 <= self.confidence <= 1.0:
             raise ValueError("Gesture trigger confidence must be normalized.")
         if not math.isfinite(self.observed_at):
@@ -87,7 +87,7 @@ class GestureActionDecision:
 
 
 class GestureActionRouter:
-    """Translate debounced recognition into intent without executing anything."""
+    """Translate debounced recognition into intent with execution delegated to the caller."""
 
     def __init__(
         self,
@@ -96,9 +96,9 @@ class GestureActionRouter:
         cooldown_seconds: float = 2.0,
     ) -> None:
         if not math.isfinite(confidence_threshold) or not MIN_CONFIDENCE_THRESHOLD <= confidence_threshold <= 1.0:
-            raise ValueError("Gesture action confidence threshold is invalid.")
+            raise ValueError("Gesture action confidence threshold needs a supported value.")
         if not math.isfinite(cooldown_seconds) or cooldown_seconds < 0.0:
-            raise ValueError("Gesture action cooldown is invalid.")
+            raise ValueError("Gesture action cooldown needs a supported value.")
         self._confidence_threshold = confidence_threshold
         self._cooldown_seconds = cooldown_seconds
         self._last_triggered_at: dict[str, float] = {}

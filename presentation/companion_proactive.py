@@ -9,7 +9,7 @@ lazy from application.multisensory_interaction import (
     MultisensoryInteractionArbiter,
     WelcomeTimingRules,
 )
-lazy from application.presentation_ports import PresentationDatabasePort
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.proactive_companion_app_bridge import (
     ProactiveAppEvent,
     ProactiveAppState,
@@ -25,11 +25,12 @@ lazy from application.visual_perception import (
 )
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
-lazy from domain.app_profile import personalize_text, profile_setting
-lazy from domain.constants import (
+lazy from domain.character_source import personalize_text, profile_setting
+lazy from domain.core_constants import (
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.sensory_synesthesia import (
     complaint_line as sensory_complaint_line,
     rain_alpha,
@@ -341,7 +342,7 @@ class CompanionProactiveMixin:
             else "unknown",
             active=observation.activity is ActivityState.ACTIVE,
         )
-        # While the companion is speaking, visual presence/motion must not
+        # While the companion is speaking, visual presence/motion keeps
         # switch the expression state.  A visual-triggered set_state would
         # leave the speaking state, freezing the mouth animation, and the
         # arrival/turn framing would keep rotating the body toward the camera
@@ -353,7 +354,7 @@ class CompanionProactiveMixin:
         if not speaking:
             if observation.presence is PresenceState.PRESENT:
                 self.set_state(
-                    "gentle_smile_front",
+                    CHARACTER_EXPRESSION_ROLES["gentle"],
                     source="visual",
                     intensity=0.35,
                 )
@@ -406,7 +407,7 @@ class CompanionProactiveMixin:
 
     def _consider_desktop_presence(self) -> None:
         # Time sovereignty: sample the local hour on the existing presence timer
-        # so the companion grows drowsy deep into the night without any blocking
+        # so the companion grows drowsy deep into the night while keeping the UI responsive
         # work on the Qt main thread.
         sovereignty = getattr(self, "time_sovereignty_state", None)
         if sovereignty is not None:
@@ -448,7 +449,7 @@ class CompanionProactiveMixin:
         if sword is not None:
             sword.update(
                 days=float(elapsed_days),
-                # TODO(sword-soul): ``sword_soul_commit_count`` has no writer
+                # TODO(sword-soul): ``sword_soul_commit_count`` receives no persisted writer
                 # yet, so the resonance currently only grows with elapsed days.
                 # A future release-note importer should persist the real commit
                 # count; until then the conservative 0 default applies.
@@ -489,8 +490,15 @@ class CompanionProactiveMixin:
             )
             if line:
                 self._last_sensory_weather_line_at = monotonic_now
-                self.set_state("gentle_smile_front", source="visual", intensity=0.45)
-                self.speak(line, "gentle_smile_front")
+                self.set_state(
+                    CHARACTER_EXPRESSION_ROLES["gentle"],
+                    source="visual",
+                    intensity=0.45,
+                )
+                self.speak(
+                    line,
+                    CHARACTER_EXPRESSION_ROLES["gentle"],
+                )
                 return
 
         drowsiness = float(
@@ -504,7 +512,7 @@ class CompanionProactiveMixin:
         ):
             self.speak(
                 random_somniloquy(str(self.db.setting("ui_language", "zh-TW"))),
-                "gentle_smile_front",
+                CHARACTER_EXPRESSION_ROLES["gentle"],
             )
             return
 

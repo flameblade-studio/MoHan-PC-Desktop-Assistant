@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+lazy import math
 lazy import os
 lazy import sys
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
+
+lazy import numpy as np
+lazy from PIL import Image
 
 os.environ["QT_QPA_PLATFORM"] = "offscreen"
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -15,6 +19,8 @@ lazy from PySide6.QtWidgets import QApplication
 
 lazy from domain.companion_animation_contract import (
     EXPRESSION_BLINK_FRAMES,
+    EXPRESSION_HALF_BLINK_FRAME_SOURCES,
+    EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES,
     EXPRESSION_FACE_OFFSETS,
     EXPRESSION_POSES,
     EXPRESSION_SPEECH_EXPRESSIONS,
@@ -24,11 +30,18 @@ lazy from domain.companion_animation_contract import (
     GESTURE_SPEECH_FRAMES,
     NEW_EXPRESSION_ASSETS,
 )
+lazy from infrastructure.complete_halfbody_expressions import load_complete_halfbody_frames
+lazy from domain.outfit_pack_makeup import load_makeup_safe_regions
 lazy from presentation.companion_window import CompanionWindow
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 ANCHOR_OFFSET_BOUND = 6
 ANCHOR_CONFIDENCE_THRESHOLD = 0.15
 ANCHOR_OFFSET_TOLERANCE = 2
+COMPLETE_EXPRESSION_EYE_EXPRESSIONS = frozenset(
+    {"glance", "caught", "happy", "worried", "reminder"},
+)
 
 FEATURES = (
     "physics_sleeves",
@@ -64,6 +77,26 @@ def changed_pixels(
     return inside, outside
 
 
+def changed_pixels_in_regions(
+    before: QPixmap,
+    after: QPixmap,
+    allowed: tuple[QRect, ...],
+) -> tuple[int, int]:
+    first = before.toImage().convertToFormat(QImage.Format_RGBA8888)
+    second = after.toImage().convertToFormat(QImage.Format_RGBA8888)
+    inside = 0
+    outside = 0
+    for y in range(first.height()):
+        for x in range(first.width()):
+            if first.pixel(x, y) == second.pixel(x, y):
+                continue
+            if any(rect.contains(x, y) for rect in allowed):
+                inside += 1
+            else:
+                outside += 1
+    return inside, outside
+
+
 def alpha_bounds(pixmap: QPixmap) -> QRect:
     image = pixmap.toImage()
     left = image.width()
@@ -80,6 +113,54 @@ def alpha_bounds(pixmap: QPixmap) -> QRect:
             bottom = max(bottom, y)
     assert right >= left and bottom >= top
     return QRect(left, top, right - left + 1, bottom - top + 1)
+
+
+def _complete_blink_pose(expression: str) -> str | None:
+    """Return the installed complete pose whose whole-frame blinks this expression owns."""
+    complete = load_complete_halfbody_frames(
+        PROJECT_ROOT / "assets" / "expressions" / "complete-expressions"
+    )
+    if complete is None or expression not in complete.expressions:
+        return None
+    pose = complete.expressions[expression][0]
+    return pose if pose in complete.whole_frame_blinks else None
+
+
+def complete_expression_eye_authority_rect(expression: str) -> QRect | None:
+    """Use the approved blink change region plus the registered eye-makeup region."""
+    pose = _complete_blink_pose(expression)
+    if pose is None or expression == "glance":
+        return None
+    frames = PROJECT_ROOT / "assets" / "expressions" / "complete-expressions" / "frames"
+    rest = np.asarray(Image.open(frames / f"{pose}-neutral-rest.rgba.png").convert("RGBA"))
+    changed = np.zeros(rest.shape[:2], dtype=bool)
+    for state in ("half", "closed"):
+        frame = np.asarray(Image.open(frames / f"{pose}-neutral-{state}.rgba.png").convert("RGBA"))
+        changed |= (frame != rest).any(axis=2)
+    rows = np.flatnonzero(changed.any(axis=1))
+    columns = np.flatnonzero(changed.any(axis=0))
+    assert rows.size and columns.size, expression
+    scale = 465 / rest.shape[1]
+    left = int(columns[0] * scale)
+    top = int(rows[0] * scale)
+    right = math.ceil((columns[-1] + 1) * scale)
+    bottom = math.ceil((rows[-1] + 1) * scale)
+    authority = QRect(left, top, right - left, bottom - top)
+    # Eye makeup changes with the eye state, so its safe region is eye authority too.
+    for x, y, width, height in load_makeup_safe_regions()[pose].rects("eyes"):
+        authority = authority.united(
+            QRect(int(x * scale), int(y * scale), math.ceil(width * scale), math.ceil(height * scale)),
+        )
+    return authority
+
+
+def complete_expression_mouth_authority_rect(expression: str) -> QRect | None:
+    """Use the registered new-face lip safe region for speech endpoint checks."""
+    if expression not in COMPLETE_EXPRESSION_EYE_EXPRESSIONS or expression == "glance":
+        return None
+    x, y, width, height = load_makeup_safe_regions()[f"cheek-{expression}"].rects("lips")[0]
+    scale = 465 / 1254
+    return QRect(round(x * scale), round(y * scale), round(width * scale), round(height * scale))
 
 
 def eye_bounds(window: CompanionWindow, pose: str) -> QRect:
@@ -111,7 +192,7 @@ def rect_difference(
 
 
 def edge_energy(pixmap: QPixmap, region: QRect) -> int:
-    """Measure local detail so a blurred mouth cannot pass unnoticed."""
+    """Measure local detail to detect and report a blurred mouth."""
     image = pixmap.toImage().convertToFormat(QImage.Format_RGBA8888)
 
     def luminance(x: int, y: int) -> int:
@@ -336,16 +417,25 @@ def assert_expression_speech_variants(
     frames: dict[str, str],
 ) -> None:
     original = window.expression_pixmaps[expression]
-    mouth_rect = EXPRESSION_SPEECH_MOUTH_RECTS[expression]
+    mouth_rect = complete_expression_mouth_authority_rect(expression)
+    if mouth_rect is None:
+        mouth_rect = (
+            QRect(181, 177, 68, 50)
+            if expression == "glance"
+            else EXPRESSION_SPEECH_MOUTH_RECTS[expression]
+        )
+    allowed_regions = (mouth_rect,)
+    if expression in COMPLETE_EXPRESSION_EYE_EXPRESSIONS and expression != "glance":
+        eye_rect = complete_expression_eye_authority_rect(expression)
+        assert eye_rect is not None
+        allowed_regions += (eye_rect,)
     for speech_expression, aperture in (
         (frames["mid"], 0.48),
         (frames["open"], 0.90),
         (frames["round"], 0.72),
     ):
-        asset_inside, asset_outside = changed_pixels(
-            original,
-            window.expression_pixmaps[speech_expression],
-            mouth_rect,
+        asset_inside, asset_outside = changed_pixels_in_regions(
+            original, window.expression_pixmaps[speech_expression], allowed_regions,
         )
         assert asset_inside > 0
         assert asset_outside == 0, (
@@ -361,6 +451,24 @@ def assert_expression_speech_variants(
         assert composed.size() == original.size()
 
 
+def _has_bound_blink_source(expression: str) -> bool:
+    """True only when a blink endpoint is actually authored for THIS expression.
+
+    A pose-silhouette match, a filename convention or mere set membership is not
+    authority over another expression's features, so those do not count.
+    """
+
+    if _complete_blink_pose(expression) is not None:
+        return True
+    if expression in COMPLETE_EXPRESSION_EYE_EXPRESSIONS:
+        return False
+    return (
+        expression in EXPRESSION_BLINK_FRAMES
+        or EXPRESSION_HALF_BLINK_FRAME_SOURCES.get(expression) is not None
+        or EXPRESSION_NATIVE_CLOSED_BLINK_FRAME_SOURCES.get(expression) is not None
+    )
+
+
 def assert_expression_speech_blink(
     window: CompanionWindow,
     expression: str,
@@ -370,15 +478,19 @@ def assert_expression_speech_blink(
     blinked = window._blink_composite(opened, expression)
     eye_offset_x, eye_offset_y = window._expression_eye_offset(expression)
     pose = EXPRESSION_POSES[expression]
-    blink_mask = (
-        window.dedicated_blink_masks[pose]
-        if expression in EXPRESSION_BLINK_FRAMES
-        else window.blink_masks[pose]
-    )
-    expression_eye_rect = alpha_bounds(blink_mask).translated(
-        eye_offset_x,
-        eye_offset_y,
-    )
+    if expression == "glance":
+        # The previously verified glance route uses this non-overlapping eye ROI.
+        expression_eye_rect = QRect(175, 115, 101, 71).translated(eye_offset_x, eye_offset_y)
+    elif (complete_eye_rect := complete_expression_eye_authority_rect(expression)) is not None:
+        # Complete portraits blink in place, so the legacy eye offset does not apply.
+        expression_eye_rect = complete_eye_rect
+    else:
+        blink_mask = (
+            window.dedicated_blink_masks[pose]
+            if expression in EXPRESSION_BLINK_FRAMES
+            else window.blink_masks[pose]
+        )
+        expression_eye_rect = alpha_bounds(blink_mask).translated(eye_offset_x, eye_offset_y)
     blink_inside, blink_outside = changed_pixels(
         opened,
         blinked,
@@ -387,6 +499,13 @@ def assert_expression_speech_blink(
     if expression in EYES_CLOSED_EXPRESSIONS:
         assert blink_inside == 0
         assert blink_outside == 0
+    elif expression in EXPRESSION_POSES and not _has_bound_blink_source(expression):
+        # Contract B: a complete portrait with no blink source bound to THIS
+        # expression keeps the incoming frame in both eye states; sharing the
+        # pose silhouette is not authority, so the neutral donor is not used.
+        # The mouth still animates - only the eyelid replacement is declined.
+        assert blink_inside == 0, expression
+        assert blink_outside == 0, expression
     else:
         assert blink_inside > 0, expression
         assert blink_outside == 0, expression
@@ -404,13 +523,9 @@ def assert_expression_local_speech_assets(window: CompanionWindow) -> None:
 
 
 def assert_dedicated_blink_assets(window: CompanionWindow) -> None:
-    # Identity-locked eyelids may alter only the eye mask.
+    # Only non-complete expressions retain a dedicated portrait blink asset.
     assert set(EXPRESSION_BLINK_FRAMES) == {
         "thinking_front",
-        "glance",
-        "happy",
-        "worried",
-        "reminder",
     }
     for expression, blink_asset in EXPRESSION_BLINK_FRAMES.items():
         original = window.expression_pixmaps[expression]
@@ -457,9 +572,8 @@ def assert_gesture_speech_blink(
     show_expression_speech_frame(window, expression, gesture_frames)
     pre_gesture_blink = QPixmap(window.character.pixmap())
     window._blink()
-    # The discrete blink contract keeps HALF frames untouched when no
-    # registered half-eye source exists, so advance to the CLOSED authority
-    # frame before sampling the eye region.
+    # The discrete blink contract preserves HALF until a registered half-eye
+    # source exists. Advance to CLOSED before sampling the eye region.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     gesture_blink = QPixmap(window.character.pixmap())
     offset_x, offset_y = window._expression_eye_offset(expression)
@@ -485,16 +599,21 @@ def assert_expression_speech_blink_restore(
     window._blink()
     assert window.speech_blinking
     assert window.current_expression == expression_frames["mid"]
-    # Discrete blink contract: HALF frames stay untouched without a half-eye
-    # source, so sample the CLOSED authority frame.
+    # HALF preserves the current eye source; sample the authored CLOSED frame.
     window._advance_speaking_blink(window.blink_generation, 1.0)
     during_blink = QPixmap(window.character.pixmap())
+    eye_authority = complete_expression_eye_authority_rect(expression) or eye_rects["front"]
     inside, outside = changed_pixels(
         pre_blink,
         during_blink,
-        eye_rects["front"],
+        eye_authority,
     )
-    assert inside > 0
+    if expression in EXPRESSION_POSES and not _has_bound_blink_source(expression):
+        # Contract B: no endpoint is bound to this portrait, so the speaking
+        # blink keeps the incoming frame instead of borrowing the pose donor.
+        assert inside == 0
+    else:
+        assert inside > 0
     assert outside == 0
     window._finish_speaking_blink(window.blink_generation)
     restored_inside, restored_outside = changed_pixels(
@@ -529,11 +648,9 @@ def assert_expression_generation_guards(window: CompanionWindow) -> None:
     assert window.expression_return_timer.isActive()
     window._release_scheduled_expression()
     assert window.state == "idle", (
-        "scheduled expression release did not restore idle: "
-        f"state={window.state!r}, "
-        f"generation={window.expression_generation}, "
-        f"speech_playing={window.speech_playing!r}, "
-        f"realtime_mouth_active={window.realtime_mouth_active!r}"
+        f'scheduled expression release must restore idle; observed state={window.state!r}, generation='
+        f'{window.expression_generation}, speech_playing={window.speech_playing!r}, realtime_mouth_active='
+        f'{window.realtime_mouth_active!r}'
     )
     assert not window.expression_return_timer.isActive()
 
@@ -559,27 +676,42 @@ def assert_ai_emotion_metadata(window: CompanionWindow) -> None:
     ]
 
 
+def release_window(window: CompanionWindow, app: QApplication) -> None:
+    """Tear the window and its profile database down before temp cleanup.
+
+    ``TemporaryDirectory`` removes the isolated profile root on exit; Windows
+    refuses to unlink a file whose handle is still open, so the SQLite
+    connection the window borrowed from the service container must be closed
+    here rather than left to garbage collection.
+    """
+
+    window.close()
+    app.processEvents()
+    window.db.close()
+
+
 def run() -> None:
     with TemporaryDirectory() as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
         app = QApplication([])
         window = CompanionWindow(startup_speech=False)
-        window.show()
-        app.processEvents()
-        stop_automatic_timers(window)
-        assert_asset_registry(window)
-        assert_anchor_profiles(window)
-        assert_reply_expression_policy(window)
-        assert_conservative_idle_policy(window)
-        eye_rects = assert_expression_pose_pipeline(window)
-        assert_expression_local_speech_assets(window)
-        assert_dedicated_blink_assets(window)
-        assert_gesture_speech_blink(window, eye_rects)
-        assert_expression_speech_blink_restore(window, eye_rects)
-        assert_expression_generation_guards(window)
-        assert_ai_emotion_metadata(window)
-        window.close()
-        app.processEvents()
+        try:
+            window.show()
+            app.processEvents()
+            stop_automatic_timers(window)
+            assert_asset_registry(window)
+            assert_anchor_profiles(window)
+            assert_reply_expression_policy(window)
+            assert_conservative_idle_policy(window)
+            eye_rects = assert_expression_pose_pipeline(window)
+            assert_expression_local_speech_assets(window)
+            assert_dedicated_blink_assets(window)
+            assert_gesture_speech_blink(window, eye_rects)
+            assert_expression_speech_blink_restore(window, eye_rects)
+            assert_expression_generation_guards(window)
+            assert_ai_emotion_metadata(window)
+        finally:
+            release_window(window, app)
     print("EXPRESSION_PIPELINE_OK")
 
 

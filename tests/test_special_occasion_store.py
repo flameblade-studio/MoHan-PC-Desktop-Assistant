@@ -173,7 +173,7 @@ def assert_atomic_rollback_and_safe_errors() -> None:
     try:
         SpecialOccasionStore(broken).save(populated_state())
     except SpecialOccasionStoreError as exc:
-        assert "rollback was incomplete" in str(exc)
+        assert "rollback requires attention" in str(exc)
         assert "PRIVATE" not in str(exc)
     else:
         raise AssertionError("failing rollback unexpectedly succeeded")

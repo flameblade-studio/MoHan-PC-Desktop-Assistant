@@ -22,8 +22,8 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 
-lazy from application.presentation_ports import PresentationDatabasePort
-lazy from domain.app_profile import profile_setting
+lazy from application.service_contracts import PresentationDatabasePort
+lazy from domain.character_source import profile_setting
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from presentation.dashboard_shared import (
     MEMORY_CATEGORIES,
@@ -453,8 +453,7 @@ class ArchivedMemoryDialog(QDialog):
             ui_text(
                 language,
                 "archived_memory_intro",
-                "自動整理只會封存較舊、低重要度的對話記憶，不會直接銷毀。"
-                "您可以在這裡隨時勾選還原。",
+                '自動整理只封存較舊且重要性較低的對話記憶，並保留完整內容。勾選此處的項目即可還原。',
             )
         )
         intro.setWordWrap(True)
@@ -485,7 +484,9 @@ class ArchivedMemoryDialog(QDialog):
         consume = getattr(self.db, "consume_corrupt_data_notifications", None)
         if callable(consume):
             messages = consume()
-            if messages:
+            if isinstance(messages, tuple) and all(
+                isinstance(message, str) for message in messages
+            ) and messages:
                 QMessageBox.warning(
                     self,
                     ui_text(self.language, "corrupt_data_title", "資料讀取警告"),
@@ -501,8 +502,7 @@ class ArchivedMemoryDialog(QDialog):
                     ui_text(
                         self.language,
                         "archived_memory_corrupt",
-                        "【無法讀取】這筆封存記憶的原檔已保留。"
-                        "\n封存原因：{reason}\u3000時間：{archived}",
+                        '[讀取需要處理] 原始封存記憶已保留。\n封存原因：{reason}  封存時間：{archived}',
                         reason=str(row["reason"]),
                         archived=str(row["archived_at"])[:16],
                     )
@@ -580,7 +580,7 @@ class ArchivedMemoryDialog(QDialog):
             status += "\n" + ui_text(
                 self.language,
                 "corrupt_data_message",
-                "某項設定／記憶無法讀取，已保留原檔",
+                '讀取設定或記憶需要處理；原始檔案已保留。',
             )
         self.archive_status.setText(status)
 
@@ -606,8 +606,7 @@ class ChatHistoryDialog(QDialog):
             ui_text(
                 language,
                 "chat_history_intro",
-                "對話平時保存在本機，不會自動刪除。"
-                "請只勾選確定要永久刪除的紀錄。",
+                '對話保留在本機，直到您明確刪除。請只勾選您確定要永久刪除的紀錄。',
             )
         )
         intro.setWordWrap(True)

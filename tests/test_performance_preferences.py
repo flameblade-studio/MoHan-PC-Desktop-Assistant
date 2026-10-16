@@ -155,7 +155,7 @@ def assert_snapshot_save_cancel_and_rollback() -> None:
 
     incomplete = MemorySettings(fail_write_after=0, fail_restore=True)
     message = expect_error(lambda: PerformancePreferencesService(incomplete).save(changed))
-    assert "rollback was incomplete" in message
+    assert "rollback requires attention" in message
 
 
 def assert_portable_schema_round_trip_and_unknown_ignored() -> None:

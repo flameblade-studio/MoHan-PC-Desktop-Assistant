@@ -20,8 +20,8 @@ def run() -> None:
         os.environ["LOCALAPPDATA"] = temp
         app = QApplication.instance() or QApplication([])
 
-        # Closing during the short first-paint window must not access timers,
-        # animations, or tray objects that intentionally do not exist yet.
+        # Closing during the first-paint window accesses only initialized objects;
+        # timers, animations, and tray objects initialize in the later startup phase.
         early_window = CompanionWindow(
             startup_speech=False,
             defer_visual_startup=True,
@@ -46,6 +46,7 @@ def run() -> None:
         assert set(window.expression_pixmaps) == {"idle"}
         assert not hasattr(window, "tray")
         assert not hasattr(window, "blink_timer")
+        assert window.dashboard.wardrobe_packages_loaded is False
         assert window.character.pixmap() is not None
         assert not window.character.pixmap().isNull()
 
@@ -69,6 +70,16 @@ def run() -> None:
         )
         assert window.blink_timer.isActive()
         assert window.tray is not None
+
+        wardrobe_index = next(
+            index
+            for index in range(window.dashboard.tabs.count())
+            if window.dashboard.tabs.widget(index).property("mohanFeatureId")
+            == "wardrobe"
+        )
+        window.dashboard.tabs.setCurrentIndex(wardrobe_index)
+        assert window.dashboard.wardrobe_packages_loaded is True
+        assert window.dashboard.wardrobe_packages.count() > 0
 
         window.close()
         app.processEvents()

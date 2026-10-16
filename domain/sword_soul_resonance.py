@@ -2,14 +2,14 @@ from __future__ import annotations
 
 """Sword soul resonance (劍魂覺醒), the final piece of the soul.
 
-A real girl does not stay the same forever.  As the user spends more days with
+A real girl keeps growing over time.  As the user spends more days with
 MoHan (or accumulates more GitHub commits), her lines and expression weights
 shift in small, irreversible ways.  Early on she is a strict strategist
 ("主上，這段代碼需要重構"); later, once affinity and days cross a threshold,
 her idle gaze lingers on the cursor a little longer and she may, at low
 probability, offer a tender line when the user is idle.
 
-This is pure domain logic with no Qt dependency.  It maps elapsed days and a
+This is pure domain logic with Qt outside the domain boundary.  It maps elapsed days and a
 commit count to a bounded, monotonic "awakening" level.
 """
 
@@ -30,9 +30,9 @@ class SwordSoulResonanceState:
 
     def __init__(self, *, days: float = 0.0, commits: int = 0) -> None:
         if days < 0.0:
-            raise ValueError("Elapsed days must not be negative.")
+            raise ValueError("Elapsed days accepts zero or greater.")
         if commits < 0:
-            raise ValueError("Commit count must not be negative.")
+            raise ValueError("Commit count accepts zero or greater.")
         self._days = float(days)
         self._commits = int(commits)
 
@@ -51,7 +51,7 @@ class SwordSoulResonanceState:
         return self.awakening >= AWAKENED_THRESHOLD
 
     def gaze_linger(self) -> float:
-        """The gaze-linger bonus (0 = none, 1 = full) as awakening grows."""
+        """The gaze-linger bonus (0 = baseline, 1 = full) as awakening grows."""
         return self.awakening
 
     def update(self, *, days: float, commits: int) -> float:

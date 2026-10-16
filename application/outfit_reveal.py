@@ -10,6 +10,7 @@ lazy from application.companion_phrasebook import (
     CompanionPhrasebook,
     public_companion_line,
 )
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 
 PENDING_OUTFIT_KEY = "wardrobe_reveal_pending_outfit_id"
 LAST_REVEALED_OUTFIT_KEY = "wardrobe_last_revealed_outfit_id"
@@ -43,7 +44,7 @@ class OutfitRevealCue:
 
 
 class OutfitRevealStateStore:
-    """Persist only reveal lifecycle identifiers, never generated imagery."""
+    """Persist only reveal lifecycle identifiers, generated imagery remains private."""
 
     def __init__(self, settings: OutfitRevealSettingsPort) -> None:
         self._settings = settings
@@ -64,7 +65,7 @@ class OutfitRevealStateStore:
     def record_reveal(self, outfit_id: str, *, succeeded: bool) -> bool:
         normalized = str(outfit_id).strip()
         if not normalized or type(succeeded) is not bool:
-            raise ValueError("Outfit reveal result is invalid.")
+            raise ValueError("Outfit reveal result needs a supported value.")
         if self.pending_outfit_id() != normalized:
             return False
         if not succeeded:
@@ -92,7 +93,7 @@ def decide_outfit_reveal(
     return OutfitRevealCue(
         context.outfit_id,
         WARDROBE_REVEAL_QUESTION,
-        "shy_cute_front",
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"],
         "show-outfit",
         "full-body",
     )

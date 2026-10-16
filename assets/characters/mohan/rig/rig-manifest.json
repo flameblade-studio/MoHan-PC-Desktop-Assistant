@@ -1,0 +1,567 @@
+{
+  "schema": "flameblade.character-rig.v1",
+  "schema_version": 1,
+  "character_id": "flameblade.mohan",
+  "body_profile": {
+    "id": "mohan-body-v2",
+    "version": 2,
+    "measurements": {
+      "height_cm": 168,
+      "weight_kg": 54,
+      "bust_cm": 86,
+      "underbust_cm": 71,
+      "waist_cm": 62,
+      "hips_cm": 90
+    },
+    "art_direction": "Adult East Asian woman with a tall, slender frame and a natural, centered, supported C70-equivalent bust contour. Garments may alter drape and support while the core skeleton and body geometry stay authoritative."
+  },
+  "full_body": {
+    "canvas": {
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGBA"
+    },
+    "view_ring": {
+      "yaw_step_degrees": 15,
+      "pitch_degrees": [0],
+      "yaws": [
+        -180,
+        -165,
+        -150,
+        -135,
+        -120,
+        -105,
+        -90,
+        -75,
+        -60,
+        -45,
+        -30,
+        -15,
+        0,
+        15,
+        30,
+        45,
+        60,
+        75,
+        90,
+        105,
+        120,
+        135,
+        150,
+        165
+      ],
+      "legacy_aliases": {
+        "front-000": 0,
+        "left-030": -30,
+        "right-030": 30,
+        "left-045": -45,
+        "right-045": 45,
+        "back-left-120": -120,
+        "back-right-120": 120,
+        "back-180": -180
+      },
+      "mirror_views": {
+        "yaw-180-pitch+00": "yaw-180-pitch+00",
+        "yaw-165-pitch+00": "yaw+165-pitch+00",
+        "yaw-150-pitch+00": "yaw+150-pitch+00",
+        "yaw-135-pitch+00": "yaw+135-pitch+00",
+        "yaw-120-pitch+00": "yaw+120-pitch+00",
+        "yaw-105-pitch+00": "yaw+105-pitch+00",
+        "yaw-090-pitch+00": "yaw+090-pitch+00",
+        "yaw-075-pitch+00": "yaw+075-pitch+00",
+        "yaw-060-pitch+00": "yaw+060-pitch+00",
+        "yaw-045-pitch+00": "yaw+045-pitch+00",
+        "yaw-030-pitch+00": "yaw+030-pitch+00",
+        "yaw-015-pitch+00": "yaw+015-pitch+00",
+        "yaw+000-pitch+00": "yaw+000-pitch+00",
+        "yaw+015-pitch+00": "yaw-015-pitch+00",
+        "yaw+030-pitch+00": "yaw-030-pitch+00",
+        "yaw+045-pitch+00": "yaw-045-pitch+00",
+        "yaw+060-pitch+00": "yaw-060-pitch+00",
+        "yaw+075-pitch+00": "yaw-075-pitch+00",
+        "yaw+090-pitch+00": "yaw-090-pitch+00",
+        "yaw+105-pitch+00": "yaw-105-pitch+00",
+        "yaw+120-pitch+00": "yaw-120-pitch+00",
+        "yaw+135-pitch+00": "yaw-135-pitch+00",
+        "yaw+150-pitch+00": "yaw-150-pitch+00",
+        "yaw+165-pitch+00": "yaw-165-pitch+00"
+      }
+    },
+    "layer_z_order": [
+      "body",
+      "hair_back",
+      "base",
+      "jaw",
+      "oral_cavity",
+      "teeth_tongue",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right",
+      "hair_left",
+      "hair_right",
+      "sleeve_left",
+      "sleeve_right",
+      "ornament"
+    ],
+    "required_layers": [
+      "body",
+      "hair_back",
+      "hair_left",
+      "hair_right",
+      "sleeve_left",
+      "sleeve_right",
+      "ornament"
+    ],
+    "registered_composite_layers": [
+      "body",
+      "hair_back",
+      "base",
+      "jaw",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right",
+      "hair_left",
+      "hair_right",
+      "sleeve_left",
+      "sleeve_right",
+      "ornament"
+    ],
+    "face_authority_layers": [
+      "base",
+      "jaw",
+      "lip_lower",
+      "lip_upper",
+      "corner_left",
+      "corner_right",
+      "blush_left",
+      "blush_right",
+      "iris_left",
+      "iris_right",
+      "eyelid_left",
+      "eyelid_right",
+      "eyeliner_left",
+      "eyeliner_right",
+      "brow_left",
+      "brow_right"
+    ],
+    "side_view_yaw_limit": 90,
+    "mouth_authority_manifest": "mouth_authority_manifest.json"
+  },
+  "half_body": {
+    "asset_canvas": {
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA"
+    },
+    "viewport": {
+      "canvas_width": 470,
+      "image_size": 465,
+      "base_y": 215,
+      "scale_min": 75,
+      "scale_max": 180,
+      "scale_default": 100
+    }
+  },
+  "poses": {
+    "silhouettes": {
+      "cheek": "cheek-rest",
+      "lean": "left-neutral",
+      "front": "front-crossed"
+    },
+    "gesture_silhouettes": {
+      "mock_scold": "front-mock-scold",
+      "mock_hit_front": "front-mock-hit",
+      "eureka_front": "front-eureka",
+      "exasperated_front": "front-exasperated"
+    },
+    "behavior_views": {
+      "front-crossed": "front-000",
+      "left-cheek-rest": "left-030",
+      "left-neutral": "left-045",
+      "right-neutral": "right-045",
+      "back-two-thirds-left": "back-left-120",
+      "back-two-thirds-right": "back-right-120",
+      "back-full": "back-180"
+    },
+    "back_depth": {
+      "front-crossed": 0,
+      "left-cheek-rest": 0,
+      "left-neutral": 1,
+      "right-neutral": 1,
+      "back-two-thirds-left": 2,
+      "back-two-thirds-right": 2,
+      "back-full": 3
+    },
+    "registry": [
+      {
+        "id": "front-crossed",
+        "yaw_degrees": 0,
+        "legacy_face_pose": "front",
+        "silhouette": "front-crossed",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 105.0,
+          "elbow_degrees": -62.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 75.0,
+          "elbow_degrees": 62.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["idle_front.png"],
+        "speech_safe": true,
+        "tags": ["legacy", "idle", "front"]
+      },
+      {
+        "id": "left-neutral",
+        "yaw_degrees": -30,
+        "legacy_face_pose": "lean",
+        "silhouette": "left-neutral",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 118.0,
+          "elbow_degrees": -28.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 62.0,
+          "elbow_degrees": 35.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["idle_lean.png"],
+        "speech_safe": true,
+        "tags": ["legacy", "idle", "left-view"]
+      },
+      {
+        "id": "left-cheek-rest",
+        "yaw_degrees": -30,
+        "legacy_face_pose": "cheek",
+        "silhouette": "cheek-rest",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": -112.0,
+          "elbow_degrees": 118.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 78.0,
+          "elbow_degrees": 54.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["idle.png"],
+        "speech_safe": true,
+        "tags": ["legacy", "idle", "left-view", "cheek-rest"]
+      },
+      {
+        "id": "right-neutral",
+        "yaw_degrees": 30,
+        "legacy_face_pose": "front",
+        "silhouette": "right-neutral",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 112.0,
+          "elbow_degrees": -32.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 68.0,
+          "elbow_degrees": 31.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["pose-atlas-v4"],
+        "speech_safe": true,
+        "tags": ["v4", "idle", "right-view"]
+      },
+      {
+        "id": "back-two-thirds-left",
+        "yaw_degrees": -120,
+        "legacy_face_pose": "front",
+        "silhouette": "back-two-thirds-left",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 105.0,
+          "elbow_degrees": -62.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 75.0,
+          "elbow_degrees": 62.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["pose-atlas-v4"],
+        "speech_safe": false,
+        "tags": ["v4", "back-view", "left-view"]
+      },
+      {
+        "id": "back-two-thirds-right",
+        "yaw_degrees": 120,
+        "legacy_face_pose": "front",
+        "silhouette": "back-two-thirds-right",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 105.0,
+          "elbow_degrees": -62.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 75.0,
+          "elbow_degrees": 62.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["pose-atlas-v4"],
+        "speech_safe": false,
+        "tags": ["v4", "back-view", "right-view"]
+      },
+      {
+        "id": "back-full",
+        "yaw_degrees": -180,
+        "legacy_face_pose": "front",
+        "silhouette": "back-full",
+        "left_arm": {
+          "shoulder": [0.39, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 105.0,
+          "elbow_degrees": -62.0,
+          "wrist_degrees": -10.0
+        },
+        "right_arm": {
+          "shoulder": [0.61, 0.39],
+          "upper_arm_length": 0.145,
+          "forearm_length": 0.135,
+          "hand_length": 0.075,
+          "shoulder_degrees": 75.0,
+          "elbow_degrees": 62.0,
+          "wrist_degrees": 10.0
+        },
+        "required_corrections": ["pose-atlas-v4"],
+        "speech_safe": false,
+        "tags": ["v4", "back-view", "full-back"]
+      }
+    ],
+    "legacy_pose_ids": [
+      "front-crossed",
+      "left-neutral",
+      "left-cheek-rest"
+    ],
+    "relaxed_hand": {
+      "facing": "camera",
+      "points": [
+        [0.0, 0.0],
+        [-0.15, -0.05],
+        [-0.28, -0.15],
+        [-0.38, -0.27],
+        [-0.46, -0.38],
+        [-0.18, -0.28],
+        [-0.21, -0.5],
+        [-0.22, -0.66],
+        [-0.22, -0.8],
+        [-0.02, -0.31],
+        [-0.02, -0.56],
+        [-0.02, -0.74],
+        [-0.02, -0.89],
+        [0.13, -0.29],
+        [0.16, -0.52],
+        [0.18, -0.68],
+        [0.2, -0.81],
+        [0.25, -0.24],
+        [0.31, -0.42],
+        [0.35, -0.55],
+        [0.38, -0.66]
+      ]
+    }
+  },
+  "physics": {
+    "pose_suffixes": [
+      {
+        "suffix": "",
+        "pose": "cheek"
+      },
+      {
+        "suffix": "_lean",
+        "pose": "lean"
+      },
+      {
+        "suffix": "_front",
+        "pose": "front"
+      }
+    ],
+    "speech_frame_prefixes": [
+      "idle",
+      "speaking",
+      "blink",
+      "mouth_mid",
+      "mouth_wide",
+      "mouth_round",
+      "mouth_i",
+      "mouth_o",
+      "blink_mid",
+      "blink_open",
+      "blink_wide",
+      "blink_round",
+      "blink_i",
+      "blink_o"
+    ],
+    "anchors": {
+      "ornament": {
+        "cheek": [315, 96],
+        "lean": [306, 96],
+        "front": [293, 72]
+      },
+      "hair": {
+        "cheek": {
+          "left": [187, 178],
+          "right": [268, 168]
+        },
+        "lean": {
+          "left": [177, 174],
+          "right": [254, 162]
+        },
+        "front": {
+          "left": [183, 171],
+          "right": [278, 168]
+        }
+      },
+      "sleeve": {
+        "cheek": {
+          "left": [132, 253],
+          "right": [330, 239]
+        },
+        "lean": {
+          "left": [130, 252],
+          "right": [326, 239]
+        },
+        "front": {
+          "left": [131, 253],
+          "right": [333, 253]
+        }
+      }
+    },
+    "pose_switch_probability": 0.55,
+    "breath_lift_scale": 6.0,
+    "max_sleeve_lift": 4.0,
+    "max_gesture_sway": 3.0,
+    "gesture_energy_threshold": 0.45
+  },
+  "face_calibration": {
+    "layer_opacity_eye_lid": 1.0,
+    "layer_opacity_eyeliner": 1.0,
+    "layer_opacity_blush": 1.0,
+    "layer_opacity_iris": 1.0,
+    "mouth_stretch_ratio": 0.08,
+    "mouth_rounding_ratio": 0.02,
+    "mouth_height_ratio": 0.04,
+    "mouth_aperture_normalizer": 0.18,
+    "jaw_translation_factor": 3.0,
+    "brow_lift_factor": 3.0,
+    "brow_tension_factor": 1.5,
+    "corner_smile_factor": 2.0,
+    "corner_smile_lift_factor": 1.0,
+    "shyness_blush_weight": 0.15,
+    "shyness_gaze_weight": 0.1,
+    "shyness_lip_weight": 0.05,
+    "viseme_u_inward_lerp": 0.05
+  },
+  "full_body_calibration": {
+    "proportions": {
+      "root_to_pelvis": 0.025,
+      "pelvis_to_spine": 0.115,
+      "spine_to_chest": 0.155,
+      "chest_to_neck": 0.105,
+      "neck_to_head": 0.105,
+      "hip_half_width": 0.075,
+      "thigh_length": 0.245,
+      "shin_length": 0.225,
+      "foot_length": 0.105,
+      "toe_length": 0.045
+    },
+    "root": [0.5, 0.51],
+    "minimum_perspective": 0.18,
+    "left_leg_degrees": [88.0, 2.0, 0.0],
+    "right_leg_degrees": [92.0, -2.0, 0.0],
+    "heel_center_offset": 0.018,
+    "sole_half_width": 0.022,
+    "direction_vectors": {
+      "forward": [0.0, 0.28],
+      "back": [0.0, -0.28],
+      "left": [-1.0, 0.0],
+      "right": [1.0, 0.0]
+    }
+  },
+  "gesture_actions": {
+    "wave": "none",
+    "silence": "mute-audio",
+    "open-palm": "stop-speech",
+    "closed-fist": "none",
+    "thumbs-up": "positive-acknowledgement",
+    "thumbs-down": "none",
+    "point-left": "none",
+    "point-right": "none"
+  }
+}

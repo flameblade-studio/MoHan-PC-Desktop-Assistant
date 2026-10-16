@@ -60,15 +60,30 @@ def test_gesture_document_has_complete_ordered_four_language_contract() -> None:
 def test_every_language_states_safety_privacy_and_release_limits() -> None:
     sections = language_sections(GESTURE_DOC.read_text(encoding="utf-8"))
     required_by_language = (
-        ("預設關閉", "原始攝影機影像不保存", "安全命令流程", "不代表已完成或已發布"),
-        ("默认关闭", "原始摄像头图像不保存", "安全命令流程", "不代表已经完成或发布"),
         (
-            "off by default",
-            "Raw camera images are never retained",
-            "safe-command pipeline",
-            "does not claim",
+            "手勢互動的預設狀態為關閉",
+            "原始攝影機影像的處理範圍限定於即時記憶體",
+            "安全命令流程",
+            "完成與發布聲明以相應閘門通過為準",
         ),
-        ("既定で無効", "元のカメラ画像を保存せず", "安全なコマンド経路", "完了を主張しません"),
+        (
+            "手势交互的默认状态为关闭",
+            "原始摄像头图像的处理范围限定于实时内存",
+            "安全命令流程",
+            "完成与发布声明以相应关卡通过为准",
+        ),
+        (
+            "Gesture interaction is off by default",
+            "Raw camera-image processing is confined to transient memory",
+            "safe-command pipeline",
+            "completion and release claims begin after",
+        ),
+        (
+            "ジェスチャー操作の既定状態は無効",
+            "元のカメラ画像の処理範囲は一時メモリに限定します",
+            "安全なコマンド経路",
+            "完了と公開の表明は対応する関門を通過した後に成立します",
+        ),
     )
     for section, required in zip(sections, required_by_language, strict=True):
         assert all(statement in section for statement in required)
@@ -79,19 +94,25 @@ def test_every_language_states_safety_privacy_and_release_limits() -> None:
 def test_skeleton_samples_require_explicit_strong_password_encryption() -> None:
     sections = language_sections(GESTURE_DOC.read_text(encoding="utf-8"))
     required_by_language = (
-        ("一般攜帶檔", "不得包含 21 點骨架樣本", "強密碼", "不得進入一般資料庫"),
-        ("普通可移植文件", "不得包含 21 点骨架样本", "强密码", "不得进入普通数据库"),
         (
-            "ordinary portable profile",
-            "must never contain 21-point skeleton samples",
-            "strong password",
-            "must never enter the ordinary database",
+            "一般攜帶檔的內容範圍",
+            "骨架樣本在使用者明確勾選敏感資料並設定強密碼時",
+            "一般資料庫維持非敏感資料範圍",
+        ),
+        (
+            "普通可移植文件的内容范围",
+            "骨架样本在用户明确勾选敏感数据并设置强密码时",
+            "普通数据库维持非敏感数据范围",
+        ),
+        (
+            "An ordinary portable profile's content scope",
+            "when the user explicitly selects sensitive export and supplies a strong password",
+            "the ordinary database retains its non-sensitive-data scope",
         ),
         (
             "通常の可搬プロファイル",
-            "21 点骨格サンプルを含めません",
-            "強力なパスワード",
-            "通常データベースには保存しません",
+            "利用者が機密データの書き出しを明示的に選択し、強力なパスワードを設定した場合",
+            "通常データベースは非機密データ範囲を維持します",
         ),
     )
     for section, required in zip(sections, required_by_language, strict=True):
@@ -138,11 +159,9 @@ def test_files_are_strict_utf8_without_corruption_markers() -> None:
 
 
 def test_release_draft_keeps_four_language_structure() -> None:
-    # Audit ruling (2026-08-27): v4.0.0 has shipped, so the historical draft
-    # is no longer forced to carry an "unreleased development draft"
-    # disclaimer in every language.  The file stays as a historical artifact;
-    # only its existence and ordered four-language structure are verified
-    # (language_sections already asserts the ordered headings).
+    # Audit ruling (2026-08-27): v4.0.0 shipped. Its draft remains a historical
+    # artifact; this gate checks existence and ordered four-language structure
+    # through language_sections. Current release guidance lives in current docs.
     sections = language_sections(RELEASE_DRAFT.read_text(encoding="utf-8"))
     assert len(sections) == LANGUAGE_SECTION_COUNT
     assert all(section.strip() for section in sections)

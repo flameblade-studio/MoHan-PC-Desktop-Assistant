@@ -21,6 +21,9 @@ lazy from domain.lip_sync import (
     VisemeDynamics,
     infer_vowel_pcm16,
 )
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 
 
 def _audio_frames() -> tuple[bytes, ...]:
@@ -163,6 +166,7 @@ def _run_mode(mode: str, args: argparse.Namespace) -> dict[str, object]:
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument("--worker", action="store_true")
     parser.add_argument("--expected-jit", choices=("0", "1"))

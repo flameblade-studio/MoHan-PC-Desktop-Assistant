@@ -245,7 +245,7 @@ def test_late_db_failure_restores_both_layers_and_rebuilds_ui(
     stage_changed_protected_sample(value)
     center = value.flagship_center
     # ``proactive_interaction_mode`` is only written after the user touches
-    # its control (untouched controls no longer overwrite other pages).
+    # its control (each page writes only its own touched controls).
     center.proactive_mode.setCurrentIndex(
         center.proactive_mode.findData("active")
     )

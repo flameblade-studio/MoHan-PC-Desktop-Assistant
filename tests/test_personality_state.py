@@ -47,7 +47,7 @@ def test_temperature_stays_within_bounds() -> None:
 def test_mirror_eases_smoothly() -> None:
     state = PersonalityMirrorState()
     first = state.update(sentiment_polarity=1.0, style_score=1.0)
-    assert first < TEMPERATURE_MAX, "mirror must ease in, not snap"
+    assert first < TEMPERATURE_MAX, 'mirror must change gradually'
 
 
 def run() -> None:

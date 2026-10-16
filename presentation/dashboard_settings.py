@@ -26,12 +26,9 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
-lazy from application.presentation_ports import (
-    DEFAULT_TEXT_MODEL,
-    TEXT_MODELS,
-    PlatformCapabilities,
-)
+lazy from presentation.qt_parent import require_qwidget
+lazy from application.presentation_ports import TEXT_MODELS, PlatformCapabilities
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.companion_animation_contract import (
     CHARACTER_SCALE_DEFAULT,
@@ -79,7 +76,7 @@ def _configure_form(form: QFormLayout) -> None:
     form.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
     form.setRowWrapPolicy(QFormLayout.WrapLongRows)
 
-class DashboardSettingsMixin:
+class DashboardSettingsMixin:  # ruff: ignore[blank-lines-top-level]
     """General settings, permissions, profile, and save transactions."""
 
     save_permissions = DashboardSettingsPersistenceMixin.save_permissions
@@ -177,7 +174,7 @@ class DashboardSettingsMixin:
         intro = QLabel(
             self._t(
                 "permissions_intro",
-                "每項能力分開授權。選擇「每次詢問」時，墨寒執行前會顯示確認視窗；"
+                "每項能力分開授權。選擇「每次詢問」時，{character_name}執行前會顯示確認視窗；"
                 "刪除檔案預設禁止。",
             )
         )
@@ -214,8 +211,7 @@ class DashboardSettingsMixin:
         warning = QLabel(
             self._t(
                 "permissions_warning",
-                "安全原則：墨寒不會因聊天內容自動取得更高權限；"
-                "API 模型只能提出工具請求，真正執行仍由本機權限層決定。",
+                '安全原則：權限提升須明確授權；API 模型僅提出工具請求，實際執行由本機權限層決定。',
             )
         )
         warning.setWordWrap(True)
@@ -260,7 +256,7 @@ class DashboardSettingsMixin:
         editor: QAbstractSpinBox,
         object_prefix: str,
     ) -> tuple[QWidget, QPushButton, QPushButton]:
-        """Use explicit buttons so Windows/QSS cannot steal the up hit area."""
+        """Use explicit buttons so Windows/QSS keeps the up hit area."""
         editor.setButtonSymbols(QAbstractSpinBox.NoButtons)
         container = QWidget()
         layout = QHBoxLayout(container)
@@ -438,7 +434,7 @@ class DashboardSettingsMixin:
         message.setPlaceholderText(
             self._t(
                 "reminder_message_placeholder",
-                "此提醒觸發時要說的內容",
+                "",
             )
         )
         form.addRow(
@@ -804,7 +800,7 @@ class DashboardSettingsMixin:
             )
         return self._t(
             "api_status_offline",
-            "OpenAI API：未設定，使用離線人設",
+            'OpenAI API：設定金鑰後即可連線，目前使用離線人格',
         )
 
     def _persona_prompt_input(self) -> QTextEdit:
@@ -825,7 +821,7 @@ class DashboardSettingsMixin:
         note = QLabel(
             self._t(
                 "restart_language_note",
-                "變更介面語言後，重新啟動墨寒即可完整套用。",
+                "變更介面語言後，重新啟動{character_name}即可完整套用。",
             )
         )
         note.setWordWrap(True)
@@ -906,7 +902,7 @@ class DashboardSettingsMixin:
                 self.platform_services.open_path(Path(value))
         else:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._settings_text(SettingsText.WORK_FOLDER_INVALID_TITLE),
                 self._settings_text(SettingsText.WORK_FOLDER_INVALID_MESSAGE),
             )

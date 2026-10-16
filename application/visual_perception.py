@@ -78,7 +78,7 @@ class LocalVisualAnalyzer:
         observed_at: float | None = None,
     ) -> VisualObservation:
         if not sample:
-            raise ValueError("camera sample must not be empty")
+            raise ValueError("camera sample requires content")
         normalized = tuple(max(0, min(255, int(value))) for value in sample)
         now = self._clock() if observed_at is None else float(observed_at)
         brightness = sum(normalized) / len(normalized)

@@ -1,29 +1,18 @@
 from __future__ import annotations
 
-# 2026-08-27 稽核收編：本檔原名 check_packaged_migration.py，是打包產物的
-# 兩階段遷移驗證器（prepare → 啟動已安裝的應用程式 → verify），過去未被
-# run_all 收集而成為孤兒。改名後由 run_all 收集：缺少打包遷移證據
-# （prepare 留下的 legacy_marker 資料庫）時明確 skip，證據存在時執行完整
-# fail-closed 驗證。prepare／verify 命令列介面保留給打包流程使用。
-# 2026-08-27 审计收编：本文件原名 check_packaged_migration.py，是打包产物的
-# 两阶段迁移验证器（prepare → 启动已安装的应用程序 → verify），过去未被
-# run_all 收集而成为孤儿。改名后由 run_all 收集：缺少打包迁移证据
-# （prepare 留下的 legacy_marker 数据库）时明确 skip，证据存在时执行完整
-# fail-closed 验证。prepare／verify 命令行接口保留给打包流程使用。
-# 2026-08-27 audit adoption: this file was named check_packaged_migration.py,
-# a two-phase migration verifier for the packaged product (prepare -> launch
-# the installed app -> verify) that run_all never collected, leaving it an
-# orphan.  After the rename run_all collects it: when the packaged-migration
-# evidence (the legacy_marker database left by prepare) is absent the test
-# skips explicitly; when it is present the full fail-closed verification
-# runs.  The prepare/verify CLI is preserved for the packaging pipeline.
-# 2026-08-27 監査編入：本ファイルの旧名は check_packaged_migration.py で、
-# パッケージ製品の二段階移行検証（prepare → インストール済みアプリ起動 →
-# verify）でしたが、run_all に収集されず孤児になっていました。改名後は
-# run_all が収集します：打包移行の証拠（prepare が残す legacy_marker
-# データベース）が無い場合は明示的に skip し、存在する場合は fail-closed の
-# 完全検証を実行します。prepare／verify の CLI はパッケージ工程向けに
-# 維持します。
+# 2026-08-27 稽核收編：本檔由 check_packaged_migration.py 更名後納入 run_all。
+# prepare 建立 legacy_marker，啟動已安裝應用完成遷移，再由 verify 驗證。
+# 證據齊備時執行完整閘門；證據待補時明確 skip。保留 prepare/verify CLI。
+# 2026-08-27 审计收编：本文件从 check_packaged_migration.py 更名后纳入 run_all。
+# prepare 创建 legacy_marker，启动已安装应用完成迁移，再由 verify 验证。
+# 证据齐备时执行完整门槛；证据待补时明确 skip。保留 prepare/verify CLI。
+# 2026-08-27 audit adoption: rename check_packaged_migration.py for run_all collection.
+# prepare creates legacy_marker; launch the installed app, then run verify.
+# Complete evidence enables the full gate; absent evidence yields an explicit skip.
+# The prepare/verify CLI remains available for packaging.
+# 2026-08-27 監査編入：check_packaged_migration.py を改名し run_all に登録。
+# prepare で legacy_marker を作成し、導入済みアプリを起動して verify で検証。
+# 証拠が揃えば完全検証を実行し、準備中は明示的に skip。CLI は維持する。
 
 lazy import os
 lazy import sqlite3
@@ -137,13 +126,12 @@ def _prepared_evidence_exists() -> bool:
 
 
 def test_packaged_migration_preserves_and_migrates_legacy_data() -> None:
-    """Fail-closed gate: verify when packaged evidence exists, skip otherwise.
+    """Validate the packaged migration when its required evidence is available.
 
-    The full check needs the packaged product itself: ``prepare`` seeds a
-    legacy database, the installed app must then run once (its startup
-    migrations rewrite voices, prompts and the model default), and only then
-    can ``verify`` assert the migrated end state.  Without that evidence the
-    assertions cannot hold, so the test skips loudly instead of failing.
+    prepare seeds a legacy database, then one installed-app startup migrates
+    voices, prompts, and the model default. verify checks that resulting state.
+    The test reports an explicit skip until the packaged product and migrated
+    evidence are present.
     """
 
     if not _prepared_evidence_exists():

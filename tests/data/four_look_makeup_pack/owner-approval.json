@@ -1,0 +1,1293 @@
+{
+  "schema": "mohan.four-look-owner-approved-installation.v1",
+  "owner_message": "這次可以了，我們正式進入下一個環節，替換全部的原有上一版素材。",
+  "owner_appearance_approved": true,
+  "authorized_scope": [
+    "replace previous full-body and half-body makeup assets",
+    "bare light classic glamorous",
+    "detachable native runtime integration"
+  ],
+  "review_receipt": {
+    "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/receipt.json",
+    "sha256": "0f933f71a2e7267139a85ba8641a7392bcd1efb421c6ff53ad592bd4d43a6d66",
+    "bytes": 50997
+  },
+  "counts": {
+    "fullbody": 13,
+    "halfbody": 7
+  },
+  "looks": [
+    "bare",
+    "light",
+    "classic",
+    "glamorous"
+  ],
+  "rows": [
+    {
+      "view": "yaw-090-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-repair-01/local-alpha-01/profile-bare.birefnet-rgba.png",
+          "sha256": "02c3a3b7a4f12219eba349a06a0bcfe95c8f505bc0240777f6872483a036bc4a",
+          "bytes": 1916178,
+          "canvas": [
+            1144,
+            1375
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw-090-pitch+00-light.rgba.png",
+          "sha256": "6bb77a91097e5fec414438d3dca09f052c55fa97cb5ae3985c1f6680bdc9d483",
+          "bytes": 1914185,
+          "canvas": [
+            1143,
+            1376
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw-090-pitch+00-standard.rgba.png",
+          "sha256": "5ea3f78b578ebd0beade637cae6ec0c3933038af4888b4324f68ce326bf776bf",
+          "bytes": 2020596,
+          "canvas": [
+            1144,
+            1375
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw-090-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "fefb638ce5649905046030c9a9d95c473401218043c4e3084295dce97dbc5310",
+          "bytes": 1912205,
+          "canvas": [
+            1144,
+            1375
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.46,
+        0.25,
+        0.91,
+        0.73
+      ],
+      "eye_window": [
+        0.61,
+        0.32,
+        0.91,
+        0.46
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw-090-pitch+00/source.json",
+        "sha256": "3012f6848e19f1799bfc4b53ed2bf08777f04511b29744c751fd2a7e58ea408c",
+        "bytes": 4505
+      }
+    },
+    {
+      "view": "yaw-075-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-075-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "688fbc501c025c330d9bb563b8827c42729ddc3f2d9b68054060280612960964",
+          "bytes": 1973166,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw-075-pitch+00-light.rgba.png",
+          "sha256": "e4f94e4237ac1bb04a7b54c5ba341b71378411a545e78ed497497be0f9fe25f4",
+          "bytes": 2016925,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw-075-pitch+00-standard.rgba.png",
+          "sha256": "74cf77278e7d93ec389e8442ff97d86931af21e434ce4853844f4e8788b923bf",
+          "bytes": 1979608,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw-075-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "09c8c20b298621409611b67329f252379be4451f8b0fcc16fbc39ee6e7d4288b",
+          "bytes": 1938581,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.35,
+        0.175,
+        0.625,
+        0.44
+      ],
+      "eye_window": [
+        0.46,
+        0.24,
+        0.61,
+        0.3
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw-075-pitch+00/source.json",
+        "sha256": "48c1b768492aa94e69c355a1d6f802dad8ebd17a117a3dd689c8a311e6ff0e83",
+        "bytes": 4276
+      }
+    },
+    {
+      "view": "yaw-060-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-060-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "9d9cad3b65b89b763ef62558c5a420b0f8029eb4628c27b23a6f6c030089abaa",
+          "bytes": 1960641,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw-060-pitch+00-light.rgba.png",
+          "sha256": "1177d44e11f512fec8a967519493b37ed0fc8bf430ad5dae86f238c820bd337f",
+          "bytes": 2100534,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw-060-pitch+00-standard.rgba.png",
+          "sha256": "58495fc504d215d8e22c4ee70534ec933bb4e71994e64e8398b400e28f4f0899",
+          "bytes": 2024513,
+          "canvas": [
+            1227,
+            1281
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw-060-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "b1d92688e32a8bee51168d412a047f517f819ed38b9ee9df37e20d3d1d74a85b",
+          "bytes": 1936800,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.36,
+        0.16,
+        0.63,
+        0.44
+      ],
+      "eye_window": [
+        0.46,
+        0.24,
+        0.61,
+        0.3
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw-060-pitch+00/source.json",
+        "sha256": "47cafaafdf86fa106cb3cb72877b8de0f11360fd4bacb73759b2cbcf4c3b0754",
+        "bytes": 4514
+      }
+    },
+    {
+      "view": "yaw-045-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-045-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "d8b328d35f5d6b279377e99ef80e0f58064432eb5a63693bfad8ac72e526ba3d",
+          "bytes": 1932179,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw-045-pitch+00-light.rgba.png",
+          "sha256": "910c889adecc1d9d2f93bc1a7fd81ca9de68bf42bb89d5a9686ae039a1bcb490",
+          "bytes": 2015531,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw-045-pitch+00-standard.rgba.png",
+          "sha256": "73267746fec67b3c98be0c88196e1745744c9be62200c9307881dbbf6e64d621",
+          "bytes": 2007890,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw-045-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "758744fbb2b009ab64d6fbce7cc469f368b25311a6f34e8cd60a640a848662c7",
+          "bytes": 1909213,
+          "canvas": [
+            1227,
+            1282
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.37,
+        0.185,
+        0.645,
+        0.445
+      ],
+      "eye_window": [
+        0.39,
+        0.25,
+        0.615,
+        0.32
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw-045-pitch+00/source.json",
+        "sha256": "81242a5d9ab072591051d2ee97a38114cd60b4fa734998bf0d1c7cbe77012532",
+        "bytes": 4532
+      }
+    },
+    {
+      "view": "yaw-030-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-030-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "7223c315070b177649d83da7f940633d8890c933836cb8b20be156fd5b055609",
+          "bytes": 2014207,
+          "canvas": [
+            1151,
+            1367
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-030-pitch+00-light.birefnet-rgba.png",
+          "sha256": "44ac3fa4c69719fa327a6f9ab95370dcc14cd29f0e775efbbfc55a60f94c2bb8",
+          "bytes": 1951124,
+          "canvas": [
+            1150,
+            1368
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw-030-pitch+00-standard.rgba.png",
+          "sha256": "624b5f3fda221c32ea69e6156cbe2f4c76bf7be17eb06169ede47a89ab469a4c",
+          "bytes": 1952350,
+          "canvas": [
+            1150,
+            1368
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw-030-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "1b61b43894b7cfdb8d88753190150ad739420612ee71dc21dd12c6cce6960921",
+          "bytes": 1955589,
+          "canvas": [
+            1150,
+            1368
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.31,
+        0.25,
+        0.77,
+        0.68
+      ],
+      "eye_window": [
+        0.33,
+        0.36,
+        0.62,
+        0.46
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw-030-pitch+00/source.json",
+        "sha256": "5cd579b6d995af9dba0dfd3f4b7ed2088c4e09840f69e0703e5c1cb3b88ba643",
+        "bytes": 3812
+      }
+    },
+    {
+      "view": "yaw-015-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-015-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "b8a9ac99c4d93b27036ea18f32287ae2c4ed8fc13ed2fe654bdadd19b54a61bf",
+          "bytes": 1994493,
+          "canvas": [
+            1151,
+            1367
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw-015-pitch+00-light.birefnet-rgba.png",
+          "sha256": "4562f7a761292daa786da80cacca0edd567f8758112b82061539d9b18da188cd",
+          "bytes": 1941944,
+          "canvas": [
+            1150,
+            1368
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw-015-pitch+00-standard.rgba.png",
+          "sha256": "e6392e2ceed41982d8885938a501f84b30741ac3162c916b884e055054856e4e",
+          "bytes": 2002431,
+          "canvas": [
+            1150,
+            1368
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw-015-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "f8f40913ff3590adc7e7fee67b2c4e5647d2f9c95ef04cfc6e36f1a6c0ee5e21",
+          "bytes": 1963104,
+          "canvas": [
+            1151,
+            1367
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.31,
+        0.25,
+        0.77,
+        0.68
+      ],
+      "eye_window": [
+        0.33,
+        0.36,
+        0.62,
+        0.46
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw-015-pitch+00/source.json",
+        "sha256": "851a16427bcc58ded1216fef545edf98af1e88db1cdcca4e011d835cd0b8fce1",
+        "bytes": 3913
+      }
+    },
+    {
+      "view": "yaw+000-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+000-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "41ab5aab15243633f3b782f14b87721a39a3a09d3f861feb7a9bf3b50eb1d6b1",
+          "bytes": 2063910,
+          "canvas": [
+            1187,
+            1326
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+000-pitch+00-light.birefnet-rgba.png",
+          "sha256": "bfb81944ddb57da4ef3bcb237780ad0962b555eb5853134a2a89f21ae072fe3f",
+          "bytes": 2002820,
+          "canvas": [
+            1187,
+            1326
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/front-standard-eyeliner-taper-05/standard.rgba.png",
+          "sha256": "b3e62199071aa2722b8be4ad0d1d6ec4a8ddda0834d07a066317b18526f42321",
+          "bytes": 2069616,
+          "canvas": [
+            1187,
+            1326
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+000-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "d09b02235d6e4c10da08c6629b30419ef52d34181f00bc51d95cb36ff42544b3",
+          "bytes": 1992481,
+          "canvas": [
+            1187,
+            1326
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.27,
+        0.25,
+        0.72,
+        0.64
+      ],
+      "eye_window": [
+        0.32,
+        0.35,
+        0.68,
+        0.45
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/front-standard-eyeliner-taper-05/source.json",
+        "sha256": "1b148e289cb5a1ebadb6dd1f2b5ef035ae3e82274cf11db9f85c23fb7c3125ff",
+        "bytes": 3643
+      }
+    },
+    {
+      "view": "yaw+015-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+015-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "3feb1595c6943c886700a60ec3a5e3b5ec8a712961a34600226cb4c755c3ecc0",
+          "bytes": 1863281,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+015-pitch+00-light.birefnet-rgba.png",
+          "sha256": "854605a55fe98e53d73738543067277d2919f48261dd870b937338f884801033",
+          "bytes": 1867872,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/local-alpha-01/fullbody-yaw+015-pitch+00-standard.birefnet-rgba.png",
+          "sha256": "c5244896c23a15ebca7d6d814e2c4681b8fdac5d1ee538ee2342c4f721dae72c",
+          "bytes": 1844918,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+015-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "5c7099bb7582b1f106ed8857ef33cf894d820e7c5672215ead5047b1c28adf32",
+          "bytes": 1879349,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.3,
+        0.16,
+        0.66,
+        0.53
+      ],
+      "eye_window": [
+        0.31,
+        0.28,
+        0.62,
+        0.39
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/fullbody/yaw+015-pitch+00/source.json",
+        "sha256": "6ab834168fffc9305bdacec156301925c0731f6f051028deffb1b7c69118e840",
+        "bytes": 437
+      }
+    },
+    {
+      "view": "yaw+030-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+030-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "9182c6ba06b7dcd0552ec6776e189a5fc416cff9a1d1189c47d51e02f37842a6",
+          "bytes": 1768244,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+030-pitch+00-light.birefnet-rgba.png",
+          "sha256": "14ca4a7f6249ba094f5e2dc99b2808442b03fe85ac117ab268b9543bf3dcd1dc",
+          "bytes": 1767523,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/local-alpha-01/fullbody-yaw+030-pitch+00-standard.birefnet-rgba.png",
+          "sha256": "a08950872bb25d89690657d9896bc4f1315d1dec0a6901969e68c3c86b9d4306",
+          "bytes": 1771793,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+030-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "fbbdbb5601f7746c3882c08ea94ad5e00c108fc9e6392000ce4b606f14222d7b",
+          "bytes": 1793262,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.3,
+        0.16,
+        0.65,
+        0.53
+      ],
+      "eye_window": [
+        0.31,
+        0.28,
+        0.62,
+        0.39
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/fullbody/yaw+030-pitch+00/source.json",
+        "sha256": "e86faa8f8592d900ce4925c25d3d19218b603de9d749c7b51a34e975fc082024",
+        "bytes": 437
+      }
+    },
+    {
+      "view": "yaw+045-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+045-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "1f6b8dfafa748aaae026f489a210c51986f7f143bec8b7101fb2cb3be500076b",
+          "bytes": 1969627,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw+045-pitch+00-light.rgba.png",
+          "sha256": "ec46a607c893fb3cbd2e4a9d9b4ff69341fb97e6f4b3bb95056f6ea3f60a1750",
+          "bytes": 2010569,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw+045-pitch+00-standard.rgba.png",
+          "sha256": "68ce93dc34b43da8a35a8abd9d5ddcb360be156d1f794a88dfbae66dd499ff03",
+          "bytes": 2004206,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+045-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "9936bbd3ec3c58ea4314226033b10509707dc5f955585e132e932f27ae0fdaac",
+          "bytes": 1893580,
+          "canvas": [
+            1211,
+            1299
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.31,
+        0.17,
+        0.65,
+        0.54
+      ],
+      "eye_window": [
+        0.33,
+        0.24,
+        0.55,
+        0.32
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw+045-pitch+00/source.json",
+        "sha256": "ef16f7817bc083be30d23f9f514b07c8119dc2f58f923053e42cf78d481ef5d0",
+        "bytes": 4487
+      }
+    },
+    {
+      "view": "yaw+060-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+060-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "ba29a603be20d42679b88d1d62308f97fb1db9eac0342101b272f2b7c007a6d3",
+          "bytes": 1939145,
+          "canvas": [
+            1167,
+            1348
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw+060-pitch+00-light.rgba.png",
+          "sha256": "2da68b30a916ed29bcf552373a9b364ab817c7ef48c20ac1369adf3f41150e12",
+          "bytes": 2003109,
+          "canvas": [
+            1167,
+            1347
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw+060-pitch+00-standard.rgba.png",
+          "sha256": "1fe1337a8d2f6de5c4695870aaaebeb904afbfe1bc307689850b9724ea46e55e",
+          "bytes": 1907586,
+          "canvas": [
+            1168,
+            1347
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+060-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "42d36b4e2b5d7e510c948c401b944fc759208a34cea8407f87b8535a5bdde654",
+          "bytes": 1848068,
+          "canvas": [
+            1167,
+            1347
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.3115,
+        0.139,
+        0.6066,
+        0.4085
+      ],
+      "eye_window": [
+        0.3443,
+        0.2057,
+        0.5492,
+        0.3121
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw+060-pitch+00/source.json",
+        "sha256": "1acab8d7370e1f32fecb8b0d9053ba83c2fc47b1cc0af850382addb8214f4765",
+        "bytes": 4030
+      }
+    },
+    {
+      "view": "yaw+075-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+075-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "290844e27f5edacf98658565cfb619630e7a5cfd591ec70111050c3908cb4442",
+          "bytes": 1860344,
+          "canvas": [
+            1176,
+            1338
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw+075-pitch+00-light.rgba.png",
+          "sha256": "2029a9a04cd7aeb1b586885bc1ded042a28da1340da1c30263ea2275fadac7dc",
+          "bytes": 1952343,
+          "canvas": [
+            1176,
+            1337
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+075-pitch+00-standard.birefnet-rgba.png",
+          "sha256": "f8240a15e6b9477e04ad1b6d7c599a36bb789e72f3d59aba8e1e75494357a400",
+          "bytes": 1880768,
+          "canvas": [
+            1177,
+            1337
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+075-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "20769f2dfec3762ccf1bcf229e1f4ca6a50772932c49f6d4cb22f40aba3c5b9a",
+          "bytes": 1833051,
+          "canvas": [
+            1176,
+            1337
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.3306,
+        0.1418,
+        0.5968,
+        0.4113
+      ],
+      "eye_window": [
+        0.3629,
+        0.2057,
+        0.5484,
+        0.305
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/fullbody/yaw+075-pitch+00/standard-source.json",
+        "sha256": "7287851ecfaa6ad82972772cb1e6e625b4483ac71bc6d30eb599a07cd760981b",
+        "bytes": 2321
+      }
+    },
+    {
+      "view": "yaw+090-pitch+00",
+      "group": "fullbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/fullbody-source-bound-other-angles-01/local-alpha-01/yaw+090-pitch+00-bare.birefnet-rgba.png",
+          "sha256": "c7f613066e2a164a5f53cc9c1d9acbe6c9f95dc41a200bda64ee3cf0e3496010",
+          "bytes": 2058458,
+          "canvas": [
+            1007,
+            1562
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/fullbody-yaw+090-pitch+00-light.rgba.png",
+          "sha256": "0572ea95d43e95667e3447546874300757d335a1d958cb57a51731e9712e2d87",
+          "bytes": 1960070,
+          "canvas": [
+            1007,
+            1562
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/fullbody-yaw+090-pitch+00-standard.rgba.png",
+          "sha256": "10a4b9946f2fb27e891a93d96aba20441810aada3081b965bb903099216c75a8",
+          "bytes": 1979103,
+          "canvas": [
+            1007,
+            1562
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/local-alpha-01/fullbody-yaw+090-pitch+00-glamorous.birefnet-rgba.png",
+          "sha256": "5c2a61a44d840b9ff7c6b1ba24c82e477b22757e51b1b290c16d9705bac67039",
+          "bytes": 1994229,
+          "canvas": [
+            1007,
+            1562
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.2374,
+        0.1348,
+        0.5604,
+        0.4043
+      ],
+      "eye_window": [
+        0.2637,
+        0.2057,
+        0.4835,
+        0.305
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/fullbody/yaw+090-pitch+00/source.json",
+        "sha256": "36380539917274050b19651d2bed08b84f6425ff22052de6841ae6296a555d83",
+        "bytes": 4073
+      }
+    },
+    {
+      "view": "front-crossed",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/frames/front-crossed-bare.rgba.png",
+          "sha256": "04d253bd9e46b8e99cbfe0b56ae11f8d94312ef3d04845f929fe8d2a63798200",
+          "bytes": 1207856,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/native-halfbody-adaptation-04/front-crossed/rest/light/full.rgba.png",
+          "sha256": "781a3fe6505d045998b9048b2acfe4510da2c57758d23f5c5560a9d64d50cade",
+          "bytes": 1238206,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/halfbody-front-crossed-standard.rgba.png",
+          "sha256": "5ad9a9fa5c05327eaca494b1f9ce556644fc41b2cd1c2cb4f82e63011ff48808",
+          "bytes": 1825095,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/front-crossed/cleaned.rgba.png",
+          "sha256": "dd0b4eb5cea3d1c86bbaa1ce05394b6b59312c3aabf985c701547c746ac0ab69",
+          "bytes": 1540139,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.34,
+        0.2,
+        0.66,
+        0.51
+      ],
+      "eye_window": [
+        0.34,
+        0.285,
+        0.67,
+        0.44
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/halfbody/front-crossed/source.json",
+        "sha256": "484cb57fbf5f77129d56e8057cddff8fec544ee2fb8a6d072140c00b31b599e1",
+        "bytes": 4430
+      }
+    },
+    {
+      "view": "left-neutral",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/frames/left-neutral-bare.rgba.png",
+          "sha256": "b450af81a22e0151ef2b9aae321d709a9dbfcb94f4e1b3d7289ba34d4686001f",
+          "bytes": 1210092,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/halfbody-left-neutral-light.rgba.png",
+          "sha256": "1be429d9e00b5a1d2c61ce6f74b6fac4cf510b357e4ed5e9fe70450067a26111",
+          "bytes": 1547083,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/halfbody-left-neutral-standard.rgba.png",
+          "sha256": "82cc2be9119e58eda2b29e31c5822a339f87f49fa9e0055475cb729457cba8cf",
+          "bytes": 2111570,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/left-neutral/cleaned.rgba.png",
+          "sha256": "69df3aa42ec105341f6e03d28f48b611733058a544c002e5b5bb549d886e5839",
+          "bytes": 1543733,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.34,
+        0.18,
+        0.7,
+        0.51
+      ],
+      "eye_window": [
+        0.34,
+        0.27,
+        0.7,
+        0.44
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/halfbody/left-neutral/source.json",
+        "sha256": "2d7b6384fa5b7d6146969ccde29474d5fdd36f72286ad3c832e0df6e3672c978",
+        "bytes": 4236
+      }
+    },
+    {
+      "view": "front-eureka",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/frames/front-eureka-bare.rgba.png",
+          "sha256": "e4b6f886152b9ac08b0e228bf1b34fa1ff6c51e33dbbd35686d0b3ad71213dac",
+          "bytes": 1212407,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/halfbody-front-eureka-light.rgba.png",
+          "sha256": "3d668b792d83a0b7da31d7001ac6eb620d632da485a97a58a4e74c16e289301c",
+          "bytes": 1488685,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/halfbody-front-eureka-standard.rgba.png",
+          "sha256": "66e83e88beb3ed34bfc262920adbc9ff905dfb84cefe171b3055f7920ebfd66f",
+          "bytes": 1789241,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/front-eureka/cleaned.rgba.png",
+          "sha256": "4848cf328628bf05b62a5de8d8acf8743954f7a6218d7aade94992e912be80d2",
+          "bytes": 1515460,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.34,
+        0.19,
+        0.67,
+        0.51
+      ],
+      "eye_window": [
+        0.34,
+        0.275,
+        0.68,
+        0.44
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/halfbody/front-eureka/source.json",
+        "sha256": "6d41b37245f8d960bb7896f841db921e572fd8248e1bf2a76718ef358b0199e1",
+        "bytes": 4266
+      }
+    },
+    {
+      "view": "front-mock-hit",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/frames/front-mock-hit-bare.rgba.png",
+          "sha256": "883b23340569e090d38828a37d62e318af48d27887cc7339927d412e7a5586ff",
+          "bytes": 1296337,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/halfbody-front-mock-hit-light.rgba.png",
+          "sha256": "e59bb198b7c3b4a0cd1fc56ea904fb3cd08ad4c62a7653aa71d28b8208e4d68b",
+          "bytes": 1604585,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/halfbody-front-mock-hit-standard.rgba.png",
+          "sha256": "36d42b954a49dff82f9cd69350b13bf7937f8de3d7af3e41729940f81c30bf1f",
+          "bytes": 1850397,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/front-mock-hit/cleaned.rgba.png",
+          "sha256": "a96f47008a620ce386e7f36b586de1da18f7752e18c0598c3102f143128a34a4",
+          "bytes": 1597125,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.34,
+        0.19,
+        0.67,
+        0.51
+      ],
+      "eye_window": [
+        0.34,
+        0.275,
+        0.68,
+        0.44
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/halfbody/front-mock-hit/source.json",
+        "sha256": "d5e54784b6bbd8fe53371594816ed58610a2bbda77291c693e7caac3405f4612",
+        "bytes": 4314
+      }
+    },
+    {
+      "view": "front-mock-scold",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/frames/front-mock-scold-bare.rgba.png",
+          "sha256": "895b9ef262862081cb352c94161ec0c94dc2f6316cef118c3be630aea5f50831",
+          "bytes": 1241283,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/halfbody-front-mock-scold-light.rgba.png",
+          "sha256": "77f5547829f74127f09b792dab844bc01bd88a96451278e70a6b815cd1e1aea0",
+          "bytes": 1536470,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/standard-edge-cleanup/front-mock-scold/cleaned.rgba.png",
+          "sha256": "dfeee211e97943b15b7eabdc4a3b4fa7b339ac5b04cbc1ec706b001b0f329552",
+          "bytes": 2167225,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/front-mock-scold/cleaned.rgba.png",
+          "sha256": "814c378b0a8660afc988d5a6e0dbc18ac09f22e74a4db0e5325e9daf4b8cae0d",
+          "bytes": 2147100,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.34,
+        0.19,
+        0.67,
+        0.51
+      ],
+      "eye_window": [
+        0.34,
+        0.275,
+        0.68,
+        0.44
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/halfbody/front-mock-scold/source.json",
+        "sha256": "4924e2f41a218b3a75aa6a380963d1f28243b88935913890864ba38a7df30dd9",
+        "bytes": 4623
+      }
+    },
+    {
+      "view": "cheek-rest",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/cheek-approved-formal-integration-20260912-01/bcc8-runtime-preview/rest-bare-on.rgba.png",
+          "sha256": "84ffeeaee9c5e40e51bc0860064b033570b6ad052c1f3d3a44fe02129488f245",
+          "bytes": 1368425,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/light-level-calibration-03/selected-rgba/halfbody-cheek-rest-light.rgba.png",
+          "sha256": "d95ab870d3322e93b9c559714a3edfd5a0f6402daa5d0ee142791d7f7da31a22",
+          "bytes": 1666838,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/halfbody-cheek-rest-standard.rgba.png",
+          "sha256": "8b261893b0e372e7812dc899b748efe71495483a61ae09601886e3dc9fd48595",
+          "bytes": 2112147,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/cheek-rest/cleaned.rgba.png",
+          "sha256": "c892bae0ace7eecb205deb0c5aba8870cdf758d33187c7b3676ab4a296962180",
+          "bytes": 1677978,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.32,
+        0.17,
+        0.73,
+        0.52
+      ],
+      "eye_window": [
+        0.34,
+        0.255,
+        0.72,
+        0.445
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/halfbody/cheek-rest/source.json",
+        "sha256": "eb08ba3110da06bc499f741f7331db2fd2f7a9e48b6297de9902575c43d81d69",
+        "bytes": 4238
+      }
+    },
+    {
+      "view": "front-exasperated",
+      "group": "halfbody",
+      "images": {
+        "bare": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/exasperated-runtime/rest-bare.rgba.png",
+          "sha256": "4b6afd06925a68869bb1d65f9863e50161585e7c418a54a9364a29ad02323c8d",
+          "bytes": 1583555,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "light": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/native-halfbody-adaptation-04/front-exasperated/rest/light/full.rgba.png",
+          "sha256": "363752b882b1a03b0cd80b3a169e576a85ed4b519f11bde74dfec8b8d6488491",
+          "bytes": 1601863,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "classic": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/selected-rgba/halfbody-front-exasperated-standard.rgba.png",
+          "sha256": "6695b501644a878c7a3422d8f75ce5ad92956cf5b9c3ac520948f3edbec4282c",
+          "bytes": 1761927,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        },
+        "glamorous": {
+          "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/contrast-refinement-02/edge-cleanup/front-exasperated/cleaned.rgba.png",
+          "sha256": "5f52bd28a480d82e02ef7cc486438b1d377a497022c5729812c11ee4622a79d2",
+          "bytes": 2266785,
+          "canvas": [
+            1254,
+            1254
+          ],
+          "mode": "RGBA"
+        }
+      },
+      "face_window": [
+        0.3,
+        0.17,
+        0.67,
+        0.52
+      ],
+      "eye_window": [
+        0.33,
+        0.265,
+        0.69,
+        0.445
+      ],
+      "source_record": {
+        "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/standard-liner-blush-calibration-04/halfbody/front-exasperated/source.json",
+        "sha256": "a2a5fdcba407917f0454a5cfb39cb296318bb59b173303fd0429263065449281",
+        "bytes": 4774
+      }
+    }
+  ],
+  "excluded": [
+    "rejected-blunt-01",
+    "superseded comparison images"
+  ],
+  "installation_completed": false,
+  "note": "Approval pins final review sources. Installation evidence is recorded separately."
+}

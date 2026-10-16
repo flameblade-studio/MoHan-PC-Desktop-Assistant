@@ -6,6 +6,7 @@ lazy from collections.abc import Mapping
 lazy from functools import lru_cache
 lazy from pathlib import Path
 
+lazy from domain.contracts import default_character_display_name
 lazy from infrastructure.platform_contracts import PlatformServicePort
 lazy from infrastructure.platform_linux import LinuxPlatformServices
 lazy from infrastructure.platform_macos import MacOSPlatformServices
@@ -20,7 +21,9 @@ def normalized_platform_id(value: str | None = None) -> str:
         return "macos"
     if candidate.startswith("linux"):
         return "linux"
-    raise RuntimeError(f"MoHan 尚未定義此作業系統平台：{candidate}")
+    raise RuntimeError(
+        f"{default_character_display_name('en')} 尚未定義此作業系統平台：{candidate}"
+    )
 
 
 def create_platform_services(

@@ -1,12 +1,9 @@
 from __future__ import annotations
-
 """Visual composition and motion behavior for the companion window."""
-
 lazy import contextlib
 lazy import math
 lazy import time
 lazy from pathlib import Path
-
 lazy from PySide6.QtCore import QPoint, QRect, Qt, QTimer
 lazy from PySide6.QtGui import QColor, QCursor, QLinearGradient, QPainter, QPixmap
 lazy from PySide6.QtWidgets import (
@@ -17,7 +14,7 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
-
+lazy from presentation.qt_parent import require_qobject
 lazy from application.background_agents import (
     DiagnosticReportWorker,
     ManagerWorkerScheduler,
@@ -25,6 +22,9 @@ lazy from application.background_agents import (
 )
 lazy from application.multisensory_interaction import MultisensoryInteractionArbiter
 lazy from domain.app_profile import profile_setting, profile_window_title
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_expression_catalog
+lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
     CHARACTER_CANVAS_WIDTH,
@@ -46,12 +46,13 @@ lazy from presentation.companion_visual_physics import CompanionVisualPhysicsMet
 lazy from presentation.dashboard_dialogs import ClickableLabel
 lazy from presentation.presentation_resources import application_icon, resource_path
 lazy from presentation.ui_localization import ui_text
-
 __all__ = ("CompanionVisualDynamicsMixin",)
-
 MAX_BUBBLE_LENGTH = 230
 GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
+_EXPRESSION_CATALOG = active_expression_catalog()
+_EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
+_STARTUP_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates
 
 
 class CompanionVisualDynamicsMixin:
@@ -147,20 +148,13 @@ class CompanionVisualDynamicsMixin:
         self._setup_tray()
         self._visual_startup_complete = True
         if self._startup_speech_requested:
-            if not bool(self.db.setting("onboarding_complete", False)):
-                # First awakening: a quiet, fateful greeting for the very first
-                # launch, echoing the "accidental birth" of the companion.
-                self.speak(
-                    f"妾……終於能與{profile_setting(self.db, 'user_title')}相見了。"
-                    "自赤焰劍中醒來，往後便由妾伴您左右。",
-                    "gentle_smile_front",
-                )
-            else:
-                self.speak(
-                    f"妾已就位。{profile_setting(self.db, 'user_title')}點妾，"
-                    "便可展開今日卷冊。",
-                    "idle",
-                )
+            returning = bool(self.db.setting("onboarding_complete", False))
+            event = "startup.returning" if returning else "startup.first"
+            expression = "idle" if returning else _EXPRESSIONS["gentle"]
+            line = _STARTUP_DIALOGUE[event].format(
+                user_title=profile_setting(self.db, "user_title")
+            )
+            self.speak(line, expression)
 
     def complete_deferred_startup(self) -> None:
         """Finish heavy visual preparation after the first window paint."""
@@ -173,7 +167,7 @@ class CompanionVisualDynamicsMixin:
         for expression in EXPRESSION_IMAGE_ASSETS:
             if expression in self.expression_pixmaps:
                 continue
-            pix = QPixmap(str(resource_path(f"assets/expressions/{expression}.png")))
+            pix = QPixmap(str(resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png")))
             self.expression_pixmaps[expression] = pix.scaled(
                 465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
             )
@@ -217,7 +211,7 @@ class CompanionVisualDynamicsMixin:
         self.expression_pixmaps: dict[str, QPixmap] = {}
         initial_assets = ("idle",) if defer_visual_assets else EXPRESSION_IMAGE_ASSETS
         for expression in initial_assets:
-            source = QPixmap(str(resource_path(f"assets/expressions/{expression}.png")))
+            source = QPixmap(str(resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/{expression}.png")))
             self.expression_pixmaps[expression] = source.scaled(
                 465,
                 465,
@@ -423,25 +417,26 @@ class CompanionVisualDynamicsMixin:
         self._initialize_service_timers()
 
     def _initialize_idle_animation(self) -> None:
+        parent = require_qobject(self)
         self.idle_phase = 0
         self.idle_pose = "front"
         self._set_expression(self._idle_expression(), fade=False)
-        self.idle_timer = QTimer(self)
+        self.idle_timer = QTimer(parent)
         self.idle_timer.timeout.connect(self._idle_tick)
         self.idle_timer.start(IDLE_FRAME_INTERVAL_MS)
-        self.pose_timer = QTimer(self)
+        self.pose_timer = QTimer(parent)
         self.pose_timer.setSingleShot(True)
         self.pose_timer.timeout.connect(self._rotate_idle_pose)
         self._schedule_pose_change()
-        self.blink_timer = QTimer(self)
+        self.blink_timer = QTimer(parent)
         self.blink_timer.setSingleShot(True)
         self.blink_timer.timeout.connect(self._blink)
         self._schedule_blink()
-        self.gaze_timer = QTimer(self)
+        self.gaze_timer = QTimer(parent)
         self.gaze_timer.setSingleShot(True)
         self.gaze_timer.timeout.connect(self._start_attention_glance)
         self._schedule_attention_glance()
-        self.ambient_timer = QTimer(self)
+        self.ambient_timer = QTimer(parent)
         self.ambient_timer.setSingleShot(True)
         self.ambient_timer.timeout.connect(self._show_ambient_expression)
         self._schedule_ambient_expression()
@@ -484,27 +479,29 @@ class CompanionVisualDynamicsMixin:
         self.realtime_after_speech_state = "idle"
 
     def _initialize_mouth_timers(self) -> None:
-        self.mouth_timer = QTimer(self)
+        parent = require_qobject(self)
+        self.mouth_timer = QTimer(parent)
         self.mouth_timer.setSingleShot(True)
         self.mouth_timer.timeout.connect(self._mouth_tick)
-        self.mouth_visual_timer = QTimer(self)
+        self.mouth_visual_timer = QTimer(parent)
         self.mouth_visual_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.mouth_visual_timer.timeout.connect(self._render_audio_mouth_transition)
-        self.speech_finish_timer = QTimer(self)
+        self.speech_finish_timer = QTimer(parent)
         self.speech_finish_timer.setSingleShot(True)
         self.speech_finish_timer.timeout.connect(self._complete_speech_audio_finished)
-        self.realtime_finish_timer = QTimer(self)
+        self.realtime_finish_timer = QTimer(parent)
         self.realtime_finish_timer.setSingleShot(True)
         self.realtime_finish_timer.timeout.connect(
             self._complete_realtime_speaking_stop
         )
-        self.expression_return_timer = QTimer(self)
+        self.expression_return_timer = QTimer(parent)
         self.expression_return_timer.setSingleShot(True)
         self.expression_return_timer.timeout.connect(self._release_scheduled_expression)
         self.scheduled_expression_state = ""
         self.scheduled_expression_generation = 0
 
     def _initialize_motion_attention(self) -> None:
+        parent = require_qobject(self)
         self.gaze_x = 0.0
         self.gaze_y = 0.0
         self.gaze_target_x = 0.0
@@ -518,31 +515,32 @@ class CompanionVisualDynamicsMixin:
         self._saccade_target_x = 0.0
         self._saccade_target_y = 0.0
         self._saccade_expires_at = 0.0
-        self.saccade_timer = QTimer(self)
+        self.saccade_timer = QTimer(parent)
         self.saccade_timer.setSingleShot(True)
         self.saccade_timer.timeout.connect(self._start_saccade)
         self._schedule_saccade()
-        self.motion_timer = QTimer(self)
+        self.motion_timer = QTimer(parent)
         self.motion_timer.setInterval(MOTION_FRAME_INTERVAL_MS)
         self.motion_timer.timeout.connect(self._motion_tick)
         self.motion_timer.start()
         self.attention_pose = ""
-        self.attention_timer = QTimer(self)
+        self.attention_timer = QTimer(parent)
         self.attention_timer.timeout.connect(self._attention_tick)
         self.attention_timer.start(ATTENTION_FRAME_INTERVAL_MS)
 
     def _initialize_service_timers(self) -> None:
-        self.reminder_timer = QTimer(self)
+        parent = require_qobject(self)
+        self.reminder_timer = QTimer(parent)
         self.reminder_timer.timeout.connect(self.check_reminders)
         self.reminder_timer.start(20_000)
-        self.clock_timer = QTimer(self)
+        self.clock_timer = QTimer(parent)
         self.clock_timer.timeout.connect(self.dashboard.refresh_work_time)
         self.clock_timer.start(1_000)
-        self.topmost_timer = QTimer(self)
+        self.topmost_timer = QTimer(parent)
         self.topmost_timer.setInterval(100)
         self.topmost_timer.timeout.connect(self._topmost_policy_tick)
         self.topmost_timer.start()
-        self.background_agent_timer = QTimer(self)
+        self.background_agent_timer = QTimer(parent)
         self.background_agent_timer.setInterval(1_000)
         self.background_agent_timer.timeout.connect(self._background_agent_tick)
         self.background_agent_timer.start()
@@ -554,7 +552,7 @@ class CompanionVisualDynamicsMixin:
         self.idle_phase = (self.idle_phase + 1) % 720
         # Crimson Flame resonance: the breathing period shortens smoothly when
         # the user is agitated (furrowed brow), so the companion's body mirrors
-        # the user's tension.  The period is eased by the resonance state, never
+        # the user's tension.  The period is eased by the resonance state, while keeping
         # snapped, so the transition stays smooth frame to frame.
         breath_period = getattr(self, "_resonance_breath_period", 72.0)
         breath = (math.sin(self.idle_phase * math.tau / breath_period) + 1.0) / 2.0
@@ -652,17 +650,15 @@ class CompanionVisualDynamicsMixin:
     def _build_attention_layers(self) -> None:
         self.face_sources = {}
         self.eye_sources = {}
-        for pose, suffix in (
-            ("cheek", ""),
-            ("lean", "_lean"),
-            ("front", "_front"),
-        ):
-            self.face_sources[pose] = QPixmap(
-                str(resource_path(f"assets/expressions/v120_face{suffix}.png"))
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-            self.eye_sources[pose] = QPixmap(
-                str(resource_path(f"assets/expressions/v120_eyes{suffix}.png"))
-            ).scaled(465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        for pose, suffix in (("cheek", ""), ("lean", "_lean"), ("front", "_front")):
+            face_path = resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/v120_face{suffix}.png")
+            eye_path = resource_path(f"{CHARACTER_ASSET_PATHS['halfbody_root']}/v120_eyes{suffix}.png")
+            self.face_sources[pose] = QPixmap(str(face_path)).scaled(
+                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
+            self.eye_sources[pose] = QPixmap(str(eye_path)).scaled(
+                465, 465, Qt.KeepAspectRatio, Qt.SmoothTransformation
+            )
 
     def _render_attention_layers(self, force: bool = False) -> None:
         if not hasattr(self, "face_overlay"):
@@ -697,7 +693,7 @@ class CompanionVisualDynamicsMixin:
         face_rendered.fill(Qt.transparent)
         face_painter = QPainter(face_rendered)
         face_painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        # Never translate a photographed face patch over the base portrait.
+        # while keeping translate a photographed face patch over the base portrait.
         # Even a sub-pixel offset creates a visible duplicate lip/eyelid seam.
         # Face parallax is represented by a gaze-dependent, alpha-clipped
         # lighting shift instead; the facial geometry remains registered.
@@ -746,12 +742,12 @@ class CompanionVisualDynamicsMixin:
             and time.monotonic()
             <= getattr(self, "_sensory_gaze_expires_at", 0.0)
         )
-        if sensory_active:
+        if sensory_active and sensory_target is not None:
             self.gaze_target_x, self.gaze_target_y = sensory_target
             # Shy gaze aversion: apply a small, downward offset on top of the
             # sensory gaze target so the companion glances away bashfully when
             # the user stares.  The offset is eased toward its target with a
-            # lerp so the look-away reads as a shy glance, never a sudden snap.
+            # lerp so the look-away reads as a shy glance, while keeping a sudden snap.
             shy_offset = getattr(self, "_shy_gaze_offset", None)
             if shy_offset is not None:
                 current = getattr(self, "_shy_gaze_offset_current", (0.0, 0.0))
@@ -811,7 +807,7 @@ class CompanionVisualDynamicsMixin:
             self.gaze_target_y = 0.0
         # Sword-soul awakening lets her gaze linger instead of snapping back
         # with the same mechanical timing forever.  The bounded reduction is
-        # subtle (0.15 -> 0.10) and therefore cannot stall pointer tracking.
+        # subtle (0.15 -> 0.10) and therefore keeps pointer tracking responsive.
         linger = max(0.0, min(1.0, float(
             getattr(self, "_sword_soul_gaze_linger", 0.0)
         )))
@@ -918,7 +914,7 @@ class CompanionVisualDynamicsMixin:
         return True
 
     def _finish_speech_motion_release(self) -> None:
-        """Transfer visual ownership without changing the composed pixel."""
+        """Transfer visual ownership while preserving the composed pixel."""
         if not self.speech_motion_y:
             return
         self.ambient_motion_y += self.speech_motion_y

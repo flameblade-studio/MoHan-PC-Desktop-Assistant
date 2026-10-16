@@ -71,11 +71,11 @@ class SettingsPort(Protocol[SnapshotT]):
 
 
 class PerformancePreferencesError(RuntimeError):
-    """Fixed-detail preference boundary failure."""
+    """Fixed-detail preference boundary attention event."""
 
 
 class UnsupportedPreferencesVersion(PerformancePreferencesError):
-    """The portable schema version cannot be interpreted safely."""
+    """The portable schema version requires supported values for safe interpretation."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -116,11 +116,12 @@ class PerformancePreferencesService[SnapshotT]:
             return PerformancePreferences()
         if not isinstance(raw, Mapping):
             return PerformancePreferences()
-        resolved = {
-            field: _safe_value(field, _first_value(raw, key))
-            for field, key in _FIELD_KEYS.items()
-        }
-        return PerformancePreferences(**resolved)
+        return _preferences_from_mapping(
+            {
+                field: _first_value(raw, key)
+                for field, key in _FIELD_KEYS.items()
+            }
+        )
 
     def snapshot(self) -> SnapshotT:
         try:
@@ -133,7 +134,7 @@ class PerformancePreferencesService[SnapshotT]:
     def save(self, preferences: PerformancePreferences) -> None:
         if not isinstance(preferences, PerformancePreferences):
             raise PerformancePreferencesError(
-                "Performance preferences are invalid."
+                "Performance preferences need supported values."
             )
         before = self.snapshot()
         try:
@@ -143,10 +144,10 @@ class PerformancePreferencesService[SnapshotT]:
                 self._settings.restore(before)
             except _SETTINGS_BOUNDARY_ERRORS:
                 raise PerformancePreferencesError(
-                    "Performance preference save failed and rollback was incomplete."
+                    "Performance preference save requires attention and rollback requires attention."
                 ) from None
             raise PerformancePreferencesError(
-                "Performance preference save failed; previous values were restored."
+                "Performance preference save requires attention; previous values were restored."
             ) from None
 
     def cancel(self, snapshot: SnapshotT) -> None:
@@ -168,7 +169,7 @@ class PerformancePreferencesService[SnapshotT]:
     ) -> dict[str, object]:
         if not isinstance(preferences, PerformancePreferences):
             raise PerformancePreferencesError(
-                "Performance preferences are invalid."
+                "Performance preferences need supported values."
             )
         return {
             "format": PREFERENCES_FORMAT,
@@ -185,17 +186,13 @@ class PerformancePreferencesService[SnapshotT]:
         version = payload.get("version")
         if type(version) is not int or version != PREFERENCES_VERSION:
             raise UnsupportedPreferencesVersion(
-                "Performance preference schema version is unsupported."
+                "Performance preference schema version needs a supported value."
             )
         raw = payload.get("preferences")
         if not isinstance(raw, Mapping):
             return PerformancePreferences()
         defaults = PerformancePreferences()
-        values = {
-            field: _safe_value(field, raw.get(field, getattr(defaults, field)))
-            for field in _FIELD_KEYS
-        }
-        return PerformancePreferences(**values)
+        return _preferences_from_mapping(raw, defaults=defaults)
 
 
 def _first_value(raw: Mapping[str, object], canonical: str) -> object:
@@ -211,11 +208,51 @@ def _field_for_key(key: str) -> str:
     return next(field for field, setting_key in _FIELD_KEYS.items() if setting_key == key)
 
 
-def _safe_value(field: str, value: object) -> bool | int:
-    default = getattr(PerformancePreferences(), field)
-    if field == "intensity_percent":
-        return value if type(value) is int and 0 <= value <= MAX_INTENSITY_PERCENT else default
+def _preferences_from_mapping(
+    values: Mapping[str, object],
+    *,
+    defaults: PerformancePreferences | None = None,
+) -> PerformancePreferences:
+    fallback = defaults or PerformancePreferences()
+    return PerformancePreferences(
+        proactive_body_enabled=_safe_bool(
+            values.get("proactive_body_enabled"), fallback.proactive_body_enabled
+        ),
+        intensity_percent=_safe_intensity(
+            values.get("intensity_percent"), fallback.intensity_percent
+        ),
+        view_360_enabled=_safe_bool(
+            values.get("view_360_enabled"), fallback.view_360_enabled
+        ),
+        full_back_view_enabled=_safe_bool(
+            values.get("full_back_view_enabled"), fallback.full_back_view_enabled
+        ),
+        emotional_back_view_enabled=_safe_bool(
+            values.get("emotional_back_view_enabled"),
+            fallback.emotional_back_view_enabled,
+        ),
+        left_gestures_enabled=_safe_bool(
+            values.get("left_gestures_enabled"), fallback.left_gestures_enabled
+        ),
+        right_gestures_enabled=_safe_bool(
+            values.get("right_gestures_enabled"), fallback.right_gestures_enabled
+        ),
+        camera_context_enabled=_safe_bool(
+            values.get("camera_context_enabled"), fallback.camera_context_enabled
+        ),
+    )
+
+
+def _safe_bool(value: object, default: bool) -> bool:
     return value if type(value) is bool else default
+
+
+def _safe_intensity(value: object, default: int) -> int:
+    return (
+        value
+        if type(value) is int and 0 <= value <= MAX_INTENSITY_PERCENT
+        else default
+    )
 
 
 def _settings_payload(

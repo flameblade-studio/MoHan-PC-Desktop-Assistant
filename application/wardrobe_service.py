@@ -3,20 +3,25 @@ from __future__ import annotations
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
-
 lazy from domain.autonomous_wardrobe import WardrobeCandidate
+lazy from domain.contracts import default_character_display_name
+lazy from domain.character_source import active_character_source
 lazy from domain.outfit_pack import (
-    BUILTIN_MAKEUP_PACK_ID,
-    BUILTIN_MAKEUP_VARIANTS,
+    FOUNDATION_SLOT,
     InstalledEnsemble,
     IncompatibleBodyProfileError,
     InstalledSelection,
+    MAKEUP_SLOTS,
+    MAKEUP_SLOTS_V2,
     OutfitPack,
     OutfitPackError,
+    REQUIRED_SILHOUETTES,
     SELECTION_CATEGORIES,
     apply_appearance_selection,
     apply_ensemble,
     clear_appearance_selection,
+    installed_pack_path,
+    inspect_installed_outfit_pack,
     install_outfit_pack,
     list_installed_ensembles,
     list_installed_selections,
@@ -24,21 +29,35 @@ lazy from domain.outfit_pack import (
     resolve_active_selection,
     restore_builtin_outfit,
 )
+lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT, select_body_outfit
 lazy from domain.outfit_pack_makeup import (
     ACTIVE_STATE_FILE,
     MAKEUP_STATE_FILE,
+    MAKEUP_READ_FAILURE_MESSAGE,
     read_makeup_intensity,
+    read_makeup_slot_intensities,
     select_builtin_makeup,
     verify_makeup_layers,
     write_makeup_intensity,
+    write_makeup_slot_intensity,
 )
-lazy from domain.outfit_pack_official import OFFICIAL_OUTFIT_PACK_ID, official_outfit_ensemble
+lazy from domain.outfit_pack_store import OfficialPackRoots
+lazy from domain.outfit_pack_official import (
+    OFFICIAL_OUTFIT_PACK_ID,
+    _load_official_appearance,
+    official_outfit_pack_id,
+    official_outfit_ensemble,
+)
 
 # Opaque sentinel persisted in the ``active_outfit_id`` setting since v2; it
 # means "the built-in look" (today the official Blue-and-White Hanfu pack plus
 # the built-in classic makeup) and is kept stable so saved profiles keep working.
 BUILTIN_OUTFIT_ID = "mohan.default.blue-silver"
-BUILTIN_OUTFIT_FALLBACK_NAME = "墨寒藍白漢服"
+BODY_OUTFIT_ID = "body"
+BODY_OUTFIT_NAMES = frozendict({"zh-TW": "素體", "zh-CN": "素体", "en": "Base body", "ja": "素体"})
+BUILTIN_OUTFIT_FALLBACK_NAME = (
+    f"{default_character_display_name('zh-TW')}藍白漢服"
+)
 BARE_MAKEUP_ID = "none"
 BUILTIN_MAKEUP_PREFIX = "builtin/"
 SELECTION_ID_PARTS = 3
@@ -58,10 +77,11 @@ class InstalledOutfit:
 class MakeupOption:
     """One entry of the wardrobe makeup menu.
 
-    ``option_id`` is ``none`` (bare face), ``builtin/<variant>`` for the two
-    built-in variants, or ``pack/item/variant`` for an installed pack.  A
-    built-in option is ``available`` only while the official built-in makeup
-    pack ships with the app; the entry stays selectable so the choice persists.
+    ``option_id`` is ``none`` (bare face), ``builtin/<variant>`` for the built-in
+    variants, or ``pack/item/variant`` for an installed pack.  A
+    Classic and light remain listed for saved-profile compatibility even when
+    their official archive is absent.  An optional variant is listed only when
+    the official archive declares its assets.
     """
 
     option_id: str
@@ -96,7 +116,7 @@ def _localized_name(selection: InstalledSelection, language: str) -> str:
 
 
 def _ensemble_id(ensemble: InstalledEnsemble) -> str:
-    if ensemble.pack_id == OFFICIAL_OUTFIT_PACK_ID:
+    if ensemble.pack_id == official_outfit_pack_id():
         return BUILTIN_OUTFIT_ID
     return "/".join((ensemble.pack_id, ensemble.ensemble_id))
 
@@ -122,32 +142,62 @@ def _localized_ensemble_name(
 
 
 def _makeup_option_id(pack_id: str, item_id: str, variant_id: str) -> str:
+    appearance = _load_official_appearance()
     if pack_id == "builtin" and item_id == "none":
         return BARE_MAKEUP_ID
-    if pack_id in {"builtin", BUILTIN_MAKEUP_PACK_ID}:
+    if pack_id in {"builtin", appearance.makeup_pack_id}:
         # The ``builtin/builtin/builtin`` sentinel of a fresh profile means the classic variant.
-        variant = variant_id if variant_id in BUILTIN_MAKEUP_VARIANTS else BUILTIN_MAKEUP_VARIANTS[0]
+        variant = (
+            variant_id
+            if variant_id in appearance.makeup_variants
+            else appearance.makeup_variants[0]
+        )
         return f"{BUILTIN_MAKEUP_PREFIX}{variant}"
     return "/".join((pack_id, item_id, variant_id))
+
+
+def _builtin_outfit_fallback_name(language: str) -> str:
+    if official_outfit_pack_id() == OFFICIAL_OUTFIT_PACK_ID:
+        return BUILTIN_OUTFIT_FALLBACK_NAME
+    return active_character_source().persona.display_name(language)
 
 
 class WardrobeService:
     """Validated v2 outfit installation and selection boundary."""
 
-    def __init__(self, install_root: Path) -> None:
+    def __init__(
+        self,
+        install_root: Path,
+        *,
+        official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
+    ) -> None:
         self.install_root = Path(install_root)
+        self.official_pack_root = official_pack_root
+        # An active archive requiring recovery keeps
+        # the detail controls flicker back to a four-slot default.  Keep the
+        # last validated answer per silhouette, with the legacy three-slot
+        # shape as the protective value for a fresh service.
+        self._last_makeup_slots: dict[str, frozenset[str]] = {}
+        self._makeup_slots_read_warned: set[str] = set()
 
     def outfits(self, language: str = "zh-TW") -> tuple[InstalledOutfit, ...]:
-        # The official default pack is the built-in entry itself; it is never
+        # The official default pack is the built-in entry itself; the listing contains it once as the restorable
         # listed a second time as a removable ensemble or loose variant.
-        every_ensemble = list_installed_ensembles(self.install_root)
+        every_ensemble = list_installed_ensembles(
+            self.install_root,
+            official_pack_root=self.official_pack_root,
+        )
         official = official_outfit_ensemble(every_ensemble)
+        official_pack_id = official_outfit_pack_id()
         installed_ensembles = tuple(
-            ensemble for ensemble in every_ensemble if ensemble.pack_id != OFFICIAL_OUTFIT_PACK_ID
+            ensemble for ensemble in every_ensemble
+            if ensemble.pack_id != official_pack_id
         )
         built_in = InstalledOutfit(
             BUILTIN_OUTFIT_ID,
-            BUILTIN_OUTFIT_FALLBACK_NAME if official is None else _localized_pack_name(official, language),
+            _builtin_outfit_fallback_name(language)
+            if official is None
+            else _localized_pack_name(official, language),
             True,
             True,
             ensemble=official,
@@ -181,6 +231,7 @@ class WardrobeService:
             for selection in list_installed_selections(
                 self.install_root,
                 "garment",
+                official_pack_root=self.official_pack_root,
             )
             if (
                 selection.pack_id,
@@ -189,12 +240,18 @@ class WardrobeService:
             ) not in ensemble_garments
         )
         # Generation-1 packs stay visible so the owner can see why they are
-        # greyed out and remove them; they are never resolvable or applied.
+        # see the reason and remove them; rendering uses the supported generation-2 entries.
         stale = tuple(
             InstalledOutfit(pack_id, pack_id, False)
-            for pack_id in list_stale_body_profile_packs(self.install_root)
+            for pack_id in list_stale_body_profile_packs(
+                self.install_root,
+                official_pack_root=self.official_pack_root,
+            )
         )
-        return (built_in, *ensembles, *separate_variants, *stale)
+        body_options = (() if not self._has_body_pack() else (
+            InstalledOutfit(BODY_OUTFIT_ID, BODY_OUTFIT_NAMES.get(language, "Base body"), True),
+        ))
+        return (built_in, *body_options, *ensembles, *separate_variants, *stale)
 
     def install(self, source: Path) -> OutfitPack:
         # Makeup arrives through the same single-file import as every other
@@ -202,10 +259,29 @@ class WardrobeService:
         verify_makeup_layers(Path(source))
         return install_outfit_pack(Path(source), self.install_root)
 
+    @staticmethod
+    def _has_body_pack() -> bool:
+        source = active_character_source()
+        return getattr(source.appearance, "resolved_body_pack", None) is not None
+
     def apply(self, outfit_id: str) -> InstalledOutfit:
+        if outfit_id == BODY_OUTFIT_ID and self._has_body_pack():
+            select_body_outfit(self.install_root)
+            return InstalledOutfit(BODY_OUTFIT_ID, BODY_OUTFIT_NAMES["zh-TW"], True)
         if outfit_id == BUILTIN_OUTFIT_ID:
             restore_builtin_outfit(self.install_root)
-            return self.outfits()[0]
+            try:
+                return self.outfits()[0]
+            except OutfitPackError:
+                # The explicit restore already wrote the built-in state.  Keep
+                # that recovery usable when an unrelated installed archive is
+                # requires attention, while ordinary listing still reports the diagnostic.
+                return InstalledOutfit(
+                    BUILTIN_OUTFIT_ID,
+                    BUILTIN_OUTFIT_FALLBACK_NAME,
+                    True,
+                    True,
+                )
         match = next(
             (
                 outfit
@@ -227,25 +303,41 @@ class WardrobeService:
                 self.install_root,
                 match.ensemble.pack_id,
                 match.ensemble.ensemble_id,
+                official_pack_root=self.official_pack_root,
             )
         elif match.selection is not None:
-            apply_appearance_selection(self.install_root, match.selection)
+            apply_appearance_selection(
+                self.install_root,
+                match.selection,
+                official_pack_root=self.official_pack_root,
+            )
         else:
             raise OutfitPackError(
-                "The selected complete outfit has no applicable content."
+                "The selected complete outfit requires at least one applicable slot; choose a supported outfit."
             )
         return match
 
     # -- makeup category ----------------------------------------------------
 
     def makeup_options(self, language: str = "zh-TW") -> tuple[MakeupOption, ...]:
-        """Bare face, the two built-in variants, then every installed makeup variant."""
-        installed = list_installed_selections(self.install_root, "makeup")
+        """Bare face, available built-in variants, then every installed makeup variant."""
+        appearance = _load_official_appearance()
+        installed = list_installed_selections(
+            self.install_root,
+            "makeup",
+            official_pack_root=self.official_pack_root,
+        )
         official = {
             selection.variant_id: selection
             for selection in installed
-            if selection.pack_id == BUILTIN_MAKEUP_PACK_ID
+            if selection.pack_id == appearance.makeup_pack_id
         }
+        menu_variants = tuple(
+            variant_id
+            for variant_id in appearance.makeup_menu_variants
+            if variant_id in official
+            or variant_id in appearance.makeup_always_visible_variants
+        )
         built_in = tuple(
             MakeupOption(
                 f"{BUILTIN_MAKEUP_PREFIX}{variant_id}",
@@ -254,7 +346,7 @@ class WardrobeService:
                 variant_id in official,
                 official.get(variant_id),
             )
-            for variant_id in BUILTIN_MAKEUP_VARIANTS
+            for variant_id in menu_variants
         )
         packs = tuple(
             MakeupOption(
@@ -265,13 +357,18 @@ class WardrobeService:
                 selection,
             )
             for selection in installed
-            if selection.pack_id != BUILTIN_MAKEUP_PACK_ID
+            if selection.pack_id != appearance.makeup_pack_id
         )
         return (MakeupOption(BARE_MAKEUP_ID, "", True, True), *built_in, *packs)
 
     def active_makeup(self) -> MakeupState:
         """The effective makeup option; ``fallback`` marks a vanished pack replaced by the built-in default."""
-        resolution = resolve_active_selection(self.install_root, "makeup")
+        appearance = _load_official_appearance()
+        resolution = resolve_active_selection(
+            self.install_root,
+            "makeup",
+            official_pack_root=self.official_pack_root,
+        )
         effective = _makeup_option_id(
             resolution.effective_pack_id,
             resolution.effective_item_id,
@@ -282,37 +379,137 @@ class WardrobeService:
             resolution.requested_item_id,
             resolution.requested_variant_id,
         )
-        if resolution.status == "builtin" and resolution.requested_pack_id == "builtin" and resolution.requested_item_id != "none":
+        if (
+            resolution.status == "builtin"
+            and resolution.requested_pack_id == "builtin"
+            and resolution.requested_item_id != "none"
+            and (
+                resolution.requested_variant_id == "builtin"
+                or resolution.requested_variant_id
+                in appearance.makeup_always_visible_variants
+            )
+        ):
             # The built-in variant is chosen but its official art is not shipped yet:
             # keep showing the user's choice rather than pretending they picked bare.
             effective = requested
         fallback = (
-            resolution.requested_pack_id not in {"builtin", BUILTIN_MAKEUP_PACK_ID}
+            resolution.requested_pack_id
+            not in {"builtin", appearance.makeup_pack_id}
             and resolution.requested_pack_id != resolution.effective_pack_id
         )
         return MakeupState(effective, requested, fallback)
+
+    def active_makeup_slots(
+        self,
+        silhouette: str,
+        notify: Callable[[str], None] | None = None,
+    ) -> frozenset[str]:
+        """Return the slots declared by the effective makeup variant.
+
+        The persisted ``builtin`` selection is only a sentinel.  Resolving it
+        first is essential because the shipped makeup archive can provide the
+        new foundation slot while the persisted selection remains unchanged.
+        An archive requiring recovery falls back to the last validated answer (or
+        the legacy three-slot shape) and reports the read attention event through the
+        same callback used by makeup-settings reads.
+        """
+        if silhouette not in REQUIRED_SILHOUETTES:
+            raise ValueError("Use a recognized makeup silhouette.")
+        fallback = self._last_makeup_slots.get(silhouette, MAKEUP_SLOTS)
+        try:
+            slots = self._resolve_active_makeup_slots(silhouette)
+        except (IncompatibleBodyProfileError, OutfitPackError, OSError, ValueError):
+            if notify is not None and silhouette not in self._makeup_slots_read_warned:
+                self._makeup_slots_read_warned.add(silhouette)
+                notify(MAKEUP_READ_FAILURE_MESSAGE)
+            return fallback
+        self._last_makeup_slots[silhouette] = slots
+        self._makeup_slots_read_warned.discard(silhouette)
+        return slots
+
+    def _resolve_active_makeup_slots(self, silhouette: str) -> frozenset[str]:
+        resolution = resolve_active_selection(
+            self.install_root,
+            "makeup",
+            official_pack_root=self.official_pack_root,
+        )
+        if resolution.status != "installed":
+            return MAKEUP_SLOTS
+        archive_path = installed_pack_path(
+            self.install_root,
+            resolution.effective_pack_id,
+            official_pack_root=self.official_pack_root,
+        )
+        pack = inspect_installed_outfit_pack(archive_path)
+        if pack is None:
+            raise IncompatibleBodyProfileError(
+                f"Active pack {resolution.effective_pack_id!r} targets another body-profile generation."
+            )
+        item = next(
+            (
+                value
+                for value in pack.items
+                if value.category == "makeup"
+                and value.item_id == resolution.effective_item_id
+            ),
+            None,
+        )
+        if item is None:
+            raise OutfitPackError("Provide the active makeup item.")
+        variant = next(
+            (
+                value
+                for value in item.variants
+                if value.variant_id == resolution.effective_variant_id
+            ),
+            None,
+        )
+        if variant is None:
+            raise OutfitPackError("Provide the active makeup variant.")
+        assets = variant.poses.get(silhouette)
+        if assets is None:
+            raise OutfitPackError("Provide the active makeup silhouette.")
+        slots = frozenset(asset.slot for asset in assets)
+        if slots not in {MAKEUP_SLOTS, MAKEUP_SLOTS_V2}:
+            raise OutfitPackError("The active makeup variant requires supported slot names.")
+        foundation_declared = silhouette in variant.foundation_silhouettes
+        if (FOUNDATION_SLOT in slots) != foundation_declared:
+            raise OutfitPackError("The active foundation declaration is inconsistent.")
+        return slots
 
     def apply_makeup(self, option_id: str) -> None:
         if option_id == BARE_MAKEUP_ID:
             clear_appearance_selection(self.install_root, "makeup")
             return
         if option_id.startswith(BUILTIN_MAKEUP_PREFIX):
-            select_builtin_makeup(self.install_root, option_id[len(BUILTIN_MAKEUP_PREFIX):])
+            select_builtin_makeup(
+                self.install_root,
+                option_id[len(BUILTIN_MAKEUP_PREFIX):],
+                official_pack_root=self.official_pack_root,
+            )
             return
         parts = option_id.split("/")
         if len(parts) != SELECTION_ID_PARTS:
-            raise OutfitPackError("Invalid makeup selection identifier.")
+            raise OutfitPackError("Provide a supported makeup selection identifier.")
         match = next(
             (
                 selection
-                for selection in list_installed_selections(self.install_root, "makeup")
+                for selection in list_installed_selections(
+                    self.install_root,
+                    "makeup",
+                    official_pack_root=self.official_pack_root,
+                )
                 if _selection_id(selection) == option_id
             ),
             None,
         )
         if match is None:
             raise OutfitPackError("The selected makeup is not installed.")
-        apply_appearance_selection(self.install_root, match)
+        apply_appearance_selection(
+            self.install_root,
+            match,
+            official_pack_root=self.official_pack_root,
+        )
 
     def makeup_intensity(
         self,
@@ -321,10 +518,14 @@ class WardrobeService:
         return read_makeup_intensity(self.install_root, notify=notify)
 
     def appearance_active(self) -> bool:
-        """True when any slot resolves to an installed pack, so a bare preview would be wrong."""
+        """True when any slot resolves to an installed pack, so the preview includes the active pack."""
         try:
             return any(
-                resolve_active_selection(self.install_root, category).status == "installed"
+                resolve_active_selection(
+                    self.install_root,
+                    category,
+                    official_pack_root=self.official_pack_root,
+                ).status == "installed"
                 for category in SELECTION_CATEGORIES
             )
         except (IncompatibleBodyProfileError, OutfitPackError, OSError, ValueError):
@@ -345,13 +546,42 @@ class WardrobeService:
     def set_makeup_intensity(self, value: float) -> float:
         return write_makeup_intensity(self.install_root, value)
 
+    def makeup_slot_intensities(
+        self,
+        notify: Callable[[str], None] | None = None,
+        *,
+        slots: frozenset[str] = MAKEUP_SLOTS,
+    ) -> frozendict[str, float]:
+        return read_makeup_slot_intensities(
+            self.install_root,
+            notify=notify,
+            slots=slots,
+        )
+
+    def set_makeup_slot_intensity(
+        self,
+        slot: str,
+        value: float,
+        *,
+        slots: frozenset[str] | None = None,
+    ) -> float:
+        return write_makeup_slot_intensity(
+            self.install_root,
+            slot,
+            value,
+            slots=slots,
+        )
+
     def autonomous_candidates(self) -> tuple[WardrobeCandidate, ...]:
         return tuple(
             WardrobeCandidate(
                 _ensemble_id(ensemble),
                 ensemble.autonomous_profile,
             )
-            for ensemble in list_installed_ensembles(self.install_root)
+            for ensemble in list_installed_ensembles(
+                self.install_root,
+                official_pack_root=self.official_pack_root,
+            )
         )
 
     @staticmethod

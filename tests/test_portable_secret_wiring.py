@@ -188,7 +188,7 @@ def assert_sensitive_failure_calls_core_rollback(root: Path) -> None:
             except ProfileTransferError as exc:
                 assert "PRIVATE" not in str(exc)
             else:
-                raise AssertionError("sensitive restore failure must surface")
+                raise AssertionError('sensitive restore errors must surface')
         restore_import.assert_called_once_with(result)
         assert stores["openai"].value == "old-openai"
         assert stores["azure_speech"].value == "old-azure"
@@ -226,9 +226,9 @@ def assert_sensitive_and_rollback_failure_uses_transfer_error(root: Path) -> Non
                 panel._restore_sensitive_result(result)
             except ProfileTransferError as exc:
                 assert "PRIVATE" not in str(exc)
-                assert "rollback failed" in str(exc)
+                assert "database rollback requires attention" in str(exc)
             else:
-                raise AssertionError("rollback failure must surface")
+                raise AssertionError('rollback errors must surface')
     finally:
         panel.deleteLater()
         database.close()

@@ -9,7 +9,7 @@ CORRUPT_DATA_MESSAGE = "某項設定／記憶無法讀取，已保留原檔"
 
 @dataclass(frozen=True, slots=True)
 class CorruptStoredJSON:
-    """Recognizable result for a stored value that must not be guessed."""
+    """Recognizable result for a stored value that requires an explicit interpretation."""
 
     source: str
     key: str

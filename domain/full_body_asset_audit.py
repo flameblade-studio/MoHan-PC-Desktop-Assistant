@@ -99,7 +99,7 @@ def audit_full_body_assets(
     views: tuple[FullBodyViewEvidence, ...],
     policy: FullBodyAuditPolicy = DEFAULT_FULL_BODY_AUDIT_POLICY,
 ) -> FullBodyAssetAuditReport:
-    """Audit a complete 24-view body ring without retaining source assets."""
+    """Audit a complete 24-view body ring while keeping source assets private."""
 
     issues: list[FullBodyAuditIssue] = []
     counts = Counter(view.yaw_degrees for view in views)
@@ -179,10 +179,10 @@ def _audit_view(
     )
     if not soles_inside:
         issues.append(FullBodyAuditIssue("invalid_sole_baseline", yaw))
-    elif len(visible_soles) == TWO_SOLES and (
+    elif (len(visible_soles) == TWO_SOLES and (
         abs(visible_soles[0] - visible_soles[1]) > sole_tolerance
         or max(visible_soles) != view.bottom
-    ) or len(visible_soles) == ONE_SOLE and visible_soles[0] != view.bottom:
+    )) or (len(visible_soles) == ONE_SOLE and visible_soles[0] != view.bottom):
         issues.append(FullBodyAuditIssue("unbalanced_sole_baseline", yaw))
 
     center_x = (view.left + view.right) / 2

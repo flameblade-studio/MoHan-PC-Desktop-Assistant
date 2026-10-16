@@ -1,20 +1,19 @@
 """Ed25519 detached signatures for the GitHub update manifest.
 
 The manifest's SHA-256 values prove that a downloaded installer matches the
-manifest.  They do not prove who issued the manifest: manifest and installer
+manifest.  They identify the bytes; the detached signature identifies the issuer: manifest and installer
 sit in the same GitHub Release, so anyone who can write to the Release can
 replace both together and every hash still matches.  The detached signature
 moves the trust anchor from "the GitHub account" to "the owner's private
-key", which never leaves the owner's machine and is never a CI secret.
+key", which stays on the owner's machine and outside CI secrets.
 
 Contract:
 - the signature covers the manifest asset's exact bytes, nothing canonical;
 - it is published as a separate Release asset named ``<manifest>.sig`` and
   contains the 64-byte Ed25519 signature as 128 lowercase hex characters;
-- the client pins one or more public keys here and refuses any release whose
-  manifest lacks a signature that verifies under a pinned key (fail closed);
-- an empty pin list is a build-time error caught before release, never a
-  runtime "skip verification".
+- the client pins one or more public keys here and accepts a release only when its
+  manifest lacks a signature that verifies under a pinned key (protective validation);
+- a configured pin list is required at build time, and runtime always verifies.
 """
 from __future__ import annotations
 
@@ -40,7 +39,7 @@ PINNED_UPDATE_MANIFEST_PUBLIC_KEYS: tuple[str, ...] = (
 
 
 class UpdateManifestSignatureError(ValueError):
-    """The manifest signature is missing, malformed or does not verify."""
+    """The manifest signature requires a present, well-formed, verifying value."""
 
 
 def signature_asset_name(manifest_name: str) -> str:

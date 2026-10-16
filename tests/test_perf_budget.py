@@ -80,16 +80,15 @@ def _profile_for_result(
         return DEVELOPER_PROFILE
 
     raise AssertionError(
-        "PERF_BUDGET_ENVIRONMENT_UNIDENTIFIED: no CI marker and runtime "
-        f"does not match {DEVELOPER_PROFILE}; mismatches={mismatches}; "
-        f"runtime_environment={result_environment}"
+        f'PERF_BUDGET_ENVIRONMENT_UNIDENTIFIED: provide a CI marker or a runtime matching {DEVELOPER_PROFILE}'
+        f'; mismatches={mismatches}; runtime_environment={result_environment}'
     )
 
 
 def _summary(measurement: object, label: str) -> dict[str, object]:
-    assert isinstance(measurement, dict), f"{label} measurement is not an object"
+    assert isinstance(measurement, dict), f'{label} measurement must be an object'
     summary = measurement.get("summary")
-    assert isinstance(summary, dict), f"{label} summary is not an object"
+    assert isinstance(summary, dict), f'{label} summary must be an object'
     return summary
 
 
@@ -104,7 +103,7 @@ def _percentile(values: tuple[float, ...], ratio: float) -> float:
 
 def _sample_values(record: dict[str, object], label: str) -> tuple[float, ...]:
     values = record.get("samples_ms")
-    assert isinstance(values, list), f"{label} samples_ms is not a list"
+    assert isinstance(values, list), f'{label} samples_ms must be a list'
     result: list[float] = []
     for value in values:
         assert isinstance(value, (int, float)) and not isinstance(value, bool), (
@@ -112,7 +111,7 @@ def _sample_values(record: dict[str, object], label: str) -> tuple[float, ...]:
         )
         number = float(value)
         assert math.isfinite(number) and number > 0, (
-            f"{label} contains an invalid sample: {value!r}"
+            f'{label} requires a valid sample in place of: {value!r}'
         )
         result.append(number)
     return tuple(result)
@@ -124,7 +123,7 @@ def _assert_observed_spread(
     label: str,
 ) -> None:
     spread = record.get("observed_spread")
-    assert isinstance(spread, dict), f"{label} observed_spread is not an object"
+    assert isinstance(spread, dict), f'{label} observed_spread must be an object'
     if not samples:
         assert spread["min_ms"] is None
         assert spread["median_ms"] is None
@@ -419,7 +418,7 @@ def test_budget_never_silences_a_sufficiently_sampled_metric() -> None:
                 not_gated += 1
                 reason = record["reason"]
                 assert isinstance(reason, str) and reason.strip(), (
-                    f"{profile_name}/{metric} disables gating without a reason"
+                    f'{profile_name}/{metric} requires an explicit reason for disabled gating'
                 )
                 sample_count = record["sample_count"]
                 assert isinstance(sample_count, int) and not isinstance(
@@ -454,9 +453,7 @@ def _run_reduced_benchmark(gate: dict[str, object]) -> dict[str, object]:
         timeout=CI_TIMEOUT_SECONDS,
     )
     assert completed.returncode == 0, (
-        f"benchmark failed with exit {completed.returncode}:\n"
-        f"stdout={completed.stdout}\n"
-        f"stderr={completed.stderr}"
+        f'benchmark requires attention; exit {completed.returncode}:\nstdout={completed.stdout}\nstderr={completed.stderr}'
     )
     result = json.loads(completed.stdout)
     assert result["schema"] == BENCHMARK_SCHEMA

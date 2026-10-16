@@ -103,7 +103,7 @@ def _detect_all(image: np.ndarray, detector_model: Path) -> np.ndarray:
     )
     _status, faces = detector.detect(image[:, :, :3])
     if faces is None:
-        raise ValueError("no face detected")
+        raise ValueError("face detection requires a detectable face")
     return faces
 
 
@@ -119,7 +119,7 @@ def _feature(
 
 
 def _geometry(face: np.ndarray) -> dict[str, float]:
-    x, y, width, height = (float(value) for value in face[:4])
+    _x, y, width, height = (float(value) for value in face[:4])
     landmarks = face[4:14].reshape(5, 2).astype(np.float64)
     eye_center_y = float(landmarks[:2, 1].mean())
     mouth_center_y = float(landmarks[3:, 1].mean())
@@ -140,7 +140,7 @@ def _checkerboard_ratio(image: np.ndarray) -> float:
 
 
 def _face_chroma_count(image: np.ndarray, face: np.ndarray) -> int:
-    x, y, width, height = (int(round(float(value))) for value in face[:4])
+    x, y, width, height = (round(float(value)) for value in face[:4])
     x = max(0, x)
     y = max(0, y)
     roi = image[y : min(image.shape[0], y + height), x : min(image.shape[1], x + width), :3]
@@ -199,7 +199,7 @@ def _forehead_profile(image: np.ndarray, face: np.ndarray) -> dict[str, float]:
     }
 
 
-def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
+def audit_profile_source_candidate(  # ruff: ignore[too-many-locals]
     candidate_path: Path,
     authorities: tuple[Path, ...],
     model_root: Path,
@@ -215,7 +215,7 @@ def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
     if channels != RGBA_CHANNELS:
         _issue(
             issues, "source_has_no_alpha", candidate_path,
-            "candidate is opaque RGB and cannot be directly registered as a layer",
+            "opaque RGB candidate requires an explicit alpha layer before registration",
             channels=channels,
         )
     checker_ratio = _checkerboard_ratio(candidate)
@@ -229,7 +229,7 @@ def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
     if len(candidate_faces) != 1:
         _issue(
             issues, "ambiguous_face_detection", candidate_path,
-            "candidate does not produce exactly one unambiguous face detection",
+            "candidate requires exactly one unambiguous face detection",
             detected_faces=len(candidate_faces),
         )
     candidate_face = _primary(candidate_faces)
@@ -253,7 +253,7 @@ def audit_profile_source_candidate(  # noqa: PLR0912, PLR0914, PLR0915
     if identity_median < IDENTITY_SIMILARITY_MIN:
         _issue(
             issues, "identity_similarity_low", candidate_path,
-            "candidate does not match the three half-body identity authorities",
+            "candidate identity requires alignment with the three half-body authorities",
             median_similarity=round(identity_median, 6),
             minimum=IDENTITY_SIMILARITY_MIN,
         )

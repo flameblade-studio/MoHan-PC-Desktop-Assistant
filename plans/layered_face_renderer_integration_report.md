@@ -2,8 +2,8 @@
 
 ## 1. 結論摘要
 
-`LayeredParametricFaceRenderer`（18 圖層參數化全臉合成）**不應**接入
-[`face_renderer_factory`](application/service_container.py:228)，因為兩者的契約本質不同：
+`LayeredParametricFaceRenderer`（18 圖層參數化全臉合成）應接入獨立的全臉合成邊界；
+[`face_renderer_factory`](application/service_container.py:228) 繼續承擔現行嘴巴補丁契約，因為兩者的契約本質不同：
 
 | 維度 | `ParametricFaceRenderer`（現役） | `LayeredParametricFaceRenderer`（新） |
 |------|----------------------------------|--------------------------------------|
@@ -91,12 +91,12 @@ flowchart TD
   且 18 圖層素材是「全臉」素材，硬套嘴巴補丁會浪費其餘 16 層，且嘴巴區域的
   對齊/縮放需與現有 `mouth_clips` 精確匹配，工程複雜且收益低。
 
-### 方案 C：先不接入，保留獨立模組（現狀）
+### 方案 C：維持獨立模組，等待接入決策（現狀）
 
 - 保留 `LayeredParametricFaceRenderer` 為獨立模組 + 自有測試。
 - 等實機驗收視覺效果後，再決定是否走方案 A 或 B。
-- 優點：零風險、不破壞現有契約。
-- 缺點：新渲染器尚未在正式畫面生效。
+- 優點：現有契約完整保留。
+- 待辦：新渲染器的正式畫面接入仍待完成。
 
 ## 5. 建議
 
@@ -105,7 +105,7 @@ flowchart TD
 1. 分層渲染器的價值在於「連續參數化全臉」（眨眼、挑眉、腮紅、嘴巴開合、視線
    全部由 `FaceMotionFrame` 連續驅動），這正是「整張表情圖切換」階段想達成的目標。
 2. 現有 `face_renderer_factory` 的嘴巴補丁契約是「局部優化」，兩者服務不同階段，
-   不應混為一談。
+   並各自維持清楚的責任邊界。
 3. 方案 A 可讓新渲染器在「整張表情圖切換」階段漸進上線，同時保留嘴巴補丁作為
    過渡，風險可控。
 

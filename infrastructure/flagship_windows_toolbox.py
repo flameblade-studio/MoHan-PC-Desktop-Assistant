@@ -5,7 +5,7 @@ from __future__ import annotations
 lazy import webbrowser
 lazy from pathlib import Path
 lazy from typing import Protocol
-lazy from urllib.parse import ParseResult, urlparse
+lazy from urllib.parse import ParseResult, unquote, urlparse
 
 lazy from domain.flagship_action_models import ActionRequest, ActionResult
 lazy from infrastructure.platform_contracts import PlatformServicePort
@@ -43,13 +43,26 @@ def _same_origin(request: ParseResult, allowed: ParseResult) -> bool:
 
 
 def _path_within(request_path: str, allowed_path: str) -> bool:
-    """路徑必須落在允許的**路徑段**之下，不是字首相符。
+    """路徑必須落在允許的**路徑段**之下，且不能包含點路徑段。
 
     字首比對讓 `/app` 涵蓋 `/app-delete`——相鄰但無關的路徑，對帶有 GET
-    副作用的管理介面尤其危險。
+    副作用的管理介面尤其危險。瀏覽器也會正規化 `..` 路徑段，因此比對前
+    必須拒絕明文、編碼及多重編碼的點路徑段。
     """
     request_path = request_path or "/"
     allowed_path = allowed_path or "/"
+    for path in (request_path, allowed_path):
+        decoded_path = path
+        for _ in range(8):
+            segments = decoded_path.replace("\\", "/").split("/")
+            if any(segment in {".", ".."} for segment in segments):
+                return False
+            next_path = unquote(decoded_path)
+            if next_path == decoded_path:
+                break
+            decoded_path = next_path
+        else:
+            return False
     if allowed_path == "/":
         return True
     allowed_path = allowed_path.rstrip("/")
@@ -57,7 +70,7 @@ def _path_within(request_path: str, allowed_path: str) -> bool:
 
 
 class WindowsToolbox:
-    """Small, explicit Windows tool surface; never executes arbitrary shell."""
+    """Small, explicit Windows tool surface; executes only approved commands."""
 
     def __init__(
         self,
@@ -80,7 +93,7 @@ class WindowsToolbox:
         # 選的「唯讀」因此完全沒有作用，create_file／move_file／rename_file
         # 照樣能寫進去。介面告訴使用者的權限邊界是假的。
         #
-        # 這裡刻意 fail-closed：沒有明確指定就一律不可寫。呼叫端必須把
+        # 這裡刻意 protective：沒有明確指定就一律不可寫。呼叫端必須把
         # access_mode 傳進來，忘了傳的後果是「不能寫」而不是「什麼都能寫」。
         self.writable_folders = [
             Path(value).expanduser().resolve()

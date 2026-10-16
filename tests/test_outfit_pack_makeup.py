@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+
 lazy import copy
 lazy import hashlib
 lazy import json
 lazy import os
 lazy import re
 lazy import sys
+lazy import zipfile
+lazy from dataclasses import replace
 lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -21,8 +24,11 @@ lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice
 lazy from PySide6.QtGui import QColor, QImage
 
 lazy from application.outfit_pack_builder import build_outfit_pack
+lazy from domain.outfit_pack_pose_assets import (
+    COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES,
+    FRONT_MAKEUP_SILHOUETTES,
+)
 lazy from application.wardrobe_service import WardrobeService
-lazy from domain import outfit_pack
 lazy from domain.outfit_pack import (
     BUILTIN_MAKEUP_ITEM_ID,
     BUILTIN_MAKEUP_PACK_ID,
@@ -50,6 +56,7 @@ lazy from domain.outfit_pack_makeup import (
 )
 lazy from test_outfit_pack import _manifest, _names, _pack, _png
 lazy from tools.build_makeup_safe_regions import silhouette_regions
+lazy from tools.assemble_official_default_pack import makeup_authoring_mode, makeup_layer_paths
 lazy from tools.scaffold_makeup_pack_manifest import main as scaffold_main
 
 SLOT_Z = {"cheeks": 0, "eyes": 1, "lips": 2}
@@ -66,20 +73,54 @@ BUILTIN_SCAFFOLD_ARGS = (
     "--item-name", "墨寒妝容|墨寒妆容|MoHan face makeup|墨寒メイク",
     "--variant", "classic:原妝|原妆|Classic|基本メイク",
     "--variant", "light:淡雅|淡雅|Light|淡めメイク",
-    "--license", "All Rights Reserved - see ASSETS-LICENSE.md",
+    "--license", "CC-BY-NC-ND-4.0",
 )
 
 Block = tuple[int, int, int, int]
 
 
-@pytest.fixture(autouse=True)
-def _pending_official_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    """Start every test before the official packs ship; ``official_builtin_pack`` opts back in."""
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", tmp_path / "official")
+@pytest.fixture
+def official_pack_root(tmp_path: Path) -> Path:
+    """Provide an isolated official root without mutating domain module state."""
+    return tmp_path / "official"
 
 
 def canvas_for(silhouette: str) -> tuple[int, int]:
     return MAKEUP_CANVASES["full-body" if silhouette in POSE_ATLAS_SILHOUETTES else "half-body"]
+
+
+def _declared_makeup_assets(manifest: dict) -> tuple[tuple[str, dict], ...]:
+    entries: list[tuple[str, dict]] = []
+    for item in manifest["makeup"]:
+        for variant in item["variants"]:
+            for silhouette, assets in variant.get("poses", {}).items():
+                entries.extend((silhouette, asset) for asset in assets)
+            for state_poses in variant.get("eye_states", {}).values():
+                for silhouette, assets in state_poses.items():
+                    entries.extend((silhouette, asset) for asset in assets)
+    return tuple(entries)
+
+
+def _write_blank_makeup_assets(manifest: dict, root: Path) -> None:
+    blank = {size: layer_png(size) for size in MAKEUP_CANVASES.values()}
+    for silhouette, entry in _declared_makeup_assets(manifest):
+        target = root / Path(*entry["path"].split("/"))
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(blank[canvas_for(silhouette)])
+
+
+def _copy_committed_makeup_manifest(root: Path) -> tuple[Path, dict]:
+    source = ROOT / "assets" / "makeup" / "builtin" / "manifest.json"
+    manifest = json.loads(source.read_text(encoding="utf-8"))
+    target_root = root / "committed-authoring"
+    target_root.mkdir(parents=True, exist_ok=True)
+    _write_blank_makeup_assets(manifest, target_root)
+    manifest_path = target_root / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return manifest_path, manifest
 
 
 def layer_png(size: tuple[int, int], blocks: tuple[Block, ...] = (), color: QColor = RED) -> bytes:
@@ -150,7 +191,7 @@ def makeup_pack(path: Path, **options) -> Path:
     return _pack(path, manifest, assets)
 
 
-def official_builtin_pack(root: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+def official_builtin_pack(root: Path) -> Path:
     """Stand in for the studio-authored built-in pack at the official (non-removable) root."""
     official = root / "official"
     makeup_pack(
@@ -159,7 +200,6 @@ def official_builtin_pack(root: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
         item_id=BUILTIN_MAKEUP_ITEM_ID,
         variants=BUILTIN_VARIANTS,
     )
-    monkeypatch.setattr(outfit_pack, "OFFICIAL_PACK_ROOT", official)
     return official
 
 
@@ -167,7 +207,9 @@ def _identity(resolution) -> tuple[str, str, str]:
     return (resolution.effective_pack_id, resolution.effective_item_id, resolution.effective_variant_id)
 
 
-def test_makeup_pack_parses_two_variants_and_lists_them(tmp_path: Path) -> None:
+def test_makeup_pack_parses_two_variants_and_lists_them(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
     assert "makeup" in SELECTION_CATEGORIES
     pack_path = makeup_pack(
         tmp_path / "festival-makeup.mohan-outfit",
@@ -185,8 +227,43 @@ def test_makeup_pack_parses_two_variants_and_lists_them(tmp_path: Path) -> None:
     assert {asset.slot for asset in variants["classic"].poses["front-crossed"]} == {"eyes", "cheeks", "lips"}
     store = tmp_path / "store"
     install_outfit_pack(pack_path, store)
-    installed = list_installed_selections(store, "makeup")
+    installed = list_installed_selections(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert {(item.item_id, item.variant_id) for item in installed} == {("festival", "classic"), ("festival", "light")}
+
+
+def test_candidate_makeup_pack_accepts_glamorous_variant(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
+    """A candidate archive may carry the fourth look without formal built-in art."""
+    pack_path = makeup_pack(
+        tmp_path / "four-look-candidate.mohan-outfit",
+        pack_id="four-look-candidate",
+        item_id="mohan-look",
+        variants=("classic", "light", "glamorous"),
+    )
+    pack = inspect_outfit_pack(pack_path)
+    item = next(item for item in pack.items if item.category == "makeup")
+    assert [variant.variant_id for variant in item.variants] == [
+        "classic", "light", "glamorous",
+    ]
+
+    store = tmp_path / "store"
+    service = WardrobeService(store, official_pack_root=official_pack_root)
+    service.install(pack_path)
+    assert {
+        (selection.item_id, selection.variant_id)
+        for selection in list_installed_selections(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    } == {
+        ("mohan-look", "classic"),
+        ("mohan-look", "light"),
+        ("mohan-look", "glamorous"),
+    }
+    service.apply_makeup("four-look-candidate/mohan-look/glamorous")
+    assert service.active_makeup().option_id == "four-look-candidate/mohan-look/glamorous"
 
 
 def test_packs_without_makeup_stay_valid_and_ensembles_may_omit_or_null_makeup(tmp_path: Path) -> None:
@@ -247,7 +324,7 @@ def _mutations() -> dict[str, tuple]:
 
     def unknown_slot(manifest, assets):
         manifest["makeup"][0]["variants"][0]["poses"]["cheek-rest"][0]["slot"] = "brows"
-        return "Unknown slot"
+        return "recognized slot or asset path"
 
     return {
         function.__name__: (function,)
@@ -295,58 +372,151 @@ def test_pixel_gate_blocks_layers_outside_the_safe_region(tmp_path: Path) -> Non
 def test_safe_region_document_matches_the_rigs() -> None:
     document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
     regions = load_makeup_safe_regions()
-    assert set(regions) == set(REQUIRED_SILHOUETTES)
+    complete = json.loads(
+        (ROOT / "assets" / "expressions" / "complete-expressions" / "manifest.json").read_text(encoding="utf-8")
+    )
+    # Rest-state front regions exist exactly for the installed complete front poses.
+    front_poses = {pose for pose in complete["poses"] if pose in FRONT_MAKEUP_SILHOUETTES}
+    assert set(regions) == set(REQUIRED_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES) | front_poses
     for silhouette, region in regions.items():
         assert region.canvas == canvas_for(silhouette)
         for slot in ("eyes", "cheeks", "lips"):
             for x, y, width, height in region.rects(slot):
-                assert 0 <= x and 0 <= y and x + width <= region.canvas[0] and y + height <= region.canvas[1]
+                assert x >= 0 and y >= 0 and x + width <= region.canvas[0] and y + height <= region.canvas[1]
     front = regions["front-crossed"]
     assert all(front.rects(slot) for slot in ("eyes", "cheeks", "lips"))
+    legacy_eye_rectangles = ((485, 373, 113, 118), (586, 371, 135, 118))
+    assert front.rects("eyes")[:2] == legacy_eye_rectangles
+    approved_exasperated_lip_rectangle_count = 2
+    measured_eye_rectangles = {"front-crossed": front.rects("eyes")[2:]}
+    approved_gesture_eye_rectangles = {
+        "front-mock-scold": ((480, 407, 116, 62), (602, 407, 119, 69)),
+        "front-mock-hit": ((480, 406, 109, 63), (599, 407, 122, 62)),
+        "front-eureka": ((480, 406, 116, 63), (490, 475, 20, 22), (602, 406, 121, 64)),
+        "front-exasperated": ((466, 443, 237, 122),),
+        "left-neutral": ((453, 412, 247, 109),),
+        "front-surprised_front": ((491, 385, 234, 108),),
+    }
     for gesture in ("front-mock-scold", "front-mock-hit", "front-eureka", "front-exasperated"):
-        assert regions[gesture].slots == front.slots
+        region = regions[gesture]
+        assert region.rects("cheeks") == front.rects("cheeks")
+        assert region.rects("lips")[:1] == front.rects("lips")
+        assert region.rects("eyes") == approved_gesture_eye_rectangles[gesture]
+        measured_eye_rectangles[gesture] = region.rects("eyes")
+    for gesture in ("left-neutral", "front-surprised_front"):
+        assert regions[gesture].rects("eyes") == approved_gesture_eye_rectangles[gesture]
+    assert (
+        len(regions["front-exasperated"].rects("lips"))
+        == approved_exasperated_lip_rectangle_count
+    )
+    assert regions["front-exasperated"].rects("lips")[1] != front.rects("lips")[0]
+    # The V5 gestures share the legacy facial rig but carry their own measured
+    # eye rectangles.  In particular, exasperated is authored with lowered,
+    # closed eyes and must not be forced back onto the front-crossed geometry.
+    assert len(set(measured_eye_rectangles.values())) == len(measured_eye_rectangles)
+    assert min(
+        rectangle[1] for rectangle in measured_eye_rectangles["front-exasperated"]
+    ) > max(rectangle[1] for rectangle in measured_eye_rectangles["front-crossed"])
     assert all(not regions["yaw-180-pitch+00"].rects(slot) for slot in ("eyes", "cheeks", "lips"))
     for silhouette in ("front-crossed", "yaw+000-pitch+00"):
-        assert silhouette_regions(ROOT, silhouette) == document["silhouettes"][silhouette]
+        # The rig generator owns geometry; load_makeup_safe_regions above also
+        # validates authored v2 foundation/aperture declarations and their files.
+        derived = silhouette_regions(ROOT, silhouette)
+        authored = document["silhouettes"][silhouette]
+        expected = {key: authored[key] for key in derived}
+        if silhouette == "front-crossed":
+            # tools/art_pipeline/front_crossed_rig.py re-authors the front-crossed
+            # mouth rig from the V5 portrait; the cut-outs must exist beside it.
+            authored_rig = "assets/front-makeup-rigs/front-crossed-neutral"
+            assert authored["rig"] == authored_rig
+            for role in ("oral_cavity", "lip_upper", "lip_lower", "teeth_tongue"):
+                assert (ROOT / f"{authored_rig}_{role}.png").is_file()
+            expected["rig"] = derived["rig"]
+            expected["slots"] = {
+                **authored["slots"],
+                "eyes": authored["slots"]["eyes"][: len(legacy_eye_rectangles)],
+            }
+        elif silhouette == "yaw+000-pitch+00":
+            # Owner-approved whole-region eye layers (2026-10-15) need the eye
+            # slots widened by 6 px beyond the rig-derived bounds; every other
+            # rig-owned value must still match the generator exactly.
+            assert authored["slots"]["eyes"] == [[435, 204, 96, 84], [491, 205, 99, 84]]
+            expected["slots"] = {**authored["slots"], "eyes": derived["slots"]["eyes"]}
+        assert derived == expected
+        assert set(authored) - set(derived) <= {"foundation_masks", "eye_aperture_masks"}
 
 
 def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, official_pack_root: Path
 ) -> None:
     store = tmp_path / "store"
-    bare = resolve_active_selection(store, "makeup")
+    bare = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert bare.status == "builtin"  # official art absent: the default renders a bare face
-    official_builtin_pack(tmp_path, monkeypatch)
-    resolution = resolve_active_selection(store, "makeup")
+    official_builtin_pack(tmp_path)
+    resolution = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert resolution.status == "installed"
     assert _identity(resolution) == (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, "classic")
     assert (resolution.requested_pack_id, resolution.requested_item_id) == ("builtin", "builtin")
-    select_builtin_makeup(store, "light")
-    assert _identity(resolve_active_selection(store, "makeup"))[2] == "light"
+    select_builtin_makeup(
+        store, "light", official_pack_root=official_pack_root
+    )
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )[2] == "light"
     with pytest.raises(OutfitPackError):
-        select_builtin_makeup(store, "glitter")
+        select_builtin_makeup(
+            store, "glitter", official_pack_root=official_pack_root
+        )
     clear_appearance_selection(store, "makeup")
-    cleared = resolve_active_selection(store, "makeup")
+    cleared = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert cleared.status == "builtin"
     assert _identity(cleared) == ("builtin", "none", "none")
     restore_builtin_outfit(store)
-    assert _identity(resolve_active_selection(store, "makeup"))[2] == "classic"
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )[2] == "classic"
     with pytest.raises(OutfitPackError):
         install_outfit_pack(tmp_path / "official" / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit", store)
 
 
-def test_removed_makeup_pack_falls_back_to_builtin_classic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    official_builtin_pack(tmp_path, monkeypatch)
+def test_removed_makeup_pack_falls_back_to_builtin_classic(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
+    official_builtin_pack(tmp_path)
     store = tmp_path / "store"
-    service = WardrobeService(store)
+    service = WardrobeService(store, official_pack_root=official_pack_root)
     service.install(makeup_pack(tmp_path / "festival-makeup.mohan-outfit"))
-    festival = next(item for item in list_installed_selections(store, "makeup") if item.pack_id == "festival-makeup")
-    apply_appearance_selection(store, festival)
-    assert _identity(resolve_active_selection(store, "makeup")) == ("festival-makeup", "festival", "classic")
+    festival = next(
+        item
+        for item in list_installed_selections(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+        if item.pack_id == "festival-makeup"
+    )
+    apply_appearance_selection(
+        store, festival, official_pack_root=official_pack_root
+    )
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    ) == ("festival-makeup", "festival", "classic")
     with pytest.raises(OutfitPackError, match="switched"):
         remove_outfit_pack(store, "festival-makeup")
     (store / "packages" / "festival-makeup.mohan-outfit").unlink()
-    fallback = resolve_active_selection(store, "makeup")
+    fallback = resolve_active_selection(
+        store, "makeup", official_pack_root=official_pack_root
+    )
     assert _identity(fallback) == (BUILTIN_MAKEUP_PACK_ID, BUILTIN_MAKEUP_ITEM_ID, "classic")
     assert fallback.requested_pack_id == "festival-makeup"
     state = service.active_makeup()
@@ -371,26 +541,37 @@ def test_makeup_intensity_state_round_trips(tmp_path: Path) -> None:
     assert read_makeup_intensity(store) == 1.0
 
 
-def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_wardrobe_service_menu_lists_bare_builtin_and_installed(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
     store = tmp_path / "store"
-    service = WardrobeService(store)
+    service = WardrobeService(store, official_pack_root=official_pack_root)
     pending = service.makeup_options("en")
-    assert [option.option_id for option in pending] == ["none", "builtin/classic", "builtin/light"]
+    assert [option.option_id for option in pending] == [
+        "none", "builtin/light", "builtin/classic",
+    ]
     assert [option.available for option in pending] == [True, False, False]
+    with pytest.raises(OutfitPackError):
+        service.apply_makeup("builtin/glamorous")
     assert service.active_makeup().option_id == "builtin/classic"
-    official_builtin_pack(tmp_path, monkeypatch)
+    official_builtin_pack(tmp_path)
     service.install(makeup_pack(tmp_path / "festival-makeup.mohan-outfit"))
     options = service.makeup_options("en")
     assert [option.option_id for option in options] == [
-        "none", "builtin/classic", "builtin/light", "festival-makeup/festival/classic",
+        "none", "builtin/light", "builtin/classic",
+        "festival-makeup/festival/classic",
     ]
-    assert all(option.available for option in options)
-    assert options[1].display_name.endswith("classic")
+    assert [option.available for option in options] == [True, True, True, True]
+    assert options[2].display_name.endswith("classic")
     assert options[3].display_name == "festival-makeup · festival · classic"
     service.apply_makeup("festival-makeup/festival/classic")
     assert service.active_makeup().option_id == "festival-makeup/festival/classic"
     service.apply_makeup("builtin/light")
-    assert _identity(resolve_active_selection(store, "makeup"))[2] == "light"
+    assert _identity(
+        resolve_active_selection(
+            store, "makeup", official_pack_root=official_pack_root
+        )
+    )[2] == "light"
     service.apply_makeup("none")
     assert service.active_makeup().option_id == "none"
     with pytest.raises(OutfitPackError):
@@ -399,18 +580,40 @@ def test_wardrobe_service_menu_lists_bare_builtin_and_installed(tmp_path: Path, 
     assert service.makeup_intensity() == pytest.approx(0.25)
 
 
-def test_scaffolded_manifest_seals_into_a_makeup_only_pack(tmp_path: Path) -> None:
+def test_official_glamorous_variant_adds_the_fourth_builtin_look(
+    tmp_path: Path, official_pack_root: Path
+) -> None:
+    official = official_pack_root
+    makeup_pack(
+        official / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit",
+        pack_id=BUILTIN_MAKEUP_PACK_ID,
+        item_id=BUILTIN_MAKEUP_ITEM_ID,
+        variants=("classic", "light", "glamorous"),
+    )
+    options = WardrobeService(
+        tmp_path / "store", official_pack_root=official
+    ).makeup_options("en")
+    assert [option.option_id for option in options] == [
+        "none", "builtin/light", "builtin/classic", "builtin/glamorous",
+    ]
+    assert [option.available for option in options] == [True, True, True, True]
+
+
+def test_generic_scaffold_contract_seals_into_a_makeup_only_pack(tmp_path: Path) -> None:
     manifest_path = tmp_path / "builtin" / "manifest.json"
     assert scaffold_main([str(manifest_path), *BUILTIN_SCAFFOLD_ARGS]) == 0
-    committed = json.loads((ROOT / "assets" / "makeup" / "builtin" / "manifest.json").read_text(encoding="utf-8"))
-    assert json.loads(manifest_path.read_text(encoding="utf-8")) == committed
-    blank = {size: layer_png(size) for size in MAKEUP_CANVASES.values()}
-    for variant in committed["makeup"][0]["variants"]:
-        for silhouette, entries in variant["poses"].items():
-            for entry in entries:
-                target = manifest_path.parent / Path(*entry["path"].split("/"))
-                target.parent.mkdir(parents=True, exist_ok=True)
-                target.write_bytes(blank[canvas_for(silhouette)])
+    scaffolded = json.loads(manifest_path.read_text(encoding="utf-8"))
+    assert makeup_authoring_mode(manifest_path) == "legacy"
+    variants = scaffolded["makeup"][0]["variants"]
+    assert [variant["id"] for variant in variants] == list(BUILTIN_VARIANTS)
+    assert all("eye_states" not in variant for variant in variants)
+    assert all("foundation_silhouettes" not in variant for variant in variants)
+    assert all(
+        {entry["slot"] for entry in [*entries for entries in variant["poses"].values()]}
+        == set(SLOT_Z)
+        for variant in variants
+    )
+    _write_blank_makeup_assets(scaffolded, manifest_path.parent)
     output = tmp_path / f"{BUILTIN_MAKEUP_PACK_ID}.mohan-outfit"
     build_outfit_pack(manifest_path, manifest_path.parent, output)
     pack = inspect_outfit_pack(output)
@@ -419,3 +622,106 @@ def test_scaffolded_manifest_seals_into_a_makeup_only_pack(tmp_path: Path) -> No
     assert [variant.variant_id for variant in item.variants] == list(BUILTIN_VARIANTS)
     assert len(item.variants) == EXPECTED_VARIANTS
     assert all(len(variant.poses) == EXPECTED_SILHOUETTES for variant in item.variants)
+
+
+def test_committed_authoring_rebuild_includes_all_declared_makeup_members(tmp_path: Path) -> None:
+    manifest_path, committed = _copy_committed_makeup_manifest(tmp_path)
+    output = tmp_path / "committed.mohan-outfit"
+    build_outfit_pack(manifest_path, manifest_path.parent, output)
+    pack = inspect_outfit_pack(output)
+    item = next(item for item in pack.items if item.category == "makeup")
+    declared_paths = [entry["path"] for _silhouette, entry in _declared_makeup_assets(committed)]
+    pose_assets = [*variant.poses.values() for variant in item.variants]
+    parsed_paths = [asset.path for asset in [*assets for assets in pose_assets]]
+    parsed_paths.extend(
+        asset.path
+        for variant in item.variants
+        for state_poses in variant.eye_states.values()
+        for assets in state_poses.values()
+        for asset in assets
+    )
+    assert len(parsed_paths) == len(declared_paths)
+    assert sorted(parsed_paths) == sorted(declared_paths)
+    with zipfile.ZipFile(output) as archive:
+        assert set(declared_paths) <= set(archive.namelist())
+
+
+def test_scaffold_and_canonical_authoring_modes_remain_distinct(tmp_path: Path) -> None:
+    manifest_path = tmp_path / "legacy.json"
+    assert scaffold_main([str(manifest_path), *BUILTIN_SCAFFOLD_ARGS]) == 0
+    canonical = json.loads(manifest_path.read_text(encoding="utf-8"))
+    canonical["makeup"][0]["variants"][0]["eye_states"] = {"half": {}, "closed": {}}
+    canonical_path = tmp_path / "canonical.json"
+    canonical_path.write_text(json.dumps(canonical), encoding="utf-8")
+    assert makeup_authoring_mode(manifest_path) == "legacy"
+    assert makeup_authoring_mode(canonical_path) == "canonical"
+    with pytest.raises(SystemExit, match="Canonical foundation"):
+        makeup_layer_paths(canonical_path)
+
+
+def test_builder_calibration_keeps_pixel_gate_and_import_boundary(tmp_path: Path) -> None:
+    """Staging calibration preserves the installed body's existing acceptance gate."""
+    silhouette = "front-crossed"
+    painted = (0, 0, BLOCK, BLOCK)
+    manifest, assets = makeup_manifest(blocks={("classic", silhouette, "eyes"): (painted,)})
+    source = tmp_path / "authoring"
+    source.mkdir()
+    manifest_path = source / "manifest.json"
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+    for name, payload in assets.items():
+        target = source / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+    rejected = tmp_path / "rejected.mohan-outfit"
+    with pytest.raises(OutfitPackError, match="safe region"):
+        build_outfit_pack(manifest_path, source, rejected)
+    assert not rejected.exists()
+    assert not rejected.with_name(f".{rejected.name}.building").exists()
+    installed = load_makeup_safe_regions()
+    region = installed[silhouette]
+    staging = frozendict({
+        **installed,
+        silhouette: replace(region, slots=frozendict({**region.slots, "eyes": (painted,)})),
+    })
+    sealed = tmp_path / "staging.mohan-outfit"
+    build_outfit_pack(manifest_path, source, sealed, makeup_regions=staging)
+    verify_makeup_layers(sealed, staging)
+    with pytest.raises(OutfitPackError, match="safe region"):
+        verify_makeup_layers(sealed)
+    escaped = frozendict({
+        **staging,
+        silhouette: replace(region, slots=frozendict({**region.slots, "eyes": ()})),
+    })
+    with pytest.raises(OutfitPackError, match="safe region"):
+        build_outfit_pack(manifest_path, source, rejected, makeup_regions=escaped)
+    assert not rejected.exists()
+
+
+def main() -> int:
+    result = pytest.main([__file__, "-q", *sys.argv[1:]])
+    if result == 0:
+        print("OUTFIT_PACK_MAKEUP_OK")
+    return int(result)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+
+
+def test_declared_asset_paths_includes_mouth_states() -> None:
+    """Regression: _declared_asset_paths() must count mouth_states assets too,
+    or a pack with mouth_states fails _validate_declared_assets() even when
+    every member is properly declared (found during INSTALL-1 Stage 2)."""
+    from domain.outfit_pack import AppearanceAsset, AppearanceItem, AppearanceVariant, _declared_asset_paths
+
+    lips = AppearanceAsset("lips", "assets/viseme-a.png", "0" * 64, 1024, 1536, 0, 0, 0)
+    base_lips = AppearanceAsset("lips", "assets/base-lips.png", "1" * 64, 1254, 1254, 0, 0, 0)
+    variant = AppearanceVariant(
+        "classic", frozendict(), frozendict({"front-crossed": (base_lips,)}),
+        mouth_states=frozendict({"a": frozendict({"yaw+000-pitch+00": (lips,)})}),
+    )
+    item = AppearanceItem("makeup", "face", frozendict(), (variant,))
+    paths = _declared_asset_paths([item])
+    assert lips.path in paths
+    assert base_lips.path in paths
+    assert sorted(paths) == sorted({lips.path, base_lips.path})

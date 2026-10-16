@@ -4,6 +4,7 @@ lazy from dataclasses import dataclass
 lazy from pathlib import Path
 lazy from typing import Protocol
 
+lazy from domain.contracts import default_character_display_name
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.theme_pack import (
     DEFAULT_TOKENS,
@@ -29,10 +30,10 @@ __all__ = (
 
 _BUILTIN_NAMES = frozendict(
     {
-        "zh-TW": "墨寒藍銀主題",
-        "zh-CN": "墨寒蓝银主题",
-        "en": "MoHan Blue-Silver",
-        "ja-JP": "墨寒ブルーシルバー",
+        "zh-TW": f"{default_character_display_name('zh-TW')}藍銀主題",
+        "zh-CN": f"{default_character_display_name('zh-CN')}蓝银主题",
+        "en": f"{default_character_display_name('en')} Blue-Silver",
+        "ja-JP": f"{default_character_display_name('ja-JP')}ブルーシルバー",
     }
 )
 
@@ -62,7 +63,7 @@ class ThemeGenerationRequest:
 
 
 class ThemeGenerationPort(Protocol):
-    """Optional provider boundary; current public builds inject no provider."""
+    """Optional provider boundary; current public builds use provider-independent behavior."""
 
     def generate_draft(
         self,
@@ -97,7 +98,7 @@ class ThemePackService:
         request: ThemeGenerationRequest,
         destination: Path,
     ) -> ThemePack:
-        """Generate but never install or activate a future provider draft."""
+        """Generate a future provider draft for review; installation and activation stay explicit."""
 
         if self._generation_provider is None:
             raise ThemeGenerationUnavailable(
@@ -110,7 +111,7 @@ class ThemePackService:
         theme = inspect_theme_pack(generated)
         if theme.source_channel != "mohan-generated":
             raise ThemeGenerationUnavailable(
-                "Generated theme provenance is invalid."
+                "Generated theme provenance needs a supported value."
             )
         return theme
 

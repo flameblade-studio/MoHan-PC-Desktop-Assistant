@@ -75,7 +75,7 @@ def test_proactive_controls_live_inside_the_control_center(center_env) -> None:
 def test_untouched_proactive_controls_never_overwrite_saved_values(
     center_env,
 ) -> None:
-    """A save must not clobber values another settings page wrote meanwhile."""
+    """Saving preserves values another settings page wrote concurrently."""
 
     db, center = center_env
     db.set_setting("proactive_interaction_mode", "quiet")

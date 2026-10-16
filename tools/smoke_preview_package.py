@@ -65,12 +65,12 @@ def _run(
     if result.returncode != 0:
         raise RuntimeError(f"Preview smoke process exited with {result.returncode}")
     if not output.is_file() or output.read_text(encoding="utf-8") != EXPECTED:
-        raise RuntimeError("Preview smoke marker was not created correctly")
+        raise RuntimeError("Preview smoke validation requires the expected marker")
     if (
         not jit_output.is_file()
         or jit_output.read_text(encoding="utf-8") != "PACKAGED_JIT_DEFAULT_OK"
     ):
-        raise RuntimeError("Preview package JIT state did not match the shipped policy")
+        raise RuntimeError("Preview package JIT state must match the shipped policy")
 
 
 def smoke_macos(package: Path, expected_version: str, *, require_pose_atlas: bool) -> None:

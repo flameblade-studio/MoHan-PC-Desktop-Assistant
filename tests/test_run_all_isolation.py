@@ -22,6 +22,7 @@ ISOLATED_PATH_VARIABLES = (
 )
 
 EXPECTED_EXIT_CODE = 23
+EXPECTED_AGGREGATE_COMMAND_RUNS = 4
 
 
 def _test_file(root: Path, name: str, source: str = "") -> None:
@@ -33,6 +34,12 @@ def _command_test_name(command: list[str]) -> str:
         argument for argument in command if ".py" in argument
     )
     return Path(test_argument.partition("::")[0]).name
+
+
+def _direct_command(test: Path) -> list[str]:
+    """Direct ``main()`` modules run through the bundled-character fixture launcher."""
+
+    return [sys.executable, "-m", "tests.character_runtime_support", str(test)]
 
 
 def test_each_child_receives_an_independent_sanitized_environment() -> None:
@@ -80,6 +87,8 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
     ]
     assert calls[0]["command"] == [
         sys.executable,
+        "-m",
+        "tests.character_runtime_support",
         str(tests_dir / "test_alpha.py"),
     ]
     assert calls[1]["command"] == [
@@ -102,6 +111,7 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
         assert environment["PYTHONPATH"] == str(tests_dir.parent)
         assert "PYTEST_ADDOPTS" not in environment
         assert environment["RUN_ALL_PRESERVE_ME"] == "preserved"
+        assert environment[run_all.ISOLATED_TEST_CHILD] == "1"
     for variable in ISOLATED_PATH_VARIABLES:
         paths = [Path(environment[variable]) for environment in environments]
         assert len(set(paths)) == len(paths)
@@ -112,7 +122,7 @@ def test_each_child_receives_an_independent_sanitized_environment() -> None:
 def test_first_failure_stops_the_sorted_run_and_preserves_exit_code() -> None:
     called: list[str] = []
     # test_alpha passes (0); test_bravo fails twice in a row (23, 23) so the
-    # single retry cannot rescue it and the suite stops with its exit code.
+    # both attempts report the issue and the suite preserves its exit code.
     return_codes = iter((0, 23, 23))
 
     def fail_second(command, **_kwargs):
@@ -200,7 +210,7 @@ def test_orphan_assert_file_fails_the_collection_audit() -> None:
     lines = stderr.getvalue().splitlines()
     assert len(lines) == 1
     assert lines[0].startswith(
-        "COLLECTION_AUDIT: orphan checker is never collected: check_orphan.py"
+        "COLLECTION_AUDIT: collect this orphan checker: check_orphan.py"
     )
 
 
@@ -241,7 +251,7 @@ def test_mixed_module_uses_one_process_when_main_covers_pytest_nodes() -> None:
             "    print('partial manual runner')\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_mixed_module_only_collects_nodes_missing_from_main() -> None:
@@ -259,7 +269,7 @@ def test_mixed_module_only_collects_nodes_missing_from_main() -> None:
         )
 
         assert run_all._test_commands(test) == (
-            [sys.executable, str(test)],
+            _direct_command(test),
             [
                 sys.executable,
                 "-m",
@@ -290,7 +300,7 @@ def test_mixed_module_combines_missing_pytest_nodes_in_one_process() -> None:
         )
 
         assert run_all._test_commands(test) == (
-            [sys.executable, str(test)],
+            _direct_command(test),
             [
                 sys.executable,
                 "-m",
@@ -320,7 +330,7 @@ def test_unittest_main_does_not_duplicate_wrapped_pytest_functions() -> None:
             "    unittest.main()\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_pure_pytest_delegate_to_main_runner_is_not_duplicated() -> None:
@@ -337,7 +347,7 @@ def test_pure_pytest_delegate_to_main_runner_is_not_duplicated() -> None:
             "    run()\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_bare_function_reference_does_not_count_as_execution() -> None:
@@ -377,7 +387,7 @@ def test_explicit_function_collection_loop_counts_as_execution() -> None:
             "    run()\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_parametrized_delegate_is_not_assumed_to_be_covered() -> None:
@@ -410,7 +420,7 @@ def test_pure_main_script_still_runs_as_a_script() -> None:
             "    raise SystemExit(main())\n",
         )
 
-        assert run_all._test_commands(test) == ([sys.executable, str(test)],)
+        assert run_all._test_commands(test) == (_direct_command(test),)
 
 
 def test_shards_are_complete_disjoint_deterministic_and_balanced() -> None:
@@ -487,6 +497,104 @@ def test_timeout_fails_closed_with_stable_exit_code() -> None:
     ]
 
 
+def test_aggregate_mode_continues_after_malformed_and_timeout() -> None:
+    calls: list[str] = []
+
+    def fail_and_timeout(command, **_kwargs):
+        name = _command_test_name(command)
+        calls.append(name)
+        if name == "test_alpha.py":
+            return 17
+        if name == "test_slow.py":
+            raise __import__("subprocess").TimeoutExpired(command, 300)
+        return 0
+
+    with TemporaryDirectory() as directory:
+        tests_dir = Path(directory) / "tests"
+        tests_dir.mkdir()
+        _test_file(tests_dir, "test_alpha.py")
+        _test_file(tests_dir, "test_broken.py", "def broken(:\n")
+        _test_file(tests_dir, "test_slow.py")
+        _test_file(tests_dir, "test_zulu.py")
+        with (
+            patch.object(run_all, "TESTS_DIR", tests_dir),
+            patch.object(run_all, "_run_test_process", side_effect=fail_and_timeout),
+            redirect_stdout(stdout := StringIO()),
+            redirect_stderr(stderr := StringIO()),
+        ):
+            assert run_all.main(("--aggregate",)) == (
+                run_all.AGGREGATE_FAILURE_EXIT_CODE
+            )
+
+    assert calls == [
+        "test_alpha.py",
+        "test_alpha.py",
+        "test_slow.py",
+        "test_zulu.py",
+    ]
+    assert stdout.getvalue().splitlines() == [
+        "[1/4] test_alpha.py",
+        "[2/4] test_broken.py",
+        "[3/4] test_slow.py",
+        "[4/4] test_zulu.py",
+        "RETRIED_MODULES: test_alpha.py",
+    ]
+    assert stderr.getvalue().splitlines() == [
+        "RETRY: test_alpha.py (attempt 1 failed, retrying in a fresh environment)",
+        "AGGREGATE_FAILURES=3",
+        "FAILED: test_alpha.py (exit 17)",
+        "FAILED: test_broken.py (exit 2)",
+        f"FAILED: test_slow.py (timeout {run_all.TEST_TIMEOUT_SECONDS}s)",
+    ]
+
+
+def test_aggregate_mode_runs_follow_up_command_after_a_failure() -> None:
+    commands: list[tuple[str, ...]] = []
+    return_codes = iter((23, 23, 0, 0))
+
+    def fail_first_command(command, **_kwargs):
+        commands.append(tuple(command))
+        return next(return_codes)
+
+    with TemporaryDirectory() as directory:
+        tests_dir = Path(directory) / "tests"
+        tests_dir.mkdir()
+        _test_file(
+            tests_dir,
+            "test_mixed.py",
+            "def test_covered():\n"
+            "    assert True\n\n"
+            "def test_missing():\n"
+            "    assert True\n\n"
+            "if __name__ == '__main__':\n"
+            "    test_covered()\n",
+        )
+        _test_file(tests_dir, "test_zulu.py")
+        with (
+            patch.object(run_all, "TESTS_DIR", tests_dir),
+            patch.object(
+                run_all, "_run_test_process", side_effect=fail_first_command
+            ),
+            redirect_stdout(stdout := StringIO()),
+            redirect_stderr(stderr := StringIO()),
+        ):
+            assert run_all.main(("--aggregate",)) == (
+                run_all.AGGREGATE_FAILURE_EXIT_CODE
+            )
+
+    assert len(commands) == EXPECTED_AGGREGATE_COMMAND_RUNS
+    assert Path(commands[0][-1]).name == "test_mixed.py"
+    assert Path(commands[1][-1]).name == "test_mixed.py"
+    assert any(
+        argument.endswith("test_mixed.py::test_missing")
+        for argument in commands[2]
+    )
+    assert Path(commands[3][5]).name == "test_zulu.py"
+    assert "[1/2] test_mixed.py" in stdout.getvalue()
+    assert "AGGREGATE_FAILURES=1" in stderr.getvalue()
+    assert "FAILED: test_mixed.py command 1/2 (exit 23)" in stderr.getvalue()
+
+
 def test_github_governance_helpers_are_safe_for_pytest_collection() -> None:
     governance_path = Path(__file__).with_name("test_github_governance.py")
     tree = ast.parse(governance_path.read_text(encoding="utf-8"))
@@ -528,7 +636,7 @@ def test_github_governance_helpers_are_safe_for_pytest_collection() -> None:
     }
     assert "test_release_workflow" in main_calls
     assert run_all._test_commands(governance_path) == (
-        [sys.executable, str(governance_path)],
+        _direct_command(governance_path),
     )
 
 
@@ -572,8 +680,7 @@ def test_repository_never_runs_the_same_whole_test_file_twice() -> None:
                 if argument.startswith(f"{test}::")
             ]
             assert pytest_targets, (
-                f"{test.name} repeats a whole-file command instead of selecting "
-                "only the missing pytest nodes"
+                f'{test.name} must select only the outstanding pytest nodes for follow-up execution'
             )
 
 
@@ -596,6 +703,8 @@ if __name__ == "__main__":
     test_shards_are_complete_disjoint_deterministic_and_balanced()
     test_main_runs_only_the_requested_shard()
     test_timeout_fails_closed_with_stable_exit_code()
+    test_aggregate_mode_continues_after_malformed_and_timeout()
+    test_aggregate_mode_runs_follow_up_command_after_a_failure()
     test_github_governance_helpers_are_safe_for_pytest_collection()
     test_repository_inventory_includes_native_vision_and_architecture_suites()
     test_repository_never_runs_the_same_whole_test_file_twice()

@@ -49,22 +49,22 @@ class FramingPreferences:
         if any(type(value) is not bool for value in flags):
             raise TypeError("Framing preference flags must be boolean.")
         if not isinstance(self.preferred_framing, PreferredFraming):
-            raise TypeError("Preferred framing is invalid.")
+            raise TypeError("Preferred framing needs a supported value.")
 
 
 class FramingPreferencesError(RuntimeError):
-    """A fixed-detail framing preference error."""
+    """A fixed-detail framing preference boundary result."""
 
 
 class UnsupportedFramingPreferencesVersion(FramingPreferencesError):
-    """The portable framing schema cannot be interpreted safely."""
+    """The portable framing schema requires supported values for safe interpretation."""
 
 
 def export_framing_preferences(
     preferences: FramingPreferences,
 ) -> dict[str, object]:
     if not isinstance(preferences, FramingPreferences):
-        raise FramingPreferencesError("Framing preferences are invalid.")
+        raise FramingPreferencesError("Framing preferences need supported values.")
     values = asdict(preferences)
     values["preferred_framing"] = preferences.preferred_framing.value
     return {
@@ -84,7 +84,7 @@ def import_framing_preferences(
     version = payload.get("version")
     if type(version) is not int or version != FRAMING_PREFERENCES_VERSION:
         raise UnsupportedFramingPreferencesVersion(
-            "Framing preference schema version is unsupported."
+            "Framing preference schema version needs a supported value."
         )
     raw = payload.get("preferences")
     if not isinstance(raw, Mapping):

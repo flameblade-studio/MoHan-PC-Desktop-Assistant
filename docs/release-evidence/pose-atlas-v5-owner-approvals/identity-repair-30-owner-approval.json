@@ -1,0 +1,12 @@
+{
+  "schema": "mohan.owner-identity-approval.v1",
+  "session": "codex-20260922-v5-angle-repair-30",
+  "owner_statement": "這張像墨寒，採用側臉",
+  "question": "新的「側臉候選 01」（以已採用 V5 正面、斜面母版重建）是否像墨寒？這次只確認臉部身分，通過後才續接該角度的素體與衣裝。",
+  "image": "minus090-face-candidate-01.png",
+  "sha256": "f21dda5b84a1e387b820c54f6c7f3790c236abb8533732df2b54cb92560c33b5",
+  "status": "owner_approved_profile_identity_ready_for_alignment_and_extraction",
+  "scope": "Only this new face identity is approved. Alignment to the existing full body, alpha extraction, detachable garment fitting and actual runtime integration still require implementation and verification. Earlier minus090 face and derived rejected candidates remain rejected.",
+  "fullbody_installed_at_approval": false,
+  "garment_installed_at_approval": false
+}

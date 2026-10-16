@@ -1,0 +1,5 @@
+### 候選眨眼來源綁定／候选眨眼来源绑定／Candidate blink source binding／候補まばたき素材の参照元固定
+
+- 明確指定素體來源的候選渲染器，會在載入時核對眨眼配對、來源路徑、畫布與 SHA-256，並使用同一份已驗證 PNG 位元組繪製，確保舊眼皮維持隔離，且驗證後持續使用同一檔案；省略候選來源的既有模式維持相容。／明确指定素体来源的候选渲染器，会在加载时核对眨眼配对、来源路径、画布与 SHA-256，并使用同一份已验证 PNG 字节绘制，确保旧眼皮维持隔离，且验证后持续使用同一文件；省略候选来源的现有模式保持兼容。／Candidate renderers with an explicit body authority validate blink pairs, source paths, canvas dimensions and SHA-256 at load time, then render the same verified PNG bytes to keep stale eyelids isolated and preserve the verified file after validation. Existing rendering that omits an explicit candidate authority remains compatible.／素体の参照元を明示した候補レンダラーは、読み込み時にまばたきの組、参照パス、キャンバス寸法、SHA-256 を検証し、検証済みの同じ PNG バイト列を描画します。古いまぶたを隔離し、検証後も同じファイルを維持して、候補の参照元を省略した既存の描画との互換性を維持します。
+
+- 此檢查確認宣告的檔案綁定；美術核可、24 視角與 600 分層完成度仍各自以正式驗收為準。／此检查确认声明的文件绑定；美术批准、24 视角与 600 分层完成度仍各自以正式验收为准。／This check validates declared file bindings; visual acceptance and completion of 24 views and 600 layers remain separate formal gates.／この検証は宣言されたファイルの対応関係を確認します。美術承認と 24 視点・600 レイヤーの完成度は、それぞれ別の正式な関門で確認します。

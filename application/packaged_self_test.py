@@ -13,6 +13,7 @@ lazy from application.speech_performance import (
     SpeechPerformanceTimeline,
 )
 lazy from domain.constants import (
+    CHARACTER_ASSET_PATHS,
     FLOAT_COMPARISON_EPSILON,
     POSE_ATLAS_RELATIVE_ROOT,
 )
@@ -113,9 +114,11 @@ def _neutral_face_motion() -> FaceMotionFrame:
 
 
 def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
+    # This product release check validates the bundled MoHan calibration assets;
+    # it does not select runtime frames for the active character.
     root = resource_path(POSE_ATLAS_RELATIVE_ROOT)
     try:
-        assets = PoseAtlasAssets(root, image_size=465)
+        assets = PoseAtlasAssets(root, image_size=465, display_scale=True)
         view_ids = assets.view_ids
         # The parametric layered renderer is the sole full-body path; it needs a
         # neutral motion frame to compose each view.
@@ -141,8 +144,17 @@ def _pose_atlas_checks() -> tuple[_SelfTestCheck, ...]:
 
 def _layered_half_body_checks() -> tuple[_SelfTestCheck, ...]:
     """Verify the packaged three-pose, 25-layer portrait asset contract."""
-    root = resource_path("assets/expressions/layered")
-    layers = tuple(root.glob("*.png")) if root.is_dir() else ()
+    root = resource_path(CHARACTER_ASSET_PATHS["halfbody_layers"])
+    # Expression-specific dynamic assets (for example cheek-glance oral masks)
+    # share this directory; the contract counts only the three pose rigs.
+    layers = (
+        tuple(
+            path for path in root.glob("*.png")
+            if path.name.startswith(("front_", "lean_", "cheek_"))
+        )
+        if root.is_dir()
+        else ()
+    )
     return (
         _SelfTestCheck(
             "layered_half_body.layer_count",
@@ -157,6 +169,8 @@ def _layered_half_body_checks() -> tuple[_SelfTestCheck, ...]:
             ),
         ),
     )
+
+
 def _visual_checks(app: QApplication, window) -> tuple[_SelfTestCheck, ...]:
     checks = (
         _SelfTestCheck("visual.character_pixmap", window.character.pixmap() is not None),
@@ -237,7 +251,7 @@ def _voice_checks(window, voices: tuple[str, ...]) -> tuple[_SelfTestCheck, ...]
 
 
 def _speech_runtime_checks() -> tuple[_SelfTestCheck, ...]:
-    """Exercise packaged speech lifecycle and mouth controls without sound."""
+    """Exercise packaged speech lifecycle and mouth controls with sound outside this boundary."""
 
     portaudio = Path(str(getattr(sounddevice, "_libname", "")))
     timeline = SpeechPerformanceTimeline()

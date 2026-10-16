@@ -28,6 +28,10 @@ lazy from application.special_occasion import OccasionCue, OccasionKind, Occasio
 lazy from application.wellbeing_app_bridge import ReminderTrigger, SpeakRequest
 lazy from application.wellbeing_reminder import WellbeingCue, WellbeingKind
 lazy from application.wellbeing_runtime import RuntimeAttention, RuntimeCue
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
+
+_DIALOGUES = active_character_data().dialogues
 
 MIN_ABSENCE_SECONDS = 60.0
 lazy from domain.companion_proactivity_preferences import (
@@ -94,11 +98,11 @@ class NormalizedCompanionEnvironment:
         if self.now.tzinfo is None:
             raise ValueError("Companion environment time must be timezone-aware.")
         if self.absence_duration_seconds < 0.0:
-            raise ValueError("Absence duration must not be negative.")
+            raise ValueError("Absence duration accepts zero or greater.")
         if self.seconds_since_user_interaction < 0.0:
-            raise ValueError("User interaction age must not be negative.")
+            raise ValueError("User interaction age accepts zero or greater.")
         if not self.language.strip() or not self.user_title.strip():
-            raise ValueError("Companion language and user title must not be empty.")
+            raise ValueError("Companion language and user title require content.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -134,7 +138,7 @@ class SpecialOccasionServicePort(Protocol):
         attention: RuntimeAttention,
     ) -> RuntimeCue | None: ...
 
-    def record_delivery(self, cue: RuntimeCue, *, succeeded: bool) -> bool: ...
+    def record_delivery(self, runtime_cue: RuntimeCue, *, succeeded: bool) -> bool: ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -274,7 +278,7 @@ class ProactiveCompanionRuntime:
 
     def report_spoken(self, delivery_token: str, *, succeeded: bool) -> bool:
         if not delivery_token or type(succeeded) is not bool:
-            raise ValueError("Proactive delivery result is invalid.")
+            raise ValueError("Proactive delivery result needs a supported value.")
         pending = self._pending.pop(delivery_token, None)
         if pending is None:
             return False
@@ -457,7 +461,7 @@ class ProactiveCompanionRuntime:
         self,
         environment: NormalizedCompanionEnvironment,
     ) -> _Candidate | None:
-        """Warmly acknowledge visible activity without claiming identity."""
+        """Warmly acknowledge visible activity while treating identity as caller-owned."""
 
         if not environment.visual_activity:
             return None
@@ -671,14 +675,11 @@ def _memory_check_in_text(language: str, user_title: str, topic: str) -> str:
     topic = str(topic).strip()
     if not topic:
         return ""
-    locale = str(language).strip().lower()
-    if locale.startswith(("zh-cn", "zh-hans")):
-        return f"{user_title}，之前您提到「{topic}」，后来如何了？"
-    if locale.startswith("en"):
-        return f"{user_title}, you mentioned \"{topic}\" earlier — how did that go?"
-    if locale.startswith("ja"):
-        return f"{user_title}、以前「{topic}」とおっしゃっていましたが、その後いかがですか？"
-    return f"{user_title}，之前你提到「{topic}」，後來如何了？"
+    locale = canonical_character_locale(language)
+    return _DIALOGUES[locale].templates["proactive.memory_check_in"].format(
+        user_title=user_title,
+        topic=topic,
+    )
 
 
 def _visual_activity_variation(now: datetime) -> int:
@@ -696,31 +697,10 @@ def _visual_activity_token(now: datetime, variation: int) -> str:
 
 
 def _visual_activity_text(language: str, user_title: str, variation: int) -> str:
-    locale = str(language).strip().lower()
-    lines = (
-        (
-            f"看見您在這裡，墨寒很安心，{user_title}。",
-            f"{user_title}，墨寒有留意到您。今天還順利嗎？",
-            f"您一動，墨寒就注意到了。想和我說說話嗎，{user_title}？",
-        )
-        if not locale.startswith(("zh-cn", "zh-hans", "en", "ja"))
-        else (
-            f"看见您在这里，墨寒很安心，{user_title}。",
-            f"{user_title}，墨寒有留意到您。今天还顺利吗？",
-            f"您一动，墨寒就注意到了。想和我说说话吗，{user_title}？",
-        )
-        if locale.startswith(("zh-cn", "zh-hans"))
-        else (
-            f"I am glad to see you here, {user_title}.",
-            f"I noticed you, {user_title}. Is everything going well today?",
-            f"You caught my attention, {user_title}. Would you like to talk?",
-        )
-        if locale.startswith("en")
-        else (
-            f"ここにいらっしゃるのが見えて、安心しました、{user_title}。",
-            f"{user_title}、ちゃんと気づいていますよ。今日は順調ですか？",
-            f"動かれたので気づきました、{user_title}。少しお話ししませんか？",
-        )
+    locale = canonical_character_locale(language)
+    lines = tuple(
+        line.format(user_title=user_title)
+        for line in _DIALOGUES[locale].line_sets["proactive.visual_activity"]
     )
     return lines[variation % len(lines)]
 

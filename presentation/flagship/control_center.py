@@ -69,7 +69,7 @@ lazy from presentation.lingxiao_themes import (
 )
 lazy from presentation.flagship_ui_localization import FlagshipTranslator
 
-__all__ = ("FlagshipControlCenter", "ControlCenterDependencies")
+__all__ = ("ControlCenterDependencies", "FlagshipControlCenter")
 
 
 @dataclass(frozen=True, slots=True)
@@ -194,7 +194,7 @@ class FlagshipControlCenter(
         if not callable(consume):
             return
         message = consume()
-        if message:
+        if isinstance(message, str) and message:
             QMessageBox.warning(
                 self,
                 self._t("設定讀取"),
@@ -240,6 +240,6 @@ class FlagshipControlCenter(
 
 
 def _active_translator_factory() -> Callable[[str], object]:
-    """Honor the legacy module's patch point without depending on that module."""
+    """Honor the legacy module's patch point while keeping this module independent."""
     compatibility = sys.modules.get("flagship_ui")
     return getattr(compatibility, "FlagshipTranslator", FlagshipTranslator)

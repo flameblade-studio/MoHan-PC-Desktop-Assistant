@@ -18,10 +18,9 @@ EXPECTED_PRUNED_COUNT = 107
 EXPECTED_ARCHIVED_COUNT = 107
 EXPECTED_ARCHIVED_AFTER_RESTORE = 106
 RANK_RESULT_COUNT = 24
-# Coarse anti-regression gate, not a performance benchmark (relaxed 500 ->
-# 2000 on 2026-08-27): warmed ranking over 1000 rows normally takes a few
-# milliseconds, so this only catches order-of-magnitude regressions without
-# exploding on slow or heavily loaded CI runners.
+# Coarse regression gate: the threshold changed from 500 to 2000 on
+# 2026-08-27. Warmed ranking of 1000 rows usually takes milliseconds;
+# the generous budget detects large slowdowns and tolerates loaded CI.
 MAX_RANK_ELAPSED_MS = 2000
 
 

@@ -327,7 +327,7 @@ def assert_missing_or_unsafe_roi_fails_closed() -> None:
 def assert_skin_background_declaration_skips_extra_digit_and_reports_it() -> None:
     # 裸臂裸腿的素體：手部 ROI 內合法有皮膚。extra-digit 的皮膚啟發式是在長袖 v4 上
     # 校準的，對裸體 24 視角誤報 19 個。宣告後不跑該檢查，但必須列在 skipped_checks，
-    # 其他檢查照跑，非布林宣告 fail closed，沒有宣告時行為與以前完全相同。
+    # 其餘檢查照常執行；宣告須為布林值，省略時沿用既有行為。
     with TemporaryDirectory() as temporary:
         root = Path(temporary)
         manifest = write_fixture(

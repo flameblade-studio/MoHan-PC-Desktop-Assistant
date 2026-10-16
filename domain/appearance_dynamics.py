@@ -7,7 +7,7 @@ lazy from typing import Final
 
 
 class AppearanceDynamicsError(ValueError):
-    """A secondary-motion input or configuration is unsafe."""
+    """A secondary-motion input or configuration requires supported values."""
 
 
 class DynamicsMode(StrEnum):
@@ -52,7 +52,7 @@ class DynamicsConfiguration:
 
     def __post_init__(self) -> None:
         if type(self.enabled) is not bool or not isinstance(self.mode, DynamicsMode):
-            raise AppearanceDynamicsError("Dynamics configuration is invalid.")
+            raise AppearanceDynamicsError("Dynamics configuration needs a supported value.")
         finite_positive = (
             self.fixed_step_seconds,
             self.maximum_dt_seconds,
@@ -60,11 +60,11 @@ class DynamicsConfiguration:
         )
         finite_nonnegative = (self.breathing_pixels, self.breathing_scale)
         if not all(math.isfinite(value) and value > 0 for value in finite_positive):
-            raise AppearanceDynamicsError("Dynamics timing is invalid.")
+            raise AppearanceDynamicsError("Dynamics timing needs a supported value.")
         if not all(
             math.isfinite(value) and value >= 0 for value in finite_nonnegative
         ):
-            raise AppearanceDynamicsError("Breathing configuration is invalid.")
+            raise AppearanceDynamicsError("Breathing configuration needs a supported value.")
         if (
             self.fixed_step_seconds > self.maximum_dt_seconds
             or type(self.maximum_substeps) is not int
@@ -72,7 +72,7 @@ class DynamicsConfiguration:
             or self.breathing_pixels > MAX_BREATHING_PIXELS
             or self.breathing_scale > MAX_BREATHING_SCALE
         ):
-            raise AppearanceDynamicsError("Dynamics limits are invalid.")
+            raise AppearanceDynamicsError("Dynamics limits need supported values.")
 
 
 DEFAULT_DYNAMICS_CONFIGURATION: Final = DynamicsConfiguration()
@@ -95,7 +95,7 @@ class DynamicsInput:
             self.gravity_y,
         )
         if not all(math.isfinite(value) for value in values) or self.dt_seconds < 0:
-            raise AppearanceDynamicsError("Dynamics input is invalid.")
+            raise AppearanceDynamicsError("Dynamics input needs a supported value.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -170,7 +170,7 @@ _ACCESSORY_SLOTS: Final = frozenset(
 
 
 def motion_group_for_slot(slot: str) -> MotionGroup | None:
-    """Map an existing generic layer slot without requiring pack changes."""
+    """Map an existing generic layer slot while keeping pack changes optional."""
 
     normalized = str(slot).strip().lower()
     if normalized in _SLEEVE_SLOTS:
@@ -194,7 +194,7 @@ class AppearanceDynamics:
         backend_available: bool = True,
     ) -> None:
         if type(backend_available) is not bool:
-            raise AppearanceDynamicsError("Dynamics capability is invalid.")
+            raise AppearanceDynamicsError("Dynamics capability needs a supported value.")
         self._configuration = configuration
         self._backend_available = backend_available
         self._states = {group: _MotionState() for group in MotionGroup}
@@ -237,9 +237,9 @@ class AppearanceDynamics:
 
     def restore(self, snapshot: DynamicsSnapshot) -> DynamicsFrame:
         if not isinstance(snapshot, DynamicsSnapshot):
-            raise AppearanceDynamicsError("Dynamics snapshot is invalid.")
+            raise AppearanceDynamicsError("Dynamics snapshot needs a supported value.")
         if tuple(group for group, _values in snapshot.states) != tuple(MotionGroup):
-            raise AppearanceDynamicsError("Dynamics snapshot is invalid.")
+            raise AppearanceDynamicsError("Dynamics snapshot needs a supported value.")
         self._accumulator = snapshot.accumulator
         self._breathing_phase = snapshot.breathing_phase
         self._tick = snapshot.tick

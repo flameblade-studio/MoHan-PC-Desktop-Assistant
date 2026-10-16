@@ -16,7 +16,8 @@ lazy from application.gesture_action_dispatcher import (
 )
 lazy from application.gesture_runtime import GestureRuntime
 lazy from application.vision_runtime import bundled_model_directory
-lazy from domain.air_interaction import AirHandPoint, AirHandSample, HandSide
+lazy from domain.air_interaction import AirHandPoint, AirHandSample
+lazy from domain.gesture_intent import HandSide
 lazy from domain.gesture_configuration import (
     GestureConfiguration,
     GestureLandmark,
@@ -256,7 +257,7 @@ class GestureController(QObject):
         lips: LipRegion | None,
         observed_at: float,
     ) -> None:
-        """Accept transient face evidence without retaining a source frame."""
+        """Accept transient face evidence while keeping the source frame private."""
 
         if not math.isfinite(observed_at):
             self._clear_lip_region()
@@ -286,7 +287,7 @@ class GestureController(QObject):
         *,
         maximum_age_seconds: float = 1.0,
     ) -> GestureSample | None:
-        """Return one recent skeleton without retaining pixels or blocking the UI."""
+        """Return one recent skeleton while keeping pixels private or blocking the UI."""
 
         if maximum_age_seconds <= 0.0:
             raise ValueError("Gesture sample age must be positive.")

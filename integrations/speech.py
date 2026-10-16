@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-lazy import json, math, os, subprocess, tempfile, threading, wave
+lazy import json, math, os, subprocess, tempfile, threading, wave  # ruff: ignore[multiple-imports-on-one-line]
 lazy from array import array
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
@@ -46,6 +46,7 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
+lazy from domain.speech_configuration import MOHAN_VOICE_DEFAULTS
 lazy from domain.safe_error import sanitize_error
 lazy from domain.service_status_localization import (
     ServiceStatus,
@@ -55,6 +56,7 @@ lazy from domain.service_status_localization import (
 lazy from integrations.speech_windows_synthesis import WindowsSpeechSynthesisMethods
 
 MAX_TTS_RESPONSE_BYTES = 32 * 1024 * 1024
+_ONECORE_PREFIX = MOHAN_VOICE_DEFAULTS.system_local.onecore_prefix
 
 
 def _emit_qt_callback_safely(callback: Callable[..., None], *args: object) -> None:
@@ -63,7 +65,7 @@ def _emit_qt_callback_safely(callback: Callable[..., None], *args: object) -> No
     except RuntimeError:
         return
 
-__all__ = (
+__all__ = (  # ruff: ignore[blank-lines-after-function-or-class]
     "DEFAULT_TRANSCRIPTION_MODEL",
     "DEFAULT_TRANSCRIPTION_PROMPT",
     "OpenAITTS",
@@ -92,17 +94,14 @@ __all__ = (
 if os.name == "nt":
     lazy import winsound
 else:
-    # Keep the module importable on macOS/Linux. A later platform audio
-    # adapter will provide verified playback there; silently pretending that
-    # Windows playback exists would turn a compatibility gate into a false
-    # claim.
+    # Keep the module importable until another platform adapter is verified.
     winsound = None
 
 
 CREATE_NO_WINDOW = 0x08000000
 DEFAULT_TRANSCRIPTION_MODEL = "gpt-4o-mini-transcribe"
 DEFAULT_TRANSCRIPTION_PROMPT = (
-    "請依使用者選擇的語言精確轉錄，保留原意，不要改寫。"
+    "請依使用者選擇的語言精確轉錄，保留原意並依原話呈現。"
     "人名、公司名、產品名與工作術語請優先依提示中的常用詞判斷。"
 )
 
@@ -237,7 +236,7 @@ class WindowsTTS(QObject):
         super().__init__(parent)
         self.language = language
         self._pcm = pcm_acceleration
-        self.volume_percent = 125
+        self.volume_percent = MOHAN_VOICE_DEFAULTS.default_volume_percent
         self.muted = False
         self._state_lock = threading.RLock()
         self._generation = 0
@@ -251,7 +250,7 @@ class WindowsTTS(QObject):
         self.volume_percent = max(0, min(160, int(volume_percent)))
         self.muted = bool(muted)
 
-    def speak(self, text: str, voice_name: str = "", rate: int = -1) -> None:
+    def speak(self, text: str, voice_name: str = "", rate: int = MOHAN_VOICE_DEFAULTS.default_rate) -> None:
         generation = self._begin_generation()
         if os.name != "nt" or not text.strip():
             self._emit_finished(generation)
@@ -369,7 +368,7 @@ class WindowsTTS(QObject):
             process.terminate()
         except OSError:
             # The worker still has the generation gate, so a process that
-            # exited during this race cannot publish obsolete results.
+            # exits during this race stays outside result publication.
             return
 
     @staticmethod
@@ -406,10 +405,10 @@ class WindowsTTS(QObject):
                 self._emit_finished(generation)
                 return
             voice_name = selected_voice
-            if voice_name.startswith("OneCore::"):
+            if voice_name.startswith(_ONECORE_PREFIX):
                 self._run_onecore(
                     text,
-                    voice_name.removeprefix("OneCore::"),
+                    voice_name.removeprefix(_ONECORE_PREFIX),
                     generation,
                 )
             else:
@@ -426,12 +425,12 @@ class WindowsTTS(QObject):
         ) as exc:
             if not self._is_current(generation):
                 return
-            if voice_name.startswith("OneCore::"):
+            if voice_name.startswith(_ONECORE_PREFIX):
                 try:
                     desktop_voices = [
                         voice
                         for voice in windows_voices()
-                        if not voice[0].startswith("OneCore::")
+                        if not voice[0].startswith(_ONECORE_PREFIX)
                     ]
                     fallback = preferred_windows_voice(desktop_voices)
                     self._run_sapi(text, fallback, rate, generation)
@@ -513,7 +512,7 @@ class OpenAITTS(QObject):
         super().__init__(parent)
         self.language = language
         self._pcm = pcm_acceleration
-        self.volume_percent = 125
+        self.volume_percent = MOHAN_VOICE_DEFAULTS.default_volume_percent
         self.muted = False
         self._state_lock = threading.RLock()
         self._generation = 0
@@ -530,7 +529,7 @@ class OpenAITTS(QObject):
         self,
         text: str,
         api_key: str,
-        voice: str = "coral",
+        voice: str = MOHAN_VOICE_DEFAULTS.default_cloud_voice,
         instructions: str = "",
     ) -> None:
         generation = self._begin_generation()
@@ -550,7 +549,7 @@ class OpenAITTS(QObject):
         ).start()
 
     def stop(self) -> None:
-        """Invalidate the current request and abort playback without waiting."""
+        """Advance the request generation and stop playback promptly."""
 
         self._begin_generation()
 
@@ -822,9 +821,9 @@ class SpeechListener(QObject):
                         )
                     )
                 return
-            # Freeze every SQLite-backed provider on the Qt/main thread.
-            # Accessing StudioDB from the recording worker raises SQLite's
-            # cross-thread ProgrammingError before the API request is sent.
+            # Resolve every SQLite-backed provider on the Qt/main thread.
+            # This keeps StudioDB access within its thread boundary before the
+            # API request is sent.
             model = (
                 self.transcription_model_provider().strip() or self.TRANSCRIPTION_MODEL
             )
@@ -869,14 +868,7 @@ class SpeechListener(QObject):
         self.audio_path = audio_path
         self.process = QProcess(self)
         self.process.finished.connect(self._finished)
-        self.process.errorOccurred.connect(
-            lambda _error: self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_RECOGNITION_START_FAILED,
-                )
-            )
-        )
+        self.process.errorOccurred.connect(self._process_error)
         if audio_path is None:
             self.listening_changed.emit(True)
             self.status_changed.emit(
@@ -904,10 +896,35 @@ class SpeechListener(QObject):
         ]
         if audio_path is not None:
             arguments.extend(["-InputPath", str(audio_path)])
-        self.process.start(
-            "powershell.exe",
-            arguments,
+        self.process.start("powershell.exe", arguments)
+
+    def _process_error(self, error: object) -> None:
+        failure = service_status(
+            self.language,
+            ServiceStatus.SPEECH_RECOGNITION_START_FAILED,
         )
+        try:
+            if error == QProcess.FailedToStart:
+                self._release_process()
+        finally:
+            self.failed.emit(failure)
+
+    def _release_process(self) -> None:
+        process, self.process = self.process, None
+        output_path, self.output_path = self.output_path, None
+        audio_path, self.audio_path = self.audio_path, None
+        was_recording = self._recording_active.is_set()
+        self._busy.clear()
+        self._recording_active.clear()
+        self._stop_recording.clear()
+        if was_recording:
+            self.recording_changed.emit(False)
+        self.listening_changed.emit(False)
+        if process is not None:
+            process.deleteLater()
+        for path in (output_path, audio_path):
+            if path is not None:
+                path.unlink(missing_ok=True)
 
     def _start_windows_fallback(
         self,
@@ -1094,7 +1111,7 @@ class SpeechListener(QObject):
                     model=model,
                 )
             )
-            # 比照 Windows 路徑（_finished）：空白轉寫改走 failed，不進對話流程。
+            # 與 Windows 路徑（_finished）一致：空白轉寫交給 failed，對話流程等待有效內容。
             if text.strip():
                 self.recognized.emit(text)
             else:
@@ -1111,7 +1128,8 @@ class SpeechListener(QObject):
             self.diagnostic_changed.emit(reason)
             if audio_path and audio_path.exists():
                 if fallback_enabled:
-                    # 雲端不可用時，將同一段錄音交給 Windows，不要求使用者重說。
+                    # 雲端狀態需要本機接手時，將同一段錄音交給 Windows，
+                    # 使用者可直接等待本機結果。
                     self._fallback_requested.emit(str(audio_path), reason)
                 else:
                     audio_path.unlink(missing_ok=True)
@@ -1131,65 +1149,47 @@ class SpeechListener(QObject):
                 self.listening_changed.emit(False)
 
     def _finished(self) -> None:
-        self._busy.clear()
-        self.listening_changed.emit(False)
         text = ""
         stderr = ""
-        if self.process:
-            stderr = (
-                bytes(self.process.readAllStandardError())
-                .decode("utf-8", errors="replace")
-                .strip()
-            )
-        if self.output_path and self.output_path.exists():
-            text = self.output_path.read_text(encoding="utf-8-sig").strip()
-            self.output_path.unlink(missing_ok=True)
-        if self.audio_path and self.audio_path.exists():
-            self.audio_path.unlink(missing_ok=True)
-        self.audio_path = None
-        if self.process is not None:
-            # The finished QProcess stays parented to this listener; release
-            # the native object so repeated recognitions cannot accumulate.
-            self.process.deleteLater()
-        self.process = None
-        if text == "__ERROR__:NO_RECOGNIZER":
-            self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_WINDOWS_RECOGNIZER_MISSING,
+        try:
+            if self.process:
+                stderr = (
+                    bytes(self.process.readAllStandardError())
+                    .decode("utf-8", errors="replace")
+                    .strip()
                 )
+            if self.output_path and self.output_path.exists():
+                text = self.output_path.read_text(encoding="utf-8-sig").strip()
+        finally:
+            self._release_process()
+        failure: str | None = None
+        if text == "__ERROR__:NO_RECOGNIZER":
+            failure = service_status(
+                self.language, ServiceStatus.SPEECH_WINDOWS_RECOGNIZER_MISSING
             )
         elif text.startswith("__ERROR__:"):
             detail = text.removeprefix("__ERROR__:")
             if "0x80070005" in detail or "Access is denied" in detail:
-                self.failed.emit(
-                    service_status(
-                        self.language,
-                        ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED,
-                    )
+                failure = service_status(
+                    self.language, ServiceStatus.SPEECH_WINDOWS_MICROPHONE_DENIED
                 )
             else:
-                self.failed.emit(
-                    service_status(
-                        self.language,
-                        ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR,
-                        detail=sanitize_error(detail),
-                    )
+                failure = service_status(
+                    self.language,
+                    ServiceStatus.SPEECH_WINDOWS_RECOGNITION_ERROR,
+                    detail=sanitize_error(detail),
                 )
         elif text and text != "__EMPTY__":
             self.recognized.emit(text)
         elif stderr:
-            self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_WINDOWS_RECOGNITION_START_ERROR,
-                    detail=sanitize_error(stderr),
-                )
+            failure = service_status(
+                self.language,
+                ServiceStatus.SPEECH_WINDOWS_RECOGNITION_START_ERROR,
+                detail=sanitize_error(stderr),
             )
         else:
-            self.failed.emit(
-                service_status(
-                    self.language,
-                    ServiceStatus.SPEECH_NOT_UNDERSTOOD,
-                )
+            failure = service_status(
+                self.language, ServiceStatus.SPEECH_NOT_UNDERSTOOD
             )
+        if failure is not None:
+            self.failed.emit(failure)

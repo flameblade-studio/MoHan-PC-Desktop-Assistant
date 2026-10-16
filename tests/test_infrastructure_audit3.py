@@ -1,7 +1,7 @@
-"""第 3 發 infrastructure 稽核（2026-09-02）的回歸。
+"""2026-09-02 第 3 批 infrastructure 稽核回歸。
 
-七項裡的六項在這裡有測試；第 1 項（更新清單與安裝程式同源、沒有獨立發布者
-簽章）是發行流程與金鑰託管的決策，不是程式碼修補。
+七項中的六項由本檔驗證；第 1 項的獨立發布者簽章，另由發行流程
+與金鑰託管決策負責。
 """
 from __future__ import annotations
 
@@ -54,7 +54,7 @@ windows_only = pytest.mark.skipif(
 NOW = datetime(2026, 9, 2, 12, 0, tzinfo=UTC)
 
 
-# ---- #3 DPAPI：沒有 blob 是空字串；有 blob 解不開必須出錯 ----
+# ---- #3 DPAPI：blob 為空回傳空字串；現存 blob 解密異常須回報錯誤 ----
 
 
 def test_secret_store_missing_blob_is_empty(tmp_path: Path) -> None:
@@ -103,7 +103,20 @@ def test_unverifiable_backup_neither_satisfies_recent_nor_outranks_real(
     manager.prune(keep_daily=1, keep_monthly=0)
     assert created.exists()  # 最新的真備份留下
     assert not real.exists()  # 較舊的真備份依保留數被清
-    assert bogus.exists()  # 無法驗證的檔案不參與排名、也不動它
+    assert bogus.exists()  # 待驗證檔案保留原樣，排名僅納入已驗證檔案。
+
+
+def test_non_object_backup_manifest_is_unverified(tmp_path: Path) -> None:
+    manager = BackupManager(_FakeDB(tmp_path / "main.db"), tmp_path / "backups")
+    backup = manager.create("test")
+    manifest_path = backup.with_suffix(".json")
+
+    for malformed_manifest in ("[]", "null", '"not-an-object"'):
+        manifest_path.write_text(malformed_manifest, encoding="utf-8")
+        assert not manager.verify(backup)
+
+    created = manager.automatic_if_due()
+    assert created is not None and manager.verify(created)
 
 
 # ---- #7 Win32 回傳值 ----
@@ -116,24 +129,24 @@ class _FakeUser32:
         self.rect_fail_hwnd = rect_fail_hwnd
         self.enum_ok = enum_ok
 
-    def IsWindowVisible(self, hwnd):  # noqa: N802 - Win32 名稱
+    def IsWindowVisible(self, hwnd):
         return 1
 
-    def GetWindowTextLengthW(self, hwnd):  # noqa: N802
+    def GetWindowTextLengthW(self, hwnd):
         return 9
 
-    def GetWindowTextW(self, hwnd, buffer, size):  # noqa: N802
+    def GetWindowTextW(self, hwnd, buffer, size):
         buffer.value = f"window-{hwnd}"
         return len(buffer.value)
 
-    def GetWindowRect(self, hwnd, rect_ref):  # noqa: N802
+    def GetWindowRect(self, hwnd, rect_ref):
         if hwnd == self.rect_fail_hwnd:
             return 0
         rect = rect_ref._obj
         rect.left, rect.top, rect.right, rect.bottom = 1, 2, 3, 4
         return 1
 
-    def EnumWindows(self, callback, lparam):  # noqa: N802
+    def EnumWindows(self, callback, lparam):
         if not self.enum_ok:
             return 0
         for hwnd in (11, 22, 33):
@@ -158,7 +171,7 @@ def test_enum_windows_failure_is_an_error_not_an_empty_success(monkeypatch) -> N
         windows_tools.visible_windows()
 
 
-# ---- #6 五個 store：後端讀取失敗要拋型別化錯誤，不回預設值 ----
+# ---- #6 五個 store：後端讀取異常須拋出型別化錯誤 ----
 
 
 class _BrokenSettings:
@@ -198,7 +211,7 @@ def test_backend_read_failure_raises_typed_error(factory, error, call) -> None:
     assert call(factory(_EmptySettings())) is not None
 
 
-# ---- #2 匯出白名單：不可攜的表不能夾帶出去 ----
+# ---- #2 匯出白名單：匯出範圍限於核准的可攜資料表 ----
 
 
 def test_export_clears_every_table_outside_the_portable_allowlist(
@@ -226,7 +239,7 @@ def test_export_clears_every_table_outside_the_portable_allowlist(
         connection.close()
 
 
-# ---- #4 匯入不得繞過正常寫入路徑的驗證 ----
+# ---- #4 匯入沿用正常寫入路徑的完整驗證 ----
 
 
 def _incoming_like(db: StudioDB, table: str) -> sqlite3.Connection:

@@ -20,26 +20,26 @@
 - GitHub 助理工具：已有實作；仍待真實儲存庫端對端驗證。
 - Home Assistant：已有權限邊界與連接器基礎；仍待真實伺服器及實體裝置驗證。
 
-上述整合一律維持自願啟用；在取得可重現的真實環境驗證證據前，不得宣稱已完成完整驗證。
+上述整合一律維持自願啟用；完整驗證狀態只在取得可重現的真實環境證據後標示。
 
 ### 近期品質目標
 
 - 擴充真實裝置與真實帳號的整合測試涵蓋率。
 - 改善無障礙、首次使用說明的清晰度、診斷及復原路徑。
-- 持續改善動畫與語音同步品質，同時不得破壞可決定重現的待機、語音結束及表情規則。
+- 持續改善動畫與語音同步品質，同時維持可決定重現的待機、語音結束及表情規則。
 - 依照 [參數化分層 2.5D 臉部計畫](PARAMETRIC_2_5D_FACE_PLAN.md)，一次完整導入三種姿態的可回退連續嘴型與表情圖層。
 - 改善貢獻者文件，並在證據顯示維護阻力時隔離更多功能邊界。
 - 待永續資金足以負擔可信任的 Windows 憑證時加入程式碼簽章。
 
 ### 歡迎協作方向
 
-- 不包含機密或私人資料且可重現的錯誤報告。
+- 已移除機密與私人資料的可重現問題報告。
 - 無障礙及台灣繁體中文使用者體驗改善。
 - Windows 封裝、音訊裝置及多螢幕相容性。
 - 具備明確權限、確認及復原能力的安全連接器介接器。
 - 能降低維護風險的測試與文件。
 
-開始實作大型變更前，請先提出 Feature Request。安全問題必須遵照 [SECURITY.md](SECURITY.md)，不得公開張貼漏洞、金鑰或私人資料。
+開始實作大型變更前，請先提出 Feature Request。安全問題須遵照 [SECURITY.md](SECURITY.md) 使用私人管道，公開內容限於已移除漏洞細節、金鑰與私人資料的資訊。
 
 ## 简体中文
 
@@ -61,13 +61,13 @@
 - GitHub 助理工具：已有实现；仍待真实仓库端到端验证。
 - Home Assistant：已有权限边界与连接器基础；仍待真实服务器及物理设备验证。
 
-上述集成一律保持自愿启用；在取得可重现的真实环境验证证据前，不得宣称已完成完整验证。
+上述集成一律保持自愿启用；完整验证状态只在取得可重现的真实环境证据后标示。
 
 ### 近期质量目标
 
 - 扩充真实设备与真实账号的集成测试覆盖率。
 - 改善无障碍、首次使用说明的清晰度、诊断及恢复路径。
-- 持续改善动画与语音同步质量，同时不得破坏可确定重现的待机、语音结束及表情规则。
+- 持续改善动画与语音同步质量，同时维持可确定重现的待机、语音结束及表情规则。
 - 依照[参数化分层 2.5D 脸部计划](PARAMETRIC_2_5D_FACE_PLAN.md)，一次完整导入三种姿态的可回退连续嘴型与表情图层。
 - 改善贡献者文档，并在证据显示维护阻力时隔离更多功能边界。
 - 待可持续资金足以负担可信任的 Windows 证书时加入代码签名。
@@ -80,11 +80,11 @@
 - 具备明确权限、确认及回滚能力的安全连接器适配器。
 - 能降低维护风险的测试与文档。
 
-开始实现大型变更前，请先提出 Feature Request。安全问题必须遵照 [SECURITY.md](SECURITY.md)，不得公开发布漏洞、密钥或私人数据。
+开始实现大型变更前，请先提出 Feature Request。安全问题须遵照 [SECURITY.md](SECURITY.md) 使用私人渠道，公开内容限于已移除漏洞细节、密钥与私人数据的信息。
 
 ## English
 
-This roadmap communicates direction, not deadlines. Safety, privacy, data compatibility, and regression protection always take priority over feature count.
+This roadmap communicates direction; delivery dates are maintained in the release plan. Safety, privacy, data compatibility, and regression protection always take priority over feature count.
 
 ### Stable foundations
 
@@ -102,13 +102,13 @@ This roadmap communicates direction, not deadlines. Safety, privacy, data compat
 - GitHub assistant tools: implementation exists; real-repository end-to-end validation remains pending.
 - Home Assistant: permission boundaries and connector foundations exist; real-server and physical-device validation remains pending.
 
-These integrations must remain opt-in and must not be presented as fully validated until reproducible real-environment evidence is available.
+These integrations must remain opt-in and are presented as fully validated only after reproducible real-environment evidence is available.
 
 ### Near-term quality goals
 
 - Expand real-device and real-account integration test coverage.
 - Improve accessibility, onboarding clarity, diagnostics, and recovery paths.
-- Continue animation and voice-sync quality work without breaking deterministic idle, speech-completion, and expression rules.
+- Continue animation and voice-sync quality work while maintaining deterministic idle, speech-completion, and expression rules.
 - Deliver reversible continuous articulation and expression layers for all three poses together under the [Parametric Layered 2.5D Face Plan](PARAMETRIC_2_5D_FACE_PLAN.md).
 - Improve contributor documentation and isolate more feature boundaries where evidence shows maintenance friction.
 - Add code signing when sustainable funding makes a trusted Windows certificate practical.
@@ -121,11 +121,11 @@ These integrations must remain opt-in and must not be presented as fully validat
 - Safe connector adapters with explicit permissions, confirmation, and rollback.
 - Tests and documentation that reduce maintenance risk.
 
-Please open a Feature Request before implementing a large change. Security findings must follow [SECURITY.md](SECURITY.md) and must not be posted publicly with vulnerabilities, keys, or private data.
+Please open a Feature Request before implementing a large change. Security findings follow the private process in [SECURITY.md](SECURITY.md); public content is limited to material from which vulnerability details, keys, and private data have been removed.
 
 ## 日本語
 
-本ロードマップは方向性を示すものであり、納期を示すものではありません。安全性、プライバシー、データ互換性、回帰防止を、機能数より常に優先します。
+本ロードマップは方向性を示し、提供日はリリース計画で管理します。安全性、プライバシー、データ互換性、回帰防止を、機能数より常に優先します。
 
 ### 安定した基盤
 
@@ -143,13 +143,13 @@ Please open a Feature Request before implementing a large change. Security findi
 - GitHub アシスタントツール：実装済みですが、実リポジトリでのエンドツーエンド検証は未完了です。
 - Home Assistant：権限境界とコネクター基盤は実装済みですが、実サーバーおよび物理デバイスでの検証は未完了です。
 
-これらの統合はすべてオプトインを維持し、再現可能な実環境の検証証拠が得られるまで、完全に検証済みと表示してはいけません。
+これらの統合はすべてオプトインを維持し、再現可能な実環境の検証証拠が得られた段階で、完全検証済みと表示します。
 
 ### 短期的な品質目標
 
 - 実デバイスおよび実アカウントの統合テスト範囲を拡大します。
 - アクセシビリティ、オンボーディングの明確さ、診断、復旧経路を改善します。
-- 決定論的な待機、音声終了、表情規則を壊さずに、アニメーションと音声同期の品質改善を継続します。
+- 決定論的な待機、音声終了、表情規則を維持しながら、アニメーションと音声同期の品質改善を継続します。
 - [パラメトリック多層 2.5D フェイス計画](PARAMETRIC_2_5D_FACE_PLAN.md)に従い、三姿勢のロールバック可能な連続口形と表情レイヤーを一括導入します。
 - コントリビューター向け文書を改善し、保守上の摩擦を証拠が示す箇所では、機能境界をさらに分離します。
 - 信頼できる Windows 証明書を持続可能な資金で取得できる段階で、コード署名を追加します。
@@ -162,4 +162,4 @@ Please open a Feature Request before implementing a large change. Security findi
 - 明示的な権限、確認、ロールバックを備えた安全なコネクターアダプター。
 - 保守リスクを低減するテストと文書。
 
-大規模な変更を実装する前に Feature Request を提出してください。セキュリティ上の問題は [SECURITY.md](SECURITY.md) に従い、脆弱性、キー、個人データを公開投稿してはいけません。
+大規模な変更を実装する前に Feature Request を提出してください。セキュリティ上の問題は [SECURITY.md](SECURITY.md) の非公開手順に従い、公開内容は脆弱性の詳細、キー、個人データを除去した情報に限定します。

@@ -160,7 +160,7 @@ def assert_visual_presence_and_absence_are_normalized_only_when_enabled() -> Non
     except ValueError:
         pass
     else:
-        raise AssertionError("Disabled camera must not claim user recognition")
+        raise AssertionError('Recognition requires an enabled camera and verified observation')
 
 
 def assert_visual_activity_is_normalized_without_an_identity_claim() -> None:
@@ -180,7 +180,7 @@ def assert_visual_activity_is_normalized_without_an_identity_claim() -> None:
     except ValueError:
         pass
     else:
-        raise AssertionError("Disabled camera must not claim visual activity")
+        raise AssertionError('Visual activity requires an enabled camera and verified observation')
 
 
 def assert_speech_port_is_used_and_two_phase_commit_waits_for_callback() -> None:
@@ -248,14 +248,14 @@ def assert_disabled_and_close_are_complete_bypasses() -> None:
 
 
 def assert_stale_completion_cannot_commit() -> None:
-    app_bridge, runtime, *_rest = bridge()
+    app_bridge, runtime, *rest = bridge()
     first = app_bridge.dispatch(ProactiveAppEvent(state(generation=1)))
     assert first.request is not None
     second = app_bridge.dispatch(
         ProactiveAppEvent(state(generation=2, now=NOW.replace(minute=1)))
     )
     assert second.request is not None
-    speech = _rest[2]
+    speech = rest[2]
     speech.finish(0, True)
     assert runtime.reports[0] == (first.request.delivery_token, False)
     speech.finish(1, True)

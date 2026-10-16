@@ -3,207 +3,104 @@
     {
       "landmarks": [
         [
-          391,
-          787
+          585,
+          789
         ],
         [
-          391,
-          809
+          600,
+          810
         ],
         [
-          388,
-          828
+          605,
+          831
         ],
         [
-          389,
-          843
+          602,
+          846
         ],
         [
-          391,
-          855
+          595,
+          857
         ],
         [
-          367,
-          836
+          609,
+          844
         ],
         [
-          370,
-          865
+          605,
+          873
         ],
         [
-          377,
-          878
+          597,
+          887
         ],
         [
-          384,
-          886
+          588,
+          894
         ],
         [
-          368,
-          836
+          600,
+          844
         ],
         [
-          371,
-          869
+          594,
+          876
         ],
         [
-          380,
-          882
-        ],
-        [
-          388,
+          585,
           890
         ],
         [
-          374,
-          836
+          576,
+          898
         ],
         [
-          377,
-          868
+          588,
+          843
         ],
         [
-          384,
-          883
+          584,
+          873
         ],
         [
-          390,
-          892
+          575,
+          886
         ],
         [
-          386,
-          836
+          568,
+          894
         ],
         [
-          387,
-          860
+          574,
+          839
         ],
         [
-          391,
+          572,
+          863
+        ],
+        [
+          567,
           874
         ],
         [
-          393,
-          885
+          563,
+          882
         ]
       ],
       "model_evidence": {
-        "augmentation": "rotate-clockwise",
-        "confidence": 0.966611,
+        "augmentation": "flip-horizontal",
+        "confidence": 0.977084,
         "model_handedness": "left",
         "pixel_refinement": "nearest-skin-within-8px"
       },
       "occlusions": [],
       "roi": [
-        359,
-        779,
-        43,
-        122
+        555,
+        781,
+        63,
+        126
       ],
       "side": "left",
-      "thumb_side_check": false
-    },
-    {
-      "landmarks": [
-        [
-          680,
-          792
-        ],
-        [
-          677,
-          812
-        ],
-        [
-          677,
-          831
-        ],
-        [
-          677,
-          842
-        ],
-        [
-          677,
-          853
-        ],
-        [
-          681,
-          844
-        ],
-        [
-          679,
-          861
-        ],
-        [
-          675,
-          873
-        ],
-        [
-          674,
-          882
-        ],
-        [
-          685,
-          846
-        ],
-        [
-          684,
-          867
-        ],
-        [
-          679,
-          879
-        ],
-        [
-          672,
-          886
-        ],
-        [
-          690,
-          847
-        ],
-        [
-          688,
-          868
-        ],
-        [
-          682,
-          878
-        ],
-        [
-          675,
-          886
-        ],
-        [
-          695,
-          847
-        ],
-        [
-          693,
-          865
-        ],
-        [
-          688,
-          875
-        ],
-        [
-          682,
-          881
-        ]
-      ],
-      "model_evidence": {
-        "augmentation": "native",
-        "confidence": 0.764734,
-        "model_handedness": "right",
-        "pixel_refinement": "nearest-skin-within-8px"
-      },
-      "occlusions": [],
-      "roi": [
-        664,
-        784,
-        40,
-        111
-      ],
-      "side": "right",
       "thumb_side_check": false
     }
   ],
@@ -218,16 +115,29 @@
     "hand_confidence_threshold": 0.65,
     "palm_threshold": 0.45,
     "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
-    "source_sha256": "8f73e74ff048063a1f3b748339e3692b5fa85c1358a11989dce38cd4ace8c517"
+    "source_sha256": "0d1a56d029d4fbd084334a8d9b9ae58c9fbdb4c88ce3a074f344bd359c02fda0"
   },
-  "occluded_hands": [],
+  "occluded_hands": [
+    {
+      "occluder_id": "robe-or-view-occlusion",
+      "reason": "No reliable 21-point hand observation was visible after the approved fixed augmentations.",
+      "region": [
+        0,
+        102,
+        1024,
+        1335
+      ],
+      "side": "right",
+      "status": "occluded"
+    }
+  ],
   "occluders": [],
   "protected_regions": [
     {
       "label": "face",
       "rect": [
         412,
-        133,
+        182,
         200,
         220
       ]
@@ -236,7 +146,7 @@
       "label": "body",
       "rect": [
         412,
-        313,
+        362,
         200,
         220
       ]

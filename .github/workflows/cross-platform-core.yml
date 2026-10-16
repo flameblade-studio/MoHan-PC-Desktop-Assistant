@@ -47,13 +47,22 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes libegl1 libportaudio2
 
-      - name: Build verified Qt 3.15 compatibility wheelhouse
-        run: python tools/build_python315_qt_compat.py --output-dir qt315-wheelhouse
-
-      - name: Install dependencies
+      - name: Install hash-locked official Qt wheels
         run: >-
-          python tools/install_python315_dependencies.py
-          --qt-compat-wheelhouse qt315-wheelhouse
+          python -m pip install --only-binary=:all:
+          --require-hashes
+          --report qt-install-report.json
+          -r requirements-qt.txt
+
+      - name: Install pinned dependencies from official wheels
+        run: >-
+          python -m pip install --only-binary=:all:
+          -r requirements.txt
+
+      - name: Verify official Qt runtime and wheel provenance
+        run: >-
+          python tools/check_official_qt_runtime.py
+          --pip-report qt-install-report.json
 
       # Split for the same Windows pwsh exit-code reason as the native steps.
       - name: Install pinned Rust toolchain
@@ -66,8 +75,8 @@ jobs:
           python -m pip install --only-binary=:all: maturin==1.14.1
 
       # One native command per step: the Windows leg runs these through pwsh,
-      # which only surfaces the final command's exit code, so a multi-command
-      # step would swallow intermediate failures there.
+      # which surfaces the final command's exit code. Separate steps keep each
+      # intermediate result visible there.
       - name: Build native acceleration
         run: python tools/build_native_acceleration.py --output-dir native-wheels --evidence native-wheels/build-evidence.json --install
       - name: Verify native equivalence
@@ -82,7 +91,7 @@ jobs:
         run: python tests/test_cross_platform_core.py
 
       - name: Verify provider registry migration
-        run: python tests/test_speech_provider_registry.py
+        run: python -m tests.character_runtime_support tests/test_speech_provider_registry.py
 
       - name: Verify architecture boundaries
         run: python tests/test_architecture_contracts.py
@@ -91,6 +100,6 @@ jobs:
       - name: Verify platform-neutral PCM audio core
         run: python tests/test_pcm_audio.py
       - name: Verify platform-neutral audio buffer core
-        run: python tests/test_audio_buffer.py
+        run: python -m tests.character_runtime_support tests/test_audio_buffer.py
       - name: Verify platform-neutral memory vector core
         run: python tests/test_memory_vector_index.py

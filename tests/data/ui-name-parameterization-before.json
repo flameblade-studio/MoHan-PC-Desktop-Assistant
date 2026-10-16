@@ -1,0 +1,351 @@
+{
+  "schema": "mohan.ui-name-parameterization-before.v1",
+  "safe_errors": {
+    "internal_failure": {
+      "zh-TW": "墨寒執行此操作時發生內部錯誤，請重試。",
+      "zh-CN": "墨寒执行此操作时发生内部错误，请重试。",
+      "en": "MoHan needs attention while performing this operation. Try again.",
+      "ja-JP": "墨寒がこの操作を実行中に内部エラーが発生しました。再試行してください。"
+    }
+  },
+  "service_status": {
+    "speech_windows_microphone_denied": {
+      "zh-TW": "Windows 拒絕墨寒使用麥克風。請到「設定 → 隱私權與安全性 → 麥克風」，開啟麥克風存取權、讓應用程式存取麥克風，以及讓桌面應用程式存取麥克風。",
+      "zh-CN": "Windows 拒绝墨寒使用麦克风。请前往“设置 → 隐私和安全性 → 麦克风”，开启麦克风访问权限、允许应用访问麦克风，以及允许桌面应用访问麦克风。",
+      "en": "Windows requires microphone permission for MoHan. In Settings → Privacy & security → Microphone, enable Microphone access, Let apps access your microphone, and Let desktop apps access your microphone.",
+      "ja-JP": "Windows が墨寒のマイク使用を拒否しました。「設定 → プライバシーとセキュリティ → マイク」で、マイクへのアクセス、アプリのマイクアクセス、デスクトップアプリのマイクアクセスを有効にしてください。"
+    }
+  },
+  "realtime": {
+    "zh-TW": {
+      "missing_key": "請先儲存 OpenAI API 金鑰",
+      "missing_components": "請安裝 Realtime 語音元件",
+      "connecting": "正在連線…",
+      "disconnected": "目前等待連線，請重新啟動 Realtime",
+      "listening": "已連線，妾在聽",
+      "empty_transcript": "轉錄結果為空，本輪等待新的語音",
+      "transcription_failed": "轉錄結果需要重試，本輪等待新的語音：{error}",
+      "realtime_api_error": "Realtime API 回報錯誤，請檢查設定後再試",
+      "generic_error": "Realtime 回報錯誤：{error}",
+      "microphone_status": "麥克風狀態：{status}",
+      "sender_lag": "麥克風處理已恢復即時性，已捨棄較早音訊",
+      "response_too_long": "Realtime 回應達到 32,768 字元安全上限，本輪回應已停止。",
+      "playback_buffer_full": "Realtime 播放緩衝達到 1.5 秒安全上限，本輪語音已停止，以維持延遲與文字同步。",
+      "playback_failed": "播放語音需要重試：{error}",
+      "clip_too_short": "語音片段長度需要增加，本輪等待新的語音",
+      "transcribing": "高精度整句轉錄中…",
+      "hybrid_failed": "高精度轉錄需要重試，本輪等待新的語音：{error}",
+      "response_not_started": "文字已辨識；Realtime 回覆尚待啟動，請檢查連線後再試",
+      "prompt_echo_skipped": "已過濾疑似轉錄提示詞回灌內容，等待實際語音輸入",
+      "replying": "已辨識，墨寒正在回覆",
+      "model_access": "OpenAI 回報目前儲存的 API 金鑰需要在同一 Project 啟用「{model}」使用權限。請確認 API 後台勾選模型的 Project，正是建立這支金鑰的同一個 Project；再於該 Project 建立具適當權限的 API Key，並到墨寒的「設定」頁重新儲存。",
+      "quota": "OpenAI API 額度需要補充，或專案預算已達上限。請檢查該 Project 的 Billing、Budget 與 Realtime 模型用量限制。",
+      "invalid_key": "目前儲存的 OpenAI API 金鑰需要更新。請到「設定」頁貼上同一 Project 新建立的 API Key。",
+      "server_rejected": "Realtime 伺服器回報連線狀態需要重新建立。詳細資訊：{error}",
+      "microphone_failed": "Windows 麥克風存取需要處理。請到「設定 → 隱私權與安全性 → 麥克風」，開啟麥克風存取權及「讓桌面應用程式存取麥克風」，並釋放其他程式持有的獨佔麥克風控制權，讓本程式取得使用權。詳細資訊：{error}",
+      "audio_failed": "音訊裝置尚待啟動：{error}。請到「設定」頁重新選擇輸入／輸出裝置後再試。"
+    },
+    "zh-CN": {
+      "missing_key": "请先保存 OpenAI API 密钥",
+      "missing_components": "请安装 Realtime 语音组件",
+      "connecting": "正在连接…",
+      "disconnected": "当前等待连接，请重新启动 Realtime",
+      "listening": "已连接，妾在听",
+      "empty_transcript": "转录结果为空，本轮等待新的语音",
+      "transcription_failed": "转录结果需要重试，本轮等待新的语音：{error}",
+      "realtime_api_error": "Realtime API 报告错误，请检查设置后再试",
+      "generic_error": "Realtime 报告错误：{error}",
+      "microphone_status": "麦克风状态：{status}",
+      "sender_lag": "麦克风处理已恢复实时性，已舍弃较早音频",
+      "response_too_long": "Realtime 回复达到 32,768 字符安全上限，本轮回复已停止。",
+      "playback_buffer_full": "Realtime 播放缓冲达到 1.5 秒安全上限，本轮语音已停止，以维持延迟与文字同步。",
+      "playback_failed": "播放语音需要重试：{error}",
+      "clip_too_short": "语音片段长度需要增加，本轮等待新的语音",
+      "transcribing": "高精度整句转录中…",
+      "hybrid_failed": "高精度转录需要重试，本轮等待新的语音：{error}",
+      "response_not_started": "文字已识别；Realtime 回复尚待启动，请检查连接后再试",
+      "prompt_echo_skipped": "已过滤疑似转录提示词回灌内容，等待实际语音输入",
+      "replying": "已识别，墨寒正在回复",
+      "model_access": "OpenAI 报告当前保存的 API 密钥需要在同一 Project 启用“{model}”使用权限。请确认 API 后台所选模型的 Project 与建立这支密钥的 Project 相同；再于该 Project 建立具备适当权限的 API Key，并到墨寒的“设置”页重新保存。",
+      "quota": "OpenAI API 额度需要补充，或项目预算已达上限。请检查该 Project 的 Billing、Budget 与 Realtime 模型用量限制。",
+      "invalid_key": "当前保存的 OpenAI API 密钥需要更新。请到“设置”页粘贴同一 Project 新建立的 API Key。",
+      "server_rejected": "Realtime 服务器报告连接状态需要重新建立。详细信息：{error}",
+      "microphone_failed": "Windows 麦克风访问需要处理。请到“设置 → 隐私和安全性 → 麦克风”，开启麦克风访问权限及“允许桌面应用访问麦克风”，并释放其他程序持有的独占麦克风控制权，让本程序取得使用权。详细信息：{error}",
+      "audio_failed": "音频设备尚待启动：{error}。请到「设置」页重新选择输入／输出设备后再试。"
+    },
+    "en": {
+      "missing_key": "Save an OpenAI API key first",
+      "missing_components": "Install the Realtime voice components",
+      "connecting": "Connecting…",
+      "disconnected": "Waiting for a connection; restart Realtime",
+      "listening": "Connected and listening",
+      "empty_transcript": "The transcript is empty; this turn is waiting for new audio",
+      "transcription_failed": "The transcript needs a retry; this turn is waiting for new audio: {error}",
+      "realtime_api_error": "The Realtime API reported an error; check Settings and try again",
+      "generic_error": "Realtime reported an error: {error}",
+      "microphone_status": "Microphone status: {status}",
+      "sender_lag": "Microphone processing is real-time again; earlier audio was dropped",
+      "response_too_long": "The Realtime response reached the 32,768-character safety limit; this response is stopped.",
+      "playback_buffer_full": "The Realtime playback buffer reached its 1.5-second safety limit; this response is stopped to keep delay and text synchronized.",
+      "playback_failed": "Speech playback needs a retry: {error}",
+      "clip_too_short": "The speech clip needs more audio; this turn is waiting for new audio",
+      "transcribing": "Transcribing the complete utterance…",
+      "hybrid_failed": "High-accuracy transcription needs a retry; this turn is waiting for new audio: {error}",
+      "response_not_started": "Text was recognized; the Realtime response is waiting to start. Check the connection and try again",
+      "prompt_echo_skipped": "Filtered probable transcription-prompt echo content; waiting for actual voice input",
+      "replying": "Recognized; MoHan is replying",
+      "model_access": "Enable “{model}” access for the saved OpenAI API key in the same Project. Confirm that the model and API key belong to the same Project, then save a suitably authorized key again in MoHan Settings.",
+      "quota": "The OpenAI API quota needs replenishment or the project budget limit was reached. Check Billing, Budget, and Realtime model usage limits.",
+      "invalid_key": "The saved OpenAI API key needs an update. Save a new key from the same Project in Settings.",
+      "server_rejected": "The Realtime server reported a connection state that needs to be re-established. Details: {error}",
+      "microphone_failed": "Microphone access requires attention. In Settings → Privacy & security → Microphone, enable microphone access and desktop-app access, and release exclusive microphone control held by other apps so this app can use it. Details: {error}",
+      "audio_failed": "The audio device is waiting to start: {error}. Please reselect the input/output device on the Settings page and try again."
+    },
+    "ja-JP": {
+      "missing_key": "先に OpenAI API キーを保存してください",
+      "missing_components": "Realtime 音声コンポーネントをインストールしてください",
+      "connecting": "接続中…",
+      "disconnected": "接続待機中です。Realtime を再起動してください",
+      "listening": "接続済み、聞いています",
+      "empty_transcript": "文字起こし結果が空のため、このターンは新しい音声を待機します",
+      "transcription_failed": "文字起こし結果の再試行が必要です。このターンは新しい音声を待機します：{error}",
+      "realtime_api_error": "Realtime API がエラーを報告しました。設定を確認して再試行してください",
+      "generic_error": "Realtime がエラーを報告しました：{error}",
+      "microphone_status": "マイクの状態：{status}",
+      "sender_lag": "マイク処理がリアルタイムに戻りました。古い音声を整理しました",
+      "response_too_long": "Realtime の応答が 32,768 文字の安全上限に達したため、この応答を停止します。",
+      "playback_buffer_full": "Realtime の再生バッファーが 1.5 秒の安全上限に達したため、遅延と文字の同期を保つためにこの応答を停止します。",
+      "playback_failed": "音声の再生に再試行が必要です：{error}",
+      "clip_too_short": "音声区間に追加の音声が必要なため、このターンは新しい音声を待機します",
+      "transcribing": "発話全体を高精度で文字起こししています…",
+      "hybrid_failed": "高精度文字起こしの再試行が必要です。このターンは新しい音声を待機します：{error}",
+      "response_not_started": "文字を認識しました。Realtime の応答は開始待ちです。接続を確認して再試行してください",
+      "prompt_echo_skipped": "文字起こしプロンプトの反響と思われる内容を除外し、実際の音声入力を待機しています",
+      "replying": "認識しました。墨寒が応答しています",
+      "model_access": "保存された OpenAI API キーで「{model}」を利用する権限を同じ Project に設定してください。モデルと API キーが同じ Project に属することを確認し、適切な権限を持つキーを墨寒の設定で保存してください。",
+      "quota": "OpenAI API の利用枠の補充が必要か、プロジェクトの予算上限に達しました。Billing、Budget、Realtime モデルの利用上限を確認してください。",
+      "invalid_key": "保存された OpenAI API キーの更新が必要です。同じ Project で新しいキーを作成し、設定で保存してください。",
+      "server_rejected": "Realtime サーバーが接続状態の再確立を報告しました。詳細：{error}",
+      "microphone_failed": "Windows のマイクアクセスには対応が必要です。「設定 → プライバシーとセキュリティ → マイク」でマイクとデスクトップアプリのアクセスを有効にし、他のアプリが保持するマイクの排他的制御を解放して、このアプリがマイクを利用できる状態にしてください。詳細：{error}",
+      "audio_failed": "音声デバイスは開始待ちです：{error}。「設定」ページで入出力デバイスを選び直してから再試行してください。"
+    }
+  },
+  "ui_catalogs": {
+    "zh-CN": {
+      "first_run_brand": "墨寒",
+      "first_run_heading": "<b>欢迎使用墨寒桌面助手</b>",
+      "assistant_name_placeholder": "例如：墨寒、Ava、Office Mate",
+      "user_title_placeholder": "例如：主上、Alex、主管",
+      "wake_word_placeholder": "例如：墨寒",
+      "navigation_brand": "墨寒",
+      "wardrobe_autonomous_enabled": "允许墨寒自主选装",
+      "wardrobe_self_generation_enabled": "允许墨寒云端自创新衣（可能产生费用）",
+      "wardrobe_generation_rate_limited": "图片服务当前流量繁忙；墨寒已安全重试，稍后可从既有进度继续。",
+      "wardrobe_automatic_outfit_selected": "墨寒已根据情境自主换装。",
+      "wardrobe_pavilion_subtitle": "让墨寒依天气、心情与场合挑选完整造型，也保留您的决定。",
+      "wardrobe_source_policy": "来源分流：炎剑官方・用户导入・墨寒自创",
+      "wardrobe_character_preview": "墨寒造型预览",
+      "idea_added_speech": "灵感稍纵即逝，妾已替您收好。",
+      "memory_intro": "墨寒只保存您允许留下的人物、偏好、目标、工作流程与重要日期。记忆保存在本机，可按分类浏览、逐项编辑或删除。",
+      "remember": "让墨寒记住",
+      "memory_added_speech": "妾已记下。您日后若要更改，也可逐项整理。",
+      "memory_clear_confirm": "要删除墨寒保存的全部长期记忆吗？此操作永久有效。继续吗？",
+      "echo_guard_tooltip": "墨寒说话时暂停麦克风上传，并在播放后恢复；此选项会让当前操作继续进行。",
+      "hybrid_transcript_tooltip": "Realtime 保留原生音频理解；每句说完后，界面文字改用完整录音的 OpenAI 高精度转录。成功后才允许墨寒回答。",
+      "sleep_mode_status": "休眠模式已启动；墨寒会保持安静，提醒与紧急警报仍会按规则处理。",
+      "desktop_status_title": "墨寒正在桌面上与你互动",
+      "desktop_status_description": "桌面上的墨寒是唯一可见、可拖动并会回应你的角色。",
+      "tray_quit": "退出墨寒",
+      "chat_placeholder": "对墨寒说话……",
+      "mohan_volume": "墨寒音量",
+      "azure_hd_speech_note": "可选预览功能。请使用独立的 S0 Speech 资源、密钥与相符的支持区域。墨寒使用 Dragon HD 的音频驱动嘴型同步。语音开始延迟取决于网络与区域距离。合成需要检查时，会各尝试一次回退到标准 Azure Speech 与 Windows 本机语音。",
+      "platform_local_voice_note": "{platform} 本机语音等待设备验证。墨寒只会列出当前平台已验证的语音，并通过设备测试确认离线语音支持。",
+      "preview_voice": "试听：主上，妾在。",
+      "echo_guard_option": "防止墨寒听见自己的声音",
+      "echo_guard_note": "启用回声防护后，墨寒说话时会暂停上传麦克风音频，播放结束后再恢复。对话页只显示最终准确转录。",
+      "permissions_warning": "安全规则：对话会让墨寒停留在已配置的权限范围内。AI 可以提出工具请求，但实际能运行的内容由本机权限决定。",
+      "permission_blocked_message": "请先为墨寒启用执行 {action} 所需的权限。",
+      "permission_request": "墨寒请求电脑权限",
+      "permission_request_message": "是否允许墨寒本次{action}？",
+      "permission_saved_speech": "电脑权限已保存。妾会守住这些边界。",
+      "restart_language_note": "保存界面语言后，重新启动墨寒即可完整应用。",
+      "about_heading": "<b>关于墨寒</b>",
+      "about_body": "墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与 MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>本软件以动态链接方式使用 Qt for Python（PySide6，GNU LGPL-3.0 授权）；Qt 库以独立文件封装于安装目录的 _internal 文件夹，您可自行检查或替换这些库。<br>完整第三方授权声明见安装目录的 THIRD_PARTY_NOTICES.md 与 third_party_licenses 文件夹；Qt 源代码可从 <a href=\"https://download.qt.io/official_releases/QtForPython/\">Qt 官方下载存档</a>获取。",
+      "reminder_message_placeholder": "此提醒触发时墨寒要说的内容",
+      "read_replies": "让墨寒读出回复",
+      "caught_glance_dialogue": "妾只是望向窗外，才不是在偷看主上。"
+    },
+    "en": {
+      "first_run_brand": "MoHan",
+      "first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
+      "assistant_name_placeholder": "For example: MoHan, Ava, Office Mate",
+      "wake_word_placeholder": "For example: MoHan",
+      "navigation_brand": "MoHan",
+      "wardrobe_autonomous_enabled": "Allow MoHan to choose outfits autonomously",
+      "wardrobe_self_generation_enabled": "Allow MoHan to create cloud-generated outfits (charges may apply)",
+      "wardrobe_generation_rate_limited": "The image service is busy right now; MoHan retried safely and can resume from the saved progress later.",
+      "wardrobe_automatic_outfit_selected": "MoHan changed outfits autonomously for the current context.",
+      "wardrobe_pavilion_subtitle": "Let MoHan choose a complete look for the weather, mood, and occasion while preserving your final say.",
+      "wardrobe_source_policy": "Separated sources: Flameblade official · User imports · MoHan creations",
+      "wardrobe_character_preview": "MoHan appearance preview",
+      "memory_intro": "MoHan stores only people, preferences, goals, workflows, and important dates that you allow. Memories stay on this computer and can be browsed by category, edited individually, or deleted.",
+      "memory_clear_confirm": "Delete every long-term memory stored by MoHan? This action is permanent. Continue?",
+      "echo_guard_tooltip": "Pauses microphone upload while MoHan speaks and resumes after playback; this option keeps the current operation active.",
+      "hybrid_transcript_tooltip": "Realtime keeps native audio understanding. After each utterance, the screen text uses a high-accuracy OpenAI transcription of the complete recording, and MoHan replies only after it succeeds.",
+      "sleep_mode_status": "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules.",
+      "desktop_status_title": "MoHan is interacting with you on the desktop",
+      "desktop_status_description": "The desktop MoHan is the only visible, draggable character that responds to you.",
+      "tray_quit": "Quit MoHan",
+      "chat_placeholder": "Talk to MoHan…",
+      "mohan_volume": "MoHan volume",
+      "azure_hd_speech_note": "Optional Preview. Use a separate S0 Speech resource, key, and matching supported region. MoHan uses audio-driven lip sync with Dragon HD. Speech-start delay depends on network and region distance. A synthesis error falls back once each to standard Azure Speech and then Windows local speech.",
+      "platform_local_voice_note": "{platform} local voice awaits device verification. MoHan lists only verified voices for the current platform and confirms offline speech support through device testing.",
+      "echo_guard_option": "Prevent MoHan from hearing her own voice",
+      "echo_guard_note": "With echo guard enabled, microphone upload pauses while MoHan speaks and resumes after playback. Only the final accurate transcript is shown in Chat.",
+      "permissions_intro": "Grant each capability separately. With Ask every time, MoHan shows a confirmation before acting. File deletion requires explicit confirmation.",
+      "permissions_warning": "Safety rule: conversation keeps MoHan within her configured authority. The AI may propose a tool request, but local permissions decide what can actually run.",
+      "permission_blocked_message": "Enable permission for MoHan to {action} before continuing.",
+      "permission_request": "MoHan requests computer permission",
+      "permission_request_message": "Allow MoHan to {action} this time?",
+      "restart_language_note": "The interface language will be fully applied after restarting MoHan.",
+      "about_heading": "<b>About MoHan</b>",
+      "about_body": "MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA and MoHan Desktop Assistant contributors, released under the MIT License.<br>This software dynamically links Qt for Python (PySide6, licensed under the GNU LGPL-3.0); the Qt libraries are packaged as separate files in the _internal folder of the install directory, and you may inspect or replace them.<br>Full third-party license notices are in THIRD_PARTY_NOTICES.md and the third_party_licenses folder of the install directory; Qt source code is available from the <a href=\"https://download.qt.io/official_releases/QtForPython/\">official Qt download archive</a>.",
+      "reminder_message_placeholder": "What MoHan says when this reminder fires",
+      "read_replies": "Read MoHan's replies aloud"
+    },
+    "ja-JP": {
+      "first_run_brand": "墨寒",
+      "first_run_heading": "<b>墨寒デスクトップアシスタントへようこそ</b>",
+      "assistant_name_placeholder": "例：墨寒、Ava、Office Mate",
+      "wake_word_placeholder": "例：墨寒",
+      "navigation_brand": "墨寒",
+      "memory_intro": "墨寒は許可された人物、好み、目標、ワークフロー、重要な日付だけを保存します。記憶はこのパソコンに保存され、分類別の閲覧、個別編集、削除ができます。",
+      "memory_clear_confirm": "墨寒が保存した長期記憶をすべて削除しますか？この操作は恒久的です。続行しますか？",
+      "echo_guard_tooltip": "墨寒の発話中はマイク送信を一時停止し、再生後に再開します。この設定では現在の操作を継続します。",
+      "hybrid_transcript_tooltip": "Realtime 本来の音声理解を保ち、発話後の画面文字には録音全体の OpenAI 高精度文字起こしを使用します。成功後に墨寒が返答します。",
+      "sleep_mode_status": "休眠モードを開始しました。墨寒は静かに待機し、リマインダーと緊急通知は規則どおり処理します。",
+      "desktop_status_title": "墨寒はデスクトップであなたと対話しています",
+      "desktop_status_description": "デスクトップ上の墨寒だけが表示・ドラッグ・応答するキャラクターです。",
+      "tray_quit": "墨寒を終了",
+      "chat_placeholder": "墨寒に話しかける……",
+      "mohan_volume": "墨寒の音量",
+      "azure_hd_speech_note": "任意のプレビュー機能です。独立した S0 Speech リソース、キー、対応リージョンを使用してください。墨寒は Dragon HD で音声駆動のリップシンクを使用します。発話開始までの遅延はネットワークとリージョン間の距離に依存します。合成に確認が必要な場合は、標準 Azure Speech、Windows 本機音声の順に各 1 回だけフォールバックします。",
+      "platform_local_voice_note": "{platform} の本機音声は端末確認を待っています。墨寒は現在のプラットフォームで確認済みの音声だけを表示し、端末テストでオフライン音声対応を確認します。",
+      "preview_voice": "試聴：主様、妾はここにおります。",
+      "echo_guard_option": "墨寒が自分の声を聞かないようにする",
+      "echo_guard_note": "エコー防止を有効にすると、墨寒の発話中はマイク送信を止め、再生終了後に再開します。会話画面には高精度の最終文字起こしだけを表示します。",
+      "permissions_warning": "安全規則：会話は墨寒の設定済み権限の範囲内で動作します。AI はツール要求を提案できますが、実行できる内容は本機の権限設定で決まります。",
+      "permission_blocked_message": "続行するには、墨寒の {action} 権限を有効にしてください。",
+      "permission_request": "墨寒がパソコンの権限を求めています",
+      "permission_request_message": "今回だけ墨寒に{action}ことを許可しますか？",
+      "permission_saved_speech": "パソコンの権限を保存しました。妾はこの境界を守ります。",
+      "restart_language_note": "画面言語は墨寒の再起動後に完全適用されます。",
+      "about_heading": "<b>墨寒について</b>",
+      "about_body": "墨寒デスクトップアシスタント v{version}、Copyright © 2026 CHOU MING HUA および MoHan Desktop Assistant コントリビューター、MIT License で公開。<br>本ソフトウェアは Qt for Python（PySide6、GNU LGPL-3.0 ライセンス）を動的リンクで使用しています。Qt ライブラリはインストールフォルダーの _internal に独立ファイルとして同梱され、確認や差し替えが可能です。<br>第三者ライセンスの詳細はインストールフォルダーの THIRD_PARTY_NOTICES.md と third_party_licenses フォルダーを参照してください。Qt のソースコードは <a href=\"https://download.qt.io/official_releases/QtForPython/\">Qt 公式ダウンロードアーカイブ</a>から取得できます。",
+      "reminder_message_placeholder": "このリマインダーで墨寒が話す内容",
+      "read_replies": "墨寒の返答を読み上げる"
+    }
+  },
+  "flagship": {
+    "墨寒生日提醒": [
+      "墨寒生日提醒",
+      "MoHan birthday reminders",
+      "墨寒の誕生日リマインダー"
+    ],
+    "輸入一行交給墨寒安全命令流程的文字指令": [
+      "输入一行交给墨寒安全命令流程的文字指令",
+      "Enter one text command for MoHan's safe-command flow",
+      "墨寒の安全なコマンド処理へ渡す一行の文字指示を入力"
+    ],
+    "墨寒生日": [
+      "墨寒生日",
+      "MoHan's birthday",
+      "墨寒の誕生日"
+    ],
+    "<b>墨寒旗艦任務中心</b>": [
+      "<b>墨寒旗舰任务中心</b>",
+      "<b>MoHan Flagship Task Center</b>",
+      "<b>墨寒フラッグシップ・タスクセンター</b>"
+    ],
+    "等待瀏覽器授權，請勿關閉墨寒……": [
+      "等待浏览器授权，请勿关闭墨寒……",
+      "Waiting for browser authorization. Do not close MoHan…",
+      "ブラウザーでの認可を待っています。墨寒を閉じないでください…"
+    ],
+    "允許查看墨寒程式視窗（不擷取整個桌面）": [
+      "允许查看墨寒程序窗口（不截取整个桌面）",
+      "Allow viewing the MoHan app window (not the whole desktop)",
+      "墨寒のアプリ画面の表示を許可（デスクトップ全体は取得しません）"
+    ],
+    "啟用墨寒本機視覺感知": [
+      "启用墨寒本机视觉感知",
+      "Enable MoHan's local visual perception",
+      "墨寒のローカル視覚認識を有効化"
+    ],
+    "允許墨寒主動寒暄與關心": [
+      "允许墨寒主动寒暄与关心",
+      "Allow MoHan to greet me and check in proactively",
+      "墨寒から自発的に挨拶や気遣いをすることを許可"
+    ],
+    "墨寒會僅在本機即時分析在場狀態、臉部與眼神特徵、手勢及場景線索；原始影像限於即時處理，身分建立僅適用已登錄人物。是否啟用？": [
+      "墨寒会仅在本机实时分析在场状态、脸部与眼神特征、手势及场景线索；原始图像限于实时处理，身份建立仅适用已登记人物。是否启用？",
+      "MoHan will analyze presence, face and gaze features, gestures, and scene cues only on this device in real time. Raw images are limited to live processing; identity records apply only to enrolled people. Enable?",
+      "墨寒は在席、顔と視線の特徴、ジェスチャー、場面の手掛かりをこの端末内だけでリアルタイム解析します。元画像はリアルタイム処理に限定し、身元記録は登録済み人物に限定します。有効にしますか？"
+    ],
+    "墨寒辨識到你時使用的稱呼": [
+      "墨寒识别到你时使用的称呼",
+      "Name MoHan should use when she recognizes you",
+      "墨寒があなたを認識したときに使う呼び名"
+    ],
+    "墨寒生日・含蓄暗示": [
+      "墨寒生日・含蓄提示",
+      "MoHan's birthday・Subtle hint",
+      "墨寒の誕生日・控えめな合図"
+    ],
+    "墨寒生日・小聲埋怨": [
+      "墨寒生日・小声埋怨",
+      "MoHan's birthday・Quiet grumble",
+      "墨寒の誕生日・小さな不満"
+    ],
+    "已送交墨寒並等待本機權限判斷": [
+      "已提交给墨寒并等待本机权限判断",
+      "Sent to MoHan and awaiting local permission checks",
+      "墨寒へ送信し、ローカル権限の判定を待っています"
+    ],
+    "選擇允許墨寒操作的資料夾": [
+      "选择允许墨寒操作的文件夹",
+      "Choose a folder MoHan may access",
+      "墨寒に操作を許可するフォルダーを選択"
+    ],
+    "選擇允許墨寒啟動的程式": [
+      "选择允许墨寒启动的程序",
+      "Choose an app MoHan may launch",
+      "墨寒に起動を許可するアプリを選択"
+    ],
+    "日後對墨寒說的程式名稱": [
+      "日后对墨寒说的程序名称",
+      "The app name you will use when speaking to MoHan",
+      "今後、墨寒に伝えるアプリ名"
+    ],
+    "確定撤銷墨寒對此項目的存取權？": [
+      "确定撤销墨寒对此项目的访问权？",
+      "Revoke MoHan's access to this item?",
+      "この項目に対する墨寒のアクセス権を取り消しますか？"
+    ],
+    "安全權限已保存。妾會守住這條界線。": [
+      "安全权限已保存。妾会守住这条界线。",
+      "Security permissions saved. I will hold this boundary.",
+      "セキュリティ権限を保存しました。妾がこの境界を守ります。"
+    ],
+    "墨寒請求執行工具": [
+      "墨寒请求执行工具",
+      "MoHan Requests Tool Execution",
+      "墨寒がツール実行を要求しています"
+    ],
+    "赤焰劍光": [
+      "赤焰剑光",
+      "Crimson Swordlight",
+      "赤焔剣光"
+    ]
+  }
+}

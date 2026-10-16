@@ -5,6 +5,7 @@ lazy import time
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
+lazy from typing import TypedDict, Unpack
 
 lazy from application.behavior_director import BehaviorInput
 lazy from application.body_pose_renderer import BodyPoseRenderer
@@ -19,6 +20,7 @@ lazy from application.speech_performance import (
     SpeechEvent,
     SpeechEventKind,
     SpeechPerformanceDirective,
+    SpeechPerformanceTimeline,
 )
 lazy from domain.character_pose import PoseRegistry
 lazy from domain.performance_preferences import PerformancePreferences
@@ -45,7 +47,7 @@ class PerformanceBridgeInput:
 
     def __post_init__(self) -> None:
         if self.behavior_generation < 0:
-            raise ValueError("Behavior generation must not be negative.")
+            raise ValueError("Behavior generation accepts zero or greater.")
 
 
 FrameCallback = Callable[[AtomicPerformanceFrame], None]
@@ -62,10 +64,18 @@ class PerformanceBridgeOptions:
     minimum_render_interval_seconds: float = 0.02
 
 
-class _ExistingSpeechPairTimeline:
+class PerformanceBridgeOptionValues(TypedDict, total=False):
+    clock: Callable[[], float] | None
+    rng: random.Random | None
+    seed: int | None
+    minimum_render_interval_seconds: float
+
+
+class _ExistingSpeechPairTimeline(SpeechPerformanceTimeline):
     """Expose one already-normalized speech pair through the runtime protocol."""
 
     def __init__(self) -> None:
+        super().__init__()
         self._pair: tuple[SpeechEvent, SpeechPerformanceDirective] | None = None
 
     def stage(
@@ -134,7 +144,7 @@ _UNTHROTTLED = frozenset({
 
 
 class PerformanceAppBridge:
-    """Narrow fail-closed boundary between the app and atomic performance runtime."""
+    """Narrow protective boundary between the app and atomic performance runtime."""
 
     def __init__(
         self,
@@ -142,12 +152,12 @@ class PerformanceAppBridge:
         renderer: BodyPoseRenderer,
         render_request: RenderRequestFactory,
         publish: FrameCallback,
-        **legacy_options: object,
+        **legacy_options: Unpack[PerformanceBridgeOptionValues],
     ) -> None:
         options = PerformanceBridgeOptions(**legacy_options)
         minimum_render_interval_seconds = options.minimum_render_interval_seconds
         if minimum_render_interval_seconds < 0.0:
-            raise ValueError("Render interval must not be negative.")
+            raise ValueError("Render interval accepts zero or greater.")
         self._clock = options.clock or time.monotonic
         self._publish = publish
         self._minimum_interval = float(minimum_render_interval_seconds)
@@ -161,7 +171,7 @@ class PerformanceAppBridge:
             clock=self._clock,
             rng=options.rng,
             seed=options.seed,
-            timeline=self._timeline,  # type: ignore[arg-type]
+            timeline=self._timeline,
         )
         self._last_input_signature: tuple[object, ...] | None = None
         self._last_frame_signature: tuple[object, ...] | None = None

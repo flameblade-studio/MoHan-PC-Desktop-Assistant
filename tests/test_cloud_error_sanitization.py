@@ -94,7 +94,7 @@ def _assert_sanitized(
         assert exc.__cause__ is None
         assert exc.__context__ is None
     else:
-        raise AssertionError(f"{error_type.__name__} was not raised")
+        raise AssertionError(f'{error_type.__name__} must be raised')
 
     for fragment in expected:
         assert fragment in surface

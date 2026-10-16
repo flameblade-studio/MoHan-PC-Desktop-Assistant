@@ -95,7 +95,7 @@ class CharacterIdentityEvidence:
             raise ValueError("Identity evidence requires a traceable identifier.")
         if self.visibility is FaceVisibility.REAR:
             if self.face_features_visible or self.geometry is not None or self.embedding:
-                raise ValueError("Rear evidence must not expose or encode a face.")
+                raise ValueError("Rear evidence keeps face pixels and encodings outside the record.")
         elif self.geometry is None:
             raise ValueError("Every non-rear view requires measured identity geometry.")
         elif (

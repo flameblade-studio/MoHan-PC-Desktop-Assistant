@@ -1,14 +1,13 @@
-"""量測墨寒的能見度指標，供每月月報使用（issue #129）。
+"""量測墨寒能見度，供每月月報使用（issue #129）。
 
-GitHub 的流量資料只保留十四天——不主動記錄就永久消失。本工具一鍵產出
-月報所需的全部數字，並與 2026-08-30 的基準對照，讓「改動有沒有用」
-可被驗證而非憑感覺。
+GitHub 流量資料保留十四天；定期記錄可保存月報所需數字。本工具彙整
+指標並對照 2026-08-30 基準，以實測呈現變更的影響。
 
 用法：
     python tools/measure_visibility.py              # 人類可讀
     python tools/measure_visibility.py --json       # 機器可讀，供存檔
 
-需要已登入的 gh CLI（流量端點需要推送權限）。
+需要已登入的 gh CLI，流量端點需要推送權限。
 """
 from __future__ import annotations
 
@@ -35,7 +34,7 @@ BASELINE = {
 
 
 def _gh_json(path: str) -> dict | list | None:
-    """呼叫 gh api 並解析 JSON；端點不可用時回傳 None 而非中斷。"""
+    """呼叫 gh api 並解析 JSON；端點待恢復時回傳 None，讓後續流程繼續。"""
     result = subprocess.run(
         ["gh", "api", path],
         check=False,
@@ -120,7 +119,7 @@ def render(data: dict) -> str:
     lines += [
         "",
         f"clone {data['clones']:,} 次 / {data['unique_cloners']:,} 不重複",
-        "  ！clone 數絕大多數來自機器人與鏡像，不得作為成效回報。",
+        "  clone 數主要反映機器人與鏡像活動；成效回報請採用可驗證的使用者互動指標。",
         f"  基準當時 {BASELINE['clones']:,} 次 clone 只對應 "
         f"{BASELINE['unique_visitors']} 個真人訪客。",
         "",
@@ -153,7 +152,7 @@ def main() -> int:
     data = collect()
     if not data["views"] and not data["stars"]:
         print(
-            "無法取得資料：請確認 gh CLI 已登入且對本儲存庫有推送權限。",
+            "取得資料需要已登入的 gh CLI 與本儲存庫的推送權限，請確認兩項設定。",
             file=sys.stderr,
         )
         return 1

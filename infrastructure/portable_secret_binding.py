@@ -6,7 +6,11 @@ lazy from pathlib import Path
 lazy from types import MappingProxyType
 lazy from typing import Protocol
 
-lazy from domain.contracts import SecretStoreFactoryPort, SecretStorePort
+lazy from domain.contracts import (
+    SecretStoreFactoryPort,
+    SecretStorePort,
+    default_character_display_name,
+)
 lazy from infrastructure.portable_secrets import (
     SECRET_IDS,
     PortableSecretsPayload,
@@ -16,14 +20,14 @@ lazy from infrastructure.portable_secrets import (
 
 
 class PortableSecretBindingError(RuntimeError):
-    """A fixed-detail error for invalid secret-store composition."""
+    """A fixed-detail boundary result for a supported secret-store composition."""
 
 
 _BOUNDARY_ERRORS = (Exception,)
 
 
 class DashboardSecretBoundaries(Protocol):
-    """Secret boundaries exposed by DashboardDependencies without UI imports."""
+    """Secret boundaries exposed by DashboardDependencies with UI details outside the boundary."""
 
     secret_store: SecretStorePort
     azure_secret_store: SecretStorePort | None
@@ -61,11 +65,11 @@ def bind_portable_secret_stores(
     for secret_id in sorted(SECRET_IDS):
         store = stores[secret_id]
         if not _is_secret_store(store):
-            raise PortableSecretBindingError("A portable secret store is invalid.")
+            raise PortableSecretBindingError("A portable secret store needs a supported value.")
         identity = id(store)
         if identity in identities:
             raise PortableSecretBindingError(
-                "Portable secret stores must not be shared between IDs."
+                "Portable secret stores use a separate store for each ID."
             )
         identities.add(identity)
         normalized[secret_id] = store
@@ -85,39 +89,39 @@ def bind_dashboard_portable_secrets(
         or factory is None
     ):
         raise PortableSecretBindingError(
-            "Dashboard secret-store boundaries are incomplete."
+            "Dashboard secret-store boundaries require complete values."
         )
     root = Path(data_path)
     generated = {
         "home_assistant": _create_store(
             factory,
             root / "home-assistant-token.dpapi",
-            "MoHan Home Assistant token",
+            f"{default_character_display_name('en')} Home Assistant token",
         ),
         "oauth_google": _create_store(
             factory,
             root / "oauth-google.dpapi",
-            "MoHan google OAuth token",
+            f"{default_character_display_name('en')} google OAuth token",
         ),
         "oauth_microsoft": _create_store(
             factory,
             root / "oauth-microsoft.dpapi",
-            "MoHan microsoft OAuth token",
+            f"{default_character_display_name('en')} microsoft OAuth token",
         ),
         "oauth_github": _create_store(
             factory,
             root / "oauth-github.dpapi",
-            "MoHan github OAuth token",
+            f"{default_character_display_name('en')} github OAuth token",
         ),
         "face_identities": _create_store(
             factory,
             root / "face-identities.dpapi",
-            "MoHan local face identity templates",
+            f"{default_character_display_name('en')} local face identity templates",
         ),
         "gesture_templates": _create_store(
             factory,
             root / "gesture-templates.dpapi",
-            "MoHan local gesture skeleton templates",
+            f"{default_character_display_name('en')} local gesture skeleton templates",
         ),
     }
     return bind_portable_secret_stores(
@@ -142,7 +146,7 @@ def _create_store(
             "A required portable secret store could not be created."
         ) from None
     if not _is_secret_store(store):
-        raise PortableSecretBindingError("A portable secret store is invalid.")
+        raise PortableSecretBindingError("A portable secret store needs a supported value.")
     return store
 
 

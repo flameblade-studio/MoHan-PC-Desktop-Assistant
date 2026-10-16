@@ -11,6 +11,7 @@ lazy from application.adaptive_character_runtime import (
     AdaptiveCharacterDisposition,
     AdaptiveCharacterRequest,
     AdaptiveCharacterRuntime,
+    _body_framing,
 )
 lazy from application.behavior_director import BreathStyle, GazeTarget, TransitionStyle
 lazy from application.body_pose_renderer import BodyPoseFrame
@@ -38,6 +39,7 @@ lazy from application.full_body_performance_bridge import (
 lazy from application.performance_coordinator import PerformanceFrame
 lazy from application.performance_runtime import AtomicPerformanceFrame
 lazy from application.speech_performance import SpeechEventKind, SpeechPerformancePhase
+lazy from application.full_body_render_adapter import NormalizedCrop
 
 
 def pixels(shade: int) -> bytes:
@@ -111,10 +113,10 @@ class Assets:
     enabled = True
 
     def resolve_static(self, *_args):
-        raise AssertionError("Runtime must not read assets directly")
+        raise AssertionError('Runtime asset access must use its injected port')
 
     def resolve_speech(self, *_args):
-        raise AssertionError("Runtime must not read assets directly")
+        raise AssertionError('Runtime asset access must use its injected port')
 
 
 class FramingPort:
@@ -213,11 +215,10 @@ def request(
 
 
 def assert_half_framing_skips_full_body_composition() -> None:
-    """CLOSE/HALF framing must not render the full body at all.
+    """CLOSE/HALF framing skips full-body composition.
 
-    The composed photograph is only published for THREE_QUARTER/FULL_BODY
-    framing, so producing it for half framing would burn a full render,
-    format conversion, and hash per speech event just to discard the frame.
+    Full-body rendering, conversion, and hashing are reserved for
+    THREE_QUARTER/FULL_BODY, where the composed photograph is published.
     """
     engine, framing, full_body = runtime()
     framing.command = AtomicFramingCommand(
@@ -262,10 +263,8 @@ def assert_continuous_face_motion_is_never_deduplicated() -> None:
     base = request(operation)
     first = replace(base, face_motion=face_motion(blink=0.0))
     assert engine.dispatch(first).should_publish
-    # A blink-only change must reach the renderer (the fake port renders
-    # identical bytes for it, so output-level dedupe may still withhold the
-    # publish — that part is correct economy; the input gate must not stop
-    # the render itself).
+    # Blink-only changes reach the renderer. Identical resulting bytes may then
+    # be deduplicated at the output boundary, preserving rendering semantics.
     blink_only = replace(base, face_motion=face_motion(blink=1.0))
     engine.dispatch(blink_only)
     assert full_body.calls == RENDERS_AFTER_BLINK_CHANGE
@@ -397,6 +396,20 @@ def assert_speech_hold_and_settle_do_not_jump_body_height() -> None:
     assert settled.framing.mode is not FramingMode.FULL_BODY
 
 
+def assert_body_framing_converts_rect_edges_to_crop_extents() -> None:
+    rect = FRAMING_RECTS[FramingMode.THREE_QUARTER]
+    crop = _body_framing(
+        AtomicFramingCommand(
+            1,
+            FramingMode.THREE_QUARTER,
+            rect,
+            480,
+            (FramingAuditEntry("test", "three-quarter"),),
+        )
+    ).crop
+    assert crop == NormalizedCrop(rect.left, rect.top, rect.width, rect.height)
+
+
 def run() -> None:
     assert_atomic_publish_uses_both_ports_once()
     assert_continuous_face_motion_is_never_deduplicated()
@@ -406,6 +419,7 @@ def run() -> None:
     assert_failure_preserves_last_known_good()
     assert_50hz_speech_keeps_static_full_body_and_framing_stable()
     assert_speech_hold_and_settle_do_not_jump_body_height()
+    assert_body_framing_converts_rect_edges_to_crop_extents()
     print("ADAPTIVE_CHARACTER_RUNTIME_OK")
 
 

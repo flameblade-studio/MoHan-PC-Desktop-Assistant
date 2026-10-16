@@ -1,0 +1,29 @@
+{
+  "schema": "mohan.owner-garment-approval.v1",
+  "recorded_on": "2026-09-12",
+  "owner_statement": "可以，採用這版衣裝",
+  "approval_scope": "front-exasperated garment source appearance only",
+  "asset": {
+    "path": "scratchpad/v4-identity-rebuild-20260905/v4-hanfu-alignment-20260910/source-bound-halfbody-sword-sync-20260911-01/exasperated-approved-integration-20260912-01/garment-generated.png",
+    "role": "owner-approved garment source; detachable layer extraction remains pending",
+    "bytes": 1973983,
+    "sha256": "8cd67e61e5e0938883082833e64ffcf320c48fe1e28f00756d9937b80f250d5b",
+    "native": {
+      "size_wh": [
+        1254,
+        1254
+      ],
+      "mode": "RGB",
+      "format": "PNG"
+    }
+  },
+  "authorization": {
+    "garment_extraction_work": true,
+    "garment_runtime_integration_work": true,
+    "whole_halfbody_visual_approval": false,
+    "makeup_visual_approval": false,
+    "detachable_halfbody_formal_installation": false,
+    "release": false
+  },
+  "historical_receipts_preserved": true
+}
