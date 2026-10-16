@@ -1131,6 +1131,7 @@
         "test_official_default_pack.py",
         "test_official_native_headwear.py",
         "test_official_pack_ids_reservation.py",
+        "test_official_pack_qc_gate.py",
         "test_official_qt_runtime.py",
         "test_openai_fashion_trend_scout.py",
         "test_openai_outfit_generator.py",
@@ -1209,6 +1210,7 @@
         "test_python315_runtime.py",
         "test_python_license_gate.py",
         "test_qc_drift.py",
+        "test_qc_official_pack.py",
         "test_quality_gate.py",
         "test_readme_media.py",
         "test_realtime_echo_final_transcript.py",
@@ -7952,6 +7954,35 @@
     },
     {
       "paths": [
+        "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit"
+      ],
+      "tests": [
+        "test_official_pack_qc_gate.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/qc_official_pack.py"
+      ],
+      "tests": [
+        "test_official_pack_qc_gate.py",
+        "test_qc_official_pack.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "docs/media/portraits/idle_front.png"
+      ],
+      "tests": [
+        "test_official_pack_qc_gate.py",
+        "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "integrations/openai_fashion_trend_scout.py"
       ],
       "tests": [
@@ -8520,7 +8551,6 @@
         "assets/ui/checkmark.svg",
         "docs/PYTHON-3.15-MIGRATION.md",
         "docs/media/portraits/gentle_smile_front.png",
-        "docs/media/portraits/idle_front.png",
         "docs/media/portraits/mock_hit_front.png",
         "docs/media/portraits/proud_front.png",
         "docs/media/portraits/shy_cute_front.png",

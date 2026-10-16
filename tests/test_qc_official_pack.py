@@ -91,9 +91,9 @@ def test_eight_pixel_isolated_point_fails_and_reports_one() -> None:
 
     measured = qc.judge_pack_isolated_specks(layers)
 
-    assert EXPECTED_EIGHT_PIXEL_AREA == int(
+    assert int(
         (point[300:302, 400:404] > qc.SOLID_ALPHA_THRESHOLD).sum()
-    )
+    ) == EXPECTED_EIGHT_PIXEL_AREA
     assert measured[qc.FRONT_LAYER_KEY] == EXPECTED_ONE
     assert measured[qc.FRONT_LAYER_KEY] != qc.REQUIRED_ZERO_COUNT
 
