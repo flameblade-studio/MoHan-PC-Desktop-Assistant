@@ -1,0 +1,3 @@
+### #193 依目前 main 重產消費端截圖基線／按当前 main 重产消费端截图基线／Regenerate the consumer screenshot baseline from current main／現在の main から消費者向けスクリーンショット基準を再生成
+
+* 七張截圖基線改以目前已核准的 main 畫面重產，不再等待 #185；張嘴場景改用專注表情的張嘴語音影格，因舊的 speaking_front 名稱在分層渲染器下只會畫出閉嘴待機／七张截图基线改以当前已批准的 main 画面重产，不再等待 #185；张嘴场景改用专注表情的张嘴语音帧，因旧的 speaking_front 名称在分层渲染器下只会画出闭嘴待机／The seven screenshot baselines are regenerated from the current approved main without waiting for #185; the open-mouth scene now uses the attentive open-mouth speech frame because the legacy speaking_front name renders the closed idle in the layered renderer／七枚のスクリーンショット基準を現在承認済みの main 画面から再生成し、#185 を待たなくなりました。口開きシーンは集中表情の口開き発話フレームを使います。旧来の speaking_front 名はレイヤー描画では口を閉じた待機になるためです
