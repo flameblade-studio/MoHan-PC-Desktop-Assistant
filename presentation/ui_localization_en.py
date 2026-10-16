@@ -2,16 +2,16 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 
+lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.immutable_config import deep_freeze
+
+_DIALOGUE = load_mohan_character_data().dialogues["en"]
 
 ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "first_run_title": "First-run setup",
-    "first_run_brand": "MoHan",
-    "first_run_heading": "<b>Welcome to MoHan Desktop Assistant</b>",
-    "first_run_hero_tagline": (
-        "A thousand-year-old Northern Song sword spirit who listens, "
-        "remembers, and helps you get things done."
-    ),
+    "first_run_brand": _DIALOGUE.labels["ui.first_run_brand"],
+    "first_run_heading": _DIALOGUE.labels["ui.first_run_heading"],
+    "first_run_hero_tagline": _DIALOGUE.labels["ui.first_run_hero_tagline"],
     "first_run_intro": (
         "Create your profile first. You can change these choices later in "
         "Settings; they are not tied to a specific company or profession."
@@ -23,17 +23,17 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "work_type": "Work type",
     "ui_language": "Interface and reply language",
     "wake_word": "Voice wake word",
-    "assistant_name_placeholder": "For example: MoHan, Ava, Office Mate",
-    "user_title_placeholder": "For example: Commander, Alex, Manager",
+    "assistant_name_placeholder": _DIALOGUE.labels["ui.assistant_name_placeholder"],
+    "user_title_placeholder": _DIALOGUE.labels["ui.user_title_placeholder"],
     "organization_placeholder": "Optional company, studio, or team name",
     "window_title_placeholder": ("Leave blank to use Assistant name · Organization"),
-    "wake_word_placeholder": "For example: MoHan",
+    "wake_word_placeholder": _DIALOGUE.labels["ui.wake_word_placeholder"],
     "first_run_note": (
-        "The Work Platforms page starts empty. Add only the company systems, "
+        "The Work Platforms page is ready for your company systems. Add the systems, "
         "collaboration tools, admin panels, or websites you use."
     ),
     "finish_setup": "Finish setup and start",
-    "required_title": "Required information missing",
+    "required_title": "Complete the required information",
     "required_identity": (
         "Enter an assistant name and how the assistant should address you."
     ),
@@ -47,7 +47,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "tab_voice": "Voice",
     "tab_permissions": "Computer permissions",
     "tab_settings": "Settings",
-    "navigation_brand": "MoHan",
+    "navigation_brand": _DIALOGUE.labels["ui.navigation_brand"],
     "nav_realm_companion": "Companion",
     "nav_realm_today": "Tasks",
     "nav_realm_wardrobe": "Styling",
@@ -57,34 +57,34 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "draft_bar_clean_message": "Settings match what is running now",
     "draft_bar_dirty": "Draft",
     "draft_bar_dirty_message": "You have {count} unapplied change(s)",
-    "draft_bar_error": "Read failed",
-    "draft_bar_error_message": "Settings could not be read; please try again later",
+    "draft_bar_error": "Read requires attention",
+    "draft_bar_error_message": 'Reading settings requires attention; please try again.',
     "tab_wardrobe": "Wardrobe Pavilion",
-    "cancel_without_saving": "Cancel without saving",
+    "cancel_without_saving": "Cancel and keep the saved values",
     "wardrobe_import": "Import outfit package",
     "wardrobe_apply": "Apply selected outfit",
     "wardrobe_restore_builtin": "Restore built-in outfit",
     "wardrobe_package_list": "Package list",
     "wardrobe_compatibility_status": "Compatibility status",
     "wardrobe_status": "Status",
-    "wardrobe_no_packages": "No outfit packages installed",
+    "wardrobe_no_packages": "Install an outfit package to begin",
     "wardrobe_default_outfit": "Built-in default outfit",
     "wardrobe_compatible": "Compatible",
-    "wardrobe_incompatible": "Incompatible",
+    "wardrobe_incompatible": 'Compatibility update required',
     "wardrobe_status_ready": "Wardrobe system is ready",
     "wardrobe_validator_pending": (
-        "The package failed complete all-view and security validation and was not installed."
+        "Installation is paused until the package passes complete all-view and security validation."
     ),
     "wardrobe_assets_pending": (
-        "This outfit does not include complete assets for every view and cannot be applied."
+        "This outfit requires complete assets for every view before it can be applied."
     ),
     "wardrobe_body_profile_outdated": (
-        "This outfit was made for the generation-1 body and will not line up on the generation-2 body; regenerate it with one-click outfit creation."
+        "This outfit requires generation-2 body assets; regenerate it with one-click outfit creation."
     ),
     "wardrobe_builtin_applied": "Built-in default outfit applied.",
     "wardrobe_outfit_applied": "Selected complete outfit applied.",
-    "wardrobe_autonomous_enabled": "Allow MoHan to choose outfits autonomously",
-    "wardrobe_self_generation_enabled": "Allow MoHan to create cloud-generated outfits (charges may apply)",
+    "wardrobe_autonomous_enabled": "Allow {character_name} to choose outfits autonomously",
+    "wardrobe_self_generation_enabled": "Allow {character_name} to create cloud-generated outfits (charges may apply)",
     "wardrobe_trend_search_enabled": "Allow trend search using five context fields for original inspiration (may incur charges)",
     "wardrobe_generation_trend_search": "Searching trends with the five consented context fields, then generating, auditing, and packaging a new outfit (may incur charges)…",
     "wardrobe_image_quality": "Cloud outfit image quality",
@@ -94,48 +94,61 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_generated_limit": "Generated outfit retention limit",
     "wardrobe_storage_limit": "Generated outfit storage limit",
     "wardrobe_manual_lock_hours": "Manual outfit lock duration",
-    "wardrobe_manual_lock_off": "No lock",
+    "wardrobe_manual_lock_off": "Automatic selection available",
     "wardrobe_generate_now": "Generate a new outfit now (uses the Image API)",
     "wardrobe_generation_starting": "Creating and auditing a new 31-view outfit…",
     "wardrobe_generation_running": "Generating, auditing, and packaging a new outfit…",
     "wardrobe_generation_installed": "The new outfit passed audit, was installed, and is now active.",
     "wardrobe_generation_installed_manual_lock": "The new outfit passed audit and was installed. The current manually selected outfit remains active until its lock expires.",
-    "wardrobe_generation_activation_failed": "The new outfit passed audit and was installed, but could not be activated safely; the current outfit was preserved.",
+    "wardrobe_generation_activation_failed": 'The new outfit passed audit and was installed. Activation requires attention; the current outfit remains active.',
     "wardrobe_generation_not_enabled": "Enable cloud outfit creation first.",
-    "wardrobe_generation_no_key": "No usable OpenAI API key is configured.",
+    "wardrobe_generation_no_key": "Set a usable OpenAI API key in Settings.",
     "wardrobe_generation_capacity": "The generated-outfit capacity or cooldown limit was reached.",
-    "wardrobe_generation_cooldown": "Automatic generation is cooling down after a failure; use Generate now to retry manually.",
-    "wardrobe_generation_quarantined": "The new outfit failed audit and was quarantined without being applied.",
-    "wardrobe_generation_failed": "Outfit generation failed; no assets were installed.",
-    "wardrobe_generation_rate_limited": "The image service is busy right now; MoHan retried safely and can resume from the saved progress later.",
-    "wardrobe_generation_auth_failed": "OpenAI API key authentication failed; save the key again on the Settings tab.",
-    "wardrobe_generation_access_denied": "The current OpenAI project has no GPT Image 2 access yet or has not completed organization verification.",
-    "wardrobe_generation_moderation_blocked": "This image request failed the provider's content check; nothing was added to the wardrobe.",
-    "wardrobe_generation_invalid_request": "The image service rejected the generation request; the error was kept for repair and no incomplete assets were installed.",
-    "wardrobe_generation_network_unavailable": "The image service cannot be reached right now; no incomplete assets were installed.",
-    "wardrobe_generation_provider_unavailable": "The image service is temporarily unavailable; no incomplete assets were installed.",
-    "wardrobe_automatic_selection_disabled": "Autonomous outfit selection is currently disabled.",
-    "wardrobe_automatic_selection_failed": "Autonomous selection failed; the current outfit was preserved.",
-    "wardrobe_automatic_outfit_selected": "MoHan changed outfits autonomously for the current context.",
+    "wardrobe_generation_cooldown": "Automatic generation is cooling down after an attention event; use Generate now to retry manually.",
+    "wardrobe_generation_quarantined": "The new outfit completed its audit with corrections required; it remains quarantined until it passes.",
+    "wardrobe_generation_failed": "Outfit generation requires attention; the active asset set remains unchanged.",
+    "wardrobe_generation_rate_limited": "The image service is busy right now; {character_name} retried safely and can resume from the saved progress later.",
+    "wardrobe_generation_auth_failed": "OpenAI API key authentication requires attention; save the key again on the Settings tab.",
+    "wardrobe_generation_access_denied": "The current OpenAI project needs GPT Image 2 access and organization verification before image generation.",
+    "wardrobe_generation_moderation_blocked": "This image request needs revision to pass the provider's content check; the wardrobe retains its existing assets.",
+    "wardrobe_generation_invalid_request": "The image service requires attention for this generation request; details were kept for repair and the active asset set stays unchanged until validation completes.",
+    "wardrobe_generation_network_unavailable": 'Connecting to the image service requires attention; the installed asset set remains intact.',
+    "wardrobe_generation_provider_unavailable": 'The image service requires recovery before generation can continue; the installed asset set remains intact.',
+    "wardrobe_automatic_selection_disabled": 'Enable autonomous outfit selection to use this feature.',
+    "wardrobe_automatic_selection_failed": "Autonomous selection requires attention; the current outfit was preserved.",
+    "wardrobe_automatic_outfit_selected": "{character_name} changed outfits autonomously for the current context.",
     "wardrobe_pavilion_subtitle": (
-        "Let MoHan choose a complete look for the weather, mood, and occasion "
+        "Let {character_name} choose a complete look for the weather, mood, and occasion "
         "while preserving your final say."
     ),
     "wardrobe_source_policy": (
-        "Separated sources: Flameblade official · User imports · MoHan creations"
+        "Separated sources: Flameblade official · User imports · {character_name} creations"
     ),
     "dashboard_brand_line": "Ink in her bones · Cold light in her heart",
     "restore_dashboard_window": "Restore window",
     "restore_dashboard_window_tooltip": "Restore the control center to a movable, resizable window",
-    "wardrobe_character_preview": "MoHan appearance preview",
+    "wardrobe_character_preview": "{character_name} appearance preview",
+    "wardrobe_rotation_hint": "Drag the character to rotate through 360°. Arrow keys rotate; Home returns to the front.",
+    "wardrobe_clothing_tab": "Outfits",
+    "wardrobe_preferences_tab": "Autonomy",
+    "wardrobe_hairstyle_tab": "Hair",
+    "wardrobe_headwear_tab": "Headwear",
+    "wardrobe_independent_appearance": "Hair and headwear selections are saved separately. Turning off an added layer keeps any headwear already in the native image.",
+    "wardrobe_native_bun": "V5 native bun (legacy selection ID)",
+    "wardrobe_apply_appearance": "Apply selection",
+    "wardrobe_headwear_none": "Headwear off",
+    "wardrobe_appearance_read_failed": 'Reading hair or headwear requires attention. Check the appearance package; your current selection remains active.',
+    "wardrobe_appearance_apply_failed": 'Applying this hair or headwear requires attention; your current look remains active.',
+    "wardrobe_appearance_applied": "The selected hair or headwear was applied.",
     "wardrobe_view_front": "Front",
     "wardrobe_view_left": "Left",
     "wardrobe_view_right": "Right",
     "wardrobe_view_back": "Back",
+    "wardrobe_preview_body_pack_error": "Body-pack preview failed to load. Check the character’s required body pack.",
     "wardrobe_preview_composing": "Composing the appearance preview through the runtime…",
-    "wardrobe_preview_fallback": "The appearance preview could not be composed and shows the bare base for now; the desktop companion is unaffected.",
+    "wardrobe_preview_fallback": 'Appearance composition requires attention. The preview currently shows the bare base; the desktop companion keeps its current appearance.',
     "wardrobe_upload_single_file": "Upload one file",
-    "wardrobe_installed_inactive": "Installed, not active",
+    "wardrobe_installed_inactive": "Installed; ready to activate",
     "wardrobe_outfit_preview": "Outfit preview",
     "wardrobe_hairstyle_preview": "Hairstyle preview",
     "wardrobe_headwear_accessories": "Headwear and accessories",
@@ -144,35 +157,41 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_cancel_restores": "Cancel to restore",
     "wardrobe_remove_package": "Remove add-on",
     "wardrobe_delete_confirm": "Remove {package}?",
-    "wardrobe_builtin_not_removable": "Built-in packages cannot be removed",
+    "wardrobe_builtin_not_removable": "Built-in packages stay available",
     "wardrobe_switch_before_remove": "Switch packages before removing the active one",
-    "wardrobe_missing_package_fallback": "Package missing; kept the current look",
+    "wardrobe_missing_package_fallback": "Provide the package; the current look stays active",
     "theme_preview": "Theme preview",
     "theme_section_title": "<b>Dashboard theme</b>",
     "theme_restore": "Restore theme",
     "theme_source_official": "Flameblade official",
     "theme_source_user": "User-created",
-    "package_rejected_unsafe_or_missing": "Package rejected: unsafe or missing files",
+    "package_rejected_unsafe_or_missing": "Installation is paused until the package provides complete, safe files for all-view and security validation.",
     "appearance_category_outfit": "Outfit",
     "appearance_category_hairstyle": "Hairstyle",
     "appearance_category_headwear": "Headwear",
     "appearance_category_accessory": "Accessory",
-    "appearance_no_headwear": "No headwear",
+    "appearance_no_headwear": "Headwear off",
     "appearance_category_makeup": "Makeup",
     "wardrobe_makeup_title": "Makeup",
     "wardrobe_makeup_item": "Makeup selection",
-    "wardrobe_makeup_none": "Bare face (no makeup)",
+    "wardrobe_makeup_none": "Bare face (makeup off)",
     "wardrobe_makeup_variant_classic": "Classic",
     "wardrobe_makeup_variant_light": "Light",
+    "wardrobe_makeup_variant_glamorous": "Glamorous",
     "wardrobe_makeup_intensity": "Makeup intensity",
-    "wardrobe_makeup_read_failed": "Makeup settings could not be read; the last valid value was kept.",
+    "wardrobe_makeup_eyes_intensity": "Eye makeup intensity",
+    "wardrobe_makeup_cheeks_intensity": "Blush intensity",
+    "wardrobe_makeup_lips_intensity": "Lip makeup intensity",
+    "wardrobe_makeup_foundation_intensity": "Foundation intensity",
+    "wardrobe_makeup_read_failed": 'Reading makeup settings requires attention; the last valid value remains active.',
+    "wardrobe_packages_read_failed": 'Reading appearance packages requires attention. Check or reimport them; your current selection remains active.',
     "wardrobe_makeup_applied": "Selected makeup applied.",
     "wardrobe_makeup_cleared": "Makeup removed; back to a bare face.",
     "wardrobe_makeup_pack_missing": (
         "The selected makeup pack is gone; switched back to the built-in classic makeup."
     ),
     "wardrobe_makeup_unavailable": (
-        "This makeup cannot be applied right now; the current makeup was kept."
+        "This makeup requires attention before it can be applied; the current makeup was kept."
     ),
     "wardrobe_makeup_assets_pending": "built-in makeup art pending",
     "wardrobe_makeup_hint": (
@@ -215,21 +234,21 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "idea_title_required_title": "Title required",
     "idea_title_required": "Enter an idea title first.",
     "todo_count": "{count} open",
-    "todo_empty": ("No tasks yet today.\nWrite down the one thing that matters most."),
+    "todo_empty": ("Today is ready for its first task.\nWrite down the one thing that matters most."),
     "idea_count": "{count} saved",
-    "idea_empty": ("No ideas saved yet. Enter text above and choose ‘Save idea’."),
+    "idea_empty": ("Your ideas list is ready. Enter text above and choose ‘Save idea’."),
     "idea_edit_tooltip": "Double-click to edit the title and details",
     "today_time": "Today {total} | {state}",
     "timing_active": "Timing",
-    "timing_inactive": "Not timing",
+    "timing_inactive": 'Timer paused',
     "todo_title_required": "Enter a task title first.",
     "todo_added": "✓ Task added: {text}",
-    "todo_added_speech": "Added to today's tasks.",
+    "todo_added_speech": _DIALOGUE.templates["ui.todo_added_speech"],
     "idea_capture_required": "Enter an idea to save first.",
     "idea_added": "✓ Idea saved: {text}",
-    "idea_added_speech": "I saved that idea before it slipped away.",
+    "idea_added_speech": _DIALOGUE.templates["ui.idea_added_speech"],
     "idea_select_edit": "Select an idea to edit first.",
-    "idea_not_found": ("That idea could not be found. Refresh and try again."),
+    "idea_not_found": ('Refresh the idea list and select an available item.'),
     "idea_updated": "✓ Idea updated: {title}",
     "idea_select_delete": "Check one or more ideas to delete first.",
     "idea_delete_title": "Delete creative ideas",
@@ -242,47 +261,47 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "add_platform": "Add work platform",
     "platform_filter_all": "All platforms",
     "platform_filter_active": "In progress",
-    "platform_filter_blocked": "Missing information / blocked",
+    "platform_filter_blocked": "Information requiring attention",
     "platform_filter_finished": "Completed / published",
-    "platform_filter_not_started": "Not started",
+    "platform_filter_not_started": 'Awaiting start',
     "save_all_platforms": "Save all now",
     "show": "Show",
     "platform_empty": (
-        "No work platforms yet.\nAdd a company system, collaboration tool, "
+        "Your work platforms list is ready.\nAdd a company system, collaboration tool, "
         "client portal, or any platform you use above."
     ),
     "platform_intro": (
         "Manage the platforms, systems, client portals, and collaboration "
-        "tools you use. Each user creates their own list; no industry is assumed."
+        "tools you use. Each user creates their own list; the list follows your work."
     ),
     "platform_auto_save_note": (
         "Changes save automatically. You can also use each card's Save button."
     ),
     "platform_item_placeholder": "Current task, project, or case",
     "platform_missing_placeholder": (
-        "Missing information, pending replies, or blockers; leave blank if none"
+        "Information, pending replies, or action items; add details when available"
     ),
     "platform_next_placeholder": "Next concrete action and deadline",
     "platform_notes_placeholder": "Notes, rules, contacts, or other details",
     "platform_url_card_placeholder": "https://… (optional)",
-    "platform_not_saved": "Not saved",
+    "platform_not_saved": 'Awaiting save',
     "save_platform": "Save platform",
     "platform_field_item": "Task / project",
-    "platform_field_missing": "Missing / blocked",
+    "platform_field_missing": "Requires attention",
     "platform_field_next": "Next action",
     "platform_field_notes": "Notes",
     "platform_field_url": "URL",
     "open_platform": "Open website / tool",
     "delete_platform": "Delete platform",
     "platform_updated": "Updated: {updated}",
-    "platform_updated_unknown": "Update time unknown",
+    "platform_updated_unknown": "Update time pending",
     "save_changes": "Save changes",
     "platform_waiting_auto_save": "{platform} changed; waiting to auto-save…",
     "platform_validation_finished_blocked": (
-        "This work is completed but still lists missing information or blockers."
+        "This work is completed and lists follow-up information or action items."
     ),
     "platform_validation_revision_details": (
-        "Describe the needed revision under Missing, Next action, or Notes."
+        "Describe the revision under Follow-up, Next action, or Notes."
     ),
     "platform_validation_not_started_data": (
         "This card already has work details. Consider changing its status to "
@@ -294,18 +313,18 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "platform_summary_unsaved": " | Unsaved {count}",
     "platform_summary": (
         "{total} platforms | Completed {finished} | In progress {active} | "
-        "Not started {not_started} | Missing / blocked {blocked}{unsaved}"
+        "Ready to start {not_started} | Requires attention {blocked}{unsaved}"
     ),
     "platform_saved": "{platform} saved.",
     "platform_saved_automatic": "{platform} saved automatically.",
     "all_platforms_saved": (
-        "All work platforms saved; {count} still list missing information or blockers."
+        "All work platforms saved; {count} still list follow-up information or action items."
     ),
-    "all_platforms_saved_speech": (
-        "Work platforms saved. {count} still have missing information or blockers."
-    ),
+    "all_platforms_saved_speech": _DIALOGUE.templates[
+        "ui.all_platforms_saved_speech"
+    ],
     "memory_intro": (
-        "MoHan stores only people, preferences, goals, workflows, and important "
+        "{character_name} stores only people, preferences, goals, workflows, and important "
         "dates that you allow. Memories stay on this computer and can be "
         "browsed by category, edited individually, or deleted."
     ),
@@ -332,34 +351,32 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "“I like”, or “I usually”"
     ),
     "memory_count": "{count} saved",
-    "memory_empty": "There are no memories in this category.",
+    "memory_empty": "This category is ready for memories.",
     "memory_source_manual_short": "Manual",
     "memory_source_conversation_short": "Conversation",
     "memory_untitled": "Untitled memory",
     "corrupt_data_title": "Data read warning",
-    "corrupt_data_message": "A setting or memory could not be read; the original file was kept.",
+    "corrupt_data_message": 'Reading a setting or memory requires attention; the original file was kept.',
     "memory_item": (
         "[{category}] {title}  Importance {importance}/5\n{content}\n"
         "Source: {source}  Updated: {updated}"
     ),
-    "memory_added_speech": (
-        "I saved that. You can review or change it individually later."
-    ),
-    "memory_select_edit_title": "No memory selected",
+    "memory_added_speech": _DIALOGUE.templates["ui.memory_added_speech"],
+    "memory_select_edit_title": "Select a memory",
     "memory_select_edit": "Select a memory to edit first.",
-    "memory_not_found_title": "Memory not found",
-    "memory_not_found": ("That memory no longer exists. The list will be refreshed."),
-    "memory_save_failed_title": "Memory could not be saved",
+    "memory_not_found_title": 'Refresh the memory list',
+    "memory_not_found": ("That memory is already removed. The list will be refreshed."),
+    "memory_save_failed_title": 'Saving memory requires attention',
     "memory_save_failed": (
-        "An identical memory may already exist. Existing data was not changed."
+        'An identical memory may already exist. Existing data remains intact.'
     ),
-    "memory_select_delete_title": "No memories checked",
+    "memory_select_delete_title": "Select memories",
     "memory_select_delete": "Check one or more memories to delete first.",
     "memory_delete_title": "Delete long-term memories",
     "memory_delete_confirm": ("Permanently delete the {count} checked memories?"),
     "memory_clear_title": "Clear long-term memory",
     "memory_clear_confirm": (
-        "Delete every long-term memory stored by MoHan? This cannot be undone."
+        "Delete every long-term memory stored by {character_name}? This action is permanent. Continue?"
     ),
     "memory_optimize_title": "Memory organization complete",
     "memory_optimize_result": (
@@ -386,9 +403,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "memory_content_required": "Enter the memory details first.",
     "archived_memory_title": "Archived long-term memories",
     "archived_memory_intro": (
-        "Automatic organization only archives older, low-importance "
-        "conversation memories; it does not destroy them. Check any item here "
-        "to restore it."
+        'Automatic organization archives only older, low-importance conversation memories and preserves their contents. Check any item here to restore it.'
     ),
     "restore_checked_memories": "Restore checked memories",
     "close": "Close",
@@ -397,17 +412,15 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "Archived: {archived}"
     ),
     "archived_memory_corrupt": (
-        "[Unreadable] The original archived memory was kept.\n"
-        "Archive reason: {reason}  Archived: {archived}"
+        '[Reading requires attention] The original archived memory was kept.\nArchive reason: {reason}  Archived: {archived}'
     ),
     "archived_memory_count": "{count} memories can be restored",
-    "archived_memory_select_title": "No memories checked",
+    "archived_memory_select_title": "Select memories",
     "archived_memory_select": "Check one or more memories to restore first.",
     "archived_memory_restored": "Restored {count} memories.",
     "chat_history_title": "Manage / clear chats",
     "chat_history_intro": (
-        "Chats stay on this computer and are not deleted automatically. Check "
-        "only the entries you are certain you want to delete permanently."
+        'Chats stay on this computer until you explicitly delete them. Check only the entries you are certain you want to delete permanently.'
     ),
     "delete_checked_chats": "Delete checked chats",
     "chat_history_item": "{created} | {speaker}\n{content}",
@@ -415,13 +428,13 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         " (This window shows only the 500 most recent entries.)"
     ),
     "chat_history_status": "{count} chats are stored on this computer.{suffix}",
-    "chat_select_delete_title": "No chats checked",
+    "chat_select_delete_title": "Select chats",
     "chat_select_delete": "Check one or more chats to delete first.",
     "chat_delete_title": "Permanently delete chats",
     "chat_delete_confirm": "Permanently delete the {count} checked chats?",
     "load_older_chat_tooltip": "Load 50 earlier chats from this computer",
     "manage_chat_tooltip": (
-        "Select and delete specific chats without affecting the others"
+        "Select and delete specific chats while preserving the others"
     ),
     "chat_zoom_out_tooltip": "Make chat text smaller (Ctrl + wheel down)",
     "chat_zoom_in_tooltip": "Make chat text larger (Ctrl + wheel up)",
@@ -433,50 +446,52 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "platform_added": "Work platform added: {platform}",
     "platform_delete_title": "Delete work platform",
     "platform_delete_confirm": (
-        "Delete “{platform}” and its work progress? This cannot be undone."
+        "Delete “{platform}” and its work progress? This action is permanent. Continue?"
     ),
-    "platform_not_found": "Work platform not found: {platform}",
+    "platform_not_found": 'Refresh the work platform list and check this entry: {platform}',
     "platform_deleted": "Work platform deleted: {platform}",
-    "platform_url_missing_title": "URL not set",
+    "platform_url_missing_title": "Set the URL",
     "platform_url_missing": (
         "Enter the website or tool URL on the “{platform}” card first."
     ),
-    "platform_url_unsupported_title": "Unsupported URL format",
+    "platform_url_unsupported_title": "Provide a supported URL format",
     "platform_url_unsupported": "Only http:// or https:// URLs can be opened.",
     "permission_open_platform": "open the {platform} website",
     "echo_guard_tooltip": (
-        "Pauses microphone upload while MoHan speaks and resumes after playback; "
-        "you cannot interrupt while this option is enabled."
+        "Pauses microphone upload while {character_name} speaks and resumes after playback; "
+        "this option keeps the current operation active."
     ),
     "hybrid_transcript_tooltip": (
         "Realtime keeps native audio understanding. After each utterance, the "
         "screen text uses a high-accuracy OpenAI transcription of the complete "
-        "recording, and MoHan replies only after it succeeds."
+        "recording, and {character_name} replies only after it succeeds."
     ),
     "flagship_heading": "<b>Flagship control center</b>",
     "increase": "Increase",
     "decrease": "Decrease",
     "voice_section": "Voice",
-    "profile_required_title": "Required profile details missing",
+    "profile_required_title": "Complete the required profile details",
     "profile_required": (
-        "Assistant name and how the assistant addresses you cannot be blank."
+        "Assistant name and the form of address require content."
     ),
-    "send_chat_required_title": "No message entered",
+    "send_chat_required_title": "Enter a message",
     "send_chat_required": (
         "Enter text on the left and choose Send; you can also use the microphone."
     ),
     "thinking_status": "{assistant} is thinking…",
     "answering_status": "Answering…",
-    "api_connection_failed": "OpenAI API: connection failed ({error})",
+    "api_connection_failed": "OpenAI API: check the connection settings ({error})",
     "voice_vad_degraded": "Voice detection degraded; using RMS instead.",
     "voice_ready_short": "Ready",
     "voice_muted_short": "Muted",
     "sleep_mode_status": (
-        "Sleep mode is active. MoHan will remain quiet; reminders and urgent alerts still follow their rules."
+        "Sleep mode is active. {character_name} will remain quiet; reminders and urgent alerts still follow their rules."
     ),
-    "desktop_status_title": "MoHan is interacting with you on the desktop",
+    "desktop_status_title": "{character_name} is interacting with you on the desktop",
+    "desktop_status_expand": "Expand status",
+    "desktop_status_collapse": "Collapse status",
     "desktop_status_description": (
-        "The desktop MoHan is the only visible, draggable character that responds to you."
+        "The desktop {character_name} is the only visible, draggable character that responds to you."
     ),
     "desktop_status_mode": "Mode",
     "desktop_status_expression": "Pose / expression",
@@ -487,7 +502,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "desktop_status_camera_waiting": "Camera standing by",
     "desktop_status_gesture_waiting": "Waiting for a gesture",
     "desktop_status_vision_present": "I can see you",
-    "desktop_status_vision_away": "I cannot see you right now",
+    "desktop_status_vision_away": "Your camera view is currently away from the companion",
     "desktop_status_vision_motion": "Movement detected",
     "desktop_status_vision_unknown": "Camera standing by",
     "desktop_status_gesture_wave": "Wave recognized",
@@ -497,11 +512,11 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "voice_status_format": "Voice status: {phase}",
     "bubble_full_content": "…\n(See the Chat page for the complete message.)",
     "tray_open_today": "Open Today",
-    "tray_quit": "Quit MoHan",
-    "chat_retention": "Chats stay on this computer and are not auto-deleted",
+    "tray_quit": "Quit {character_name}",
+    "chat_retention": 'Chats stay on this computer until you explicitly delete them',
     "load_older_chat": "Load older chats",
     "manage_chat": "Manage / clear chats",
-    "chat_placeholder": "Talk to MoHan…",
+    "chat_placeholder": "Talk to {character_name}…",
     "microphone": "🎙 Microphone",
     "send_text": "Send",
     "voice_ready": "Voice status: Ready",
@@ -512,14 +527,14 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "windows_transcription_fallback": "Windows fallback",
     "offline_fallback": "Offline fallback",
     "platform_offline_fallback_unavailable": (
-        "{platform} offline recognition has not completed device verification"
+        '{platform} offline recognition awaits device verification'
     ),
     "last_transcription": "Latest transcription diagnostic",
     "voice_engine": "Speech method",
     "windows_voice": "Windows voice",
     "platform_local_voice": "{platform} local voice",
     "platform_local_voice_unavailable": (
-        "{platform} local voice has not completed device verification"
+        '{platform} local voice awaits device verification'
     ),
     "tts_voice": "OpenAI text-to-speech voice",
     "realtime_output_source": "Realtime response voice source",
@@ -550,7 +565,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "realtime_screen_transcript": "Realtime screen transcript",
     "echo_guard": "Echo guard",
     "local_rate": "Local speech rate",
-    "mohan_volume": "MoHan volume",
+    "mohan_volume": _DIALOGUE.labels["ui.mohan_volume"],
     "voice_style": "Voice style",
     "realtime": "Realtime voice",
     "windows_engine": "Windows local voice",
@@ -567,7 +582,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "azure_key_missing": "Paste the Azure Speech resource key",
     "azure_remove_key": "Remove Azure Speech key",
     "azure_remove_key_confirm": ("Remove the Azure Speech key encrypted by Windows?"),
-    "azure_key_save_failed": ("Could not securely save the Azure Speech key: {error}"),
+    "azure_key_save_failed": ("Check Azure Speech key storage settings: {error}"),
     "azure_hd_voice": "Dragon HD female voice",
     "azure_hd_region": "Dragon HD resource region",
     "azure_hd_key": "Dragon HD S0 resource key",
@@ -578,60 +593,46 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "Remove the Dragon HD S0 key securely stored by {platform}?"
     ),
     "azure_hd_key_save_failed": (
-        "Could not securely save the Dragon HD S0 key: {error}"
+        "Check Dragon HD S0 key storage settings: {error}"
     ),
     "azure_hd_speech_note": (
-        "Optional Preview. Use a separate S0 Speech resource, key, and "
-        "matching supported region. Dragon HD has no viseme events, so "
-        "MoHan retains audio-driven lip sync. Speech-start delay depends on "
-        "network and region distance. Failures fall back once each to "
-        "standard Azure Speech and then Windows local speech."
+        'Optional Preview. Use a separate S0 Speech resource, key, and matching supported region. {character_name} uses audio-driven lip sync with Dragon HD. Speech-start delay depends on network and region distance. A synthesis error falls back once each to standard Azure Speech and then Windows local speech.'
     ),
     "azure_speech_note": (
-        "Preview feature. Bring your own Azure Speech resource key and its "
-        "matching region. Only verified female voices are listed. Missing "
-        "settings or a service failure falls back to a Windows female voice. "
-        "Azure usage and charges are governed by Microsoft."
+        'Preview feature. Bring your own Azure Speech resource key and its matching region. Only verified female voices are listed. Settings requiring completion or a service error trigger fallback to a Windows female voice. Azure usage and charges are governed by Microsoft.'
     ),
     "azure_speech_note_no_local_fallback": (
-        "Preview feature. Bring your own Azure Speech resource key and "
-        "matching region. This platform has no verified local voice yet; "
-        "playback stops safely if the service fails."
+        'Preview feature. Bring your own Azure Speech resource key and matching region. Local voice on this platform awaits verification; a service error stops playback safely.'
     ),
     "azure_fallback_missing_settings": (
-        "Azure Speech is not fully configured; using the Windows female "
-        "voice without sending a cloud request."
+        'Complete Azure Speech settings to use cloud speech. This utterance uses only the Windows female voice locally.'
     ),
     "azure_missing_no_local_fallback": (
-        "Azure Speech is not fully configured, and this platform has no "
-        "verified local voice. Nothing will be played or sent to the cloud."
+        'Complete Azure Speech settings to use cloud speech. Local voice on this platform awaits verification; playback and cloud requests remain paused.'
     ),
-    "no_female_voice": "No verified female Windows voice detected",
+    "no_female_voice": 'Install a verified female Windows voice',
     "female_voice_note": (
         "Only installed voices explicitly marked as female are listed. "
         "Voices matching the selected interface language are preferred."
     ),
     "platform_local_voice_note": (
-        "{platform} local voice has not completed device verification. "
-        "MoHan will not show another platform's voices or claim offline "
-        "speech support."
+        '{platform} local voice awaits device verification. {character_name} lists only verified voices for the current platform and confirms offline speech support through device testing.'
     ),
     "transcription_language_placeholder": (
         "ISO language code; leave blank for automatic detection"
     ),
-    "openai_fallback": "Use Windows offline recognition if OpenAI fails",
+    "openai_fallback": 'Use Windows offline recognition as the OpenAI recovery path',
     "openai_recognition": "OpenAI accurate recognition (recommended)",
     "windows_recognition": "Windows offline recognition",
-    "no_transcription_error": "No transcription errors recorded",
-    "preview_voice": "Preview: Commander, I am here.",
-    "realtime_disconnected": "Realtime: Disconnected",
+    "no_transcription_error": "Transcription is ready with a clean record",
+    "preview_voice": _DIALOGUE.labels["ui.preview_voice"],
+    "realtime_disconnected": 'Realtime: Awaiting connection',
     "realtime_status_format": "Realtime: {status}",
-    "realtime_disconnected_status": "Disconnected",
+    "realtime_disconnected_status": 'Awaiting connection',
     "realtime_error_status": "Error: {error}",
     "realtime_voice_title": "Realtime voice",
     "realtime_output_unavailable": (
-        "Realtime Azure speech output is unavailable, so the live "
-        "conversation was not started."
+        'Realtime Azure speech output requires attention before the live conversation can start.'
     ),
     "start_realtime": "Start Realtime conversation",
     "stop_realtime": "Stop Realtime conversation",
@@ -640,7 +641,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "noise_off": "Noise reduction off",
     "stable_vad": "Stable complete turns (about 0.85 s pause)",
     "semantic_vad": "Semantic turns (may cut speech early)",
-    "echo_guard_option": "Prevent MoHan from hearing her own voice",
+    "echo_guard_option": "Prevent {character_name} from hearing her own voice",
     "hybrid_transcript": "Use accurate final transcripts on screen",
     "mute": "Mute",
     "rate_down": "Decrease local speech rate",
@@ -658,7 +659,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "the new key in Settings."
     ),
     "echo_guard_note": (
-        "With echo guard enabled, microphone upload pauses while MoHan speaks "
+        "With echo guard enabled, microphone upload pauses while {character_name} speaks "
         "and resumes after playback. Only the final accurate transcript is "
         "shown in Chat."
     ),
@@ -672,15 +673,15 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
         "on this platform."
     ),
     "platform_secret_storage_unavailable": (
-        "{platform} secure secret storage has not completed device verification"
+        '{platform} secure secret storage awaits device verification'
     ),
     "platform_autostart_unavailable": (
-        "{platform} automatic startup has not completed device verification"
+        '{platform} automatic startup awaits device verification'
     ),
     "autostart": "Automatic startup",
     "permissions_intro": (
-        "Grant each capability separately. With Ask every time, MoHan shows a "
-        "confirmation before acting. File deletion is denied by default."
+        "Grant each capability separately. With Ask every time, {character_name} shows a "
+        "confirmation before acting. File deletion requires explicit confirmation."
     ),
     "permission_open_web": "Open a specified website",
     "permission_open_folder": "Open the workspace folder",
@@ -691,18 +692,16 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "permission_ask": "Ask every time",
     "permission_allow": "Allow",
     "permissions_warning": (
-        "Safety rule: conversation cannot grant MoHan additional authority. "
+        "Safety rule: conversation keeps {character_name} within her configured authority. "
         "The AI may propose a tool request, but local permissions decide what "
         "can actually run."
     ),
     "save_permissions": "Save tool permissions",
-    "permission_blocked": "Permission blocked",
-    "permission_blocked_message": "MoHan is not allowed to {action}.",
-    "permission_request": "MoHan requests computer permission",
-    "permission_request_message": "Allow MoHan to {action} this time?",
-    "permission_saved_speech": (
-        "Computer permissions saved. I will remain within these boundaries."
-    ),
+    "permission_blocked": "Permission requires an update",
+    "permission_blocked_message": 'Enable permission for {character_name} to {action} before continuing.',
+    "permission_request": "{character_name} requests computer permission",
+    "permission_request_message": "Allow {character_name} to {action} this time?",
+    "permission_saved_speech": _DIALOGUE.templates["ui.permission_saved_speech"],
     "profile_heading": "<b>Identity and profile</b>",
     "system_heading": "<b>Work and system settings</b>",
     "api_key": "OpenAI API key",
@@ -715,19 +714,18 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "save_settings": "Save settings",
     "api_key_saved": "Safely stored; leave blank to keep it unchanged",
     "api_key_missing": "Paste an OpenAI Project API key beginning with sk-",
-    "api_key_save_failed": "Could not store the OpenAI API key securely: {error}",
+    "api_key_save_failed": "Check OpenAI API key storage settings: {error}",
     "secret_auto_save_hint": (
         "Press Enter or leave the field to store the key securely and automatically."
     ),
     "api_status_saved": "OpenAI API: Key stored securely by the operating system",
     "api_status_environment": "OpenAI API: Key supplied by an environment variable",
     "api_status_secret_unavailable": (
-        "OpenAI API: {platform} secure secret storage has not completed "
-        "device verification"
+        'OpenAI API: {platform} secure secret storage awaits device verification'
     ),
-    "api_status_offline": "OpenAI API: Not configured; using offline persona",
+    "api_status_offline": 'OpenAI API: Configure a key to connect; the offline persona is active',
     "restart_language_note": (
-        "The interface language will be fully applied after restarting MoHan."
+        "The interface language will be fully applied after restarting {character_name}."
     ),
     "about_heading": "<b>About MoHan</b>",
     "about_body": (
@@ -748,17 +746,18 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "reminder_offwork": "Finish work",
     "enabled": "Enabled",
     "reminder_message_label": "{label} message",
-    "reminder_message_placeholder": "What MoHan says when this reminder fires",
+    "reminder_message_placeholder": _DIALOGUE.labels["ui.reminder_message_placeholder"],
     "continuous_work_reminder": "Continuous work reminder",
     "overwork_message": "Sitting / overwork reminder message",
     "minutes_suffix": " minutes",
-    "read_replies": "Read MoHan's replies aloud",
+    "read_replies": "Read {character_name}'s replies aloud",
+    "caught_glance_dialogue": _DIALOGUE.templates["caught_glance"],
     "voice_settings_saved": "Voice settings saved.",
     "settings_saved": "Settings saved.",
     "work_timer_already_running": (
-        "The work timer is already running. There is no need to start it twice."
+        "The work timer is already running; its current session continues."
     ),
-    "work_timer_not_started": "Today's work timer has not started yet.",
+    "work_timer_not_started": "Start today's work timer when you are ready.",
 })
 
 __all__ = ("ENGLISH_UI_TEXT",)

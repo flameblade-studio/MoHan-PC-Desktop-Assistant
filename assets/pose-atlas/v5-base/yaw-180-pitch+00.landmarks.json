@@ -2,72 +2,79 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      528,
-      91
+      517,
+      84
+    ],
+    "left_ankle": [
+      535,
+      1393
+    ],
+    "left_heel": [
+      530,
+      1477
+    ],
+    "left_hip": [
+      586,
+      867
+    ],
+    "left_knee": [
+      561,
+      1175
+    ],
+    "left_sole": [
+      535,
+      1483
+    ],
+    "left_toe": [
+      540,
+      1477
     ],
     "right_ankle": [
-      558,
-      1406
+      465,
+      1393
     ],
     "right_heel": [
-      553,
-      1490
+      463,
+      1477
     ],
     "right_hip": [
-      409,
-      878
+      426,
+      867
     ],
     "right_knee": [
-      483,
-      1187
+      445,
+      1175
     ],
     "right_sole": [
-      558,
-      1496
+      465,
+      1483
     ],
     "right_toe": [
-      562,
-      1490
+      467,
+      1477
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "474152478d191ff3d3ae29062249683c0b1930867237f38e98573ba9bee81141",
-    "target_subject_height": 1406
+    "source_sha256": "7b596fa8e5a6b9eae620440db7b98e0db2d2182a110ad4fd748362aaaadb965d",
+    "target_subject_height": 1400
   },
-  "occluded_landmarks": [
-    {
-      "name": "left_hip",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
+  "native_face_landmarks": {
+    "coordinates": null,
+    "landmark_count": 0,
+    "reason": "No single-face result from the bundled native 478-point provider; no prior coordinates reused.",
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw-180-pitch+00.png",
+      "sha256": "7b596fa8e5a6b9eae620440db7b98e0db2d2182a110ad4fd748362aaaadb965d"
     },
-    {
-      "name": "left_knee",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "left_ankle",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "left_heel",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "left_toe",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "left_sole",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    }
-  ],
+    "status": "missing_no_single_face_result"
+  },
+  "occluded_landmarks": [],
   "schema_version": 2,
   "view_id": "yaw-180-pitch+00",
   "width": 1024,

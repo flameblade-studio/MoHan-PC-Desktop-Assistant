@@ -1,0 +1,68 @@
+{
+  "approval_phrases": {
+    "lin_keyun_gestures": {
+      "english": "The three Lin Keyun gestures are approved.",
+      "japanese": "林可芸の三つのジェスチャーに同意します。",
+      "simplified_chinese": "林可芸三个手势同意",
+      "traditional_chinese": "林可芸三個手勢同意"
+    },
+    "prior_28_views": {
+      "english": "28 views previously approved",
+      "japanese": "以前に承認された 28 視点",
+      "simplified_chinese": "28 格先前核准",
+      "traditional_chinese": "28 格先前核准"
+    }
+  },
+  "body_pack": {
+    "fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+    "id": "mohan-body-v2",
+    "version": "1.0.0"
+  },
+  "character_pack": {
+    "id": "flameblade.lin-keyun",
+    "version": "1.0.4"
+  },
+  "layer_source": {
+    "authority": "The current BODY-RELEASE-1 task explicitly designates the unreserved seventh-round candidate source; prior approval phrases in this record govern the selected 28 views and three gestures.",
+    "candidate_manifest_path": "body-pack-build/lin-keyun-layers/manifest.json",
+    "candidate_manifest_sha256": "0ba1bee016c026ce323c211bca014426941e887216cf949d7d468fead4872f1f",
+    "layer_png_bytes": 19393601,
+    "layer_png_files": 155,
+    "layer_view_aliases": 203,
+    "physical_views": 31,
+    "png_profiles": {
+      "1024x1536 RGBA": 120,
+      "1254x1254 RGBA": 35
+    },
+    "provenance_note": "Older round9/pending metadata is not the authority for this explicitly selected seventh-round source. This record does not claim that the round9 candidate received appearance approval.",
+    "repository_manifest_path": "assets/characters/lin-keyun/body/manifest.json",
+    "repository_manifest_sha256": "eedc4ef2e8b535811cfc3953cd2bbd070915123c8e3b380c9036d724c72bac76"
+  },
+  "release_authorization": {
+    "license": "CC BY-NC-ND 4.0",
+    "recorded_authority": "Project-owner authorization in the BODY-RELEASE-1 task instructions; no release upload is performed by this work item.",
+    "source_quote": "同意。素體包放在 GitHub Release 讓使用者另外下載，一樣 CC BY-NC-ND 4.0",
+    "translations": {
+      "english": "Agreed. Put the body pack on GitHub Releases for users to download separately, under the same CC BY-NC-ND 4.0 license.",
+      "japanese": "同意します。素体パックを GitHub Releases に置いて利用者が個別にダウンロードできるようにし、同じ CC BY-NC-ND 4.0 を適用します。",
+      "simplified_chinese": "同意。素体包放在 GitHub Release 让用户另外下载，一样 CC BY-NC-ND 4.0",
+      "traditional_chinese": "同意。素體包放在 GitHub Release 讓使用者另外下載，一樣 CC BY-NC-ND 4.0"
+    }
+  },
+  "schema": "flameblade.release-evidence.character-body-layers.v1",
+  "scope": {
+    "english": "Retain the 28 previously approved views and the three approved Lin Keyun gestures; this ticket does not reapprove or recompute appearance.",
+    "japanese": "以前に承認された 28 視点と林可芸の承認済み三つのジェスチャーを引き継ぎます。本チケットでは外観を再承認・再計算しません。",
+    "simplified_chinese": "沿用先前批准的 28 格与林可芸三个已批准手势；本工单不重新批准或重算外观。",
+    "traditional_chinese": "沿用先前核准的 28 格與林可芸三個已核准手勢；本工單不重新核准或重算外觀。"
+  },
+  "semantic_cleanup": {
+    "authority": "Owner WARDROBE-BASE-1 second-round instruction, 2026-10-12",
+    "clothed_rgba_max": 0,
+    "current_layer_png_bytes": 19357039,
+    "layer_manifest_sha256": "2f3170c41b10964336c1e6b049d14b9613ba9303c91f8363636adc544a9272a3",
+    "physical_views": 31,
+    "rule": "Base mode composes body plus hair-back, hair-front and ornament only. Clothing edge pixels move from hair to garment with native RGBA unchanged."
+  },
+  "ticket": "BODY-RELEASE-1"
+}

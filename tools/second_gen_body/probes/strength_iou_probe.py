@@ -1,20 +1,16 @@
-"""量測「幾何到底有沒有進去」，而不是「哪個強度看起來順眼」。
+"""以剪影 IoU 量測幾何條件化的影響。
 
-先前選定 s0.95 的推理是反的：0.70/0.80/0.88 之所以殘留人偶體型，正是因為
-幾何有進去；0.95 之所以乾淨，是因為幾何沒進去。diffusers 的算式可直接驗證——
-
+較低強度 0.70/0.80/0.88 保留較多原始體型；0.95 則削弱初始幾何。
+diffusers 使用：
     init_timestep = min(steps * strength, steps)
-    t_start       = int(max(steps - init_timestep, 0))
+    t_start = int(max(steps - init_timestep, 0))
 
-steps=34、strength=0.95 時 t_start=1，34 步只跳過 1 步，初始圖被加噪到幾乎全是雜訊。
-實測也對得上：兩張構圖完全不同的初始圖，輸出只差 2.1% 的像素。
+steps=34、strength=0.95 時 t_start=1，初始圖接近全雜訊；兩張構圖
+相異的初始圖，其輸出只有 2.1% 像素差異。此探針比較輸出與控制剪影
+IoU，觀察降低強度時的幾何保留程度，並對照純文生圖基準。
 
-所以這支探針改用一個能證偽的指標：輸出的人物剪影與控制網格剪影的 IoU。
-幾何若真的進去，IoU 應隨 strength 下降而上升；若沒進去，IoU 會停在
-「隨便畫一個人剛好也會重疊」的基準值附近。
-
-順帶修掉另一個 bug：先前沒傳 height/width，管線退回預設 1024x1024 方形，
-把 2:3 的初始圖壓成正方形，而方形畫布正是模型畫成角色設定表（兩個人）的誘因。
+明確傳入 height/width，保留 2:3 畫布，降低預設正方形誘導雙人設定表
+的構圖偏移。
 """
 import os
 import sys
@@ -67,7 +63,7 @@ def main() -> None:
     init = make_init(BUNDLE)
     init.save(OUT / "_init.png")
     control = foreground(init)
-    print(f"初始圖 {init.size}，控制剪影佔畫面 {control.mean()*100:.1f}%", flush=True)
+    print(f"初始圖 {init.size}，控制剪影佔畫面 {control.mean() * 100:.1f}%", flush=True)
 
     transformer = ChromaTransformer2DModel.from_single_file(
         str(GGUF),
@@ -89,7 +85,7 @@ def main() -> None:
     # 基準線：完全不給初始圖的純文生圖。任何強度的 IoU 必須顯著高過它，
     # 才算「幾何真的進去了」；否則只是「隨便畫個人剛好也會重疊」。
     from diffusers import ChromaPipeline
-    t2i = ChromaPipeline(**{k: v for k, v in pipe.components.items()})
+    t2i = ChromaPipeline(**dict(pipe.components.items()))
     t2i.set_progress_bar_config(disable=True)
     baseline_img = t2i(
         prompt=prompt, negative_prompt=NEG, height=HEIGHT, width=WIDTH,
@@ -102,7 +98,7 @@ def main() -> None:
 
     print("\nstrength   IoU     相對基準", flush=True)
     for strength in STRENGTHS:
-        target = OUT / f"s{int(strength*100):03d}.png"
+        target = OUT / f"s{int(strength * 100):03d}.png"
         image = pipe(
             prompt=prompt, negative_prompt=NEG, image=init, strength=strength,
             height=HEIGHT, width=WIDTH,          # 不傳就退回 1024x1024 方形

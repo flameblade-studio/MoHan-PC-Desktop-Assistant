@@ -137,7 +137,7 @@ def assert_responses_request_is_private_and_typed() -> None:
     assert request["timeout"] == REQUEST_TIMEOUT_SECONDS
     content = request["input"][0]["content"]  # type: ignore[index]
     assert content[0]["type"] == "input_text"
-    assert "present an inference as fact" in content[0]["text"]
+    assert "label every inference as an inference rather than a fact" in content[0]["text"]
     assert content[1]["type"] == "input_image"
     assert content[1]["image_url"].startswith("data:image/jpeg;base64,")
     assert content[1]["detail"] == "auto"

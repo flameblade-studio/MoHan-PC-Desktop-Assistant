@@ -1,5 +1,5 @@
 name: Bug report / 錯誤回報
-description: Report a reproducible problem without private data. 回報可重現問題。
+description: Report a reproducible problem with privacy-safe details. 回報可重現問題並提供隱私安全的資料。
 title: "[Bug] "
 labels: ["bug"]
 body:
@@ -8,15 +8,17 @@ body:
       value: |
         Thank you for helping improve MoHan. 謝謝您協助改善墨寒。
 
-        Do not attach API keys, OAuth files, databases, private conversations,
-        email, addresses, recordings, or unredacted screenshots.
-        請勿附上 API 金鑰、OAuth 檔案、資料庫、私人對話、郵件、住址、錄音或未遮蔽截圖。
+        Attach redacted diagnostic material only. Keep API keys, OAuth files,
+        databases, private conversations, email, addresses, and recordings in
+        their private storage, and redact every screenshot.
+        僅附上已遮蔽的診斷資料。API 金鑰、OAuth 檔案、資料庫、私人對話、郵件、
+        住址與錄音請留在私人儲存位置，所有截圖請先完成遮蔽。
   - type: checkboxes
     id: privacy
     attributes:
       label: Privacy confirmation / 隱私確認
       options:
-        - label: I removed all secrets and personal data. 我已移除所有機密與個人資料。
+        - label: I reviewed the report and kept secrets and personal data private. 我已檢查回報內容，並將機密與個人資料留在私人環境。
           required: true
   - type: input
     id: version

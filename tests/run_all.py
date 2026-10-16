@@ -7,11 +7,13 @@ lazy import json
 lazy import os
 lazy import subprocess
 lazy import sys
+lazy import time
 lazy from collections.abc import Sequence
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 
 TESTS_DIR = Path(__file__).resolve().parent
+ISOLATED_TEST_CHILD = "MOHAN_ISOLATED_TEST_CHILD"
 SENSITIVE_ENVIRONMENT_VARIABLES = (
     "OPENAI_API_KEY",
     "WORDPRESS_APP_PASSWORD",
@@ -30,20 +32,28 @@ SENSITIVE_ENVIRONMENT_MARKERS = (
 MALFORMED_TEST_EXIT_CODE = 2
 COLLECTION_AUDIT_EXIT_CODE = 3
 TEST_TIMEOUT_EXIT_CODE = 124
-# Non-test .py files that legitimately live in tests/ without being collected.
+AGGREGATE_FAILURE_EXIT_CODE = 1
+# Supporting .py files in tests/ are intentionally outside collection.
 # Anything else that carries assert statements is an orphan checker (like the
 # former check_packaged_migration.py) and fails the collection audit.
-ORPHAN_EXEMPT_FILES = frozenset({"run_all.py", "__init__.py", "conftest.py"})
+ORPHAN_EXEMPT_FILES = frozenset({
+    "run_all.py",
+    "__init__.py",
+    "conftest.py",
+    "golden_render_support.py",
+})
 TEST_TIMEOUT_SECONDS = 600
 # A single retry absorbs the timing-sensitive Qt flakiness that surfaces on
-# slow CI runners (event-loop races, transient file locks) without masking a
-# deterministic failure: a test must fail twice in a row to fail the suite.
+# slow CI runners (event-loop races, transient file locks) while surfacing a
+# deterministic issue: two consecutive failing attempts fail the suite.
 TEST_RETRY_ATTEMPTS = 1
 DEFAULT_TIER = "gate"
 FAST_TIER = "fast"
 NIGHTLY_TIER = "nightly"
 TEST_TIERS = (FAST_TIER, DEFAULT_TIER, NIGHTLY_TIER)
 IMPACT_MAP_FILENAME = "impact_map.json"
+TEST_DURATIONS_FILENAME = "test_durations.json"
+DURATION_SCHEMA = "mohan.test-durations.v1"
 
 
 def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -82,6 +92,23 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
         default=0,
         help="Zero-based shard index to run.",
     )
+    parser.add_argument(
+        "--aggregate",
+        action="store_true",
+        help="Run every selected test command and summarize all failures.",
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List the selected test modules without running them.",
+    )
+    parser.add_argument(
+        "--write-durations",
+        metavar="PATH",
+        type=Path,
+        default=None,
+        help="Write measured per-module seconds after this run.",
+    )
     arguments = parser.parse_args(tuple(argv or ()))
     if arguments.shard_count < 1:
         parser.error("--shard-count must be at least 1")
@@ -98,6 +125,10 @@ def _arguments(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     if arguments.changed_from is not None and arguments.tier != FAST_TIER:
         parser.error("--changed-from is only valid with the fast tier")
+    if arguments.write_durations is not None and arguments.list:
+        parser.error("--write-durations cannot be combined with --list")
+    if arguments.write_durations is not None and arguments.shard_count != 1:
+        parser.error("--write-durations requires an unsharded run")
     return arguments
 
 
@@ -107,13 +138,98 @@ def _select_shard(
     shard_index: int,
     shard_count: int,
 ) -> tuple[Path, ...]:
-    """Select one stable round-robin shard without overlap."""
+    """Select one stable, disjoint shard balanced by historical duration."""
 
-    return tuple(
-        test
-        for index, test in enumerate(tests)
-        if index % shard_count == shard_index
+    durations, default_seconds = _load_test_durations()
+    assignments = _assign_shards(
+        tests,
+        shard_count=shard_count,
+        durations=durations,
+        default_seconds=default_seconds,
     )
+    return assignments[shard_index]
+
+
+def _load_test_durations(
+    path: Path | None = None,
+) -> tuple[dict[str, float], float]:
+    duration_path = path or TESTS_DIR / TEST_DURATIONS_FILENAME
+    try:
+        document = json.loads(duration_path.read_text(encoding="utf-8"))
+        raw_durations = document["durations"]
+        default_seconds = float(document["default_seconds"])
+        if document["schema"] != DURATION_SCHEMA:
+            raise ValueError("unsupported schema")
+        if not isinstance(raw_durations, dict) or default_seconds <= 0:
+            raise ValueError("invalid duration data")
+        durations = {
+            str(name): float(seconds)
+            for name, seconds in raw_durations.items()
+            if float(seconds) > 0
+        }
+    except (KeyError, OSError, TypeError, ValueError, json.JSONDecodeError):
+        return {}, 1.0
+    return durations, default_seconds
+
+
+def _estimated_seconds(
+    test: Path,
+    durations: dict[str, float],
+    default_seconds: float,
+) -> float:
+    return durations.get(test.name, default_seconds)
+
+
+def _assign_shards(
+    tests: Sequence[Path],
+    *,
+    shard_count: int,
+    durations: dict[str, float],
+    default_seconds: float,
+) -> tuple[tuple[Path, ...], ...]:
+    """Apply deterministic longest-processing-time-first load balancing."""
+
+    shards: list[list[Path]] = [[] for _ in range(shard_count)]
+    loads = [0.0] * shard_count
+    ordered = sorted(
+        tests,
+        key=lambda test: (
+            -_estimated_seconds(test, durations, default_seconds),
+            test.name,
+        ),
+    )
+    for test in ordered:
+        target = min(range(shard_count), key=lambda index: (loads[index], index))
+        shards[target].append(test)
+        loads[target] += _estimated_seconds(test, durations, default_seconds)
+    return tuple(tuple(sorted(shard)) for shard in shards)
+
+
+def _write_test_durations(path: Path, durations: dict[str, float]) -> None:
+    values = tuple(durations.values())
+    default_seconds = sum(values) / len(values) if values else 1.0
+    document = {
+        "schema": DURATION_SCHEMA,
+        "default_seconds": round(default_seconds, 3),
+        "durations": {
+            name: round(seconds, 3)
+            for name, seconds in sorted(durations.items())
+        },
+        "provenance": {
+            "source": "isolated module wall-clock measurements",
+            "update_command": (
+                "python tests/run_all.py --aggregate "
+                "--write-durations tests/test_durations.json"
+            ),
+        },
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(f"{path.suffix}.tmp")
+    temporary.write_text(
+        json.dumps(document, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    temporary.replace(path)
 
 
 def _normalise_repo_path(value: str) -> str:
@@ -179,7 +295,7 @@ def _git_changed_files(
             break
         else:
             return (), (
-                f"could not compare {changed_from!r} with HEAD: "
+                f"comparison of {changed_from!r} with HEAD requires attention: "
                 f"{reference_error}"
             )
 
@@ -209,7 +325,7 @@ def _git_changed_files(
             _git_names(("ls-files", "--others", "--exclude-standard", "-z"))
         )
     except RuntimeError as error:
-        return (), f"could not inspect the worktree: {error}"
+        return (), f"worktree inspection requires attention: {error}"
     return tuple(sorted(changed)), None
 
 
@@ -226,7 +342,7 @@ def _configured_test_names(
     names = tuple(str(value) for value in values)
     missing = tuple(sorted(set(names) - test_names))
     if missing:
-        raise ValueError(f"{key} names missing test files: {', '.join(missing)}")
+        raise ValueError(f"{key} requires these test files: {', '.join(missing)}")
     return tuple(sorted(set(names)))
 
 
@@ -237,11 +353,11 @@ def _load_impact_map(
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
-        return None, f"could not load {path}: {error}"
+        return None, f"loading {path} requires attention: {error}"
     if not isinstance(document, dict):
         return None, "impact map root must be an object"
     if document.get("schema") != "mohan.test-impact-map.v1":
-        return None, "impact map schema is not mohan.test-impact-map.v1"
+        return None, "impact map requires schema mohan.test-impact-map.v1"
     try:
         contract_tests = _configured_test_names(
             document,
@@ -284,7 +400,7 @@ def _load_impact_map(
             )
             if invalid:
                 raise ValueError(
-                    f"rule {index} names missing test files: {', '.join(invalid)}"
+                    f"rule {index} requires these test files: {', '.join(invalid)}"
                 )
             rules.append(
                 (
@@ -433,7 +549,7 @@ def _pytest_node_names(tree: ast.Module) -> tuple[str, ...]:
             isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
             and node.name.startswith("test_")
         )
-        or isinstance(node, ast.ClassDef)
+        or (isinstance(node, ast.ClassDef)
         and (
             node.name.startswith("Test")
             or any(
@@ -443,11 +559,11 @@ def _pytest_node_names(tree: ast.Module) -> tuple[str, ...]:
                     and base.value.id == "unittest"
                     and base.attr == "TestCase"
                 )
-                or isinstance(base, ast.Name)
-                and base.id == "TestCase"
+                or (isinstance(base, ast.Name)
+                and base.id == "TestCase")
                 for base in node.bases
             )
-        )
+        ))
     )
 
 
@@ -583,7 +699,7 @@ def _pytest_nodes_missing_from_main(
     tree: ast.Module,
     main_guards: tuple[ast.If, ...],
 ) -> tuple[str, ...]:
-    """Find pytest nodes not exercised by the file's direct entry point."""
+    """Find pytest nodes requiring coverage beyond the file's direct entry point."""
 
     functions = {
         node.name: node
@@ -646,7 +762,9 @@ def _test_commands(test: Path) -> tuple[list[str], ...]:
     )
     pytest_nodes = _pytest_node_names(tree)
     if main_guards:
-        commands.append([sys.executable, str(test)])
+        commands.append(
+            [sys.executable, "-m", "tests.character_runtime_support", str(test)]
+        )
         missing_nodes = _pytest_nodes_missing_from_main(tree, main_guards)
         if missing_nodes:
             commands.append(
@@ -706,22 +824,20 @@ def _isolated_environment(test_root: Path) -> dict[str, str]:
     environment.pop("MOHAN_DATA_DIR", None)
     # GitHub Actions injects GIT_CONFIG_COUNT/KEY_n/VALUE_n as one atomic
     # protocol.  The generic secret filter removes KEY_n; retaining COUNT (or
-    # VALUE_n) leaves git itself malformed.  Tests must receive none of it.
+    # VALUE_n) leaves git itself malformed. Tests receive a clean Git environment.
     environment.pop("GIT_CONFIG_COUNT", None)
     for name in tuple(environment):
         if name.startswith("GIT_CONFIG_VALUE_"):
             environment.pop(name, None)
     environment.update({name: str(location) for name, location in locations.items()})
     import_roots = [str(TESTS_DIR.parent)]
-    # The project-owned Python 3.15 runtime keeps its source-built Qt wheel in
-    # this compatibility root.  Preserve test isolation while making that
-    # explicit, repository-scoped dependency visible to child processes.
-    qt_compat = TESTS_DIR.parent / ".qt315-compat-full" / "Lib" / "site-packages"
-    if qt_compat.is_dir():
-        import_roots.append(str(qt_compat))
     environment["PYTHONPATH"] = os.pathsep.join(import_roots)
     environment.pop("PYTEST_ADDOPTS", None)
     environment.update(dict.fromkeys(SENSITIVE_ENVIRONMENT_VARIABLES, ""))
+    # run_all already owns process and filesystem isolation.  Tell the pytest
+    # collection bridge to use native collection inside this child instead of
+    # adding a redundant isolated subprocess and another temporary-path layer.
+    environment[ISOLATED_TEST_CHILD] = "1"
     return environment
 
 
@@ -729,7 +845,7 @@ def _contains_assertions(path: Path) -> bool:
     try:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     except OSError, SyntaxError, UnicodeError:
-        # An unreadable checker still counts as an orphan: fail closed.
+        # A checker requiring read or parse repair still counts as an orphan.
         return True
     return any(isinstance(node, ast.Assert) for node in ast.walk(tree))
 
@@ -737,10 +853,9 @@ def _contains_assertions(path: Path) -> bool:
 def _collection_audit_errors(collected: Sequence[Path]) -> tuple[str, ...]:
     """Reconcile the tests/ directory manifest with the collected set.
 
-    Two guarantees keep orphan checkers from silently losing coverage again:
-    the number of ``test_*.py`` files on disk must equal the number the
-    runner collected, and no other ``.py`` file in tests/ may contain assert
-    statements unless it is a known non-test file (``ORPHAN_EXEMPT_FILES``).
+    Every test_*.py file on disk must appear in collection. Every other .py
+    file containing assertions must either be collected or belong to the
+    explicit ORPHAN_EXEMPT_FILES supporting-file list.
     """
 
     errors: list[str] = []
@@ -762,7 +877,7 @@ def _collection_audit_errors(collected: Sequence[Path]) -> tuple[str, ...]:
             continue
         if _contains_assertions(path):
             errors.append(
-                f"orphan checker is never collected: {path.name} "
+                f"collect this orphan checker: {path.name} "
                 "(rename it to test_*.py or add it to ORPHAN_EXEMPT_FILES)"
             )
     return tuple(errors)
@@ -787,7 +902,7 @@ def _announce_tier(
     tier_notice: str | None,
 ) -> None:
     """Say which tests a fast or nightly run selected, or why it fell back."""
-    if tier not in (FAST_TIER, NIGHTLY_TIER):
+    if tier not in {FAST_TIER, NIGHTLY_TIER}:
         return
     if tier == FAST_TIER:
         print(f"FAST_CHANGED_FROM={changed_from or 'working-tree'}", flush=True)
@@ -807,7 +922,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     arguments = _arguments(argv)
     all_tests = tuple(sorted(TESTS_DIR.glob("test_*.py")))
     if not all_tests:
-        print("No tests found.", file=sys.stderr)
+        print("Provide test_*.py files for collection.", file=sys.stderr)
         return 2
     audit_errors = _collection_audit_errors(all_tests)
     if audit_errors:
@@ -832,22 +947,50 @@ def main(argv: Sequence[str] | None = None) -> int:
         shard_count=arguments.shard_count,
     )
     if not tests:
-        print("No tests selected for this shard.", file=sys.stderr)
+        print("Select at least one test for this shard.", file=sys.stderr)
         return 2
+    durations, default_seconds = _load_test_durations()
+    estimated_seconds = sum(
+        _estimated_seconds(test, durations, default_seconds) for test in tests
+    )
+    if arguments.list:
+        print(
+            f"SHARD_SELECTION index={arguments.shard_index} "
+            f"count={arguments.shard_count} modules={len(tests)} "
+            f"estimated_seconds={estimated_seconds:.3f}",
+            flush=True,
+        )
+        for test in tests:
+            print(f"SHARD_TEST={test.name}")
+        return 0
+    return _run_selected_tests(arguments, tests)
+
+
+def _run_selected_tests(
+    arguments: argparse.Namespace,
+    tests: Sequence[Path],
+) -> int:
     retried_modules: list[str] = []
+    failures: list[str] = []
+    measured_durations: dict[str, float] = {}
     with TemporaryDirectory(prefix="mohan-test-suite-") as suite_temp:
         suite_root = Path(suite_temp)
         for index, test in enumerate(tests, start=1):
             print(f"[{index}/{len(tests)}] {test.name}", flush=True)
+            module_started = time.perf_counter()
             try:
                 commands = _test_commands(test)
             except OSError, SyntaxError, UnicodeError:
-                print(
-                    f"FAILED: {test.name} (exit {MALFORMED_TEST_EXIT_CODE})",
-                    file=sys.stderr,
+                failure = (
+                    f"FAILED: {test.name} (exit {MALFORMED_TEST_EXIT_CODE})"
                 )
-                _print_retried_modules(retried_modules)
-                return MALFORMED_TEST_EXIT_CODE
+                if not arguments.aggregate:
+                    print(failure, file=sys.stderr)
+                    _print_retried_modules(retried_modules)
+                    return MALFORMED_TEST_EXIT_CODE
+                failures.append(failure)
+                measured_durations[test.name] = time.perf_counter() - module_started
+                continue
             for command_index, command in enumerate(commands, start=1):
                 returncode = _run_with_retry(
                     command,
@@ -859,21 +1002,36 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
                 if returncode:
                     if returncode == TEST_TIMEOUT_EXIT_CODE:
-                        print(
-                            f"FAILED: {test.name} "
-                            f"(timeout {TEST_TIMEOUT_SECONDS}s)",
-                            file=sys.stderr,
-                        )
+                        reason = f"timeout {TEST_TIMEOUT_SECONDS}s"
                     else:
-                        print(
-                            f"FAILED: {test.name} (exit {returncode})",
-                            file=sys.stderr,
-                        )
-                    _print_retried_modules(retried_modules)
-                    return returncode
+                        reason = f"exit {returncode}"
+                    command_label = (
+                        f" command {command_index}/{len(commands)}"
+                        if arguments.aggregate and len(commands) > 1
+                        else ""
+                    )
+                    failure = f"FAILED: {test.name}{command_label} ({reason})"
+                    if not arguments.aggregate:
+                        print(failure, file=sys.stderr)
+                        _print_retried_modules(retried_modules)
+                        return returncode
+                    failures.append(failure)
+            measured_durations[test.name] = time.perf_counter() - module_started
+    if arguments.write_durations is not None:
+        _write_test_durations(arguments.write_durations, measured_durations)
+        print(
+            f"TEST_DURATIONS_WRITTEN={arguments.write_durations} "
+            f"modules={len(measured_durations)}",
+            flush=True,
+        )
     # A module that only passed after a retry still exits 0, but the summary
-    # must name it so intermittent failures never stay invisible.
+    # must name it so every intermittent issue remains visible.
     _print_retried_modules(retried_modules)
+    if failures:
+        print(f"AGGREGATE_FAILURES={len(failures)}", file=sys.stderr)
+        for failure in failures:
+            print(failure, file=sys.stderr)
+        return AGGREGATE_FAILURE_EXIT_CODE
     print(f"ALL_{len(tests)}_TESTS_OK")
     return 0
 
@@ -906,9 +1064,8 @@ def _run_with_retry(
                 ),
             )
         except subprocess.TimeoutExpired:
-            # The caller prints the single, stable timeout line; a timeout is
-            # never retried because it signals a genuinely hung test, not a
-            # timing race.
+            # The caller prints one stable timeout line. A timeout signals a hung test
+            # and immediately returns its exit code; timing-race retries apply separately.
             return TEST_TIMEOUT_EXIT_CODE
         if returncode == 0:
             return 0

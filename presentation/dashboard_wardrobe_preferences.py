@@ -15,7 +15,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.autonomous_wardrobe import DEFAULT_MANUAL_LOCK
-lazy from presentation.flagship_theme import mark_flagship_card
+lazy from presentation.dashboard_shared import mark_flagship_card
 
 __all__ = ("DashboardWardrobePreferencesMixin",)
 
@@ -28,12 +28,12 @@ class DashboardWardrobePreferencesMixin:
         mark_flagship_card(preferences_card)
         preferences = QVBoxLayout(preferences_card)
         preferences_title = QLabel(
-            self._t("wardrobe_autonomous_enabled", "允許墨寒自主選裝")
+            self._t("wardrobe_autonomous_enabled", "允許{character_name}自主選裝")
         )
         preferences_title.setProperty("mohanRole", "cardTitle")
         preferences.addWidget(preferences_title)
         self.autonomous_wardrobe_enabled = QCheckBox(
-            self._t("wardrobe_autonomous_enabled", "允許墨寒自主選裝")
+            self._t("wardrobe_autonomous_enabled", "允許{character_name}自主選裝")
         )
         self.autonomous_wardrobe_enabled.setChecked(
             bool(self.db.setting("autonomous_wardrobe_enabled", True))
@@ -41,7 +41,7 @@ class DashboardWardrobePreferencesMixin:
         self.self_outfit_generation_enabled = QCheckBox(
             self._t(
                 "wardrobe_self_generation_enabled",
-                "允許墨寒雲端自創新衣（可能產生費用）",
+                "允許{character_name}雲端自創新衣（可能產生費用）",
             )
         )
         self.self_outfit_generation_enabled.setChecked(
@@ -88,7 +88,7 @@ class DashboardWardrobePreferencesMixin:
         self.manual_wardrobe_lock_hours.setWrapping(True)
         self.manual_wardrobe_lock_hours.setSuffix(" h")
         self.manual_wardrobe_lock_hours.setSpecialValueText(
-            self._t("wardrobe_manual_lock_off", "不鎖定")
+            self._t("wardrobe_manual_lock_off", "可自主選裝")
         )
         self.manual_wardrobe_lock_hours.setValue(
             int(self.db.setting("manual_wardrobe_lock_hours", 6))

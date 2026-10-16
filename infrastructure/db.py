@@ -7,10 +7,12 @@ lazy from dataclasses import dataclass
 lazy from datetime import datetime, timedelta
 lazy from pathlib import Path
 
+lazy from domain.character_source import active_character_data
 lazy from domain.language_support import (
     LEGACY_AUTHOR_ORGANIZATION, LEGACY_TRANSCRIPTION_PROMPT, canonical_ui_language, localized_transcription_prompt,
 )
 lazy from domain.time_utils import local_wall_time
+lazy from domain.scalar_conversion import require_value
 lazy from infrastructure.db_affection import StudioDBAffectionMethods
 lazy from infrastructure.db_corrupt_data import StudioDBCorruptDataMethods
 lazy from infrastructure.db_memory import StudioDBMemoryMethods
@@ -20,8 +22,8 @@ lazy from infrastructure.sqlite_safety import classify_db_file, table_column_nam
 
 MAX_MEMORY_TITLE_LENGTH = 36
 
-# 裁決 2026-08-28：這些鍵是執行期狀態（好感、天氣、自主衣櫥、新裝披露），
-# 而非使用者可編輯的設定；restore_settings_snapshot 於快照回復時保留當前值。
+# 這些鍵是執行期狀態或立即保存的 UI 偏好，不屬於底部設定交易；
+# restore_settings_snapshot 於快照回復時保留當前值。
 RUNTIME_PRESERVED_KEYS = frozenset({
     "affinity_value", "jealousy_value", "affinity_interaction_count",
     "favor_value", "satiety_value", "camera_presence_state",
@@ -29,7 +31,7 @@ RUNTIME_PRESERVED_KEYS = frozenset({
     "wardrobe_generation_last_error", "wardrobe_last_generated_at",
     "active_outfit_id", "wardrobe_last_changed_at", "wardrobe_manual_lock_until",
     "wardrobe_current_weight", "weather_temperature_c", "weather_condition",
-    "wardrobe_reveal_pending_outfit_id",
+    "wardrobe_reveal_pending_outfit_id", "desktop_status_collapsed",
 })
 
 DEFAULT_REMINDERS = frozendict({
@@ -96,18 +98,6 @@ MODEL_DEFAULT_MIGRATIONS = (
         "gpt-5.6-luna",
     ),
 )
-LEGACY_PROFILE_DEFAULTS = frozendict({
-    "assistant_name": "墨寒",
-    "user_title": "主上",
-    "organization_name": "炎劍文化工作室",
-    "window_title": "",
-    "work_type": "創作／內容工作",
-    "ui_language": "zh-TW",
-    "wake_word": "墨寒",
-    "onboarding_complete": True,
-    "transcription_language": "zh",
-    "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT,
-})
 TRANSCRIPTION_PROFILE_KEYS = (
     "ui_language",
     "assistant_name",
@@ -115,6 +105,12 @@ TRANSCRIPTION_PROFILE_KEYS = (
     "organization_name",
     "wake_word",
 )
+
+
+def _legacy_profile_defaults() -> Mapping[str, object]:
+    # Read on use: the composition root activates the character after import.
+    return frozendict({**active_character_data().identity.legacy_defaults, "onboarding_complete": True,
+                       "transcription_language": "zh", "transcription_prompt": LEGACY_TRANSCRIPTION_PROMPT})
 
 
 @dataclass(frozen=True, slots=True)
@@ -132,10 +128,7 @@ DURATION_FORMATS: Mapping[str, DurationFormat] = frozendict({
         with_hours="{hours} 小时 {minutes} 分",
         minutes_only="{minutes} 分钟",
     ),
-    "en": DurationFormat(
-        with_hours="{hours} h {minutes} min",
-        minutes_only="{minutes} min",
-    ),
+    "en": DurationFormat(with_hours="{hours} h {minutes} min", minutes_only="{minutes} min"),
     "ja-JP": DurationFormat(
         with_hours="{hours}時間{minutes}分",
         minutes_only="{minutes}分",
@@ -231,7 +224,7 @@ class StudioDBSettingsPort:
 
     def restore(self, snapshot: SettingsRowsSnapshot) -> None:
         if not isinstance(snapshot, SettingsRowsSnapshot):
-            raise TypeError("settings snapshot type is invalid")
+            raise TypeError("settings snapshot type needs a supported value")
         keys = snapshot.keys
         with self._db.conn:
             if keys:
@@ -288,7 +281,7 @@ class StudioDB:
         try:
             self._migrate()
         except Exception:
-            # A failed migration must never leave the profile database locked.
+            # A migration keeps the profile database available throughout its transaction.
             self.conn.close()
             raise
 
@@ -486,7 +479,7 @@ class StudioDB:
         ).fetchone()
         if marker is None:
             # Existing profiles retain their rows; new profiles intentionally
-            # start empty instead of assuming a publishing workflow.
+            # start from a fresh store and add publishing workflow entries explicitly.
             self.conn.execute(
                 "INSERT INTO settings(key,value) "
                 "VALUES('custom_platforms_v1207_seeded','true')"
@@ -533,8 +526,8 @@ class StudioDB:
         if not self.existing_install:
             return
         # Existing users retain identity and workflow choices; only fields
-        # unavailable in older releases are supplied.
-        for key, value in LEGACY_PROFILE_DEFAULTS.items():
+        # needed by older releases are supplied.
+        for key, value in _legacy_profile_defaults().items():
             self.conn.execute(
                 "INSERT OR IGNORE INTO settings(key,value) VALUES(?,?)",
                 (key, json.dumps(value, ensure_ascii=False)),
@@ -639,7 +632,7 @@ class StudioDB:
             ),
         )
         self.conn.commit()
-        return int(cur.lastrowid)
+        return require_value(cur.lastrowid, "SQLite insert did not return a row ID.")
 
     def list_todos(self, include_done: bool = False) -> list[sqlite3.Row]:
         where = "" if include_done else "WHERE status != '完成'"
@@ -688,7 +681,7 @@ class StudioDB:
             ),
         )
         self.conn.commit()
-        return int(cur.lastrowid)
+        return require_value(cur.lastrowid, "SQLite insert did not return a row ID.")
 
     def list_ideas(self, limit: int = 30) -> list[sqlite3.Row]:
         return list(
@@ -983,7 +976,7 @@ class StudioDB:
                     ") VALUES(?,?,?,?,?)",
                     (name, definition, int(enabled), now, now),
                 )
-                return int(cursor.lastrowid)
+                return require_value(cursor.lastrowid, "SQLite insert did not return a row ID.")
             self.conn.execute(
                 "UPDATE workflows SET name=?,definition=?,enabled=?,"
                 "updated_at=? WHERE id=?",
@@ -1149,7 +1142,7 @@ class StudioDB:
             ),
         )
         self.conn.commit()
-        return int(cursor.lastrowid)
+        return require_value(cursor.lastrowid, "SQLite insert did not return a row ID.")
 
     def paired_devices(self) -> list[sqlite3.Row]:
         return list(

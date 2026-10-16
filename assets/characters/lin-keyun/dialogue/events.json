@@ -1,0 +1,44 @@
+{
+  "fixed_occasions": [
+    {
+      "day": 8,
+      "grumble_hour": 18,
+      "hint_hour": 8,
+      "kind": "mohan_birthday",
+      "minimum_grumble_delay_seconds": 14400.0,
+      "month": 1
+    },
+    {
+      "day": 14,
+      "grumble_hour": 19,
+      "hint_hour": 10,
+      "kind": "valentines_day",
+      "minimum_grumble_delay_seconds": 14400.0,
+      "month": 2
+    },
+    {
+      "day": 14,
+      "grumble_hour": 19,
+      "hint_hour": 10,
+      "kind": "white_day",
+      "minimum_grumble_delay_seconds": 14400.0,
+      "month": 3
+    },
+    {
+      "day": 24,
+      "grumble_hour": 20,
+      "hint_hour": 10,
+      "kind": "christmas_day",
+      "minimum_grumble_delay_seconds": 14400.0,
+      "month": 12
+    }
+  ],
+  "qixi": {
+    "grumble_hour": 19,
+    "hint_hour": 10,
+    "minimum_grumble_delay_seconds": 14400.0
+  },
+  "schema": "flameblade.character-events.v1",
+  "schema_version": 1,
+  "zodiac": "capricorn"
+}

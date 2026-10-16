@@ -3,102 +3,103 @@
     {
       "landmarks": [
         [
-          315,
-          789
+          345,
+          819
         ],
         [
-          325,
-          817
+          352,
+          836
         ],
         [
-          321,
-          840
+          355,
+          851
         ],
         [
-          317,
-          857
+          350,
+          862
         ],
         [
-          315,
-          874
+          362,
+          871
         ],
         [
-          297,
-          849
-        ],
-        [
-          296,
-          874
-        ],
-        [
-          303,
-          889
-        ],
-        [
-          310,
-          901
-        ],
-        [
-          292,
-          847
-        ],
-        [
-          292,
-          877
-        ],
-        [
-          300,
-          893
-        ],
-        [
-          308,
-          903
-        ],
-        [
-          290,
-          845
-        ],
-        [
-          290,
-          874
-        ],
-        [
-          299,
-          890
-        ],
-        [
-          308,
-          899
-        ],
-        [
-          292,
-          842
-        ],
-        [
-          292,
+          338,
           865
         ],
         [
-          298,
-          879
+          342,
+          883
         ],
         [
-          304,
+          348,
+          894
+        ],
+        [
+          354,
+          901
+        ],
+        [
+          336,
+          865
+        ],
+        [
+          340,
+          887
+        ],
+        [
+          347,
+          899
+        ],
+        [
+          355,
+          906
+        ],
+        [
+          336,
+          865
+        ],
+        [
+          340,
           888
+        ],
+        [
+          348,
+          899
+        ],
+        [
+          355,
+          905
+        ],
+        [
+          339,
+          865
+        ],
+        [
+          342,
+          883
+        ],
+        [
+          348,
+          894
+        ],
+        [
+          354,
+          900
         ]
       ],
       "model_evidence": {
-        "augmentation": "rotate-counterclockwise",
-        "confidence": 0.975829,
+        "augmentation": "native",
+        "confidence": 0.895225,
         "model_handedness": "left",
-        "pixel_refinement": "nearest-skin-within-8px"
+        "pixel_refinement": "nearest-skin-within-8px",
+        "selection_rule": "highest-confidence-candidate-passing-finger-proportion-audit"
       },
       "occlusions": [],
       "roi": [
-        282,
-        781,
-        52,
-        131
+        328,
+        811,
+        43,
+        104
       ],
       "side": "left",
       "thumb_side_check": false
@@ -106,102 +107,103 @@
     {
       "landmarks": [
         [
-          713,
-          796
+          666,
+          806
         ],
         [
-          710,
-          819
+          653,
+          840
         ],
         [
-          716,
-          837
+          653,
+          855
         ],
         [
-          721,
-          849
+          646,
+          871
         ],
         [
-          724,
-          860
+          643,
+          885
         ],
         [
-          738,
-          844
+          681,
+          871
         ],
         [
-          734,
-          866
+          670,
+          896
         ],
         [
-          730,
-          879
+          656,
+          909
         ],
         [
-          727,
-          888
+          644,
+          917
         ],
         [
-          738,
-          844
-        ],
-        [
-          735,
+          684,
           869
         ],
         [
-          730,
-          881
+          671,
+          901
         ],
         [
-          726,
-          889
+          654,
+          913
         ],
         [
-          735,
-          844
+          641,
+          917
         ],
         [
-          733,
-          868
+          682,
+          866
         ],
         [
-          729,
-          881
+          671,
+          897
         ],
         [
-          725,
-          891
+          655,
+          909
         ],
         [
-          729,
-          844
+          641,
+          915
         ],
         [
-          728,
-          864
+          675,
+          861
         ],
         [
-          726,
-          875
+          666,
+          886
         ],
         [
-          725,
-          884
+          655,
+          898
+        ],
+        [
+          646,
+          904
         ]
       ],
       "model_evidence": {
-        "augmentation": "native",
-        "confidence": 0.814288,
+        "augmentation": "rotate-counterclockwise",
+        "confidence": 0.942291,
         "model_handedness": "right",
-        "pixel_refinement": "nearest-skin-within-8px"
+        "pixel_refinement": "nearest-skin-within-8px",
+        "selection_rule": "highest-confidence-candidate-passing-finger-proportion-audit"
       },
       "occlusions": [],
       "roi": [
-        702,
-        788,
-        45,
-        112
+        633,
+        798,
+        60,
+        128
       ],
       "side": "right",
       "thumb_side_check": false
@@ -218,7 +220,7 @@
     "hand_confidence_threshold": 0.65,
     "palm_threshold": 0.45,
     "pipeline": "OpenCV Zoo MediaPipe PalmDet + HandPose FP32 ONNX",
-    "source_sha256": "474152478d191ff3d3ae29062249683c0b1930867237f38e98573ba9bee81141"
+    "source_sha256": "7b596fa8e5a6b9eae620440db7b98e0db2d2182a110ad4fd748362aaaadb965d"
   },
   "occluded_hands": [],
   "occluders": [],
@@ -227,7 +229,7 @@
       "label": "face",
       "rect": [
         412,
-        138,
+        164,
         200,
         220
       ]
@@ -236,13 +238,37 @@
       "label": "body",
       "rect": [
         412,
-        318,
+        344,
         200,
         220
       ]
     }
   ],
   "schema_version": 1,
+  "selection_correction": {
+    "candidate_evidence": [
+      {
+        "augmentation": "native",
+        "confidence": 0.895225,
+        "finger_proportion_pass": true,
+        "side_after_screen_assignment": "left"
+      },
+      {
+        "augmentation": "rotate-counterclockwise",
+        "confidence": 0.942291,
+        "finger_proportion_pass": true,
+        "side_after_screen_assignment": "right"
+      }
+    ],
+    "operation": "replayed_existing_fixed_augmentation_candidates_and_selected_passing_native_points",
+    "prohibited": [
+      "no_point_interpolation",
+      "no_coordinate_edit",
+      "no_image_edit",
+      "no_geometry_morphology"
+    ],
+    "reason": "first-pass highest-confidence selection failed hand_finger_proportion on the existing audit"
+  },
   "skin_background": true,
   "view_id": "yaw-180-pitch+00",
   "width": 1024,

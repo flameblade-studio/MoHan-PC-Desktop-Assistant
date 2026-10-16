@@ -18,13 +18,14 @@ lazy from pathlib import Path
 
 lazy from PySide6.QtGui import QImage
 
+lazy from domain.character_runtime import CHARACTER_LAYER_ROLES, character_rig_manifest
 lazy from infrastructure.layered_face_assets import (
     LAYERED_FACE_DIMENSION,
     LayeredFaceManifest,
 )
 
 # A layer whose opaque bounding box drifts more than this many pixels from the
-# pose's base layer is rejected. One pixel is the hard ceiling: any larger jump
+# pose's base layer receives an audit result. One pixel is the hard ceiling: any larger jump
 # is visible as a seam in continuous-gradient mode.
 MAX_ANCHOR_DRIFT_PIXELS = 1
 
@@ -33,26 +34,11 @@ MAX_ANCHOR_DRIFT_PIXELS = 1
 # sleeve_left, sleeve_right, ornament) legitimately extend beyond the face, so
 # their centers are not checked against the base region.
 FACIAL_LAYERS = frozenset(
-    {
-        "base",
-        "jaw",
-        "oral_cavity",
-        "teeth_tongue",
-        "lip_lower",
-        "lip_upper",
-        "corner_left",
-        "corner_right",
-        "blush_left",
-        "blush_right",
-        "iris_left",
-        "iris_right",
-        "eyelid_left",
-        "eyelid_right",
-        "eyeliner_left",
-        "eyeliner_right",
-        "brow_left",
-        "brow_right",
-    }
+    (
+        *character_rig_manifest().face_authority_layers,
+        CHARACTER_LAYER_ROLES["mouth_cavity"],
+        CHARACTER_LAYER_ROLES["teeth_and_tongue"],
+    )
 )
 
 
@@ -75,7 +61,7 @@ class LayerAnchor:
 
 
 def _opaque_bounds(path: Path) -> LayerAnchor | None:
-    """Return the opaque bounding box of a PNG, or ``None`` if fully transparent."""
+    """Return the opaque bounding box of a PNG, or the sentinel if fully transparent."""
     image = QImage(str(path))
     if image.isNull():
         raise ValueError(f"cannot decode layered face PNG: {path.name}")
@@ -115,8 +101,7 @@ def _center_escape(reference: LayerAnchor, candidate: LayerAnchor) -> float:
     A local layer (iris, blush, jaw, corner) legitimately occupies only a small
     region of the face, so its box is expected to sit *somewhere inside* the
     base layer's box rather than match it. The anchor check therefore verifies
-    that each layer's center still lands inside the base's opaque region; a
-    center that escapes the base region means the layer was authored on a
+    that each layer's center still lands inside the base's opaque region; A center outside the base region indicates the layer was authored on a
     shifted canvas and would produce a visible seam.
     """
 
@@ -135,15 +120,13 @@ def _center_escape(reference: LayerAnchor, candidate: LayerAnchor) -> float:
 
 
 def calibrate_layered_face_assets(manifest: LayeredFaceManifest) -> None:
-    """Fail closed if any layer's center escapes the base layer's region.
+    """Apply a protective result when any layer's center leaves the base layer's region.
 
     The ``base`` layer of each pose is the alignment reference. Every other
     layer's opaque bounding-box center must land inside the base layer's opaque
-    region (within ``MAX_ANCHOR_DRIFT_PIXELS`` of tolerance). A center that
-    escapes the base region means the layer was authored on a shifted canvas and
+    region (within ``MAX_ANCHOR_DRIFT_PIXELS`` of tolerance). A center outside the base region indicates the layer was authored on a shifted canvas and
     would produce a visible seam in continuous-gradient mode. A fully
-    transparent layer is also rejected, since it would silently erase that
-    facial feature.
+    transparent layer receives an audit result because it could erase that facial feature.
     """
 
     for pose, layered_pose in manifest.poses.items():

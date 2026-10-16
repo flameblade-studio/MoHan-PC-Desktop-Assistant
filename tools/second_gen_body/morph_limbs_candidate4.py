@@ -35,7 +35,7 @@ OUT = ROOT / "work/second-gen-body/limb-morph"
 TARGET_HEIGHT = 168.0
 VERTEX_COUNT, FACE_COUNT = 18_439, 36_874
 
-# 官方斷面（candidate3-report.json），本形變不得改變任何一個
+# 本形變完整保留官方斷面（candidate3-report.json）
 TORSO_SECTIONS = {
     "hip": (0.50, 90.06925217482814),
     "waist": (0.62, 62.21390939635582),
@@ -186,12 +186,12 @@ def scale_field(arc: np.ndarray, segment_scales: list[float],
     """沿弧長的連續縮放場：兩端收斂回 1.0，段間平滑過渡。
 
     節點取 [0, 0.5/n, 1.5/n, ..., 1]，值取 [1, s1, s2, ..., 1]，
-    再以 smoothstep 在節點間插值——比線性插值少一階不連續，
-    不會在肘、膝留下折線。
+    再以 smoothstep 在節點間插值，讓一階導數保持連續，
+    並在肘、膝維持平滑過渡。
     """
     count = len(segment_scales)
     knots = [0.0] + [(i + 0.5) / count for i in range(count)] + [1.0]
-    values = [1.0] + list(segment_scales) + [1.0]
+    values = [1.0, *list(segment_scales), 1.0]
     result = np.ones_like(arc)
     for index in range(len(knots) - 1):
         low, high = knots[index], knots[index + 1]
@@ -204,7 +204,7 @@ def scale_field(arc: np.ndarray, segment_scales: list[float],
     # 端點附近再乘一層收斂，確保與軀幹／手腳的接縫處完全不動。
     # taper_start 讓收斂的起點往後推：腿鏈的臀圍量測面落在弧長約 5% 處，
     # 若從 0 起算，收斂還沒完成就跨過量測面，臀圍會被改掉 0.15 cm——
-    # 而 90.07 是擁有者核可的數字，不可動。
+    # 而 90.07 是擁有者核可的數字，須完整保留。
     head = np.clip((arc - taper_start) / TAPER, 0.0, 1.0)
     tail = np.clip((1.0 - arc) / TAPER, 0.0, 1.0)
     edge = np.minimum(head, tail)
@@ -240,7 +240,7 @@ def main() -> None:
     print(f"目標百分位 P{args.percentile:g}")
     for name in ("uparm", "lowarm", "upleg", "lowleg"):
         print(f"  {name:7s} {CURRENT[name][0]:6.1f} → {goals[name]:6.1f} cm"
-              f"   縮放 {ratios[name]:.4f}（{ratios[name]-1:+.1%}）")
+              f"   縮放 {ratios[name]:.4f}（{ratios[name] - 1:+.1%}）")
 
     # 375 個關節模糊頂點（part 255）必須跟著最近的那條肢鏈一起動。
     # 第一版把它們排除在形變之外、卻納入量測，結果上臂只達成 -13.7%
@@ -264,7 +264,7 @@ def main() -> None:
     floor_probe = float(base[:, 1].min())
     height_probe = float(np.ptp(base[:, 1]))
     hip_plane_y = floor_probe + TORSO_SECTIONS["hip"][0] * height_probe
-    for chain, (part_sequence, bone_sequence, norm_sequence) in CHAINS.items():
+    for chain, (part_sequence, _bone_sequence, norm_sequence) in CHAINS.items():
         nodes = chain_nodes[chain]
         index = np.concatenate([
             np.flatnonzero(np.isin(part_ids, part_sequence)),
@@ -296,8 +296,12 @@ def main() -> None:
     sections = {}
     for name, (fraction, official) in TORSO_SECTIONS.items():
         found = plane_loop(result, faces, np.asarray([0.0, floor + fraction * height, 0.0]), up)
-        measured = found[0] if found else None
-        delta = abs(measured - official) if measured else float("inf")
+        if found is None or not found[1] or not np.isfinite(found[0]) or found[0] <= 0:
+            problems.append(f"軀幹斷面 {name} 缺失、未閉合或周長不可量測")
+            print(f"  {name:10s} 缺失、未閉合或周長不可量測，驗收不通過")
+            continue
+        measured, _closed = found
+        delta = abs(measured - official)
         sections[name] = {"official": official, "after": measured, "delta_cm": delta}
         flag = "OK" if delta <= TORSO_PRESERVE_TOLERANCE_CM else "← 已改變"
         if delta > TORSO_PRESERVE_TOLERANCE_CM:
@@ -310,7 +314,9 @@ def main() -> None:
         if not chain.startswith("l_"):
             continue
         nodes = np.asarray([joints[name] for name in bone_sequence])
-        for position, (part_id, norm_name) in enumerate(zip(part_sequence, norm_sequence)):
+        for position, (part_id, norm_name) in enumerate(
+            zip(part_sequence, norm_sequence, strict=True)
+        ):
             a, b = nodes[position], nodes[position + 1]
             axis = (b - a) / np.linalg.norm(b - a)
             member = (part_ids == part_id) | (part_ids == AMBIGUOUS)
@@ -338,7 +344,7 @@ def main() -> None:
         for vertex in result:
             stream.write(f"v {vertex[0]:.10f} {vertex[1]:.10f} {vertex[2]:.10f}\n")
         for face in faces:
-            stream.write(f"f {face[0]+1} {face[1]+1} {face[2]+1}\n")
+            stream.write(f"f {face[0] + 1} {face[1] + 1} {face[2] + 1}\n")
     report = {
         "status": "CANDIDATE_4_LIMB_MORPH_PENDING_OWNER_REVIEW",
         "base": "candidate3.obj",

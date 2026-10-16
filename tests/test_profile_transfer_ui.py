@@ -98,7 +98,7 @@ def assert_panel_options_preserve_legacy_calls(db: StudioDB) -> None:
         except TypeError:
             pass
         else:
-            raise AssertionError("invalid panel options were accepted")
+            raise AssertionError('panel options must satisfy the validation contract')
 
 
 def assert_default_opt_in_controls(db: StudioDB) -> None:

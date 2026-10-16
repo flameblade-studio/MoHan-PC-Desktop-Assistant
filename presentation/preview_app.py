@@ -15,6 +15,9 @@ from application.preview_app import (
     parse_preview_arguments,
     validate_preview_runtime,
 )
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from application.runtime_bootstrap import ensure_default_jit, jit_is_enabled
 
 ensure_default_jit(__name__, __file__)
@@ -122,7 +125,7 @@ _TEXT = deep_freeze({
             "✓ Native-format package and startup smoke test\n"
             "✓ Traditional Chinese, Simplified Chinese, English, and Japanese\n"
             "✓ Per-user paths and explicit platform capabilities\n"
-            "✓ Unsupported capabilities remain safely disabled"
+            "✓ Supported capabilities remain safely disabled"
         ),
         "limited_title": "Full capabilities not yet enabled",
         "limited": (
@@ -132,7 +135,7 @@ _TEXT = deep_freeze({
         ),
         "security_title": "Safety promise",
         "security": (
-            "This Preview exposes no API-key, OAuth, or Home Assistant token "
+            "This Preview does not provide API-key, OAuth, or Home Assistant token "
             "fields. Until native secure storage is verified, MoHan will not "
             "fall back to plaintext or pretend that protected features work."
         ),
@@ -377,6 +380,7 @@ def validate_preview_contract(window: PreviewWindow) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime()
     values = sys.argv[1:] if argv is None else argv
     args = parse_preview_arguments(values)
     if args.jit_status_output:

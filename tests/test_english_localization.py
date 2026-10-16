@@ -214,8 +214,8 @@ def assert_companion_voice_policy() -> list[tuple[str, str]]:
 
 
 def assert_empty_voice_selection_fails() -> None:
-    # The runtime never lets an empty selection fall through to an arbitrary
-    # Windows system default, which could be male.
+    # An empty selection uses the explicit companion-voice policy, preserving
+    # the intended voice instead of falling through to a system default.
     tts = WindowsTTS(language="en")
     failures: list[str] = []
     tts.failed.connect(failures.append)

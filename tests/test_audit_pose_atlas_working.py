@@ -6,6 +6,7 @@ lazy import subprocess
 lazy import sys
 lazy import zlib
 lazy from itertools import pairwise
+lazy from dataclasses import replace
 lazy from pathlib import Path
 lazy from tempfile import TemporaryDirectory
 lazy from importlib import import_module
@@ -82,23 +83,23 @@ def _points(side: str) -> tuple[Point, ...]:
     for finger in ("thumb", "index", "middle", "ring", "pinky"):
         base = bases[finger]
         tip = tips[finger]
-        for step in range(4):
-            result.append(
-                Point(
+        result.extend(Point(
                     base.x + (tip.x - base.x) * step / 3,
                     base.y + (tip.y - base.y) * step / 3,
-                ),
-            )
+                ) for step in range(4))
     return tuple(result)
 
 
 def _disk(pixels: bytearray, center: Point, radius: int = 2) -> None:
     for y in range(round(center.y) - radius, round(center.y) + radius + 1):
         for x in range(round(center.x) - radius, round(center.x) + radius + 1):
-            if (x - center.x) ** 2 + (y - center.y) ** 2 <= radius**2:
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT:
-                    offset = (y * WIDTH + x) * 4
-                    pixels[offset : offset + 4] = bytes(PNG_SKIN)
+            if (
+                (x - center.x) ** 2 + (y - center.y) ** 2 <= radius**2
+                and 0 <= x < WIDTH
+                and 0 <= y < HEIGHT
+            ):
+                offset = (y * WIDTH + x) * 4
+                pixels[offset : offset + 4] = bytes(PNG_SKIN)
 
 
 def _line(
@@ -119,7 +120,7 @@ def _draw_hands(pixels: bytearray) -> None:
     for side in ("left", "right"):
         hand = _points(side)
         _disk(pixels, hand[0], 3)
-        for finger, indices in FINGERS.items():
+        for indices in FINGERS.values():
             _line(pixels, hand[0], hand[indices[0]])
             for first, second in pairwise(indices):
                 _line(pixels, hand[first], hand[second])
@@ -205,7 +206,7 @@ def _run_audit(root: Path) -> subprocess.CompletedProcess[str]:
 
 
 def _load_payload(result: subprocess.CompletedProcess[str]) -> dict[str, object]:
-    assert result.returncode in (0, 1), result.stderr
+    assert result.returncode in {0, 1}, result.stderr
     return json.loads(result.stdout)
 
 
@@ -251,21 +252,11 @@ def test_dimension_mismatch_fails_closed() -> None:
 
 
 def _run_with_custom_count(root: Path, extra_yaw: int, extra_view_id: str) -> dict[str, object]:
-    original_yaws = audit_tool.CANONICAL_YAWS
-    original_view_id = audit_tool.canonical_view_id
-    try:
-        audit_tool.CANONICAL_YAWS = (*original_yaws, extra_yaw)
-
-        def patched_view_id(value: int) -> str:
-            if value == extra_yaw:
-                return extra_view_id
-            return original_view_id(value)
-
-        audit_tool.canonical_view_id = patched_view_id
-        return audit_tool.audit(root)
-    finally:
-        audit_tool.CANONICAL_YAWS = original_yaws
-        audit_tool.canonical_view_id = original_view_id
+    settings = replace(
+        audit_tool.DEFAULT_CHARACTER_SETTINGS,
+        views=(*audit_tool.DEFAULT_CHARACTER_SETTINGS.views, (extra_view_id, extra_yaw)),
+    )
+    return audit_tool.audit(root, settings=settings)
 
 
 def test_view_count_mismatch_fails_for_missing_or_extra_angles() -> None:
@@ -287,6 +278,48 @@ def test_view_count_mismatch_fails_for_missing_or_extra_angles() -> None:
             item for item in payload["views"] if item["view_id"] == extra_view_id
         )
         assert "asset_missing" in extra_view["issues"]
+
+
+def test_default_settings_match_existing_views_and_schema():
+    settings = audit_tool.DEFAULT_CHARACTER_SETTINGS
+    assert settings.views == tuple((canonical_view_id(yaw), yaw) for yaw in CANONICAL_YAWS)
+    assert (settings.width, settings.height) == (WIDTH, HEIGHT)
+    assert settings.schema == "mohan.pose-atlas.working-audit.v1"
+
+
+def test_fake_character_audit_reads_only_configured_paths_and_dimensions(tmp_path, monkeypatch):
+    settings_path = tmp_path / "settings.json"
+    settings_path.write_text(json.dumps({
+        "schema": "example.asset-audit.v1", "views": [["sample-profile", 30]],
+        "width": 8, "height": 9,
+    }), encoding="utf-8")
+    settings = audit_tool.load_character_settings(settings_path)
+    root = tmp_path / "example-assets"
+    root.mkdir()
+    (root / "sample-profile.png").write_bytes(b"fake image")
+    (root / "sample-profile.hands.json").write_text("{}", encoding="utf-8")
+    observed = []
+
+    class Result:
+        passed = True
+        problems = issues = skipped_checks = ()
+        visible_sides = occluded_sides = frozenset()
+
+    def build(path, evidence):
+        observed.append((path, evidence))
+        return Result()
+
+    monkeypatch.setattr(audit_tool, "build_hand_asset_evidence", build)
+    report = audit_tool.audit(root, settings=settings)
+    assert report["passed"] is True
+    assert report["schema"] == settings.schema
+    assert report["view_count"] == 1
+    assert observed[0][0] == root.resolve()
+    evidence = observed[0][1]
+    assert (evidence.view_id, evidence.yaw_degrees, evidence.width, evidence.height) == (
+        "sample-profile", 30, 8, 9,
+    )
+    assert report["views"][0]["view_id"] == "sample-profile"
 
 
 def main() -> int:

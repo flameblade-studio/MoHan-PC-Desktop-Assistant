@@ -19,8 +19,9 @@ lazy from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+lazy from presentation.qt_parent import require_qwidget
 
-lazy from application.presentation_ports import PlatformProgressUpdate
+lazy from application.service_contracts import PlatformProgressUpdate
 lazy from domain.time_utils import local_wall_time
 lazy from presentation.ui_localization import (
     PLATFORM_STATUS_LABELS,
@@ -261,7 +262,7 @@ class DashboardPlatformMixin:
                 self._t("platform_url_card_placeholder", "https://…（可留空）")
             ),
             validation=QLabel(),
-            updated=QLabel(self._t("platform_not_saved", "尚未保存")),
+            updated=QLabel(self._t("platform_not_saved", '等待儲存')),
             save_button=QPushButton(self._t("save_platform", "保存此平台")),
             # 計時器的父物件必須是卡片本身：卡片 deleteLater 時一併回收，
             # 不會在重建清單後累積掛在 Dashboard 上的孤兒 QTimer。
@@ -447,11 +448,11 @@ class DashboardPlatformMixin:
 
     def delete_custom_platform(self, platform: str) -> None:
         answer = QMessageBox.question(
-            self,
+            require_qwidget(self),
             self._t("platform_delete_title", "刪除工作平台"),
             self._t(
                 "platform_delete_confirm",
-                "確定刪除「{platform}」及其工作進度嗎？此動作無法復原。",
+                '確定永久刪除「{platform}」及其工作進度嗎？',
                 platform=platform,
             ),
         )
@@ -464,7 +465,7 @@ class DashboardPlatformMixin:
             self.platform_feedback.setText(
                 self._t(
                     "platform_not_found",
-                    "找不到工作平台：{platform}",
+                    '請重新整理工作平台清單並檢查此項目：{platform}',
                     platform=platform,
                 )
             )
@@ -521,7 +522,7 @@ class DashboardPlatformMixin:
             self._t("save_changes", "保存變更")
         )
         controls.updated.setText(
-            self._t("platform_not_saved", "尚未保存")
+            self._t("platform_not_saved", '等待儲存')
         )
         controls.timer.start()
         self.platform_feedback.setText(
@@ -638,14 +639,14 @@ class DashboardPlatformMixin:
             has_missing = bool(controls.missing.text().strip())
             visible = (
                 selected == "all"
-                or selected == "active"
-                and status not in {"尚未開始", "已完成", "已上架"}
-                or selected == "blocked"
-                and has_missing
-                or selected == "finished"
-                and status in {"已完成", "已上架"}
-                or selected == "not_started"
-                and status == "尚未開始"
+                or (selected == "active"
+                and status not in {"尚未開始", "已完成", "已上架"})
+                or (selected == "blocked"
+                and has_missing)
+                or (selected == "finished"
+                and status in {"已完成", "已上架"})
+                or (selected == "not_started"
+                and status == "尚未開始")
             )
             controls.card.setVisible(visible)
 
@@ -704,7 +705,7 @@ class DashboardPlatformMixin:
             self.speak_requested.emit(
                 self._t(
                     "all_platforms_saved_speech",
-                    "工作平台已保存。仍有 {count} 個平台標有待補資料或阻礙。",
+                    "",
                     count=missing_count,
                 ),
                 "happy",
@@ -729,7 +730,7 @@ class DashboardPlatformMixin:
             url = self._normalize_platform_url(row["url"] if row else "")
         if not url:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t(
                     "platform_url_missing_title",
                     "尚未設定網址",
@@ -743,7 +744,7 @@ class DashboardPlatformMixin:
             return
         if not url.lower().startswith(("https://", "http://")):
             QMessageBox.warning(
-                self,
+                require_qwidget(self),
                 self._t(
                     "platform_url_unsupported_title",
                     "網址格式不支援",

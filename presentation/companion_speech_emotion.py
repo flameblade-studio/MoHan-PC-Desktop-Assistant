@@ -12,6 +12,7 @@ layered-architecture line budget.
 """
 
 lazy from application.behavior_director import SemanticEmotion
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 lazy from domain.expression_system import EXPRESSION_TO_EMOTION
 
 __all__ = (
@@ -25,36 +26,37 @@ __all__ = (
 # Emotional prosody: map an expressive speech state to a small rate nudge so a
 # shy or gentle line is spoken a touch slower and an excited or proud line a
 # touch faster.  The user's configured rate (-5..5) remains the baseline; this
-# only adds a bounded offset that never pushes the rate outside the valid band.
-_EMOTION_RATE_ADJUSTMENT = frozendict({
-    "shy": -1,
-    "shy_front": -1,
-    "shy_cute_front": -1,
-    "gentle": -1,
-    "gentle_smile_front": -1,
-    "worried": -1,
-    "worried_front": -1,
-    "reminder": -1,
-    "happy": 1,
-    "proud": 1,
-    "proud_front": 1,
-    "eureka": 1,
-    "eureka_front": 1,
-    "surprised": 1,
-    "surprised_front": 1,
-    "exasperated": 1,
-    "exasperated_front": 1,
-})
+# only adds a bounded offset that keeps the rate inside the valid band.
+def _emotion_rate_adjustments() -> dict[str, int]:
+    return {
+        "shy": -1,
+        CHARACTER_EXPRESSION_ROLES["bashful"]: -1,
+        CHARACTER_EXPRESSION_ROLES["bashful_cute"]: -1,
+        "gentle": -1,
+        CHARACTER_EXPRESSION_ROLES["gentle"]: -1,
+        "worried": -1,
+        CHARACTER_EXPRESSION_ROLES["concern"]: -1,
+        "reminder": -1,
+        "happy": 1,
+        "proud": 1,
+        CHARACTER_EXPRESSION_ROLES["pride"]: 1,
+        "eureka": 1,
+        CHARACTER_EXPRESSION_ROLES["insight"]: 1,
+        "surprised": 1,
+        CHARACTER_EXPRESSION_ROLES["surprise"]: 1,
+        "exasperated": 1,
+        CHARACTER_EXPRESSION_ROLES["exasperation"]: 1,
+    }
 
 
 def _emotion_rate_adjustment(state: str) -> int:
     """Return a bounded rate nudge for an expressive speech state."""
-    return _EMOTION_RATE_ADJUSTMENT.get(str(state), 0)
+    return _emotion_rate_adjustments().get(str(state), 0)
 
 
 # Map an internal emotion name (from EXPRESSION_TO_EMOTION) to the semantic
 # emotion the behavior director understands.  This covers every expressive
-# state so attentive, gentle, and protective poses no longer collapse to
+# state so attentive, gentle, and protective poses stay distinct from
 # NEUTRAL during speech.
 _EMOTION_TO_SEMANTIC = frozendict({
     "attentive": SemanticEmotion.ATTENTIVE,

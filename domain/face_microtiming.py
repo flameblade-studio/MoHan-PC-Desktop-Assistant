@@ -1,6 +1,7 @@
 """Authoritative natural microtiming ranges for the companion face."""
 
 from __future__ import annotations
+lazy import itertools
 
 BLINK_INTERVAL_MS = (2_800, 6_200)
 BLINK_DURATION_MS = (118, 145)
@@ -27,7 +28,7 @@ def audit_interval_samples(
     *,
     allowed_range: tuple[int, int],
 ) -> tuple[str, ...]:
-    """Reject out-of-range or mechanically periodic face-event schedules."""
+    """Use in-range face-event schedules with natural timing."""
 
     if len(samples_ms) < MINIMUM_AUDIT_SAMPLES:
         return (f"{name}:insufficient-microtiming-samples",)
@@ -39,7 +40,7 @@ def audit_interval_samples(
         issues.append(f"{name}:microtiming-out-of-range")
     if len(set(samples_ms)) == 1:
         issues.append(f"{name}:mechanical-fixed-period")
-    deltas = tuple(end - start for start, end in zip(samples_ms, samples_ms[1:]))
+    deltas = tuple(end - start for start, end in itertools.pairwise(samples_ms))
     if deltas and len(set(deltas)) == 1:
         issues.append(f"{name}:mechanical-linear-period")
     return tuple(issues)

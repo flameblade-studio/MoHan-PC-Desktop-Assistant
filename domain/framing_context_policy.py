@@ -86,7 +86,7 @@ class WellbeingReminderSnapshot:
 
     def __post_init__(self) -> None:
         if not self.event_id.strip():
-            raise ValueError("Wellbeing event ID must not be empty.")
+            raise ValueError("Wellbeing event ID requires content.")
         if self.occurrence < 1:
             raise ValueError("Reminder occurrence must be positive.")
         values = (
@@ -96,9 +96,9 @@ class WellbeingReminderSnapshot:
             self.category_used,
         )
         if any(value < 0 for value in values):
-            raise ValueError("Reminder limits and usage must not be negative.")
+            raise ValueError("Reminder limits and usage accepts zero or greater.")
         if self.cooldown_seconds < 0.0 or self.seconds_since_last_nudge < 0.0:
-            raise ValueError("Reminder cooldown timing must not be negative.")
+            raise ValueError("Reminder cooldown timing accepts zero or greater.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -121,13 +121,13 @@ class FramingPolicyContext:
 
     def __post_init__(self) -> None:
         if self.away_seconds < 0.0:
-            raise ValueError("Away time must not be negative.")
+            raise ValueError("Away time accepts zero or greater.")
         if not 0.0 <= self.intimacy <= 1.0:
             raise ValueError("Intimacy must be within 0..1.")
         if not 0.0 <= self.emotion_intensity <= 1.0:
             raise ValueError("Emotion intensity must be within 0..1.")
         if self.speech_active and self.mouth_closed:
-            raise ValueError("Active speech cannot report a closed mouth.")
+            raise ValueError("Active speech reports an open mouth.")
 
 
 @dataclass(frozen=True, slots=True)
@@ -198,7 +198,7 @@ _REPEATED_WELLBEING_FRAMING = frozendict({
 def evaluate_framing_context(
     context: FramingPolicyContext,
 ) -> FramingPolicyResult:
-    """Score four shots without switching, cooling down, or retaining state."""
+    """Score four shots while keeping the selected view, cooling down, or retaining state."""
 
     scores = dict(_BASE_SCORES)
     reasons: dict[FramingMode, list[FramingReasonCode]] = {

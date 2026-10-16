@@ -193,7 +193,7 @@ def assert_store_failure_rolls_back_without_private_details() -> None:
     try:
         GestureConfigurationStore(broken).save(GestureConfiguration(enabled=True))
     except GestureConfigurationStoreError as error:
-        assert "rollback was incomplete" in str(error)
+        assert "rollback requires attention" in str(error)
         assert "PRIVATE" not in str(error)
     else:
         raise AssertionError("failing gesture rollback unexpectedly succeeded")

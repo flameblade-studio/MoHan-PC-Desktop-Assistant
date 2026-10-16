@@ -417,7 +417,7 @@ class OpenCVZooHandRunner:
 
 
 class HandLandmarkProvider:
-    """Fault-isolated provider that never retains a source frame."""
+    """Fault-isolated provider that keeps the source frame private."""
 
     def __init__(
         self,

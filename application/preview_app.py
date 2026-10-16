@@ -17,7 +17,7 @@ SUPPORTED_PREVIEW_PLATFORMS = frozendict({
 
 
 def normalized_preview_platform(value: str | None = None) -> str:
-    """Return a supported Preview platform without enabling product services."""
+    """Return a supported Preview platform while keeping product services opt-in."""
 
     candidate = str(value or sys.platform).strip().lower()
     if candidate.startswith("darwin") or candidate in {"mac", "macos"}:
@@ -65,7 +65,7 @@ def validate_preview_runtime(runtime: PreviewRuntime) -> None:
             "Preview platform unexpectedly exposes unverified capabilities: " + enabled
         )
     if not runtime.version.strip() or not runtime.architecture.strip():
-        raise RuntimeError("Preview runtime metadata is incomplete")
+        raise RuntimeError("Preview runtime metadata requires complete values")
 
 
 def parse_preview_arguments(argv: list[str]) -> argparse.Namespace:

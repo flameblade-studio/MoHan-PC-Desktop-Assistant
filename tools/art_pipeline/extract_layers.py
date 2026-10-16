@@ -219,7 +219,7 @@ def register(
     height = prev.shape[0]
     if step == "L2_garment":
         rows = slice(0, int(height * REGISTER_HEAD_ROI_BOTTOM_RATIO))
-    elif step in ("L3_hair", "L4_headwear"):
+    elif step in {"L3_hair", "L4_headwear"}:
         rows = slice(int(height * REGISTER_LOWER_ROI_TOP_RATIO), height)
     else:
         rows = slice(0, height)
@@ -246,7 +246,7 @@ def silhouette_id(prefix: str) -> str | None:
     if prefix.startswith("full_"):
         return prefix[len("full_") :]
     for key, silhouette in HALF_SILHOUETTES.items():
-        if prefix.startswith(f"halfprod_{key}_") or prefix.startswith(f"half_{key}"):
+        if prefix.startswith((f"halfprod_{key}_", f"half_{key}")):
             return silhouette
     if prefix.startswith("yaw000"):
         return "yaw+000-pitch+00"
@@ -359,7 +359,7 @@ def _headwear_cleanup(mask: np.ndarray, cur: np.ndarray) -> np.ndarray:
 def _safe_prefix(prefix: str) -> Path:
     candidate = Path(prefix)
     if candidate.is_absolute() or ".." in candidate.parts:
-        raise ValueError("prefix 必須是相對且不可離開輸出目錄")
+        raise ValueError("prefix 請使用位於輸出目錄內的相對路徑")
     return candidate
 
 
@@ -544,7 +544,7 @@ def _write_final_outputs(
     )
 
     def tile(image: np.ndarray) -> np.ndarray:
-        background = np.empty(image.shape[:2] + (3,), np.uint8)
+        background = np.empty((*image.shape[:2], 3), np.uint8)
         background[:, :] = SHEET_BACKGROUND_BGR
         alpha = image[:, :, 3:4].astype(np.float32) / 255.0
         composed = image[:, :, :3] * alpha + background * (1.0 - alpha)

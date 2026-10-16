@@ -6,7 +6,7 @@
 
 ### 安全與隱私
 
-- [ ] 未新增 API 金鑰、OAuth 權杖、錄音、資料庫或個人資料。
+- [ ] 本 PR 將 API 金鑰、OAuth 權杖、錄音、資料庫與個人資料留在既有安全邊界內。
 - [ ] 既有權限與確認邊界保持不變。
 - [ ] 資料庫遷移會保留既有使用者資料。
 
@@ -26,7 +26,7 @@
 
 ### 安全与隐私
 
-- [ ] 未新增 API 密钥、OAuth 令牌、录音、数据库或个人资料。
+- [ ] 本 PR 将 API 密钥、OAuth 令牌、录音、数据库与个人资料留在既有安全边界内。
 - [ ] 现有权限与确认边界保持不变。
 - [ ] 数据库迁移会保留现有用户数据。
 
@@ -46,7 +46,7 @@ Describe the change, reason, user impact, and verification results.
 
 ### Safety and privacy
 
-- [ ] No API keys, OAuth tokens, recordings, databases, or personal data were added.
+- [ ] This PR keeps API keys, OAuth tokens, recordings, databases, and personal data inside the existing safety boundary.
 - [ ] Existing permission and confirmation boundaries remain intact.
 - [ ] Database migrations preserve existing user data.
 
@@ -66,7 +66,7 @@ List any Windows, voice, model, database, or packaging compatibility impact.
 
 ### 安全性とプライバシー
 
-- [ ] API キー、OAuth トークン、録音、データベース、個人情報を追加していません。
+- [ ] この PR では API キー、OAuth トークン、録音、データベース、個人情報を既存の安全境界内で扱っています。
 - [ ] 既存の権限と確認境界を維持しています。
 - [ ] データベース移行は既存の利用者データを保持します。
 

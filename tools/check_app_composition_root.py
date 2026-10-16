@@ -181,9 +181,9 @@ def _validate_main(
     function = functions[0]
     issues: list[CompositionRootIssue] = []
     if function.args.args or function.args.posonlyargs or function.args.kwonlyargs or function.args.vararg or function.args.kwarg:
-        issues.append(_issue("main_arguments_forbidden", "main() must not accept arguments.", function))
+        issues.append(_issue("main_arguments_forbidden", "main() requires a parameter-free signature.", function))
     if function.decorator_list:
-        issues.append(_issue("main_decorator_forbidden", "main() must not use decorators.", function))
+        issues.append(_issue("main_decorator_forbidden", "Define main() as a plain function.", function))
     call = _single_main_call(function)
     if call is None or call.args or call.keywords:
         issues.append(

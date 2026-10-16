@@ -1,12 +1,9 @@
-"""Dashboard window resize contract.
+"""Dashboard resizing supports all edges and corners.
 
-v4.5.1 live report (2026-08-29): the dashboard could be resized from its
-left/right edges but not from the top/bottom edges or any corner.  Cause:
-word-wrapped labels propagate height-for-width up to the top-level layout,
-and Qt then treats the window height as a function of its width, so the
-native frame refuses vertical resizing.  The window overrides
-``hasHeightForWidth`` to keep its height a free variable; this contract
-keeps that override alive.
+v4.5.1 live report (2026-08-29): resizing worked only at the left and right
+edges. Word-wrapped labels propagated height-for-width to the top-level
+layout, coupling height to width. The hasHeightForWidth override keeps
+height independent so vertical and corner resizing remain available.
 """
 
 from __future__ import annotations
@@ -39,10 +36,9 @@ def test_dashboard_height_stays_a_free_variable() -> None:
         try:
             dashboard.show()
             app.processEvents()
-            # The layout may legitimately be height-for-width internally
-            # (word-wrapped labels), but the WINDOW must not be: that is what
-            # the native frame consults when deciding whether the top/bottom
-            # edges and corners may resize.
+            # Internal layouts may use height-for-width for wrapped labels. The window
+            # keeps height independent because the native frame uses its answer to
+            # enable resizing at vertical edges and corners.
             assert dashboard.hasHeightForWidth() is False
             assert dashboard.sizePolicy().hasHeightForWidth() is False
             assert dashboard.maximumHeight() > dashboard.minimumHeight()

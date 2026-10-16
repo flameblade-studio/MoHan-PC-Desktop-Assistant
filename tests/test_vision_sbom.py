@@ -110,7 +110,8 @@ def assert_models_are_machine_verifiable() -> None:
             {"type": "distribution", "url": asset.source}
         ]
     build_script = (ROOT / "build.ps1").read_text(encoding="utf-8")
-    assert '--add-data "assets;assets"' in build_script
+    assert '--add-data "$AssetStage;assets"' in build_script
+    assert 'stage_installer_assets.py' in build_script
     assert '--add-data "THIRD_PARTY_NOTICES.md;."' in build_script
 
 
@@ -176,8 +177,8 @@ source_revision = "unknown"
 license = "CC-BY-4.0"
 profiles = ["windows"]
 """
-    # Future theme/outfit package manifests use the same asset schema. Missing
-    # source or license fields must never be accepted as release inventory.
+    # Future theme/outfit manifests use the same schema. Every release asset
+    # requires complete source and license fields before inventory acceptance.
     for field in ("source", "license", "sha256", "path", "version"):
         damaged = manifest.replace(f'{field} = ', f'ignored_{field} = ', 1)
         with TemporaryDirectory() as raw:
@@ -188,7 +189,7 @@ profiles = ["windows"]
             except ValueError:
                 pass
             else:
-                raise AssertionError(f"asset manifest without {field} must fail")
+                raise AssertionError(f'asset manifest requires {field} must fail')
 
 
 def outfit_manifest(*, role: str = "garment") -> str:
@@ -269,7 +270,7 @@ def assert_outfit_pack_identity_and_reference_boundaries() -> None:
             except ValueError as exc:
                 assert "forbidden" in str(exc)
             else:
-                raise AssertionError(f"outfit pack must not provide {role}")
+                raise AssertionError(f'outfit packs must preserve the protected role: {role}')
         for forbidden in (
             "redistributable = false",
             "packaged = true",
@@ -286,7 +287,7 @@ def assert_outfit_pack_identity_and_reference_boundaries() -> None:
             except ValueError:
                 pass
             else:
-                raise AssertionError("real garment reference must not be packaged or redistributed")
+                raise AssertionError('real garment references must remain private working material')
         manifest.write_text(outfit_manifest(), encoding="utf-8")
         try:
             validate_asset_package_manifest(
@@ -296,7 +297,7 @@ def assert_outfit_pack_identity_and_reference_boundaries() -> None:
         except ValueError as exc:
             assert "approved core_body_skin" in str(exc)
         else:
-            raise AssertionError("outfit pack must not replace official body skin")
+            raise AssertionError('outfit packs must preserve official body skin')
 
 
 def run() -> None:

@@ -1,16 +1,23 @@
 from __future__ import annotations
 
+lazy from pathlib import Path
+
 lazy from PySide6.QtCore import Signal
 lazy from PySide6.QtWidgets import QDialog, QLayout, QVBoxLayout
 
 lazy from application.gesture_controller import GestureController
-lazy from application.presentation_ports import PresentationDatabasePort
+lazy from application.service_contracts import PresentationDatabasePort
 lazy from application.theme_pack_service import ThemePackService
 lazy from domain.theme_retint import retint_stylesheet
 lazy from domain.theme_pack import ThemePack
 lazy from domain.theme_session import ThemeResolution, ThemeSession
 lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_artwork import apply_dashboard_artwork
 lazy from presentation.dashboard_conversation import DashboardConversationMixin
+lazy from presentation.dashboard_theme_materials import (
+    external_theme_accent_stylesheet,
+    resolve_material_palette,
+)
 lazy from presentation.dashboard_platforms import DashboardPlatformMixin
 lazy from presentation.dashboard_settings import DashboardSettingsMixin
 lazy from presentation.dashboard_shell import DashboardShellMixin
@@ -27,9 +34,16 @@ lazy from presentation.lingxiao_shell import refresh_runtime_palette
 lazy from presentation.lingxiao_themes import (
     DEFAULT_THEME_ID,
     THEME_SETTING_KEY,
+    palette_for_theme,
 )
 
 __all__ = ("Dashboard",)
+
+
+def _float_setting(value: object) -> float:
+    if isinstance(value, int | float | str | bytes | bytearray):
+        return float(value)
+    raise TypeError("Dashboard scale requires a scalar value.")
 
 
 class Dashboard(
@@ -72,9 +86,11 @@ class Dashboard(
         parent=None,
         *,
         gesture_controller: GestureController | None = None,
+        defer_wardrobe_startup: bool = False,
     ):
         super().__init__(parent)
         self.gesture_controller = gesture_controller
+        self._defer_wardrobe_startup = defer_wardrobe_startup
         self._initialize_dashboard_state(db, dependencies)
         self._initialize_theme_support()
         self._configured_lingxiao_theme_id = str(
@@ -102,7 +118,7 @@ class Dashboard(
         apply_flagship_theme(
             self,
             high_contrast=self._runtime_lingxiao_high_contrast,
-            scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            scale=_float_setting(self.db.setting("flagship_ui_scale", 1.0)),
             theme=self._runtime_lingxiao_theme_id,
         )
         self._apply_theme_resolution(self.theme_session.last_resolution)
@@ -133,26 +149,47 @@ class Dashboard(
             else DEFAULT_THEME_ID
         )
 
+    def _apply_dashboard_artwork(
+        self,
+        theme: ThemePack | None = None,
+        background: Path | None = None,
+    ) -> None:
+        """Refresh decorative scenery from the active runtime theme palette."""
+
+        palette = palette_for_theme(
+            self._runtime_lingxiao_theme_id,
+            high_contrast=self._runtime_lingxiao_high_contrast,
+        )
+        apply_dashboard_artwork(
+            self, palette, theme, background,
+            high_contrast=self._runtime_lingxiao_high_contrast,
+        )
+
     def _apply_theme_resolution(self, resolution: ThemeResolution) -> None:
+        payload = resolution.payload
+        if resolution.resolved_id != "builtin" and not isinstance(payload, ThemePack):
+            raise TypeError("Resolved theme payload must be a theme pack.")
         self._set_runtime_lingxiao_theme(resolution)
         apply_flagship_theme(
             self,
             high_contrast=self._runtime_lingxiao_high_contrast,
-            scale=float(self.db.setting("flagship_ui_scale", 1.0)),
+            scale=_float_setting(self.db.setting("flagship_ui_scale", 1.0)),
             theme=self._runtime_lingxiao_theme_id,
+            font_family=payload.font_family if isinstance(payload, ThemePack) else None,
         )
         if resolution.resolved_id == "builtin":
             refresh_runtime_palette(
                 self,
                 active=self.db.active_session() is not None,
             )
+            self._apply_dashboard_artwork()
             self._enforce_readable_combo_popups()
             if hasattr(self, "chat"):
                 self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
             return
-        theme = resolution.payload
-        if not isinstance(theme, ThemePack):
+        if not isinstance(payload, ThemePack):
             raise TypeError("Resolved theme payload must be a theme pack.")
+        theme = payload
         # Retint the flagship stylesheet toward the pack's primary hue first:
         # appended low-specificity selectors alone lose every cascade fight
         # against the flagship's attribute selectors, which left installed
@@ -161,9 +198,18 @@ class Dashboard(
         # build_stylesheet overlay painted every unstyled QFrame with the
         # pack's dark card color plus a universal border — the black bands
         # and stray rectangles reported live on v4.6.0 (2026-08-30).  Only
-        # the pack's font choice survives as a non-structural rule.
+        # the pack's font choice is applied directly to the display, caps and
+        # body selectors by apply_flagship_theme above.
         stylesheet = retint_stylesheet(self.styleSheet(), theme.tokens)
-        stylesheet += f"QWidget {{ font-family:'{theme.font_family}'; }}"
+        palette = palette_for_theme(
+            self._runtime_lingxiao_theme_id,
+            high_contrast=self._runtime_lingxiao_high_contrast,
+        )
+        materials = resolve_material_palette(palette, theme)
+        stylesheet += external_theme_accent_stylesheet(
+            materials,
+            focus=theme.tokens["focus"],
+        )
         background = self.theme_pack_service.background_path(theme.theme_id)
         if background is not None:
             normalized = background.as_posix().replace("'", "\\'")
@@ -173,9 +219,11 @@ class Dashboard(
                 "}"
             )
         self.setStyleSheet(stylesheet)
+        self._apply_dashboard_artwork(theme, background)
         refresh_runtime_palette(
             self,
             active=self.db.active_session() is not None,
+            theme=theme,
         )
         self._enforce_readable_combo_popups()
         if hasattr(self, "chat"):

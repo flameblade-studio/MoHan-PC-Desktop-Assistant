@@ -112,7 +112,7 @@ def _download_source(cache: Path) -> Path:
         )
         downloads = tuple(cache.glob(f"[Pp]y[Ii]nstaller-{PYINSTALLER_VERSION}.tar.gz"))
         if len(downloads) != 1:
-            raise RuntimeError("Unable to identify the pinned PyInstaller source archive")
+            raise RuntimeError("Provide an identifiable source archive for the pinned PyInstaller version")
         downloads[0].replace(archive)
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
     if digest != SOURCE_SHA256:

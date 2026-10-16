@@ -9,22 +9,27 @@ lazy from PySide6.QtWidgets import (
     QApplication, QHBoxLayout, QLabel, QLineEdit,
     QMessageBox, QPushButton, QVBoxLayout, QWidget,
 )
-
+lazy from presentation.qt_parent import require_qwidget
 lazy from application.companion_phrasebook import (
     PHRASEBOOK_SETTING, CompanionPhrasebook,
 )
 lazy from application.outfit_reveal import (
     LAST_REVEALED_OUTFIT_KEY, is_outfit_origin_question, outfit_origin_reply,
 )
-lazy from application.presentation_ports import (
-    DEFAULT_TEXT_MODEL, AIWorkerRequest, format_duration,
-)
+lazy from application.presentation_ports import AIWorkerRequest, format_duration
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy from domain.app_profile import (
     persona_for_profile, personalize_text, profile_setting,
 )
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_expression_catalog
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions
-lazy from domain.language_support import is_english, is_japanese, is_simplified_chinese
+lazy from domain.sensory_synesthesia import (
+    runtime_dialogue_locale,
+    runtime_reply_expression_rules,
+)
 lazy from domain.text_normalizer import to_taiwan_traditional
 lazy from presentation.dashboard_dialogs import ChatHistoryDialog, ZoomTextBrowser
 
@@ -32,21 +37,28 @@ __all__ = ("DashboardConversationMixin", "classify_memory_text")
 
 MIN_CHAT_ZOOM_PERCENT = 60
 MAX_CHAT_ZOOM_PERCENT = 200
+_CHARACTER_DATA = load_mohan_character_data()
+_EXPRESSIONS = active_expression_catalog().emotion_to_expression
+_RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
+_REPLY_EXPRESSION_RULES = runtime_reply_expression_rules()
+_ZH_TW_IDENTITY = _CHARACTER_DATA.personas["zh-TW"].identity
+_EN_IDENTITY = _CHARACTER_DATA.personas["en"].identity
+_JA_IDENTITY = _CHARACTER_DATA.personas["ja-JP"].identity
 
 # Entries are stored pre-normalized: comma-free (`，`/`,`/`、` are stripped
 # from the incoming text), whitespace-collapsed, and casefolded, so every
 # phrase below must stay lowercase and comma-free to remain reachable.
 EMERGENCY_COMMANDS = frozenset(
     {
-        "墨寒停手",
-        "寒停手",
+        f"{_ZH_TW_IDENTITY.display_name}停手",
+        f"{_ZH_TW_IDENTITY.assistant_alias}停手",
         "停手",
         "停止所有操作",
         "取消所有任務",
-        "mohan stop",
+        f"{_EN_IDENTITY.display_name} stop".casefold(),
         "stop everything",
         "stop all tasks",
-        "墨寒止まって",
+        f"{_JA_IDENTITY.display_name}止まって",
         "止まって",
         "ぜんぶ止めて",
         "全部止めて",
@@ -142,10 +154,10 @@ class DashboardConversationMixin:
         history_row = QHBoxLayout()
         self.chat_retention = QLabel(
             self._t(
-                "chat_retention",
-                "對話保存在本機，不會自動刪除",
+                "chat_retention", '對話持續保留在本機，由您明確決定刪除',
             )
         )
+        self.chat_retention.setWordWrap(True)
         self.chat_retention.setStyleSheet("color: #356d88;")
         self.load_older_chat_btn = QPushButton(
             self._t("load_older_chat", "載入較早對話")
@@ -211,7 +223,6 @@ class DashboardConversationMixin:
         )
         self.chat.zoom_step_requested.connect(self.adjust_chat_zoom)
 
-
     def _chat_tab(self) -> QWidget:
         tab = QWidget()
         layout = QVBoxLayout(tab)
@@ -246,7 +257,6 @@ class DashboardConversationMixin:
         self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
         return tab
 
-
     def append_chat(self, speaker: str, text: str) -> None:
         color = (
             "#2f6987"
@@ -256,10 +266,9 @@ class DashboardConversationMixin:
         display_text = personalize_text(self.db, text)
         safe_text = html.escape(display_text).replace("\n", "<br>")
         self.chat.append(
-            f'<p><b style="color:{color}">{speaker}</b><br>{safe_text}</p>'
+            f'<p><b style="color:{color}">{html.escape(speaker)}</b><br>{safe_text}</p>'
         )
         self.chat.verticalScrollBar().setValue(self.chat.verticalScrollBar().maximum())
-
 
     def refresh_chat(self) -> None:
         self.chat.clear()
@@ -286,11 +295,9 @@ class DashboardConversationMixin:
         # the displayed text agrees with the already-correct percentage label.
         self.apply_chat_zoom(self.chat_zoom_percent, persist=False)
 
-
     def load_older_chat(self) -> None:
         self.chat_loaded_limit += 50
         self.refresh_chat()
-
 
     def manage_chat_history(self) -> None:
         manager = ChatHistoryDialog(
@@ -302,10 +309,8 @@ class DashboardConversationMixin:
         if manager.changed:
             self.refresh_chat()
 
-
     def adjust_chat_zoom(self, steps: int) -> None:
         self.apply_chat_zoom(self.chat_zoom_percent + (steps * 10))
-
 
     def apply_chat_zoom(self, percent: int, *, persist: bool = True) -> None:
         self.chat_zoom_percent = max(60, min(200, int(percent)))
@@ -321,12 +326,11 @@ class DashboardConversationMixin:
         if persist:
             self.db.set_setting("chat_zoom_percent", self.chat_zoom_percent)
 
-
     def send_chat(self) -> None:
         text = self.chat_input.text().strip()
         if not text:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t(
                     "send_chat_required_title",
                     "尚未輸入內容",
@@ -361,20 +365,18 @@ class DashboardConversationMixin:
         )
         self._start_next_ai_request()
 
-
     def _receive_remote_command(self, text: str) -> None:
         normalized = text.strip()
         if not normalized:
             return
         # The remote server has already authenticated and audited the device.
-        # It enters the same command path as local text so it cannot bypass
+        # It enters the same command path as local text so it stays within
         # command parsing, conversation history, or the flagship policy layer.
         bracket = normalized.find("] ")
         command = normalized[bracket + 2 :] if bracket >= 0 else normalized
         self._input_source = "remote"
         self.chat_input.setText(command)
         self.send_chat()
-
 
     def _start_next_ai_request(self) -> None:
         if self.ai_busy or not self.ai_queue:
@@ -417,7 +419,7 @@ class DashboardConversationMixin:
         )
         # Same guard pattern as presentation/flagship/planner.py: completion
         # callbacks carry the generation active at submission and are dropped
-        # once the dashboard closes, so a late worker can never touch the
+        # once the dashboard closes, so a late worker keeps the
         # closed database or deleted widgets.
         generation = self._ai_generation
         worker.signals.done.connect(
@@ -451,7 +453,6 @@ class DashboardConversationMixin:
         self.ai_busy = False
         self._finish_ai_wait_expression()
 
-
     def _schedule_ai_wait_expressions(self, text: str) -> None:
         """Schedule optional reactions; the status label is display-only."""
         self._finish_ai_wait_expression()
@@ -467,7 +468,6 @@ class DashboardConversationMixin:
                     cue.intensity,
                 ),
             )
-
 
     def _emit_ai_wait_expression(
         self,
@@ -485,7 +485,6 @@ class DashboardConversationMixin:
                 intensity,
             )
 
-
     def _finish_ai_wait_expression(self) -> None:
         generation = self.active_ai_wait_generation
         if not generation:
@@ -493,11 +492,9 @@ class DashboardConversationMixin:
         self.active_ai_wait_generation = 0
         self.ai_wait_expression_finished.emit(generation)
 
-
     def cancel_ai_wait_expression(self) -> None:
-        """Invalidate pending visual reactions without cancelling the API."""
+        """Invalidate pending visual reactions while preserving the API session."""
         self._finish_ai_wait_expression()
-
 
     def _capture_explicit_memory(self, text: str) -> None:
         if not bool(self.db.setting("auto_memory", True)):
@@ -521,7 +518,6 @@ class DashboardConversationMixin:
             category = classify_memory_text(text)
             self.db.add_memory(text, category, "conversation", 4)
             self.refresh_memories()
-
 
     def _handle_command(self, text: str, source: str = "local") -> bool:
         return (
@@ -550,9 +546,8 @@ class DashboardConversationMixin:
         )
         if not reply:
             return False
-        self._reply(reply, "shy_cute_front", source="wardrobe-origin")
+        self._reply(reply, _EXPRESSIONS["shy"], source="wardrobe-origin")
         return True
-
 
     def _handle_emergency_command(self, text: str) -> bool:
         comma_free = text.replace("，", "").replace(",", "").replace("、", "")
@@ -562,17 +557,14 @@ class DashboardConversationMixin:
         self._emergency_stop()
         return True
 
-
     def _handle_teasing_command(self, text: str) -> bool:
         if not any(marker in text for marker in TEASING_COMMAND_MARKERS):
             return False
         self._reply(
-            "主上莫要自作多情。妾不過是在觀察你的神色，"
-            "好替你籌謀下一步。至於旁的……並無此事。",
-            "caught",
+            str(_RUNTIME_DIALOGUE["dashboard_teasing"]),
+            _EXPRESSIONS["caught_gaze"],
         )
         return True
-
 
     def _handle_work_status_command(self, text: str) -> bool:
         if is_start_work_command(text):
@@ -586,11 +578,15 @@ class DashboardConversationMixin:
                 self.db.today_work_seconds(),
                 self.ui_language,
             )
-            self._reply(f"主上今日已工作 {duration}。", "speaking")
+            self._reply(
+                str(_RUNTIME_DIALOGUE["dashboard_work_duration"]).format(
+                    duration=duration,
+                ),
+                "speaking",
+            )
         else:
             return False
         return True
-
 
     def _handle_quick_capture_command(self, text: str) -> bool:
         marker = "幫我記一下"
@@ -598,7 +594,10 @@ class DashboardConversationMixin:
             return False
         content = text.split(marker, 1)[1].lstrip("：:，, ").strip()
         if not content:
-            self._reply("主上想讓妾記下什麼？", "worried")
+            self._reply(
+                str(_RUNTIME_DIALOGUE["dashboard_quick_capture_prompt"]),
+                "worried",
+            )
         elif any(marker in content for marker in IDEA_CAPTURE_MARKERS):
             self.db.add_idea(content)
             self.refresh_ideas()
@@ -608,7 +607,6 @@ class DashboardConversationMixin:
             self.refresh_todos()
             self._reply("已加入今日待辦。", "happy")
         return True
-
 
     def _handle_tool_instruction(self, text: str, source: str) -> bool:
         flagship_center = getattr(self, "flagship_center", None)
@@ -622,11 +620,10 @@ class DashboardConversationMixin:
             return False
         flagship_center.plan_instruction(text, source=source)
         self._reply(
-            "妾先整理成安全計畫，確認權限與目標後再請主上過目。",
-            "thinking_front",
+            str(_RUNTIME_DIALOGUE["dashboard_tool_plan"]),
+            _EXPRESSIONS["thinking"],
         )
         return True
-
 
     def _emergency_shortcut_activated(self) -> None:
         # 裁決：Esc 是全域緊急停止，但模態對話框開啟時，應用程式層級的
@@ -638,11 +635,9 @@ class DashboardConversationMixin:
             return
         self._emergency_stop()
 
-
     def _emergency_stop(self) -> None:
         if hasattr(self, "flagship_center"):
             self.flagship_center.emergency_stop()
-
 
     def _reply(
         self,
@@ -663,14 +658,13 @@ class DashboardConversationMixin:
         )
         self.speak_requested.emit(text, state)
 
-
     def _ai_done(self, text: str) -> None:
         # finally 鐵閘：_reply（語音／表情／桌寵）拋例外會被 Qt 事件圈吞掉，
         # 舊流程 ai_busy 永不釋放、面板凍在思考中（v4.5.1 實機回報）。
         try:
             self._finish_ai_wait_expression()
             tagged = parse_internal_emotion(text)
-            clean = tagged.text or "妾在。主上方才所言，容妾再細想一遍。"
+            clean = tagged.text or str(_RUNTIME_DIALOGUE["dashboard_ai_empty"])
             expression = (
                 tagged.expression
                 if tagged.valid_tag and tagged.expression is not None
@@ -686,147 +680,22 @@ class DashboardConversationMixin:
             self.ai_busy = False
             self._start_next_ai_request()
 
-
     @staticmethod
     def _reply_expression(text: str) -> str:
         compact = "".join(str(text).split())
-        rules = (
-            (
-                "mock_hit_front",
-                (
-                    "再胡說妾便敲你",
-                    "再胡說妾可要敲你",
-                    "當心妾敲你",
-                    "放肆，妾可要",
-                ),
-            ),
-            (
-                "mock_scold",
-                ("休得胡言", "莫要踰矩", "休要亂說"),
-            ),
-            (
-                "shy_cute_front",
-                (
-                    "莫要自作多情",
-                    "才沒有偷看",
-                    "妾並未偷看",
-                    "誰在注視你",
-                    "並無此事，主上",
-                ),
-            ),
-            (
-                "eureka_front",
-                ("妾想到了", "妾有辦法了", "關鍵原來在於"),
-            ),
-            (
-                "protective_front",
-                (
-                    "妾會護著主上",
-                    "不許任何人傷你",
-                    "誰也不得傷主上",
-                    "有妾護著主上",
-                ),
-            ),
-            (
-                "exasperated_front",
-                (
-                    "真拿主上沒辦法",
-                    "主上又來了",
-                    "讓妾省點心",
-                ),
-            ),
-            (
-                "restrained_amused_front",
-                (
-                    "妾忍俊不禁",
-                    "主上是在逗妾",
-                    "倒是有趣得很",
-                ),
-            ),
-            (
-                "attentive_front",
-                ("妾在聽", "主上慢慢說", "請繼續說", "妾願聞其詳"),
-            ),
-            (
-                "determined_front",
-                ("計策已定", "便照此執行", "就這麼辦", "此事交給妾"),
-            ),
-            (
-                "surprised_front",
-                ("真沒想到", "出乎妾意料", "竟會如此"),
-            ),
-            (
-                "worried_front",
-                (
-                    "妾很擔心",
-                    "主上別逞強",
-                    "主上莫要逞強",
-                    "先處理傷勢",
-                    "你已經很疲憊",
-                    "妾放心不下",
-                ),
-            ),
-            (
-                "reminder",
-                (
-                    "該吃飯了",
-                    "先去吃飯",
-                    "該休息了",
-                    "先休息片刻",
-                    "喝些水",
-                    "到了下班時辰",
-                    "妾提醒主上",
-                ),
-            ),
-            (
-                "relieved_front",
-                ("主上平安便好", "沒事就好", "妾總算放心"),
-            ),
-            (
-                "proud_front",
-                ("不出妾所料", "正如妾所料", "依妾之計"),
-            ),
-            (
-                "gentle_smile_front",
-                (
-                    "主上做得很好",
-                    "妾替主上高興",
-                    "此事值得恭喜",
-                ),
-            ),
-            (
-                "thinking_front",
-                (
-                    "妾先分析",
-                    "先分析風險",
-                    "妾的建議是",
-                    "先排優先順序",
-                    "此事需從長計議",
-                ),
-            ),
-        )
-        for expression, phrases in rules:
+        for rule in _REPLY_EXPRESSION_RULES:
+            emotion = str(rule["emotion"])
+            phrases = rule["phrases"]
+            if not isinstance(phrases, tuple):
+                raise TypeError("Character reply-expression phrases are unavailable.")
             if any(phrase in compact for phrase in phrases):
-                return expression
+                return _EXPRESSIONS[emotion]
         return "speaking"
-
 
     def _ai_failed(self, error: str) -> None:
         self._finish_ai_wait_expression()
-        if is_english(self.ui_language):
-            message = (
-                "The cloud connection is temporarily unavailable. I remain "
-                "here, but cannot draw on external knowledge just now."
-            )
-        elif is_simplified_chinese(self.ui_language):
-            message = "云端连接暂时中断。妾仍在，只是此刻无法借用外部知识。"
-        elif is_japanese(self.ui_language):
-            message = (
-                "クラウドとの接続が一時的に途切れました。妾はここにおりますが、"
-                "今は外部の知識を借りられません。"
-            )
-        else:
-            message = "雲端傳音暫時中斷。妾仍在，只是此刻無法借用外部智識。"
+        locale = canonical_character_locale(self.ui_language)
+        message = str(runtime_dialogue_locale(locale)["dashboard_ai_failure"])
         # 與 _ai_done 相同的 finally 鐵閘。
         try:
             self._reply(message, "worried")
@@ -840,7 +709,6 @@ class DashboardConversationMixin:
         finally:
             self.ai_busy = False
             self._start_next_ai_request()
-
 
     def _voice_text(self, text: str) -> None:
         text = text.strip()
@@ -858,14 +726,12 @@ class DashboardConversationMixin:
         self._input_source = "voice"
         self.send_chat()
 
-
     def _voice_error(self, message: str) -> None:
         self.set_voice_phase(
             self._t("voice_ready_short", "準備就緒")
         )
         self.append_chat("寒", message)
         self.speak_requested.emit(message, "worried")
-
 
     def _listening_changed(self, listening: bool) -> None:
         if not listening:
@@ -884,7 +750,6 @@ class DashboardConversationMixin:
             )
             self.mic_btn.setEnabled(False)
 
-
     def _recording_changed(self, recording: bool) -> None:
         if recording:
             self.mic_btn.setText(
@@ -897,12 +762,10 @@ class DashboardConversationMixin:
             )
             self.mic_btn.setEnabled(False)
 
-
     def _transcription_diagnostic(self, message: str) -> None:
         self.db.set_setting("last_transcription_diagnostic", message)
         if hasattr(self, "transcription_diagnostic"):
             self.transcription_diagnostic.setText(message)
-
 
     def set_voice_phase(self, phase: str) -> None:
         self.set_desktop_companion_status("voice", phase)

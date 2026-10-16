@@ -5,6 +5,7 @@ lazy from dataclasses import replace
 lazy from pathlib import Path
 lazy from typing import Any
 lazy from urllib.parse import urlparse
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -89,6 +90,7 @@ class FlagshipSettingsSecurityMixin:
         add_web.clicked.connect(self.add_allowed_web)
         remove_target.clicked.connect(self.remove_allowed_target)
         self.refresh_allowed_targets()
+
     def _security_permission_section(
         self,
         form: QFormLayout,
@@ -119,18 +121,19 @@ class FlagshipSettingsSecurityMixin:
                 ),
                 combo,
             )
+
     def _security_footer(self, form: QFormLayout) -> None:
         note = QLabel(
             self._t(
-                "付款、購買、密碼匯出、停用安全防護、任意 PowerShell／管理員命令"
-                "永遠禁止自動執行，無法由此頁解除。"
+                '付款、購買、密碼匯出、停用安全防護及任意 PowerShell／管理員命令，永久排除於自動執行範圍；本頁持續遵守此界線。'
             )
         )
         note.setWordWrap(True)
         note.setStyleSheet("color:#8a5a13;")
         form.addRow(note)
+
     def validate_draft_settings(self, *, show_error: bool = True) -> FlagshipDraftValues | None:
-        """Build every typed value without touching persistence or external services."""
+        """Build every typed value while preserving persistence or external services."""
 
         touched = self._proactive_interaction_touched
         try:
@@ -173,11 +176,12 @@ class FlagshipSettingsSecurityMixin:
             if show_error:
                 self.gesture_command.setFocus(Qt.OtherFocusReason)
                 QMessageBox.warning(
-                    self,
-                    self._t("手勢設定尚未完成"),
+                    require_qwidget(self),
+                    self._t('請完成手勢設定'),
                     self._t("選擇自訂文字指令時，必須輸入一行指令後才能保存。"),
                 )
             return None
+
     def _staged_gesture_configuration(self) -> GestureConfiguration:
         definition = self._selected_gesture()
         value = self._gesture_draft.value
@@ -195,6 +199,7 @@ class FlagshipSettingsSecurityMixin:
             )
             value = value.replace_definition(updated)
         return replace(value, enabled=self.gesture_enabled.isChecked())
+
     def _staged_proactivity_preferences(self) -> CompanionProactivityPreferences:
         return CompanionProactivityPreferences(
             enabled=self.companion_enabled.isChecked(),
@@ -211,6 +216,7 @@ class FlagshipSettingsSecurityMixin:
             fullscreen_protection_enabled=self.companion_fullscreen_protection.isChecked(),
             daily_limit=self.companion_daily_limit.value(),
         )
+
     def save_draft_settings(self, values: FlagshipDraftValues | None = None) -> bool:
         """Persist all ordinary settings or restore their exact previous snapshot."""
 
@@ -230,8 +236,8 @@ class FlagshipSettingsSecurityMixin:
             self.gesture_store.save(validated.gesture)
             self.proactivity_store.save(validated.proactivity)
             self.performance_store.save(validated.performance)
-            # ``None`` marks a control the user never touched: skip the write so
-            # this page cannot clobber values owned by another settings page
+            # The sentinel marks a control at its untouched state: keep the write scoped so
+            # this page preserves values owned by another settings page
             # (the dashboard also writes ``proactive_interaction_mode``).
             for key, value in (
                 ("proactive_interaction_mode", validated.proactive_mode),
@@ -275,10 +281,11 @@ class FlagshipSettingsSecurityMixin:
             )
             return False
         return True
+
     def _after_successful_settings_save(self, vision: OpenAIVisionPreferences) -> None:
         self._configure_executor()
         apply_flagship_theme(
-            self,
+            require_qwidget(self),
             high_contrast=bool(self.db.setting("flagship_high_contrast", False)),
             scale=float(self.db.setting("flagship_ui_scale", 1.0)),
             theme=str(self.db.setting(THEME_SETTING_KEY, DEFAULT_THEME_ID)),
@@ -294,10 +301,12 @@ class FlagshipSettingsSecurityMixin:
         )
         if self.camera_enabled.isChecked():
             self._configure_gesture_runtime()
+
     def cancel_draft_settings(self) -> None:
         """Close every old draft, rebuild from persistence, and refresh its UI."""
 
         self._rebuild_draft_settings()
+
     def _close_drafts(self) -> None:
         for draft in (
             self._gesture_draft,
@@ -312,10 +321,12 @@ class FlagshipSettingsSecurityMixin:
                 PerformancePreferencesStoreError,
             ):
                 draft.cancel()
+
     def reload_draft_settings(self) -> None:
         """Reload controls after an owning settings transaction restores the DB."""
 
         self._rebuild_draft_settings()
+
     def _rebuild_draft_settings(self) -> None:
         self._close_drafts()
         self._gesture_draft = self.gesture_store.begin_edit()
@@ -333,9 +344,11 @@ class FlagshipSettingsSecurityMixin:
         self._refresh_accessibility_controls()
         if getattr(self, "_control_center_ui_ready", False):
             self._notify_pending_proactivity_store_error()
+
     def _refresh_gesture_controls(self) -> None:
         self.gesture_enabled.setChecked(self._gesture_draft.value.enabled)
         self._refresh_gesture_list()
+
     def _refresh_proactivity_controls(self) -> None:
         preferences = self._proactivity_draft.value
         controls = (
@@ -355,6 +368,7 @@ class FlagshipSettingsSecurityMixin:
         self.companion_brief_minutes.setValue(preferences.brief_absence_seconds // 60)
         self.companion_long_wait_minutes.setValue(preferences.long_wait_seconds // 60)
         self.companion_daily_limit.setValue(preferences.daily_limit)
+
     def _refresh_openai_vision_controls(self) -> None:
         preferences = self._openai_vision_draft.value
         self.openai_vision_enabled.setChecked(preferences.enabled)
@@ -367,6 +381,7 @@ class FlagshipSettingsSecurityMixin:
         self.openai_vision_daily_limit.setValue(preferences.daily_limit)
         self.openai_vision_per_minute_limit.setValue(preferences.per_minute_limit)
         self._refresh_openai_vision_status(preferences)
+
     def _staged_openai_vision_preferences(self) -> OpenAIVisionPreferences:
         return OpenAIVisionPreferences(
             enabled=self.openai_vision_enabled.isChecked(),
@@ -386,6 +401,7 @@ class FlagshipSettingsSecurityMixin:
             ),
             raw_image_storage_enabled=False,
         )
+
     def _security_tab(self) -> QWidget:
         scroll, form = self._scroll_form()
         stored = self.db.setting("flagship_permissions", {})
@@ -393,6 +409,7 @@ class FlagshipSettingsSecurityMixin:
         self._security_permission_section(form, stored)
         self._security_footer(form)
         return scroll
+
     def refresh_allowed_targets(self) -> None:
         self.target_list.clear()
         for row in self.db.allowed_targets():
@@ -411,10 +428,11 @@ class FlagshipSettingsSecurityMixin:
             )
             item.setData(Qt.UserRole, int(row["id"]))
             self.target_list.addItem(item)
+
     def add_allowed_folder(self) -> None:
         path = QFileDialog.getExistingDirectory(
-            self,
-            self._t("選擇允許墨寒操作的資料夾"),
+            require_qwidget(self),
+            self._t("選擇允許{character_name}操作的資料夾"),
         )
         if not path:
             return
@@ -431,12 +449,14 @@ class FlagshipSettingsSecurityMixin:
             path,
             access_mode,
         )
+        self._refresh_remote_file_whitelist()
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def add_allowed_app(self) -> None:
         path, _filter = QFileDialog.getOpenFileName(
-            self,
-            self._t("選擇允許墨寒啟動的程式"),
+            require_qwidget(self),
+            self._t("選擇允許{character_name}啟動的程式"),
             "",
             (
                 self._t("Windows 程式 (*.exe);;所有檔案 (*)")
@@ -448,7 +468,7 @@ class FlagshipSettingsSecurityMixin:
             return
         name, ok = self._simple_text_dialog(
             self._t("程式別名"),
-            self._t("日後對墨寒說的程式名稱"),
+            self._t("日後對{character_name}說的程式名稱"),
         )
         if not ok or not name:
             return
@@ -460,6 +480,7 @@ class FlagshipSettingsSecurityMixin:
         )
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def add_allowed_web(self) -> None:
         url, ok = self._simple_text_dialog(
             self._t("加入允許網站"),
@@ -470,7 +491,7 @@ class FlagshipSettingsSecurityMixin:
         parsed = urlparse(url)
         if parsed.scheme != "https" or not parsed.netloc:
             QMessageBox.information(
-                self,
+                require_qwidget(self),
                 self._t("網站白名單"),
                 self._t("公開網站只接受完整 HTTPS 網址。"),
             )
@@ -483,22 +504,41 @@ class FlagshipSettingsSecurityMixin:
         )
         self.refresh_allowed_targets()
         self._configure_executor()
+
     def remove_allowed_target(self) -> None:
         item = self.target_list.currentItem()
         if item is None:
             return
         if (
             QMessageBox.question(
-                self,
+                require_qwidget(self),
                 self._t("移除允許項目"),
-                self._t("確定撤銷墨寒對此項目的存取權？"),
+                self._t("確定撤銷{character_name}對此項目的存取權？"),
             )
             != QMessageBox.Yes
         ):
             return
+        remote_server = getattr(self, "remote_server", None)
+        if remote_server is not None:
+            remote_server.set_allowed_folders(())
         self.db.remove_allowed_target(int(item.data(Qt.UserRole)))
+        self._refresh_remote_file_whitelist()
         self.refresh_allowed_targets()
         self._configure_executor()
+
+    def _refresh_remote_file_whitelist(self) -> None:
+        remote_server = getattr(self, "remote_server", None)
+        if remote_server is None:
+            return
+        # 先清空，再查詢目前白名單；查詢失敗時遠端下載維持拒絕。
+        remote_server.set_allowed_folders(())
+        folders = tuple(
+            str(row["target_value"])
+            for row in self.db.allowed_targets("folder")
+            if str(row["access_mode"]) in {"read", "write"}
+        )
+        remote_server.set_allowed_folders(folders)
+
     def save_security(self) -> None:
         values = {
             key: str(combo.currentData())
@@ -507,6 +547,6 @@ class FlagshipSettingsSecurityMixin:
         self.db.set_setting("flagship_permissions", values)
         self._configure_executor()
         self.speak_requested.emit(
-            self._t("安全權限已保存。妾會守住這條界線。"),
+            self._t("安全權限已保存。{self_reference}會守住這條界線。"),
             "happy",
         )

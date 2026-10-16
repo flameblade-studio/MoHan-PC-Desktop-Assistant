@@ -1,15 +1,11 @@
-"""外部輸入不得跨過它被授權的邊界。
+"""外部輸入只在其授權邊界內執行。
 
-2026-09-02 稽核的兩項發現：
+2026-09-02 稽核發現網站白名單僅比 hostname 與路徑字首；scheme
+檢查套在白名單自身，導致 https://portal.example/app 的授權擴及
+http://portal.example:8080/app-delete。測試要求完整比對協定、埠與路徑。
 
-1. 網站白名單只比 `hostname`、路徑只比字首，而那行看似檢查 scheme 的條件
-   檢查的是白名單項目自己的 scheme——請求端的 scheme 從未被約束。於是
-   允許 `https://portal.example/app` 等於同時允許 `http://portal.example:8080/app-delete`。
-2. `--jit-status-output=` 的值直接進 `write_text()`，而該函式在 `--self-test`
-   判斷之前無條件執行；任何一次一般啟動帶著這個旗標都會清掉指定的檔案。
-
-每組都同時驗證「該擋的擋住」與「該放行的仍然放行」——只驗負例的修正，
-可能只是把功能關掉。
+另有 --jit-status-output= 在一般啟動時直接覆寫指定檔案的問題；
+輸出現在須受 --self-test 範圍約束。每組同時驗證正常授權與越界案例。
 """
 from __future__ import annotations
 
@@ -23,11 +19,11 @@ def _toolbox(allowed: tuple[str, ...]):
 
 
 def _open(toolbox, url: str, monkeypatch) -> bool:
-    """回傳白名單是否放行；絕不真的開瀏覽器。
+    """以替身記錄白名單判斷，將瀏覽器操作留在測試邊界內。
 
-    第一版沒有換掉 webbrowser.open，正例在 CI runner 上真的啟動了 Edge，
-    它佔住 component_crx_cache 的檔案，臨時目錄清理時 PermissionError
-    [WinError 32]。測白名單的測試不該有任何副作用。
+    初版直接呼叫 webbrowser.open 曾在 CI 啟動 Edge，鎖住
+    component_crx_cache，清理時回報 PermissionError [WinError 32]。
+    此版本使用替身記錄呼叫，讓授權正例也保持隔離。
     """
     import webbrowser
 
@@ -44,14 +40,14 @@ def _open(toolbox, url: str, monkeypatch) -> bool:
     try:
         toolbox.open_web(request)
     except PermissionError:
-        assert not launched, "被擋下的網址不得觸發任何開啟"
+        assert not launched, '網址開啟必須先通過授權'
         return False
     assert launched == [url], "放行的網址必須恰好開啟一次"
     return True
 
 
 def test_allowed_site_still_opens(monkeypatch) -> None:
-    """正例：修正不得把正常授權的網址一起擋掉。"""
+    """正例：正常授權的網址仍可使用。"""
     toolbox = _toolbox(("https://portal.example/app",))
     assert _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/app/report")
     assert _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/app")
@@ -74,7 +70,7 @@ def test_port_must_match_the_allowed_entry(monkeypatch) -> None:
 
 
 def test_path_must_stop_at_a_segment_boundary(monkeypatch) -> None:
-    """`/app` 不得涵蓋 `/app-delete`——相鄰但無關的路徑。"""
+    """`/app` 授權只涵蓋該路徑及其子路徑；`/app-delete` 保持獨立。"""
     toolbox = _toolbox(("https://portal.example/app",))
     assert not _open(toolbox, monkeypatch=monkeypatch, url="https://portal.example/app-delete"), (
         "字首比對讓相鄰路徑通過；對帶有 GET 副作用的管理介面尤其危險"
@@ -88,7 +84,7 @@ def test_root_path_entry_allows_the_whole_host(monkeypatch) -> None:
 
 
 def test_harness_output_is_ignored_on_a_normal_launch(monkeypatch, tmp_path) -> None:
-    """一般啟動帶著旗標不得寫檔——這是原本最該關掉的行為。"""
+    """一般啟動保持檔案原樣；狀態輸出旗標限於核准的自我測試流程。"""
     from application import application_bootstrap
 
     target = tmp_path / "victim.txt"
@@ -117,7 +113,7 @@ def test_harness_output_is_accepted_in_self_test_mode(monkeypatch, tmp_path) -> 
 def test_harness_output_may_be_rewritten_across_repeated_runs(
     monkeypatch, tmp_path
 ) -> None:
-    """profiler 會用同一路徑重複執行，既存檔不得讓它靜默不寫。"""
+    """profiler 重複使用同一路徑時，仍須明確更新既存狀態檔。"""
     from application import application_bootstrap
 
     target = tmp_path / "smoke.txt"

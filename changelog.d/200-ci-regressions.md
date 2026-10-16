@@ -1,0 +1,3 @@
+### 修復完整回歸測試相容性與二代素材執行期合成／修复完整回归测试兼容性与二代素材运行时合成／Repair full-regression compatibility and generation-2 runtime composition／完全回帰テストの互換性と第二世代素材の実行時合成を修復
+
+* 維持拆分模組的公開匯入與 monkeypatch 契約，修正髮型、嘴型、視線、妝容、手部遮擋及完整身體合成，並快取已驗證的正式表情素材以恢復效能預算。／维持拆分模块的公开导入与 monkeypatch 契约，修正发型、嘴型、视线、妆容、手部遮挡及完整身体合成，并缓存已验证的正式表情素材以恢复性能预算。／Preserve public imports and monkeypatch contracts across split modules, repair hair, mouth, gaze, makeup, hand-occlusion, and full-body composition, and cache validated formal expression assets to restore the performance budget.／分割モジュール間の公開インポートと monkeypatch 契約を維持し、髪・口形・視線・化粧・手の遮蔽・全身合成を修復するとともに、検証済みの正式表情素材をキャッシュして性能予算を回復します。

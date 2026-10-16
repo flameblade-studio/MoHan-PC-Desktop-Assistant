@@ -78,7 +78,7 @@ def test_provenance_contract_is_complete_immutable_and_four_language() -> None:
 
 @pytest.mark.parametrize("filename", tuple(EXPECTED))
 def test_actual_hand_model_asset_gate(filename: str) -> None:
-    """A skipped asset gate is explicitly incomplete, never a provenance pass."""
+    """A skipped asset gate retains an explicit incomplete provenance status."""
 
     path = ASSET_ROOT / filename
     if not path.is_file():
@@ -103,4 +103,5 @@ def test_hand_models_are_registered_for_windows_packaging() -> None:
         assert asset["license"] == "Apache-2.0"
         assert asset["profiles"] == ["windows"]
     build_script = (ROOT / "build.ps1").read_text(encoding="utf-8")
-    assert '--add-data "assets;assets"' in build_script
+    assert '--add-data "$AssetStage;assets"' in build_script
+    assert 'stage_installer_assets.py' in build_script

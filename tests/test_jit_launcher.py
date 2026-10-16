@@ -36,7 +36,7 @@ def test_launcher_disables_jit_by_default(
     environment = captured["env"]
     assert isinstance(environment, dict)
     # Stability-first default after the 2026-08-29 mid-session 0xC0000409
-    # crash on a user machine (3.15rc1 JIT/Qt failure family).
+    # crash on a user machine (3.15rc1 JIT/Qt diagnostic family).
     assert environment["PYTHON_JIT"] == "0"
     assert "PYTHONHASHSEED" not in environment
 

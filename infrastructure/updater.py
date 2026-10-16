@@ -41,7 +41,7 @@ SEMVER_RE = re.compile(
 
 
 class UpdateError(RuntimeError):
-    """A safe, user-displayable updater failure."""
+    """A safe, user-displayable updater attention event."""
 
 
 @dataclass(frozen=True)
@@ -113,7 +113,7 @@ class UpdateManager:
         self.download_dir = Path(download_dir)
         self._opener = opener or urlopen
         self._ssl_context = ssl.create_default_context()
-        # None 代表用內嵌公鑰；測試才會注入臨時公鑰。
+        # sentinel 代表用內嵌公鑰；測試注入臨時公鑰。
         self._public_keys = public_keys
 
     @staticmethod
@@ -437,5 +437,5 @@ class UpdateManager:
         try:
             path.unlink(missing_ok=True)
         except (OSError, TypeError, ValueError):
-            # The original safe failure must not be replaced by a private path.
+            # The original safe attention event remains the public result while the private path stays internal.
             return

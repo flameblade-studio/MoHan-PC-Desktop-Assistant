@@ -116,7 +116,7 @@ def test_snapshot_restore_is_exact_and_rejects_wrong_types() -> None:
     except AppearanceDynamicsError:
         pass
     else:
-        raise AssertionError("invalid dynamics snapshot must fail closed")
+        raise AssertionError('dynamics snapshots must satisfy the acceptance contract')
 
 
 def test_existing_pack_slots_work_without_new_metadata() -> None:

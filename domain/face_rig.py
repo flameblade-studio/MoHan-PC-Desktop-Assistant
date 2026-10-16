@@ -3,6 +3,8 @@ from __future__ import annotations
 lazy from dataclasses import dataclass, replace
 lazy from enum import StrEnum
 
+lazy from domain.character_runtime import character_rig_manifest
+
 
 class FacePose(StrEnum):
     CHEEK = "cheek"
@@ -34,7 +36,7 @@ EYE_STATE_BLINK = frozendict({
     EyeState.CLOSED: 1.0,
 })
 EYE_CLOSED_THRESHOLD = 0.75
-VISEME_U_INWARD_LERP = 0.05
+VISEME_U_INWARD_LERP = character_rig_manifest().face_calibration.viseme_u_inward_lerp
 
 
 def eye_state_for_blink(value: float) -> EyeState:
@@ -59,7 +61,7 @@ def viseme_u_inward_scale(weight: float) -> float:
 
     ``weight`` is the 50 Hz transition weight stored on ``MouthShape``. The
     source authority is always transformed from its original pixels, so
-    repeated frames can never accumulate another five-percent shrink.
+    repeated frames preserve the same five-percent scale.
     """
 
     return 1.0 - VISEME_U_INWARD_LERP * _unit(weight)

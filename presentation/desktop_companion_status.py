@@ -8,12 +8,14 @@ belongs to the presentation layer and only touches companion UI concerns.
 
 from __future__ import annotations
 
-lazy from PySide6.QtCore import Qt
+lazy from PySide6.QtCore import Qt, QTimer
 lazy from PySide6.QtWidgets import (
     QFrame,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QSizePolicy,
+    QSplitter,
     QVBoxLayout,
 )
 
@@ -23,15 +25,20 @@ lazy from presentation.ui_localization import (
     display_label,
 )
 lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS
+lazy from presentation.dashboard_artwork import CelestialFrame
 
 __all__ = (
+    "DESKTOP_STATUS_COLLAPSED_SETTING",
     "build_desktop_companion_stage",
     "desktop_companion_initial_status",
     "gesture_status_message",
     "mode_status_label",
+    "set_desktop_companion_collapsed",
     "update_desktop_companion_status",
     "visual_status_message",
 )
+
+DESKTOP_STATUS_COLLAPSED_SETTING = "desktop_status_collapsed"
 
 
 def desktop_companion_initial_status(shell) -> dict[str, str]:
@@ -58,6 +65,47 @@ def mode_status_label(shell, mode: str) -> str:
     )
 
 
+def _apply_collapsed_stage(shell, stage: QFrame, collapsed: bool) -> None:
+    try:
+        card = stage.findChild(QFrame, "desktopCompanionStatusCard")
+        toggle = stage.findChild(QPushButton, "desktopCompanionStatusToggle")
+    except RuntimeError:
+        # A queued initial layout may outlive a page rebuilt during shutdown.
+        return
+    if card is None or toggle is None:
+        return
+    card.setVisible(not collapsed)
+    stage.setMinimumWidth(180 if collapsed else 220)
+    stage.setProperty("mohanStatusCollapsed", collapsed)
+    text = (
+        shell._t("desktop_status_expand", "展開狀態")
+        if collapsed
+        else shell._t("desktop_status_collapse", "收合狀態")
+    )
+    toggle.setChecked(not collapsed)
+    toggle.setText(f"{'▸' if collapsed else '▾'} {text}")
+    toggle.setAccessibleName(text)
+    splitter = stage.parentWidget()
+    if isinstance(splitter, QSplitter):
+        splitter.setStretchFactor(0, 1 if collapsed else 2)
+        splitter.setStretchFactor(1, 4 if collapsed else 3)
+        splitter.setSizes((180, 820) if collapsed else (360, 640))
+
+
+def set_desktop_companion_collapsed(
+    shell,
+    collapsed: bool,
+    *,
+    persist: bool,
+) -> None:
+    """Apply one status-card preference to every feature page."""
+
+    if persist:
+        shell.db.set_setting(DESKTOP_STATUS_COLLAPSED_SETTING, collapsed)
+    for stage in shell.findChildren(QFrame, "desktopCompanionStage"):
+        _apply_collapsed_stage(shell, stage, collapsed)
+
+
 def build_desktop_companion_stage(
     shell,
     status_values: dict[str, str],
@@ -68,10 +116,10 @@ def build_desktop_companion_stage(
     can keep updating them across dashboard rebuilds.
     """
 
-    stage = QFrame()
+    stage = CelestialFrame(kind="scene")
     stage.setObjectName("desktopCompanionStage")
     stage.setProperty("mohanRole", "desktopCompanionStage")
-    # Keep the live stage present on compact dashboards without forcing it
+    # Keep the live stage present on compact dashboards while keeping it
     # underneath the conversation dock.  The old 400 px hard minimum combined
     # with the dock's 500 px minimum exceeded the space left beside navigation.
     stage.setMinimumWidth(220)
@@ -87,7 +135,7 @@ def build_desktop_companion_stage(
     status_layout.setContentsMargins(18, 18, 18, 18)
     status_layout.setSpacing(12)
     status_title = QLabel(
-        shell._t("desktop_status_title", "墨寒正在桌面上與您互動")
+        shell._t("desktop_status_title", "{character_name}正在桌面上與您互動")
     )
     status_title.setProperty("mohanRole", "desktopCompanionStatusTitle")
     status_title.setWordWrap(True)
@@ -95,7 +143,7 @@ def build_desktop_companion_stage(
     status_note = QLabel(
         shell._t(
             "desktop_status_description",
-            "桌面上的墨寒是唯一可見、可拖移並會回應您的角色。",
+            "桌面上的{character_name}是唯一可見、可拖移並會回應您的角色。",
         )
     )
     status_note.setProperty("mohanRole", "desktopCompanionStatusNote")
@@ -128,7 +176,27 @@ def build_desktop_companion_stage(
         status_layout.addWidget(row)
         labels[key] = value
     status_layout.addStretch(1)
+    toggle = QPushButton()
+    toggle.setObjectName("desktopCompanionStatusToggle")
+    toggle.setProperty("mohanAction", "secondary")
+    toggle.setCheckable(True)
+    toggle.clicked.connect(
+        lambda checked: set_desktop_companion_collapsed(
+            shell,
+            not checked,
+            persist=True,
+        )
+    )
+    stage_layout.addWidget(toggle)
     stage_layout.addWidget(status_card, 1)
+    collapsed = bool(
+        shell.db.setting(DESKTOP_STATUS_COLLAPSED_SETTING, False)
+    )
+    _apply_collapsed_stage(shell, stage, collapsed)
+    QTimer.singleShot(
+        0,
+        lambda: _apply_collapsed_stage(shell, stage, collapsed),
+    )
     return stage, labels
 
 
@@ -175,7 +243,7 @@ def visual_status_message(
 
 
 def gesture_status_message(gesture: str) -> tuple[str, str]:
-    """Pick the gesture status translation key without leaking internal labels."""
+    """Pick the gesture status translation key while keeping internal labels localized."""
 
     return {
         "wave": ("desktop_status_gesture_wave", "已辨識揮手"),

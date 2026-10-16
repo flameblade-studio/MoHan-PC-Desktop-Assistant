@@ -1,7 +1,6 @@
 """更新清單的 Ed25519 分離簽章：模組、工具與更新器整合。
 
-安全結論只有一條：沒有能以內嵌公鑰驗證的簽章，更新器就不會把任何安裝程式
-當成可用更新，不論 SHA-256 多麼一致。
+可用更新須通過內嵌公鑰的簽章驗證，以及既定 SHA-256 檢查。
 """
 from __future__ import annotations
 
@@ -192,7 +191,7 @@ def test_cli_keygen_sign_verify(tmp_path: Path, capsys) -> None:
     public = capsys.readouterr().out.split("：")[-1].strip()
     manifest = tmp_path / MANIFEST_NAME
     manifest.write_bytes(_manifest_bytes())
-    # 臨時金鑰沒有內嵌：CLI 的 sign 必須拒絕，避免簽出用戶端不認的簽章。
+    # CLI sign 只接受與內嵌公鑰對應的金鑰，讓簽章可由用戶端驗證。
     with pytest.raises(UpdateManifestSignatureError):
         tool_main(["sign", str(manifest), "--private-key", str(key_path)])
     signature = manifest.with_name(signature_asset_name(MANIFEST_NAME))

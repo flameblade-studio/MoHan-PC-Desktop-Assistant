@@ -60,7 +60,7 @@ def assert_startup_backup_failure_retains_manager_and_retries() -> None:
         "BackupManager",
         _RetryingBackupManager,
     ):
-        initialize = getattr(service_container, "_initialize_backup_manager")
+        initialize = service_container._initialize_backup_manager
         manager = initialize(object(), Path(temporary))
         assert manager is _RetryingBackupManager.instances[0]
         assert manager.automatic_backup_failed is True
@@ -79,7 +79,7 @@ def assert_overview_exposes_automatic_backup_failure() -> None:
         _t=lambda source, **values: source.format(**values),
     )
     FlagshipOverviewMixin.refresh_health(probe)
-    assert "自動備份失敗" in summary.value
+    assert '自動備份需要處理' in summary.value
 
 
 def run() -> None:

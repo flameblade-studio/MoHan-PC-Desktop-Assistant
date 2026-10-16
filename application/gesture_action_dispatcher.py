@@ -58,7 +58,7 @@ GestureAuthorizer = Callable[[GestureActionDecision], bool]
 
 
 class GestureActionDispatcher:
-    """Execute one routed intent without weakening existing policy boundaries."""
+    """Execute one routed intent while preserving existing policy boundaries."""
 
     def __init__(
         self,

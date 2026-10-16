@@ -93,7 +93,7 @@ class _FailedPlanner:
 
 class _UnreadableBody(io.BytesIO):
     def read(self, *_args: object, **_kwargs: object) -> bytes:
-        raise AssertionError("HTTP response body must not be read")
+        raise AssertionError('HTTP response bodies must remain unread at this error boundary')
 
 
 def _http_error() -> HTTPError:

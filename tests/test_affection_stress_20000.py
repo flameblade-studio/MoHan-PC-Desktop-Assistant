@@ -44,13 +44,13 @@ def _round(label: str) -> None:
         favor_score = favor.snapshot(now=now)
         arbiter.request("happy", source="conversation", favor_score=favor_score)
         arbiter.request("worried", source="safety", favor_score=favor_score)
-        # Boundedness: no value may escape its [0, 1] (or [-0.3, 0.3]) envelope.
+        # Boundedness: every value stays in [0, 1] (or [-0.3, 0.3]).
         assert 0.0 <= affinity.affinity <= 1.0
         assert 0.0 <= affinity.jealousy <= 1.0
         assert 0.0 <= favor.favor <= 1.0
         assert 0.0 <= satiety.satiety <= 1.0
         assert MIRROR_TEMP_MIN <= mirror.temperature <= MIRROR_TEMP_MAX
-    current, peak = tracemalloc.get_traced_memory()
+    _current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     gc.collect()
     print(

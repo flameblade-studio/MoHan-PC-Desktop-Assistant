@@ -2,15 +2,18 @@ from __future__ import annotations
 
 """Qt-owned resource helpers shared by desktop presentation modules."""
 
-lazy import sys
-lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
-lazy from PySide6.QtCore import QRect
-lazy from PySide6.QtGui import QFont, QIcon, QPixmap
+lazy from PySide6.QtGui import QFont, QIcon
 lazy from PySide6.QtWidgets import QApplication
 
-APP_ICON_PATH = "assets/mohan-halfbody.ico"
+lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.constants import CHARACTER_ASSET_PATHS
+lazy from presentation.dashboard_shared import resource_path as _resource_path
+lazy from presentation.render_contracts import FaceRenderLayers
+
+APP_ICON_PATH = CHARACTER_ASSET_PATHS["application_icon"]
+_ENGLISH_DISPLAY_NAME = load_mohan_character_data().personas["en"].identity.display_name
 
 # Window-local fallback used by direct widget tests.  The application
 # composition root installs the complete theme on QApplication in production.
@@ -112,6 +115,12 @@ QToolTip { background: #ffffff; color: #24364a; border: 1px solid #9eb5c7; paddi
 """
 
 
+def resource_path(relative: str) -> Path:
+    """Preserve the product resource API over the neutral resolver."""
+
+    return _resource_path(relative)
+
+
 def application_ui_font() -> QFont:
     font = QFont()
     font.setFamilies(
@@ -126,15 +135,6 @@ def application_ui_font() -> QFont:
     return font
 
 
-RESOURCE_BASE = Path(
-    getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1])
-)
-
-
-def resource_path(relative: str) -> Path:
-    return RESOURCE_BASE / relative
-
-
 def application_icon() -> QIcon:
     application = QApplication.instance()
     if application is not None and not application.windowIcon().isNull():
@@ -142,21 +142,10 @@ def application_icon() -> QIcon:
     icon_path = resource_path(APP_ICON_PATH)
     icon = QIcon(str(icon_path))
     if icon.isNull():
-        raise RuntimeError(f"MoHan application icon could not be loaded: {icon_path}")
+        raise RuntimeError(
+            f"{_ENGLISH_DISPLAY_NAME} application icon could not be loaded: {icon_path}"
+        )
     return icon
-
-
-@dataclass(frozen=True, slots=True)
-class FaceRenderLayers:
-    """Qt image layers passed through the injected face-renderer port."""
-
-    mouth_source: QPixmap
-    mouth_mask: QPixmap
-    mouth_rect: QRect
-    blink_source: QPixmap | None = None
-    blink_mask: QPixmap | None = None
-    blush_source: QPixmap | None = None
-    blush_mask: QPixmap | None = None
 
 
 __all__ = (

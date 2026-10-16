@@ -169,7 +169,7 @@ def assert_missing_model_paths_are_rejected() -> None:
     except FileNotFoundError as error:
         assert "face_landmark_468.tflite" in str(error)
     else:
-        raise AssertionError("missing multimodal models must fail closed")
+        raise AssertionError('multimodal model loading requires all governed files')
 
 
 def run() -> None:

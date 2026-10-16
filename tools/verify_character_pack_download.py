@@ -1,0 +1,80 @@
+"""Download a released character pack and load it the way the product does.
+
+The lock check rebuilds a pack from source; this check closes the other half of
+the release loop by fetching the published GitHub asset, installing it into an
+isolated profile, and reading it with the product's official pack limits.
+"""
+
+from __future__ import annotations
+
+lazy import argparse
+lazy import sys
+lazy import tempfile
+lazy from collections.abc import Sequence
+lazy from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+lazy from application.character_runtime_bootstrap import (
+    DEFAULT_CHARACTER_ID,
+    activate_product_character_runtime,
+    official_character_pack_limits,
+)
+lazy from infrastructure.installed_character_packs import (
+    installed_character_pack_path,
+    load_installed_character_pack,
+)
+lazy from tools.fetch_body_pack import BodyPackFetchError, fetch_body_pack
+lazy from tools.fetch_character_pack import CharacterPackFetchError, fetch_character_pack
+lazy from tools.verify_character_pack_lock import RELEASE_PROFILES
+
+
+def verify_download(profile_name: str, data_root: Path) -> int:
+    """Fetch, install, and load one released pack; return the loaded file count."""
+
+    profile = RELEASE_PROFILES[profile_name]
+    # Pack validation reads the canonical view ring, so this entry point acts
+    # as the composition root and activates the bundled character first, the
+    # same way a product cold start does before loading an installed pack.
+    activate_product_character_runtime(ROOT, character_id=DEFAULT_CHARACTER_ID)
+    character_id = profile.pack_id.removeprefix("flameblade.")
+    if profile_name == "lin-keyun":
+        body_result = fetch_body_pack(data_root=data_root)
+        print(f"BODY_PACK_ID={body_result.pack_id}")
+        print(f"BODY_PACK_VERSION={body_result.pack_version}")
+        print(f"BODY_PACK_FINGERPRINT={body_result.fingerprint}")
+    target = installed_character_pack_path(character_id, data_root=data_root)
+    result = fetch_character_pack(target, lock_path=ROOT / profile.lock_path)
+    reader = load_installed_character_pack(
+        character_id,
+        data_root=data_root,
+        limits=official_character_pack_limits(),
+    )
+    if reader.character_id != character_id:
+        raise ValueError(f"Loaded {reader.character_id!r}; expected {character_id!r}.")
+    print(f"PACK_ID={result.pack_id}")
+    print(f"PACK_VERSION={result.pack_version}")
+    print(f"PACKAGE_HASH={result.package_hash}")
+    print(f"LOADED_CHARACTER={reader.character_id}")
+    return result.checked_files
+
+
+def main(arguments: Sequence[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--profile", choices=tuple(RELEASE_PROFILES), required=True)
+    parsed = parser.parse_args(arguments)
+    with tempfile.TemporaryDirectory(prefix="mohan-pack-download-") as directory:
+        try:
+            checked = verify_download(parsed.profile, Path(directory))
+        except (BodyPackFetchError, CharacterPackFetchError, ValueError, OSError) as error:
+            print(f"CHARACTER_PACK_DOWNLOAD_ERROR={error}", file=sys.stderr)
+            return 1
+    print(f"CHECKED_FILES={checked}")
+    print("CHARACTER_PACK_DOWNLOAD_VALID=1")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

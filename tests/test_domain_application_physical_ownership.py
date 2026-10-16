@@ -4,6 +4,9 @@ lazy import ast
 lazy import importlib
 lazy import os
 lazy from pathlib import Path
+lazy from unittest.mock import patch
+
+lazy import pytest
 
 lazy from tools.check_layered_imports import PHYSICALLY_LAYERED_ROOTS
 
@@ -78,7 +81,9 @@ def test_retired_compatibility_aliases_are_not_importable() -> None:
         importlib.import_module(owner_name)
         try:
             importlib.import_module(facade_name)
-        except ModuleNotFoundError:
+        except ModuleNotFoundError as exc:
+            if exc.name != facade_name:
+                raise
             continue
         raise AssertionError(f"retired root alias is importable again: {facade_name}")
 
@@ -90,3 +95,16 @@ def test_silence_gesture_detector_is_a_callable_owner_export() -> None:
 
     assert callable(intent.SilenceGestureDetector)
     assert isinstance(detector, intent.SilenceGestureDetector)
+
+
+def test_retired_alias_guard_propagates_missing_internal_dependencies() -> None:
+    def import_with_broken_facade(name: str) -> object:
+        if "." not in name:
+            raise ModuleNotFoundError("missing_internal_dependency", name="missing_internal_dependency")
+        return object()
+
+    with (
+        patch.object(importlib, "import_module", side_effect=import_with_broken_facade),
+        pytest.raises(ModuleNotFoundError, match="missing_internal_dependency"),
+    ):
+        test_retired_compatibility_aliases_are_not_importable()

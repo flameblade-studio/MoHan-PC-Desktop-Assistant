@@ -34,11 +34,32 @@ license = "SIL OFL 1.1"
 profiles = ["windows", "preview"]
 
 [[component]]
-name = "PySide6"
-version = "6.11.1"
+name = "PySide6_Essentials"
+version = "6.12.0"
 license = "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only"
 scope = "runtime"
 profiles = ["windows", "preview"]
+
+[[component]]
+name = "PySide6_Addons"
+version = "6.12.0"
+license = "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only"
+scope = "runtime"
+profiles = ["windows", "preview"]
+
+[[component]]
+name = "shiboken6"
+version = "6.12.0"
+license = "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only"
+scope = "runtime"
+profiles = ["windows", "preview"]
+
+[[component]]
+name = "Pillow"
+version = "12.3.0"
+license = "MIT-CMU"
+scope = "runtime"
+profiles = ["windows"]
 
 [[component]]
 name = "sounddevice"
@@ -58,6 +79,13 @@ profiles = ["windows"]
 name = "websocket-client"
 version = "1.9.0"
 license = "Apache-2.0"
+scope = "runtime"
+profiles = ["windows"]
+
+[[component]]
+name = "certifi"
+version = "2026.7.22"
+license = "MPL-2.0"
 scope = "runtime"
 profiles = ["windows"]
 

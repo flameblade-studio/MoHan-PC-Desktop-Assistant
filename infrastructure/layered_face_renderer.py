@@ -1,95 +1,191 @@
-"""Parametric 18-layer 2.5D face renderer.
+"""Half-body face renderer with complete and layered source routes.
 
-Composes the 54 authored transparent layers (three poses × 18 facial layers)
-into a continuously controlled face from a single :class:`FaceMotionFrame`.
-This replaces whole-expression image switching with independent, sub-frame
-deformation of eyelids, brows, irises, blush, lips, mouth corners, oral cavity,
-teeth/tongue, and jaw.
-
-The legacy :class:`~infrastructure.face_renderer.ParametricFaceRenderer` remains
-the rollback path; this renderer is the new default once every gate passes.
+Installed complete-expression sources select coordinated mouth and blink
+frames through explicit expression bindings. Other expressions retain the
+existing native or parametric layer routes. Appearance remains separately
+composed; source approval and formal installation are independent gates.
 """
 
 from __future__ import annotations
 
 lazy from collections import OrderedDict
-lazy from dataclasses import replace
+lazy from collections.abc import Callable
+lazy from dataclasses import dataclass, replace
 lazy from pathlib import Path
-
 lazy from PySide6.QtCore import QRect, Qt
-lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion, QTransform
+lazy from PySide6.QtGui import QColor, QPainter, QPixmap, QRegion
 
+lazy from application.appearance_ports import OutfitOverlayPort
 lazy from domain.companion_animation_contract import (
+    CHEEK_SPEECH_CLOSED_EXPRESSION,
     gesture_portrait_expression,
     outfit_silhouette,
 )
-lazy from domain.face_rig import EyeState, FaceMotionFrame, Viseme, eye_state_for_blink
+lazy from domain.character_runtime import (
+    CHARACTER_ASSET_PATHS,
+    CHARACTER_EXPRESSION_ROLES,
+    CHARACTER_LAYER_ROLES,
+    character_rig_manifest,
+)
+lazy from domain.character_source import active_expression_catalog
+lazy from domain.face_rig import FaceMotionFrame, Viseme
+lazy from domain.qt_image_io import optional_pixmap, require_pixmap
+lazy from infrastructure.blink_makeup_composition import paint_blink_makeup
+lazy from infrastructure.complete_halfbody_renderer import CompleteHalfbodyRenderer
+lazy from infrastructure.detachable_halfbody_assets import load_detachable_halfbody_assets
+lazy from infrastructure.exasperated_candidate_assets import (
+    ExasperatedAppearanceOverlay,
+    ExasperatedCandidateAssets,
+    ExasperatedCandidateProvider,
+)
+# Resolve this public re-export before consumers lazily import the class.
+from infrastructure.outfit_source_bound_expressions import (
+    OutfitSourceBoundExpressionProvider as OutfitSourceBoundExpressionProvider,
+)
 lazy from infrastructure.layered_face_assets import (
     LayeredFaceManifest,
     LayeredFacePose,
-    load_layered_face_assets,
+    load_layered_face_assets as _load_layered_face_assets,
 )
+# Public compatibility re-export retained after the painting helper split.
+from infrastructure.layered_face_painting import MAX_CACHED_MASK_BOUNDS as MAX_CACHED_MASK_BOUNDS
+lazy from infrastructure.layered_face_painting import LayeredFacePaintingMixin
 
 MOUTH_APERTURE_THRESHOLD = 0.01
-SCALE_EPSILON = 1e-4
 
 # The authored 54-layer asset set lives under the project root, mirroring the
 # ``RESOURCE_BASE`` resolution used by the presentation layer. The renderer
 # resolves it itself so the composition boundary stays a no-arg factory.
-LAYERED_FACE_ASSET_DIR = Path("assets") / "expressions" / "layered"
+LAYERED_FACE_ASSET_DIR = Path(CHARACTER_ASSET_PATHS["halfbody_layers"])
+DETACHABLE_HALFBODY_ASSET_DIR = Path(CHARACTER_ASSET_PATHS["halfbody_detachable"])
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAX_CACHED_LAYER_PIXMAPS = 30
 MAX_CACHED_NEUTRAL_POSES = 3
-MAX_CACHED_MASK_BOUNDS = 64
 SEAM_HEAL_RADIUS = 7
+_RIG_MANIFEST = character_rig_manifest()
+_EXPRESSION_CATALOG = active_expression_catalog()
+_EXASPERATED_EXPRESSION = CHARACTER_EXPRESSION_ROLES["exasperation"]
+_EXASPERATED_SOURCE_ID = _EXASPERATED_EXPRESSION
+_CHEEK_SILHOUETTE = _RIG_MANIFEST.pose_silhouettes["cheek"]
 FACE_AUTHORITY_FILES = frozendict({
-    "cheek": "idle.png",
-    "lean": "idle_lean.png",
-    "front": "idle_front.png",
+    pose: specification.base
+    for pose, specification in _EXPRESSION_CATALOG.face_pose_assets.items()
 })
-REGISTERED_COMPOSITE_LAYERS = (
-    "body", "hair_back", "base", "jaw", "oral_cavity", "teeth_tongue",
-    "lip_lower", "lip_upper",
-    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
-    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
-    "eyeliner_right", "brow_left", "brow_right", "hair_left", "hair_right",
-    "sleeve_left", "sleeve_right", "ornament",
-)
+REGISTERED_COMPOSITE_LAYERS = _RIG_MANIFEST.layer_z_order
 FACE_AUTHORITY_REGION_LAYERS = (
-    "base", "jaw", "oral_cavity", "teeth_tongue", "lip_lower", "lip_upper",
-    "corner_left", "corner_right", "blush_left", "blush_right", "iris_left",
-    "iris_right", "eyelid_left", "eyelid_right", "eyeliner_left",
-    "eyeliner_right", "brow_left", "brow_right",
+    *_RIG_MANIFEST.face_authority_layers[:2],
+    CHARACTER_LAYER_ROLES["mouth_cavity"],
+    CHARACTER_LAYER_ROLES["teeth_and_tongue"],
+    *_RIG_MANIFEST.face_authority_layers[2:],
 )
+_MOUTH_LAYERS = (
+    CHARACTER_LAYER_ROLES["mouth_cavity"],
+    CHARACTER_LAYER_ROLES["teeth_and_tongue"],
+    CHARACTER_LAYER_ROLES["lower_lip"],
+    CHARACTER_LAYER_ROLES["upper_lip"],
+    CHARACTER_LAYER_ROLES["left_mouth_corner"],
+    CHARACTER_LAYER_ROLES["right_mouth_corner"],
+)
+_NEUTRAL_LAYERS = _RIG_MANIFEST.layer_z_order[1:20]
+_TOP_LAYERS = _RIG_MANIFEST.layer_z_order[20:]
 
 
-class LayeredParametricFaceRenderer:
-    """Compose the 18 authored layers from continuous face parameters.
+lazy from infrastructure.exasperated_face_rendering import ExasperatedFaceRenderingMixin
+
+
+def load_layered_face_assets(root: Path) -> LayeredFaceManifest:
+    """Expose a concrete composition callable across the lazy-import boundary."""
+
+    return _load_layered_face_assets(root)
+
+
+@dataclass(frozen=True)
+class HalfbodySourceBindings:
+    """Construction-time dependencies for the source-bound expression route."""
+
+    appearance_overlay: ExasperatedAppearanceOverlay | None = None
+    expression_provider: ExasperatedCandidateProvider | None = None
+    complete_halfbody_supplement: tuple[Path, Path] | None = None
+    complete_halfbody_root: Path | None = None
+    require_complete_halfbody: bool = False
+    complete_halfbody_provider: Callable[[], tuple[Path | None, bool]] | None = None
+    native_frames: Callable[[], bool] | None = None
+
+
+ExasperatedSourceBindings = HalfbodySourceBindings
+
+
+class LayeredParametricFaceRenderer(
+    ExasperatedFaceRenderingMixin,
+    LayeredFacePaintingMixin,
+):
+    """Select complete expressions or compose existing authored face layers.
 
     This renderer satisfies :class:`FaceRendererPort` so it can replace
     :class:`~infrastructure.face_renderer.ParametricFaceRenderer` at the
-    composition boundary. The ``render(base, motion, layers, *, aperture)``
-    entry point ignores ``base``/``layers`` (whole-expression inputs) and
-    composes from the 18 authored layers instead, keyed by ``motion.pose``.
+    composition boundary. Complete sources use explicit expression bindings;
+    existing native and parametric routes handle expressions without them.
     """
 
     def __init__(
         self,
         manifest: LayeredFaceManifest | None = None,
-        outfit_overlay=None,
+        outfit_overlay: OutfitOverlayPort | None = None,
         authority_dir: Path | None = None,
+        detachable_dir: Path | None = None,
+        use_detachable: bool = True,
+        exasperated_candidate_dir: Path | None = None,
+        exasperated_source_bindings: HalfbodySourceBindings | None = None,
     ) -> None:
         self._manifest = manifest
         self._outfit_overlay = outfit_overlay
         # The idle authority portraits (seam healing, face restoration) and
         # the speaking/viseme patches are read from this directory.  Tests
         # pass a staging directory to validate a candidate rig against its
-        # own authorities without replacing assets/expressions.
+        # own authorities while preserving assets/expressions.
         self._authority_dir = (
-            Path(authority_dir)
+            Path(authority_dir).resolve()
             if authority_dir is not None
-            else PROJECT_ROOT / "assets" / "expressions"
+            else PROJECT_ROOT / CHARACTER_ASSET_PATHS["halfbody_root"]
         )
+        self._detachable_dir = (
+            Path(detachable_dir).resolve()
+            if detachable_dir is not None
+            else PROJECT_ROOT / DETACHABLE_HALFBODY_ASSET_DIR
+        )
+        self._use_detachable = use_detachable
+        self._exasperated_candidate_dir = (
+            Path(exasperated_candidate_dir).resolve()
+            if exasperated_candidate_dir is not None
+            else None
+        )
+        source_bindings = exasperated_source_bindings or ExasperatedSourceBindings()
+        self._native_frames_provider = source_bindings.native_frames
+        self._candidate_appearance_overlay = source_bindings.appearance_overlay
+        self._source_bound_expression_provider = source_bindings.expression_provider
+        # An explicitly injected detachable candidate must not be shadowed by
+        # the repository's installed complete-expression pack. Callers that
+        # want both sources can bind both directories explicitly.
+        complete_root = (
+            self._authority_dir / "complete-expressions"
+            if authority_dir is not None or detachable_dir is None
+            else self._detachable_dir / "complete-expressions"
+        )
+        self._complete_halfbody = CompleteHalfbodyRenderer(
+            complete_root, outfit_overlay,
+            exasperated_source_bindings.complete_halfbody_supplement
+            if exasperated_source_bindings is not None else None,
+            complete_root=source_bindings.complete_halfbody_root,
+            require_complete=source_bindings.require_complete_halfbody,
+            complete_provider=source_bindings.complete_halfbody_provider,
+        )
+        self._exasperated_candidate_assets: ExasperatedCandidateAssets | None = None
+        self._exasperated_candidate_key: str | None = None
+        self._exasperated_candidate_rest: QPixmap | None = None
+        self._exasperated_candidate_patches: dict[str, QPixmap] = {}
+        self._detachable_assets = None
+        self._detachable_loaded = False
+        self._detachable_cache: OrderedDict[str, QPixmap] = OrderedDict()
         # One 25-layer pose plus a transition margin is sufficient. The former
         # unbounded cache retained every full-canvas pose layer for the entire
         # process lifetime after pose changes.
@@ -99,7 +195,7 @@ class LayeredParametricFaceRenderer:
         # rebuilding the same 1254px body, hair, clothing and neutral face for
         # both endpoints of every phoneme transition wastes most of the 20ms
         # frame budget.  Keep at most the three authored poses; returned
-        # QPixmaps detach on first paint and cannot mutate these authorities.
+        # QPixmaps detach on first paint and preserve these authorities.
         self._neutral_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._top_pose_cache: OrderedDict[str, QPixmap] = OrderedDict()
         self._layer_center_cache: dict[str, tuple[float, float]] = {}
@@ -146,17 +242,7 @@ class LayeredParametricFaceRenderer:
         *,
         aperture: float | None = None,
     ) -> QPixmap:
-        """Compose the 25 authored layers for ``motion.pose``.
-
-        ``base`` and ``layers`` are accepted for interface compatibility with
-        :class:`FaceRendererPort` but are ignored: the layered renderer draws
-        from its own authored assets instead of a whole-expression image. The
-        mouth opening is driven by ``motion.mouth.aperture`` (already smoothed
-        by the face-motion controller), unless the caller supplies an explicit
-        ``aperture`` override (the legacy speech path passes a discrete 0.0/1.0
-        target during mouth transitions). The composed frame is scaled to
-        ``base``'s size so the caller's canvas dimensions are preserved.
-        """
+        """Render a source-bound expression when installed, otherwise the legacy rig."""
 
         if aperture is not None:
             motion = replace(
@@ -177,7 +263,60 @@ class LayeredParametricFaceRenderer:
         # gesture portrait is the frame and the appearance pack dresses it with
         # the layers cut on that very portrait (its gesture silhouette).
         gesture = gesture_portrait_expression(motion.expression)
-        composed = self._gesture_portrait(gesture) if gesture is not None else QPixmap()
+        silhouette = outfit_silhouette(motion.expression, motion.pose.value)
+        if self._native_frames_provider is not None and self._native_frames_provider():
+            complete = self._complete_halfbody.render(base, motion, layers)
+            if complete is not None:
+                return complete
+        if gesture == _EXASPERATED_EXPRESSION:
+            portable = (
+                self._source_bound_expression_provider.assets_for(
+                    _EXASPERATED_SOURCE_ID
+                )
+                if self._source_bound_expression_provider is not None
+                else None
+            )
+            if portable is not None:
+                return self._render_exasperated_candidate(
+                    base,
+                    motion,
+                    layers,
+                    aperture,
+                    portable,
+                )
+            if self._exasperated_candidate_dir is not None:
+                return self._render_exasperated_candidate(
+                    base,
+                    motion,
+                    layers,
+                    aperture,
+                )
+        complete = self._complete_halfbody.render(base, motion, layers)
+        if complete is not None:
+            return complete
+        native_state = getattr(self._outfit_overlay, "render_native_state", None)
+        if callable(native_state):
+            amount = motion.mouth.aperture if aperture is None else float(aperture)
+            native = optional_pixmap(
+                native_state(
+                    silhouette,
+                    speaking=amount > MOUTH_APERTURE_THRESHOLD,
+                )
+            )
+            if native is not None:
+                return native if base.isNull() or native.size() == base.size() else native.scaled(
+                    base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation,
+                )
+        native_neutral = getattr(self._outfit_overlay, "native_neutral", None)
+        composed = (
+            optional_pixmap(native_neutral(silhouette))
+            if callable(native_neutral)
+            else None
+        )
+        if composed is None:
+            composed = self._detachable_portrait(silhouette)
+        if composed.isNull() and gesture is not None:
+            composed = self._gesture_portrait(gesture)
         if composed.isNull():
             composed = self.render_pose(
                 self._pose(motion),
@@ -190,26 +329,15 @@ class LayeredParametricFaceRenderer:
         # scaling: the outfit assets and their anchor bounds live in the
         # authority canvas coordinates (1254px for the half-body poses).
         # Applying after the scale-down to the caller's canvas made every
-        # anchor check fail (or draw ~2.7x off), so installed outfits never
+        # anchor check requiring attention (or draw ~2.7x off), so installed outfits stay outside
         # appeared on the half-body poses at all.
         if self._outfit_overlay is not None:
-            suppress_makeup_slots = (
-                frozenset({"eyes"})
-                if eye_state_for_blink(motion.expression_shape.blink)
-                is EyeState.CLOSED
-                else frozenset()
-            )
-            silhouette = outfit_silhouette(motion.expression, motion.pose.value)
-            if suppress_makeup_slots:
-                composed = self._outfit_overlay.apply(
+            composed = require_pixmap(
+                self._outfit_overlay.apply(
                     composed,
                     silhouette,
-                    suppress_makeup_slots=suppress_makeup_slots,
                 )
-            else:
-                # Preserve the legacy port signature for open-eye callers and
-                # lightweight test doubles that implement the original port.
-                composed = self._outfit_overlay.apply(composed, silhouette)
+            )
         result = (
             composed
             if composed.size() == base.size()
@@ -226,9 +354,7 @@ class LayeredParametricFaceRenderer:
         mouth_mask = getattr(layers, "mouth_mask", None)
         if actual_aperture > MOUTH_APERTURE_THRESHOLD:
             self._paint_masked(
-                result,
-                mouth_source,
-                mouth_mask,
+                result, mouth_source, mouth_mask,
                 max(0.0, min(1.0, actual_aperture / 0.18)),
             )
         return result
@@ -237,6 +363,46 @@ class LayeredParametricFaceRenderer:
         """The authored full-canvas portrait of one gesture expression (null when absent)."""
         return QPixmap(self._cached_pixmap(self._authority_dir / f"{expression}.png"))
 
+    def supports_discrete_speech(self, expression: str) -> bool:
+        """Tell the presentation timer when complete mouth endpoints are authoritative."""
+        if self._complete_halfbody.supports(expression):
+            return True
+        if expression == CHEEK_SPEECH_CLOSED_EXPRESSION:
+            capability = getattr(self._outfit_overlay, "has_native_motion", None)
+            return bool(callable(capability) and capability(_CHEEK_SILHOUETTE))
+        return (
+            (
+                self._exasperated_candidate_dir is not None
+                or (
+                    self._source_bound_expression_provider is not None
+                    and self._source_bound_expression_provider.assets_for(
+                        _EXASPERATED_SOURCE_ID
+                    ) is not None
+                )
+            )
+            and gesture_portrait_expression(expression) == _EXASPERATED_EXPRESSION
+        )
+
+    def _detachable_portrait(self, silhouette: str) -> QPixmap:
+        """Use the installed seven-part rig; missing installation uses legacy assets."""
+        if not self._use_detachable:
+            return QPixmap()
+        if not self._detachable_loaded:
+            self._detachable_assets = load_detachable_halfbody_assets(self._detachable_dir)
+            self._detachable_loaded = True
+        if self._detachable_assets is None:
+            return QPixmap()
+        cached = self._detachable_cache.get(silhouette)
+        if cached is None:
+            cached = self._detachable_assets.compose(silhouette)
+            self._detachable_cache[silhouette] = cached
+            self._detachable_cache.move_to_end(silhouette)
+            while len(self._detachable_cache) > MAX_CACHED_NEUTRAL_POSES:
+                self._detachable_cache.popitem(last=False)
+        else:
+            self._detachable_cache.move_to_end(silhouette)
+        return QPixmap(cached)
+
     def render_overlay(
         self,
         base: QPixmap,
@@ -244,20 +410,50 @@ class LayeredParametricFaceRenderer:
         *,
         mask: QPixmap | None = None,
         opacity: float = 1.0,
+        eye_state: str = "rest",
+        view_id: str | None = None,
+        makeup_view_id: str | None = None,
     ) -> QPixmap:
         """Compose one registered expression layer without owning its policy."""
-
+        if eye_state != "rest":
+            makeup_context = makeup_view_id if makeup_view_id is not None else view_id
+            complete = self._complete_halfbody.blink(
+                base, eye_state, source, makeup_context
+            )
+            if complete is not None:
+                return complete
+        native_blink = getattr(self._outfit_overlay, "render_native_blink", None)
+        if view_id is not None and eye_state != "rest" and callable(native_blink):
+            native = optional_pixmap(
+                native_blink(base, view_id, eye_state=eye_state)
+            )
+            if native is not None:
+                return native
         result = QPixmap(base)
         if mask is None:
             if not source.isNull():
                 painter = QPainter(result)
+                if eye_state != "rest":
+                    # A registered eyelid replaces face colour while the
+                    # existing body retains its matte, including fine alpha
+                    # around extracted highlights and hair-edge pixels.
+                    painter.setCompositionMode(QPainter.CompositionMode_SourceAtop)
                 painter.setOpacity(max(0.0, min(1.0, float(opacity))))
                 painter.drawPixmap(0, 0, source)
                 painter.end()
+                makeup_context = makeup_view_id if makeup_view_id is not None else view_id
+                if makeup_context is not None and eye_state != "rest" and self._outfit_overlay is not None:
+                    paint_blink_makeup(result, source, self._outfit_overlay, makeup_context, eye_state)
             return result
         self._paint_masked(result, source, mask, opacity)
         return result
 
+    def render_complete_blink(self, base: QPixmap, eye_state: str) -> QPixmap | None:
+        """Render an owned whole-frame blink before legacy eye-patch routing."""
+
+        if not self._complete_halfbody.has_whole_frame_blink(base):
+            return None
+        return self._complete_halfbody.blink(base, eye_state)
     # -- core layered composition -------------------------------------------
 
     def render_pose(
@@ -310,7 +506,7 @@ class LayeredParametricFaceRenderer:
         # The first-generation face cut-outs contain broad skin-coloured
         # interiors, not merely antialiased feature pixels.  Restore the exact
         # authority face inside the union of those registered face layers so
-        # their rectangles/circles cannot become visible.  This is a facial
+        # their rectangles/circles remain outside visible output.  This is a facial
         # identity sanitation pass only: body, hair, sleeves, ornaments and
         # their physics remain the 25-layer composition above.
         self._restore_authority_face(result, pose)
@@ -405,14 +601,7 @@ class LayeredParametricFaceRenderer:
         if cached is not None:
             return cached
         region = QRegion()
-        for layer_name in (
-            "oral_cavity",
-            "teeth_tongue",
-            "lip_lower",
-            "lip_upper",
-            "corner_left",
-            "corner_right",
-        ):
+        for layer_name in _MOUTH_LAYERS:
             source = self._cached_pixmap(pose.path(layer_name))
             if not source.isNull():
                 region = region.united(QRegion(source.mask()))
@@ -447,27 +636,7 @@ class LayeredParametricFaceRenderer:
         neutral = QPixmap(body)
         # Preserve the authoritative shared half/full-body Z-order.  This is a
         # layered-renderer cache, not a fallback to a legacy whole portrait.
-        for layer_name in (
-            "hair_back",
-            "base",
-            "jaw",
-            "oral_cavity",
-            "teeth_tongue",
-            "lip_lower",
-            "lip_upper",
-            "corner_left",
-            "corner_right",
-            "blush_left",
-            "blush_right",
-            "iris_left",
-            "iris_right",
-            "eyelid_left",
-            "eyelid_right",
-            "eyeliner_left",
-            "eyeliner_right",
-            "brow_left",
-            "brow_right",
-        ):
+        for layer_name in _NEUTRAL_LAYERS:
             self._paint_opacity(neutral, pose.path(layer_name), 1.0)
         self._neutral_pose_cache[key] = neutral
         self._neutral_pose_cache.move_to_end(key)
@@ -536,13 +705,7 @@ class LayeredParametricFaceRenderer:
                 return
             top = QPixmap(body.size())
             top.fill(Qt.transparent)
-            for layer_name in (
-                "hair_left",
-                "hair_right",
-                "sleeve_left",
-                "sleeve_right",
-                "ornament",
-            ):
+            for layer_name in _TOP_LAYERS:
                 self._paint_opacity(top, pose.path(layer_name), 1.0)
             self._top_pose_cache[key] = top
             self._top_pose_cache.move_to_end(key)
@@ -553,158 +716,3 @@ class LayeredParametricFaceRenderer:
         painter = QPainter(target)
         painter.drawPixmap(0, 0, top)
         painter.end()
-
-    # -- painting helpers ---------------------------------------------------
-
-    def _paint_opacity(self, target: QPixmap, path, opacity: float) -> None:
-        source = self._cached_pixmap(path)
-        if source.isNull() or opacity <= 0.0:
-            return
-        painter = QPainter(target)
-        painter.setOpacity(max(0.0, min(1.0, float(opacity))))
-        painter.drawPixmap(0, 0, source)
-        painter.end()
-
-    def _paint_translated(self, target: QPixmap, path, *, dx: float = 0.0, dy: float = 0.0) -> None:
-        source = self._cached_pixmap(path)
-        if source.isNull():
-            return
-        painter = QPainter(target)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        painter.drawPixmap(round(dx), round(dy), source)
-        painter.end()
-
-    def _paint_masked(
-        self,
-        target: QPixmap,
-        source: QPixmap | None,
-        mask: QPixmap | None,
-        opacity: float,
-    ) -> None:
-        if source is None or mask is None or source.isNull() or mask.isNull():
-            return
-        mask_key = int(mask.cacheKey())
-        bounds = self._mask_bounds_cache.get(mask_key)
-        if bounds is None:
-            bounds = QRegion(mask.mask()).boundingRect()
-            self._mask_bounds_cache[mask_key] = bounds
-            self._mask_bounds_cache.move_to_end(mask_key)
-            while len(self._mask_bounds_cache) > MAX_CACHED_MASK_BOUNDS:
-                self._mask_bounds_cache.popitem(last=False)
-        else:
-            self._mask_bounds_cache.move_to_end(mask_key)
-        if bounds.isEmpty():
-            return
-        # The speech mask occupies only a small mouth rectangle. Allocating and
-        # alpha-compositing a full 1254x1254 portrait for every 50 Hz viseme was
-        # the dominant Windows p95 cost. Preserve the same DestinationIn blend
-        # while restricting the temporary surface to the authored mask bounds.
-        layer = QPixmap(bounds.size())
-        layer.fill(Qt.transparent)
-        mask_painter = QPainter(layer)
-        mask_painter.drawPixmap(
-            0,
-            0,
-            source,
-            bounds.x(),
-            bounds.y(),
-            bounds.width(),
-            bounds.height(),
-        )
-        mask_painter.setCompositionMode(QPainter.CompositionMode_DestinationIn)
-        mask_painter.drawPixmap(
-            0,
-            0,
-            mask,
-            bounds.x(),
-            bounds.y(),
-            bounds.width(),
-            bounds.height(),
-        )
-        mask_painter.end()
-        painter = QPainter(target)
-        painter.setOpacity(max(0.0, min(1.0, float(opacity))))
-        painter.drawPixmap(bounds.topLeft(), layer)
-        painter.end()
-
-    def _paint_mouth_lips(self, target: QPixmap, pose: LayeredFacePose, mouth) -> None:
-        """Scale the upper/lower lips around the mouth center for articulation."""
-
-        width_scale = 1.0 + (mouth.width - 0.5) * 0.08 - mouth.rounding * 0.02
-        height_scale = 1.0 + mouth.aperture * 0.12
-        if (
-            abs(width_scale - 1.0) < SCALE_EPSILON
-            and abs(height_scale - 1.0) < SCALE_EPSILON
-        ):
-            return
-        for layer in ("lip_upper", "lip_lower"):
-            path = pose.path(layer)
-            dy = mouth.aperture * (-2.0 if layer == "lip_upper" else 8.0)
-            self._paint_transformed(
-                target,
-                path,
-                scale_x=width_scale,
-                scale_y=height_scale,
-                dy=dy,
-            )
-
-    def _paint_mouth_opening(
-        self,
-        target: QPixmap,
-        pose: LayeredFacePose,
-        mouth,
-    ) -> None:
-        """Open a visible cavity before placing the articulated lip layers."""
-        aperture = max(0.0, min(1.0, float(mouth.aperture)))
-        self._paint_transformed(
-            target,
-            pose.path("oral_cavity"),
-            scale_x=1.0 + mouth.rounding * 0.08,
-            scale_y=1.0 + aperture * 1.4,
-            dy=aperture * 3.0,
-        )
-        self._paint_transformed(
-            target,
-            pose.path("teeth_tongue"),
-            scale_y=1.0 + aperture * 0.45,
-            dy=aperture * 2.0,
-        )
-
-    def _paint_transformed(
-        self,
-        target: QPixmap,
-        path,
-        *,
-        scale_x: float = 1.0,
-        scale_y: float = 1.0,
-        dx: float = 0.0,
-        dy: float = 0.0,
-    ) -> None:
-        source = self._cached_pixmap(path)
-        if source.isNull():
-            return
-        center_x, center_y = self._layer_center(path, source)
-        transform = QTransform()
-        transform.translate(center_x + dx, center_y + dy)
-        transform.scale(scale_x, scale_y)
-        transform.translate(-center_x, -center_y)
-        # Paint the transformed layer directly into the destination. The old
-        # path allocated a full-canvas temporary for every lip/cavity layer on
-        # every viseme, then copied that canvas a second time. Direct painting
-        # is pixel-equivalent and removes four large allocations per frame.
-        painter = QPainter(target)
-        painter.setRenderHint(QPainter.SmoothPixmapTransform)
-        painter.setTransform(transform)
-        painter.drawPixmap(0, 0, source)
-        painter.end()
-
-    def _layer_center(self, path, source: QPixmap) -> tuple[float, float]:
-        """Return one alpha-bounds pivot without rescanning it at 50 Hz."""
-        key = str(path)
-        cached = self._layer_center_cache.get(key)
-        if cached is not None:
-            return cached
-        bounds = QRegion(source.mask()).boundingRect()
-        center = (float(bounds.center().x()), float(bounds.center().y()))
-        self._layer_center_cache[key] = center
-        return center

@@ -6,11 +6,14 @@ lazy from array import array
 lazy from dataclasses import dataclass
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE, PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE
+lazy from domain.core_constants import (
+    PCM16_MAX_SAMPLE as MAX_PCM16_SAMPLE,
+    PCM16_MIN_SAMPLE as MIN_PCM16_SAMPLE,
+)
 
 
 class PcmAudioError(ValueError):
-    """Raised when a PCM16 buffer or conversion request is invalid."""
+    """Raised when a PCM16 buffer or conversion request needs a supported value."""
 
 
 type Pcm16Buffer = bytes | bytearray
@@ -29,7 +32,7 @@ class Pcm16RateState:
 
 
 def validate_pcm16_buffer(data: object) -> Pcm16Buffer:
-    """Return a supported PCM buffer without copying its bytes."""
+    """Return a supported PCM buffer while preserving its bytes."""
     if not isinstance(data, (bytes, bytearray)):
         raise PcmAudioError("PCM16 data must be bytes or bytearray")
     return data
@@ -103,11 +106,11 @@ def validate_pcm16_rate_state(
     *,
     channels: int,
 ) -> Pcm16RateState | None:
-    """Validate immutable streamed-resampling state without transforming it."""
+    """Validate immutable streamed-resampling state while preserving its original representation."""
     if state is None:
         return None
     if not isinstance(state, Pcm16RateState):
-        raise PcmAudioError("resampling state has an invalid type")
+        raise PcmAudioError("resampling state requires a supported type")
     if not isinstance(state.tail_frame, tuple):
         raise PcmAudioError("resampling state tail frame must be a tuple")
     if len(state.tail_frame) != channels:
@@ -135,7 +138,7 @@ def validate_rate_conversion_request_size(
     output_rate: int,
     state: Pcm16RateState | None = None,
 ) -> None:
-    """Reject malformed or amplifying requests before allocating output."""
+    """Validate request shape and amplification bounds before allocating output."""
     data_size = _validate_integer_range(
         data_size,
         name="PCM16 data size",
@@ -190,7 +193,7 @@ def validate_rate_conversion_request(
     output_rate: int,
     state: Pcm16RateState | None = None,
 ) -> Pcm16Buffer:
-    """Validate one streamed conversion request without decoding its audio."""
+    """Validate one streamed conversion request while preserving its audio representation."""
     validated = validate_pcm16_buffer(data)
     validate_rate_conversion_request_size(
         len(validated),
@@ -217,7 +220,11 @@ def _encode_pcm16(samples: array[int]) -> bytes:
 
 
 def _clip_pcm16(value: float) -> int:
-    return max(-32768, min(32767, math.floor(value)))
+    if value <= MIN_PCM16_SAMPLE:
+        return MIN_PCM16_SAMPLE
+    if value >= MAX_PCM16_SAMPLE:
+        return MAX_PCM16_SAMPLE
+    return math.floor(value)
 
 
 def scale_pcm16(data: Pcm16Buffer, factor: float) -> bytes:
@@ -270,7 +277,7 @@ def rate_convert_pcm16(
     )
     samples = _decode_pcm16(data)
     if input_rate == output_rate:
-        return data, None
+        return bytes(data), None
     if not samples:
         return b"", state
 

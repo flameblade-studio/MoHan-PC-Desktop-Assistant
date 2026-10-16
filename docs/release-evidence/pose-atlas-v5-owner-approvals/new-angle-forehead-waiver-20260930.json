@@ -1,0 +1,33 @@
+{
+  "schema": "mohan.owner-identity-audit-waiver.v1",
+  "date": "2026-09-30",
+  "owner": "CHOU MING HUA",
+  "question": "#200 所有測試都過了，只剩安裝程式打包前的「素體身份靜態稽核」擋下：它對你 9/28 核准的新角度 +60、-60、-75 標出 4 項額頭輪廓診斷（曲率突變、外凸）。要怎麼處理？",
+  "answer_quote": "加入豁免名單（建議）",
+  "context_approval": {
+    "path": "scratchpad/mohan-v5-visible-geometry-scale-166/session48/owner-final-approval-20260928.json",
+    "sha256": "2057d242937380b43f3580393bfa67fb47ff732c09c002509cce2b3a94c459aa"
+  },
+  "waived_findings": {
+    "yaw+060-pitch+00": {
+      "sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
+      "issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    },
+    "yaw-060-pitch+00": {
+      "sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
+      "issue_codes": [
+        "forehead_curvature_discontinuity"
+      ]
+    },
+    "yaw-075-pitch+00": {
+      "sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
+      "issue_codes": [
+        "forehead_curvature_discontinuity",
+        "forehead_outward_bulge"
+      ]
+    }
+  }
+}

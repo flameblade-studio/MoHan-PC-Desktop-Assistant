@@ -55,7 +55,7 @@ def run() -> None:
                 urlopen(request, timeout=3)
             except HTTPError as exc:
                 assert exc.code == HTTP_TOO_MANY_REQUESTS
-                assert json.load(exc) == {"error": "請求過於頻繁"}
+                assert json.load(exc) == {"error": "請求頻率已達上限，請稍後再試"}
             else:
                 raise AssertionError("rate limit must return HTTP 429")
         finally:

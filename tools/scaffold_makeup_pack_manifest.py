@@ -1,10 +1,12 @@
-"""Scaffold an authoring manifest for a makeup-only ``.mohan-outfit`` pack.
+"""Scaffold a legacy three-slot makeup-only ``.mohan-outfit`` manifest.
 
-The scaffold declares one makeup item with any number of variants and the full
-31-silhouette × 3-slot layer set each variant needs.  ``sha256``, ``width`` and
-``height`` are left blank on purpose: ``tools/build_outfit_pack.py`` fills them
-from the PNG files the artist drops under ``<asset_root>/assets/`` and rejects
-the pack if a file is missing, off-canvas or paints outside the safe region.
+The generic scaffold declares one makeup item with any number of variants and
+the full 31-silhouette × 3-slot ``poses`` layer set each variant needs.
+``foundation`` and ``eye_states`` belong to the canonical four-look stage and
+are intentionally absent here. ``sha256``, ``width`` and ``height`` are left
+blank on purpose: ``tools/build_outfit_pack.py`` fills them from the PNG files
+the artist drops under ``<asset_root>/assets/``. Acceptance requires every
+file to exist, fit the canvas, and stay within its safe region.
 
 Example (the official built-in item)::
 
@@ -15,6 +17,8 @@ Example (the official built-in item)::
 """
 
 from __future__ import annotations
+
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 
 lazy import argparse
 lazy import json
@@ -97,6 +101,7 @@ def scaffold(arguments: argparse.Namespace) -> dict[str, object]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("output", type=Path)
     parser.add_argument("--pack-id", required=True)
@@ -105,7 +110,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--item-name", required=True, help="zh-TW|zh-CN|en|ja-JP")
     parser.add_argument("--variant", action="append", required=True, help="id:zh-TW|zh-CN|en|ja-JP (repeatable)")
     parser.add_argument("--author", default="Flameblade Studio")
-    parser.add_argument("--license", default="CC BY 4.0")
+    parser.add_argument("--license", default="CC-BY-4.0")
     parser.add_argument("--pack-version", default="1.0.0")
     parser.add_argument("--app-range", default=">=4.0.0,<5.0.0")
     arguments = parser.parse_args(argv)

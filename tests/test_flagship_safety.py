@@ -291,7 +291,7 @@ def assert_lock_service_rejected(client: HomeAssistantClient) -> None:
     except PermissionError:
         pass
     else:
-        raise AssertionError("lock service must not bypass hard policy")
+        raise AssertionError('lock service must enforce the hard policy')
 
 
 def assert_home_assistant_contract() -> None:
@@ -339,11 +339,10 @@ if __name__ == "__main__":
 
 
 def test_read_only_folder_rejects_writes(tmp_path: Path) -> None:
-    """唯讀資料夾必須擋下建檔、搬移與重新命名。
+    """唯讀資料夾維持讀取範圍，寫入操作須有可寫入授權。
 
-    迴歸測試：安全設定會把每個資料夾存成「唯讀」或「可寫入」，但
-    runtime 先前只讀取 target_value，access_mode 整個被丟掉——使用者在
-    介面上選的唯讀完全沒有作用。介面對使用者宣告的權限邊界必須為真。
+    安全設定同時保存 target_value 與 access_mode。先前只讀取路徑，
+    使唯讀選項失效；測試要求建檔、搬移及重新命名都遵守存取模式。
     """
     root = tmp_path / "readonly"
     root.mkdir()
@@ -367,7 +366,7 @@ def test_read_only_folder_rejects_writes(tmp_path: Path) -> None:
 
 
 def test_writable_folder_allows_writes(tmp_path: Path) -> None:
-    """可寫入資料夾不得被誤擋——修正不能只是把功能關掉。"""
+    """可寫入資料夾通過授權檢查後，維持正常可用。"""
     root = tmp_path / "writable"
     root.mkdir()
     toolbox = WindowsToolbox(
@@ -379,10 +378,10 @@ def test_writable_folder_allows_writes(tmp_path: Path) -> None:
 
 
 def test_unknown_permission_string_fails_closed() -> None:
-    """損壞的權限字串必須退回風險預設，不得變成「允許且免確認」。
+    """權限字串須符合已知值；其餘值採用風險預設與既定確認次數。
 
-    迴歸測試：evaluate() 只封鎖精確字串「禁止」，所以任何損壞值都會得到
-    allowed=True 且 confirmations=0。GREEN 與 BLUE 能力因此免確認執行。
+    舊 evaluate() 僅比對單一阻擋值，其他損壞值會得到 allowed=True
+    及 confirmations=0。此測試驗證 GREEN 與 BLUE 能力的預設保護。
     """
     from domain.flagship_action_policy import PolicyEngine
 

@@ -1,0 +1,48 @@
+{
+  "schema": "mohan.exasperated-runtime-candidate.v1",
+  "approved_source_sha256": "0bb3d74affef4d2df831cf45d7f6d756b69cb58aee3693aea14f38f5d47996df",
+  "parts": {
+    "visible_core_hair": {
+      "path": "parts/visible_core_hair.rgba.png",
+      "sha256": "867b76c63304c1249c002b3c2648f0443e0175246d611322aebb483dc5346219"
+    },
+    "visible_head_neck_chest_skin": {
+      "path": "parts/visible_head_neck_chest_skin.rgba.png",
+      "sha256": "08ba6a284ac791bbbf319678659b8f4051b643ef1b99b739f6a3d69eb870269b"
+    },
+    "visible_upper_garment": {
+      "path": "parts/visible_upper_garment.rgba.png",
+      "sha256": "47a0633cf6c4d0ac68885060c790a8cb1f7389a916693dcf62c31b02d93cf5d6"
+    },
+    "visible_right_arm": {
+      "path": "parts/visible_right_arm.rgba.png",
+      "sha256": "74f6dc4ed5429b8c8375cd2b2ae45e75b482678c83cf7c4697525546e6a07a6c"
+    },
+    "visible_left_arm": {
+      "path": "parts/visible_left_arm.rgba.png",
+      "sha256": "6eac7b98649b82a3a62776c771b26e65cb0709d54ddfbc028e23d7683ebea853"
+    },
+    "visible_right_hand": {
+      "path": "parts/visible_right_hand.rgba.png",
+      "sha256": "7e240dcf59e1596e57a102f72e5ba2856f1e0bbc279ea909edd49f5b26788d5d"
+    },
+    "visible_left_hand": {
+      "path": "parts/visible_left_hand.rgba.png",
+      "sha256": "142386a23793c7e96504c0fd2d2bb5c976681ba9532ae9b2c1a109ce17fce46f"
+    }
+  },
+  "mouths": {
+    "mid": {
+      "path": "mouths/mid.rgba.png",
+      "sha256": "89dc6f1913bac35eebe562168bad3a0558855d48a6a64849014e34c31a1ce9ca"
+    },
+    "open": {
+      "path": "mouths/open.rgba.png",
+      "sha256": "69e07ebded64ad3548ea6ae2bd9ecd07bc438f681dbae7b8f7c42d011f066f46"
+    },
+    "round": {
+      "path": "mouths/round.rgba.png",
+      "sha256": "c12acae6030fd26799555e13d224ab30763ff6744ba4a5c38eb91967cc00492f"
+    }
+  }
+}

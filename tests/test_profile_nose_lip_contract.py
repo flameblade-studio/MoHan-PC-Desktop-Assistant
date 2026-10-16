@@ -73,9 +73,11 @@ class NoseLipContractTests(unittest.TestCase):
             np.zeros_like(reference),
         )
         for candidate in invalid:
-            with self.subTest(shape=candidate.shape):
-                with self.assertRaises(ValueError):
-                    audit_nose_lip_contract(reference, candidate)
+            with (
+                self.subTest(shape=candidate.shape),
+                self.assertRaises(ValueError),
+            ):
+                audit_nose_lip_contract(reference, candidate)
 
     def test_50hz_linear_transition_is_finite_and_continuous(self):
         reference = authority_landmarks()

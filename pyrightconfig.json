@@ -1,0 +1,59 @@
+{
+  "exclude": [
+    ".quality-tmp/**",
+    "artifacts/**",
+    "assets/**",
+    "build/**",
+    "dist/**",
+    ".venv315/**",
+    "native/**/target/**"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "application",
+      "extraPaths": ["."]
+    },
+    {
+      "root": "domain",
+      "extraPaths": ["."]
+    },
+    {
+      "root": "infrastructure",
+      "extraPaths": ["."]
+    },
+    {
+      "root": "presentation",
+      "extraPaths": ["."]
+    }
+  ],
+  "include": [
+    "application",
+    "domain",
+    "infrastructure",
+    "presentation"
+  ],
+  "ignore": [
+    "application/wardrobe_service.py",
+    "domain/outfit_pack.py",
+    "domain/pose_pack.py",
+    "infrastructure/hand_landmark_provider.py",
+    "infrastructure/layered_full_body_assets.py",
+    "presentation/companion_visual_physics.py"
+  ],
+  "pythonPlatform": "Windows",
+  "pythonVersion": "3.15",
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "reportMissingTypeStubs": "warning",
+  "reportArgumentType": "warning",
+  "reportAttributeAccessIssue": "none",
+  "reportCallIssue": "none",
+  "reportGeneralTypeIssues": "warning",
+  "reportIndexIssue": "warning",
+  "reportOperatorIssue": "warning",
+  "reportAssignmentType": "warning",
+  "reportReturnType": "warning",
+  "stubPath": "typings",
+  "typeCheckingMode": "basic",
+  "useLibraryCodeForTypes": true
+}

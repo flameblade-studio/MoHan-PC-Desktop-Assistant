@@ -25,8 +25,8 @@ def test_neutrals_and_semantic_accents_stay_put() -> None:
         "QLineEdit:focus { border-color: #f0d58b; }"  # gold focus
         "QWidget { background: rgba(255, 255, 255, 26); }"
     )
-    # #24364a00 is not matched as an 8-digit color by design; the 6-digit
-    # prefix would be desaturated navy — verify true neutrals separately.
+    # The matcher treats #24364a00 by its six-digit prefix, desaturated navy.
+    # Verify true neutral colors separately.
     result = retint_stylesheet("QLabel { color: #ffffff; }", CRIMSON_TOKENS)
     assert result == "QLabel { color: #ffffff; }"
     result = retint_stylesheet(sheet, CRIMSON_TOKENS)

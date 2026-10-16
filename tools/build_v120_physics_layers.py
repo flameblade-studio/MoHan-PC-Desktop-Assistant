@@ -14,7 +14,7 @@ POSES = {
 
 # The masks are deliberately built from the original full-resolution pixels.
 # Existing segmented layers only identify the intended moving region; their
-# colors are never reused. This prevents the magenta/grey fringe seen in v1.19.
+# colors come exclusively from the authority, preserving clean color edges.
 LAYER_SETTINGS = {
     "sleeve_left": (19, 13.0, 238),
     "sleeve_right": (19, 13.0, 238),

@@ -13,7 +13,6 @@ set -eu
 # Locate ruff. Prefer the project's pinned virtualenv, then fall back to PATH.
 RUFF=""
 for candidate in \
-    ".qt315-compat-full/Scripts/ruff.exe" \
     ".venv315/Scripts/ruff.exe" \
     "ruff"; do
     if command -v "$candidate" >/dev/null 2>&1; then
@@ -23,7 +22,7 @@ for candidate in \
 done
 
 if [ -z "$RUFF" ]; then
-    echo "pre-commit: ruff not found; skipping magic-number gate." >&2
+    echo "pre-commit: magic-number gate skipped; install ruff to enable this check." >&2
     exit 0
 fi
 

@@ -112,8 +112,10 @@ def test_version_runtime_and_evidence_policy() -> None:
             '--collect-all "opencc"',
             '$env:PYTHON_JIT = "1"',
             "tools/build_pyinstaller_jit_bootloader.py",
-            '.qt315-compat-full\\Lib\\site-packages',
-            "6.11.1+mohan.py315.",
+            "tools/check_official_qt_runtime.py",
+            "--pip-report $QtPipReportPath",
+            "QtPipReport",
+            "Qt for Python 6.12.0 three-distribution",
             "tools\\jit_launcher.py",
             "Move-Item -LiteralPath $PublicExecutable",
             '$env:PYTHON_JIT = "0"',
@@ -125,6 +127,8 @@ def test_version_runtime_and_evidence_policy() -> None:
     for workflow_name in ("windows-ci.yml", "release.yml"):
         workflow = read(f".github/workflows/{workflow_name}")
         assert 'python-version: "3.15.0-rc.1"' in workflow
+        assert "--require-hashes" in workflow
+        assert "requirements-qt.txt" in workflow
         assert 'python-version: "3.12"' not in workflow
         assert 'FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"' in workflow
         assert "rustup toolchain install 1.97.1" in workflow
@@ -166,31 +170,32 @@ def test_version_runtime_and_evidence_policy() -> None:
 
 
 # SHA-256 of the canonical bare half-body sprite (generation-2 base, pinned
-# 2026-09-02).  Marketing art is no longer drawn from it directly: the composed
+# 2026-09-02). Marketing art uses the composed
 # portrait below is rendered over it by tools/render_marketing_portraits.py.
 CANONICAL_HALF_BODY_SHA256 = (
     "e99cc462979d963247db30e73efcceffe408c5b4046db69611325a6920647825"
 )
-# docs/media/portraits/idle_front.png: generation-2 composite (official pack +
-# classic makeup) that installer artwork and the taskbar icon derive from, 2026-09-03.
+# docs/media/portraits/idle_front.png: V5 product composite (complete-expression
+# renderer, official pack, classic makeup), regenerated 2026-10-11 with the README
+# media.  The installer artwork and icons below are rebuilt from this portrait.
 MARKETING_IDLE_PORTRAIT_SHA256 = (
-    "3f970a7b96156badcbacd5d6bd1f76ed312db8eeb66a9152f6bc633385e8f869"
+    "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243"
 )
-# installer/artwork/wizard-hero.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-hero.png: built from the V5 composite portrait, 2026-10-11.
 WIZARD_HERO_SHA256 = (
-    "ef39c7708e4d9782a3b02f5fc4e0d27db23b6675f7656a1e5012761f66962248"
+    "a26bbcbd6505b1a3ffb08efaff1c01a1e7625f409a2064723100e29ddfc961d9"
 )
-# installer/artwork/wizard-small.png: built from the generation-2 composite, 2026-09-03.
+# installer/artwork/wizard-small.png: built from the V5 composite portrait, 2026-10-11.
 WIZARD_SMALL_SHA256 = (
-    "2733f8ee842867ddb7fb38ed07f7260f20db33093159f7f1fd678fbdfa884a33"
+    "e6459629958e96b62b0700ea0e75da844701ecf1c48c99a438491051c9b7d8de"
 )
-# assets/mohan-taskbar-icon.png: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-taskbar-icon.png: built from the V5 composite portrait, 2026-10-11.
 TASKBAR_ICON_PNG_SHA256 = (
-    "fc32f79654ce68918a838f2382484a0dc2e3e0fcc636aac82b56272fef06eecd"
+    "b84c800c546af3793c69c414cf09d6fc0761a14225f7a07a8804ff3fe8c93422"
 )
-# assets/mohan-halfbody.ico: built from the generation-2 composite, 2026-09-03.
+# assets/mohan-halfbody.ico: built from the V5 composite portrait, 2026-10-11.
 WINDOWS_ICON_SHA256 = (
-    "821b5afd5ba9f07c50e1e6a50cb64ba966b4a20131bd3643f1bbdd03d35b9db3"
+    "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
 )
 # The README expression cards and the canonical idle portrait, rendered composed.
 MARKETING_PORTRAITS = (
@@ -209,55 +214,58 @@ README_MEDIA_PATTERN = re.compile(
 )
 README_AUTO_MEDIA_SHA256 = {
     "docs/media/expressions.png": (
-        "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2"
+        "c36989312b6135f63c788d44ca7033563a96807e416e46e38fa04c19601f9dca"
     ),
     "docs/media/first-run-wizard.png": (
-        "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927"
+        "1fc8748282b5039126144cbf5e7b09aecd129d06f6efc90aa3f5f5bb8f273e0b"
     ),
     "docs/media/long-term-memory.png": (
-        "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073"
+        "bd08f4c7d9b0bc4464f5435a19b07cd634c5a79c857a7f795c6df19f760f977e"
     ),
     "docs/media/mohan-demo.mp4": (
         "f3a3614447e7f743111845c0e33de118a659070c738fea5704c31041002cb9bd"
     ),
     "docs/media/mohan-hero.png": (
-        "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb"
+        "a121608e2ea493a0a4f4225a47fe30e35973e05840c9424af67fc1d6549dc561"
     ),
     "docs/media/portraits/gentle_smile_front.png": (
-        "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2"
+        "9ecc2a7ee9b0c89d6123c290c2ca87c72e9d4f96800de1f6cf186b4e65bc85a9"
+    ),
+    "docs/media/portraits/idle_front.png": (
+        "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243"
     ),
     "docs/media/portraits/mock_hit_front.png": (
-        "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f"
+        "84f24b1a66ba08432069a2a9a35ec0407c66df84543c09a27bbfcbd0a9630539"
     ),
     "docs/media/portraits/proud_front.png": (
-        "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a"
+        "d14871c293a2936732df50479cc41b58ee705889f97755e02c1053ba61a13320"
     ),
     "docs/media/portraits/shy_cute_front.png": (
-        "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1"
+        "753c61174f7493b97ef8dd5f4198e81b034bd944157ca21e6269dfb40bb18521"
     ),
     "docs/media/portraits/thinking_front.png": (
-        "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd"
+        "d0f4923cc388ca55f79bb0dccff2fa82ed52182e980f3305f66dcd53606627ec"
     ),
     "docs/media/portraits/worried_front.png": (
-        "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5"
+        "86f2bd0401424427437c9554e017786b830ce23a006819ae1179c679c0c3943e"
     ),
     "docs/media/security-permissions.png": (
-        "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2"
+        "46c5f6656e647938a224b3236d03181d08a4fed57bb226058452d2803cde1d83"
     ),
     "docs/media/support-mock-hit.png": (
-        "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64"
+        "09517701fc8f028ce8ed345620eb39e02893d4357ed9c5e729c1aaef20c40cbb"
     ),
     "docs/media/support-proud.png": (
-        "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115"
+        "a6dd9446e57c99e6a9ae8c73b2ca89e18dacfd282b7a00129bc8a3eb5e3d5319"
     ),
     "docs/media/support-shy-aligned.png": (
-        "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996"
+        "d8deaf3044c6285544b0c43526cb74c2f4830608ce62f8584732cbb390480ab1"
     ),
     "docs/media/tasks-and-ideas.png": (
-        "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482"
+        "c886c61fa388a5c6427222bdf7fe742f04185571e1b8a8b9db3de3098a49901b"
     ),
     "docs/media/voice-modes.png": (
-        "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571"
+        "47eacde1011ed9dd45d4be16a49087981ff283fa77e8e8547738f309474d44ca"
     ),
 }
 
@@ -274,11 +282,17 @@ def _assert_media_provenance(manifest: dict[str, object]) -> None:
     entries = manifest.get("entries")
     assert isinstance(entries, dict)
     references = _readme_media_references()
-    assert set(entries) == references, (
-        "README media provenance mismatch: "
-        f"missing={sorted(references - set(entries))}, "
-        f"unexpected={sorted(set(entries) - references)}"
+    media_root = MEDIA_PROVENANCE_PATH.parent
+    media_files = {
+        path.relative_to(ROOT).as_posix()
+        for path in media_root.rglob("*")
+        if path.is_file() and path != MEDIA_PROVENANCE_PATH
+    }
+    assert set(entries) == media_files, (
+        f'media provenance requires alignment: outstanding={sorted(media_files - set(entries))}, '
+        f'unexpected={sorted(set(entries) - media_files)}'
     )
+    assert references <= set(entries), sorted(references - set(entries))
 
     stale: list[str] = []
     auto_entries: set[str] = set()
@@ -286,7 +300,7 @@ def _assert_media_provenance(manifest: dict[str, object]) -> None:
         assert isinstance(relative, str)
         assert isinstance(metadata, dict), relative
         path = ROOT / relative
-        assert path.is_file(), f"missing README media file: {relative}"
+        assert path.is_file(), f'provide the README media file: {relative}'
         generator = metadata.get("generator")
         assert isinstance(generator, str) and generator.strip(), relative
         generation = metadata.get("generation")
@@ -357,7 +371,7 @@ def test_readme_media_generation_tools_use_runtime_composition() -> None:
             "ActiveOutfitOverlay",
             "grab_widget_image",
             'render_portrait(overlay, "idle_front")',
-            'render_portrait(overlay, "attentive_front")',
+            'render_portrait(overlay, "gentle_smile_front")',
             'compose_expression_showcase(output_dir / "expressions.png", overlay)',
             "render_all(",
         ),
@@ -410,11 +424,11 @@ def test_inno_setup_and_artwork_contract() -> None:
     assert 'MOHAN_ALLOW_INSTALLER_MUTATION -ne "1"' in installer_test
     assert '"/MERGETASKS=!desktopicon"' in installer_test
     for required in (
-        "MSI $Variant shortcut target escaped the install directory",
-        "MSI $Variant shortcut has an invalid Shell Link header",
-        "MSI $Variant shortcut contains an independent icon location",
-        "MSI $Variant shortcut icon escaped the installed MoHan executable",
-        "MSI $Variant uninstaller left the Start menu shortcut behind",
+        "MSI $Variant shortcut target must match the installed application path",
+        "MSI $Variant shortcut has a Shell Link header value different from the required value",
+        "MSI $Variant shortcut uses an independent icon location",
+        "MSI $Variant shortcut icon path must use the installed MoHan executable",
+        "MSI $Variant uninstaller retained the Start menu shortcut",
     ):
         assert required in installer_test
 
@@ -424,7 +438,10 @@ def test_inno_setup_and_artwork_contract() -> None:
     portrait = ROOT / "docs/media/portraits/idle_front.png"
     assert_image(portrait, PORTRAIT_SIZE)
     assert hashlib.sha256(portrait.read_bytes()).hexdigest() == MARKETING_IDLE_PORTRAIT_SHA256
-    for consumer in ("infrastructure/face_assets.py", "tools/build_installer_artwork.py"):
+    for consumer in (
+        "assets/characters/mohan/expressions/state-catalog.json",
+        "tools/build_installer_artwork.py",
+    ):
         content = read(consumer)
         assert "idle_front.png" in content
         assert "mohan-hero-rain-canonical.webp" not in content
@@ -542,10 +559,10 @@ def test_wix_source_and_localization_contract() -> None:
     installer_test = read("installer/test_installers.ps1")
     policy = read("installer/LOCALIZATION.md")
     assert '"LICENSE", "THIRD_PARTY_NOTICES.md"' in installer_test
-    assert "EXE shortcut target escaped the installed application directory" in (
+    assert "EXE shortcut target must match the installed application path" in (
         installer_test
     )
-    assert "EXE shortcut icon does not use the installed MoHan half-body icon" in (
+    assert "EXE shortcut icon must use the installed MoHan half-body icon" in (
         installer_test
     )
     for locale, lcid in (("en-US", "1033"), ("zh-CN", "2052"), ("ja-JP", "1041")):
@@ -664,12 +681,12 @@ def test_readme_language_and_contribution_contract() -> None:
     assert_contains(
         readme,
         (
-            "妾才沒有等你的 Star",
-            "若再補上測試",
-            "你願意送來 PR",
-            "未經測試便想合併",
-            "全數綠燈",
-            "Bug 可以明日再查",
+            "妾在等你的 Star，也順道確認軍心。",
+            "若再補上測試，妾便勉強准它入主分支。",
+            "你願意送來 PR？妾、妾只是替主上記下功勞。",
+            "未經測試便想合併？手伸出來。妾只敲一下。",
+            "全數綠燈……做得好。別誤會，妾只是尊重好工程。",
+            "Bug 可以明日再查。你若累倒，誰來陪妾守著赤焰劍？",
         ),
     )
 

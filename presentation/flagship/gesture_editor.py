@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 lazy from dataclasses import replace
+lazy from presentation.qt_parent import require_qwidget
 
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtWidgets import (
@@ -59,6 +60,7 @@ class FlagshipGestureEditorMixin:
         self._loading_gesture_editor = False
         self._refresh_gesture_list()
         return card
+
     def _gesture_editor_layout(self) -> QHBoxLayout:
         editor = QHBoxLayout()
         self.gesture_list = QListWidget()
@@ -81,7 +83,7 @@ class FlagshipGestureEditorMixin:
         self.gesture_command.setMaxLength(256)
         self.gesture_command.setAccessibleName(self._t("自訂文字指令"))
         self.gesture_command.setPlaceholderText(
-            self._t("輸入一行交給墨寒安全命令流程的文字指令")
+            self._t("輸入一行交給{character_name}安全命令流程的文字指令")
         )
         self.gesture_definition_enabled = self._preference_checkbox(
             self._t("啟用此手勢"), False
@@ -98,11 +100,13 @@ class FlagshipGestureEditorMixin:
         form.addRow(self.gesture_definition_enabled)
         editor.addLayout(form, 3)
         return editor
+
     def _gesture_recording_status(self) -> QLabel:
         self.gesture_record_status = QLabel()
         self.gesture_record_status.setWordWrap(True)
         self.gesture_record_status.setAccessibleName(self._t("錄製狀態"))
         return self.gesture_record_status
+
     def _gesture_action_buttons(self) -> QHBoxLayout:
         actions = QHBoxLayout()
         self.gesture_add_button = QPushButton(self._t("新增自訂手勢"))
@@ -126,6 +130,7 @@ class FlagshipGestureEditorMixin:
             actions.addWidget(button)
         actions.addStretch(1)
         return actions
+
     def _gesture_label(self, labels) -> str:
         return {
             "zh-TW": labels.traditional_chinese,
@@ -133,10 +138,12 @@ class FlagshipGestureEditorMixin:
             "en": labels.english,
             "ja-JP": labels.japanese,
         }[self.language]
+
     def _gesture_display_name(self, definition: GestureDefinition) -> str:
         if definition.source is GestureSource.BUILTIN:
             return self._gesture_label(BUILTIN_GESTURE_LABELS[definition.gesture_id])
         return definition.display_name
+
     def _refresh_gesture_list(self, selected_id: str | None = None) -> None:
         selected_id = selected_id or self._selected_gesture_id()
         self.gesture_list.clear()
@@ -155,14 +162,17 @@ class FlagshipGestureEditorMixin:
                 selected_row = row
         if self.gesture_list.count():
             self.gesture_list.setCurrentRow(selected_row)
+
     def _selected_gesture_id(self) -> str | None:
         item = self.gesture_list.currentItem() if hasattr(self, "gesture_list") else None
         return str(item.data(Qt.UserRole)) if item is not None else None
+
     def _selected_gesture(self) -> GestureDefinition | None:
         identifier = self._selected_gesture_id()
         if identifier is None:
             return None
         return self._gesture_draft.value.definition(identifier)
+
     def _load_gesture_editor(self, _row: int) -> None:
         definition = self._selected_gesture()
         available = definition is not None
@@ -184,20 +194,22 @@ class FlagshipGestureEditorMixin:
         if not custom:
             status = self._t("內建手勢使用已稽核的偵測器，不需錄製。")
         elif recorder_available:
-            status = self._t("可錄製手部特徵；不保存照片或影像。")
+            status = self._t('錄製僅保存手部特徵資料。')
         else:
-            status = self._t("目前沒有可用的手部 landmark 訊號，無法安全錄製。")
+            status = self._t('請先取得穩定的手部 landmark 訊號，再開始安全錄製。')
         self.gesture_record_status.setText(status)
         self.gesture_action.setEnabled(available)
         self.gesture_definition_enabled.setEnabled(available)
         self._gesture_action_changed()
         self._loading_gesture_editor = False
+
     def _gesture_action_changed(self, _index: int = -1) -> None:
         custom = self.gesture_action.currentData() == GestureAction.CUSTOM_COMMAND.value
         self.gesture_command.setEnabled(custom)
         if custom and not self.gesture_command.text().strip():
             return
         self._stage_selected_gesture()
+
     def _stage_selected_gesture(self) -> None:
         if getattr(self, "_loading_gesture_editor", False):
             return
@@ -212,19 +224,21 @@ class FlagshipGestureEditorMixin:
             binding=GestureBinding(action, command),
         )
         self._gesture_draft.update_definition(updated)
+
     def add_custom_gesture(self) -> None:
         name, accepted = QInputDialog.getText(
-            self, self._t("新增自訂手勢"), self._t("手勢名稱")
+            require_qwidget(self), self._t("新增自訂手勢"), self._t("手勢名稱")
         )
         if accepted and name.strip():
             self._gesture_draft.value = self._gesture_draft.value.add_custom(name)
             self._refresh_gesture_list(self._gesture_draft.value.definitions[-1].gesture_id)
+
     def rename_custom_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.BUILTIN:
             return
         name, accepted = QInputDialog.getText(
-            self,
+            require_qwidget(self),
             self._t("重新命名"),
             self._t("手勢名稱"),
             text=definition.display_name,
@@ -232,30 +246,33 @@ class FlagshipGestureEditorMixin:
         if accepted and name.strip():
             self._gesture_draft.update_definition(replace(definition, display_name=name.strip()))
             self._refresh_gesture_list(definition.gesture_id)
+
     def delete_custom_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.BUILTIN:
             return
         self._gesture_draft.value = self._gesture_draft.value.remove_custom(definition.gesture_id)
         self._refresh_gesture_list()
+
     def reset_builtin_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.CUSTOM:
             return
         self._gesture_draft.value = self._gesture_draft.value.reset_builtin(definition.gesture_id)
         self._refresh_gesture_list(definition.gesture_id)
+
     def record_custom_gesture(self) -> None:
         definition = self._selected_gesture()
         if definition is None or definition.source is GestureSource.BUILTIN:
             return
         if not self._gesture_recorder.available():
             self.gesture_record_status.setText(
-                self._t("目前沒有可用的手部 landmark 訊號，無法安全錄製。")
+                self._t('請先取得穩定的手部 landmark 訊號，再開始安全錄製。')
             )
             return
         sample = self._gesture_recorder.record(definition.gesture_id)
         if sample is None:
-            self.gesture_record_status.setText(self._t("錄製已取消，沒有保存任何資料。"))
+            self.gesture_record_status.setText(self._t('錄製已取消，既有保存資料維持原樣。'))
             return
         self._gesture_draft.update_definition(
             replace(definition, samples=(*definition.samples, sample))

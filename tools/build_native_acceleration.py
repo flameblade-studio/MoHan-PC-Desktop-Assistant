@@ -235,7 +235,7 @@ def _publish_abi3t_compatibility_dll(output_dir: Path) -> Path | None:
     candidates = _abi3t_dll_candidates()
     if not candidates:
         raise FileNotFoundError(
-            "Python 3.15 abi3t compatibility DLL was not found beside the "
+            "Place the Python 3.15 abi3t compatibility DLL beside the "
             "selected build runtime."
         )
     hashes = {_sha256(candidate) for candidate in candidates}

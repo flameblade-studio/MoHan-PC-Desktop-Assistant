@@ -19,7 +19,7 @@ lazy from infrastructure.layered_face_calibration import (
 
 # Staging override shared with tests/test_layered_face_assets.py: point
 # MOHAN_LAYERED_FACE_DIR at a candidate 75-layer directory to calibrate it
-# without replacing assets/expressions/layered.
+# while preserving assets/expressions/layered.
 LAYERED_DIR = Path(
     os.environ.get("MOHAN_LAYERED_FACE_DIR")
     or ROOT / "assets" / "expressions" / "layered"
@@ -33,7 +33,7 @@ def _app() -> object:
 def test_calibration_accepts_authored_layers() -> None:
     _app()
     manifest = load_layered_face_assets(LAYERED_DIR)
-    # Must not raise: every authored layer's center lands inside its base.
+    # Every authored layer's center lands inside its base and validates successfully.
     calibrate_layered_face_assets(manifest)
 
 

@@ -179,9 +179,8 @@ def assert_english_has_no_han_characters(
     update_panel: UpdatePanel,
     profile_panel: PortableProfilePanel,
 ) -> None:
-    # Product names, versions, SHA256, GitHub, API, OAuth, and RC are Latin
-    # identifiers and need no exception. English auxiliary UI must contain no
-    # Han characters at all.
+    # Product names, versions, SHA256, GitHub, API, OAuth, and RC use Latin
+    # identifiers. English auxiliary UI requires zero Han characters.
     english_text = visible_update_text(update_panel) + visible_profile_text(
         profile_panel
     )

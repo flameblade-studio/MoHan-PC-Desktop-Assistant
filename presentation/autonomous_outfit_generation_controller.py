@@ -24,10 +24,11 @@ lazy from application.self_generating_wardrobe import (
 )
 lazy from application.wardrobe_service import WardrobeService
 lazy from application.wardrobe_storage import WardrobeStorageGuard, WardrobeStoragePolicy
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     DEFAULT_WEATHER_CONDITION,
     DEFAULT_WEATHER_TEMPERATURE_C,
 )
+lazy from domain.contracts import default_character_display_name
 lazy from domain.outfit_pack import (
     MOOD_TAGS,
     OCCASION_TAGS,
@@ -40,9 +41,9 @@ lazy from integrations.openai_outfit_generator import (
     OpenAIImageEditOptions,
     OpenAIImageEditTransport,
     OpenAIOutfitDraftGenerator,
-    OutfitImageGenerationError,
 )
-lazy from application.presentation_ports import DEFAULT_TEXT_MODEL
+lazy from domain.outfit_generation import OutfitImageGenerationError
+lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy import threading
 lazy from domain.outfit_generation import OutfitGenerationCancelled
 
@@ -130,7 +131,10 @@ class AutonomousOutfitGenerationController(QObject):
         self._cancel = threading.Event()
         self._running = False
         self._shutdown = False
-        self._wardrobe_service = WardrobeService(self._data_root / "outfits")
+        self._wardrobe_service = WardrobeService(
+            self._data_root / "outfits",
+            official_pack_root=self._project_root / "assets" / "official-packs",
+        )
         self._wardrobe_runtime = AutonomousWardrobeRuntime(
             self._wardrobe_service,
             self._settings,
@@ -140,7 +144,7 @@ class AutonomousOutfitGenerationController(QObject):
         self._timer.setInterval(AUTONOMOUS_CHECK_INTERVAL_MS)
         self._timer.timeout.connect(self.evaluate_automatic)
         # A controller-owned single-shot timer (instead of QTimer.singleShot)
-        # so stop() can cancel the initial delayed evaluation outright and no
+        # so stop() can cancel the initial delayed evaluation outright and zero
         # orphaned callback survives this controller's lifetime.
         self._initial_timer = QTimer(self)
         self._initial_timer.setSingleShot(True)
@@ -152,7 +156,7 @@ class AutonomousOutfitGenerationController(QObject):
             return
         self._running = True
         self._shutdown = False
-        self._cancel.clear()
+        self._cancel = threading.Event()
         self._timer.start()
         self._initial_timer.start()
 
@@ -200,7 +204,7 @@ class AutonomousOutfitGenerationController(QObject):
         self.request_generation()
 
     def _evaluate_installed_outfits(self) -> None:
-        """Select among official, user-authored, and cloud packs without mutation."""
+        """Select among official, user-authored, and cloud packs while preserving stored state."""
 
         now = datetime.now(UTC)
         weather = _allowed_setting(
@@ -258,10 +262,13 @@ class AutonomousOutfitGenerationController(QObject):
             return
         now = datetime.now(UTC)
         last_attempt = _optional_time(self._db.setting(LAST_ATTEMPT_KEY, ""))
-        if last_attempt is not None and now - last_attempt < FAILED_ATTEMPT_BACKOFF:
-            if not explicit:
-                self.status_changed.emit("cooldown-blocked")
-                return
+        if (
+            last_attempt is not None
+            and now - last_attempt < FAILED_ATTEMPT_BACKOFF
+            and not explicit
+        ):
+            self.status_changed.emit("cooldown-blocked")
+            return
             # A user clicking the charge-labelled button is an intentional
             # retry.  The backoff protects unattended generation only.
         pending_job = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()
@@ -281,7 +288,8 @@ class AutonomousOutfitGenerationController(QObject):
             mood=str(self._db.setting("current_mood", "calm") or "calm"),
             occasion=self._wardrobe_occasion(),
             creative_direction=(
-                "An elegant original Northern-Song-inspired outfit for MoHan, "
+                "An elegant original Northern-Song-inspired outfit for "
+                f"{default_character_display_name('en')}, "
                 "adapted to the current weather and mood while preserving her "
                 "blue-silver sword-spirit identity."
             ),
@@ -291,8 +299,10 @@ class AutonomousOutfitGenerationController(QObject):
             ),
             user_initiated=explicit,
         )
+        cancel_event = threading.Event()
+        self._cancel = cancel_event
         worker = _GenerationWorker(
-            self._create_wardrobe(api_key), request, self._cancel
+            self._create_wardrobe(api_key), request, cancel_event
         )
         worker.signals.completed.connect(self._completed)
         worker.signals.failed.connect(self._failed)
@@ -379,7 +389,7 @@ class AutonomousOutfitGenerationController(QObject):
             self.status_changed.emit("invalid-result")
             return
         if value.status != "installed" or value.installed_pack is None:
-            # A completed non-install result has no resumable transaction.
+            # A completed non-install result has zero resumable transaction state.
             # Keep its quarantine evidence, but start any later request with a
             # fresh job id. Reusing this id would collide with the preserved
             # quarantine directory and make every retry fail immediately.
@@ -403,7 +413,7 @@ class AutonomousOutfitGenerationController(QObject):
         )
         if manual_lock_until is not None and manual_lock_until > now_value:
             # Generation may finish hours after it was requested.  Installation
-            # is safe, but an autonomous completion must never override the
+            # is safe, but an autonomous completion keeps the
             # user's current manually locked look.  The new pack remains a
             # candidate after the lock expires or may be selected explicitly.
             now = now_value.isoformat()
@@ -429,7 +439,7 @@ class AutonomousOutfitGenerationController(QObject):
         self.status_changed.emit("installed")
 
     def _abandon_pending_job(self) -> None:
-        """Forget a finished unusable job without deleting quarantine evidence."""
+        """Forget a finished job while preserving quarantine evidence."""
 
         job_id = str(self._db.setting(PENDING_JOB_KEY, "") or "").strip()
         self._db.set_setting(PENDING_JOB_KEY, "")
@@ -449,8 +459,8 @@ class AutonomousOutfitGenerationController(QObject):
         except OSError:
             # The outfit has already been audited/installed at this point.
             # A locked antivirus handle, read-only cache, or transient disk
-            # error must not turn that successful transaction into a silent UI
-            # failure.  Preserve that exact checkpoint directory for later
+            # attention detail keeps that successful transaction visible in the UI
+            # attention event.  Preserve that exact checkpoint directory for later
             # maintenance instead of misreporting the installed transaction.
             return
 

@@ -14,7 +14,7 @@
 - 平和地接受修正，並協助新加入者學習。
 - 讓回報聚焦於可重現的事實與可實行的改善。
 
-### 不可接受的行為
+### 維護安全社群的行為界線
 
 - 騷擾、歧視、威脅、跟蹤、帶有性意味的關注或人身攻擊。
 - 公開他人的私人資訊或憑證。
@@ -24,11 +24,11 @@
 
 ### 適用範圍與執行
 
-本準則適用於儲存庫 Issue、Pull Request、Discussion、Release 回饋，以及任何代表本專案的其他場合。必要時，維護者得編修或移除內容、拒絕貢獻、暫時限制參與或永久禁止參與。執行時會考量情境、嚴重程度、重複性及社群安全。
+本準則適用於儲存庫 Issue、Pull Request、Discussion、Release 回饋，以及任何代表本專案的其他場合。必要時，維護者得編修或移除內容、退回貢獻、暫時限制參與或永久終止參與資格。執行時會考量情境、嚴重程度、重複性及社群安全。
 
 ### 通報方式
 
-請勿公開敏感證據。一般行為疑慮請使用 GitHub 的檢舉工具回報相關公開內容。若必須提供私人細節，請使用本儲存庫的[私人通報管道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，並將標題設為 `Code of Conduct report`。若該管道無法使用，請建立標題為 `[Private contact request]` 的 Issue，但不得在其中附上細節。
+敏感證據請保留於私人通報管道。一般行為疑慮請使用 GitHub 的檢舉工具回報相關公開內容。若必須提供私人細節，請使用本儲存庫的[私人通報管道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，並將標題設為 `Code of Conduct report`。該管道暫時無法使用時，請建立只含標題 `[Private contact request]` 的 Issue。
 
 基於善意的通報會在實際可行範圍內保密處理。故意不實或報復性的通報本身亦可能違反本準則。
 
@@ -46,7 +46,7 @@
 - 平和地接受修正，并帮助新加入者学习。
 - 让报告聚焦于可复现的事实与可实行的改进。
 
-### 不可接受的行为
+### 维护安全社区的行为边界
 
 - 骚扰、歧视、威胁、跟踪、带有性意味的关注或人身攻击。
 - 公开他人的私人信息或凭据。
@@ -56,11 +56,11 @@
 
 ### 适用范围与执行
 
-本准则适用于仓库 Issue、Pull Request、Discussion、Release 反馈，以及任何代表本项目的其他场合。必要时，维护者可以编辑或移除内容、拒绝贡献、暂时限制参与或永久禁止参与。执行时会考虑情境、严重程度、重复性及社区安全。
+本准则适用于仓库 Issue、Pull Request、Discussion、Release 反馈，以及任何代表本项目的其他场合。必要时，维护者可以编辑或移除内容、退回贡献、暂时限制参与或永久终止参与资格。执行时会考虑情境、严重程度、重复性及社区安全。
 
 ### 报告方式
 
-请勿公开敏感证据。一般行为疑虑请使用 GitHub 的举报工具报告相关公开内容。若必须提供私人细节，请使用本仓库的[私人报告渠道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，并将标题设为 `Code of Conduct report`。若该渠道无法使用，请创建标题为 `[Private contact request]` 的 Issue，但不得在其中附上细节。
+敏感证据请保留在私人报告渠道。一般行为疑虑请使用 GitHub 的举报工具报告相关公开内容。若必须提供私人细节，请使用本仓库的[私人报告渠道](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)，并将标题设为 `Code of Conduct report`。该渠道暂时无法使用时，请创建只含标题 `[Private contact request]` 的 Issue。
 
 基于善意的报告会在实际可行范围内保密处理。故意不实或报复性的报告本身也可能违反本准则。
 
@@ -92,7 +92,7 @@ This policy applies to repository Issues, Pull Requests, Discussions, Release fe
 
 ### Reporting
 
-Do not publish sensitive evidence. For an ordinary conduct concern, report the relevant public content with GitHub's reporting tools. If private details are required, use the repository's [private advisory channel](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new) with the title `Code of Conduct report`. If that channel is unavailable, open an Issue titled `[Private contact request]` without including the details.
+Keep sensitive evidence in the private reporting channel. For an ordinary conduct concern, report the relevant public content with GitHub's reporting tools. If private details are required, use the repository's [private advisory channel](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new) with the title `Code of Conduct report`. If that channel is temporarily unavailable, open an Issue containing only the title `[Private contact request]`.
 
 Good-faith reports will be handled as confidentially as practical. Deliberately false or retaliatory reports may themselves violate this policy.
 
@@ -120,10 +120,10 @@ Good-faith reports will be handled as confidentially as practical. Deliberately 
 
 ### 適用範囲と執行
 
-この規範は、リポジトリの Issue、Pull Request、Discussion、Release へのフィードバック、およびプロジェクトを代表して行動するその他すべての場に適用されます。必要に応じて、メンテナーは内容の編集または削除、コントリビューションの拒否、参加の一時制限、参加者の永久追放を行うことがあります。執行時には、状況、重大性、反復性、コミュニティの安全を考慮します。
+この規範は、リポジトリの Issue、Pull Request、Discussion、Release へのフィードバック、およびプロジェクトを代表して行動するその他すべての場に適用されます。必要に応じて、メンテナーは内容の編集または削除、コントリビューションの差し戻し、参加の一時制限、参加資格の永久終了を行うことがあります。執行時には、状況、重大性、反復性、コミュニティの安全を考慮します。
 
 ### 報告方法
 
-機密性の高い証拠を公開しないでください。通常の行動上の懸念は、GitHub の報告ツールを使って該当する公開内容を報告してください。個人的な詳細が必要な場合は、リポジトリの[非公開報告窓口](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)を使用し、タイトルを `Code of Conduct report` としてください。その窓口を利用できない場合は、詳細を含めず、`[Private contact request]` というタイトルで Issue を作成してください。
+機密性の高い証拠は非公開報告窓口に保持してください。通常の行動上の懸念は、GitHub の報告ツールを使って該当する公開内容を報告してください。個人的な詳細が必要な場合は、リポジトリの[非公開報告窓口](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/security/advisories/new)を使用し、タイトルを `Code of Conduct report` としてください。その窓口を一時的に利用できない場合は、`[Private contact request]` というタイトルだけの Issue を作成してください。
 
 善意による報告は、実務上可能な限り機密として扱われます。意図的な虚偽報告や報復目的の報告は、それ自体がこの規範への違反となる場合があります。

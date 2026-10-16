@@ -120,7 +120,6 @@ def _response_opener(responses: dict[str, bytes]):
             raise URLError("unexpected URL")
         return FakeResponse(url, responses[url])
 
-
     return opener
 
 
@@ -140,7 +139,7 @@ def _assert_invalid_hash_rejected(
     except UpdateError as exc:
         assert "SHA256" in str(exc)
         return
-    raise AssertionError("invalid SHA256 was accepted")
+    raise AssertionError('SHA256 must satisfy validation')
 
 
 def _assert_verified_download(
@@ -179,7 +178,7 @@ def _assert_unsafe_urls_rejected() -> None:
             raise AssertionError(f"unsafe URL accepted: {unsafe}")
 
 
-def main() -> None:
+def run() -> None:
     _assert_version_ordering()
     repo, installer_bytes, responses, public_key = _release_responses()
     _assert_verified_download(repo, installer_bytes, responses, public_key)
@@ -188,4 +187,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    run()

@@ -2,49 +2,49 @@ from __future__ import annotations
 
 """Emotional continuity: a decaying affective residue between expressions.
 
-A real person does not snap from one feeling to a neutral face the instant a
-sentence ends.  A compliment leaves a lingering shyness, a worry leaves a
+A real person eases from one feeling to a neutral face after a sentence ends.  A compliment leaves a lingering shyness, a worry leaves a
 softened gaze, and joy fades gradually instead of vanishing.  This module
 tracks the most recent expressive state and exposes an exponentially decaying
 residue so the companion can ease back toward idle instead of jumping there.
 
-The module is pure domain logic with no Qt or speech-provider dependency, so
+The module is pure domain logic with Qt and speech-provider details outside the domain boundary, so
 it can be unit-tested deterministically and reused by any presentation owner.
 """
 
 lazy import math
 lazy import time
 lazy from dataclasses import dataclass
+lazy from domain.character_runtime import CHARACTER_EXPRESSION_ROLES
 
 # Each expressive state maps to the "softer" expression that should linger
 # after the primary expression ends.  The residue is always a gentler variant
-# so the companion never looks stuck on a strong emotion.
+# so the companion stays expressive through a strong emotion.
 RESIDUAL_EXPRESSION = frozendict({
-    "happy": "gentle_smile_front",
-    "proud": "gentle_smile_front",
-    "proud_front": "gentle_smile_front",
-    "relieved": "gentle_smile_front",
-    "relieved_front": "gentle_smile_front",
-    "shy": "shy_cute_front",
-    "shy_front": "shy_cute_front",
-    "shy_cute_front": "shy_cute_front",
-    "amused": "restrained_amused_front",
-    "restrained_amused_front": "restrained_amused_front",
-    "worried": "worried_front",
-    "worried_front": "worried_front",
-    "gentle": "gentle_smile_front",
-    "gentle_smile_front": "gentle_smile_front",
-    "surprised": "attentive_front",
-    "surprised_front": "attentive_front",
-    "eureka": "attentive_front",
-    "eureka_front": "attentive_front",
-    "thinking": "attentive_front",
-    "thinking_front": "attentive_front",
-    "attentive": "attentive_front",
-    "attentive_front": "attentive_front",
-    "caught": "shy_cute_front",
-    "protective": "determined_front",
-    "protective_front": "determined_front",
+    "happy": CHARACTER_EXPRESSION_ROLES["gentle"],
+    "proud": CHARACTER_EXPRESSION_ROLES["gentle"],
+    CHARACTER_EXPRESSION_ROLES["pride"]: CHARACTER_EXPRESSION_ROLES["gentle"],
+    "relieved": CHARACTER_EXPRESSION_ROLES["gentle"],
+    CHARACTER_EXPRESSION_ROLES["relief"]: CHARACTER_EXPRESSION_ROLES["gentle"],
+    "shy": CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    CHARACTER_EXPRESSION_ROLES["bashful"]: CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    CHARACTER_EXPRESSION_ROLES["bashful_cute"]: CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    "amused": CHARACTER_EXPRESSION_ROLES["amusement"],
+    CHARACTER_EXPRESSION_ROLES["amusement"]: CHARACTER_EXPRESSION_ROLES["amusement"],
+    "worried": CHARACTER_EXPRESSION_ROLES["concern"],
+    CHARACTER_EXPRESSION_ROLES["concern"]: CHARACTER_EXPRESSION_ROLES["concern"],
+    "gentle": CHARACTER_EXPRESSION_ROLES["gentle"],
+    CHARACTER_EXPRESSION_ROLES["gentle"]: CHARACTER_EXPRESSION_ROLES["gentle"],
+    "surprised": CHARACTER_EXPRESSION_ROLES["attention"],
+    CHARACTER_EXPRESSION_ROLES["surprise"]: CHARACTER_EXPRESSION_ROLES["attention"],
+    "eureka": CHARACTER_EXPRESSION_ROLES["attention"],
+    CHARACTER_EXPRESSION_ROLES["insight"]: CHARACTER_EXPRESSION_ROLES["attention"],
+    "thinking": CHARACTER_EXPRESSION_ROLES["attention"],
+    CHARACTER_EXPRESSION_ROLES["thought"]: CHARACTER_EXPRESSION_ROLES["attention"],
+    "attentive": CHARACTER_EXPRESSION_ROLES["attention"],
+    CHARACTER_EXPRESSION_ROLES["attention"]: CHARACTER_EXPRESSION_ROLES["attention"],
+    CHARACTER_EXPRESSION_ROLES["noticed"]: CHARACTER_EXPRESSION_ROLES["bashful_cute"],
+    "protective": CHARACTER_EXPRESSION_ROLES["resolve"],
+    CHARACTER_EXPRESSION_ROLES["protection"]: CHARACTER_EXPRESSION_ROLES["resolve"],
 })
 
 # How long (seconds) a residue remains visible before fully fading.  Stronger
@@ -112,7 +112,7 @@ class AffectiveState:
         )
 
     def residual_expression(self, now: float | None = None) -> str | None:
-        """Return the lingering expression, or None once it has fully faded."""
+        """Return the lingering expression, or the sentinel once it has fully faded."""
         residue = self._residue
         if residue is None:
             return None

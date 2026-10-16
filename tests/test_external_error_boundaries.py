@@ -183,13 +183,13 @@ def test_wordpress_external_errors_are_sanitized() -> None:
         _assert_safe_error(
             lambda: wordpress_sync.request_json(endpoint),
             RuntimeError,
-            "WordPress API returned invalid JSON",
+            'WordPress API response requires valid JSON',
         )
 
     _assert_safe_error(
         lambda: wordpress_sync.load_manifest(_UnreadableManifest()),
         RuntimeError,
-        "Release manifest could not be loaded",
+        'Release manifest loading requires attention',
     )
 
 

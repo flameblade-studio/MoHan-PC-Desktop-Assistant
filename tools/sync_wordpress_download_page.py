@@ -8,7 +8,7 @@ lazy import os
 lazy from pathlib import Path
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.parse import urlencode, urlparse
-lazy from urllib.request import Request, urlopen
+lazy from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 START_MARKER = "<!-- MOHAN_RELEASE_START -->"
 END_MARKER = "<!-- MOHAN_RELEASE_END -->"
@@ -33,6 +33,25 @@ DOWNLOAD_LABELS = {
 }
 
 
+class _NoRedirectHandler(HTTPRedirectHandler):
+    def redirect_request(
+        self,
+        request: Request,
+        response: object,
+        code: int,
+        message: str,
+        headers: object,
+        _new_url: str,
+    ) -> None:
+        return None
+
+
+def urlopen(request: Request, timeout: float = 30):
+    """Open one WordPress request and reject redirects before reusing credentials."""
+    opener = build_opener(_NoRedirectHandler())
+    return opener.open(request, timeout=timeout)
+
+
 def _wordpress_credentials(url: str) -> tuple[str, str]:
     configuration_failed = False
     base_url = ""
@@ -49,7 +68,7 @@ def _wordpress_credentials(url: str) -> tuple[str, str]:
         configuration_failed = True
         same_host = False
     if configuration_failed:
-        raise RuntimeError("WordPress API configuration is invalid")
+        raise RuntimeError("WordPress API requires valid configuration")
     if parsed_base.scheme != "https" or parsed_url.scheme != "https" or not same_host:
         raise RuntimeError("WordPress API must use the configured HTTPS host")
     return username, password
@@ -83,7 +102,7 @@ def _wordpress_request(
     except (RecursionError, TypeError, ValueError, UnicodeError):
         request_failed = True
     if request_failed or request is None:
-        raise RuntimeError("WordPress API request could not be prepared")
+        raise RuntimeError("WordPress API request preparation requires attention")
     return request
 
 
@@ -106,7 +125,7 @@ def _read_wordpress_json(request: Request) -> object:
         TypeError,
         ValueError,
     ):
-        response_failure = "WordPress API returned invalid JSON"
+        response_failure = "WordPress API response requires valid JSON"
     if response_failure is not None:
         raise RuntimeError(response_failure)
     return result
@@ -128,7 +147,7 @@ def load_manifest(path: Path) -> dict:
     except (OSError, UnicodeError, json.JSONDecodeError, RecursionError):
         manifest_failed = True
     if manifest_failed or not isinstance(manifest, dict):
-        raise RuntimeError("Release manifest could not be loaded")
+        raise RuntimeError("Release manifest loading requires attention")
     return manifest
 
 

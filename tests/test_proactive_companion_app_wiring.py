@@ -91,8 +91,7 @@ def assert_dispatch_normalizes_disabled_vision_and_timer_state(
     assert {"ProactiveAppEvent", "ProactiveAppState"} <= names
     assert "dispatch" in calls
     assert "timer_trigger" in {argument.arg for argument in dispatch.args.args}, (
-        "The app boundary must accept existing timer reminders without requiring "
-        "camera recognition."
+        'The app boundary must accept existing timer reminders independently of camera recognition.'
     )
     source = ast.get_source_segment(
         PROACTIVE_PATH.read_text(encoding="utf-8-sig"),
@@ -104,8 +103,7 @@ def assert_dispatch_normalizes_disabled_vision_and_timer_state(
             "The app bridge state must explicitly normalize " + state_field + "."
         )
     assert "proactive_interaction_mode" in source, (
-        "The desktop companion must consume the canonical mode saved by the "
-        "flagship control center, not only the retired proactive_mode key."
+        'The desktop companion must consume the canonical mode saved by the flagship control center.'
     )
 
 
@@ -121,8 +119,7 @@ def assert_existing_entrypoints_route_through_the_bridge(
             f"{method.name}() must submit through ProactiveCompanionAppBridge."
         )
         assert "speak" not in calls, (
-            f"{method.name}() must not directly speak system recognition or "
-            "reminder text."
+            f'{method.name}() must route recognition or reminder speech through its owner.'
         )
     visual_source = ast.get_source_segment(
         PROACTIVE_PATH.read_text(encoding="utf-8-sig"),
@@ -187,7 +184,7 @@ def run() -> None:
     }
     assert not proactive_methods.intersection(
         node.name for node in window.body if isinstance(node, ast.FunctionDef)
-    ), "CompanionWindow must not shadow proactive behavior owners"
+    ), 'CompanionWindow must delegate to proactive behavior owners'
     for path in (
         WINDOW_PATH,
         CORE_PATH,

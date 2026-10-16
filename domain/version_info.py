@@ -5,6 +5,12 @@ lazy import sys
 lazy from pathlib import Path
 
 PROJECT_REPOSITORY = "flameblade-studio/MoHan-PC-Desktop-Assistant"
+# On-disk profile location shared by every released build. It is a compatibility
+# contract with existing installs, so it must never follow a localized display name.
+# "YanJianStudio" is a legacy folder name; the studio's official English name is
+# Flameblade Studio. Renaming the folder would require a one-time data migration.
+PROFILE_VENDOR_DIRECTORY = "YanJianStudio"
+PROFILE_APP_DIRECTORY = "MoHan"
 # x-release-please-start-version
 FALLBACK_VERSION = "4.6.0"
 # x-release-please-end
@@ -14,8 +20,8 @@ UNKNOWN_VERSION = "未知版本"
 def _build_info_path() -> Path:
     # Frozen builds bundle build-info.json at the _MEIPASS root; source
     # checkouts have build.ps1 write it at the PROJECT root.  Resolving to
-    # this file's own directory (domain/) meant source runs never found it
-    # and always fell back to FALLBACK_VERSION.
+    # this file's own directory (domain/) meant source runs could locate the project root
+    # and could then read the declared version before using FALLBACK_VERSION.
     base = Path(
         getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[1])
     )

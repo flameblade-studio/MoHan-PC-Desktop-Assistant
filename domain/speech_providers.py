@@ -9,6 +9,7 @@ lazy from domain.contracts import (
     CloudSpeechEnginePort,
     LocalSpeechEnginePort,
 )
+lazy from domain.character_source import character_voice_profile
 
 SYSTEM_LOCAL_PROVIDER = "system-local"
 # Compatibility name retained for third-party imports. Its value is the new
@@ -19,6 +20,7 @@ OPENAI_SPEECH_PROVIDER = "openai-speech"
 OPENAI_REALTIME_PROVIDER = "openai-realtime"
 AZURE_SPEECH_PROVIDER = "azure-speech"
 AZURE_HD_SPEECH_PROVIDER = "azure-speech-hd"
+DEFAULT_SPEECH_RATE = -1
 
 
 _LEGACY_PROVIDER_IDS = {
@@ -77,7 +79,7 @@ class SpeechProviderCapabilities:
 class SpeechRequest:
     text: str
     voice: str = ""
-    rate: int = -1
+    rate: int = DEFAULT_SPEECH_RATE
     api_key: str = field(default="", repr=False)
     instructions: str = ""
     options: Mapping[str, str] = field(default_factory=dict)
@@ -195,15 +197,15 @@ class AzureHDSpeechProvider(AzureSpeechProvider):
 class SpeechProviderRegistry:
     """Explicit registry for replaceable speech engines.
 
-    Providers cannot change expression, lip-sync, permissions, or UI state.
+    Expression, lip-sync, permissions, and UI state remain outside provider authority.
     They only receive a synthesis request and emit audio through the existing
     engine signals.
     """
 
     def __init__(self, providers: tuple[SpeechProviderPort, ...] = ()):
         self._providers: dict[str, SpeechProviderPort] = {}
-        # Consecutive-failure tracking lets a repeatedly failing provider be
-        # proactively demoted before the user hears another broken reply.
+        # Consecutive-attention event tracking lets a provider with repeated attention events be
+        # proactively demoted before the user hears another unreliable reply.
         self._consecutive_failures: dict[str, int] = {}
         for provider in providers:
             self.register(provider)
@@ -227,19 +229,19 @@ class SpeechProviderRegistry:
         return tuple(self._providers)
 
     def record_failure(self, provider_id: object) -> None:
-        """Count one consecutive failure for a provider."""
+        """Count one consecutive attention event for a provider."""
         normalized = normalize_speech_provider_id(provider_id)
         self._consecutive_failures[normalized] = (
             self._consecutive_failures.get(normalized, 0) + 1
         )
 
     def record_success(self, provider_id: object) -> None:
-        """Reset the consecutive-failure counter after a successful reply."""
+        """Reset the consecutive-attention event counter after a successful reply."""
         normalized = normalize_speech_provider_id(provider_id)
         self._consecutive_failures[normalized] = 0
 
     def is_degraded(self, provider_id: object, threshold: int = 3) -> bool:
-        """True when a provider has failed too many times in a row."""
+        """True when a provider has requires attention too many times in a row."""
         normalized = normalize_speech_provider_id(provider_id)
         return self._consecutive_failures.get(normalized, 0) >= threshold
 
@@ -251,7 +253,7 @@ class SpeechProviderRegistry:
         cloud_available: bool = True,
         configured_provider_ids: tuple[str, ...] | None = None,
     ) -> str:
-        """Choose a provider for queued text without changing user settings.
+        """Choose a provider for queued text while preserving user settings.
 
         Realtime owns its live audio while connected. If it is selected but
         unavailable, queued text falls back to the registered system-local
@@ -274,7 +276,7 @@ class SpeechProviderRegistry:
         )
         configured.add(SYSTEM_LOCAL_PROVIDER)
         if selected in self._providers and selected in configured:
-            # A provider that has failed repeatedly is proactively demoted to
+            # A provider with repeated attention events is proactively demoted to
             # its fallback so the user hears a working voice instead of another
             # broken reply.
             if self.is_degraded(selected):
@@ -292,18 +294,13 @@ class SpeechProviderRegistry:
 
     def fallback_provider_id(self, failed_provider_id: object) -> str | None:
         failed = normalize_speech_provider_id(failed_provider_id)
-        if (
-            failed == AZURE_HD_SPEECH_PROVIDER
-            and AZURE_SPEECH_PROVIDER in self._providers
-        ):
-            return AZURE_SPEECH_PROVIDER
-        local = self._providers.get(SYSTEM_LOCAL_PROVIDER)
-        if (
-            failed != SYSTEM_LOCAL_PROVIDER
-            and local is not None
-            and local.capabilities.offline
-        ):
-            return SYSTEM_LOCAL_PROVIDER
+        fallback_order = character_voice_profile().fallback_provider_order
+        for candidate in fallback_order[failed]:
+            provider = self._providers.get(candidate)
+            if provider is None:
+                continue
+            if candidate != SYSTEM_LOCAL_PROVIDER or provider.capabilities.offline:
+                return candidate
         return None
 
 

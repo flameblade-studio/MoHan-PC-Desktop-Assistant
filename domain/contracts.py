@@ -1,13 +1,27 @@
 from __future__ import annotations
 
 lazy import sqlite3
-lazy from collections.abc import Callable
 lazy from pathlib import Path
 lazy from typing import Any, Protocol
 
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 
-class SignalPort(Protocol):
-    def connect(self, slot: Callable[..., Any]) -> Any: ...
+
+def default_character_display_name(language: str = "en") -> str:
+    """Return the active character's localized name from character data."""
+
+    locale = canonical_character_locale(language)
+    return active_character_data().personas[locale].identity.display_name
+
+
+DEFAULT_PROTECTED_SECRET_DESCRIPTION = "MoHan protected secret"
+
+# PySide exposes class-level ``Signal`` descriptors and instance-level
+# ``SignalInstance`` objects.  Its generated stubs do not preserve that binding
+# during structural protocol comparison, so Qt signals stay opaque at this
+# framework-neutral domain boundary.
+SignalPort = object
 
 
 class SecretStorePort(Protocol):
@@ -24,7 +38,7 @@ class SecretStoreFactoryPort(Protocol):
     def __call__(
         self,
         path: Path,
-        description: str = "MoHan protected secret",
+        description: str = DEFAULT_PROTECTED_SECRET_DESCRIPTION,
     ) -> SecretStorePort: ...
 
 
@@ -38,9 +52,14 @@ class ProfileDatabasePort(Protocol):
 
 
 class LocalSpeechEnginePort(Protocol):
-    finished: SignalPort
-    failed: SignalPort
-    viseme_cue: SignalPort
+    @property
+    def finished(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -55,9 +74,14 @@ class LocalSpeechEnginePort(Protocol):
 
 
 class CloudSpeechEnginePort(Protocol):
-    finished: SignalPort
-    failed: SignalPort
-    viseme_cue: SignalPort
+    @property
+    def finished(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -65,7 +89,7 @@ class CloudSpeechEnginePort(Protocol):
         self,
         text: str,
         api_key: str,
-        voice: str = "coral",
+        voice: str = "",
         instructions: str = "",
     ) -> None: ...
 
@@ -73,10 +97,17 @@ class CloudSpeechEnginePort(Protocol):
 
 
 class AzureSpeechEnginePort(Protocol):
-    finished: SignalPort
-    failed: SignalPort
-    viseme_cue: SignalPort
-    voice_catalog_ready: SignalPort
+    @property
+    def finished(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
+
+    @property
+    def voice_catalog_ready(self) -> SignalPort: ...
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
 
@@ -124,16 +155,35 @@ class SpeechProviderRegistryPort(Protocol):
 
 
 class RealtimeVoicePort(Protocol):
-    status_changed: SignalPort
-    user_transcript: SignalPort
-    assistant_transcript: SignalPort
-    speaking_changed: SignalPort
-    viseme_cue: SignalPort
-    failed: SignalPort
-    output_text_started: SignalPort
-    output_text_delta: SignalPort
-    output_text_done: SignalPort
-    output_interrupted: SignalPort
+    @property
+    def status_changed(self) -> SignalPort: ...
+
+    @property
+    def user_transcript(self) -> SignalPort: ...
+
+    @property
+    def assistant_transcript(self) -> SignalPort: ...
+
+    @property
+    def speaking_changed(self) -> SignalPort: ...
+
+    @property
+    def viseme_cue(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def output_text_started(self) -> SignalPort: ...
+
+    @property
+    def output_text_delta(self) -> SignalPort: ...
+
+    @property
+    def output_text_done(self) -> SignalPort: ...
+
+    @property
+    def output_interrupted(self) -> SignalPort: ...
     running: bool
 
     def set_volume(self, volume_percent: int, muted: bool = False) -> None: ...
@@ -146,12 +196,24 @@ class RealtimeVoicePort(Protocol):
 
 
 class SpeechListenerPort(Protocol):
-    recognized: SignalPort
-    failed: SignalPort
-    listening_changed: SignalPort
-    recording_changed: SignalPort
-    status_changed: SignalPort
-    diagnostic_changed: SignalPort
-    is_recording: bool
+    @property
+    def recognized(self) -> SignalPort: ...
+
+    @property
+    def failed(self) -> SignalPort: ...
+
+    @property
+    def listening_changed(self) -> SignalPort: ...
+
+    @property
+    def recording_changed(self) -> SignalPort: ...
+
+    @property
+    def status_changed(self) -> SignalPort: ...
+
+    @property
+    def diagnostic_changed(self) -> SignalPort: ...
+    @property
+    def is_recording(self) -> bool: ...
 
     def toggle_listening(self) -> None: ...

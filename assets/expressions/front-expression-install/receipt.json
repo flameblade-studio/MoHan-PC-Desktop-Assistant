@@ -1,0 +1,41 @@
+{
+  "schema": "mohan.front-expression-install-receipt.v1",
+  "installed_on": "2026-10-11",
+  "owner_approval": "驚訝半眨調淡後封裝：正面 13 表情的素顏完整幀、唇妝、經典／淡妝人工補繪眼妝全部核准安裝。華麗妝維持原樣。",
+  "installed_scope": {
+    "complete_frames": 156,
+    "oral_masks": 39,
+    "front_makeup_rig_files": 52,
+    "front_makeup_safe_masks": 78
+  },
+  "outfit_pack_installed": true,
+  "outfit_pack": {
+    "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
+    "pack_version": "1.0.2",
+    "sha256": "3dc76508e658f8f66d40d37af2d2d5744604f5665ffc8b9cd2871059506d6042",
+    "backup_path": ".quality-tmp/front-install/backup/mohan.makeup.builtin.mohan-outfit",
+    "backup_sha256": "174a58315109592e8e69bf0b0f231c411930e79c51b8c039063df4d9d56c58c2",
+    "preexisting_non_manifest_members_unchanged": 1206,
+    "front_members_added": 312,
+    "glamorous_source_bytes_unchanged": true
+  },
+  "complete_expression_manifest": {
+    "path": "assets/expressions/complete-expressions/manifest.json",
+    "sha256": "9f1e68f9d714ecef2d438015dad6088ec423b8ba315f42bed3642d44e0533ab1"
+  },
+  "makeup_safe_regions": {
+    "path": "assets/makeup-safe-regions.json",
+    "sha256": "6426b7d580247c3003b46b9de2dbf580cb1641b158caece38dd33b2d8c479cb6"
+  },
+  "surprised_half_adjustment": {
+    "method": "classic alpha multiplied by 0.85; light alpha regenerated as round(adjusted classic alpha multiplied by 0.55); RGB and geometry unchanged",
+    "classic_mean_delta_e76_before": 3.5501956162817123,
+    "classic_mean_delta_e76_after": 3.0120708256722093,
+    "light_mean_delta_e76_before": 1.9461458873703412,
+    "light_mean_delta_e76_after": 1.65886320234412,
+    "glamorous_mean_delta_e76_unchanged": 3.245960584705329,
+    "classic_layer_sha256": "27e10d736047d98792c1bf3cfcefcdc5cebad1d55c175b5a08cc8db9f0c034d8",
+    "light_layer_sha256": "7b866c893520a59d8ca7835999b8f177f0cc3cc4ae9475e30c1c253f512a6c2a"
+  },
+  "tests_run_locally": false
+}

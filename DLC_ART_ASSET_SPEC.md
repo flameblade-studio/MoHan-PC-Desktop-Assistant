@@ -1,7 +1,7 @@
 # 墨寒 2.5D 參數化分層臉部 — 美術素材製作工作要點（給 ChatGPT Codex）
 
 > 本文件是「墨寒（MoHan）2.5D 改善專案」所需美術素材的完整製作規格。
-> 你（Codex）只負責產出美術素材（PNG 透明圖層），**不得更動任何軟體原始碼**。
+> 你（Codex）的工作範圍是產出美術素材（PNG 透明圖層）；軟體原始碼維持原狀。
 > 素材產出後，由 DeepSeek 端負責程式碼接入。
 
 ---
@@ -13,17 +13,17 @@
 讓眼皮、眉毛、虹膜、紅暈、嘴唇、嘴角、口腔、下顎等五官能各自平滑動起來。
 
 **不改變角色五官、臉型、髮飾、服裝身分**。三種姿態（正面 front、朝左 lean、托腮 cheek）
-必須同時完成，缺一不可。
+須以完整集合一次交付。
 
 ---
 
 ## 二、需要製作的素材（核心缺口）
 
 目前 `assets/expressions/` 只有「整張表情圖」和「`v120_*` 物理切層（頭髮/袖子/飾品）」，
-**缺少「臉部五官分層透明圖層」**。
+**下一項交付是「臉部五官分層透明圖層」**。
 
 > 來源註記（2026-09-02）：本文件描述的權威半身素材已由工作室自有產線自二代素體
-> `assets/pose-atlas/v5-base/` 重新生成為素顏版（髮髻、灰色無袖上衣），不再含一代外部授權美術；
+> `assets/pose-atlas/v5-base/` 重新生成為素顏版（髮髻、灰色無袖上衣），內容完全採用二代自有美術；
 > 外袍、髮型、髮飾與妝容改為執行期圖層，因此 `v120_*` 的頭髮／袖子／髮飾切層依契約為全透明，
 > 舊的 `physics_*` 圖層已移除。請為以下三種姿態，各製作一整套分層素材：
 
@@ -65,8 +65,8 @@
 1. **格式**：PNG，**RGBA 透明背景**（alpha 通道必須正確，非透明區域 alpha=255）。
 2. **尺寸**：**1254 × 1254 像素**（與現有 `assets/expressions/*.png` 一致）。
 3. **座標系**：所有圖層共用同一座標系、同一錨點（以現有 `idle.png` / `idle_lean.png` / `idle_front.png` 為對齊基準）。
-4. **對齊**：每個圖層疊加後，必須能精確還原出「完整表情圖」的原始五官位置，不得偏移、縮放或變形。
-5. **角色身分**：五官、臉型、髮飾、服裝必須與現有權威素材完全一致，不得自行改動角色外觀。
+4. **對齊**：每個圖層疊加後，必須能精確還原出「完整表情圖」的原始五官位置，須保持原始座標、尺寸與形狀。
+5. **角色身分**：五官、臉型、髮飾、服裝須完整遵循現有權威素材定義的角色外觀。
 6. **邊緣**：圖層邊緣需有適度羽化（anti-aliasing），避免疊加時出現硬邊或殘影。
 
 ---
@@ -129,16 +129,16 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\ex
 
 ## 八、注意事項
 
-1. **不得更動任何 `.py` 原始碼**、`.json` 設定、或現有 `assets/expressions/*.png` 素材。
+1. 工作範圍限於指定的新 PNG 透明圖層；現有 `.py`、`.json` 與 `assets/expressions/*.png` 素材維持原狀。
 2. 只新增 `assets\expressions\layered\` 目錄下的新素材。
-3. 若對某個圖層的「拆分方式」有疑問（例如眼皮與眼線是否要分開），請先詢問，不要自行決定。
+3. 若對某個圖層的「拆分方式」有疑問（例如眼皮與眼線是否要分開），請先詢問並依擁有者決定執行。
 4. 完成後回報：產出了哪些檔案、總張數、以及任何你認為需要 DeepSeek 端注意的對齊細節。
 
 ---
 
 ## 九、妝容圖層（makeup slot，2026-09-02 新增）
 
-擁有者裁決：素體（`*_base.png`）保持**素顏**、頭髮收成髮髻；外袍、散髮（含鬢髮）、銀髮飾與**妝容**全部是可開關、可替換的獨立圖層，半身與全身同一標準。妝容**不再畫進 base**，而是以「妝容套件」的形式提供，格式與衣裝套件完全相同（`docs/OUTFIT-PACKS.md` 的 `makeup` 一節是權威）。
+擁有者裁決：素體（`*_base.png`）保持**素顏**、頭髮收成髮髻；外袍、散髮（含鬢髮）、銀髮飾與**妝容**全部是可開關、可替換的獨立圖層，半身與全身同一標準。base 保持素顏；妝容改以以「妝容套件」的形式提供，格式與衣裝套件完全相同（`docs/OUTFIT-PACKS.md` 的 `makeup` 一節是權威）。
 
 ### 半身要製作的圖層
 
@@ -152,9 +152,9 @@ D:\FlamebladeStudio\CodexProjects\2026-08-13\mohan-multisensory-vision\assets\ex
 
 半身輪廓與 rig 的對應：`cheek-rest`→`cheek`、`left-neutral`→`lean`、`front-crossed`／`front-mock-scold`／`front-mock-hit`／`front-eureka`／`front-exasperated`→`front`（四個手勢輪廓沿用 front 的頭部 rig，圖層可直接複製 front 的成品）。
 
-### 安全區（不可越界）
+### 安全區（像素有效範圍）
 
-每張圖層的**所有不透明像素**都必須落在 `assets/makeup-safe-regions.json` 為該 silhouette／slot 定義的矩形內（由 `{pose}_eyelid_*`／`_eyeliner_*`／`_brow_*`、`_blush_*`、`_lip_*`／`_corner_*` 的 alpha 外框各自外擴 24／48／20 px 而得；`py -3.15 tools/build_makeup_safe_regions.py --check` 可驗證檔案未過期）。越界一個像素，`tools/build_outfit_pack.py` 封裝與雲裳閣匯入都會整包拒絕。除安全區外，其餘像素 alpha 必須為 0；不得畫皮膚、不得重繪五官。
+每張圖層的**所有不透明像素**都必須落在 `assets/makeup-safe-regions.json` 為該 silhouette／slot 定義的矩形內（由 `{pose}_eyelid_*`／`_eyeliner_*`／`_brow_*`、`_blush_*`、`_lip_*`／`_corner_*` 的 alpha 外框各自外擴 24／48／20 px 而得；`py -3.15 tools/build_makeup_safe_regions.py --check` 可驗證檔案未過期）。`tools/build_outfit_pack.py` 封裝與雲裳閣匯入只接受所有像素位於安全區內的套件。安全區外的 alpha 須為 0；圖層內容限於妝容，皮膚與五官沿用權威底圖。
 
 ### 內建妝容（工作室交付物）
 
@@ -170,4 +170,4 @@ assets/makeup/builtin/assets/mohan-signature-{variant}-{silhouette}-{slot}.png
 py -3.15 tools/build_outfit_pack.py assets/makeup/builtin/manifest.json assets/makeup/builtin assets/official-packs/mohan.makeup.builtin.mohan-outfit
 ```
 
-封裝成功即代表 sha256／尺寸／安全區全部通過；產出的 `.mohan-outfit` 由官方套件目錄 `assets/official-packs/` 直接供應執行期，使用者不可移除。第三方純妝容 DLC 同樣以 `tools/scaffold_makeup_pack_manifest.py` 產生範本、補齊 PNG、以 `tools/build_outfit_pack.py` 封裝，然後從雲裳閣「匯入服裝套件」按鈕安裝。
+封裝成功即代表 sha256／尺寸／安全區全部通過；產出的 `.mohan-outfit` 由官方套件目錄 `assets/official-packs/` 直接供應執行期，並作為內建資產持續供應。第三方純妝容 DLC 同樣以 `tools/scaffold_makeup_pack_manifest.py` 產生範本、補齊 PNG、以 `tools/build_outfit_pack.py` 封裝，然後從雲裳閣「匯入服裝套件」按鈕安裝。

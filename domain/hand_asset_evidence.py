@@ -10,20 +10,17 @@ lazy from pathlib import Path, PurePosixPath
 
 lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain.hand_asset_audit import (
-    BYTES_PER_PIXEL,
-    BYTE_MAX,
     MAX_PNG_DIMENSION,
-    PNG_BIT_DEPTH,
-    PNG_COLOR_TYPE_RGBA,
     HandProjection,
     JointOcclusion,
     Occluder,
     Point,
     audit_hand_asset,
 )
+lazy from domain.core_constants import BYTES_PER_PIXEL, BYTE_MAX, PNG_BIT_DEPTH, PNG_COLOR_TYPE_RGBA
 
 # Re-exported from the centralized constants module for a single source of truth.
-lazy from domain.constants import (
+lazy from domain.core_constants import (
     PNG_MIN_HEADER_LENGTH as MIN_PNG_HEADER_LENGTH,
     PNG_SIGNATURE,
     RGB_CHANNELS,
@@ -120,7 +117,7 @@ def build_hand_asset_evidence(
     asset_root: Path,
     manifest: HandAssetManifestEvidence,
 ) -> HandAssetEvidenceResult:
-    """Audit one real RGBA view without retaining paths or landmarks."""
+    """Audit one real RGBA view while keeping paths and landmarks private."""
 
     identity_issue = _validate_manifest_identity(manifest)
     if identity_issue is not None:

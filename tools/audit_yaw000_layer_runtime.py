@@ -1,7 +1,7 @@
 """Fail-closed runtime acceptance for the canonical 25-layer front view.
 
-This audit complements the file-semantic validator: valid PNGs are not enough
-when the live renderer later paints the authority face over blink or gaze.  It
+This audit complements the file-semantic validator by verifying that live
+rendering preserves blink and gaze over the authority face.  It
 renders the actual yaw+000 runtime path and proves that rest, blink, speech,
 gaze and body physics each have the expected visible effect.
 """
@@ -16,6 +16,13 @@ lazy from dataclasses import asdict, dataclass
 lazy from pathlib import Path
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+ROOT = Path(__file__).resolve().parents[1]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
 
 lazy from PySide6.QtCore import QPoint
 lazy from PySide6.QtGui import QImage, QPixmap, QRegion
@@ -32,11 +39,14 @@ lazy from domain.constants import (
     POSE_ATLAS_LAYERED_ROOT_NAME,
     POSE_ATLAS_ROOT_NAME,
 )
-lazy from infrastructure.layered_full_body_assets import load_layered_full_body_assets
+lazy from infrastructure.layered_full_body_assets import (
+    LayeredFullBodyManifest,
+    LayeredFullBodyView,
+    load_layered_full_body_assets,
+)
 lazy from infrastructure.layered_full_body_renderer import LayeredFullBodyRenderer
 
 
-ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ASSET_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_LAYERED_ROOT_NAME
 DEFAULT_AUTHORITY = (
     ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME / "yaw+000-pitch+00.png"
@@ -132,6 +142,21 @@ def _region(view, *layers: str) -> QRegion:
     return region
 
 
+def _renderer(
+    view: LayeredFullBodyView, authority_path: Path,
+) -> LayeredFullBodyRenderer:
+    # Candidate rendering must restore the face from that candidate's own authority.
+    authority_path = Path(authority_path).resolve()
+    if authority_path.name != f"{VIEW_ID}.png":
+        raise ValueError(f"Authority must use the canonical filename: {VIEW_ID}.png")
+    target_manifest = LayeredFullBodyManifest(frozendict({VIEW_ID: view}))
+    authority_root = (
+        None if authority_path == DEFAULT_AUTHORITY.resolve()
+        else authority_path.parent
+    )
+    return LayeredFullBodyRenderer(target_manifest, authority_root=authority_root)
+
+
 def audit(
     asset_root: Path = DEFAULT_ASSET_ROOT,
     authority_path: Path = DEFAULT_AUTHORITY,
@@ -139,7 +164,7 @@ def audit(
     QApplication.instance() or QApplication([])
     manifest = load_layered_full_body_assets(Path(asset_root))
     view = manifest.view(VIEW_ID)
-    renderer = LayeredFullBodyRenderer(manifest)
+    renderer = _renderer(view, authority_path)
     neutral = renderer.render_view(VIEW_ID, _frame()).toImage()
     blink = renderer.render_view(VIEW_ID, _frame(blink=1.0)).toImage()
     gaze = renderer.render_view(VIEW_ID, _frame(gaze_x=0.85)).toImage()
@@ -186,7 +211,7 @@ def audit(
         issues.append(
             RuntimeIssue(
                 "layer-count",
-                "yaw+000 does not contain the complete 25-layer contract.",
+                "yaw+000 requires the complete 25-layer contract.",
                 len(view.layers),
                 EXPECTED_LAYERS,
             )

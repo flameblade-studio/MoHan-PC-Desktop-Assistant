@@ -60,12 +60,12 @@ def test_new_year_anchors() -> None:
 def test_qixi_anchors_and_no_expiry() -> None:
     for year, (month, day) in KNOWN_QIXI.items():
         assert qixi_gregorian(year) == date(year, month, day)
-    # The retired lookup expired after 2035; the perpetual calendar must not.
+    # The perpetual calendar remains valid beyond the retired 2035 lookup boundary.
     for year in (2036, 2050, 2075, 2100):
         resolved = qixi_gregorian(year)
         assert resolved is not None
         assert resolved.year == year
-        assert resolved.month in (7, 8)
+        assert resolved.month in {7, 8}
     assert qixi_gregorian(LUNAR_YEAR_MIN - 1) is None
     assert qixi_gregorian(LUNAR_YEAR_MAX + 1) is None
 

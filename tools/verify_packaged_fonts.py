@@ -38,7 +38,7 @@ def _find_packaged_font_root(package: Path) -> Path:
             return candidate
     checked = ", ".join(str(candidate) for candidate in candidates)
     raise RuntimeError(
-        "Packaged artifact is missing the governed font directory; "
+        "Packaged artifact requires the governed font directory; "
         f"checked: {checked}"
     )
 
@@ -76,7 +76,7 @@ def verify_packaged_fonts(
             raise FileNotFoundError(f"Governed font source is missing: {source_path}")
         if not package_path.is_file():
             raise RuntimeError(
-                "Packaged artifact is missing a governed font file: "
+                "Packaged artifact requires this governed font file: "
                 f"{package_path}"
             )
         if _sha256(package_path) != _sha256(source_path):

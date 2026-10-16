@@ -72,7 +72,7 @@ __all__ = (
 
 # The aggregate API is a compatibility boundary, not a startup dependency.
 # Force its direct owner exports to their real identities so external callers
-# never observe CPython 3.15rc1 lazy proxy objects through ``vars(module)``.
+# observe only the resolved CPython 3.15rc1 public exports through ``vars(module)``.
 _MATERIALIZED_EXPORTS = (
     ASSIST_INTENT_MARKERS,
     CALENDAR_MARKERS,

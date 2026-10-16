@@ -1,0 +1,25 @@
+{
+  "schema": "mohan.four-look-native-owner-approval.v1",
+  "owner_quote": "這次可以了，我們正式進入下一個環節，替換全部的原有上一版素材。",
+  "approval": {
+    "path": "scratchpad/halfbody-makeup-consistency-20260913-01/four-look-v4-standard-01/approved-installation-06/owner-approval.json",
+    "sha256": "2fab3387b1d2c5c9e905b9b69e9985e2682859b34a94d173fa3f0881a0e89ca1"
+  },
+  "approved_scope": [
+    "four detachable makeup looks",
+    "existing native expression states"
+  ],
+  "previous_palette_approval": {
+    "schema": "mohan.cross-angle-makeup-owner-approval.v1",
+    "owner_quote": "採用這組配色",
+    "approved_scope": [
+      "cross-angle eyes cheeks lips palette",
+      "native per-view layer integration",
+      "optional strength and removal"
+    ],
+    "reference": "three-angle-style-reference.png",
+    "sha256": "ea1431b0e849c185ee61a1394b203920f4c52f1e5739d5cb229bd171bf130839",
+    "tool": "built-in image_gen",
+    "not_authorized_as_replacement_face": true
+  }
+}

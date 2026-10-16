@@ -1,11 +1,4 @@
-"""Load and validate the 25-layer parametric 2.5D face assets.
-
-Codex authored 75 transparent PNG layers (three poses × 25 layers) under
-``assets/expressions/layered/``: the original 18 facial layers plus 7 body
-layers (body, hair_back, hair_left, hair_right, sleeve_left, sleeve_right,
-ornament). This module loads them into an immutable, Qt-independent manifest so
-the parametric renderer can compose a continuously controlled half-body
-portrait without whole-expression image switching.
+"""Load and validate the 25-layer parametric 2.5D face assets. Codex authored 75 transparent PNG layers (three poses × 25 layers) under ``assets/expressions/layered/``: the original 18 facial layers plus 7 body layers (body, hair_back, hair_left, hair_right, sleeve_left, sleeve_right, ornament). This module loads them into an immutable, Qt-independent manifest so the parametric renderer can compose a continuously controlled half-body portrait from the authored layer set.
 
 Layer naming follows the *screen* left/right convention used by the authored
 assets. The renderer is responsible for any character-local mirroring.
@@ -17,10 +10,16 @@ lazy import struct
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
 
-lazy from domain.constants import FULL_BODY_LAYER_Z_ORDER
+lazy from domain.character_runtime import FULL_BODY_LAYER_Z_ORDER, character_rig_manifest
 lazy from domain.face_rig import FacePose
 
-LAYERED_FACE_DIMENSION = 1254
+_RIG_MANIFEST = character_rig_manifest()
+if (
+    _RIG_MANIFEST.half_body_asset_canvas.width
+    != _RIG_MANIFEST.half_body_asset_canvas.height
+):
+    raise ValueError("Layered face assets require a square character canvas.")
+LAYERED_FACE_DIMENSION = _RIG_MANIFEST.half_body_asset_canvas.width
 PNG_HEADER_LENGTH = 24
 
 # The 25 authored layers, in paint order (bottom to top). This is the same

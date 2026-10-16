@@ -55,7 +55,7 @@ def propose_object_interaction(
     *,
     confidence_threshold: float = 0.72,
 ) -> ObjectInteractionCandidate:
-    """Offer a hedged local observation or consent request; never perform lookup."""
+    """Offer a hedged local observation or consent request; start lookup after explicit consent."""
 
     if not math.isfinite(confidence_threshold) or not MIN_CONFIDENCE_THRESHOLD <= confidence_threshold <= 1.0:
         raise ValueError("confidence_threshold must be finite and conservative.")

@@ -26,7 +26,7 @@ _BOUNDARY_ERRORS: Final = (Exception,)
 
 
 class GestureTemplateStoreError(RuntimeError):
-    """A fixed-detail error that never exposes protected template content."""
+    """A fixed-detail boundary result that keeps protected template content private."""
 
 
 GestureTemplates = dict[str, tuple[GestureSample, ...]]
@@ -59,14 +59,14 @@ class ProtectedGestureTemplateStore:
             payload = json.loads(raw)
         except (TypeError, ValueError, json.JSONDecodeError):
             raise GestureTemplateStoreError(
-                "Protected gesture templates are invalid."
+                "Protected gesture templates need supported values."
             ) from None
         return _decode_templates(payload)
 
     def save(self, configuration: GestureConfiguration) -> None:
         if not isinstance(configuration, GestureConfiguration):
             raise GestureTemplateStoreError(
-                "Protected gesture templates are invalid."
+                "Protected gesture templates need supported values."
             )
         templates = {
             definition.gesture_id: definition.samples
@@ -122,7 +122,7 @@ def merge_protected_templates(
     """Attach only templates whose custom definition still exists."""
 
     if not isinstance(configuration, GestureConfiguration):
-        raise GestureTemplateStoreError("Gesture configuration is invalid.")
+        raise GestureTemplateStoreError("Gesture configuration needs a supported value.")
     definitions = tuple(
         replace(
             definition,
@@ -158,7 +158,7 @@ def _encode_templates(
         )
     except (TypeError, ValueError, UnicodeError):
         raise GestureTemplateStoreError(
-            "Protected gesture templates are invalid."
+            "Protected gesture templates need supported values."
         ) from None
     _validate_raw(raw)
     return raw
@@ -166,19 +166,19 @@ def _encode_templates(
 
 def _decode_templates(payload: object) -> GestureTemplates:
     if not isinstance(payload, Mapping) or set(payload) != _PAYLOAD_KEYS:
-        raise GestureTemplateStoreError("Protected gesture templates are invalid.")
+        raise GestureTemplateStoreError("Protected gesture templates need supported values.")
     if payload.get("format") != GESTURE_TEMPLATES_FORMAT:
         raise GestureTemplateStoreError(
-            "Protected gesture-template format is unsupported."
+            "Protected gesture-template format needs a supported value."
         )
     version = payload.get("version")
     if isinstance(version, bool) or version != GESTURE_TEMPLATES_VERSION:
         raise GestureTemplateStoreError(
-            "Protected gesture-template version is unsupported."
+            "Protected gesture-template version needs a supported value."
         )
     raw_templates = payload.get("templates")
     if not isinstance(raw_templates, Mapping):
-        raise GestureTemplateStoreError("Protected gesture templates are invalid.")
+        raise GestureTemplateStoreError("Protected gesture templates need supported values.")
     if len(raw_templates) > MAX_CUSTOM_GESTURES:
         raise GestureTemplateStoreError("Too many protected gesture templates exist.")
     templates: GestureTemplates = {}
@@ -189,7 +189,7 @@ def _decode_templates(payload: object) -> GestureTemplates:
             or len(gesture_id) > MAX_GESTURE_ID_LENGTH
         ):
             raise GestureTemplateStoreError(
-                "A protected gesture-template identifier is invalid."
+                "A protected gesture-template identifier needs a supported value."
             )
         templates[gesture_id] = _decode_samples(raw_samples)
     return templates
@@ -197,7 +197,7 @@ def _decode_templates(payload: object) -> GestureTemplates:
 
 def _decode_samples(payload: object) -> tuple[GestureSample, ...]:
     if not isinstance(payload, Sequence) or isinstance(payload, (str, bytes)):
-        raise GestureTemplateStoreError("Protected gesture samples are invalid.")
+        raise GestureTemplateStoreError("Protected gesture samples need supported values.")
     if len(payload) > MAX_SAMPLES_PER_GESTURE:
         raise GestureTemplateStoreError("A protected gesture has too many samples.")
     return tuple(_decode_sample(sample) for sample in payload)
@@ -209,7 +209,7 @@ def _decode_sample(payload: object) -> GestureSample:
         or isinstance(payload, (str, bytes))
         or len(payload) != LANDMARKS_PER_HAND
     ):
-        raise GestureTemplateStoreError("A protected gesture sample is invalid.")
+        raise GestureTemplateStoreError("A protected gesture sample needs a supported value.")
     landmarks: list[GestureLandmark] = []
     try:
         for coordinates in payload:
@@ -220,23 +220,23 @@ def _decode_sample(payload: object) -> GestureSample:
                 or not all(type(value) in {int, float} for value in coordinates)
             ):
                 raise GestureTemplateStoreError(
-                    "Protected gesture landmark coordinates are invalid."
+                    "Protected gesture landmark coordinates need supported values."
                 )
             x, y, z = coordinates
             landmarks.append(GestureLandmark(float(x), float(y), float(z)))
         return GestureSample(tuple(landmarks))
     except (TypeError, ValueError, OverflowError):
         raise GestureTemplateStoreError(
-            "Protected gesture landmark coordinates are invalid."
+            "Protected gesture landmark coordinates need supported values."
         ) from None
 
 
 def _validate_raw(raw: object) -> None:
     if not isinstance(raw, str):
-        raise GestureTemplateStoreError("Protected gesture templates are invalid.")
+        raise GestureTemplateStoreError("Protected gesture templates need supported values.")
     try:
         size = len(raw.encode("utf-8"))
     except UnicodeError:
-        raise GestureTemplateStoreError("Protected gesture templates are invalid.") from None
+        raise GestureTemplateStoreError("Protected gesture templates need supported values.") from None
     if size > MAX_GESTURE_TEMPLATES_BYTES:
         raise GestureTemplateStoreError("Protected gesture templates are too large.")

@@ -23,10 +23,10 @@ LANGUAGE_HEADINGS = (
     "## 日本語",
 )
 POLICY_MARKERS = (
-    "`openai` Python SDK 執行期相依",
-    "`openai` Python SDK 运行时依赖",
-    "`openai` Python SDK runtime dependency",
-    "`openai` Python SDK の実行時依存",
+    ("`openai` Python SDK 執行期相依", "標準函式庫 HTTPS"),
+    ("`openai` Python SDK 运行时依赖", "标准库 HTTPS"),
+    ("`openai` Python SDK runtime dependency", "standard-library HTTPS"),
+    ("`openai` Python SDK の実行時依存", "標準ライブラリ HTTPS"),
 )
 POLICY_DOCUMENTS = (
     "README.md",
@@ -77,9 +77,16 @@ scope = "runtime"
 profiles = ["windows"]
 '''
     (root / "sbom" / "components.toml").write_text(components, encoding="utf-8")
-    (root / "requirements-preview.txt").write_text("PySide6==6.11.1\n", encoding="utf-8")
+    preview_requirements = (
+        "PySide6_Essentials==6.12.0\n"
+        "PySide6_Addons==6.12.0\n"
+        "shiboken6==6.12.0\n"
+    )
+    (root / "requirements-preview.txt").write_text(
+        preview_requirements, encoding="utf-8"
+    )
     (root / "requirements-preview-runtime.txt").write_text(
-        "PySide6==6.11.1\n", encoding="utf-8"
+        preview_requirements, encoding="utf-8"
     )
     (root / "sbom" / "preview.pyproject.toml").write_text(
         '[project]\nname = "preview"\nversion = "4.0.0"\ndependencies = []\n',
@@ -125,7 +132,11 @@ def test_v4_rejects_sdk_dependency_and_preview_leak() -> None:
             "opencv-python==5.0.0.93\nopenai==3.0.0\n", encoding="utf-8"
         )
         (root / "requirements-preview.txt").write_text(
-            "PySide6==6.11.1\nopenai==1.2.3\n", encoding="utf-8"
+            "PySide6_Essentials==6.12.0\n"
+            "PySide6_Addons==6.12.0\n"
+            "shiboken6==6.12.0\n"
+            "openai==1.2.3\n",
+            encoding="utf-8",
         )
         result = evaluate(root, "4.0.0")
     assert "openai:third-party-sdk-must-not-be-required" in result.issues
@@ -149,8 +160,10 @@ def test_four_language_docs_record_the_no_sdk_runtime_policy() -> None:
         content = (ROOT / relative_path).read_text(encoding="utf-8")
         heading_positions = [content.index(heading) for heading in LANGUAGE_HEADINGS]
         assert heading_positions == sorted(heading_positions), relative_path
-        for marker in POLICY_MARKERS:
-            assert marker in content, f"{relative_path}: missing {marker}"
+        for markers in POLICY_MARKERS:
+            assert any(marker in content for marker in markers), (
+                f'{relative_path}: state the SDK boundary or standard-library transport: {markers}'
+            )
         for forbidden in FORBIDDEN_SDK_REQUIREMENTS:
             assert forbidden not in content, f"{relative_path}: stale {forbidden}"
 

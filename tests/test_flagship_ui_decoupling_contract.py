@@ -114,7 +114,7 @@ class _MemorySecretStoreFactory:
 
 
 class _PartialInitializationProbeError(RuntimeError):
-    """Expected constructor failure used to verify fail-closed Qt cleanup."""
+    """Expected constructor exception verifies Qt cleanup with the gate closed."""
 
 
 class _FailingSecretStoreFactory:
@@ -141,7 +141,7 @@ def _public_classes() -> dict[str, type]:
     classes: dict[str, type] = {}
     for name in REQUIRED_CLASS_SYMBOLS:
         value = _resolve_export(getattr(module, name))
-        assert isinstance(value, type), f"flagship_ui.{name} is not a class"
+        assert isinstance(value, type), f'flagship_ui.{name} must be a class'
         classes[name] = value
     return classes
 
@@ -154,7 +154,7 @@ def _assert_parameter(
     default: object = inspect.Parameter.empty,
 ) -> None:
     parameter = signature.parameters.get(name)
-    assert parameter is not None, f"missing compatible parameter: {name}"
+    assert parameter is not None, f'provide the compatible parameter: {name}'
     assert parameter.kind is kind, (
         f"{name} changed from {kind.description} to "
         f"{parameter.kind.description}"
@@ -261,7 +261,7 @@ def _assert_mro_contract(owner: type, required_base: type) -> None:
         base.__module__.split(".", 1)[0] != "app"
         for base in mro
         if base is not object
-    ), f"{owner.__name__} must not inherit from app.py"
+    ), f'{owner.__name__} must inherit from its explicit owner outside app.py'
 
 
 def _product_source(value: object) -> Path | None:
@@ -315,9 +315,9 @@ def _public_export_owner_sources() -> dict[str, Path]:
             owner_module_name = owner.__module__
         owner_module = importlib.import_module(owner_module_name)
         module_file = getattr(owner_module, "__file__", None)
-        assert module_file is not None, f"{name} has no inspectable owner module"
+        assert module_file is not None, f'{name} requires an inspectable owner module'
         source = Path(module_file).resolve()
-        assert source.suffix == ".py", f"{name} owner is not Python source: {source}"
+        assert source.suffix == ".py", f'{name} owner must be Python source: {source}'
         try:
             source.relative_to(ROOT)
         except ValueError:
@@ -358,7 +358,7 @@ def _offline_platform(root: Path) -> object:
 
 def _select_data(combo: object, value: str) -> None:
     index = combo.findData(value)
-    assert index >= 0, f"missing canonical combo value: {value}"
+    assert index >= 0, f'provide the canonical combo value: {value}'
     combo.setCurrentIndex(index)
 
 
@@ -480,7 +480,7 @@ def _close_widget(
     )
 
     if cleanup_errors:
-        raise ExceptionGroup("flagship Qt cleanup failed", cleanup_errors)
+        raise ExceptionGroup('flagship Qt cleanup requires attention', cleanup_errors)
 
 
 def _close_center(application: object, center: object) -> None:
@@ -556,7 +556,7 @@ def _close_transient_widgets(
             widget.objectName()
         except RuntimeError:
             # Qt can delete child-owned transient widgets while Python still
-            # holds their wrappers.  They are already closed and cannot leak.
+            # holds their wrappers. They are already closed and fully released.
             continue
         _record_cleanup(
             errors,
@@ -790,8 +790,7 @@ def test_flagship_ui_is_a_thin_compatibility_entry() -> None:
     entry_path = ROOT / "presentation" / "flagship_ui.py"
     source_lines = entry_path.read_text(encoding="utf-8").splitlines()
     assert len(source_lines) <= MAX_COMPATIBILITY_ENTRY_LINES, (
-        "flagship_ui.py must be a thin compatibility entry, not an implementation "
-        f"module ({len(source_lines)} lines)"
+        f'flagship_ui.py must remain a thin compatibility entry ({len(source_lines)} lines)'
     )
 
     entry_tree = _tree(entry_path)
@@ -813,7 +812,7 @@ def test_flagship_ui_is_a_thin_compatibility_entry() -> None:
 
 def test_flagship_compatibility_entry_does_not_depend_on_app() -> None:
     entry_path = ROOT / "presentation" / "flagship_ui.py"
-    assert not _imports_app(entry_path), "flagship_ui.py must not import app.py"
+    assert not _imports_app(entry_path), 'flagship_ui.py must preserve app.py as a one-way caller'
 
 
 def test_flagship_public_implementations_are_owned_outside_the_entry() -> None:
@@ -867,7 +866,7 @@ def test_every_public_export_owner_is_bounded() -> None:
 
 def test_flagship_has_no_replacement_giant_implementation_owner() -> None:
     implementation_sources = _flagship_implementation_sources(_public_classes())
-    assert implementation_sources, "no flagship implementation modules were resolved"
+    assert implementation_sources, 'resolve the flagship implementation modules for this gate'
     oversized_owners = {
         str(path.relative_to(ROOT)): len(
             path.read_text(encoding="utf-8").splitlines()
@@ -890,8 +889,7 @@ def test_flagship_implementation_owners_do_not_depend_on_app() -> None:
         if _imports_app(path)
     ]
     assert reverse_dependencies == [], (
-        "flagship implementation owners must not depend on app.py: "
-        f"{reverse_dependencies}"
+        f'flagship owners must preserve app.py as a one-way caller: {reverse_dependencies}'
     )
 
 
@@ -958,7 +956,7 @@ def test_partial_initialization_cleanup_preserves_the_primary_error() -> None:
         )
 
     assert isinstance(constructor_error, _PartialInitializationProbeError), (
-        "the constructor probe did not fail at the requested initialization boundary"
+        'the constructor probe must raise at the requested initialization boundary'
     )
 
 

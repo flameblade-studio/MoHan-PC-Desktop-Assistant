@@ -19,6 +19,7 @@ lazy from typing import Any, BinaryIO
 lazy from urllib.parse import parse_qs, urlparse
 
 lazy from domain.language_support import canonical_ui_language
+lazy from domain.service_status_localization import character_ui_values
 
 StatusProvider = Callable[[], dict[str, Any]]
 CommandHandler = Callable[[str, str], dict[str, Any]]
@@ -57,10 +58,10 @@ PROTECTED_REMOTE_PARTS = frozenset({
 })
 PROTECTED_REMOTE_SUFFIXES = frozenset({".kdbx", ".key", ".pem", ".pfx"})
 REMOTE_FILE_UNAVAILABLE_MESSAGES = frozendict({
-    "zh-TW": "檔案目前無法提供",
-    "zh-CN": "文件目前无法提供",
-    "en-US": "The file is currently unavailable.",
-    "ja-JP": "現在このファイルを提供できません。",
+    "zh-TW": "請選擇遠端白名單中的檔案",
+    "zh-CN": "请选择远程白名单中的文件",
+    "en-US": "Choose a file from the remote allowlist.",
+    "ja-JP": "リモート許可リスト内のファイルを選択してください。",
 })
 REMOTE_FILE_UNAVAILABLE = REMOTE_FILE_UNAVAILABLE_MESSAGES["zh-TW"]
 
@@ -70,10 +71,11 @@ def remote_file_unavailable(language: str) -> str:
     key = "en-US" if normalized == "en" else normalized
     return REMOTE_FILE_UNAVAILABLE_MESSAGES[key]
 
+
 MOBILE_PAGE = """<!doctype html>
 <html lang="zh-Hant-TW"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>墨寒遠端</title>
+<title>{character_name}遠端</title>
 <style>
 body{font-family:system-ui;background:#0d1b28;color:#e8f5fb;margin:0;padding:20px}
 main{max-width:680px;margin:auto}.card{background:#152a3a;border:1px solid #35566a;
@@ -81,12 +83,12 @@ border-radius:14px;padding:16px;margin:12px 0}input,button{box-sizing:border-box
 font:inherit;border-radius:10px;border:1px solid #467089;padding:12px}
 input{width:100%;background:#102333;color:white;margin:6px 0}button{background:#28546b;
 color:white;margin:6px 6px 6px 0}pre{white-space:pre-wrap;word-break:break-word}
-</style><main><h1>墨寒遠端</h1>
+</style><main><h1>{character_name}遠端</h1>
 <div class="card"><label>一次性配對權杖</label><input id="token" type="password"
-autocomplete="off"><button onclick="save()">只保存於此瀏覽器</button></div>
+autocomplete="off"><button onclick="save()">僅保存於此瀏覽器</button></div>
 <div class="card"><button onclick="status()">更新狀態</button>
-<pre id="status">尚未連線</pre></div>
-<div class="card"><label>傳給墨寒</label><input id="command" maxlength="2000"
+<pre id="status">等待連線</pre></div>
+<div class="card"><label>傳給{character_name}</label><input id="command" maxlength="2000"
 placeholder="例如：顯示今天待辦"><button onclick="send()">送出指令</button>
 <pre id="result"></pre></div>
 <script>
@@ -97,12 +99,15 @@ async function call(path,opt={}){opt.headers={...(opt.headers||{}),
 'Authorization':'Bearer '+token.value,'Content-Type':'application/json'};
 const r=await fetch(path,opt),j=await r.json();if(!r.ok)throw Error(j.error||r.status);return j}
 async function status(){try{out.textContent=JSON.stringify(await call('/api/v1/status'),null,2)}
-catch(e){out.textContent='連線失敗：'+e.message}}
+catch(e){out.textContent='連線需要重試：'+e.message}}
 async function send(){const text=document.querySelector('#command').value;
 try{document.querySelector('#result').textContent=JSON.stringify(await call('/api/v1/command',
 {method:'POST',body:JSON.stringify({text})}),null,2)}catch(e){
-document.querySelector('#result').textContent='送出失敗：'+e.message}}
-</script></main></html>"""
+document.querySelector('#result').textContent='指令需要重試：'+e.message}}
+</script></main></html>""".replace(
+    "{character_name}",
+    character_ui_values("zh-TW")["character_name"],
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -148,7 +153,7 @@ class TokenRegistry:
     ) -> str:
         token = secrets.token_urlsafe(32)
         self.db.add_paired_device(
-            device_name.strip() or "未命名裝置",
+            device_name.strip() or "遠端裝置",
             self.hash_token(token),
             permissions,
         )
@@ -189,7 +194,7 @@ class TokenRegistry:
 
 
 class RemoteControlServer:
-    """Opt-in private-network API. It never exposes desktop control by itself."""
+    """Opt-in private-network API routed through explicit application handlers."""
 
     def __init__(
         self,
@@ -207,11 +212,22 @@ class RemoteControlServer:
             for value in services.allowed_folders
             if str(value).strip()
         ]
+        self._allowed_folders_lock = threading.Lock()
         self._server: RemoteThreadingHTTPServer | None = None
         self._thread: threading.Thread | None = None
         self._rate: dict[str, list[float]] = {}
         self._lock = threading.Lock()
         self._lifecycle_lock = threading.Lock()
+
+    def set_allowed_folders(self, folders: tuple[str, ...]) -> None:
+        """Replace remote file roots after the user changes the allowlist."""
+        with self._allowed_folders_lock:
+            self.allowed_folders = []
+            self.allowed_folders = [
+                Path(value).expanduser().resolve()
+                for value in folders
+                if str(value).strip()
+            ]
 
     @property
     def running(self) -> bool:
@@ -219,17 +235,17 @@ class RemoteControlServer:
 
     def _validate_start_config(self) -> None:
         if not self.config.enabled:
-            raise PermissionError("遠端服務尚未由使用者啟用")
+            raise PermissionError("請先由使用者啟用遠端服務")
         if (
             self.config.host not in {"127.0.0.1", "::1", "localhost"}
             and not self.config.trusted_private_transport
         ):
             raise PermissionError(
-                "非本機綁定必須先確認使用 Home Assistant Cloud、"
+                "非本機綁定請先確認使用 Home Assistant Cloud、"
                 "Tailscale 或其他可信任的加密私人網路"
             )
         if not 0 <= int(self.config.port) <= MAX_PORT:
-            raise ValueError("遠端服務連接埠必須介於 0 與 65535")
+            raise ValueError("請將遠端服務連接埠設定為 0 到 65535")
 
     def start(self) -> None:
         self._validate_start_config()
@@ -287,11 +303,13 @@ class RemoteControlServer:
         for target in self._allowed_file_catalog():
             if os.path.normcase(str(target)) == requested_key:
                 return target
-        raise PermissionError("檔案不在遠端白名單或已受保護")
+        raise PermissionError("請選擇遠端白名單中的一般檔案")
 
     def _allowed_file_catalog(self) -> Iterator[Path]:
         seen: set[str] = set()
-        for root in self.allowed_folders:
+        with self._allowed_folders_lock:
+            roots = tuple(self.allowed_folders)
+        for root in roots:
             root_prefix = os.path.normcase(os.path.join(str(root), ""))
             for directory, folder_names, file_names in os.walk(
                 root,
@@ -420,7 +438,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         if not auth.startswith("Bearer "):
             self._json(
                 HTTPStatus.UNAUTHORIZED,
-                {"error": "未授權裝置"},
+                {"error": "請提供已配對的遠端裝置權杖"},
             )
             return None
         token = auth[7:].strip()
@@ -428,20 +446,20 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         if not token:
             self._json(
                 HTTPStatus.UNAUTHORIZED,
-                {"error": "未授權裝置"},
+                {"error": "請提供已配對的遠端裝置權杖"},
             )
             return None
         if not self._owner._within_rate_limit(client_ip):
             self._json(
                 HTTPStatus.TOO_MANY_REQUESTS,
-                {"error": "請求過於頻繁"},
+                {"error": "請求頻率已達上限，請稍後再試"},
             )
             return None
         device = self._owner.tokens.authenticate(token)
         if device is None:
             self._json(
                 HTTPStatus.UNAUTHORIZED,
-                {"error": "未授權裝置"},
+                {"error": "請提供已配對的遠端裝置權杖"},
             )
         return device
 
@@ -449,7 +467,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         if "status" not in device.permissions:
             self._json(
                 HTTPStatus.FORBIDDEN,
-                {"error": "缺少狀態權限"},
+                {"error": "請為裝置啟用狀態權限"},
             )
         else:
             self._json(
@@ -467,7 +485,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         ):
             self._json(
                 HTTPStatus.FORBIDDEN,
-                {"error": "畫面權限未啟用"},
+                {"error": "請為裝置啟用畫面權限"},
             )
         else:
             self._write_response(
@@ -488,7 +506,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         ):
             self._json(
                 HTTPStatus.FORBIDDEN,
-                {"error": "檔案權限未啟用"},
+                {"error": "請為裝置啟用檔案權限"},
             )
             return
         raw_path = parse_qs(query_string).get("path", [""])[0]
@@ -532,8 +550,8 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
                     self.wfile.write(chunk)
                     remaining -= len(chunk)
         except (OSError, RuntimeError, ValueError):
-            # Headers may already be committed. Close the truncated response
-            # without exposing the local I/O failure through a server traceback.
+            # Headers may already be committed. Close the partial response
+            # while keeping local I/O details out of the server traceback.
             self.close_connection = True
 
     def do_GET(self) -> None:
@@ -553,7 +571,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         else:
             self._json(
                 HTTPStatus.NOT_FOUND,
-                {"error": "找不到端點"},
+                {"error": "請檢查端點路徑"},
             )
 
     def _read_command_text(self) -> str | None:
@@ -564,7 +582,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         if not 0 < length <= MAX_REQUEST_BYTES:
             self._json(
                 HTTPStatus.BAD_REQUEST,
-                {"error": "請求大小不正確"},
+                {"error": f"請提供 1 到 {MAX_REQUEST_BYTES} bytes 的請求"},
             )
             return None
         try:
@@ -574,20 +592,20 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         except (UnicodeDecodeError, json.JSONDecodeError):
             self._json(
                 HTTPStatus.BAD_REQUEST,
-                {"error": "JSON 格式錯誤"},
+                {"error": "請提供 JSON 物件格式"},
             )
             return None
         if not isinstance(payload, dict):
             self._json(
                 HTTPStatus.BAD_REQUEST,
-                {"error": "JSON 格式錯誤"},
+                {"error": "請提供 JSON 物件格式"},
             )
             return None
         text = str(payload.get("text", "")).strip()
         if not text or len(text) > MAX_COMMAND_TEXT_LENGTH:
             self._json(
                 HTTPStatus.BAD_REQUEST,
-                {"error": "指令文字不正確"},
+                {"error": f"請提供 1 到 {MAX_COMMAND_TEXT_LENGTH} 字元的指令文字"},
             )
             return None
         return text
@@ -599,7 +617,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         if self.path != "/api/v1/command":
             self._json(
                 HTTPStatus.NOT_FOUND,
-                {"error": "找不到端點"},
+                {"error": "請檢查端點路徑"},
             )
             return
         if (
@@ -608,7 +626,7 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
         ):
             self._json(
                 HTTPStatus.FORBIDDEN,
-                {"error": "指令權限未啟用"},
+                {"error": "請為裝置啟用指令權限"},
             )
             return
         text = self._read_command_text()

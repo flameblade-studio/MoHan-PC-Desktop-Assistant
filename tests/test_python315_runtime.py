@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy import ast
+lazy import importlib
 lazy import io
 lazy import re
 lazy import subprocess
@@ -34,6 +36,46 @@ lazy from tools.migrate_python315_imports import inventory, python_files
 
 EXPECTED_EXCEPTION_COUNT = 3
 FROZEN_EXIT_PROBE_CODE = 7
+
+
+@pytest.mark.parametrize(
+    ("source", "expected_codes"),
+    [
+        (
+            "build_opener(handler).open(request, timeout=120.0)",
+            (),
+        ),
+        ("open('payload.txt')", ("TEXT_ENCODING",)),
+        ("builtins.open('payload.txt')", ("TEXT_ENCODING",)),
+        ("io.open('payload.txt')", ("TEXT_ENCODING",)),
+        ("open('payload.txt', encoding='utf-8')", ()),
+        ("builtins.open('payload.txt', encoding='utf-8')", ()),
+        ("io.open('payload.txt', encoding='utf-8')", ()),
+        ("path.read_text()", ("TEXT_ENCODING",)),
+        ("path.write_text('payload')", ("TEXT_ENCODING",)),
+    ],
+    ids=(
+        "urllib-opener-method",
+        "bare-open-requires-encoding",
+        "builtins-open-requires-encoding",
+        "io-open-requires-encoding",
+        "bare-open-with-encoding",
+        "builtins-open-with-encoding",
+        "io-open-with-encoding",
+        "path-read-text-requires-encoding",
+        "path-write-text-requires-encoding",
+    ),
+)
+def test_python315_compatibility_audit_text_encoding_targets(
+    source: str,
+    expected_codes: tuple[str, ...],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.syspath_prepend(str(ROOT / "tools"))
+    audit_module = importlib.import_module("audit_python315_compatibility")
+    audit = audit_module.CompatibilityAudit(ROOT / "tools" / "fetch_body_pack.py")
+    audit.visit(ast.parse(source, filename="audit-contract.py"))
+    assert tuple(issue.split(" ", 1)[0] for issue in audit.issues) == expected_codes
 
 
 def test_frozen_runtime_enforces_jit_policy(monkeypatch) -> None:
@@ -139,6 +181,26 @@ def _assert_lazy_import_audit_contract() -> None:
     assert len(concurrency_inventory.exceptions) == EXPECTED_EXCEPTION_COUNT
 
 
+def test_python_file_audit_ignores_untracked_workspace_scripts() -> None:
+    with TemporaryDirectory() as temp_dir:
+        root = Path(temp_dir)
+        tracked_source = root / "product.py"
+        scratch_source = root / ".tmp" / "scratch.py"
+        tracked_source.write_text("lazy import json\n", encoding="utf-8")
+        scratch_source.parent.mkdir()
+        scratch_source.write_text("import json\n", encoding="utf-8")
+        subprocess.run(["git", "init", "--quiet"], cwd=root, check=True)
+        subprocess.run(
+            ["git", "add", "--", tracked_source.name],
+            cwd=root,
+            check=True,
+        )
+
+        assert python_files(root) == [tracked_source]
+        tracked_source.unlink()
+        assert python_files(root) == []
+
+
 def _assert_immutable_configuration() -> None:
     for mapping in (
         DEFAULT_PROFILE,
@@ -223,8 +285,9 @@ def _run_governance_audits() -> None:
     dependencies = subprocess.run(
         [
             sys.executable,
-            str(ROOT / "tools" / "install_python315_dependencies.py"),
-            "--verify-only",
+            str(ROOT / "tools" / "check_official_qt_runtime.py"),
+            "--pip-report",
+            str(ROOT / "qt-install-report.json"),
         ],
         cwd=ROOT,
         check=False,
@@ -232,7 +295,7 @@ def _run_governance_audits() -> None:
         text=True,
     )
     assert dependencies.returncode == 0, dependencies.stdout + dependencies.stderr
-    assert "QT_STABLE_ABI_OK" in dependencies.stdout
+    assert "OFFICIAL_QT_RUNTIME_OK" in dependencies.stdout
 
 
 def main() -> None:

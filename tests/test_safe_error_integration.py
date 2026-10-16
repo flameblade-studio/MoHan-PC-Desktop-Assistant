@@ -148,7 +148,7 @@ def _assert_openai_transcription_http_error() -> None:
             except RuntimeError as exc:
                 reported = exc
             else:
-                raise AssertionError("the mocked HTTP failure must be reported")
+                raise AssertionError('the mocked HTTP error must be reported')
         assert reported is not None
         surface = _assert_sanitized(
             reported,
@@ -522,6 +522,7 @@ def _assert_workflow_validation_boundaries() -> None:
         db=SimpleNamespace(set_setting=lambda *_args: None),
         _settings_text=lambda _key, **values: values.get("reason", "title"),
     )
+
     def failing_autostart(*_args: object) -> None:
         raise OSError(_bait_detail())
 

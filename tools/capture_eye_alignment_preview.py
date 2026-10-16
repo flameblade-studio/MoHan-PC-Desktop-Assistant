@@ -12,11 +12,13 @@ lazy from PySide6.QtCore import QRect, Qt
 lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.app_resources import STYLE
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     output = Path(sys.argv[1])
     with TemporaryDirectory() as temp_dir:
         os.environ["LOCALAPPDATA"] = temp_dir
@@ -43,12 +45,14 @@ def main() -> int:
             window._render_attention_layers(force=True)
             window._attention_tick()
             app.processEvents()
-            frames.append(
-                window.grab()
+            frame = (
+                window.grab(QRect(120, 330, 230, 220))
                 .toImage()
                 .convertToFormat(QImage.Format_ARGB32)
-                .copy(QRect(120, 330, 230, 220))
+                .scaled(230, 220, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
             )
+            frame.setDevicePixelRatio(1.0)
+            frames.append(frame)
 
         cell_width, cell_height = 230, 220
         title_height, margin = 36, 14

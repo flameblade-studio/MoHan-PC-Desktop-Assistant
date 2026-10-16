@@ -112,7 +112,7 @@ class LocalFrameAnalysis:
         if self.sparse_face_landmarks is not None and len(self.sparse_face_landmarks) != SPARSE_FACE_POINTS:
             raise ValueError("Sparse face analysis must contain exactly five points.")
         if self.hands is not None and len({hand.side for hand in self.hands}) != len(self.hands):
-            raise ValueError("A local frame cannot contain duplicate hand sides.")
+            raise ValueError("A local frame carries one hand per side.")
         if self.air_interaction is not None and not isinstance(
             self.air_interaction,
             AirInteractionEvent,
@@ -137,7 +137,7 @@ class LocalVisualIntelligenceResult:
 
 
 class LocalVisualIntelligencePipeline:
-    """Coordinate local evidence without camera, UI, storage, network, or control."""
+    """Coordinate local evidence with camera, UI, storage, network, and control outside this boundary."""
 
     def __init__(
         self,
@@ -323,5 +323,5 @@ def _unknown_object() -> ObjectInteractionCandidate:
 
 
 def _failure(component: IntelligenceComponent, error: Exception) -> ComponentFailure:
-    message = str(error).strip() or "unspecified optional component failure"
+    message = str(error).strip() or "unspecified optional component attention event"
     return ComponentFailure(component, type(error).__name__, message)

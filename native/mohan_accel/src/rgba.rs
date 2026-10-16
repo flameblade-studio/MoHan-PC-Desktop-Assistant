@@ -425,14 +425,16 @@ fn blend_pixel(target: &mut [u8], target_index: usize, source: &[u8], source_ind
         return;
     }
     let inverse = ALPHA_MAX - source_alpha;
-    for channel in 0..3 {
-        let blended = u32::from(source[source_index + channel]) * source_alpha
-            + u32::from(target[target_index + channel]) * inverse;
-        target[target_index + channel] = bounded_byte(blended / ALPHA_MAX);
-    }
     let target_alpha = u32::from(target[target_index + 3]);
-    target[target_index + 3] =
-        bounded_byte((source_alpha + (target_alpha * inverse) / ALPHA_MAX).min(ALPHA_MAX));
+    let output_alpha_numerator = source_alpha * ALPHA_MAX + target_alpha * inverse;
+    let output_alpha = (output_alpha_numerator + ALPHA_MAX / 2) / ALPHA_MAX;
+    for channel in 0..3 {
+        let color_numerator = u32::from(source[source_index + channel]) * source_alpha * ALPHA_MAX
+            + u32::from(target[target_index + channel]) * target_alpha * inverse;
+        target[target_index + channel] =
+            bounded_byte((color_numerator + output_alpha_numerator / 2) / output_alpha_numerator);
+    }
+    target[target_index + 3] = bounded_byte(output_alpha);
 }
 
 fn bounded_byte(value: u32) -> u8 {
@@ -462,7 +464,36 @@ mod tests {
         let source = vec![200, 100, 50, 128];
         assert_eq!(
             alpha_over(&target, &source).unwrap(),
-            vec![110, 70, 54, 167]
+            vec![157, 86, 52, 168]
+        );
+    }
+
+    #[test]
+    fn alpha_over_uses_straight_alpha_source_over() {
+        assert_eq!(
+            alpha_over(&[0, 0, 0, 0], &[255, 0, 0, 128]).unwrap(),
+            vec![255, 0, 0, 128]
+        );
+        assert_eq!(
+            alpha_over(&[0, 0, 255, 128], &[255, 0, 0, 128]).unwrap(),
+            vec![170, 0, 85, 192]
+        );
+        assert_eq!(
+            composite_region(&RegionComposite {
+                target: vec![0, 0, 0, 0],
+                target_width: 1,
+                target_height: 1,
+                source: vec![255, 0, 0, 128],
+                source_width: 1,
+                source_height: 1,
+                anchor_x: 0,
+                anchor_y: 0,
+                approved_region: vec![1],
+                immutable_identity: vec![0],
+                occlusion_masks: Vec::<Vec<u8>>::new(),
+            })
+            .unwrap(),
+            vec![255, 0, 0, 128]
         );
     }
 

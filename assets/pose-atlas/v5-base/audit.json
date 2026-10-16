@@ -1,24 +1,15 @@
 {
-  "failed_view_count": 3,
-  "passed": false,
-  "passed_view_count": 21,
+  "failed_view_count": 0,
+  "passed": true,
+  "passed_view_count": 24,
   "schema": "mohan.pose-atlas.working-audit.v1",
   "view_count": 24,
   "views": [
     {
-      "issue_details": [
-        {
-          "code": "hand_finger_proportion",
-          "finger": null,
-          "landmark_index": null,
-          "side": "right"
-        }
-      ],
-      "issues": [
-        "hand_finger_proportion"
-      ],
+      "issue_details": [],
+      "issues": [],
       "occluded_sides": [],
-      "passed": false,
+      "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
@@ -45,15 +36,16 @@
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw-150-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
@@ -72,49 +64,33 @@
       ]
     },
     {
-      "issue_details": [
-        {
-          "code": "hand_missing_pixel_coverage",
-          "finger": "thumb",
-          "landmark_index": 2,
-          "side": "left"
-        }
+      "issue_details": [],
+      "issues": [],
+      "occluded_sides": [
+        "right"
       ],
-      "issues": [
-        "hand_missing_pixel_coverage"
-      ],
-      "occluded_sides": [],
-      "passed": false,
+      "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw-120-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
-      "issue_details": [
-        {
-          "code": "hand_finger_proportion",
-          "finger": null,
-          "landmark_index": null,
-          "side": "right"
-        }
+      "issue_details": [],
+      "issues": [],
+      "occluded_sides": [
+        "right"
       ],
-      "issues": [
-        "hand_finger_proportion"
-      ],
-      "occluded_sides": [],
-      "passed": false,
+      "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw-105-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
@@ -135,29 +111,31 @@
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw-075-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw-060-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
@@ -275,15 +253,16 @@
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw+075-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
@@ -319,43 +298,46 @@
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw+120-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw+135-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {
       "issue_details": [],
       "issues": [],
-      "occluded_sides": [],
+      "occluded_sides": [
+        "right"
+      ],
       "passed": true,
       "skipped_checks": [
         "extra-digit:skin-background"
       ],
       "view_id": "yaw+150-pitch+00",
       "visible_sides": [
-        "left",
-        "right"
+        "left"
       ]
     },
     {

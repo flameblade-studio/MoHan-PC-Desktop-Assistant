@@ -178,7 +178,7 @@ def assert_missing_conflict_and_malicious_assets_fail_closed() -> None:
         except AppearanceRenderError:
             pass
         else:
-            raise AssertionError("invalid layer set must fail closed")
+            raise AssertionError('layer sets must satisfy the acceptance contract')
     oversized = ResolvedLayerAsset(
         "oversized", WIDTH + 1, HEIGHT + 1,
         rgba(WIDTH + 1, HEIGHT + 1, (1, 2, 3, 255)),
@@ -229,7 +229,7 @@ def assert_publish_failure_preserves_previous_frame() -> None:
     except RuntimeError as exc:
         assert str(exc) == "publish failed"
     else:
-        raise AssertionError("publish failure must be visible")
+        raise AssertionError('publish errors must be visible')
     assert renderer.current_frame == first
     assert publisher.frames[-1] == first.rgba
 
@@ -323,7 +323,7 @@ def assert_unavailable_backend_and_publish_failure_are_static_or_atomic() -> Non
     except RuntimeError:
         pass
     else:
-        raise AssertionError("failed publish must remain visible")
+        raise AssertionError('publish errors must remain visible')
     assert dynamics.snapshot() == before
 
 

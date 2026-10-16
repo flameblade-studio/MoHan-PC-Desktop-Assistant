@@ -1,13 +1,13 @@
-"""用自我校準的背景色重算 IoU，並先驗證這個指標本身站得住腳。
+"""以每張圖的背景色重新計算 IoU，並先驗證指標。
 
-探針內建的切法是「與我填的底板色 (196,198,200) 差 > 45」。實測模型畫出來的
-背景是 (177,189,194)，與底板差 34——只差 11 就會把整片背景誤判成人物。
-邊際太薄，改成用每張圖自己四角的中位色當背景，門檻用該圖的色差分布決定。
+原探針底板色為 (196,198,200)，模型背景實測為 (177,189,194)，
+色差 34 與固定門檻 45 的餘裕為 11。此版採用四角中位色作為背景，
+並依該圖色差分布決定門檻。
 
-指標在報數字之前必須先過三關，任一關不過就不採信：
-  1. 背景不能被算成前景——切出的前景佔比要落在合理區間
-  2. 要有上界參考——控制圖自己跟自己的 IoU 必為 1.0
-  3. 要有下界參考——純 t2i 的 IoU 就是「隨便畫個人剛好重疊」的基準
+指標通過下列三項驗證後採用：
+1. 前景佔比落在合理區間，背景保留其背景分類。
+2. 控制圖與自身的 IoU 為 1.0，提供上界參考。
+3. 純 t2i 的 IoU 提供一般人物重疊的下界參考。
 """
 import os
 import sys
@@ -50,11 +50,10 @@ def iou(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def chroma(path: Path, mask: np.ndarray) -> float:
-    """前景的平均彩度。灰模是無彩的，膚色不是，所以這一軸量的是風格轉過去了沒有。
+    """量測前景平均彩度，與 IoU 共同評估幾何及上色。
 
-    IoU 單獨一軸會選出最差的答案：s0.55 的 IoU 高達 0.919，但那是因為輸出
-    根本就還是那尊灰模（光頭、灰黏土）。兩軸一起看才問得出真正的問題——
-    有沒有哪個強度同時守住幾何又完成上色。
+    s0.55 的 IoU 曾達 0.919，但輸出仍保留灰模色彩。彩度量測補充
+    色彩轉換證據，供判讀同時符合幾何及上色條件的強度。
     """
     array = np.asarray(Image.open(path).convert("RGB")).astype(np.float32)
     high = array.max(axis=2)
@@ -71,7 +70,7 @@ def true_control() -> np.ndarray:
     可見門檻法把灰模的剪影侵蝕掉約 8%。silhouette 是渲染器直接輸出的，精確。
     """
     sys.path.insert(0, str(Path(__file__).parent))
-    from tinted_init import tinted_init  # noqa: F401  只為共用同一套裁切幾何
+    from tinted_init import tinted_init  # ruff: ignore[unused-import]  只為共用同一套裁切幾何
     from produce_v10_geo import BUNDLES
 
     folder = BUNDLES / "yaw+090-pitch+00"
@@ -104,10 +103,10 @@ def main() -> None:
         print("探針尚未產出初始圖")
         return
     control = true_control()
-    _threshold_mask, bg, frac = foreground(init)
+    _threshold_mask, _bg, frac = foreground(init)
     print("── 指標自我驗證 ──")
-    print(f"控制遮罩取自 bundle silhouette，佔畫面 {control.mean()*100:.1f}%")
-    print(f"（對照：門檻法從灰模推出來是 {frac*100:.1f}%，會侵蝕剪影）")
+    print(f"控制遮罩取自 bundle silhouette，佔畫面 {control.mean() * 100:.1f}%")
+    print(f"（對照：門檻法從灰模推出來是 {frac * 100:.1f}%，會侵蝕剪影）")
     frac = control.mean()
     print(f"控制遮罩對自己的 IoU = {iou(control, control):.3f}（必須是 1.000，否則切法有誤）")
     inverted = np.logical_not(control)
@@ -124,14 +123,14 @@ def main() -> None:
     for path in sorted(PROBE.glob("*.png")):
         if path.name == "_init.png":
             continue
-        mask, bg, frac = foreground(path)
+        mask, _bg, frac = foreground(path)
         label = "純 t2i 基準" if "baseline" in path.name else path.stem
         rows.append((label, iou(mask, control), chroma(path, mask), frac))
 
     base = next((v for lab, v, _, _ in rows if "基準" in lab), None)
     skin = next((c for lab, _, c, _ in rows if "基準" in lab), None)
     print(f"{'':14s} {'IoU':>6s} {'彩度':>7s}    判讀")
-    for label, value, colour, frac in sorted(rows, key=lambda r: r[0]):
+    for label, value, colour, _frac in sorted(rows, key=lambda r: r[0]):
         if colour <= mesh_chroma * 1.35:
             note = "仍是灰模，沒上色"
         elif base is not None and value - base < IOU_GAIN_MIN:

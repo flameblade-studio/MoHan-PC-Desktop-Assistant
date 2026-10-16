@@ -1,19 +1,14 @@
 """Cancellable execution and strict plan parsing for flagship actions."""
-
 from __future__ import annotations
 
 lazy import json
 lazy import threading
 lazy from collections.abc import Callable
 lazy from dataclasses import asdict
-lazy from typing import Any
+lazy from typing import Any, overload
 
 lazy from domain.flagship_action_models import (
-    CAPABILITY_RISK,
-    ActionPlan,
-    ActionRequest,
-    ActionResult,
-    PolicyDecision,
+    CAPABILITY_RISK, ActionPlan, ActionRequest, ActionResult, PolicyDecision,
 )
 lazy from domain.flagship_action_policy import PolicyEngine
 lazy from domain.safe_error import sanitize_error
@@ -23,9 +18,7 @@ __all__ = (
     "CancellationRegistry",
     "parse_plan_json",
 )
-
 MAX_PLAN_STEPS = 25
-
 Handler = Callable[[ActionRequest], ActionResult]
 Verifier = Callable[[ActionRequest, ActionResult], bool]
 Confirm = Callable[[ActionRequest, PolicyDecision, int], bool]
@@ -49,21 +42,32 @@ PII_AUDIT_KEYS = frozenset(
         "attributes", "latitude", "longitude", "friendly_name",
     }
 )
-AUDIT_PREVIEW_CHARS = 64
+
+
+@overload
+def redact_audit_payload(value: dict[str, object]) -> dict[str, object]: ...
+
+
+@overload
+def redact_audit_payload(value: list[object]) -> list[object]: ...
+
+
+@overload
+def redact_audit_payload(value: object) -> object: ...
 
 
 def redact_audit_payload(value: object) -> object:
-    """遞迴遮罩敏感欄位，只留長度與短預覽：稽核仍可讀，但不再是資料倉。"""
+    """遞迴遮罩敏感欄位，只留下型別與長度，不保存欄位原文。"""
     if isinstance(value, dict):
         redacted: dict[str, object] = {}
         for key, item in value.items():
-            if key in PII_AUDIT_KEYS and not isinstance(item, bool) and isinstance(item, (str, int, float, dict, list)):
+            if key in REDACTED_AUDIT_KEYS or (
+                key in PII_AUDIT_KEYS
+                and not isinstance(item, bool)
+                and isinstance(item, (str, int, float, dict, list))
+            ):
                 size = len(item) if isinstance(item, (str, dict, list)) else 1
                 redacted[key] = f"<redacted {type(item).__name__} ({size})>"
-            elif key in REDACTED_AUDIT_KEYS and isinstance(item, str):
-                preview = item[:AUDIT_PREVIEW_CHARS]
-                more = "..." if len(item) > AUDIT_PREVIEW_CHARS else ""
-                redacted[key] = f"<redacted {len(item)} chars: {preview}{more}>"
             else:
                 redacted[key] = redact_audit_payload(item)
         return redacted
@@ -130,11 +134,7 @@ class ActionExecutor:
         self.handlers[capability] = (handler, verifier)
 
     def unregister(self, capability: str) -> None:
-        """Remove a capability so a disabled integration cannot linger.
-
-        Later plans that still request the capability receive the regular
-        "尚未安裝此工具的執行器" failure instead of reaching a stale handler.
-        """
+        """Remove a capability so a disabled integration leaves the active registry. Later plans that request the capability receive the regular "尚未安裝此工具的執行器" attention event through the supported boundary. """
 
         self.handlers.pop(capability, None)
 
@@ -261,7 +261,7 @@ class ActionExecutor:
 
 
 def parse_plan_json(value: str, *, source: str = "local") -> ActionPlan:
-    """Parse model output without granting capabilities or trusting prose."""
+    """Parse model output while keeping capabilities outside the parser and treating prose as untrusted input."""
 
     payload = json.loads(value)
     if not isinstance(payload, dict):

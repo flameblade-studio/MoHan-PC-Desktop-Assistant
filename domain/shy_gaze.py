@@ -4,18 +4,17 @@ from __future__ import annotations
 
 When the user stares at MoHan on screen for a sustained stretch, a real girl
 would grow flustered and glance away.  This module encodes the precise timing
-and iris offset so the aversion reads as a shy, restrained look-away — never a
-sudden eye-roll.
+and iris offset so the aversion reads as a shy, restrained look-away — with a gentle, restrained look-away.
 
 The key tuning concerns, per the user's direction:
 
-- The stare threshold must be long enough (not a hair-trigger) so the companion
-  does not flinch the instant the user glances at her.
+- The stare threshold must be long enough with a patient threshold so the companion
+  keeps the companion settled when the user glances at her.
 - The iris offset must be small and directed downward (left-down or right-down),
-  never a large lateral jump that would look like rolling the eyes.
+  with a measured downward offset that keeps the gaze natural.
 - The aversion must hold for a few seconds, then release smoothly.
 
-This is pure domain logic with no Qt dependency, so the timing and offsets can
+This is pure domain logic with Qt outside the domain boundary, so the timing and offsets can
 be unit-tested independently of the renderer.
 """
 
@@ -55,7 +54,7 @@ class ShyGazeState:
         gaze_confidence: float,
         now: float | None = None,
     ) -> tuple[float, float] | None:
-        """Advance the state machine and return the iris offset, or None.
+        """Advance the state machine and return the iris offset, or the normal-gaze sentinel.
 
         Returns ``(offset_x, offset_y)`` while the companion is averting her
         gaze, and ``None`` when she is looking normally.

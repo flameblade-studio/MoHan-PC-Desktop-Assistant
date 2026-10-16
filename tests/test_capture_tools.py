@@ -75,7 +75,7 @@ def test_capture_tools_write_expected_offscreen_pngs(tmp_path: Path) -> None:
     )
     readme_image = readme_output / "tasks-and-ideas.png"
     assert readme_run.returncode == 0, (
-        f"README capture failed:\n{readme_run.stdout}\n{readme_run.stderr}"
+        f'README capture requires attention:\n{readme_run.stdout}\n{readme_run.stderr}'
     )
     assert readme_image.is_file() and readme_image.stat().st_size > 0
     assert png_size(readme_image) == (1400, 900)
@@ -88,8 +88,7 @@ def test_capture_tools_write_expected_offscreen_pngs(tmp_path: Path) -> None:
     )
     control_image = control_output / "control-center-reference.png"
     assert control_run.returncode == 0, (
-        f"Control-center capture failed:\n{control_run.stdout}\n"
-        f"{control_run.stderr}"
+        f'Control-center capture requires attention:\n{control_run.stdout}\n{control_run.stderr}'
     )
     assert control_image.is_file() and control_image.stat().st_size > 0
     assert png_size(control_image) == (1320, 860)

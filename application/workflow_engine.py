@@ -99,7 +99,7 @@ def _parse_schedule_time(value: object) -> tuple[int, int] | None:
 
 def _notify_schedule_error(notify: Callable[[str], None] | None) -> None:
     if notify is not None:
-        notify("排程設定無法讀取")
+        notify("讀取排程設定需要處理")
 
 
 def _ran_at_current_minute(

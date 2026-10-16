@@ -35,8 +35,8 @@ HAN_CHARACTER = re.compile(r"[\u3400-\u9fff]")
 FLAGSHIP_TAB_COUNT = 8
 TRANSLATION_LANGUAGE_COUNT = 3
 ENGLISH_ALLOWED_HAN = frozenset({
-    # User-owned profile data and the character's proper name are content,
-    # not system UI. They are allowed to remain verbatim.
+    # User-owned profile data and the character's proper name remain verbatim
+    # under the user-content preservation contract.
     "墨寒",
 })
 

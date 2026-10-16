@@ -1,0 +1,383 @@
+{
+  "schema": "mohan.v5-full-body-display-placement.v1",
+  "status": "owner_approved",
+  "mode": "height_normalised",
+  "canvas": {
+    "width": 1024,
+    "height": 1536
+  },
+  "reference": {
+    "alpha_threshold": 128,
+    "baseline_row": 1463,
+    "height": 1536,
+    "reference_height": 1366,
+    "reference_sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f",
+    "reference_view": "yaw+000-pitch+00",
+    "width": 1024
+  },
+  "source_preview_sha256": "ed5a32faa477d519b6e4cde648f4d0deb78e8a754ff400235e9c40f1d9f7f282",
+  "formal_size_review_receipt_sha256": "7352d0d192c94ffd4a5d46d92a674a3f1fb45e338f66c12c29c041f30b538d25",
+  "owner_approval_sha256": "c11dec81dee18e70de9b43a5e3c73e2d444b0b8213cb7161925a25d35b17842a",
+  "views": [
+    {
+      "view_id": "yaw-180-pitch+00",
+      "native_png_sha256": "7b596fa8e5a6b9eae620440db7b98e0db2d2182a110ad4fd748362aaaadb965d",
+      "scale": 0.97781,
+      "offset_x": 17.228,
+      "offset_y": 13.886,
+      "visible_bounds": {
+        "bottom": 1482,
+        "height": 1397,
+        "left": 325,
+        "right": 687,
+        "top": 86,
+        "width": 363
+      }
+    },
+    {
+      "view_id": "yaw-165-pitch+00",
+      "native_png_sha256": "b99f5d7be767a62527f1e7080965df6c38b58aeff4285edf69e44b4bd0d33a2f",
+      "scale": 0.979211,
+      "offset_x": 15.54,
+      "offset_y": 16.705,
+      "visible_bounds": {
+        "bottom": 1477,
+        "height": 1395,
+        "left": 327,
+        "right": 687,
+        "top": 83,
+        "width": 361
+      }
+    },
+    {
+      "view_id": "yaw-150-pitch+00",
+      "native_png_sha256": "1a948558ce165e7d505a260f6a199ff2b2e154f502a1dfbe5dbe28ced8c503cf",
+      "scale": 0.97017,
+      "offset_x": 20.609,
+      "offset_y": 31.999,
+      "visible_bounds": {
+        "bottom": 1475,
+        "height": 1408,
+        "left": 348,
+        "right": 665,
+        "top": 68,
+        "width": 318
+      }
+    },
+    {
+      "view_id": "yaw-135-pitch+00",
+      "native_png_sha256": "1f74812bb5e2fc38f79de365ec67d8b0c79741c003e6a3021f7e0a50498138b3",
+      "scale": 0.97155,
+      "offset_x": 20.395,
+      "offset_y": 30.935,
+      "visible_bounds": {
+        "bottom": 1474,
+        "height": 1406,
+        "left": 352,
+        "right": 660,
+        "top": 69,
+        "width": 309
+      }
+    },
+    {
+      "view_id": "yaw-120-pitch+00",
+      "native_png_sha256": "ffa58ec7c568630aad453da86dc926c7956cab4e75faae96fdf3b1f8c77bf911",
+      "scale": 1.049962,
+      "offset_x": -14.556,
+      "offset_y": -27.945,
+      "visible_bounds": {
+        "bottom": 1420,
+        "height": 1301,
+        "left": 375,
+        "right": 628,
+        "top": 120,
+        "width": 254
+      }
+    },
+    {
+      "view_id": "yaw-105-pitch+00",
+      "native_png_sha256": "0d1a56d029d4fbd084334a8d9b9ae58c9fbdb4c88ce3a074f344bd359c02fda0",
+      "scale": 1.02784,
+      "offset_x": -19.394,
+      "offset_y": -10.923,
+      "visible_bounds": {
+        "bottom": 1434,
+        "height": 1329,
+        "left": 413,
+        "right": 621,
+        "top": 106,
+        "width": 209
+      }
+    },
+    {
+      "view_id": "yaw-090-pitch+00",
+      "native_png_sha256": "d699e4e51c508a25c7bacdfac0cc923fad4ea03ebd721f749be5c621f7c5a44b",
+      "scale": 0.979914,
+      "offset_x": 13.224,
+      "offset_y": 38.205,
+      "visible_bounds": {
+        "bottom": 1454,
+        "height": 1394,
+        "left": 397,
+        "right": 621,
+        "top": 61,
+        "width": 225
+      }
+    },
+    {
+      "view_id": "yaw-075-pitch+00",
+      "native_png_sha256": "7f9c1c0ca8246caccdc52e30f619223c259b2b344a44264df8cfe88369256a52",
+      "scale": 1.013353,
+      "offset_x": 13.43,
+      "offset_y": 13.905,
+      "visible_bounds": {
+        "top": 55,
+        "bottom": 1433,
+        "left": 383,
+        "right": 596,
+        "height": 1378,
+        "width": 213
+      }
+    },
+    {
+      "view_id": "yaw-060-pitch+00",
+      "native_png_sha256": "4a09b1b7100092ce5091a72e8f7cd68c952188a4f1c0fb25bbefbb56f1e18bca",
+      "scale": 1.008863,
+      "offset_x": 4.038,
+      "offset_y": 13.264,
+      "visible_bounds": {
+        "top": 53,
+        "bottom": 1440,
+        "left": 381,
+        "right": 626,
+        "height": 1387,
+        "width": 245
+      }
+    },
+    {
+      "view_id": "yaw-045-pitch+00",
+      "native_png_sha256": "ebd245e49e3a31a3dc88442ce7fb108ebac66e80354000f6d02f69335e7e0d53",
+      "scale": 1.002201,
+      "offset_x": -2.63,
+      "offset_y": -1.216,
+      "visible_bounds": {
+        "bottom": 1461,
+        "height": 1363,
+        "left": 362,
+        "right": 665,
+        "top": 99,
+        "width": 304
+      }
+    },
+    {
+      "view_id": "yaw-030-pitch+00",
+      "native_png_sha256": "8750d8629cb274d7db4034e1f02dcd2d3283c537ef92fc843769b0f937d68ac7",
+      "scale": 1.027068,
+      "offset_x": -15.913,
+      "offset_y": -23.167,
+      "visible_bounds": {
+        "bottom": 1447,
+        "height": 1330,
+        "left": 353,
+        "right": 675,
+        "top": 118,
+        "width": 323
+      }
+    },
+    {
+      "view_id": "yaw-015-pitch+00",
+      "native_png_sha256": "990606cb257e3d128c13be82d7d82dfc46ba8ca250f8274245332dd34fdf69f6",
+      "scale": 1.023988,
+      "offset_x": -7.674,
+      "offset_y": -19.735,
+      "visible_bounds": {
+        "bottom": 1448,
+        "height": 1334,
+        "left": 333,
+        "right": 682,
+        "top": 115,
+        "width": 350
+      }
+    },
+    {
+      "view_id": "yaw+000-pitch+00",
+      "native_png_sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f",
+      "scale": 1.0,
+      "offset_x": 9.5,
+      "offset_y": 0.0,
+      "visible_bounds": {
+        "bottom": 1463,
+        "height": 1366,
+        "left": 316,
+        "right": 689,
+        "top": 98,
+        "width": 374
+      }
+    },
+    {
+      "view_id": "yaw+015-pitch+00",
+      "native_png_sha256": "6ecf5a4e3d6f5543291143fdb3fe048770863b202979395b1d0a9d99ae892e5c",
+      "scale": 0.97851,
+      "offset_x": 30.084,
+      "offset_y": 16.762,
+      "visible_bounds": {
+        "bottom": 1478,
+        "height": 1396,
+        "left": 319,
+        "right": 666,
+        "top": 83,
+        "width": 348
+      }
+    },
+    {
+      "view_id": "yaw+030-pitch+00",
+      "native_png_sha256": "1356d1cab3915f724372f0add1b5520ffd3d4fc9b13a7acb41ffff2adbf1d1b5",
+      "scale": 0.963329,
+      "offset_x": 22.629,
+      "offset_y": 24.75,
+      "visible_bounds": {
+        "bottom": 1493,
+        "height": 1418,
+        "left": 312,
+        "right": 704,
+        "top": 76,
+        "width": 393
+      }
+    },
+    {
+      "view_id": "yaw+045-pitch+00",
+      "native_png_sha256": "e7530053c5d54a8a4babeafb24b02e4acb5f7949542d24f678e5d7359549255e",
+      "scale": 0.990573,
+      "offset_x": 12.751,
+      "offset_y": 11.811,
+      "visible_bounds": {
+        "bottom": 1465,
+        "height": 1379,
+        "left": 345,
+        "right": 663,
+        "top": 87,
+        "width": 319
+      }
+    },
+    {
+      "view_id": "yaw+060-pitch+00",
+      "native_png_sha256": "4950e3c185310ae5e91d0b3da8164cbef50c7801c0033ff0670cd40c5f124a8e",
+      "scale": 0.97851,
+      "offset_x": 41.826,
+      "offset_y": 34.375,
+      "visible_bounds": {
+        "top": 53,
+        "bottom": 1463,
+        "left": 324,
+        "right": 637,
+        "height": 1410,
+        "width": 313
+      }
+    },
+    {
+      "view_id": "yaw+075-pitch+00",
+      "native_png_sha256": "78364a8e7d5ff032ab7420de18d0efe50203e4c3cdae4466b5d98112a09f93f2",
+      "scale": 0.992733,
+      "offset_x": 28.539,
+      "offset_y": 11.625,
+      "visible_bounds": {
+        "top": 55,
+        "bottom": 1465,
+        "left": 359,
+        "right": 615,
+        "height": 1410,
+        "width": 256
+      }
+    },
+    {
+      "view_id": "yaw+090-pitch+00",
+      "native_png_sha256": "504e7d072f382e6cfc7b80fde8d4b446954a7d9841602d4b6d2b29489d45b152",
+      "scale": 0.979914,
+      "offset_x": 8.324,
+      "offset_y": 38.205,
+      "visible_bounds": {
+        "bottom": 1454,
+        "height": 1394,
+        "left": 402,
+        "right": 626,
+        "top": 61,
+        "width": 225
+      }
+    },
+    {
+      "view_id": "yaw+105-pitch+00",
+      "native_png_sha256": "04704ab4dcdae52ab9b4702e4f2effedfd37f6b65e57ace59bdc1a76578f4d60",
+      "scale": 1.008863,
+      "offset_x": 4.038,
+      "offset_y": 5.194,
+      "visible_bounds": {
+        "bottom": 1445,
+        "height": 1354,
+        "left": 382,
+        "right": 625,
+        "top": 92,
+        "width": 244
+      }
+    },
+    {
+      "view_id": "yaw+120-pitch+00",
+      "native_png_sha256": "1c08fadc0db1eb59992cb2776442523a303de4e753eac4d7ff31981bf3647fff",
+      "scale": 1.020164,
+      "offset_x": 11.609,
+      "offset_y": -8.077,
+      "visible_bounds": {
+        "bottom": 1442,
+        "height": 1339,
+        "left": 360,
+        "right": 621,
+        "top": 104,
+        "width": 262
+      }
+    },
+    {
+      "view_id": "yaw+135-pitch+00",
+      "native_png_sha256": "5c4345d1a8987faeff2ea5f5a643c85c7953c732e3a5f093d8070cd5311ff458",
+      "scale": 0.966054,
+      "offset_x": 21.728,
+      "offset_y": 36.139,
+      "visible_bounds": {
+        "bottom": 1477,
+        "height": 1414,
+        "left": 343,
+        "right": 672,
+        "top": 64,
+        "width": 330
+      }
+    },
+    {
+      "view_id": "yaw+150-pitch+00",
+      "native_png_sha256": "f4ece290818ea03a4b914e7f4becc896a2f3d2d632933b02b9b9d9c368de330c",
+      "scale": 0.966054,
+      "offset_x": 32.354,
+      "offset_y": 36.139,
+      "visible_bounds": {
+        "bottom": 1477,
+        "height": 1414,
+        "left": 328,
+        "right": 665,
+        "top": 64,
+        "width": 338
+      }
+    },
+    {
+      "view_id": "yaw+165-pitch+00",
+      "native_png_sha256": "ae667a90e98c0742a5de68ee625f8ce05095f6fbf1d71c5bf21c31c298a1c1b1",
+      "scale": 0.97711,
+      "offset_x": 23.445,
+      "offset_y": 19.808,
+      "visible_bounds": {
+        "bottom": 1477,
+        "height": 1398,
+        "left": 334,
+        "right": 666,
+        "top": 80,
+        "width": 333
+      }
+    }
+  ]
+}

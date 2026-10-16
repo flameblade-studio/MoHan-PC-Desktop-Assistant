@@ -3,22 +3,57 @@
     "readme_reference_pattern": "docs/media/<filename>",
     "generation_source": "domain/constants.py:POSE_ATLAS_GENERATION",
     "entries": {
+        "docs/media/conversation.png": {
+            "generator": "historical tools/capture_readme_media.py output (2026-08); current tool no longer reproduces this file",
+            "generation": 1,
+            "sha256": "2987cd5fb15aa3812b058dcb49cabd06750308699cdf4c918a9d135173c36447",
+            "auto_regenerable": false,
+            "reason": "2026-08 的提交紀錄顯示由 README 截圖流程產出；現行工具已切換二代素材且不再輸出此檔，generation 1 僅依提交時間線推定。"
+        },
+        "docs/media/creation-frame-by-frame-qa.webp": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "f7faaec58c3a6fe022bdb703990a17be63459aaabd72a5d7afa7d13bfb3bdb3f",
+            "auto_regenerable": false,
+            "reason": "來源待查；2026-08-07 首次加入，未找到來源檔、生成工具或生成紀錄；generation 1 僅依提交時間線推定。"
+        },
+        "docs/media/creation-viseme-development.webp": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "0102252b73f72ea46839a7d4cd6d501309880b8abd6fb44084b5951b6f4b2302",
+            "auto_regenerable": false,
+            "reason": "來源待查；2026-08-07 首次加入，未找到來源檔、生成工具或生成紀錄；generation 1 僅依提交時間線推定。"
+        },
+        "docs/media/desktop-character.png": {
+            "generator": "historical tools/capture_readme_media.py output (2026-08); current tool no longer reproduces this file",
+            "generation": 1,
+            "sha256": "e58d1bd7fca01baf3d834f167bf301650bc1711d7ddba9851ff35798dd8f5098",
+            "auto_regenerable": false,
+            "reason": "2026-08 的提交紀錄顯示由 README 截圖流程產出；現行工具已切換二代素材且不再輸出此檔，generation 1 僅依提交時間線推定。"
+        },
         "docs/media/expressions.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab all",
             "generation": 2,
-            "sha256": "c0d8b96c47f1516444f46519a55fe69fd1063f2cf027540e8ff8422620fd04a2",
+            "sha256": "c36989312b6135f63c788d44ca7033563a96807e416e46e38fa04c19601f9dca",
             "auto_regenerable": true
         },
         "docs/media/first-run-wizard.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab first-run",
             "generation": 2,
-            "sha256": "8d4f5c1912a4947d6d315fa0bf617d1ce6cdb8ca73aa8e0ccea7d4c2e0bcf927",
+            "sha256": "1fc8748282b5039126144cbf5e7b09aecd129d06f6efc90aa3f5f5bb8f273e0b",
             "auto_regenerable": true
+        },
+        "docs/media/github-social-preview.png": {
+            "generator": "historical tools/capture_readme_media.py compose_github_social_preview output (2026-08)",
+            "generation": 1,
+            "sha256": "8592519da6ac23592304511746b7cbad4042e3163f7d6773375181b32b5cedf3",
+            "auto_regenerable": false,
+            "reason": "歷史提交記錄顯示由 README 媒體工具的社群預覽合成流程更新；現行工具已變更，generation 1 僅依提交時間線推定。"
         },
         "docs/media/long-term-memory.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab memory",
             "generation": 2,
-            "sha256": "31d8f213dc76c0fa8b9888aaf284b63ba7ef3022a4b3fc4cebb5a04091ca2073",
+            "sha256": "bd08f4c7d9b0bc4464f5435a19b07cd634c5a79c857a7f795c6df19f760f977e",
             "auto_regenerable": true
         },
         "docs/media/mohan-chibi-code-review.png": {
@@ -49,6 +84,20 @@
             "auto_regenerable": false,
             "reason": "保留、不算不一致：非執行期合成的 Q 版插畫；目視確認藍白漢服、銀白髮飾與藍色垂飾符合二代官方外觀，差異僅是畫風。"
         },
+        "docs/media/mohan-chibi-theatre.png": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "0f000305ebe191ab53cbbc39bb18d29cdb80216180086ae3c9a7507c19eaeb64",
+            "auto_regenerable": false,
+            "reason": "來源待查；同批 Q 版檔案的紀錄不足以證明本檔來源，未找到本檔的直接來源或生成紀錄。"
+        },
+        "docs/media/mohan-demo.gif": {
+            "generator": "來源待查",
+            "generation": 1,
+            "sha256": "65bed11a9413313cdbae9f880c7f5cbd0b53dc4ea801118b4d5883533445d3aa",
+            "auto_regenerable": false,
+            "reason": "來源待查；歷史提交未找到 GIF 生成工具或生成紀錄，現行 MP4 工具不足以證明本檔來源。"
+        },
         "docs/media/mohan-demo.mp4": {
             "generator": "tools/record_demo_video.py",
             "generation": 2,
@@ -64,79 +113,85 @@
         "docs/media/mohan-hero.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab all",
             "generation": 2,
-            "sha256": "169d69f63bdc5aba1a3d1ddc80fd6113e62fb0aa969aa865932baa0a998590cb",
+            "sha256": "a121608e2ea493a0a4f4225a47fe30e35973e05840c9424af67fc1d6549dc561",
             "auto_regenerable": true
         },
         "docs/media/portraits/gentle_smile_front.png": {
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
-            "sha256": "92c85c914e60f5acea002368f12ee2759665a53dbdb26784c80b703c71bda5c2",
+            "sha256": "9ecc2a7ee9b0c89d6123c290c2ca87c72e9d4f96800de1f6cf186b4e65bc85a9",
+            "auto_regenerable": true
+        },
+        "docs/media/portraits/idle_front.png": {
+            "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
+            "generation": 2,
+            "sha256": "a1d4a4603d54f5306336dd7bc333308ebc993283d0dae1b0bf42807c5c0a0243",
             "auto_regenerable": true
         },
         "docs/media/portraits/mock_hit_front.png": {
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
-            "sha256": "e38163e1fce62ee4e21215f5c32c36787b3e1099ed52256503f6693294e38f5f",
+            "sha256": "84f24b1a66ba08432069a2a9a35ec0407c66df84543c09a27bbfcbd0a9630539",
             "auto_regenerable": true
         },
         "docs/media/portraits/proud_front.png": {
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
-            "sha256": "5c5c0454d783f22c4ea0e7bd5b3e4b9787679d74cb490d0451b522dd621c340a",
+            "sha256": "d14871c293a2936732df50479cc41b58ee705889f97755e02c1053ba61a13320",
             "auto_regenerable": true
         },
         "docs/media/portraits/shy_cute_front.png": {
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
-            "sha256": "76cbd9ae93c41fdc64a0d6b7c094e751daa72262249a223816c5c56449c0efe1",
+            "sha256": "753c61174f7493b97ef8dd5f4198e81b034bd944157ca21e6269dfb40bb18521",
             "auto_regenerable": true
         },
         "docs/media/portraits/thinking_front.png": {
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
-            "sha256": "0d36ddca24d571e905c439ebaaa789993cdc6f1968e2c2ff6bc7cafd328837bd",
+            "sha256": "d0f4923cc388ca55f79bb0dccff2fa82ed52182e980f3305f66dcd53606627ec",
             "auto_regenerable": true
         },
         "docs/media/portraits/worried_front.png": {
             "generator": "tools/render_marketing_portraits.py --output docs/media/portraits",
             "generation": 2,
-            "sha256": "cff573b6b4071ac70efb7a2ce44b848938615011140f22cfaf5737904c6379c5",
+            "sha256": "86f2bd0401424427437c9554e017786b830ce23a006819ae1179c679c0c3943e",
             "auto_regenerable": true
         },
         "docs/media/security-permissions.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab security",
             "generation": 2,
-            "sha256": "37c6f232c6257387370c6581fb98025f1324a8c675cfaa7a1ebf68556fc7f5a2",
+            "sha256": "46c5f6656e647938a224b3236d03181d08a4fed57bb226058452d2803cde1d83",
             "auto_regenerable": true
         },
         "docs/media/support-mock-hit.png": {
-            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-mock-hit.png --crop-alpha --content-size 600x590 --content-offset 0,20",
+            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-proud.png --output-name support-shy-aligned.png --output-name support-mock-hit.png --crop-alpha --content-size 600x590 --content-offset 0,20",
             "generation": 2,
-            "sha256": "809490a94b627b100ec127ec352b3a7f073345bc051374685a349e0bc16cec64",
+            "sha256": "09517701fc8f028ce8ed345620eb39e02893d4357ed9c5e729c1aaef20c40cbb",
             "auto_regenerable": true
         },
         "docs/media/support-proud.png": {
-            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-proud.png --crop-alpha --content-size 600x590 --content-offset 0,20",
+            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-proud.png --output-name support-shy-aligned.png --output-name support-mock-hit.png --crop-alpha --content-size 600x590 --content-offset 0,20",
             "generation": 2,
-            "sha256": "63303ac49ab5a42fced7d1b9b54939f0b5bd2c098442439514f741c9cb252115",
+            "sha256": "a6dd9446e57c99e6a9ae8c73b2ca89e18dacfd282b7a00129bc8a3eb5e3d5319",
             "auto_regenerable": true
         },
         "docs/media/support-shy-aligned.png": {
-            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-shy-aligned.png --crop-alpha --content-size 600x590 --content-offset 0,20",
+            "generator": "tools/render_marketing_portraits.py proud_front shy_cute_front mock_hit_front --output docs/media --size 640x640 --output-name support-proud.png --output-name support-shy-aligned.png --output-name support-mock-hit.png --crop-alpha --content-size 600x590 --content-offset 0,20",
             "generation": 2,
-            "sha256": "8910511e5586f9a936a6a175da9199e8586222efe2278ca94089d77dd7665996",
+            "sha256": "d8deaf3044c6285544b0c43526cb74c2f4830608ce62f8584732cbb390480ab1",
             "auto_regenerable": true
         },
         "docs/media/tasks-and-ideas.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab tasks",
             "generation": 2,
-            "sha256": "042402392dfdce1725b100d4ec34ef75d717658d769200353070d913d79ee482",
+            "sha256": "c886c61fa388a5c6427222bdf7fe742f04185571e1b8a8b9db3de3098a49901b",
             "auto_regenerable": true
         },
         "docs/media/voice-modes.png": {
             "generator": "tools/capture_readme_media.py --screenshots-only --tab voice",
             "generation": 2,
-            "sha256": "5b563792cf056d2a99692cd5d58bf3bb5550b834c39fdde30bad9164d1def571",
+            "sha256": "47eacde1011ed9dd45d4be16a49087981ff283fa77e8e8547738f309474d44ca",
             "auto_regenerable": true
         }
     }

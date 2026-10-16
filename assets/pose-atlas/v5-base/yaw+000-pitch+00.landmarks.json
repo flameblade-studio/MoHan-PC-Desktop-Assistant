@@ -2,72 +2,84 @@
   "height": 1536,
   "landmarks": {
     "crown": [
-      509,
-      91
+      530,
+      95
     ],
     "left_ankle": [
-      580,
-      1406
+      548,
+      1374
     ],
     "left_heel": [
-      578,
-      1490
+      546,
+      1458
     ],
     "left_hip": [
-      613,
-      878
+      585,
+      862
     ],
     "left_knee": [
-      596,
-      1187
+      567,
+      1163
     ],
     "left_sole": [
-      580,
-      1496
+      548,
+      1464
     ],
     "left_toe": [
-      581,
-      1490
+      551,
+      1458
+    ],
+    "right_ankle": [
+      438,
+      1374
+    ],
+    "right_heel": [
+      436,
+      1458
+    ],
+    "right_hip": [
+      420,
+      862
+    ],
+    "right_knee": [
+      429,
+      1163
+    ],
+    "right_sole": [
+      438,
+      1464
+    ],
+    "right_toe": [
+      439,
+      1458
     ]
   },
   "measurement": {
     "method": "normalized-alpha-silhouette-registration",
     "occlusion_policy": "no_coordinates_are invented for an occluded side",
-    "source_sha256": "4bae782f8db919ec627dfdfde49a9990ec281a6e9ae029f3aa7e45e4d658a8b9",
-    "target_subject_height": 1406
+    "source_sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f",
+    "target_subject_height": 1370
   },
-  "occluded_landmarks": [
-    {
-      "name": "right_hip",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
+  "native_face_landmarks": {
+    "artifact": {
+      "path": "assets/pose-atlas/v5-base/yaw+000-pitch+00.native-landmarks.json",
+      "sha256": "da208d769cc3594567c3c9e40df583d98fd60b5983344364788629b75fb6fb9e"
     },
-    {
-      "name": "right_knee",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
+    "confidence": 0.9498521685600281,
+    "coordinates": "normalized_xy_plus_relative_z",
+    "existing_artifact": "assets/pose-atlas/v5-base/yaw+000-pitch+00.native-landmarks.json",
+    "landmark_count": 478,
+    "size": [
+      1024,
+      1536
+    ],
+    "source": {
+      "path": "assets/pose-atlas/v5-base/yaw+000-pitch+00.png",
+      "sha256": "7c87bc8b51406b962454b5da79fb8a578bdd6000c8ab117ec6f50c0e328cc81f"
     },
-    {
-      "name": "right_ankle",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "right_heel",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "right_toe",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    },
-    {
-      "name": "right_sole",
-      "occluder_id": "lower-robe-and-sleeve",
-      "reason": "The lower robe and sleeve occlude this side in the authored view."
-    }
-  ],
+    "status": "existing_native_verified_rgb_identical_alpha_cleanup"
+  },
+  "occluded_landmarks": [],
   "schema_version": 2,
   "view_id": "yaw+000-pitch+00",
   "width": 1024,

@@ -28,7 +28,7 @@ def test_mohan_body_profile_is_the_fixed_adult_art_contract() -> None:
         measurements.hips_cm,
     ) == (168, 54, 86, 71, 62, 90)
     assert "Adult East Asian woman" in profile.art_direction
-    assert "never the core skeleton or body geometry" in profile.art_direction
+    assert "the core skeleton and body geometry stay authoritative" in profile.art_direction
 
 
 if __name__ == "__main__":

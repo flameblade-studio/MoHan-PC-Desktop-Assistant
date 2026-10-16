@@ -15,12 +15,17 @@ sys.path.insert(0, str(TESTS))
 
 lazy from PySide6.QtGui import QFont
 lazy from PySide6.QtWidgets import QApplication
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from presentation.lingxiao_widgets import set_motion_override
 lazy from test_global_settings_actions import close_dashboard
 lazy from test_wardrobe_ui import build_language_dashboard
 lazy from tools.capture_media_contract import preview_font_family, select_dashboard_tab
 
 DEFAULT_OUTPUT_NAME = "control-center-reference.png"
+
+
 def output_path(output: Path) -> Path:
     if output.suffix.casefold() == ".png":
         return output
@@ -28,6 +33,7 @@ def output_path(output: Path) -> Path:
 
 
 def capture(output: Path, tab_name: str) -> Path:
+    activate_product_character_runtime(ROOT)
     application = QApplication.instance() or QApplication([])
     application.setFont(QFont(preview_font_family(), 10))
     with TemporaryDirectory(ignore_cleanup_errors=True) as temporary:
@@ -41,13 +47,14 @@ def capture(output: Path, tab_name: str) -> Path:
             destination = output_path(output)
             destination.parent.mkdir(parents=True, exist_ok=True)
             if not dashboard.grab().save(str(destination)):
-                raise RuntimeError("Could not save the control-center preview.")
+                raise RuntimeError("Saving the control-center preview requires attention; check the output path and image encoder.")
         finally:
             close_dashboard(dashboard, db)
     return destination
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--output",

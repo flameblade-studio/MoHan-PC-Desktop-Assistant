@@ -26,7 +26,7 @@ class CloudHealthSignals(QObject):
 
 
 class CloudHealthWorker(QRunnable):
-    """Probe cloud services concurrently so a slow API cannot freeze the UI."""
+    """Probe cloud services concurrently so a slow API while keeping the UI responsive."""
 
     def __init__(
         self,
@@ -43,19 +43,16 @@ class CloudHealthWorker(QRunnable):
     def _google_probes(self) -> dict[str, Any]:
         def gmail() -> str:
             payload = GmailConnector(self.token).request("GET", "/profile")
-            # 缺少 emailAddress 時先前退回泛用名稱「Google 帳戶」並報 ok=True，
-            # 於是無法分辨「連上了但拿不到身份」與「真的連上了」。
+            # Gmail 健康檢查須取得實際帳戶識別，才能確認有效連線。
             address = str(payload.get("emailAddress", "")).strip() if isinstance(
                 payload, dict
             ) else ""
             if not address:
-                raise OAuthError("Gmail 回應缺少帳戶識別，無法確認連線")
+                raise OAuthError("Gmail 回應須提供帳戶識別，才能確認連線")
             return address
 
         def calendar() -> str:
-            # 先前完全不看 payload：任何 2xx JSON 都被報成「已連線」，包含
-            # 代理層或中間設備回的空物件。健康檢查的用途正是分辨「真的通了」
-            # 與「看起來像通了」，它自己不能只看狀態碼。
+            # 健康檢查同時核對回應結構與狀態碼，確認服務傳回所需資料。
             payload = GoogleCalendarConnector(self.token).request(
                 "GET",
                 "/calendars/primary/events",
@@ -66,7 +63,7 @@ class CloudHealthWorker(QRunnable):
                 },
             )
             if not isinstance(payload, dict) or "items" not in payload:
-                raise OAuthError("Google Calendar 回應缺少 items 欄位，無法確認連線")
+                raise OAuthError("Google Calendar 回應須提供 items 欄位，才能確認連線")
             return self._translator.text("主要日曆可讀取")
 
         def drive() -> str:
@@ -80,7 +77,7 @@ class CloudHealthWorker(QRunnable):
                 },
             )
             if not isinstance(payload, dict) or "files" not in payload:
-                raise OAuthError("Google Drive 回應缺少 files 欄位，無法確認連線")
+                raise OAuthError("Google Drive 回應須提供 files 欄位，才能確認連線")
             return self._translator.text("雲端硬碟中繼資料可讀取")
 
         probes = {"Gmail": gmail, "Calendar": calendar, "Drive": drive}

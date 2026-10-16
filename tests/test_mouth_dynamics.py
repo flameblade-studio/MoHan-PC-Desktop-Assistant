@@ -52,7 +52,7 @@ def run() -> None:
         assert apertures == sorted(apertures)
         assert apertures[-1] < 1.0
 
-        # Rapidly alternating vowel guesses must not make the mouth flicker.
+        # Rapid vowel guesses retain smooth, stable mouth motion.
         for vowel in ("O", "I") * 6:
             cue(0.55, vowel)
         assert window.viseme_dynamics.current == "A"

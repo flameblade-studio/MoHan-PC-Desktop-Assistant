@@ -1,9 +1,8 @@
 """Build the README demonstration video from offscreen, reproducible captures.
 
 The six narration lines are intentionally kept together near the top of this
-module so the owner can review or edit them without searching through the
-renderer.  Narration is synthesized locally through the OneCore Yating voice;
-no cloud provider or SAPI fallback is allowed on this production path.
+module for direct owner review and editing. Narration on this production
+path uses the local OneCore Yating voice exclusively.
 """
 
 from __future__ import annotations
@@ -38,7 +37,10 @@ lazy from PySide6.QtCore import QPoint, QRect, QSize, Qt
 lazy from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter, QPen
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from domain.constants import POSE_ATLAS_GENERATION
+
+DEFAULT_PANEL_BORDER = QColor("#b6c8d6")
 lazy from domain.lip_sync import (
     VISEME_CUES_PER_SECOND,
     VisemeDynamics,
@@ -96,7 +98,7 @@ DEMO_NARRATION = (
     "你說話，妾便聽著——不必按鈕，也不必上傳到別人的雲端。",
     "今日該做的事，妾都替你記著了。",
     "這身衣裝、妝容與髮飾，妾都能換；喜歡哪一套，你自己挑。",
-    "動手之前妾會先問你一聲。危險的事，妾不會擅自替你決定。",
+    "動手之前妾會先問你一聲。重要的決定，妾都會等你確認後再行動。",
     "……別看妾，快去做事。",
 )
 DEMO_SUBTITLES = (
@@ -195,7 +197,7 @@ def _run_ffmpeg(command: list[str]) -> None:
     )
     if result.returncode:
         detail = result.stderr.decode("utf-8", errors="replace").strip()
-        raise RuntimeError(detail[-2000:] or "FFmpeg failed.")
+        raise RuntimeError(detail[-2000:] or "FFmpeg requires attention; review its diagnostic output.")
 
 
 def _ffprobe_binary(ffmpeg: str) -> str:
@@ -211,7 +213,7 @@ def _ffprobe_binary(ffmpeg: str) -> str:
     for candidate in candidates:
         if candidate and Path(candidate).is_file():
             return str(Path(candidate))
-    raise RuntimeError("FFprobe not found. Set FFPROBE_BINARY to ffprobe.exe.")
+    raise RuntimeError("Set FFPROBE_BINARY to an available ffprobe.exe.")
 
 
 def _probe_video_specs(
@@ -236,16 +238,16 @@ def _probe_video_specs(
         check=False,
     )
     if result.returncode:
-        raise RuntimeError(result.stderr.strip() or "FFprobe failed.")
+        raise RuntimeError(result.stderr.strip() or "FFprobe requires attention; review its diagnostic output.")
     try:
         metadata = json.loads(result.stdout)
     except json.JSONDecodeError as error:
-        raise RuntimeError("FFprobe returned invalid JSON.") from error
+        raise RuntimeError("FFprobe output requires valid JSON.") from error
     if not isinstance(metadata, dict):
-        raise RuntimeError("FFprobe returned an invalid metadata object.")
+        raise RuntimeError("FFprobe output requires a valid metadata object.")
     streams = metadata.get("streams")
     if not isinstance(streams, list):
-        raise RuntimeError("FFprobe returned no stream list.")
+        raise RuntimeError("FFprobe output requires a stream list.")
     video_stream = next(
         (
             stream
@@ -268,7 +270,7 @@ def _probe_video_specs(
         or not isinstance(audio_stream, dict)
         or not isinstance(format_info, dict)
     ):
-        raise RuntimeError("FFprobe did not return video, audio, and format data.")
+        raise RuntimeError("FFprobe output requires video, audio, and format data.")
     try:
         return {
             "width": int(video_stream["width"]),
@@ -279,7 +281,7 @@ def _probe_video_specs(
             "audio_channels": int(audio_stream["channels"]),
         }
     except (KeyError, TypeError, ValueError) as error:
-        raise RuntimeError("FFprobe metadata is missing required video specs.") from error
+        raise RuntimeError("FFprobe metadata requires the complete video specifications.") from error
 
 
 def _write_video_provenance(
@@ -291,7 +293,7 @@ def _write_video_provenance(
     entries = manifest.get("entries")
     entry = entries.get(MEDIA_VIDEO_ENTRY) if isinstance(entries, dict) else None
     if not isinstance(entry, dict):
-        raise RuntimeError("Media provenance is missing the demonstration video entry.")
+        raise RuntimeError("Media provenance requires the demonstration video entry.")
     entry["sha256"] = digest
     entry.update(specs)
     temporary: Path | None = None
@@ -346,7 +348,7 @@ def _assemble_narration(
     voice: OneCoreVoiceSelection,
 ) -> Narration:
     if len(normalized) != len(DEMO_NARRATION):
-        raise RuntimeError("The six narration files were not produced.")
+        raise RuntimeError("Provide all six generated narration files.")
     output.parent.mkdir(parents=True, exist_ok=True)
     segments: list[SpeechSegment] = []
     cursor = _silence_frame_count(LEAD_SILENCE_SECONDS)
@@ -356,7 +358,9 @@ def _assemble_narration(
         combined.setsampwidth(AUDIO_SAMPLE_WIDTH)
         combined.setframerate(AUDIO_SAMPLE_RATE)
         combined.writeframes(_silence(cursor))
-        for index, (text, source) in enumerate(zip(DEMO_NARRATION, normalized)):
+        for index, (text, source) in enumerate(
+            zip(DEMO_NARRATION, normalized, strict=True)
+        ):
             frames, frame_count = _read_normalized_wave(source)
             start_frame = cursor
             combined.writeframes(frames)
@@ -416,7 +420,7 @@ def _build_narration(temp_dir: Path, ffmpeg: str) -> Narration:
         _normalize_narration_wave(ffmpeg, raw, target)
         normalized.append(target)
     if selected_voice is None:
-        raise RuntimeError("OneCore Yating did not produce any narration.")
+        raise RuntimeError("OneCore Yating narration generation requires attention.")
     narration = _assemble_narration(
         tuple(normalized),
         temp_dir / "narration-22050-mono.wav",
@@ -426,14 +430,14 @@ def _build_narration(temp_dir: Path, ffmpeg: str) -> Narration:
         raise RuntimeError(
             "Normal-speed OneCore/Yating narration is "
             f"{narration.duration:.3f}s, over the 60s test boundary; "
-            "do not speed it up. Owner decision required: raise the test "
+            "retain normal speed. Owner decision required: raise the test "
             "limit or shorten the approved lines."
         )
     if narration.duration < MIN_VIDEO_DURATION_SECONDS:
         raise RuntimeError(
             "Normal-speed OneCore/Yating narration is "
             f"{narration.duration:.3f}s, below the 30s test boundary; "
-            "the recording must follow the approved audio timing and was not padded."
+            "the recording retains the approved audio timing exactly."
         )
     viseme_assets = _viseme_track(normalized[1])
     return replace(narration, viseme_assets=viseme_assets)
@@ -448,7 +452,7 @@ def _viseme_track(path: Path) -> tuple[str, ...]:
             or audio.getsampwidth() != AUDIO_SAMPLE_WIDTH
             or audio.getframerate() != AUDIO_SAMPLE_RATE
         ):
-            raise RuntimeError("The viseme source wave is not normalized audio.")
+            raise RuntimeError("The viseme source wave requires normalized audio.")
         pcm = audio.readframes(audio.getnframes())
     cue_frames = AUDIO_SAMPLE_RATE // VISEME_CUES_PER_SECOND
     dynamics = VisemeDynamics()
@@ -459,7 +463,7 @@ def _viseme_track(path: Path) -> tuple[str, ...]:
         frame = dynamics.advance(level, vowel)
         track.append(VISEME_ASSET_BY_NAME[frame.selected])
     if len(set(track)) < MIN_VISEME_ASSET_VARIANTS:
-        raise RuntimeError("The 50 Hz OneCore viseme track did not move.")
+        raise RuntimeError("The 50 Hz OneCore viseme track requires visible motion.")
     return tuple(track)
 
 
@@ -468,12 +472,13 @@ def _demo_dependencies(root: Path):
 
     base = dependencies(root)
     if base.presentation_ports is None:
-        raise RuntimeError("The capture fixture did not provide presentation ports.")
+        raise RuntimeError("The capture fixture requires presentation ports.")
 
     def outfit_overlay_factory(*, on_stale_body_profile=None):
         return ActiveOutfitOverlay(
             root / "outfits",
             ROOT,
+            official_pack_root=ROOT / "assets" / "official-packs",
             on_stale_body_profile=on_stale_body_profile,
         )
 
@@ -515,14 +520,14 @@ def _capture_wardrobe_states(
         captures.append(grab_widget_image(dashboard))
         pixmap = dashboard.wardrobe_character_preview.pixmap()
         if pixmap is None or pixmap.isNull():
-            raise RuntimeError("Wardrobe preview did not produce a composed character.")
+            raise RuntimeError("Wardrobe preview requires a composed character.")
         preview = pixmap.toImage().convertToFormat(QImage.Format_ARGB32)
         previews.append(preview)
     overlay = dashboard._wardrobe_outfit_overlay
     if overlay.layer_count("yaw+000-pitch+00") <= 0:
-        raise RuntimeError("Wardrobe preview did not use the active runtime overlay.")
+        raise RuntimeError("Wardrobe preview requires the active runtime overlay.")
     if dashboard.wardrobe_makeup_intensity.value() != MAKEUP_FULL_INTENSITY_PERCENT:
-        raise RuntimeError("The final wardrobe capture did not restore makeup to 100%.")
+        raise RuntimeError("The final wardrobe capture requires makeup restored to 100%.")
     return tuple(captures), tuple(previews)
 
 
@@ -553,7 +558,11 @@ def _capture_scene_widgets(temp_dir: Path) -> SceneCaptures:
 
 
 def _render_character_assets(temp_dir: Path) -> dict[str, QImage]:
-    overlay = ActiveOutfitOverlay(temp_dir / "marketing-store", ROOT)
+    overlay = ActiveOutfitOverlay(
+        temp_dir / "marketing-store",
+        ROOT,
+        official_pack_root=ROOT / "assets" / "official-packs",
+    )
     names = {
         "attentive_front.png",
         "attentive_front_speech_mid.png",
@@ -579,7 +588,7 @@ def _draw_panel(
     painter: QPainter,
     rect: QRect,
     fill: QColor,
-    border: QColor = QColor("#b6c8d6"),
+    border: QColor = DEFAULT_PANEL_BORDER,
 ) -> None:
     painter.setPen(QPen(border, 2))
     painter.setBrush(fill)
@@ -707,7 +716,7 @@ def _compose_frame(
             or SPEAKING_CHARACTER_CROP.bottom() >= character.height()
         ):
             raise RuntimeError(
-                "Speaking character crop does not fit the composed portrait."
+                "Fit the speaking character crop within the composed portrait."
             )
         portrait_source = character.copy(SPEAKING_CHARACTER_CROP)
     portrait = _scaled_inside(portrait_source, QSize(350, 466))
@@ -863,7 +872,7 @@ def record_demo_video(output: Path, ffmpeg: str) -> tuple[Narration, int]:
             )
         )
         if not encoded.is_file() or encoded.stat().st_size <= 0:
-            raise RuntimeError("FFmpeg did not produce the demonstration video.")
+            raise RuntimeError("FFmpeg demonstration-video output requires attention.")
         specs = _probe_video_specs(encoded, ffprobe)
         encoded.replace(output)
         if output.resolve() == MEDIA_VIDEO_PATH.resolve():
@@ -884,6 +893,7 @@ def _arguments(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(ROOT)
     arguments = _arguments(argv)
     ffmpeg = ffmpeg_binary(arguments.ffmpeg)
     narration, frame_count = record_demo_video(arguments.output, ffmpeg)

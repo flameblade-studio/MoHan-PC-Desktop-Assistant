@@ -16,7 +16,7 @@ LANGUAGE_COUNT = 4
 
 def read(relative: str) -> str:
     path = ROOT / relative
-    assert path.is_file(), f"missing required GitHub file: {relative}"
+    assert path.is_file(), f'provide the required GitHub file: {relative}'
     return path.read_text(encoding="utf-8")
 
 
@@ -25,7 +25,7 @@ def assert_action_pinned(workflow: str, action: str) -> None:
         rf"uses:\s*{re.escape(action)}@([^\s#]+)",
         workflow,
     )
-    assert references, f"missing required GitHub Action: {action}"
+    assert references, f'provide the required GitHub Action: {action}'
     assert all(re.fullmatch(r"[0-9a-f]{40}", ref) for ref in references), (
         f"{action} must be pinned to a complete 40-character commit SHA: "
         f"{references}"
@@ -220,7 +220,7 @@ def test_security_workflows() -> None:
     assert "python -m pip_audit -r requirements.txt --strict" in audit
     assert 'python-version: "3.14.7"' in audit
     assert "isolated audit tooling" in audit
-    assert "cannot\n      # start on 3.15" in audit
+    assert "Python 3.14\n      # supplies its compatible isolated audit tooling runtime" in audit
 
 
 def _assert_release_supply_chain(release: str) -> None:
@@ -289,11 +289,14 @@ def _assert_release_runtime_and_packages(release: str) -> None:
     for required in (
         "tools/audit_public_release.py",
         "tests/run_all.py",
-        "tools/install_python315_dependencies.py",
+        "tools/check_official_qt_runtime.py",
         "tools/build_python315_jit_runtime.py",
         "37e98da7c19a9e5892ee756d6dee08225422cd49",
         "repository: python/cpython",
         'python-version: "3.15.0-rc.1"',
+        "--require-hashes",
+        "requirements-qt.txt",
+        "-QtPipReport qt-jit-install-report.json",
         "PACKAGED_SELFTEST_OK",
         "PACKAGED_JIT_DEFAULT_OK",
         "MOHAN_DISABLE_JIT",
@@ -352,8 +355,8 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
         'python-version: "3.15.0-rc.1"',
         "Enforce thin app composition root before packaging",
         '"$PREFLIGHT_PYTHON" tools/check_app_composition_root.py app.py',
-        "Validate MoHan Qt 3.15 compatibility policy before packaging",
-        '"$PREFLIGHT_PYTHON" tools/check_python315_qt_compatibility.py',
+        "Validate official Qt for Python policy before packaging",
+        '"$PREFLIGHT_PYTHON" tools/check_official_qt_runtime.py --policy-only',
         "Require curated four-language Release notes before packaging",
         "PREFLIGHT_PYTHON: ${{ steps.preflight-python.outputs.python-path }}",
         '"$PREFLIGHT_PYTHON" tools/check_four_language_docs.py',
@@ -372,7 +375,7 @@ def _assert_release_preflight_precedes_packaging(release: str) -> None:
         "Enforce thin app composition root before packaging"
     )
     qt_preflight = resolve_job.index(
-        "Validate MoHan Qt 3.15 compatibility policy before packaging"
+        "Validate official Qt for Python policy before packaging"
     )
     assert resolve_job.index("Set up Python 3.15 release preflight runtime") < (
         app_preflight
@@ -399,14 +402,14 @@ def test_release_workflow() -> None:
 def test_publishing_merge_policy() -> None:
     publishing = read("PUBLISHING.md")
     for required in (
-        "既定合併政策只允許 squash",
-        "既定合并策略仅允许 squash",
-        "established merge policy only permits squash merging",
-        "既定のマージポリシーでは squash マージだけを許可",
-        "不得在每次發布時重新查詢",
-        "不得在每次发布时重新查询",
-        "Do not re-query this known policy for every release",
-        "リリースごとにこの既知のポリシーを再照会",
+        "既定合併政策採用 squash 作為唯一合併方式",
+        "既定合并策略采用 squash 作为唯一合并方式",
+        "established merge policy uses squash as its sole merge method",
+        "既定のマージポリシーでは squash マージだけを許可します",
+        "只有政策變更證據出現時才重新查詢",
+        "只有策略变更证据出现时才重新查询",
+        "re-query it only when evidence of policy change appears",
+        "ポリシー変更の証拠がある場合だけ再照会します",
     ):
         assert required in publishing
 
@@ -414,14 +417,14 @@ def test_publishing_merge_policy() -> None:
 def test_publishing_github_credential_policy() -> None:
     publishing = read("PUBLISHING.md")
     for required in (
-        "一條可預測的憑證路徑",
-        "一条可预测的凭证路径",
-        "one predictable credential path",
-        "予測可能な認証経路を一つだけ使用",
-        "在外部狀態未改變前不得反覆重試",
-        "在外部状态未变化前不得反复重试",
-        "while the external state is unchanged",
-        "外部状態が変わらない限り",
+        "GitHub 自動化必須使用一條可預測的憑證路徑",
+        "GitHub 自动化必须使用一条可预测的凭证路径",
+        "GitHub automation must use one predictable credential path",
+        "GitHub 自動化では、予測可能な認証経路を一つだけ使用します",
+        "外部狀態改變後再評估 gh",
+        "外部状态改变后再评估 gh",
+        "switch directly to the connected integration or a signed-in browser",
+        "認証情報の無効を一度確認した後は、接続済み連携またはログイン済みブラウザーへ直ちに切り替えます",
     ):
         assert required in publishing
 
@@ -459,6 +462,7 @@ def test_preview_and_windows_workflows() -> None:
     pinned_quality_install = (
         "python -m pip install --only-binary=:all: -r requirements-dev.txt"
     )
+    repository_quality_gate = "python tools/quality_gate.py --stages static"
     for required in (
         'PYTHONUTF8: "1"',
         'PYTHON_JIT = "0"',
@@ -467,16 +471,27 @@ def test_preview_and_windows_workflows() -> None:
         "tools/build_python315_jit_runtime.py",
         "tools/profile_mohan_tachyon.py",
         pinned_quality_install,
-        "python -m ruff check .",
+        repository_quality_gate,
         "--target all",
         "--min-samples 100",
         "--max-sample-read-error-percent 15",
         "--max-missed-samples-percent 10",
         "windows-tachyon-evidence",
+        "name: test-shard (${{ matrix.shard-index }})",
+        "shard-index: [0, 1, 2, 3, 4, 5, 6, 7]",
+        "--stages tests",
+        "needs: [test-static, test-shard]",
+        "name: test",
+        "if: ${{ always() }}",
+        "name: installer",
+        "needs: test",
+        "actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+        "hashFiles('rust-toolchain.toml', 'native/mohan_accel/Cargo.lock')",
+        "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
     ):
         assert required in windows_ci
     assert windows_ci.index(pinned_quality_install) < windows_ci.index(
-        "python -m ruff check ."
+        repository_quality_gate
     )
     release_workflow = read(".github/workflows/release.yml")
     assert_external_actions_pinned(release_workflow)
@@ -541,7 +556,7 @@ def test_secret_defense_and_community_files() -> None:
         r"title=${title//$'\r'/}",
         r"body=${body//$'\r'/}",
         "IFS='／'",
-        "Missing non-empty language section",
+        "Language sections require content",
         "FOUR_LANGUAGE_PR_METADATA_MINIMUM_OK",
         "tools/check_four_language_pr.py",
         "tools/check_four_language_docs.py",

@@ -29,12 +29,10 @@ LAST_CUE_MIN_SECONDS = 1.05
 LAST_CUE_MAX_SECONDS = 1.24
 INTERVAL_TOLERANCE_SECONDS = 0.07
 MEAN_INTERVAL_TOLERANCE_SECONDS = 0.003
-# _emit_wave_timeline emits exactly one cue per 20 ms chunk and never drops
-# one (late cues are emitted immediately), so the 0.12 s clip deterministically
-# produces 6 cues.  The gate only proves the playback-start event released a
-# multi-cue timeline; 4 leaves slack for a worker still flushing its final
-# cues at the 1 s join deadline on a heavily loaded runner (2026-08-27,
-# lowered from 5).
+# _emit_wave_timeline emits one cue per 20 ms chunk, including immediate
+# late cues: a 0.12 s clip produces 6 cues. The gate checks playback-start
+# release of multiple cues. Its threshold of 4 allows final worker flushing
+# at the 1 s join deadline on a loaded runner (2026-08-27, previously 5).
 MIN_GATED_CUES = 4
 
 
@@ -103,8 +101,8 @@ def run() -> None:
         - 1.0 / VISEME_CUES_PER_SECOND
     ) < MEAN_INTERVAL_TOLERANCE_SECONDS
 
-    # Only the first 20 ms WAV cue is prepared before playback, and no visual
-    # cue may escape until the real playback-start gate releases it.
+    # Prepare the first 20 ms WAV cue before playback; release visual cues
+    # only after the real playback-start gate opens.
     playback_start = threading.Event()
     timeline_ready = threading.Event()
     gated_cues: list[tuple[float, str]] = []
@@ -169,8 +167,7 @@ def run() -> None:
     assert order.index("playback-end") < order.index("closed")
     assert order[-1] == "closed"
 
-    # If analysis falls behind the blocking audio player, no late vowel is
-    # allowed to reopen the mouth after the final closed cue.
+    # The final closed cue retains priority over late vowel analysis.
     delayed_cues: list[str] = []
 
     class ShortPlayback(FakeWinSound):

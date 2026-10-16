@@ -15,9 +15,11 @@ lazy from domain.audio_acceleration import (
     PYTHON_PCM_ACCELERATION,
     PcmAccelerationPort,
 )
+lazy from domain.character_source import active_character_data
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.speech_boundary import SpeechTimingCollector, SpeechTimingEvent
+lazy from domain.speech_configuration import DEFAULT_VOICE_VOLUME_PERCENT
 lazy from integrations.azure_regions import azure_region_supports_hd_flash
 lazy from integrations.azure_voice_catalog import (
     AzureVoiceCatalog,
@@ -29,61 +31,28 @@ VOICE_LOCALE_PREFIX_LENGTH = 5
 RATE_LIMIT_STATUS = 429
 SERVER_ERROR_BOUNDARY = 500
 
-AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
-    "zh-TW": (
-        "zh-TW-HsiaoChenNeural",
-        "zh-TW-HsiaoYuNeural",
-    ),
-    "zh-CN": (
-        "zh-CN-XiaoxiaoNeural",
-        "zh-CN-XiaoyiNeural",
-        "zh-CN-XiaochenNeural",
-        "zh-CN-XiaohanNeural",
-        "zh-CN-XiaomengNeural",
-        "zh-CN-XiaomoNeural",
-        "zh-CN-XiaoqiuNeural",
-        "zh-CN-XiaorouNeural",
-        "zh-CN-XiaoruiNeural",
-    ),
-    "en-US": (
-        "en-US-AvaMultilingualNeural",
-        "en-US-AmandaMultilingualNeural",
-        "en-US-CoraMultilingualNeural",
-        "en-US-JennyMultilingualNeural",
-    ),
-    "ja-JP": (
-        "ja-JP-NanamiNeural",
-        "ja-JP-AoiNeural",
-        "ja-JP-MayuNeural",
-        "ja-JP-ShioriNeural",
-    ),
-})
-AZURE_HD_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict({
-    "zh-CN": (
-        "zh-CN-Xiaochen:DragonHDLatestNeural",
-        "zh-CN-Xiaoyue:DragonHDOmniLatestNeural",
-        "zh-CN-Maroonallegro:DragonHDOmniLatestNeural",
-        "zh-CN-Xiaoxiao:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoxiao2:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaochen:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoyi:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoyu:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaohan:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoshuang:DragonHDFlashLatestNeural",
-        "zh-CN-Xiaoyou:DragonHDFlashLatestNeural",
-    ),
-    "en-US": (
-        "en-US-Ava:DragonHDLatestNeural",
-        "en-US-Aria:DragonHDLatestNeural",
-        "en-US-Emma:DragonHDLatestNeural",
-        "en-US-Emma2:DragonHDLatestNeural",
-        "en-US-Jenny:DragonHDLatestNeural",
-        "en-US-Nova:DragonHDLatestNeural",
-        "en-US-Phoebe:DragonHDLatestNeural",
-        "en-US-Serena:DragonHDLatestNeural",
-    ),
-    "ja-JP": ("ja-JP-Nanami:DragonHDLatestNeural",),
-})
+_AZURE_VOICES = active_character_data().voice.azure
+AZURE_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict(
+    {
+        "zh-TW": tuple(
+            voice for voice in _AZURE_VOICES.voices["zh-TW"]
+            if voice.startswith("zh-TW-")
+        ),
+        "zh-CN": tuple(
+            voice for voice in _AZURE_VOICES.voices["zh-CN"]
+            if voice.startswith("zh-CN-")
+        ),
+        "en-US": _AZURE_VOICES.voices["en"],
+        "ja-JP": _AZURE_VOICES.voices["ja-JP"],
+    }
+)
+AZURE_HD_FEMALE_VOICES: frozendict[str, tuple[str, ...]] = frozendict(
+    {
+        "zh-CN": _AZURE_VOICES.hd_voices["zh-CN"],
+        "en-US": _AZURE_VOICES.hd_voices["en"],
+        "ja-JP": _AZURE_VOICES.hd_voices["ja-JP"],
+    }
+)
 
 
 def _build_voice_locale_index() -> frozendict[str, str]:
@@ -106,48 +75,48 @@ _AUDIO_QUEUE_POLL_SECONDS = 0.05
 _AUDIO_STREAM_TIMEOUT_SECONDS = 60.0
 _MESSAGES = deep_freeze({
     "zh-TW": {
-        "invalid_region": "Azure Speech 區域格式不正確。",
-        "unsupported_voice": "Azure Speech 只允許已確認的女性聲線。",
-        "missing_settings": "尚未設定 Azure Speech 金鑰與區域。",
-        "credentials": "Azure Speech 金鑰、區域或資源權限不正確。",
-        "quota": "Azure Speech 免費額度或速率限制已達上限。",
-        "service": "Azure Speech 服務暫時異常（HTTP {status}）。",
-        "request": "Azure Speech 失敗（HTTP {status}）。",
-        "network": "無法連線到 Azure Speech：{error}",
+        "invalid_region": "請輸入 2–32 個小寫英數或連字號組成的 Azure Speech 區域。",
+        "unsupported_voice": "請選擇已確認的 Azure Speech 女性聲線。",
+        "missing_settings": "請先設定 Azure Speech 金鑰與區域。",
+        "credentials": "Azure Speech 金鑰、區域或資源權限需要更新，請檢查設定。",
+        "quota": "Azure Speech 免費額度或速率限制已用盡，請稍後再試或調整方案。",
+        "service": "Azure Speech 服務回報暫時異常（HTTP {status}），請稍後再試。",
+        "request": "Azure Speech 回報請求未完成（HTTP {status}），請檢查設定後再試。",
+        "network": "Azure Speech 連線目前未建立：{error}。請檢查網路後再試。",
     },
     "zh-CN": {
-        "invalid_region": "Azure Speech 区域格式不正确。",
-        "unsupported_voice": "Azure Speech 只允许已确认的女性声线。",
-        "missing_settings": "尚未设置 Azure Speech 密钥与区域。",
-        "credentials": "Azure Speech 密钥、区域或资源权限不正确。",
-        "quota": "Azure Speech 免费额度或速率限制已达到上限。",
-        "service": "Azure Speech 服务暂时异常（HTTP {status}）。",
-        "request": "Azure Speech 失败（HTTP {status}）。",
-        "network": "无法连接 Azure Speech：{error}",
+        "invalid_region": "请输入由 2–32 个小写字母、数字或连字符组成的 Azure Speech 区域。",
+        "unsupported_voice": "请选择已确认的 Azure Speech 女性声线。",
+        "missing_settings": "请先设置 Azure Speech 密钥与区域。",
+        "credentials": "Azure Speech 密钥、区域或资源权限需要更新，请检查设置。",
+        "quota": "Azure Speech 免费额度或速率限制已用尽，请稍后再试或调整方案。",
+        "service": "Azure Speech 服务报告暂时异常（HTTP {status}），请稍后再试。",
+        "request": "Azure Speech 报告请求未完成（HTTP {status}），请检查设置后再试。",
+        "network": "Azure Speech 当前尚未建立连接：{error}。请检查网络后再试。",
     },
     "en-US": {
-        "invalid_region": "The Azure Speech region is invalid.",
-        "unsupported_voice": ("Azure Speech accepts only verified female voices."),
+        "invalid_region": "Enter an Azure Speech region using 2–32 lowercase letters, digits, or hyphens.",
+        "unsupported_voice": "Choose a verified Azure Speech female voice.",
         "missing_settings": (
-            "The Azure Speech key and region have not been configured."
+            "Configure the Azure Speech key and region to continue."
         ),
         "credentials": (
-            "The Azure Speech key, region, or resource permission is invalid."
+            "The Azure Speech key, region, or resource permission needs an update; check the settings."
         ),
-        "quota": "The Azure Speech quota or rate limit has been reached.",
-        "service": ("Azure Speech is temporarily unavailable (HTTP {status})."),
-        "request": "Azure Speech failed (HTTP {status}).",
-        "network": "Could not connect to Azure Speech: {error}",
+        "quota": "The Azure Speech quota or rate limit is used up; try again later or adjust the plan.",
+        "service": "Azure Speech reported a temporary service issue (HTTP {status}); try again later.",
+        "request": "Azure Speech reported an incomplete request (HTTP {status}); check the settings and try again.",
+        "network": "The Azure Speech connection is not established: {error}. Check the network and try again.",
     },
     "ja-JP": {
-        "invalid_region": "Azure Speech のリージョン形式が正しくありません。",
-        "unsupported_voice": "確認済みの女性音声だけを使用できます。",
-        "missing_settings": "Azure Speech のキーとリージョンが未設定です。",
-        "credentials": "Azure Speech のキー、リージョン、またはリソース権限が正しくありません。",
-        "quota": "Azure Speech の無料枠またはレート上限に達しました。",
-        "service": "Azure Speech は一時的に利用できません（HTTP {status}）。",
-        "request": "Azure Speech に失敗しました（HTTP {status}）。",
-        "network": "Azure Speech に接続できません：{error}",
+        "invalid_region": "小文字の英数字またはハイフン 2～32 個で Azure Speech のリージョンを入力してください。",
+        "unsupported_voice": "確認済みの Azure Speech 女性音声を選択してください。",
+        "missing_settings": "Azure Speech のキーとリージョンを設定すると続行できます。",
+        "credentials": "Azure Speech のキー、リージョン、またはリソース権限を更新してください。設定を確認してください。",
+        "quota": "Azure Speech の無料枠またはレート上限を使い切りました。時間を置くかプランを調整してください。",
+        "service": "Azure Speech が一時的なサービス状態を報告しました（HTTP {status}）。時間を置いて再試行してください。",
+        "request": "Azure Speech が未完了のリクエストを報告しました（HTTP {status}）。設定を確認して再試行してください。",
+        "network": "Azure Speech の接続を確立できていません：{error}。ネットワークを確認して再試行してください。",
     },
 })
 
@@ -285,11 +254,11 @@ def _streaming_synthesizer(
 
 def _completed_synthesis_result(outcome: _SynthesisOutcome) -> object:
     if not outcome.done.wait(timeout=60.0):
-        raise TimeoutError("Azure synthesis did not finish")
+        raise TimeoutError("Azure synthesis timed out before completion")
     if outcome.failure is not None:
         raise outcome.failure
     if outcome.result is None:
-        raise RuntimeError("Azure synthesis returned no result")
+        raise RuntimeError("Azure synthesis completed without a result")
     return outcome.result
 
 
@@ -384,7 +353,7 @@ def azure_speech_error_message(
     detail: str,
     locale: str = "zh-TW",
 ) -> str:
-    _ = detail  # Never echo a remote response that could contain user data.
+    _ = detail  # Keep remote responses out of messages because they may contain user data.
     if status in {401, 403}:
         return _message(locale, "credentials")
     if status == RATE_LIMIT_STATUS:
@@ -419,7 +388,7 @@ class AzureSpeechTTS(QObject):
     ):
         super().__init__(parent)
         self._pcm = pcm_acceleration
-        self.volume_percent = 125
+        self.volume_percent = DEFAULT_VOICE_VOLUME_PERCENT
         self.muted = False
         self.last_synthesis_latency_ms: float | None = None
         self._catalog_service = catalog_service or AzureVoiceCatalogService()
@@ -493,7 +462,7 @@ class AzureSpeechTTS(QObject):
         self._cancel_playback(reader, synthesizer)
 
     def close(self) -> None:
-        """End playback and reject every catalog result still in flight."""
+        """End playback and mark every in-flight catalog result as obsolete."""
         self.stop()
         self.invalidate_voice_catalog()
 

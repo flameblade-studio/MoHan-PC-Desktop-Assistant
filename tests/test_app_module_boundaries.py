@@ -103,7 +103,7 @@ def module_path(module: str) -> Path:
 
 def module_tree(module: str) -> ast.Module:
     path = module_path(module)
-    assert path.is_file(), f"missing extracted module: {path.name}"
+    assert path.is_file(), f'provide the extracted module: {path.name}'
     return ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
 
 
@@ -146,13 +146,13 @@ def assert_acyclic(graph: dict[str, set[str]]) -> None:
     def visit(module: str, trail: tuple[str, ...]) -> None:
         if module in visiting:
             cycle_start = trail.index(module)
-            cycle = trail[cycle_start:] + (module,)
+            cycle = (*trail[cycle_start:], module)
             raise AssertionError("local import cycle: " + " -> ".join(cycle))
         if module in visited:
             return
         visiting.add(module)
         for dependency in sorted(graph[module]):
-            visit(dependency, trail + (module,))
+            visit(dependency, (*trail, module))
         visiting.remove(module)
         visited.add(module)
 
@@ -224,9 +224,9 @@ def test_extracted_modules_do_not_import_app_directly_or_transitively() -> None:
 
     for module in EXTRACTED_PUBLIC_SYMBOLS:
         dependencies = imported_local_roots(module_tree(module), local)
-        assert APP_MODULE not in dependencies, f"{module}.py must not import app"
+        assert APP_MODULE not in dependencies, f'{module}.py must preserve app as a one-way caller'
         assert not reaches_app(module, set()), (
-            f"{module}.py must not depend transitively on app"
+            f'{module}.py must preserve app as a one-way caller through all dependencies'
         )
 
 
@@ -241,8 +241,7 @@ def test_app_no_longer_owns_or_exports_extracted_public_symbols() -> None:
     extracted = frozenset().union(*EXTRACTED_PUBLIC_SYMBOLS.values())
     duplicates = (definitions | exports) & extracted
     assert not duplicates, (
-        "app.py must not define or export extracted symbols: "
-        f"{sorted(duplicates)}"
+        f'app.py must delegate these extracted symbols to their owners: {sorted(duplicates)}'
     )
 
 

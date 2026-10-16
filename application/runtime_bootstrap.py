@@ -15,7 +15,7 @@ def jit_is_enabled() -> bool:
 
 
 def finalize_process_exit(code: int) -> int:
-    """Avoid CPython JIT finalizers after the frozen Qt app has cleaned up.
+    """Use the frozen Qt cleanup boundary for CPython JIT finalization.
 
     ``run_application`` returns only after the companion window, dashboard,
     timers, database, and Qt event loop have completed their owned shutdown.

@@ -1,0 +1,3468 @@
+{
+  "archive": {
+    "asset_name": "flameblade.lin-keyun-1.0.4.zip",
+    "bytes": 85049973,
+    "sha256": "10fce4ecc12087c8ef538b864f79d3466f43efaba236a2762368d8b975a8723a"
+  },
+  "engine_compatibility": {
+    "api_version": 1,
+    "max_engine_version_exclusive": "5.0.0",
+    "min_engine_version": "4.6.0",
+    "required_features": []
+  },
+  "files": [
+    {
+      "bytes": 6979,
+      "path": "assets/characters/lin-keyun/LICENSE.md",
+      "sha256": "cde3158a0a822fda1ea14f7114adfdbb9e25cd7f8395a138023d37ba2828e7e6"
+    },
+    {
+      "bytes": 626,
+      "path": "assets/characters/lin-keyun/appearance/defaults.json",
+      "sha256": "8f0074c6f21f5ed12b20b1a3656d2507b75b71e82cb55bbe57cfe4b54741c43f"
+    },
+    {
+      "bytes": 3950,
+      "path": "assets/characters/lin-keyun/body/approval.json",
+      "sha256": "7f77c69a3a15525f59122208f27064867d2f77a84774558935460cd39728699a"
+    },
+    {
+      "bytes": 326038,
+      "path": "assets/characters/lin-keyun/body/manifest.json",
+      "sha256": "2f3170c41b10964336c1e6b049d14b9613ba9303c91f8363636adc544a9272a3"
+    },
+    {
+      "bytes": 12007,
+      "path": "assets/characters/lin-keyun/body/views/cheek-rest/base-hide-mask.png",
+      "sha256": "fbc204cf6531ebd5ace5de0040ca154a195505bbe4e18208772e4c65f459d8fd"
+    },
+    {
+      "bytes": 248225,
+      "path": "assets/characters/lin-keyun/body/views/cheek-rest/body-fix.png",
+      "sha256": "ddd611792404dc593841af2dff6d63ec62c5a7da8da7d7026c342c445950b233"
+    },
+    {
+      "bytes": 414838,
+      "path": "assets/characters/lin-keyun/body/views/cheek-rest/garment.png",
+      "sha256": "232ee3f1ccb00c59004cd17fcf53d55dc0aac49dfd7c493826666eab3ea83b9f"
+    },
+    {
+      "bytes": 55280,
+      "path": "assets/characters/lin-keyun/body/views/cheek-rest/hair-back.png",
+      "sha256": "e9d962c7cb45186b7b74a66e14f85fb5b9e95f5ac9d66e25a9a8e7665bcb0dd2"
+    },
+    {
+      "bytes": 331837,
+      "path": "assets/characters/lin-keyun/body/views/cheek-rest/hair-front.png",
+      "sha256": "3e0dbaf2015366fec10d978eccaabbe38ff68f87fb939b6c665967e84088b6af"
+    },
+    {
+      "bytes": 11648,
+      "path": "assets/characters/lin-keyun/body/views/exasperated/base-hide-mask.png",
+      "sha256": "4b5efba0b18f84b326679de226a74364edfef3d227376dfb3f184759c5255901"
+    },
+    {
+      "bytes": 249836,
+      "path": "assets/characters/lin-keyun/body/views/exasperated/body-fix.png",
+      "sha256": "1966a491379d9cd8bdfca78d9d03f3a177dfc8876bfd846eaa1cb21ba27b56d4"
+    },
+    {
+      "bytes": 443262,
+      "path": "assets/characters/lin-keyun/body/views/exasperated/garment.png",
+      "sha256": "c85c4161cc21ee422645e67a2dbdfcd6babf2b8c325d1f30fd379fe462136b96"
+    },
+    {
+      "bytes": 27215,
+      "path": "assets/characters/lin-keyun/body/views/exasperated/hair-back.png",
+      "sha256": "24a724dff20b4be00652d2c7b45db994cd1a25da1232cd896b69a355c1b203cf"
+    },
+    {
+      "bytes": 421878,
+      "path": "assets/characters/lin-keyun/body/views/exasperated/hair-front.png",
+      "sha256": "d7bdf750c6e417df092b54072af4eed9a872faf52b71b73470ab03349854ea5f"
+    },
+    {
+      "bytes": 11789,
+      "path": "assets/characters/lin-keyun/body/views/front-crossed/base-hide-mask.png",
+      "sha256": "506087c02e888535a183e8e0e40c57f81261a2eea19bcf2eefd39054cf8d8cbf"
+    },
+    {
+      "bytes": 232935,
+      "path": "assets/characters/lin-keyun/body/views/front-crossed/body-fix.png",
+      "sha256": "977e0a2237d7eb69eaa0360a8891d491ebd27b49d1b00f6e17e7112ca0e98df1"
+    },
+    {
+      "bytes": 463018,
+      "path": "assets/characters/lin-keyun/body/views/front-crossed/garment.png",
+      "sha256": "b42783dce8ffa7e10277051ba8fc6815dc65e9ebd324a079c62b101f30c65300"
+    },
+    {
+      "bytes": 21903,
+      "path": "assets/characters/lin-keyun/body/views/front-crossed/hair-back.png",
+      "sha256": "612d7289a22f1d712ad60071a31a392d915c9328bcb3eee971b273862e22f2a8"
+    },
+    {
+      "bytes": 398292,
+      "path": "assets/characters/lin-keyun/body/views/front-crossed/hair-front.png",
+      "sha256": "7ebe69ba69580f071b624921e373060d273317a0fa095a8b7fdc39266ffdf6ad"
+    },
+    {
+      "bytes": 11182,
+      "path": "assets/characters/lin-keyun/body/views/front-eureka/base-hide-mask.png",
+      "sha256": "53ba93fef57c934c3d252d573f428f24906b661df05314d7d15dea3543ee3544"
+    },
+    {
+      "bytes": 204700,
+      "path": "assets/characters/lin-keyun/body/views/front-eureka/body-fix.png",
+      "sha256": "f7fb30344afd340145aacae43fbe94e0518c077c552175557b62bdfc21d024f5"
+    },
+    {
+      "bytes": 428961,
+      "path": "assets/characters/lin-keyun/body/views/front-eureka/garment.png",
+      "sha256": "c010c791ad0af0a3d5bc6385aaaef30960dc8a6d88dc85c19eebf425c704eaa2"
+    },
+    {
+      "bytes": 52070,
+      "path": "assets/characters/lin-keyun/body/views/front-eureka/hair-back.png",
+      "sha256": "242115761fc7bba7a1277a6b7471315cf0511364cb9247dae1f772e89dc20321"
+    },
+    {
+      "bytes": 377472,
+      "path": "assets/characters/lin-keyun/body/views/front-eureka/hair-front.png",
+      "sha256": "f18151a91a051521d02c51abe8086eea18052cbceae278a8010efbc55f2f9661"
+    },
+    {
+      "bytes": 11428,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-hit/base-hide-mask.png",
+      "sha256": "6a7480581e86baae83d78343ce5af42b6fbd6ad735c92619f84dddb854745658"
+    },
+    {
+      "bytes": 202915,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-hit/body-fix.png",
+      "sha256": "a52c8530c19720dc2e9577d55c5c94514f5c422d2600f82dd2030e4dac4b28fe"
+    },
+    {
+      "bytes": 422444,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-hit/garment.png",
+      "sha256": "8c950025c012b726ae7c66f69a09e4aa92e118d6db1f9167e5de92409a02328a"
+    },
+    {
+      "bytes": 57408,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-hit/hair-back.png",
+      "sha256": "26ca0819b7a6721bdd1338a5bdb79a49fd5fed989bb88bfab8013950e0519e2f"
+    },
+    {
+      "bytes": 379535,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-hit/hair-front.png",
+      "sha256": "1e56499220a33bac66400ac68813ab8705fd801c97514526510e369b07b6ef5c"
+    },
+    {
+      "bytes": 11678,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-scold/base-hide-mask.png",
+      "sha256": "207fe39b05ffbc8915f07641617db62b1d233cbcd776d65e5e1cf66cb53ea293"
+    },
+    {
+      "bytes": 257799,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-scold/body-fix.png",
+      "sha256": "47c2135aa3a4b53d14dfa9ac5a0f3973184e28bccf396578b81d5906be5a646a"
+    },
+    {
+      "bytes": 362766,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-scold/garment.png",
+      "sha256": "d4c342bd5608cef6ed3e6adf1b192bcee63fbbae0e7fc06cc8881a225b802b65"
+    },
+    {
+      "bytes": 37931,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-scold/hair-back.png",
+      "sha256": "fb9756ed1287ea45b8d2feda21ccfd57602077f9571f7ec573bb037511d94104"
+    },
+    {
+      "bytes": 359806,
+      "path": "assets/characters/lin-keyun/body/views/front-mock-scold/hair-front.png",
+      "sha256": "836780899dd79c751dedea440db0afb1ed78a0dcdefa79f200be0f78a9fcc868"
+    },
+    {
+      "bytes": 11852,
+      "path": "assets/characters/lin-keyun/body/views/left-neutral/base-hide-mask.png",
+      "sha256": "9a97ce951511f3f7184ef5dd048f405090b11e647bc37681aa17744e8b8669e9"
+    },
+    {
+      "bytes": 240396,
+      "path": "assets/characters/lin-keyun/body/views/left-neutral/body-fix.png",
+      "sha256": "0234f29be781e3cb7ba7c8bee50fa244d8c227a1ad46a27eadd4fdf19da3b425"
+    },
+    {
+      "bytes": 438436,
+      "path": "assets/characters/lin-keyun/body/views/left-neutral/garment.png",
+      "sha256": "c29712e947804484e17f12ee3590b4caef2b98369533da5c9b02aecb53027355"
+    },
+    {
+      "bytes": 27493,
+      "path": "assets/characters/lin-keyun/body/views/left-neutral/hair-back.png",
+      "sha256": "ee51f277cfaa305e850b8c0bd5af2b9d5346db39f7cc773eb9a4ee4d34db4979"
+    },
+    {
+      "bytes": 343904,
+      "path": "assets/characters/lin-keyun/body/views/left-neutral/hair-front.png",
+      "sha256": "266ac222b67107856bcf608037afc72e9a5233d6935d064f14b6781ef633ccc5"
+    },
+    {
+      "bytes": 15279,
+      "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/base-hide-mask.png",
+      "sha256": "da6bb576ce0d039dc1cd61db633ca41905f6802e5e716900415771016f556232"
+    },
+    {
+      "bytes": 73448,
+      "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/body-fix.png",
+      "sha256": "15712b256c57c759e436f3b51e2fef3e04626216bb01111a34e48a63d94b95f0"
+    },
+    {
+      "bytes": 356590,
+      "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/garment.png",
+      "sha256": "8309a66128de16942333db323288cdf698aad7425c7a3cd009e1adc6d440a29d"
+    },
+    {
+      "bytes": 25483,
+      "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/hair-back.png",
+      "sha256": "f723593d85f63b79e57d6a641e3036ca17edfc20b2a65b17f2dd458e48ad5d5b"
+    },
+    {
+      "bytes": 98704,
+      "path": "assets/characters/lin-keyun/body/views/yaw+000-pitch+00/hair-front.png",
+      "sha256": "55b3c3099f00e8c76daf711dd8ce6c1806221f817bf2527356c92ac28f086898"
+    },
+    {
+      "bytes": 14374,
+      "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/base-hide-mask.png",
+      "sha256": "24692d4d9ce2f66ed39476a1010b26d753d4db59f70b836ba46efdb9fed3c79f"
+    },
+    {
+      "bytes": 77545,
+      "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/body-fix.png",
+      "sha256": "ce255dba3f21551c933b23dd7550e8ae09af3908f9d0a50630f22b9fed165155"
+    },
+    {
+      "bytes": 381571,
+      "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/garment.png",
+      "sha256": "24c4aeb3c0ddc7f8886e1be425e3146ba3398b1ae96c451560f4c3df9084f3e4"
+    },
+    {
+      "bytes": 24290,
+      "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/hair-back.png",
+      "sha256": "b8b7fce008be4cd388092ef05aa7b195d06191f79f581b80d1e70f322d494818"
+    },
+    {
+      "bytes": 89171,
+      "path": "assets/characters/lin-keyun/body/views/yaw+015-pitch+00/hair-front.png",
+      "sha256": "134babbc6b651d34aa5f2e1e55f950ca755000d6e44bdb4911c14b7e0ccfaec1"
+    },
+    {
+      "bytes": 16546,
+      "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/base-hide-mask.png",
+      "sha256": "1fa69be34856271fd9e4c544e1442821ca02126e8e265ed18c3c1f9bca7533be"
+    },
+    {
+      "bytes": 77471,
+      "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/body-fix.png",
+      "sha256": "f15c0061e2507bff2225147d6997ea5c1f4b8bbebfb1a225a9db438fe2965715"
+    },
+    {
+      "bytes": 400520,
+      "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/garment.png",
+      "sha256": "bb994cea884733a8fb10fa46aa038260e727f9ea60cc7113129d9930c05f2bbd"
+    },
+    {
+      "bytes": 17517,
+      "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/hair-back.png",
+      "sha256": "feecf0a9531411cf130c5863475d30de71d24ee6fb5a84b2310b62c58dd3bc92"
+    },
+    {
+      "bytes": 93827,
+      "path": "assets/characters/lin-keyun/body/views/yaw+030-pitch+00/hair-front.png",
+      "sha256": "8cad7e795ec9fd0fc95b8d2d4a51587fe662a39263a59c08a54c7c2306cced38"
+    },
+    {
+      "bytes": 14670,
+      "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/base-hide-mask.png",
+      "sha256": "5283822c81989b18a22687a8562786185a729f501ce1ea9ae1576fdfad1409ae"
+    },
+    {
+      "bytes": 76054,
+      "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/body-fix.png",
+      "sha256": "68b072b49c801d9f27f0222102b6e45953c1696056b77a8384cc16b2f10ab4b2"
+    },
+    {
+      "bytes": 335298,
+      "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/garment.png",
+      "sha256": "8de229a3f81f14a5afb77584eb5ee59a5f153eeee86e1963dd6aa447a700c2db"
+    },
+    {
+      "bytes": 29654,
+      "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/hair-back.png",
+      "sha256": "93ad63488b51b03d1d8e8c017fbf182c624d40a7dd6b1af8092b5ce440910d5e"
+    },
+    {
+      "bytes": 68240,
+      "path": "assets/characters/lin-keyun/body/views/yaw+045-pitch+00/hair-front.png",
+      "sha256": "395a6c28b201b8211a1643bcc2ef7b8ca61e66209a30b2a4f893a27910a67a3c"
+    },
+    {
+      "bytes": 14508,
+      "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/base-hide-mask.png",
+      "sha256": "15e80f9f320ce6ddb05b234afd87dd308ae5e4b1bb0865a83d861f2a7dba3c49"
+    },
+    {
+      "bytes": 77723,
+      "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/body-fix.png",
+      "sha256": "9d4f11398b689c63ccbb741d101ab8c89010a68274d3219327c67de3de80691e"
+    },
+    {
+      "bytes": 343892,
+      "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/garment.png",
+      "sha256": "5223837328a420b08b18ed7df612a54670b3529782a8ff7832120b6aab541a88"
+    },
+    {
+      "bytes": 42122,
+      "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/hair-back.png",
+      "sha256": "e01a1fe3d44475003a4506be63f35f7d47dcbc9980c486cebf340459b9789248"
+    },
+    {
+      "bytes": 77508,
+      "path": "assets/characters/lin-keyun/body/views/yaw+060-pitch+00/hair-front.png",
+      "sha256": "7bdfef8f7219fe944b457418d5ec5e2135897384913a48b8d51a1feb60b1360c"
+    },
+    {
+      "bytes": 11647,
+      "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/base-hide-mask.png",
+      "sha256": "99442454d273ce73b2c1b1a2b1e1008d45c30e1960cf10fb8616fc70ed3106a1"
+    },
+    {
+      "bytes": 87560,
+      "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/body-fix.png",
+      "sha256": "e578185397d0a448a3d3ac1f1dca7b3970ee0909873bbfa7f3f73b776e02f211"
+    },
+    {
+      "bytes": 261237,
+      "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/garment.png",
+      "sha256": "1c588a5746c2539a28db97c7781389f30e6a4a0c86a8c0097a9d889dbf9f2739"
+    },
+    {
+      "bytes": 22221,
+      "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/hair-back.png",
+      "sha256": "b3f32635f32628c610b0758b9355c1a9b6f1716cabfdce7ef46c106ffd16734a"
+    },
+    {
+      "bytes": 83603,
+      "path": "assets/characters/lin-keyun/body/views/yaw+075-pitch+00/hair-front.png",
+      "sha256": "acde4023d3b895847f396c4c7245bb98971f4a4e80d69c7c046e58bb79a220ca"
+    },
+    {
+      "bytes": 12263,
+      "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/base-hide-mask.png",
+      "sha256": "aa58bdf5b146aa9bcbe17df4a713c816be8c5bfa1576e74ec65b780b5a8a29e2"
+    },
+    {
+      "bytes": 75202,
+      "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/body-fix.png",
+      "sha256": "b836f845704c30d9ea4d1ddfcdbde9da025bb1a19521ce6b4361dcafe515aed6"
+    },
+    {
+      "bytes": 211235,
+      "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/garment.png",
+      "sha256": "187e8389c287b3a405ffa1b91dca652f91dd1578190aa8d48faa39be70b1bd0d"
+    },
+    {
+      "bytes": 18321,
+      "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/hair-back.png",
+      "sha256": "421b241e8885228cc7cd3cc0f8e39c2ae808fb12e535dc89948aa0bbf500f4f7"
+    },
+    {
+      "bytes": 79625,
+      "path": "assets/characters/lin-keyun/body/views/yaw+090-pitch+00/hair-front.png",
+      "sha256": "fe55892a2958fc2c2fd8f82094b9142b2b01e8e491952e9550d282b533958d77"
+    },
+    {
+      "bytes": 11858,
+      "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/base-hide-mask.png",
+      "sha256": "a9267e5687f3ca0d7488c380f0611a79c1391b7303279f3000e770a8f766bf0e"
+    },
+    {
+      "bytes": 53717,
+      "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/body-fix.png",
+      "sha256": "5719789f4edc4f3407a63f172828a56049ec3a526e7ba63ed4ad54a469f98f07"
+    },
+    {
+      "bytes": 235948,
+      "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/garment.png",
+      "sha256": "edf2533c4d560bbbb6b82d1a7023b5ccaf77ea38a5283e41d79a7cab514c8f9e"
+    },
+    {
+      "bytes": 15061,
+      "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/hair-back.png",
+      "sha256": "50253cb9a3fad7ff1b87fa646ccfd7a0c0b8b5bbe88f7ff67d819e51801bd399"
+    },
+    {
+      "bytes": 83040,
+      "path": "assets/characters/lin-keyun/body/views/yaw+105-pitch+00/hair-front.png",
+      "sha256": "0180b0b84590084b1b00c4649da27ecf118b35e0c21413049aa12e75c324144c"
+    },
+    {
+      "bytes": 11944,
+      "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/base-hide-mask.png",
+      "sha256": "3ae43ba9555642fbd77616db39a2ea71ec6a416b131f5bc717e99987850f9fdf"
+    },
+    {
+      "bytes": 49363,
+      "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/body-fix.png",
+      "sha256": "a1bc7ba14673924d165d047eead957709a924325a47ed8a5c7a4a6c31775972a"
+    },
+    {
+      "bytes": 253906,
+      "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/garment.png",
+      "sha256": "ae6d06dd1a2cdaf2f1ec9bae891909bd522f774ca4457c6d46ea948a124c37da"
+    },
+    {
+      "bytes": 18018,
+      "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/hair-back.png",
+      "sha256": "35165bd9e04fdb4ccc695ae0c53c04baf7e1a50494e3389344da4a767164339f"
+    },
+    {
+      "bytes": 86779,
+      "path": "assets/characters/lin-keyun/body/views/yaw+120-pitch+00/hair-front.png",
+      "sha256": "e43ed77afd23a82c3dac73d9dd1efd82798b4ceccd1d62732ac51cead41ad8d1"
+    },
+    {
+      "bytes": 13150,
+      "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/base-hide-mask.png",
+      "sha256": "aec1fe9ed96557f3b2c4a0a215d26bbcd4104b8aa9206baab0991cc76997cb3c"
+    },
+    {
+      "bytes": 47167,
+      "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/body-fix.png",
+      "sha256": "551c9ff5db47cb7d148147394b09b0136ebd87f785028a2fb8f82c7853e995dd"
+    },
+    {
+      "bytes": 317351,
+      "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/garment.png",
+      "sha256": "94b9108e38f5dd51acf6a50d0c2fdcb44fc5e5c1efbea654a76c8218a7e6cf13"
+    },
+    {
+      "bytes": 18879,
+      "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/hair-back.png",
+      "sha256": "1f629e6bf088707789d8363eaf6f9a7d2b9ecbd6f762a79ffd076d89e77c2e81"
+    },
+    {
+      "bytes": 102762,
+      "path": "assets/characters/lin-keyun/body/views/yaw+135-pitch+00/hair-front.png",
+      "sha256": "6ae76c0d90618bb5f6b8431853c74567db011c88665ebc8d182fdb4ccd57ca3e"
+    },
+    {
+      "bytes": 13350,
+      "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/base-hide-mask.png",
+      "sha256": "d2adf671a660354b0501aacdb353915446594fc07b5a7c2580a1f42a5ec0d7e2"
+    },
+    {
+      "bytes": 49000,
+      "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/body-fix.png",
+      "sha256": "100c78fe87c0d44f309486e1ce77a5b76a397e63c918079d8773bc74f36ec82a"
+    },
+    {
+      "bytes": 314831,
+      "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/garment.png",
+      "sha256": "68965674f04f6098a4e585e7f07f9ebffffffb33d8c166c6facd885f0e94cb32"
+    },
+    {
+      "bytes": 10860,
+      "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/hair-back.png",
+      "sha256": "62e32b59be5cc1e1703f500d67e6408ab28fd855a98cdc9e91df03ac0ccd9316"
+    },
+    {
+      "bytes": 111627,
+      "path": "assets/characters/lin-keyun/body/views/yaw+150-pitch+00/hair-front.png",
+      "sha256": "e807a4a2dc166efabed6b71ed3876ffc15107aa839349e6affe080af9f57a2cf"
+    },
+    {
+      "bytes": 13255,
+      "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/base-hide-mask.png",
+      "sha256": "accf772b412171423bdf3fcfebbeb38f9e763ff7643550de9a41315c20c8612b"
+    },
+    {
+      "bytes": 43673,
+      "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/body-fix.png",
+      "sha256": "1037c33706e8c747755443630721e0796653e894e08158ea8ab772c6ab71d1a8"
+    },
+    {
+      "bytes": 325811,
+      "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/garment.png",
+      "sha256": "c17e73f31728db50f298283bb92e687be5f086614c1c3416c570038f29441471"
+    },
+    {
+      "bytes": 11135,
+      "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/hair-back.png",
+      "sha256": "0f5ba0a6ac2ee1f8709d46adb18b68897b345834d3264eeb6f6a041b43d6cb82"
+    },
+    {
+      "bytes": 112904,
+      "path": "assets/characters/lin-keyun/body/views/yaw+165-pitch+00/hair-front.png",
+      "sha256": "eeb574bf37f240e49b2c39ccc69c67f6517f49678878d9369ea16c20db4f97e4"
+    },
+    {
+      "bytes": 14333,
+      "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/base-hide-mask.png",
+      "sha256": "a721b99f97e5a63983ace9a9af86ed528aea68380e4d65f80f42300f4ab57d7e"
+    },
+    {
+      "bytes": 71098,
+      "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/body-fix.png",
+      "sha256": "7201144909b1f3d35dc049c2d000a4e9af6c6e2a66a4165a999e0bf906624327"
+    },
+    {
+      "bytes": 350260,
+      "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/garment.png",
+      "sha256": "f05d5f4dcff7b5f03f1697277e1e4006ab0288628f327dfacfcc41834f6c9c85"
+    },
+    {
+      "bytes": 24293,
+      "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/hair-back.png",
+      "sha256": "b97098ebe4dcda1c6b00b6f35592c3c9a91b9c6df82939068934e962b2dfc9b7"
+    },
+    {
+      "bytes": 83877,
+      "path": "assets/characters/lin-keyun/body/views/yaw-015-pitch+00/hair-front.png",
+      "sha256": "621beafeb029a4eabb6119fea06dac7fc66ebe7c11d5cf6a9814f45be14c6a2a"
+    },
+    {
+      "bytes": 14752,
+      "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/base-hide-mask.png",
+      "sha256": "59bfa42b8525e1a0b72790104279b1ed9adf170c915d6bd4b423d3b1f304b1b6"
+    },
+    {
+      "bytes": 71102,
+      "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/body-fix.png",
+      "sha256": "04748c65b17f6b50d4e159d72cc09969b76827dbf3e85ed9df1accfa442b497c"
+    },
+    {
+      "bytes": 334414,
+      "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/garment.png",
+      "sha256": "525ec26a652bcdbd3df8e2c8ef4c38d86776f8e0c51f778d9bdca737a32e8fdd"
+    },
+    {
+      "bytes": 25535,
+      "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/hair-back.png",
+      "sha256": "bd36b5c0e8df08dbfccc0bf08b08fd248af95b8d1f822f5650f14b99f68d30cc"
+    },
+    {
+      "bytes": 84806,
+      "path": "assets/characters/lin-keyun/body/views/yaw-030-pitch+00/hair-front.png",
+      "sha256": "8c55a55140821d1ca658d8e10032a81a6919f92870a5e93998f7e2fcf4762ee1"
+    },
+    {
+      "bytes": 13571,
+      "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/base-hide-mask.png",
+      "sha256": "3ce46322ed36a426ab9f96e6c2bd101f1cb140bbd22c3cdf01a7ac5f598769c6"
+    },
+    {
+      "bytes": 68580,
+      "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/body-fix.png",
+      "sha256": "31ed9f993c785437007b5d354e3a96b354035cbe81a65e7f35af80effc40b0a4"
+    },
+    {
+      "bytes": 334571,
+      "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/garment.png",
+      "sha256": "ff3200eb4413d51da33b6d1b0ae111bcf6f3a61fdf7b2af173a0f8a173e1a6e4"
+    },
+    {
+      "bytes": 24008,
+      "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/hair-back.png",
+      "sha256": "ea0d975436b0e32919dab411cca6eb641fa8a969e443cc8d6f50f41d2d8b55a9"
+    },
+    {
+      "bytes": 83204,
+      "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/hair-front.png",
+      "sha256": "14d188c597e35b7b6fec6a761fd2f804f070e0b251edd954f7f47d01d9eb29a2"
+    },
+    {
+      "bytes": 12094,
+      "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/base-hide-mask.png",
+      "sha256": "c8086fb9c87c540830cfb0b668cab7d914ae7a8b1993d2bc3b8a53a336ccdd12"
+    },
+    {
+      "bytes": 67734,
+      "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/body-fix.png",
+      "sha256": "afd9e036e97cc2ff028de1de34800f74ed953777f91acf26ca9ae7dfcab258fd"
+    },
+    {
+      "bytes": 294128,
+      "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/garment.png",
+      "sha256": "d9d3000b234243e309ed2a6ec18bde35634e2a008579416fb5ac16d1a40760b7"
+    },
+    {
+      "bytes": 42810,
+      "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/hair-back.png",
+      "sha256": "7a657732a9ace8fb149083d196871b27207ea43407758685b9c1cf4b11f922a9"
+    },
+    {
+      "bytes": 62584,
+      "path": "assets/characters/lin-keyun/body/views/yaw-060-pitch+00/hair-front.png",
+      "sha256": "dec894734da217efce03029514dc665866336727c7d99958b3781acdf12c76b3"
+    },
+    {
+      "bytes": 12677,
+      "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/base-hide-mask.png",
+      "sha256": "e540905a5ffe9328e86bb42adeb8848d70e899854a379776f1bd7e5e1d83d104"
+    },
+    {
+      "bytes": 67696,
+      "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/body-fix.png",
+      "sha256": "031712914b721841994081a7cc97e00afeb829c93ceca2a40341dd578488fb84"
+    },
+    {
+      "bytes": 208750,
+      "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/garment.png",
+      "sha256": "1b7517efebd5b700fd1cf53401b42d3a423686d3342e85b4992b05b9eb5384ac"
+    },
+    {
+      "bytes": 14951,
+      "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/hair-back.png",
+      "sha256": "e3a860d94e2fb5e03e5681c0d712d14c489c7cfcab26a52fc57b9d0750d8e0e6"
+    },
+    {
+      "bytes": 81527,
+      "path": "assets/characters/lin-keyun/body/views/yaw-075-pitch+00/hair-front.png",
+      "sha256": "636e530cd95331c53d3aed02f1bdb83ec0766b27ad88441b9767a107c60673ab"
+    },
+    {
+      "bytes": 12984,
+      "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/base-hide-mask.png",
+      "sha256": "bfece2903dac811932a3f881df883759d2deebcd9c0f1624c2d4dfebee6fe09e"
+    },
+    {
+      "bytes": 64890,
+      "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/body-fix.png",
+      "sha256": "e9391ac1ecc19155997ae7462f16f23ac6b3a53cca060343588bfd798b5b28cf"
+    },
+    {
+      "bytes": 196024,
+      "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/garment.png",
+      "sha256": "22461413f9993b0612fefd240b11ee871766993574ed1b86a86247b7769041b4"
+    },
+    {
+      "bytes": 23635,
+      "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/hair-back.png",
+      "sha256": "1f33e536ba45c72d815bfbbd4c4a276ce00ceb1c9b9a1c56ca6ecbc23a66ce7a"
+    },
+    {
+      "bytes": 82140,
+      "path": "assets/characters/lin-keyun/body/views/yaw-090-pitch+00/hair-front.png",
+      "sha256": "0a3219e3c85d86aa400447bf0342e92dc5204ff7a6848cebd5f6b4f85807f503"
+    },
+    {
+      "bytes": 12726,
+      "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/base-hide-mask.png",
+      "sha256": "6efe737a2ac0b59aaad615895c865c203bd895c1ca1baceabf5e9f9129bb3578"
+    },
+    {
+      "bytes": 52027,
+      "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/body-fix.png",
+      "sha256": "6c2037b8883837ba5d6b3e56024ec64214de47b4b15307ad29b7b9e0ff6d02b2"
+    },
+    {
+      "bytes": 211150,
+      "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/garment.png",
+      "sha256": "5d212e992fdf1f21e74c9f355cfbf866681ac15835d3dcc3c1fec7f81ecbe1ec"
+    },
+    {
+      "bytes": 24421,
+      "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/hair-back.png",
+      "sha256": "c1050386a42f9978cb1303e31758f6328c89262e30fc8ab2a131e583116bf713"
+    },
+    {
+      "bytes": 88431,
+      "path": "assets/characters/lin-keyun/body/views/yaw-105-pitch+00/hair-front.png",
+      "sha256": "8919f083df985f691666b4f5db37c716e7fdd3db88fc7705a2833ade0c3d7164"
+    },
+    {
+      "bytes": 12283,
+      "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/base-hide-mask.png",
+      "sha256": "8c9f77fb10ba29a7ba35b379ed035388c82a5807412306e024e692e2d713d5b2"
+    },
+    {
+      "bytes": 43106,
+      "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/body-fix.png",
+      "sha256": "d27fdcf1164aea0037ce045ea503b0df22b117e856afd3638a2143ef1a9e75d5"
+    },
+    {
+      "bytes": 267581,
+      "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/garment.png",
+      "sha256": "d724813d89c02ae1c203cd1f1ea24ae8c9d485269b25d0a0c9555836fd1be132"
+    },
+    {
+      "bytes": 9174,
+      "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/hair-back.png",
+      "sha256": "2feb17e41e334b56733374e83eb71a1d0f8de0aba96c11753d5db61a9e322fdc"
+    },
+    {
+      "bytes": 105656,
+      "path": "assets/characters/lin-keyun/body/views/yaw-120-pitch+00/hair-front.png",
+      "sha256": "66ecf38a43dbceccb92c366380091eb76a89af7f94408773d542fe92baf9f9f2"
+    },
+    {
+      "bytes": 13537,
+      "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/base-hide-mask.png",
+      "sha256": "d1b7ad44ca4ec5a0baf801cc8289f21f661afbbe8a9bf3a32f15139dc157bea2"
+    },
+    {
+      "bytes": 46678,
+      "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/body-fix.png",
+      "sha256": "f10ff5d7eb3e15d97109f51bd15c3522d4ab34823b9f00f856ab08440725a28c"
+    },
+    {
+      "bytes": 313788,
+      "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/garment.png",
+      "sha256": "81555d91947ea18b4b40dcfcf4de04c83576c3489ebdc3033acd30740cc967c9"
+    },
+    {
+      "bytes": 6559,
+      "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/hair-back.png",
+      "sha256": "993571c5d2ed043992b6b4578518488a80772b81acb641a985ecec8d1ad8e740"
+    },
+    {
+      "bytes": 121661,
+      "path": "assets/characters/lin-keyun/body/views/yaw-135-pitch+00/hair-front.png",
+      "sha256": "8ca78eeaade445215c03eec850317df303f161971ae730d5e339050ce184cd61"
+    },
+    {
+      "bytes": 12865,
+      "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/base-hide-mask.png",
+      "sha256": "a64ad7e9f20b689b2668879ce14ac56e49176815a3094228bfc7f36faa305914"
+    },
+    {
+      "bytes": 44616,
+      "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/body-fix.png",
+      "sha256": "c6e39caba506270132129f35f48c935abae5c1089f1c27d6c4734655e4983204"
+    },
+    {
+      "bytes": 337725,
+      "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/garment.png",
+      "sha256": "bbcbfe06629b0d5408bc99fbb7b64b8914a30eed73b8cc449553aedfe432801f"
+    },
+    {
+      "bytes": 7869,
+      "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/hair-back.png",
+      "sha256": "21c4f8d1934560da7ffa29a68817a13c4d830878524ca18f31afc5cee2b9c3f7"
+    },
+    {
+      "bytes": 129037,
+      "path": "assets/characters/lin-keyun/body/views/yaw-150-pitch+00/hair-front.png",
+      "sha256": "867adc5f496604037b5100f5b61e026cb5dc9a43f53566b577550fb5fa0941ab"
+    },
+    {
+      "bytes": 14168,
+      "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/base-hide-mask.png",
+      "sha256": "9e43a20120f3859d83adc9b2af9f608a35d7ca156779305b7de8db27a138ddd6"
+    },
+    {
+      "bytes": 46412,
+      "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/body-fix.png",
+      "sha256": "0cad7f6eec49cb4cf70d47e27fb5835eda9743ee7c441dc07aadd67218152f49"
+    },
+    {
+      "bytes": 326525,
+      "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/garment.png",
+      "sha256": "3cb86bd4542c7d90784387ff9147c07889fe609faeef4287bdcf0f026d041ff8"
+    },
+    {
+      "bytes": 6883,
+      "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/hair-back.png",
+      "sha256": "6927fce2ee55cb4186ab5ca14a1d74caeda87a25404a90d3039ec4c3d9d1b005"
+    },
+    {
+      "bytes": 125293,
+      "path": "assets/characters/lin-keyun/body/views/yaw-165-pitch+00/hair-front.png",
+      "sha256": "ddf9e40f87660f5267d5beda387ca31480c822221b4f54baa735d58526f4aad3"
+    },
+    {
+      "bytes": 14038,
+      "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/base-hide-mask.png",
+      "sha256": "452dd2d1135642b46a20bf8bc96e6bcca3b516d0d02e7941cd5d029894bd3edd"
+    },
+    {
+      "bytes": 42953,
+      "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/body-fix.png",
+      "sha256": "b2057bc1a320aed6fce41f9715f09dbf82cc78e3c43c77c88eaf928cfa2ce513"
+    },
+    {
+      "bytes": 318257,
+      "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/garment.png",
+      "sha256": "04e36fbf225f29f62e5ad0e757b5e38ca7af776bdbd64352f2b16ce709f9de35"
+    },
+    {
+      "bytes": 9317,
+      "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/hair-back.png",
+      "sha256": "27d2cd94417860366b526cd09c4bc1b8192346d6ebcb00503e199d02a5cc80f0"
+    },
+    {
+      "bytes": 134828,
+      "path": "assets/characters/lin-keyun/body/views/yaw-180-pitch+00/hair-front.png",
+      "sha256": "32056d682af3d9e9adb47a464fd1104600f82a2e55229ca7fb602d06dc3128cc"
+    },
+    {
+      "bytes": 12082,
+      "path": "assets/characters/lin-keyun/dialogue/en.json",
+      "sha256": "14d6961fc1e5fb79f61401b09f3db276ada3c68823fd4f7d2884577c41b40f62"
+    },
+    {
+      "bytes": 928,
+      "path": "assets/characters/lin-keyun/dialogue/events.json",
+      "sha256": "fa158b12bd0aedd4660538abdb2bdada5a3d72e89e52955c80d1828599a865ef"
+    },
+    {
+      "bytes": 14935,
+      "path": "assets/characters/lin-keyun/dialogue/ja-JP.json",
+      "sha256": "a1f96a797400be265373143fb1cf22ff6e3a797f533d0b7d07223ae44a421c0a"
+    },
+    {
+      "bytes": 13031,
+      "path": "assets/characters/lin-keyun/dialogue/runtime.json",
+      "sha256": "0b58f924804991466ab8de724f90629903209b14ec939cb7b467ab8ea534cf86"
+    },
+    {
+      "bytes": 11684,
+      "path": "assets/characters/lin-keyun/dialogue/zh-CN.json",
+      "sha256": "0fe13afafc1eaf464775a8d3e8ef7584dc56464d1cb95aa8553d1892f908192c"
+    },
+    {
+      "bytes": 11688,
+      "path": "assets/characters/lin-keyun/dialogue/zh-TW.json",
+      "sha256": "f459a1a6984eb61c711a62c2313d76e11a617c96b4e9bae9793264eed9cc9274"
+    },
+    {
+      "bytes": 13892,
+      "path": "assets/characters/lin-keyun/expressions/state-catalog.json",
+      "sha256": "ec5b681bc1c41f64845d4d1cf0125e3043f79c88e4c7881b0e63603457f96d75"
+    },
+    {
+      "bytes": 24241819,
+      "path": "assets/characters/lin-keyun/official-packs/linkeyun.official.modern-office.mohan-outfit",
+      "sha256": "8b5f3a64edcc9a469c9c64a7696fd06d431986d53d6c94a3f1baa1fbe260964b"
+    },
+    {
+      "bytes": 2163,
+      "path": "assets/characters/lin-keyun/persona/en.json",
+      "sha256": "4106ee1c9f0977e6e9722ce0e26e4f1b71be390b72af0648bbac475233bbde3d"
+    },
+    {
+      "bytes": 2563,
+      "path": "assets/characters/lin-keyun/persona/ja-JP.json",
+      "sha256": "680d28143908311b2c7b0d4ae52b64ebafad7da8c4e805d99e57b0b63344d158"
+    },
+    {
+      "bytes": 2587,
+      "path": "assets/characters/lin-keyun/persona/profile.json",
+      "sha256": "7e987396a7a6aeff3901d8e29a2f0a2f28dd50aa5de8c200400aa6566c165a84"
+    },
+    {
+      "bytes": 526,
+      "path": "assets/characters/lin-keyun/persona/ui-identifiers.json",
+      "sha256": "d8be05a3610a8a40e4db3e531a5e9a5d3ebb3d0ceda0fd2af2a258dac5e5dc7f"
+    },
+    {
+      "bytes": 1996,
+      "path": "assets/characters/lin-keyun/persona/zh-CN.json",
+      "sha256": "d1a61f2829c3aa7e293f874bd36e6f13714882fc74f18f1456ac9a34aaa57b8b"
+    },
+    {
+      "bytes": 1993,
+      "path": "assets/characters/lin-keyun/persona/zh-TW.json",
+      "sha256": "9a27565e0e74986536f42cba9d9ee3cf8de184b6946aabc23bc6d3a244245ea0"
+    },
+    {
+      "bytes": 17106,
+      "path": "assets/characters/lin-keyun/rig/rig-manifest.json",
+      "sha256": "eedd60bd7bfec1bddccf6c84cd003fe713a5f85a83e8bd12ada78c0d594dd3eb"
+    },
+    {
+      "bytes": 2852,
+      "path": "assets/characters/lin-keyun/rig/runtime-bindings.json",
+      "sha256": "39d81cdaf2cb0d66083dc8f900edfa7ca27c1bace8abaced093fae0dec9adcb3"
+    },
+    {
+      "bytes": 5655,
+      "path": "assets/characters/lin-keyun/voice/profile.json",
+      "sha256": "f6d8ac9d84834852a4481fca73f7a0ffbed7c1c912e2667be77314d7e9fec3ff"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/expressions/layered/cheek-glance_oral_cavity.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/expressions/layered/cheek-glance_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 10514,
+      "path": "assets/expressions/layered/cheek_eyelid_left.png",
+      "sha256": "2d97b0eea981249c39b567600c91cef847e777b04024c994fd0d86abee1a0e22"
+    },
+    {
+      "bytes": 12728,
+      "path": "assets/expressions/layered/cheek_eyelid_right.png",
+      "sha256": "b846ba8f88437d9e2f2a1de2d09fdc258de31a61a23cbb01b0810052195c1321"
+    },
+    {
+      "bytes": 8203,
+      "path": "assets/expressions/layered/cheek_iris_left.png",
+      "sha256": "a5f2273f065b4c78e409fddddaae938813d866cee30126e6a9a4d1ad176712b8"
+    },
+    {
+      "bytes": 9270,
+      "path": "assets/expressions/layered/cheek_iris_right.png",
+      "sha256": "af3b0e91cf82a4d2b756c1e18ccaaf68ca5e9242bbfd3734f1ece98bf669dc7b"
+    },
+    {
+      "bytes": 8495,
+      "path": "assets/expressions/layered/cheek_lip_lower.png",
+      "sha256": "2582af2879a969566cbc0345170ac5cfa5d03ddf53577cbf73777bf19139aa90"
+    },
+    {
+      "bytes": 7999,
+      "path": "assets/expressions/layered/cheek_lip_upper.png",
+      "sha256": "48be828e0298cd095cb4d16c737b53b00b428c866e89f77d5805532f1d3dad0d"
+    },
+    {
+      "bytes": 6495,
+      "path": "assets/expressions/layered/cheek_oral_cavity.png",
+      "sha256": "61b89793a19675d58ae0e1f1601c7d4a67631829ab47e94a9813c37f4029655e"
+    },
+    {
+      "bytes": 7090,
+      "path": "assets/expressions/layered/cheek_teeth_tongue.png",
+      "sha256": "650c5a17e320eeb647d4d25ec5345bc88c04862b79bcc91a3ecdba3b85cbcd54"
+    },
+    {
+      "bytes": 10534,
+      "path": "assets/expressions/layered/front_eyelid_left.png",
+      "sha256": "d3ef4819d6be7617e175682b37e5f590d4be36bc3229fb583664cd7a23d61458"
+    },
+    {
+      "bytes": 11606,
+      "path": "assets/expressions/layered/front_eyelid_right.png",
+      "sha256": "1ae52d0e9402a62767e54095fbd9558547db94a9cf6872cab3b0a9af5b0b465f"
+    },
+    {
+      "bytes": 8315,
+      "path": "assets/expressions/layered/front_iris_left.png",
+      "sha256": "12d230a6768ce88401729813b4151b7486ac81d3d61f74d39fed4fdea3cb05b7"
+    },
+    {
+      "bytes": 8944,
+      "path": "assets/expressions/layered/front_iris_right.png",
+      "sha256": "5185929616818cdea6e70cdb701feb4612ce1db9240af92415ce706968268bd4"
+    },
+    {
+      "bytes": 8041,
+      "path": "assets/expressions/layered/front_lip_lower.png",
+      "sha256": "2eb6ae9b58cdbd47568346f37be83f76d91f371dbeaf54c50b49b62c7db90481"
+    },
+    {
+      "bytes": 8558,
+      "path": "assets/expressions/layered/front_lip_upper.png",
+      "sha256": "ea22d87596ccf2cfbb6a1be75418b36e8809b84d3670af5274fe7389ce7d2212"
+    },
+    {
+      "bytes": 6660,
+      "path": "assets/expressions/layered/front_oral_cavity.png",
+      "sha256": "f14ff397ba0a48a9b66a914aaa39848aa1b6534ea8174f31296eece26790555b"
+    },
+    {
+      "bytes": 7220,
+      "path": "assets/expressions/layered/front_teeth_tongue.png",
+      "sha256": "8170de000510a2e57c8fc1b943b2512979167db6dc817a9457ef6f94f05c085f"
+    },
+    {
+      "bytes": 10134,
+      "path": "assets/expressions/layered/lean_eyelid_left.png",
+      "sha256": "ec434fc5dbc17c38c1d637a25393bc04e41bf7a547084f65a23db99a31d55856"
+    },
+    {
+      "bytes": 12005,
+      "path": "assets/expressions/layered/lean_eyelid_right.png",
+      "sha256": "9c5a6b7a1bb7b9a6265c02a1a8150b2dc15032b87741e0c9204932bc9a7c943d"
+    },
+    {
+      "bytes": 8161,
+      "path": "assets/expressions/layered/lean_iris_left.png",
+      "sha256": "a49104de760d4b11ba04f974b83c3ebe4e3242a97d591a7c2954a6a3cfd0291c"
+    },
+    {
+      "bytes": 8990,
+      "path": "assets/expressions/layered/lean_iris_right.png",
+      "sha256": "662c6fc4ee9624dc954c5f67f896e8a34b64290c8f58df03b512716dd0b7c1a3"
+    },
+    {
+      "bytes": 8565,
+      "path": "assets/expressions/layered/lean_lip_lower.png",
+      "sha256": "97319d1544125a0ba1407bcae8ccf1d0c6440f59519651edd347da08b7d4be92"
+    },
+    {
+      "bytes": 7969,
+      "path": "assets/expressions/layered/lean_lip_upper.png",
+      "sha256": "aed85d704fd7be3f93c99848c94332b4a4f3913a1ef8f0d8505ed11f7af453f5"
+    },
+    {
+      "bytes": 6600,
+      "path": "assets/expressions/layered/lean_oral_cavity.png",
+      "sha256": "b8baad5ddb09deb42ee896225427feb3139daca0888c23ab0e2e5c5352bc41cd"
+    },
+    {
+      "bytes": 7150,
+      "path": "assets/expressions/layered/lean_teeth_tongue.png",
+      "sha256": "4891eea36c7d736e1f8b5f8e34651eba2fa951deac5ecd54fcec46b1c05611ea"
+    },
+    {
+      "bytes": 1051,
+      "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
+      "sha256": "c5167db328cb9cc765513594de7c96e56fca9a799548f5ea6765d3231aabb704"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-attentive_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-attentive_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6264,
+      "path": "assets/front-makeup-rigs/front-attentive_front_oral_cavity.png",
+      "sha256": "c296d6117aac8fd698c61180f0f0c79c8b5dbb05ab4028e22c1db9fca9de3a54"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-attentive_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6296,
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_oral_cavity.png",
+      "sha256": "8300005d0cf62979614b3410ce95b9686faaf26ad63d3b2656036e0d8b77906c"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-crossed-neutral_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-determined_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-determined_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6200,
+      "path": "assets/front-makeup-rigs/front-determined_front_oral_cavity.png",
+      "sha256": "c806eb143f9c5dd9bb5d3619bba2dd1b8ce583b16bbc478accc6dc9569dcec2a"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-determined_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-gentle_smile_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-gentle_smile_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6319,
+      "path": "assets/front-makeup-rigs/front-gentle_smile_front_oral_cavity.png",
+      "sha256": "f7d0a20253b1ac94169a66657698a7992aefc7f21b84c885b3e0977537f27cdf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-gentle_smile_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-protective_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-protective_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6305,
+      "path": "assets/front-makeup-rigs/front-protective_front_oral_cavity.png",
+      "sha256": "32bd3b22fffdbc789f79272810934dd576c95de28d422eaca165ea4e315b9ab3"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-protective_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-proud_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-proud_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6314,
+      "path": "assets/front-makeup-rigs/front-proud_front_oral_cavity.png",
+      "sha256": "f03b6ad5a863c186716da19bbae0739339b54c091700f84418e3ecad423c5c0f"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-proud_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-relieved_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-relieved_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6289,
+      "path": "assets/front-makeup-rigs/front-relieved_front_oral_cavity.png",
+      "sha256": "a526b00da4d97ca830b2538fe71bd3dba91c6c0c8e81196af91cfdfb333a2719"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-relieved_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-restrained_amused_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-restrained_amused_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6296,
+      "path": "assets/front-makeup-rigs/front-restrained_amused_front_oral_cavity.png",
+      "sha256": "9dc422ba750bc78d799f0e1db2ddb337895dcd3e36cd7311ed19b55382eabf24"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-restrained_amused_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-shy_cute_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-shy_cute_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6357,
+      "path": "assets/front-makeup-rigs/front-shy_cute_front_oral_cavity.png",
+      "sha256": "047c88a81f6b7bb9af51d14458a2a972828e6eaf66644dd4fabccb0b6d4f7174"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-shy_cute_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-shy_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-shy_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6246,
+      "path": "assets/front-makeup-rigs/front-shy_front_oral_cavity.png",
+      "sha256": "d997d67ef61b3aa2d7c0751ea7f3bc8d6ebd31625ee91d3db5d26dde76017c29"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-shy_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-surprised_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-surprised_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6329,
+      "path": "assets/front-makeup-rigs/front-surprised_front_oral_cavity.png",
+      "sha256": "d952ddc0d7d84a083fd62548d82e0f4c252f56bb2cd68bd47b9152ee08ac577f"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-surprised_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-thinking_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-thinking_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6261,
+      "path": "assets/front-makeup-rigs/front-thinking_front_oral_cavity.png",
+      "sha256": "5a5c3cb854d76f6b2e2041f25d4e47b1d7c76cac02bd1137876ec64e48e438a4"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-thinking_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-tired_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-tired_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6232,
+      "path": "assets/front-makeup-rigs/front-tired_front_oral_cavity.png",
+      "sha256": "0d956942321971766de63941a8573f6c45b410d86530ec4e2de7b1b54a64ba12"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-tired_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-worried_front_lip_lower.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-worried_front_lip_upper.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6243,
+      "path": "assets/front-makeup-rigs/front-worried_front_oral_cavity.png",
+      "sha256": "f378554940a9b9775c062a16755f4e38ce11e0288f914fbc21862086190527e9"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/front-worried_front_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6267,
+      "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-half.png",
+      "sha256": "2416d97c1ae855fb9a9df911015da3d6e5a5838307911c63385d17530f6060ff"
+    },
+    {
+      "bytes": 6280,
+      "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-rest.png",
+      "sha256": "10a6d2c5b370d1c8db143dfefb8228dbbb97e8a986a31abb94653a43c1b9fd3e"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6244,
+      "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-half.png",
+      "sha256": "2177078a21c2c507c2eaa7414ad7c64b244f75a6ffb3f556d310d00823594f97"
+    },
+    {
+      "bytes": 6247,
+      "path": "assets/makeup-eye-apertures/yaw+015-pitch+00-rest.png",
+      "sha256": "1c515e2aa29cb76efb29712f1b6180dc1019b4bf4bae19f648a46922511abb75"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6249,
+      "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-half.png",
+      "sha256": "5d9c4205d5199d3fdc9c1520f26be32fed4fb50f991a438ea4655bc92a9555a3"
+    },
+    {
+      "bytes": 6256,
+      "path": "assets/makeup-eye-apertures/yaw+030-pitch+00-rest.png",
+      "sha256": "bdd2996bef218737542342fba40d00568542436fab4eb3ee90d5ad09907302bf"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6213,
+      "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-half.png",
+      "sha256": "22f02a76fff1c93c53d8bfc88e313f7c2aa04d60f905772ff3b10d8f3dc8f65e"
+    },
+    {
+      "bytes": 6244,
+      "path": "assets/makeup-eye-apertures/yaw+045-pitch+00-rest.png",
+      "sha256": "ce98e502b65a38e73e20b845017d972786007913398fb2ff24cdd90075871260"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6311,
+      "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-half.png",
+      "sha256": "afa1e7c69038e4ba6f13782c01ec4ffc23e3cfc58f6a113b237d32ad2d25f6f8"
+    },
+    {
+      "bytes": 6279,
+      "path": "assets/makeup-eye-apertures/yaw+060-pitch+00-rest.png",
+      "sha256": "97d72f2453757b45f9bc1c88850bccc20c0d323eb62d861a1e8d31c880834d9f"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6320,
+      "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-half.png",
+      "sha256": "dc321e6cc189bee1a125d61d1978e29785457663edd4955ae3ea7f8138d740d4"
+    },
+    {
+      "bytes": 6303,
+      "path": "assets/makeup-eye-apertures/yaw+075-pitch+00-rest.png",
+      "sha256": "23efd9f31e46bb81ff5984a98165c2f53e51c44c33766d51721182f694bfab53"
+    },
+    {
+      "bytes": 9689,
+      "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-closed.png",
+      "sha256": "31b12d3344eb0edd501ac359a5dd1bde1c2aeac96c754f8b2a91876fcc86782b"
+    },
+    {
+      "bytes": 6248,
+      "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-half.png",
+      "sha256": "60f7d4f100adc4ce6cd12460717663bb8956d8ba32854e0970eae89d42eaf990"
+    },
+    {
+      "bytes": 9747,
+      "path": "assets/makeup-eye-apertures/yaw+090-pitch+00-rest.png",
+      "sha256": "584bcb1dbe5d5e4810c42ef901a86515aebaf3dc85650d1b8413aa49da8ecc08"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6246,
+      "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-half.png",
+      "sha256": "cf3814d454da772a3f0188f354f5e700a6599d4ba1c36fe7a4b9baada02d2fa9"
+    },
+    {
+      "bytes": 6271,
+      "path": "assets/makeup-eye-apertures/yaw-015-pitch+00-rest.png",
+      "sha256": "353e0d1bf140859cbcb6008a1ca2cd8a7f65a3c86c3e9541b6d6fe4947b604ad"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6251,
+      "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-half.png",
+      "sha256": "7ad2448c7fe0e19774f03afa31f60d5ca980e06a9eeaead59b6259f22d06063c"
+    },
+    {
+      "bytes": 6259,
+      "path": "assets/makeup-eye-apertures/yaw-030-pitch+00-rest.png",
+      "sha256": "2135008495582ca0cf36da7596816ad4ec007f27ba18e76f243e3b354b1db9fe"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6228,
+      "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-half.png",
+      "sha256": "12f2b2ed8a6b21f0c93087d237289050835d42f04b32985bab9820089cf27724"
+    },
+    {
+      "bytes": 6241,
+      "path": "assets/makeup-eye-apertures/yaw-045-pitch+00-rest.png",
+      "sha256": "d1082e9a0d692c45ae6b62b9e7fb2cf6fb7783bf09a44e2a717c8e74a74977d7"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6317,
+      "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-half.png",
+      "sha256": "4b206fc31e1f246378feba629e08734809060743caa054866772e4bc35402ed6"
+    },
+    {
+      "bytes": 6306,
+      "path": "assets/makeup-eye-apertures/yaw-060-pitch+00-rest.png",
+      "sha256": "9aaa539e8af3f100fd2f509f7b7c81e9d3205acbc69d6bbc525c2ca79c656c0b"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-closed.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6286,
+      "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-half.png",
+      "sha256": "04c95008d0da724d2e7b91475a96336f3ae28a58040ac4ca857fe5a6377d24d0"
+    },
+    {
+      "bytes": 6294,
+      "path": "assets/makeup-eye-apertures/yaw-075-pitch+00-rest.png",
+      "sha256": "9d4c67ecf63cc24395f3d9814397fb00b681ff79ae71f3d1cf8ee05f7ca2c0a6"
+    },
+    {
+      "bytes": 9689,
+      "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-closed.png",
+      "sha256": "31b12d3344eb0edd501ac359a5dd1bde1c2aeac96c754f8b2a91876fcc86782b"
+    },
+    {
+      "bytes": 6241,
+      "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-half.png",
+      "sha256": "c35a9d7d579f65429d49a6d00a7a0a6833b1074fec3c88b5945eb5ac85b38bc2"
+    },
+    {
+      "bytes": 9747,
+      "path": "assets/makeup-eye-apertures/yaw-090-pitch+00-rest.png",
+      "sha256": "fabca8dae35e67d364e32dc5d83b33ec949c74338dc1b75d4a195c975cf510ea"
+    },
+    {
+      "bytes": 7722,
+      "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-closed.png",
+      "sha256": "1f2802d0e0408bf2fb7c37938dfb4ab7de7b68723b6090c1fb28be2df10c5933"
+    },
+    {
+      "bytes": 7762,
+      "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-half.png",
+      "sha256": "716a0ce61e0642c6e205fd2e62648d3cba1f0ccaf585598155cd6fa9b5ae284a"
+    },
+    {
+      "bytes": 7807,
+      "path": "assets/makeup-foundation-safe-regions/yaw+000-pitch+00-rest.png",
+      "sha256": "ac2af7e77e2e1709452689dd3535f9c59497f9d609f2976dcf7cfbb4abda48c9"
+    },
+    {
+      "bytes": 7193,
+      "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-closed.png",
+      "sha256": "c44d79d72cb070daf707f26e2d58d04e7801b1c7651c88d0434cf4db15e40333"
+    },
+    {
+      "bytes": 7193,
+      "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-half.png",
+      "sha256": "c44d79d72cb070daf707f26e2d58d04e7801b1c7651c88d0434cf4db15e40333"
+    },
+    {
+      "bytes": 7193,
+      "path": "assets/makeup-foundation-safe-regions/yaw+015-pitch+00-rest.png",
+      "sha256": "c44d79d72cb070daf707f26e2d58d04e7801b1c7651c88d0434cf4db15e40333"
+    },
+    {
+      "bytes": 7158,
+      "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-closed.png",
+      "sha256": "e6032f69bedf04bbcf21ac3acd2d63a039e6d5c712dadaa84ed77cd218ac539f"
+    },
+    {
+      "bytes": 7158,
+      "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-half.png",
+      "sha256": "e6032f69bedf04bbcf21ac3acd2d63a039e6d5c712dadaa84ed77cd218ac539f"
+    },
+    {
+      "bytes": 7158,
+      "path": "assets/makeup-foundation-safe-regions/yaw+030-pitch+00-rest.png",
+      "sha256": "e6032f69bedf04bbcf21ac3acd2d63a039e6d5c712dadaa84ed77cd218ac539f"
+    },
+    {
+      "bytes": 7036,
+      "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-closed.png",
+      "sha256": "898cd2e1625c03394d2ac4f9e750dbee011a1a86854739a43634bec9d31181b3"
+    },
+    {
+      "bytes": 7036,
+      "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-half.png",
+      "sha256": "898cd2e1625c03394d2ac4f9e750dbee011a1a86854739a43634bec9d31181b3"
+    },
+    {
+      "bytes": 7036,
+      "path": "assets/makeup-foundation-safe-regions/yaw+045-pitch+00-rest.png",
+      "sha256": "898cd2e1625c03394d2ac4f9e750dbee011a1a86854739a43634bec9d31181b3"
+    },
+    {
+      "bytes": 7308,
+      "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-closed.png",
+      "sha256": "e18e4ef18f215336b4c597e9f2794f10d6a23aa193e956651b619613034feeb9"
+    },
+    {
+      "bytes": 7308,
+      "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-half.png",
+      "sha256": "e18e4ef18f215336b4c597e9f2794f10d6a23aa193e956651b619613034feeb9"
+    },
+    {
+      "bytes": 7308,
+      "path": "assets/makeup-foundation-safe-regions/yaw+060-pitch+00-rest.png",
+      "sha256": "e18e4ef18f215336b4c597e9f2794f10d6a23aa193e956651b619613034feeb9"
+    },
+    {
+      "bytes": 7299,
+      "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-closed.png",
+      "sha256": "129b1f7ec32cd8d3d72d570f1078793dcb251d78b721570dea950112eb674d97"
+    },
+    {
+      "bytes": 7299,
+      "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-half.png",
+      "sha256": "129b1f7ec32cd8d3d72d570f1078793dcb251d78b721570dea950112eb674d97"
+    },
+    {
+      "bytes": 7299,
+      "path": "assets/makeup-foundation-safe-regions/yaw+075-pitch+00-rest.png",
+      "sha256": "129b1f7ec32cd8d3d72d570f1078793dcb251d78b721570dea950112eb674d97"
+    },
+    {
+      "bytes": 13254,
+      "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-closed.png",
+      "sha256": "552d61f61f942c217aa8002ae58797d6a2f7ed53abb157be7c5f201b4cd11277"
+    },
+    {
+      "bytes": 13254,
+      "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-half.png",
+      "sha256": "552d61f61f942c217aa8002ae58797d6a2f7ed53abb157be7c5f201b4cd11277"
+    },
+    {
+      "bytes": 13254,
+      "path": "assets/makeup-foundation-safe-regions/yaw+090-pitch+00-rest.png",
+      "sha256": "552d61f61f942c217aa8002ae58797d6a2f7ed53abb157be7c5f201b4cd11277"
+    },
+    {
+      "bytes": 7135,
+      "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-closed.png",
+      "sha256": "0aa009848a2fb5fb6f772f1263b26d474af4bd19bca920bc85bc0ce6b546fad4"
+    },
+    {
+      "bytes": 7135,
+      "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-half.png",
+      "sha256": "0aa009848a2fb5fb6f772f1263b26d474af4bd19bca920bc85bc0ce6b546fad4"
+    },
+    {
+      "bytes": 7135,
+      "path": "assets/makeup-foundation-safe-regions/yaw-015-pitch+00-rest.png",
+      "sha256": "0aa009848a2fb5fb6f772f1263b26d474af4bd19bca920bc85bc0ce6b546fad4"
+    },
+    {
+      "bytes": 7007,
+      "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-closed.png",
+      "sha256": "ea6574c79fc9e1346210578fe01f9fc3cc84fb87ffeaebe2a19d28850411f8ef"
+    },
+    {
+      "bytes": 7007,
+      "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-half.png",
+      "sha256": "ea6574c79fc9e1346210578fe01f9fc3cc84fb87ffeaebe2a19d28850411f8ef"
+    },
+    {
+      "bytes": 7007,
+      "path": "assets/makeup-foundation-safe-regions/yaw-030-pitch+00-rest.png",
+      "sha256": "ea6574c79fc9e1346210578fe01f9fc3cc84fb87ffeaebe2a19d28850411f8ef"
+    },
+    {
+      "bytes": 6994,
+      "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-closed.png",
+      "sha256": "1f48bc4be74e093f5b7f241fa0966fc063f1c451d794c3ca4ab008ca7584a5b8"
+    },
+    {
+      "bytes": 6994,
+      "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-half.png",
+      "sha256": "1f48bc4be74e093f5b7f241fa0966fc063f1c451d794c3ca4ab008ca7584a5b8"
+    },
+    {
+      "bytes": 6994,
+      "path": "assets/makeup-foundation-safe-regions/yaw-045-pitch+00-rest.png",
+      "sha256": "1f48bc4be74e093f5b7f241fa0966fc063f1c451d794c3ca4ab008ca7584a5b8"
+    },
+    {
+      "bytes": 7314,
+      "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-closed.png",
+      "sha256": "7d2244f86054b853aa1556b5367ec53b14225ea73cdbc3350776103f36a5acfc"
+    },
+    {
+      "bytes": 7314,
+      "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-half.png",
+      "sha256": "7d2244f86054b853aa1556b5367ec53b14225ea73cdbc3350776103f36a5acfc"
+    },
+    {
+      "bytes": 7314,
+      "path": "assets/makeup-foundation-safe-regions/yaw-060-pitch+00-rest.png",
+      "sha256": "7d2244f86054b853aa1556b5367ec53b14225ea73cdbc3350776103f36a5acfc"
+    },
+    {
+      "bytes": 7226,
+      "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-closed.png",
+      "sha256": "abf0e36d5e3a591db6869ede8da11b7c8dd46eb9a2e505a8fdb09001ab34604a"
+    },
+    {
+      "bytes": 7226,
+      "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-half.png",
+      "sha256": "abf0e36d5e3a591db6869ede8da11b7c8dd46eb9a2e505a8fdb09001ab34604a"
+    },
+    {
+      "bytes": 7226,
+      "path": "assets/makeup-foundation-safe-regions/yaw-075-pitch+00-rest.png",
+      "sha256": "abf0e36d5e3a591db6869ede8da11b7c8dd46eb9a2e505a8fdb09001ab34604a"
+    },
+    {
+      "bytes": 13279,
+      "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-closed.png",
+      "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
+    },
+    {
+      "bytes": 13279,
+      "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-half.png",
+      "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
+    },
+    {
+      "bytes": 13279,
+      "path": "assets/makeup-foundation-safe-regions/yaw-090-pitch+00-rest.png",
+      "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
+    },
+    {
+      "bytes": 160057,
+      "path": "assets/makeup-safe-regions.json",
+      "sha256": "1ece63b1a0c148fcc16e9225e2c4cd0b4cbd2d20e91bcc83dae4e7effa223616"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6584,
+      "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-half.png",
+      "sha256": "0ba336d2631420d7aa6af8f97eb83e9c49342c7d6fb828d6e259294c4564d5fe"
+    },
+    {
+      "bytes": 6837,
+      "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-rest.png",
+      "sha256": "44a4d834f41a52a257c66df15421f32562f79fc8434ffa37329f6c0335c16c85"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-foundation-closed.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 8298,
+      "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-foundation-half.png",
+      "sha256": "a5022412568623e72851033df12655da8b3c6b60357f0e50f1f2c1809d2c7916"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-foundation-rest.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6475,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-half.png",
+      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+    },
+    {
+      "bytes": 6500,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-rest.png",
+      "sha256": "4e73524829a61178de8172ad3ef6a6ca62c89fd6a3598d434e4f75f21099cd1f"
+    },
+    {
+      "bytes": 8152,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-foundation-closed.png",
+      "sha256": "fd51a12645f821656b8bfebbea852cdaa767349fbd346f1a45ecc23abcb4cd3f"
+    },
+    {
+      "bytes": 8502,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-foundation-half.png",
+      "sha256": "e6b46b8d25e7aac46c43dcf696cef404815de3a1d4e6e36a5aa22ff7636efc0d"
+    },
+    {
+      "bytes": 8152,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-foundation-rest.png",
+      "sha256": "fd51a12645f821656b8bfebbea852cdaa767349fbd346f1a45ecc23abcb4cd3f"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6475,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-half.png",
+      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+    },
+    {
+      "bytes": 6500,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-rest.png",
+      "sha256": "4e73524829a61178de8172ad3ef6a6ca62c89fd6a3598d434e4f75f21099cd1f"
+    },
+    {
+      "bytes": 8152,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-foundation-closed.png",
+      "sha256": "fd51a12645f821656b8bfebbea852cdaa767349fbd346f1a45ecc23abcb4cd3f"
+    },
+    {
+      "bytes": 8502,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-foundation-half.png",
+      "sha256": "e6b46b8d25e7aac46c43dcf696cef404815de3a1d4e6e36a5aa22ff7636efc0d"
+    },
+    {
+      "bytes": 8382,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-foundation-rest.png",
+      "sha256": "09a20bf07e50c00a0346aebbbe9eb6f3eb83db75c4753dc608d82c33ecfd6a4c"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6475,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-half.png",
+      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+    },
+    {
+      "bytes": 6475,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-rest.png",
+      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+    },
+    {
+      "bytes": 8152,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-foundation-closed.png",
+      "sha256": "fd51a12645f821656b8bfebbea852cdaa767349fbd346f1a45ecc23abcb4cd3f"
+    },
+    {
+      "bytes": 8502,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-foundation-half.png",
+      "sha256": "e6b46b8d25e7aac46c43dcf696cef404815de3a1d4e6e36a5aa22ff7636efc0d"
+    },
+    {
+      "bytes": 8502,
+      "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-foundation-rest.png",
+      "sha256": "e6b46b8d25e7aac46c43dcf696cef404815de3a1d4e6e36a5aa22ff7636efc0d"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6621,
+      "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-half.png",
+      "sha256": "4638d0882846d4144b26821ea8a89c9aeb9c823b5526137bd7a5794ddd8ffdf1"
+    },
+    {
+      "bytes": 6718,
+      "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-rest.png",
+      "sha256": "c1dda93d223bfb49b097ab7389075357cebf35c788180a1f887e14a01371a9f7"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-foundation-closed.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 8321,
+      "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-foundation-half.png",
+      "sha256": "e55a0a3fefdeef5afe840761d341f21d8fbf3bab087cfbdd6311e9ec26fa501f"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-foundation-rest.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6635,
+      "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-half.png",
+      "sha256": "4a57797b6b1b414b66669a3aee741d204e29dbd5dfea8c006f8456fc76ad2a00"
+    },
+    {
+      "bytes": 6858,
+      "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-rest.png",
+      "sha256": "fed00e42b1216a05aaa2f7a27991d2e126d22602536f74058726a094bb9196c0"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-foundation-closed.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 8329,
+      "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-foundation-half.png",
+      "sha256": "eec675dd66e8fe5f678df8d32928c9566a1033df3fcf225f98410da6c77314c3"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-foundation-rest.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6623,
+      "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-half.png",
+      "sha256": "01ce08198df4cc1b8dd37cb4e8ca825e496ce2e2f44987ff2c3dbe2719493a67"
+    },
+    {
+      "bytes": 6863,
+      "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-rest.png",
+      "sha256": "2c12eb356122d76380181ab6a809c86b3b9a94f688c1a0de34872827ab1491d7"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-foundation-closed.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 8324,
+      "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-foundation-half.png",
+      "sha256": "4aec820f383f8916e08d7cc80bb78961c9ef0b3d8bfa30214fbb8fa9bfab1342"
+    },
+    {
+      "bytes": 7967,
+      "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-foundation-rest.png",
+      "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6326,
+      "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-half.png",
+      "sha256": "089e41af67019f10ab55c179b0be4596bd2ee5b9d2122731afe7028f4547cfae"
+    },
+    {
+      "bytes": 6445,
+      "path": "assets/makeup-safe-regions/front-attentive_front/eye-aperture-rest.png",
+      "sha256": "721d9d077653050cbcabea86bcc8768c0254afde20e181fa3ce3743854e2fd36"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-attentive_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7843,
+      "path": "assets/makeup-safe-regions/front-attentive_front/foundation-half.png",
+      "sha256": "39bb97208cfa87b3273c667934cfde72a19ca1d689c491479b8e856220f00ea2"
+    },
+    {
+      "bytes": 7952,
+      "path": "assets/makeup-safe-regions/front-attentive_front/foundation-rest.png",
+      "sha256": "15603dbf41b2e30e2217b39eaa3ca7396e90ab963ae89d6da5de4118fff7c379"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6304,
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-half.png",
+      "sha256": "a5b5df3288ae7fce4033ad2ac33881f9b92624368f6b6eed18f71397d7be2942"
+    },
+    {
+      "bytes": 6399,
+      "path": "assets/makeup-safe-regions/front-crossed/eye-aperture-rest.png",
+      "sha256": "42762eb6d7d8d83b27ed1e73505b680aadb48fedde862b700dcc359a6532e2f0"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7828,
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-half.png",
+      "sha256": "38af7ed2b9ca831988c57836d454ce945bd5ee6ae3d72b4a13630a808504ac48"
+    },
+    {
+      "bytes": 7927,
+      "path": "assets/makeup-safe-regions/front-crossed/foundation-rest.png",
+      "sha256": "e3cf4e97eb3c426f59b3bfab2135fee1b0166a39e5acc36f0c4432a355e5bcc5"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6290,
+      "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-half.png",
+      "sha256": "e1c89b83782accc54258113726dbbb7eb1fb3a529f9fdae06a85fdc67729aece"
+    },
+    {
+      "bytes": 6384,
+      "path": "assets/makeup-safe-regions/front-determined_front/eye-aperture-rest.png",
+      "sha256": "c1cb82779163089e389e2a7122e70549b5dc12c6c4361be38d624831585c173c"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-determined_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7823,
+      "path": "assets/makeup-safe-regions/front-determined_front/foundation-half.png",
+      "sha256": "009e426f049a38ea4d42d05102ed1b15d1877d3ccfc0663e7eaa77c54ec0c974"
+    },
+    {
+      "bytes": 7900,
+      "path": "assets/makeup-safe-regions/front-determined_front/foundation-rest.png",
+      "sha256": "d85f00bdf72d49a480692312b8f82e34bc2c01981168f1a22cd30e694f79fb02"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8516,
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-half.png",
+      "sha256": "1408fd47763a2dea5b869d81838e975740ae682b80fca63a281856463310bfc7"
+    },
+    {
+      "bytes": 8534,
+      "path": "assets/makeup-safe-regions/front-eureka/eye-aperture-rest.png",
+      "sha256": "caa3969a9a4dc2e9b98ce94a94996a704b1c29f445a5d1f999792cc6e45ff6b2"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-eureka/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/eye-aperture-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-exasperated/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6295,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-half.png",
+      "sha256": "c937118bc0816c15430f0553cc8e66f9189f061236e5d13e6598e4f0185e5c8f"
+    },
+    {
+      "bytes": 6396,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/eye-aperture-rest.png",
+      "sha256": "46c021bbe8725d56b04e09cee3a98fe5e750bcd9082385e50df750243cec5e1a"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7819,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-half.png",
+      "sha256": "0b3a1d904319c756c55a8f392b55ca11aa3bacd9e519c6828e000ef225f1e463"
+    },
+    {
+      "bytes": 7909,
+      "path": "assets/makeup-safe-regions/front-gentle_smile_front/foundation-rest.png",
+      "sha256": "276b098f5bc67e45ef67ec40278887c057ac170daf3134aeed1d9e581b2c0959"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8470,
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-half.png",
+      "sha256": "98a027d3c7c0bfbadca7ac521c6809db7a57695d38307be24fe1683910f69575"
+    },
+    {
+      "bytes": 8527,
+      "path": "assets/makeup-safe-regions/front-mock-hit/eye-aperture-rest.png",
+      "sha256": "760762f364688e32b18eb582d9ce500b09d36d236f00ce10ad387735d6df48b1"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-hit/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8517,
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-half.png",
+      "sha256": "029ed7bacba9ef9f13779a0887b9bc0373d86d323e27c3ed72333c7c822653e6"
+    },
+    {
+      "bytes": 8529,
+      "path": "assets/makeup-safe-regions/front-mock-scold/eye-aperture-rest.png",
+      "sha256": "a512c4404fa3960d2b585eae047ba6c61ab686f26b9b39bddc9b24e20e3e4bf1"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-mock-scold/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6293,
+      "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-half.png",
+      "sha256": "2908f8a8b4107aa1c586d7573031ad162f38a4a0cc830cdec788efe96423f814"
+    },
+    {
+      "bytes": 6396,
+      "path": "assets/makeup-safe-regions/front-protective_front/eye-aperture-rest.png",
+      "sha256": "27a5e7a412e60e224a5655c57713c06baef69882a1eba5a5fa6a52e32a1f82c0"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-protective_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7824,
+      "path": "assets/makeup-safe-regions/front-protective_front/foundation-half.png",
+      "sha256": "7ed3716a2691c07e72c7ee59b6584b38837b4722ab1beaea1cbe08975c2bcb37"
+    },
+    {
+      "bytes": 7905,
+      "path": "assets/makeup-safe-regions/front-protective_front/foundation-rest.png",
+      "sha256": "4dddf702646235c0175d722fada08f00493c5183ba4c311ab48c714486d36953"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6293,
+      "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-half.png",
+      "sha256": "7ddc70a631077ab13791b919a39eab0a8f8f30210c9b7a0358753f549f641198"
+    },
+    {
+      "bytes": 6380,
+      "path": "assets/makeup-safe-regions/front-proud_front/eye-aperture-rest.png",
+      "sha256": "db9a92fd41bcd253c6f751eddf52291886b3b9db15087bbc86c832aba171f508"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-proud_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7827,
+      "path": "assets/makeup-safe-regions/front-proud_front/foundation-half.png",
+      "sha256": "cf519d1f81d0cc49a11df09f0d5e53d028dfe5155b1e5cc570280fe37e71ba2c"
+    },
+    {
+      "bytes": 7899,
+      "path": "assets/makeup-safe-regions/front-proud_front/foundation-rest.png",
+      "sha256": "aba021c78387fb13b3501bf0f40feb8934f02cf16dbb6111303407704fa2fc2a"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6293,
+      "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-half.png",
+      "sha256": "7ddc70a631077ab13791b919a39eab0a8f8f30210c9b7a0358753f549f641198"
+    },
+    {
+      "bytes": 6380,
+      "path": "assets/makeup-safe-regions/front-relieved_front/eye-aperture-rest.png",
+      "sha256": "db9a92fd41bcd253c6f751eddf52291886b3b9db15087bbc86c832aba171f508"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-relieved_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7827,
+      "path": "assets/makeup-safe-regions/front-relieved_front/foundation-half.png",
+      "sha256": "cf519d1f81d0cc49a11df09f0d5e53d028dfe5155b1e5cc570280fe37e71ba2c"
+    },
+    {
+      "bytes": 7899,
+      "path": "assets/makeup-safe-regions/front-relieved_front/foundation-rest.png",
+      "sha256": "aba021c78387fb13b3501bf0f40feb8934f02cf16dbb6111303407704fa2fc2a"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6295,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-half.png",
+      "sha256": "c937118bc0816c15430f0553cc8e66f9189f061236e5d13e6598e4f0185e5c8f"
+    },
+    {
+      "bytes": 6394,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/eye-aperture-rest.png",
+      "sha256": "98330c153276833e81b995fa92f90a481a9d1da0a1bb117c82cddcf872e175d5"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7819,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-half.png",
+      "sha256": "0b3a1d904319c756c55a8f392b55ca11aa3bacd9e519c6828e000ef225f1e463"
+    },
+    {
+      "bytes": 7906,
+      "path": "assets/makeup-safe-regions/front-restrained_amused_front/foundation-rest.png",
+      "sha256": "ac991e04ecf3c37348ad7f837293e614836394e23cb057631b75b99c4f65eb9b"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6278,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-half.png",
+      "sha256": "52e245884f309a975e8fc29807afed0c7dca655c5689f3f429fcec95c54b66ff"
+    },
+    {
+      "bytes": 6303,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/eye-aperture-rest.png",
+      "sha256": "0804c3bf3065b3201235c0525e81fb67bd1ffc7965c45d6b147d6a5e2ab369ee"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7815,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-half.png",
+      "sha256": "3e9e51fc72cc4a96e542c5712b5de1a0f0d7901ff8d37fc895e8d0785ebf582f"
+    },
+    {
+      "bytes": 7831,
+      "path": "assets/makeup-safe-regions/front-shy_cute_front/foundation-rest.png",
+      "sha256": "0af1ac203316c9527139b87deed96a0623c3cb8a6633ed02997957181af554e2"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6311,
+      "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-half.png",
+      "sha256": "685c16583fc83e18dfeb93e3c621ffee1ed0d7820136acf905bff644a0c48290"
+    },
+    {
+      "bytes": 6377,
+      "path": "assets/makeup-safe-regions/front-shy_front/eye-aperture-rest.png",
+      "sha256": "48e983c955aa7a4233f1e7048882187eda06cc4a9d554890a81fe24c121f8f6b"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-shy_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7840,
+      "path": "assets/makeup-safe-regions/front-shy_front/foundation-half.png",
+      "sha256": "33bb9ac46a7a4095597a77f03c7eaa68790bca38cb73bb0c3e9e477ac1f1e7b6"
+    },
+    {
+      "bytes": 7890,
+      "path": "assets/makeup-safe-regions/front-shy_front/foundation-rest.png",
+      "sha256": "031349c6cad5bb70ddac33469bcfccde8ebedd72183f33f5ab46e2576efa8bcf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8498,
+      "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-half.png",
+      "sha256": "916ea55ddcb1a8c8b403659c2ca64963fd1db8ca356bcd3ba6c9719ccc91693c"
+    },
+    {
+      "bytes": 8601,
+      "path": "assets/makeup-safe-regions/front-surprised_front/eye-aperture-rest.png",
+      "sha256": "053168dde10f9ad96f9f75a03e3d5475bfacda229704a6455b5907779800bcc5"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-surprised_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7820,
+      "path": "assets/makeup-safe-regions/front-surprised_front/foundation-half.png",
+      "sha256": "f9633c722ff467eaac6857ef175a8350488689705669c573780a0990beb74781"
+    },
+    {
+      "bytes": 7915,
+      "path": "assets/makeup-safe-regions/front-surprised_front/foundation-rest.png",
+      "sha256": "42fb2dfa762a789ecbb8371eac6fbb77aed9b4166f7ddc0158e8a28eb6ec5cfb"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6279,
+      "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-half.png",
+      "sha256": "6e758c28afdd1e73c1cff6769ec45c216285e86535dcb09e172d3e3e270a27b6"
+    },
+    {
+      "bytes": 6385,
+      "path": "assets/makeup-safe-regions/front-thinking_front/eye-aperture-rest.png",
+      "sha256": "4d5e0c102f006662204e1b3741007ca5d355ce795923103d782ba90be756ae2b"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-thinking_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7807,
+      "path": "assets/makeup-safe-regions/front-thinking_front/foundation-half.png",
+      "sha256": "b03cd4ec978a356b48d4553e96ff8fb3b3788b196da45df33f11e26385c8fc81"
+    },
+    {
+      "bytes": 7900,
+      "path": "assets/makeup-safe-regions/front-thinking_front/foundation-rest.png",
+      "sha256": "85856ddb52e1c5179a85431f6775b40c2c96f5b4beb365a5c780424c11290398"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6305,
+      "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-half.png",
+      "sha256": "ff8e842708ce478644702ec1bc3ddd5e329ccf043b753fa86fcd199bceb93a29"
+    },
+    {
+      "bytes": 6372,
+      "path": "assets/makeup-safe-regions/front-tired_front/eye-aperture-rest.png",
+      "sha256": "e9a9e28d73d556f826a463b53e158efa89023a24541c42ee436eaec3a8d43db9"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-tired_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7830,
+      "path": "assets/makeup-safe-regions/front-tired_front/foundation-half.png",
+      "sha256": "365744f5835cc16b8746c6022892fa9d2e4d2f1ff9a78354050e4182b1ba0a07"
+    },
+    {
+      "bytes": 7903,
+      "path": "assets/makeup-safe-regions/front-tired_front/foundation-rest.png",
+      "sha256": "3d01227b4532adf1a354107426502544ba6d259c0dd95252a44a92b60e6a3bd3"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-closed.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 6305,
+      "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-half.png",
+      "sha256": "8733951b83e037a6d8a5c10c0b54b26b0d73a1a9b533540d74deb46676813974"
+    },
+    {
+      "bytes": 6423,
+      "path": "assets/makeup-safe-regions/front-worried_front/eye-aperture-rest.png",
+      "sha256": "600919d594272a8820903ba1819b8111a3506538ac69e74fd4316195b594e234"
+    },
+    {
+      "bytes": 7697,
+      "path": "assets/makeup-safe-regions/front-worried_front/foundation-closed.png",
+      "sha256": "7c00acbeb453d4bf4ad681472f08ba9edb743b8778722513a45bc97ad3893b2f"
+    },
+    {
+      "bytes": 7827,
+      "path": "assets/makeup-safe-regions/front-worried_front/foundation-half.png",
+      "sha256": "b623007b7f4c8731dab1af27c43fadf82c0f1b6380207eb56dbf61c3a3bf21d3"
+    },
+    {
+      "bytes": 7928,
+      "path": "assets/makeup-safe-regions/front-worried_front/foundation-rest.png",
+      "sha256": "6da3bb4b6a26a692ccf0e3ee7f336550322123c12ef3de6da682ff8346adc1bb"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8530,
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-half.png",
+      "sha256": "45c1cb1215f31a8d7bf3e14debbf1140e94314d4a776e68f591dd41303c3cdff"
+    },
+    {
+      "bytes": 8554,
+      "path": "assets/makeup-safe-regions/left-neutral/eye-aperture-rest.png",
+      "sha256": "86552a81973d08e67059feb5dddd3b98efe9ee6f244569d5987f1c44c21a5911"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-closed.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-half.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 8375,
+      "path": "assets/makeup-safe-regions/left-neutral/foundation-rest.png",
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
+    },
+    {
+      "bytes": 36644319,
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
+      "sha256": "10da32ab10fb8a98daf01c4e7b5266cb151d1a96bc431c8da8e880aaa51a5a44"
+    },
+    {
+      "bytes": 6550,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_eyelid_left.png",
+      "sha256": "8d6ae30a4fb4b52d43abd0f032e6a6117f199b8c8c5ce3ded3cddda8b37ff64b"
+    },
+    {
+      "bytes": 6578,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_eyelid_right.png",
+      "sha256": "60892c42a08e642873c2b32acf2202f3f6a2e13a068c2f2af95132456f45e3be"
+    },
+    {
+      "bytes": 6563,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_iris_left.png",
+      "sha256": "16761a9dd27ec349cb0664ddd172cb7fda9f0c03c096a7e61a376920df307658"
+    },
+    {
+      "bytes": 6521,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_iris_right.png",
+      "sha256": "ca4b065b087aac3fe7894649df69070323c5d6ed4231210dd969fb5f1120c724"
+    },
+    {
+      "bytes": 7008,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_lip_lower.png",
+      "sha256": "5dc172608dcc9f2d3d36e5a435bf8f22e39b457f1b3c646a24ffecc319369afa"
+    },
+    {
+      "bytes": 6632,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_lip_upper.png",
+      "sha256": "6c31d25c1ae4ac7e4ccd08a9109af3ef6f838316635af6c7c9fb69fa7c90026e"
+    },
+    {
+      "bytes": 6492,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_oral_cavity.png",
+      "sha256": "6825ac6f7344774476943a284af58513d5b43619e14358dbfb2ea4fa70ec37ed"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+000-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6549,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_eyelid_left.png",
+      "sha256": "3eb1c61a995de0b5c83e5a2a736a4f054ed2931aaa30eaac8f54a4f994977553"
+    },
+    {
+      "bytes": 6594,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_eyelid_right.png",
+      "sha256": "6396148a3d15261e845cb40a4a7b8e41634571f1b69369040dfc156cabc4a477"
+    },
+    {
+      "bytes": 6389,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_iris_left.png",
+      "sha256": "0db2c1cdf0af66ff78c94300ad6238cf18dc4b8270aa4f1670259f9ebeaf54f8"
+    },
+    {
+      "bytes": 6418,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_iris_right.png",
+      "sha256": "0dc5c15ce2ec153886b3daf724bcea40c6bfa676585ef6c2fa622e8adee0c04d"
+    },
+    {
+      "bytes": 6973,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_lip_lower.png",
+      "sha256": "5ba133cd60ad18a19ce1583a9ea84cf13481ee096e7e5c4dcb03761ef1bb1aa5"
+    },
+    {
+      "bytes": 6706,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_lip_upper.png",
+      "sha256": "9ae2a9a3e16e3a7a5b96ddbc9f0201b3505da33d91f69a5a0bc5f850814f344e"
+    },
+    {
+      "bytes": 6417,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_oral_cavity.png",
+      "sha256": "c255eb7b91b76293b904c75b03efc88708cab166f5ea48fb6feddccf25740faa"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+015-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6502,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_eyelid_left.png",
+      "sha256": "2732f3c26899af6ad76c0da6be462486f6599c302808c9b34d8b59910ef71732"
+    },
+    {
+      "bytes": 6549,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_eyelid_right.png",
+      "sha256": "f2b76b1d07d2f7d060a77c94431f79931abf48a452740867036b55ee6eb44e13"
+    },
+    {
+      "bytes": 6420,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_iris_left.png",
+      "sha256": "52bad5ab2dce7c1a982fc77a8097324755b9c655df82a362db4180067cbf45b1"
+    },
+    {
+      "bytes": 6446,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_iris_right.png",
+      "sha256": "185ca7b974150bcea44f33b52101340ed33225732a8688265a63d5ee3208a29d"
+    },
+    {
+      "bytes": 6960,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_lip_lower.png",
+      "sha256": "516a2e772588f1af0d1c62d271d61f4dddfdca9ecbb546f6e8b7a1a572f8f8e7"
+    },
+    {
+      "bytes": 6735,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_lip_upper.png",
+      "sha256": "bc9625b90a5cb64e9806303e518c07a6c0e503e34881ceace9ced2d8e6913133"
+    },
+    {
+      "bytes": 6385,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_oral_cavity.png",
+      "sha256": "1001c9dfb4c0c902bf4d1cacde6dc8f04d9975b5486443f7801c46bf282de714"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+030-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6510,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_eyelid_left.png",
+      "sha256": "e1c1bdebec63837dcdf3e75fde7c7d859c596884f9b3ae7cf47474502595b9e7"
+    },
+    {
+      "bytes": 6546,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_eyelid_right.png",
+      "sha256": "a3f01f7840622952985d0f33e583f69dc95629992211b69eeb198117baf9f964"
+    },
+    {
+      "bytes": 6297,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_iris_left.png",
+      "sha256": "9ff1c676e88f5df290f153a797b98fd799d1328429d0122bc2072977264b2ece"
+    },
+    {
+      "bytes": 6427,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_iris_right.png",
+      "sha256": "ddb45236242f9d7b9aaa9f71d10023774e14c01e23e503d8777a34de3ab35dda"
+    },
+    {
+      "bytes": 6870,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_lip_lower.png",
+      "sha256": "9d1cfcac5f82930ce16900092933c95fe267dd39a8231e8924a19079609c88fa"
+    },
+    {
+      "bytes": 6647,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_lip_upper.png",
+      "sha256": "667edddd080ab33f4a991c9029b31268e41c4c6c392af72a3fac38b9417bfe6e"
+    },
+    {
+      "bytes": 6467,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_oral_cavity.png",
+      "sha256": "4ef435cfecbb9049f90fcf66fe545013a302de49cdb0bf260eab617b272cbf83"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+045-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 7788,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_eyelid_right.png",
+      "sha256": "0d29eb771963673c359080a36c6a3d855fe1008689a35a6bc191e13450bde276"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6981,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_iris_right.png",
+      "sha256": "e3a716f2aea85bde1c438bc4e6ba560eabe1ca5359535f42e6da3714f32863ca"
+    },
+    {
+      "bytes": 6803,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_lip_lower.png",
+      "sha256": "c3b0d3a9d955e067efd54d6c17dcd3cfd4fcd8ecbda920951b6ae4662d62b0ee"
+    },
+    {
+      "bytes": 6652,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_lip_upper.png",
+      "sha256": "8a8eed19cbd22bcc0001a80483dd57fece16b9a4d782b1e3114dfd7f571ac39b"
+    },
+    {
+      "bytes": 6409,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_oral_cavity.png",
+      "sha256": "8e091656244534a8e97dfff02332b20c290cb78298da2add68be0c35527a2e71"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+060-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6254,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_eyelid_left.png",
+      "sha256": "e4c71bedee9d84fae4b355c696eefe49c6b7c98a2bfaec402204540246bbb22f"
+    },
+    {
+      "bytes": 8052,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_eyelid_right.png",
+      "sha256": "9f12d1cdfe7bf53e9e1533f7cc1aebee508707d01f2e528e7e066a5697bc60fa"
+    },
+    {
+      "bytes": 6268,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_iris_left.png",
+      "sha256": "58385ccbe2a3dd1c10b0c03e2cf6651c9e141e6a16fe553d1ea3235a249a0817"
+    },
+    {
+      "bytes": 6942,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_iris_right.png",
+      "sha256": "13d2e68b96269ecb5b4bfe16af4e3b326bd77b5f2ecb3450a263a6dd91895b28"
+    },
+    {
+      "bytes": 7062,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_lip_lower.png",
+      "sha256": "2f51757a40f2192e1dd14fa4d954462bfee7206ad143111a661a3f0944a21176"
+    },
+    {
+      "bytes": 6718,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_lip_upper.png",
+      "sha256": "bd819a9994d4cdc7ad0e0924a84f6c3cf477aedb87462db0e7b3f1ce9f2438f2"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+075-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6410,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_eyelid_right.png",
+      "sha256": "12b6b7cd46f9656b17c035c0343d82894f29a965b074ffedb95dc4031e671b99"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6237,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_iris_right.png",
+      "sha256": "bed78e6552dae730dd9fc4cabbeb63288cf299867bdb76da03ff239cee7664d2"
+    },
+    {
+      "bytes": 6496,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_lip_lower.png",
+      "sha256": "ef5c570cc3107504f23940414009e3f01fecdf41b4c8ecd6f26d2d7dbd986a2b"
+    },
+    {
+      "bytes": 6483,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_lip_upper.png",
+      "sha256": "3aadae1c3a2e70aef8febac79befb2126c0ad12c84fbca019d02d9e07720a884"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+090-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+105-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+120-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+135-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+150-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw+165-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6602,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_eyelid_left.png",
+      "sha256": "ee0e11b6967d40fbf6f71e4cd1b87e9d2cb5dee5eeee4bdad17d30392c55c06f"
+    },
+    {
+      "bytes": 6563,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_eyelid_right.png",
+      "sha256": "d5be11c286e5441b2cc007449d9c31b7017479aa68996c0b3f446789733a4042"
+    },
+    {
+      "bytes": 6488,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_iris_left.png",
+      "sha256": "9cbfef0e7b6946e6885f73b330f675cb24655421551fce4f40be0cd1d205c348"
+    },
+    {
+      "bytes": 6447,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_iris_right.png",
+      "sha256": "4852d2664847b5d9a425cf51b1665e26fd00898417a5238dd57584d6e03843dc"
+    },
+    {
+      "bytes": 6884,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_lip_lower.png",
+      "sha256": "cc5932af13ebe55fd16bd20ac05ac8a46f061c118e53c3d215ad81cd914d5543"
+    },
+    {
+      "bytes": 6616,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_lip_upper.png",
+      "sha256": "49091b75f769cef907536e300a8c34560d4763d46c93ec260185fc1517120a5c"
+    },
+    {
+      "bytes": 6418,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_oral_cavity.png",
+      "sha256": "b848d42986032612d10ecc180deb2f5cb10e386bd7be665fd0a980555969c242"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-015-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6595,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_eyelid_left.png",
+      "sha256": "5e9876bb9ee4a7ed2028774350c468ce613ea8db35b9fed2a7946d3908690ea4"
+    },
+    {
+      "bytes": 6521,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_eyelid_right.png",
+      "sha256": "3efcd00477df968cc0645b96386a6905ef63e6c4b944c01275a086c3d968b272"
+    },
+    {
+      "bytes": 6440,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_iris_left.png",
+      "sha256": "72f2d8bd4362da7cfaf8c9b454030a37599eb4d3927b38c5be962cfe649a0cf5"
+    },
+    {
+      "bytes": 6341,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_iris_right.png",
+      "sha256": "ace0b1e57277cafc1525c105e7b85acc2f3e18b006a82d6dc7d4f51436ac21b3"
+    },
+    {
+      "bytes": 6805,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_lip_lower.png",
+      "sha256": "4de98137e8906093188cdca39fe1396f9bf8b9f0b912c59709384f176260ec97"
+    },
+    {
+      "bytes": 6622,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_lip_upper.png",
+      "sha256": "71ee81e8586c119624470197da8d46dc3a700a939854a9cab660ae27b54ea5a0"
+    },
+    {
+      "bytes": 6393,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_oral_cavity.png",
+      "sha256": "184a7c7ce6d2a1e795aecabc178f5f9f8881e0b00cad8f63794a74a90edce87a"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-030-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6506,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_eyelid_left.png",
+      "sha256": "63e9e3b624437289be8f375ba6f7b512afaa25168683ac1d1116947321b14fd7"
+    },
+    {
+      "bytes": 6470,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_eyelid_right.png",
+      "sha256": "3053d098ae54d1792e8356ab4d291eb7972f4c57c16a509f80e2129b1b952af7"
+    },
+    {
+      "bytes": 6432,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_iris_left.png",
+      "sha256": "29fda6fee7e5d31c7f7367be361688eb2f544c5cecc9ee8c9115b012df34186b"
+    },
+    {
+      "bytes": 6245,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_iris_right.png",
+      "sha256": "64aea1039a43871e39856a0183f70bb3ea21c2e55f2c37a5e63b719a078b7eb9"
+    },
+    {
+      "bytes": 6796,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_lip_lower.png",
+      "sha256": "f8556d87b5a71b34de6a6f981acbbe91e1a2f3b6f26be60d5d3769c07d444117"
+    },
+    {
+      "bytes": 6583,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_lip_upper.png",
+      "sha256": "94d1f5d78d9a33ab8abeb8b5959eeda1b4787e7aed33ca20081e3d300e39e71d"
+    },
+    {
+      "bytes": 6371,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_oral_cavity.png",
+      "sha256": "371eac42faaa75f53eb974356e5d0b227a3d70c5a308415b69e6809facd9948f"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-045-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 7219,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_eyelid_left.png",
+      "sha256": "d5ca8623eed716826d6f32aefb53dc17bcea097d215d3193cf255b52740395b6"
+    },
+    {
+      "bytes": 7007,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_eyelid_right.png",
+      "sha256": "c3ad1379aa6e72dd8532e3ca611bce67cab250455370cd06bfbb73f069fa52be"
+    },
+    {
+      "bytes": 6671,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_iris_left.png",
+      "sha256": "ed729bb7b41c439578987ae6bf3c273a22bdb32eb12c678a33ce7691aeff4a70"
+    },
+    {
+      "bytes": 6660,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_iris_right.png",
+      "sha256": "3eaedb9639dabe588e919c391a5c50e5db8455466cb57160de9c340ac92dfbbe"
+    },
+    {
+      "bytes": 6698,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_lip_lower.png",
+      "sha256": "99f4604ffafc26bafe6dd9cd3b906a21ca865d989b0bae6c5a7b4648168ef40f"
+    },
+    {
+      "bytes": 6551,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_lip_upper.png",
+      "sha256": "0773b4e4fc271a6b4a5d037b7c68164412d4200050449c4cc9f08562c7d7caed"
+    },
+    {
+      "bytes": 6332,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_oral_cavity.png",
+      "sha256": "faa040814d50d48f76abaa36c7145205333bf03d534a8b9ccc803b71f947496c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-060-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 7114,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_eyelid_left.png",
+      "sha256": "b3c75361bd2777909c0882b2c6bebe25aa09cc001ce94f8790c248f760b62196"
+    },
+    {
+      "bytes": 6859,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_eyelid_right.png",
+      "sha256": "38dccb921eae8bc0ea27a041830a465dbdf282d30374bb4513271730612fa56c"
+    },
+    {
+      "bytes": 6599,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_iris_left.png",
+      "sha256": "c478ec4240f528623e4ac65927aa9211cdab4c5c1dd4174fcc13f1cd6126f534"
+    },
+    {
+      "bytes": 6587,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_iris_right.png",
+      "sha256": "053a4967bfc1f2e004ee3d5a116e47d75fab2497147ba8c981ae7a64458d4505"
+    },
+    {
+      "bytes": 6711,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_lip_lower.png",
+      "sha256": "bdfcd1c38cb292c9c66d558c8543b866f35362298c2bfd1c5a5de89875201017"
+    },
+    {
+      "bytes": 6546,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_lip_upper.png",
+      "sha256": "2cb484f9162287f8da3582af8d38b7df96ed2dedf6ad7a1d230afa51528f3f71"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-075-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6411,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_eyelid_left.png",
+      "sha256": "16905b6e061b375a94f25af4ecbaebc5a3f8a9a1a0ee1b35df520f00f3df4133"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6234,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_iris_left.png",
+      "sha256": "78e50afb7595ae0883f583be38f89cacfbe3b00527c8105ad21aa82048400061"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6519,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_lip_lower.png",
+      "sha256": "84c1c3ed90e1eb30bb697e47f33f88c1b76b994cd29ddc449fd3916085d6acd6"
+    },
+    {
+      "bytes": 6477,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_lip_upper.png",
+      "sha256": "a88d34fcae77751762d1797560547ea23a6fc0d0bb423731ca8639a2c18d5ead"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-090-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-105-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-120-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-135-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-150-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-165-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_eyelid_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_eyelid_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_iris_left.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_iris_right.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_lip_lower.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_lip_upper.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_oral_cavity.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "bytes": 6178,
+      "path": "assets/pose-atlas/v5-base-layered/yaw-180-pitch+00_teeth_tongue.png",
+      "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    }
+  ],
+  "pack_id": "flameblade.lin-keyun",
+  "pack_version": "1.0.4",
+  "package_hash": "b9b319adb425f2a97e547c4e3c6fe37c5853d24645e10250e787e8a9d573292d",
+  "schema": "flameblade.character-pack-lock.v1",
+  "schema_version": 1,
+  "source": {
+    "release_tag": "lin-keyun-pack-v1.0.4",
+    "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
+  },
+  "validation_limits": {
+    "max_archive_bytes": 1073741824,
+    "max_compression_ratio": 100,
+    "max_file_bytes": 67108864,
+    "max_files": 4096,
+    "max_manifest_bytes": 1048576,
+    "max_total_bytes": 1073741824,
+    "max_zip_directory_bytes": 8388608
+  }
+}

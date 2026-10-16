@@ -69,7 +69,7 @@ class GestureApplicationAdapter:
     def set_interaction_mode(self, mode: str) -> None:
         canonical = mode.strip()
         if canonical not in {"work", "companion", "do-not-disturb"}:
-            raise ValueError("Gesture interaction mode is unsupported.")
+            raise ValueError("Gesture interaction mode needs a supported value.")
         self._callbacks.set_interaction_mode(canonical)
 
     def acknowledge_positive(self) -> None:

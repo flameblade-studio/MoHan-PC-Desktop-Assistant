@@ -81,7 +81,7 @@ def _scan_layers(
         alpha_sum += use.astype(np.uint16)
         layers[name] = {"alpha_pixels": count, "bbox": _bbox(use), "pixel_hash": _hash_pixels(arr)}
     for name in blank_pending:
-        if name in ("teeth_tongue", "oral_cavity"):
+        if name in {"teeth_tongue", "oral_cavity"}:
             # Speech-contract layers: closed-mouth neutrals keep teeth_tongue
             # empty everywhere, and profile views outside the visible
             # speech-mouth set keep the oral cavity empty as well.
@@ -90,7 +90,7 @@ def _scan_layers(
             continue
         base_name, _, side = name.rpartition("_")
         if (
-            side in ("left", "right")
+            side in {"left", "right"}
             and base_name in PAIRED_FACE_LAYERS
         ):
             # A profile view legitimately hides the far-side member of a
@@ -114,8 +114,8 @@ def _mouth_and_ornament_checks(
     lip_mask = (_rgba(layer_dir / f"{view}_lip_upper.png")[:, :, 3] > 0) | (_rgba(layer_dir / f"{view}_lip_lower.png")[:, :, 3] > 0)
     oral_mask = _rgba(layer_dir / f"{view}_oral_cavity.png")[:, :, 3] > 0
     if not oral_mask.any():
-        # Profile views keep the mouth visible but deliberately own no oral
-        # cavity: the speech contract only paints an open mouth for views in
+        # Profile views keep the mouth visible and the oral cavity
+        # transparent: the speech contract only paints an open mouth for views in
         # the visible-speech-mouth set, so an empty cavity layer is valid.
         pass
     elif not _intersects(_bbox(lip_mask), _bbox(oral_mask)):

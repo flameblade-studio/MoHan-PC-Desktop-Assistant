@@ -1,0 +1,4 @@
+### 髮飾動畫繪製順序／发饰动画绘制顺序／Animated headwear paint order／髪飾りの動的描画順序
+
+* 髮飾可明確宣告 `occludes_makeup: true`，與前髮在同一階段依原定順序繪製，避免髮飾被後畫的前髮蓋住。／发饰可明确声明 `occludes_makeup: true`，与前发在同一阶段按原定顺序绘制，避免发饰被后画的前发盖住。／Headwear may explicitly declare `occludes_makeup: true` to share the front-hair paint phase in authored order, preventing later front hair from hiding it.／髪飾りは `occludes_makeup: true` を明示して前髪と同じ段階で指定順に描画でき、後から描く前髪による隠れを防ぎます。
+* 省略或 `false` 保留舊繪製階段；身分保護、Alpha、雜湊與錨點驗證不變。測試涵蓋明確啟用、舊預設及半透明髮飾只繪製一次。／省略或 `false` 保留旧绘制阶段；身份保护、Alpha、哈希与锚点验证不变。测试覆盖明确启用、旧默认及半透明发饰只绘制一次。／Omission or `false` preserves the legacy phase and identity, alpha, hash and anchor validation. Tests cover opt-in, legacy defaults and translucent headwear painted exactly once.／省略または `false` では従来の段階と、本人性・Alpha・ハッシュ・アンカー検証を維持します。明示的有効化、従来値、半透明の髪飾りを一度だけ描く動作をテストします。

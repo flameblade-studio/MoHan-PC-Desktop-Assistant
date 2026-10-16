@@ -66,7 +66,7 @@ def _assert_local_speech_completion(
     assert window.speech_finish_timer.isActive()
     assert window.mouth_visual_timer.isActive()
     assert window.current_expression == "idle_front"
-    # Duplicate completion signals must not skip the natural mouth close.
+    # Duplicate completion signals preserve the natural mouth-close transition.
     window._speech_audio_finished()
     assert window.speech_playing
     assert window.speech_finish_timer.isActive()
@@ -119,7 +119,7 @@ def _assert_normal_realtime_answer(
     app: QApplication,
     window: CompanionWindow,
 ) -> None:
-    # "speaking" must never survive as a post-audio state.
+    # Audio completion transitions speaking to its proper post-audio state.
     window._realtime_speaking(True)
     window._realtime_assistant_text("主上，妾已經聽明白了。")
     assert window.realtime_after_speech_state == "idle"
@@ -157,7 +157,7 @@ def _assert_answer_state_reset(
     window._realtime_speaking(False)
     _process_after(app, 130)
     assert window.state == "idle"
-    # A stale delayed idle callback cannot interrupt an active answer.
+    # An active answer retains priority over a stale delayed idle callback.
     window._realtime_speaking(True)
     window._return_to_idle()
     assert window.state == "speaking"

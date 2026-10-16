@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import json
 lazy import sys
 lazy import time
@@ -75,7 +77,7 @@ def _probe_calendar_legacy_arguments(token: str) -> None:
         "讀取今天到明天的 Google Calendar 行程",
     )
     if provider != "google":
-        raise RuntimeError("provider normalization failed")
+        raise RuntimeError("provider normalization requires correction")
     start, end = FlagshipControlCenter._calendar_read_bounds(
         {"range": "today_to_tomorrow", "source": "google_calendar"}
     )
@@ -85,7 +87,7 @@ def _probe_calendar_legacy_arguments(token: str) -> None:
 def _probe_drive_legacy_arguments(token: str) -> None:
     provider = normalize_cloud_provider("", "在 Google Drive 中搜尋檔名")
     if provider != "google":
-        raise RuntimeError("provider normalization failed")
+        raise RuntimeError("provider normalization requires correction")
     arguments = {"query": "墨寒", "search_scope": "name_only"}
     name = str(
         arguments.get("name")
@@ -137,6 +139,7 @@ def _run_probes(probes: dict[str, Probe]) -> int:
 
 
 def main(data_path_text: str) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     token, status = _load_access_token(data_path_text)
     if token is None:
         return status

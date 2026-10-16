@@ -9,10 +9,10 @@
 ### 貢獻要求
 
 1. 建立範圍集中的分支。
-2. 不得將使用者資料、API 金鑰、錄音或生成的資料庫加入 commit。
+2. commit 的內容範圍限於已移除使用者資料、API 金鑰、錄音及生成資料庫的檔案。
 3. 維持既有 SQLite 資料庫的向後相容性。
 4. 每個新的行為預設值都必須提供使用者覆寫方式，或記錄不提供的理由。
-5. 全新安裝不得預設加入特定職業專用的平台。
+5. 全新安裝的預設平台維持通用用途；特定職業平台由使用者主動加入。
 6. 行為變更必須新增或更新自動化測試。
 7. 執行核心、UI、動畫、語音狀態及封裝後遷移測試。
 8. 在 Pull Request 說明使用者可見變更及隱私／安全影響。
@@ -21,15 +21,15 @@
 
 ### CHANGELOG 片段
 
-每個 Pull Request 的使用者可見變更都必須新增 `changelog.d/<name>.md`，不要直接編輯 `CHANGELOG.md` 的未發布段落。新片段以一個變更一檔，標題與每條列依繁中／簡中／English／日本語以全形斜線 `／` 分隔；既有未發布內容的遷移片段可保留原文，並由 `tools/assemble_changelog.py` 在 Release Please 產生版本標題後組裝。
+每個 Pull Request 的使用者可見變更都必須新增 `changelog.d/<name>.md`，`CHANGELOG.md` 的未發布段落由組裝工具統一產生。新片段以一個變更一檔，標題與每條列依繁中／簡中／English／日本語以全形斜線 `／` 分隔；既有未發布內容的遷移片段可保留原文，並由 `tools/assemble_changelog.py` 在 Release Please 產生版本標題後組裝。
 
 ### 翻譯與持久資料
 
-翻譯必須保留所有 placeholder，且不得僅為翻譯顯示文字而變更已持久化的資料庫值。
+翻譯必須保留所有 placeholder，並讓已持久化的資料庫值保持原值，翻譯僅作用於顯示文字。
 
 ### 安全漏洞
 
-不得在公開 Issue 或 Pull Request 揭露金鑰、權杖、私人對話、錄音、個人資料庫、未遮蔽截圖或尚未修補的漏洞。安全問題請依 [SECURITY.md](SECURITY.md) 私下回報。
+公開 Issue 與 Pull Request 只使用已移除金鑰、權杖、私人對話、錄音、個人資料庫及未遮蔽截圖的內容；修補中的漏洞與安全問題請依 [SECURITY.md](SECURITY.md) 私下回報。
 
 ## 简体中文
 
@@ -40,10 +40,10 @@
 ### 贡献要求
 
 1. 创建范围集中的分支。
-2. 不得将用户数据、API 密钥、录音或生成的数据库加入 commit。
+2. commit 的内容范围限于已移除用户数据、API 密钥、录音及生成数据库的文件。
 3. 维持现有 SQLite 数据库的向后兼容性。
 4. 每个新的行为默认值都必须提供用户覆盖方式，或记录不提供的理由。
-5. 全新安装不得默认加入特定职业专用的平台。
+5. 全新安装的默认平台保持通用用途；特定职业平台由用户主动加入。
 6. 行为变更必须新增或更新自动化测试。
 7. 执行核心、UI、动画、语音状态及封装后迁移测试。
 8. 在 Pull Request 说明用户可见变更及隐私／安全影响。
@@ -52,15 +52,15 @@
 
 ### CHANGELOG 片段
 
-每个 Pull Request 的用户可见变更都必须新增 `changelog.d/<name>.md`，不要直接编辑 `CHANGELOG.md` 的未发布段落。新片段按一个变更一个文件，标题与每个列表项按繁中／简中／English／日本語以全角斜线 `／` 分隔；既有未发布内容的迁移片段可保留原文，并由 `tools/assemble_changelog.py` 在 Release Please 产生版本标题后组装。
+每个 Pull Request 的用户可见变更都必须新增 `changelog.d/<name>.md`，`CHANGELOG.md` 的未发布段落由组装工具统一生成。新片段按一个变更一个文件，标题与每个列表项按繁中／简中／English／日本語以全角斜线 `／` 分隔；既有未发布内容的迁移片段可保留原文，并由 `tools/assemble_changelog.py` 在 Release Please 产生版本标题后组装。
 
 ### 翻译与持久数据
 
-翻译必须保留所有 placeholder，且不得仅为翻译显示文字而变更已持久化的数据库值。
+翻译必须保留所有 placeholder，并让已持久化的数据库值保持原值，翻译仅作用于显示文字。
 
 ### 安全漏洞
 
-不得在公开 Issue 或 Pull Request 泄露密钥、令牌、私人对话、录音、个人数据库、未遮蔽截图或尚未修补的漏洞。安全问题请依 [SECURITY.md](SECURITY.md) 私下报告。
+公开 Issue 与 Pull Request 只使用已移除密钥、令牌、私人对话、录音、个人数据库及未遮蔽截图的内容；修补中的漏洞与安全问题请依 [SECURITY.md](SECURITY.md) 私下报告。
 
 ## English
 
@@ -73,25 +73,25 @@ Thank you for improving MoHan. Before starting a substantial change, read the [r
 1. Create a focused branch.
 2. Keep user data, API keys, recordings, and generated databases out of commits.
 3. Preserve backward compatibility for existing SQLite databases.
-4. Every new behavioral default must have a user override or a documented reason for not providing one.
-5. Do not add profession-specific platforms to a fresh installation by default.
+4. Every new behavioral default includes a user override or a documented fixed-policy rationale.
+5. A fresh installation uses general-purpose platform defaults; users add profession-specific platforms explicitly.
 6. Add or update automated tests for behavior changes.
 7. Run the core, UI, animation, speech-state, and packaged migration tests.
 8. Describe user-visible changes and privacy or security effects in the Pull Request.
 9. Resolve every review conversation and wait for all required GitHub checks to pass.
-10. Never bypass protected `main`, force-push it, or reuse a published tag.
+10. Protected `main`, regular non-force pushes, and unique published tags are the required integration path.
 
 ### CHANGELOG fragments
 
-Every user-visible change in a Pull Request must add `changelog.d/<name>.md`; do not edit the unreleased part of `CHANGELOG.md` directly. Use one file per change, with each new title and bullet providing Traditional Chinese／Simplified Chinese／English／Japanese separated by the full-width slash `／`; migrated unreleased content may retain its original wording and is assembled by `tools/assemble_changelog.py` after Release Please creates the version heading.
+Every user-visible change in a Pull Request must add `changelog.d/<name>.md`; the assembly tool is the sole writer of the unreleased part of `CHANGELOG.md`. Use one file per change, with each new title and bullet providing Traditional Chinese／Simplified Chinese／English／Japanese separated by the full-width slash `／`; migrated unreleased content may retain its original wording and is assembled by `tools/assemble_changelog.py` after Release Please creates the version heading.
 
 ### Translation and persisted data
 
-Translations must preserve every placeholder and must not change persisted database values merely to translate display text.
+Translations must preserve every placeholder and keep persisted database values unchanged while translation applies only to display text.
 
 ### Security vulnerabilities
 
-Do not disclose keys, tokens, private conversations, recordings, personal databases, unredacted screenshots, or unpatched vulnerabilities in a public Issue or Pull Request. Report security concerns privately according to [SECURITY.md](SECURITY.md).
+Public Issues and Pull Requests contain material from which keys, tokens, private conversations, recordings, personal databases, and unredacted screenshots have been removed. Vulnerabilities awaiting a patch and other security concerns follow the private process in [SECURITY.md](SECURITY.md).
 
 ## 日本語
 
@@ -114,7 +114,7 @@ Do not disclose keys, tokens, private conversations, recordings, personal databa
 
 ### CHANGELOG フラグメント
 
-Pull Request の利用者向け変更ごとに `changelog.d/<name>.md` を追加し、`CHANGELOG.md` の未公開部分を直接編集してはいけません。新しい見出しと各箇条書きは、繁体字中国語／簡体字中国語／English／日本語を全角スラッシュ `／` で区切って揃えます。既存の未公開内容を移行したフラグメントは元の文言を保持し、Release Please がバージョン見出しを作成した後に `tools/assemble_changelog.py` で組み立てます。
+Pull Request の利用者向け変更ごとに `changelog.d/<name>.md` を追加し、`CHANGELOG.md` の未公開部分は組み立てツールが一元的に生成します。新しい見出しと各箇条書きは、繁体字中国語／簡体字中国語／English／日本語を全角スラッシュ `／` で区切って揃えます。既存の未公開内容を移行したフラグメントは元の文言を保持し、Release Please がバージョン見出しを作成した後に `tools/assemble_changelog.py` で組み立てます。
 
 ### 翻訳と永続化データ
 

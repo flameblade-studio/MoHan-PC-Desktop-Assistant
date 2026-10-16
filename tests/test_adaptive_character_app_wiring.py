@@ -167,13 +167,11 @@ def assert_v4_publish_and_speech_hold_preserve_geometry() -> None:
 
 
 def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
-    """A published v4 full-body frame must keep owning the canvas during speech.
+    """A published v4 full-body frame keeps canvas ownership during speech.
 
-    The v4 full-body composition renders its own speech mouth from
-    speech-performance events.  The legacy viseme path (``_audio_viseme_cue``)
-    must not run in parallel: it would reset ``_adaptive_full_body_active`` and
-    let the suppressed half-body overlays return, stacking a second body over
-    the full-body frame (the reported startup double image).
+    Speech-performance events drive the full-body mouth. The legacy
+    _audio_viseme_cue path remains suppressed to preserve
+    _adaptive_full_body_active and the single full-body composition.
     """
     factory = FakeFactory()
     window = CompanionWindow(
@@ -207,9 +205,8 @@ def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
 
         window._record_speech_performance = record_viseme
 
-        # A live viseme cue during speech must not hand the canvas back to the
-        # legacy half-body renderer, and it must still reach the adaptive
-        # renderer that owns the full-body mouth.
+        # A live speech viseme reaches the adaptive renderer that owns the full-body
+        # mouth, while the legacy half-body renderer remains suppressed.
         window.state = "speaking"
         window.audio_driven_mouth = True
         window.mouth_closing = False
@@ -219,7 +216,7 @@ def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
         for _ in range(5):
             window._audio_viseme_cue(cue_level, "A")
         assert window._adaptive_full_body_active is True, (
-            "_audio_viseme_cue must not reset full-body ownership"
+            '_audio_viseme_cue must preserve full-body ownership'
         )
         accepted_updates = [update for update in recorded_updates if update is not None]
         assert accepted_updates, recorded_updates
@@ -231,13 +228,11 @@ def assert_audio_viseme_does_not_reset_full_body_ownership() -> None:
 
 
 def assert_expression_state_does_not_reset_full_body_ownership() -> None:
-    """A wave/arrival expression must not hand the canvas back to legacy sprites.
+    """Wave and arrival expressions preserve full-body canvas ownership.
 
-    ``set_state`` switches the legacy half-body sprite for expressive states.
-    In full-body mode that switch would reset ``_adaptive_full_body_active`` and
-    stack the suppressed overlays back over the full-body photograph (the
-    reported double image).  The full-body widget must keep owning the canvas
-    while the gesture animation still provides a visible body response.
+    In full-body mode, set_state keeps _adaptive_full_body_active and the
+    full-body widget in charge while the gesture animation provides a visible
+    response. Legacy half-body sprites remain suppressed throughout.
     """
     factory = FakeFactory()
     window = CompanionWindow(
@@ -258,7 +253,7 @@ def assert_expression_state_does_not_reset_full_body_ownership() -> None:
         accepted = window.set_state("happy", source="visual", intensity=0.6)
         assert accepted is True
         assert window._adaptive_full_body_active is True, (
-            "set_state must not reset full-body ownership"
+            'set_state must preserve full-body ownership'
         )
         assert window.state == "happy"
     finally:
@@ -266,14 +261,11 @@ def assert_expression_state_does_not_reset_full_body_ownership() -> None:
 
 
 def assert_blink_does_not_reset_full_body_ownership() -> None:
-    """A blink must not overwrite the full-body photograph with a half-body patch.
+    """Blinking preserves the full-body photograph and its canvas ownership.
 
-    The legacy ``_blink`` path composites a half-body blink sprite over the
-    current pixmap.  In full-body mode that would stack a half-body blink patch
-    over the full-body photograph (the reported double image).  The full-body
-    renderer owns its own eyelids from ``blink_opacity``, so a blink must only
-    mutate ``blink_opacity`` and re-compose the full body, never reset the
-    ownership flag or hand the canvas back to the legacy half-body renderer.
+    The full-body renderer updates blink_opacity and recomposes its own eyelids.
+    The ownership flag remains set and the legacy half-body blink patch stays
+    suppressed, preserving a single full-body composition.
     """
     factory = FakeFactory()
     window = CompanionWindow(
@@ -293,12 +285,12 @@ def assert_blink_does_not_reset_full_body_ownership() -> None:
 
         window.state = "idle"
         # ``defer_visual_startup`` skips the blink timer wiring, so provide a
-        # minimal timer for ``_schedule_blink`` to arm without a real event loop.
+        # minimal timer for _schedule_blink in this isolated event-loop fixture.
         window.blink_timer = QTimer(window)
         window.blink_timer.setSingleShot(True)
         window._blink()
         assert window._adaptive_full_body_active is True, (
-            "_blink must not reset full-body ownership"
+            '_blink must preserve full-body ownership'
         )
         assert window.blink_opacity > 0.0, (
             "_blink must drive blink_opacity for the full-body renderer"
@@ -308,13 +300,11 @@ def assert_blink_does_not_reset_full_body_ownership() -> None:
 
 
 def assert_half_body_framing_does_not_publish_full_body() -> None:
-    """HALF/CLOSE framing (idle and speech) must keep the half-body poses.
+    """HALF/CLOSE framing keeps the half-body poses during idle and speech.
 
-    The v4 full-body photograph is reserved for gestures, hand actions,
-    accessory reveals, owner arrival and special occasions (THREE_QUARTER /
-    FULL_BODY framing).  Idle and speech use HALF framing, which must not
-    publish the full-body photograph — the legacy half-body poses (cheek-rest,
-    left-neutral, front-crossed) stay in charge.
+    Full-body photographs serve gestures, hand actions, accessory reveals,
+    owner arrival, and special occasions under THREE_QUARTER/FULL_BODY.
+    HALF framing retains cheek-rest, left-neutral, and front-crossed poses.
     """
     factory = FakeFactory()
     window = CompanionWindow(
@@ -327,12 +317,12 @@ def assert_half_body_framing_does_not_publish_full_body() -> None:
         runtime = factory.runtime
         assert runtime is not None
         runtime.publish = True
-        # HALF framing must not publish the full-body photograph.
+        # HALF framing publishes the half-body pose exclusively.
         runtime.framing_mode = FramingMode.HALF
         decision = window._dispatch_adaptive_character_frame(atomic_frame())
         assert decision is not None and decision.should_publish
         assert window._adaptive_full_body_active is False, (
-            "HALF framing must not publish the full-body photograph"
+            'HALF framing must publish the half-body pose exclusively'
         )
         # FULL_BODY framing must publish the full-body photograph.
         runtime.framing_mode = FramingMode.FULL_BODY

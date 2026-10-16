@@ -1,0 +1,3 @@
+### 官方角色包上限 1 GiB／官方角色包上限 1 GiB／1 GiB official character-pack ceiling／公式キャラクターパック上限 1 GiB
+
+- 正面 13 表情完整幀使墨寒與林可芸角色包約達 960 MB，官方角色包的 ZIP 與合計上限由 768 MiB 提高為 1 GiB，與外觀包上限一致；格式預設值不變。／正面 13 表情完整帧使墨寒与林可芸角色包约达 960 MB，官方角色包的 ZIP 与合计上限由 768 MiB 提高为 1 GiB，与外观包上限一致；格式默认值不变。／The 13 front complete-expression frames bring the MoHan and Lin Keyun packs to about 960 MB, so the official pack ZIP and aggregate ceilings rise from 768 MiB to 1 GiB, matching the appearance-pack ceiling; format defaults are unchanged.／正面 13 表情の完全フレームで墨寒と林可芸のパックが約 960 MB になるため、公式パックの ZIP と合計の上限を 768 MiB から 1 GiB に引き上げ、外観パックの上限にそろえます。形式の既定値は変更しません。

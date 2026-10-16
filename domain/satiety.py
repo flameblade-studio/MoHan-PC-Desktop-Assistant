@@ -7,7 +7,7 @@ raises her satiety.  When satiety runs low, her Live 2.5D motion grows sluggish
 — she is too hungry to blink energetically — and her speech turns listless.
 This ties the Ko-fi sponsorship gesture to the character's vitality.
 
-This module is pure domain logic with no Qt dependency.  Satiety decays slowly
+This module is pure domain logic with Qt outside the domain boundary.  Satiety decays slowly
 over time and rises with each ration, always bounded within [0, 1].
 """
 

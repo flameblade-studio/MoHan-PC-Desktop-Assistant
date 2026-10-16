@@ -28,6 +28,9 @@ lazy from PySide6.QtGui import (
 )
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import (
+    activate_product_character_runtime,
+)
 lazy from infrastructure.app_resources import STYLE
 lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.first_run_wizard import FirstRunWizard
@@ -42,7 +45,10 @@ lazy from tools.capture_media_contract import (
     select_dashboard_tab,
 )
 lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
-lazy from tools.render_marketing_portraits import render_all, render_portrait
+lazy from tools.render_marketing_portraits import (
+    prepare_marketing_store, render_all, render_portrait,
+)
+
 
 def seed_demo_database(db: StudioDB) -> None:
     settings = {
@@ -85,7 +91,7 @@ def seed_demo_database(db: StudioDB) -> None:
 
 
 def seed_demo_memories(db: StudioDB) -> None:
-    """Insert the screenshot fixture without requiring the optional text normalizer."""
+    """Insert the screenshot fixture directly using its prepared text."""
 
     now = local_wall_time().isoformat(timespec="seconds")
     rows = (
@@ -126,7 +132,7 @@ def seed_demo_memories(db: StudioDB) -> None:
 def grab_widget_image(widget) -> QImage:
     image = widget.grab().toImage().convertToFormat(QImage.Format_ARGB32)
     if image.isNull():
-        raise RuntimeError("Could not grab widget image")
+        raise RuntimeError("Widget capture requires a valid rendered image")
     return image
 
 
@@ -459,7 +465,7 @@ def ffmpeg_binary(explicit: str = "") -> str:
     for candidate in candidates:
         if candidate and Path(candidate).exists():
             return str(Path(candidate))
-    raise RuntimeError("FFmpeg not found. Set FFMPEG_BINARY to ffmpeg.exe.")
+    raise RuntimeError("Set FFMPEG_BINARY to an available ffmpeg.exe.")
 
 
 def prepare_demo_profile(temp_dir: str) -> None:
@@ -497,7 +503,7 @@ def create_capture_dashboard(
     *,
     dependencies_factory=dependencies,
 ) -> tuple[StudioDB, Dashboard]:
-    """Build a dashboard over the prepared demo database without resetting it."""
+    """Build a dashboard using the prepared demo database in its current state."""
 
     set_motion_override(False)
     db = StudioDB(Path(temp_dir) / "mohan-zh-TW.db")
@@ -523,12 +529,12 @@ def capture_conversation_assets(
     )
     character = representative_character(overlay)
     if not character.save(str(output_dir / "desktop-character.png")):
-        raise RuntimeError("Could not save the desktop character preview")
+        raise RuntimeError("Saving the desktop character preview requires attention; check the output path and image encoder.")
     return conversation
 
 
 def representative_character(overlay: ActiveOutfitOverlay) -> QImage:
-    return render_portrait(overlay, "attentive_front")
+    return render_portrait(overlay, "gentle_smile_front")
 
 
 def capture_task_assets(
@@ -653,12 +659,19 @@ def capture_media(
     ffmpeg: str | None,
     selected_tab: str = "all",
 ) -> float | None:
+    activate_product_character_runtime(ROOT)
     output_dir.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="mohan-readme-profile-") as temp_dir:
         os.environ["MOHAN_DATA_DIR"] = temp_dir
         prepare_demo_profile(temp_dir)
         app = create_capture_app()
-        overlay = ActiveOutfitOverlay(Path(temp_dir) / "marketing-store", ROOT)
+        store = Path(temp_dir) / "marketing-store"
+        prepare_marketing_store(store)
+        overlay = ActiveOutfitOverlay(
+            store,
+            ROOT,
+            official_pack_root=ROOT / "assets" / "official-packs",
+        )
         if selected_tab == "first-run":
             capture_first_run_wizard(app, temp_dir, output_dir, overlay)
             app.processEvents()
@@ -677,11 +690,11 @@ def capture_media(
         finally:
             close_dashboard(dashboard, db)
             app.processEvents()
-        duration = maybe_write_demo_video(output_dir, ffmpeg)
-        return duration
+        return maybe_write_demo_video(output_dir, ffmpeg)
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--output",
@@ -700,7 +713,7 @@ def main() -> int:
     parser.add_argument(
         "--screenshots-only",
         action="store_true",
-        help="Capture current UI images without rebuilding the demo video.",
+        help="Capture current UI images and preserve the existing demo video.",
     )
     args = parser.parse_args()
     selected_tab = args.tab.strip().casefold()

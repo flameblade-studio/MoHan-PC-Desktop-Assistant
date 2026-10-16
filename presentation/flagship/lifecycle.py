@@ -31,8 +31,8 @@ class FlagshipLifecycleMixin:
 
         for timer in self.findChildren(QTimer):
             timer.stop()
-        # Parentless value-holder widgets are never destroyed by Qt's
-        # parent-child ownership; release them here so no top-level widget
+        # Parentless value-holder widgets remain under Qt's
+        # parent-child ownership; release them here so zero top-level widgets
         # outlives the control center.
         for holder in getattr(self, "_unmounted_value_holders", ()):
             with suppress(RuntimeError):

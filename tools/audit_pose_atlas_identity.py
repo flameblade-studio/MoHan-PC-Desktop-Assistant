@@ -16,11 +16,19 @@ lazy from typing import Any
 lazy import cv2
 lazy import numpy as np
 
+ROOT = Path(__file__).resolve().parents[1]
+if __name__ == "__main__":
+    lazy from application.character_runtime_bootstrap import (
+        activate_product_character_runtime,
+    )
+
+    activate_product_character_runtime(ROOT)
+
 lazy from domain.constants import POSE_ATLAS_ROOT_NAME
 lazy from infrastructure.layered_full_body_assets import VIEW_IDS
+lazy import itertools
 
 
-ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ATLAS_ROOT = ROOT / "assets" / "pose-atlas" / POSE_ATLAS_ROOT_NAME
 DEFAULT_DETECTOR_MODEL = (
     ROOT / "assets" / "vision-models" / "face_detection_yunet_2023mar.onnx"
@@ -35,8 +43,8 @@ BASELINE_SCHEMA = "mohan.pose-atlas-identity-baseline.v1"
 SHA256_HEX_LENGTH = 64
 EXIT_CODE_CONTRACT = {
     "0": "all static identity checks passed",
-    "1": "one or more visual identity checks failed",
-    "2": "audit configuration or execution failed closed",
+    "1": "one or more visual identity checks require correction",
+    "2": "audit stopped with the acceptance gate closed; review configuration and execution",
 }
 VISIBLE_MAX_ABS_YAW = 90
 PROFILE_YAWS = frozenset({-90, -75, -60, 60, 75, 90})
@@ -124,10 +132,10 @@ def _yaw(view_id: str) -> int:
 def _load_rgba(path: Path, expected_size: tuple[int, int]) -> np.ndarray:
     image = cv2.imread(str(path), cv2.IMREAD_UNCHANGED)
     if image is None:
-        raise ValueError("not a decodable PNG")
+        raise ValueError("provide a decodable PNG")
     width, height = expected_size
     if image.ndim != IMAGE_DIMENSIONS or image.shape[2] != RGBA_CHANNELS:
-        raise ValueError("not an RGBA PNG")
+        raise ValueError("provide an RGBA PNG")
     if image.shape[:2] != (height, width):
         raise ValueError(
             f"unexpected dimensions {image.shape[1]}x{image.shape[0]}; "
@@ -144,7 +152,7 @@ def _detect(image: np.ndarray, model: Path) -> FaceEvidence:
     _status, faces = detector.detect(image[:, :, :3])
     candidates = [] if faces is None else [face for face in faces if face[1] < height * 0.35]
     if not candidates:
-        raise ValueError("YuNet did not detect the visible face")
+        raise ValueError("visible face detection requires review")
     face = max(candidates, key=lambda item: float(item[14]))
     landmarks = tuple(
         (float(point[0]), float(point[1]))
@@ -175,10 +183,10 @@ def _forehead_metrics(
     nose_x = evidence.landmarks[2][0]
     faces_right = nose_x > x + width * 0.5
     mask = image[:, :, 3] > ALPHA_THRESHOLD
-    top = max(0, int(math.floor(y + height * 0.03)))
-    bottom = min(image.shape[0], int(math.ceil(y + height * 0.40)))
-    left = max(0, int(math.floor(x - width * 0.15)))
-    right = min(image.shape[1], int(math.ceil(x + width * 1.15)))
+    top = max(0, math.floor(y + height * 0.03))
+    bottom = min(image.shape[0], math.ceil(y + height * 0.40))
+    left = max(0, math.floor(x - width * 0.15))
+    right = min(image.shape[1], math.ceil(x + width * 1.15))
     contour: list[float] = []
     for row in range(top, bottom):
         columns = np.flatnonzero(mask[row, left:right])
@@ -210,24 +218,29 @@ def _mouth_chroma_count(image: np.ndarray, evidence: FaceEvidence) -> int:
     right = min(image.shape[1], int(center_x + mouth_width))
     top = max(0, int(center_y - mouth_width * 0.6))
     bottom = min(image.shape[0], int(center_y + mouth_width * 0.7))
-    blue, green, red = cv2.split(image[top:bottom, left:right, :3])
-    blue_i = blue.astype(np.int16)
-    green_i = green.astype(np.int16)
-    red_i = red.astype(np.int16)
+    roi = image[top:bottom, left:right]
+    blue, green, red = cv2.split(roi[:, :, :3])
+    # PNG RGB beneath a nearly transparent antialias fringe is not visible at
+    # its stored straight-alpha intensity. Audit the premultiplied colour that
+    # can actually reach the compositor; opaque chroma defects remain exact.
+    alpha = roi[:, :, 3].astype(np.int32)
+    blue_i = blue.astype(np.int32) * alpha // 255
+    green_i = green.astype(np.int32) * alpha // 255
+    red_i = red.astype(np.int32) * alpha // 255
     green_spot = (
         (green_i > red_i + CHROMA_RED_DEFICIT_MIN)
         & (green_i > blue_i + 4)
-        & (green > CHROMA_MIN_BRIGHTNESS)
+        & (green_i > CHROMA_MIN_BRIGHTNESS)
     )
     cyan_spot = (
         (green_i > red_i + CHROMA_RED_DEFICIT_MIN)
         & (blue_i > red_i + CHROMA_RED_DEFICIT_MIN)
-        & (green > CHROMA_MIN_BRIGHTNESS)
+        & (green_i > CHROMA_MIN_BRIGHTNESS)
     )
     return int(np.count_nonzero(green_spot | cyan_spot))
 
 
-def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
+def audit_pose_atlas_identity(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements]
     atlas_root: Path,
     detector_model: Path,
     *,
@@ -249,7 +262,7 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
         yaw = _yaw(view_id)
         path = atlas_root / f"{view_id}.png"
         if not path.is_file():
-            _issue(issues, "missing_view", path, view_id, "static PoseAtlas view is missing")
+            _issue(issues, "missing_view", path, view_id, "provide the static PoseAtlas view")
             continue
         files_checked += 1
         if baseline is not None and view_id in baseline:
@@ -275,8 +288,8 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
         x, y, width, height = evidence.box
         left = max(0, int(x))
         top = max(0, int(y))
-        right = min(image.shape[1], int(math.ceil(x + width)))
-        bottom = min(image.shape[0], int(math.ceil(y + height)))
+        right = min(image.shape[1], math.ceil(x + width))
+        bottom = min(image.shape[0], math.ceil(y + height))
         if right <= left or bottom <= top:
             _issue(issues, "face_roi_invalid", path, view_id, "face ROI is outside canvas")
             continue
@@ -286,7 +299,7 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
         if coverage < FACE_ALPHA_COVERAGE_MIN:
             _issue(
                 issues, "face_roi_visibility_low", path, view_id,
-                "detected face ROI is not sufficiently registered to visible pixels",
+                "detected face ROI requires closer registration to visible pixels",
                 alpha_coverage=round(coverage, 6), minimum=FACE_ALPHA_COVERAGE_MIN,
             )
         chroma_count = _mouth_chroma_count(image, evidence)
@@ -339,13 +352,11 @@ def audit_pose_atlas_identity(  # noqa: PLR0912, PLR0914, PLR0915
                 )
 
     ordered = sorted(
-        (( _yaw(view_id), view_id, face) for view_id, face in faces.items()),
+        ((_yaw(view_id), view_id, face) for view_id, face in faces.items()),
         key=lambda item: item[0],
     )
     canvas_width = expected_size[0]
-    for (_left_yaw, left_id, left), (_right_yaw, right_id, right) in zip(
-        ordered, ordered[1:], strict=False
-    ):
+    for (_left_yaw, left_id, left), (_right_yaw, right_id, right) in itertools.pairwise(ordered):
         left_center = (left.box[0] + left.box[2] / 2) / canvas_width
         right_center = (right.box[0] + right.box[2] / 2) / canvas_width
         center_delta = abs(left_center - right_center)

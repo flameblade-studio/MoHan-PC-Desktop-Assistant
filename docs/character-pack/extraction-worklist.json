@@ -1,0 +1,1133 @@
+{
+  "classification_definitions": {
+    "engine_extract": "此檔屬未來炎劍鑄魂引擎；偵測到的角色內容須改由角色資料提供。",
+    "persisted_identifier": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+    "product_shell_allowed": "此檔位於逐檔白名單；命中內容是墨寒產品殼識別，可依既有產品契約保留。",
+    "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
+  },
+  "counts": {
+    "actual_embedded_code_files": 22,
+    "engine_extract_files": 0,
+    "manual_review_hint_only_files": 64,
+    "persisted_identifier_files": 2,
+    "product_shell_allowed_files": 22,
+    "true_extraction_files": 0,
+    "ui_text_reference_files": 0,
+    "work_packages": 0
+  },
+  "declared_product_shell_allowlist": [
+    {
+      "path": "application/application_bootstrap.py",
+      "reason": "墨寒最外層組裝入口保留產品程序名稱。",
+      "status": "no_current_content_evidence"
+    },
+    {
+      "path": "application/character_default_look.py",
+      "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "application/character_runtime_bootstrap.py",
+      "reason": "產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "application/runtime_bootstrap.py",
+      "reason": "墨寒產品執行期入口保留程序與執行緒識別字。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "application/service_container.py",
+      "reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "domain/constants.py",
+      "reason": "現行 PoseAtlas 世代目錄名依專案契約只在此定義一次（AGENTS.md：換代只改這裡），屬墨寒產品殼。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "domain/version_info.py",
+      "reason": "原墨寒專案的版本、儲存庫與更新網址屬產品殼。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "infrastructure/app_resources.py",
+      "reason": "產品名、Windows AppUserModelID、圖示與 studio 識別屬墨寒產品殼。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "infrastructure/backup_manager.py",
+      "reason": "墨寒使用者備份檔名與產品資料位置屬產品殼相容契約。",
+      "status": "no_current_content_evidence"
+    },
+    {
+      "path": "infrastructure/installed_body_packs.py",
+      "reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "infrastructure/profile_transfer.py",
+      "reason": "墨寒攜帶檔名稱與既有使用者匯入格式屬產品殼相容契約。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "infrastructure/updater.py",
+      "reason": "墨寒更新端點、User-Agent 與發行資產名稱屬產品殼。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "presentation/auxiliary_ui_localization.py",
+      "reason": "更新、備份與攜帶檔中的墨寒產品名稱屬產品殼文案。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "presentation/preview_app.py",
+      "reason": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
+      "status": "allowed_content_present"
+    }
+  ],
+  "extraction_items": [],
+  "owner_decisions": {
+    "art_tool_license": "MIT",
+    "character_asset_license": "CC-BY-NC-ND-4.0",
+    "dlc_relationship": "owner_decision_pending",
+    "engine_license": "MIT",
+    "pack_visibility": "public_mohan_release_page",
+    "paid_dlc_license": "CC-BY-NC-ND-4.0",
+    "standalone_download_design": true
+  },
+  "product_shell_allowed": [
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 92,
+              "matched": "assets/expressions/",
+              "text": "else \"assets/expressions/complete-expressions\")"
+            },
+            {
+              "line": 95,
+              "matched": "assets/expressions/",
+              "text": "native = relative is not None and relative != \"assets/expressions/complete-expressions\""
+            },
+            {
+              "line": 105,
+              "matched": "assets/expressions/",
+              "text": "or bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\") != \"assets/expressions/complete-expressions\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/character_default_look.py",
+      "reason": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "角色身形或角色識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 151,
+              "matched": "mohan-body-v2",
+              "text": "body_path = installed_body_pack_root() / \"mohan-body-v2\""
+            },
+            {
+              "line": 155,
+              "matched": "mohan-body-v2",
+              "text": "f\"Active character {selected!r} requires body pack 'mohan-body-v2'; \""
+            }
+          ],
+          "rule": "character_body_profile_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        },
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 157,
+              "matched": "MoHan",
+              "text": "\"No character was activated, so the bundled MoHan body is not used. \""
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/character_runtime_bootstrap.py",
+      "reason": "產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json",
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 47,
+              "matched": "MoHan",
+              "text": "\"Frozen MoHan runtime JIT state does not match the \""
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "application/runtime_bootstrap.py",
+      "reason": "墨寒產品執行期入口保留程序與執行緒識別字。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 439,
+              "matched": "assets/expressions/",
+              "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
+            },
+            {
+              "line": 440,
+              "matched": "assets/expressions/",
+              "text": "!= \"assets/expressions/complete-expressions\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "application/service_container.py",
+      "reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "persisted_identifier",
+      "content": [
+        {
+          "content_kind": "product_shell",
+          "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+          "locations": [
+            {
+              "line": 55,
+              "matched": "mohan.default.blue-silver",
+              "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "persisted_identifier",
+          "suggested_data_target": "application/wardrobe_service.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "application/wardrobe_service.py",
+      "reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+      "suggested_data_targets": [
+        "application/wardrobe_service.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 209,
+              "matched": "assets/pose-atlas/v5",
+              "text": "POSE_ATLAS_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base\""
+            },
+            {
+              "line": 210,
+              "matched": "assets/pose-atlas/v5",
+              "text": "POSE_ATLAS_LAYERED_RELATIVE_ROOT: Final = \"assets/pose-atlas/v5-base-layered\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "domain/constants.py",
+      "reason": "現行 PoseAtlas 世代目錄名依專案契約只在此定義一次（AGENTS.md：換代只改這裡），屬墨寒產品殼。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 18,
+              "matched": "MoHan",
+              "text": "DEFAULT_PROTECTED_SECRET_DESCRIPTION = \"MoHan protected secret\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "domain/contracts.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "persisted_identifier",
+      "content": [
+        {
+          "content_kind": "product_shell",
+          "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
+          "locations": [
+            {
+              "line": 54,
+              "matched": "mohan.default.blue-silver",
+              "text": "DEFAULT_OUTFIT_SELECTION_ID = \"mohan.default.blue-silver\""
+            }
+          ],
+          "rule": "persisted_identifier",
+          "suggested_data_target": "application/wardrobe_service.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "domain/outfit_pack_official.py",
+      "reason": "命中內容只有既有使用者設定所保存的不透明識別碼；它屬產品殼持久化契約，不是角色外觀資料。",
+      "suggested_data_targets": [
+        "application/wardrobe_service.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 7,
+              "matched": "MoHan",
+              "text": "PROJECT_REPOSITORY = \"flameblade-studio/MoHan-PC-Desktop-Assistant\""
+            },
+            {
+              "line": 13,
+              "matched": "MoHan",
+              "text": "PROFILE_APP_DIRECTORY = \"MoHan\""
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "domain/version_info.py",
+      "reason": "原墨寒專案的版本、儲存庫與更新網址屬產品殼。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig_assets",
+          "description": "墨寒專屬素材路徑仍由程式直接指定。",
+          "locations": [
+            {
+              "line": 18,
+              "matched": "assets/mohan-",
+              "text": "APP_ICON_PATH = \"assets/mohan-halfbody.ico\""
+            }
+          ],
+          "rule": "character_asset_path_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        },
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 223,
+              "matched": "MoHan",
+              "text": "raise RuntimeError(f\"MoHan application icon could not be loaded: {icon_path}\")"
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 16,
+              "matched": "墨寒",
+              "text": "APP_NAME = \"墨寒桌面助理\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/app_resources.py",
+      "reason": "產品名、Windows AppUserModelID、圖示與 studio 識別屬墨寒產品殼。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json",
+        "assets/characters/mohan/rig/rig-manifest.json",
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "角色身形或角色識別碼仍寫在原始碼。",
+          "locations": [
+            {
+              "line": 17,
+              "matched": "mohan-body-v2",
+              "text": "MOHAN_BODY_PACK_ID = \"mohan-body-v2\""
+            }
+          ],
+          "rule": "character_body_profile_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/installed_body_packs.py",
+      "reason": "產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 584,
+              "matched": "墨寒",
+              "text": "raise ProfileTransferError(\"找不到指定的墨寒攜帶檔。\")"
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "infrastructure/profile_transfer.py",
+      "reason": "墨寒攜帶檔名稱與既有使用者匯入格式屬產品殼相容契約。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 145,
+              "matched": "MoHan",
+              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant-Updater\","
+            },
+            {
+              "line": 271,
+              "matched": "MoHan",
+              "text": "manifest_name = f\"MoHan-Desktop-Assistant-{tag}-update.json\""
+            },
+            {
+              "line": 391,
+              "matched": "MoHan",
+              "text": "headers={\"User-Agent\": \"MoHan-Desktop-Assistant-Updater\"},"
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "infrastructure/updater.py",
+      "reason": "墨寒更新端點、User-Agent 與發行資產名稱屬產品殼。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 499,
+              "matched": "MoHan",
+              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
+            },
+            {
+              "line": 532,
+              "matched": "MoHan",
+              "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "integrations/cloud_connectors.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 115,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.NEW_VERSION_TITLE: \"發現墨寒新版本\","
+            },
+            {
+              "line": 125,
+              "matched": "墨寒",
+              "text": "\"SHA256 驗證通過。現在將關閉墨寒並開啟安裝程式。\\n\""
+            },
+            {
+              "line": 131,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.UPDATE_DIALOG_TITLE: \"墨寒更新\","
+            },
+            {
+              "line": 159,
+              "matched": "墨寒",
+              "text": "\"墨寒攜帶檔已建立，並包含加密的敏感資料。\\n\\n位置：{path}\\n收錄資料與設定共 {count} 筆。\""
+            },
+            {
+              "line": 162,
+              "matched": "墨寒",
+              "text": "\"墨寒攜帶檔已建立，未包含 API 金鑰、連線權杖或臉部身分資料。\\n\\n位置：{path}\\n收錄資料與設定共 {count} 筆。\""
+            },
+            {
+              "line": 174,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_BUTTON: \"匯出墨寒攜帶檔\","
+            },
+            {
+              "line": 178,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_DIALOG_TITLE: \"匯出墨寒攜帶檔\","
+            },
+            {
+              "line": 179,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.PROFILE_FILTER: \"墨寒攜帶檔 (*{extension})\","
+            },
+            {
+              "line": 180,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_FAILED_TITLE: \"匯出墨寒攜帶檔\","
+            },
+            {
+              "line": 184,
+              "matched": "墨寒",
+              "text": "\"墨寒攜帶檔已建立。\\n\\n位置：{path}\\n收錄資料與設定共 {count} 筆。\\n\\n\""
+            },
+            {
+              "line": 187,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_DIALOG_TITLE: \"匯入墨寒攜帶檔\","
+            },
+            {
+              "line": 188,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_READ_FAILED_TITLE: \"匯入墨寒攜帶檔\","
+            },
+            {
+              "line": 205,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_FAILED_TITLE: \"匯入墨寒攜帶檔\","
+            },
+            {
+              "line": 209,
+              "matched": "墨寒",
+              "text": "\"墨寒的共同進度已匯入完成。\\n\\n原資料備份：{path}\\n\\n\""
+            },
+            {
+              "line": 212,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.PROFILE_ERROR_NOT_FOUND: '請確認指定的墨寒攜帶檔後再繼續。',"
+            },
+            {
+              "line": 237,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.NEW_VERSION_TITLE: \"发现墨寒新版本\","
+            },
+            {
+              "line": 247,
+              "matched": "墨寒",
+              "text": "\"SHA256 验证通过。现在将关闭墨寒并启动安装程序。\\n\""
+            },
+            {
+              "line": 253,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.UPDATE_DIALOG_TITLE: \"墨寒更新\","
+            },
+            {
+              "line": 281,
+              "matched": "墨寒",
+              "text": "\"墨寒携带文件已建立，并包含加密的敏感数据。\\n\\n位置：{path}\\n共收录 {count} 项数据与设置。\""
+            },
+            {
+              "line": 284,
+              "matched": "墨寒",
+              "text": "\"墨寒携带文件已建立，未包含 API 密钥、连接令牌或面部身份数据。\\n\\n位置：{path}\\n共收录 {count} 项数据与设置。\""
+            },
+            {
+              "line": 296,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_BUTTON: \"导出墨寒携带文件\","
+            },
+            {
+              "line": 300,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_DIALOG_TITLE: \"导出墨寒携带文件\","
+            },
+            {
+              "line": 301,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.PROFILE_FILTER: \"墨寒携带文件 (*{extension})\","
+            },
+            {
+              "line": 302,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_FAILED_TITLE: \"导出墨寒携带文件\","
+            },
+            {
+              "line": 306,
+              "matched": "墨寒",
+              "text": "\"墨寒携带文件已建立。\\n\\n位置：{path}\\n共收录 {count} 项数据与设置。\\n\\n\""
+            },
+            {
+              "line": 309,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_DIALOG_TITLE: \"导入墨寒携带文件\","
+            },
+            {
+              "line": 310,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_READ_FAILED_TITLE: \"导入墨寒携带文件\","
+            },
+            {
+              "line": 327,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_FAILED_TITLE: \"导入墨寒携带文件\","
+            },
+            {
+              "line": 331,
+              "matched": "墨寒",
+              "text": "\"墨寒的共同进度已导入完成。\\n\\n原数据备份：{path}\\n\\n\""
+            },
+            {
+              "line": 334,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.PROFILE_ERROR_NOT_FOUND: '请确认指定的墨寒携带文件后再继续。',"
+            },
+            {
+              "line": 361,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.NEW_VERSION_TITLE: \"A new MoHan version is available\","
+            },
+            {
+              "line": 371,
+              "matched": "MoHan",
+              "text": "\"SHA256 verification passed. MoHan will now close and start the installer.\\n\""
+            },
+            {
+              "line": 377,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.UPDATE_DIALOG_TITLE: \"MoHan update\","
+            },
+            {
+              "line": 414,
+              "matched": "MoHan",
+              "text": "\"The portable MoHan profile was created with encrypted sensitive data.\\n\\n\""
+            },
+            {
+              "line": 418,
+              "matched": "MoHan",
+              "text": "\"The portable MoHan profile was created without API keys, connection tokens, or \""
+            },
+            {
+              "line": 433,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.EXPORT_BUTTON: \"Export portable MoHan profile\","
+            },
+            {
+              "line": 437,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.EXPORT_DIALOG_TITLE: \"Export portable MoHan profile\","
+            },
+            {
+              "line": 438,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.PROFILE_FILTER: \"MoHan portable profile (*{extension})\","
+            },
+            {
+              "line": 443,
+              "matched": "MoHan",
+              "text": "\"The portable MoHan profile was created.\\n\\nLocation: {path}\\n\""
+            },
+            {
+              "line": 447,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.IMPORT_DIALOG_TITLE: \"Import portable MoHan profile\","
+            },
+            {
+              "line": 470,
+              "matched": "MoHan",
+              "text": "\"MoHan's shared progress was imported.\\n\\nExisting data backup: {path}\\n\\n\""
+            },
+            {
+              "line": 474,
+              "matched": "MoHan",
+              "text": "AuxiliaryText.PROFILE_ERROR_NOT_FOUND: 'Check the selected portable MoHan profile before continuing.',"
+            },
+            {
+              "line": 509,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.NEW_VERSION_TITLE: \"墨寒の新しいバージョンがあります\","
+            },
+            {
+              "line": 519,
+              "matched": "墨寒",
+              "text": "\"SHA256 検証に合格しました。墨寒を終了してインストーラーを起動します。\\n\""
+            },
+            {
+              "line": 525,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.UPDATE_DIALOG_TITLE: \"墨寒の更新\","
+            },
+            {
+              "line": 558,
+              "matched": "墨寒",
+              "text": "\"暗号化された機密データを含む墨寒ポータブルプロファイルを作成しました。\\n\\n\""
+            },
+            {
+              "line": 562,
+              "matched": "墨寒",
+              "text": "\"API キー、接続トークン、顔識別データを含まない墨寒ポータブルプロファイルを作成しました。\\n\\n\""
+            },
+            {
+              "line": 575,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_BUTTON: \"墨寒ポータブルプロファイルを書き出す\","
+            },
+            {
+              "line": 579,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.EXPORT_DIALOG_TITLE: \"墨寒ポータブルプロファイルを書き出す\","
+            },
+            {
+              "line": 580,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.PROFILE_FILTER: \"墨寒ポータブルプロファイル (*{extension})\","
+            },
+            {
+              "line": 585,
+              "matched": "墨寒",
+              "text": "\"墨寒ポータブルプロファイルを作成しました。\\n\\n保存先：{path}\\n\""
+            },
+            {
+              "line": 589,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.IMPORT_DIALOG_TITLE: \"墨寒ポータブルプロファイルを読み込む\","
+            },
+            {
+              "line": 612,
+              "matched": "墨寒",
+              "text": "\"墨寒の共有進捗を読み込みました。\\n\\n元データのバックアップ：{path}\\n\\n\""
+            },
+            {
+              "line": 615,
+              "matched": "墨寒",
+              "text": "AuxiliaryText.PROFILE_ERROR_NOT_FOUND: '指定した墨寒ポータブルプロファイルを確認してから続行してください。',"
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "presentation/auxiliary_ui_localization.py",
+      "reason": "更新、備份與攜帶檔中的墨寒產品名稱屬產品殼文案。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 874,
+              "matched": "墨寒",
+              "text": "form.addRow(QLabel(self._t(\"about_heading\", \"<b>關於墨寒</b>\")))"
+            },
+            {
+              "line": 878,
+              "matched": "墨寒",
+              "text": "\"墨寒桌面助理 v{version}，Copyright © 2026 CHOU MING HUA 與\""
+            },
+            {
+              "line": 879,
+              "matched": "MoHan",
+              "text": "\" MoHan Desktop Assistant 貢獻者，依 MIT License 發行。<br>\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/dashboard_settings.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 172,
+              "matched": "MoHan",
+              "text": "f\"MoHan {provider_id} OAuth token\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "presentation/flagship/cloud.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 60,
+              "matched": "MoHan",
+              "text": "\"MoHan Home Assistant token\","
+            },
+            {
+              "line": 64,
+              "matched": "MoHan",
+              "text": "\"MoHan OpenAI API key\","
+            },
+            {
+              "line": 68,
+              "matched": "MoHan",
+              "text": "\"MoHan local face identity templates\","
+            },
+            {
+              "line": 72,
+              "matched": "MoHan",
+              "text": "\"MoHan local gesture skeleton templates\","
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/flagship/runtime.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "identity",
+          "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
+          "locations": [
+            {
+              "line": 52,
+              "matched": "墨寒",
+              "text": "\"window_title\": \"墨寒桌面陪伴工作助理 — macOS／Linux Preview\","
+            },
+            {
+              "line": 54,
+              "matched": "墨寒",
+              "text": "\"heading\": \"墨寒已抵達此平台，但仍在整備中\","
+            },
+            {
+              "line": 56,
+              "matched": "墨寒",
+              "text": "\"這個安裝包用來驗證墨寒能在 macOS／Linux 啟動、顯示四語介面，\""
+            },
+            {
+              "line": 77,
+              "matched": "墨寒",
+              "text": "\"在原生安全保存完成前，墨寒不會退回明文保存，也不會假裝功能可用。\""
+            },
+            {
+              "line": 82,
+              "matched": "墨寒",
+              "text": "\"window_title\": \"墨寒桌面陪伴工作助手 — macOS／Linux Preview\","
+            },
+            {
+              "line": 84,
+              "matched": "墨寒",
+              "text": "\"heading\": \"墨寒已抵达此平台，但仍在整备中\","
+            },
+            {
+              "line": 86,
+              "matched": "墨寒",
+              "text": "\"此安装包用于验证墨寒能在 macOS／Linux 启动、显示四语界面，\""
+            },
+            {
+              "line": 107,
+              "matched": "墨寒",
+              "text": "\"原生安全保存完成前，墨寒不会退回明文保存，也不会假装功能可用。\""
+            },
+            {
+              "line": 114,
+              "matched": "MoHan",
+              "text": "\"heading\": \"MoHan has arrived on this platform—carefully\","
+            },
+            {
+              "line": 139,
+              "matched": "MoHan",
+              "text": "\"fields. Until native secure storage is verified, MoHan will not \""
+            },
+            {
+              "line": 147,
+              "matched": "墨寒",
+              "text": "\"heading\": \"墨寒はこの環境へ到着しました。現在は慎重に整備中です\","
+            }
+          ],
+          "rule": "character_name_literal",
+          "suggested_data_target": "assets/characters/mohan/persona/profile.json"
+        },
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 112,
+              "matched": "MoHan",
+              "text": "\"window_title\": \"MoHan Desktop Assistant — macOS/Linux Preview\","
+            },
+            {
+              "line": 145,
+              "matched": "墨寒",
+              "text": "\"window_title\": \"墨寒デスクトップアシスタント — macOS／Linux Preview\","
+            },
+            {
+              "line": 401,
+              "matched": "MoHan",
+              "text": "app.setApplicationName(\"MoHan Desktop Assistant Preview\")"
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "presentation/preview_app.py",
+      "reason": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/persona/profile.json",
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 540,
+              "matched": "墨寒",
+              "text": "'about_heading': '<b>关于墨寒</b>',"
+            },
+            {
+              "line": 542,
+              "matched": "墨寒",
+              "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
+            },
+            {
+              "line": 543,
+              "matched": "MoHan",
+              "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/ui_localization.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 730,
+              "matched": "MoHan",
+              "text": "\"about_heading\": \"<b>About MoHan</b>\","
+            },
+            {
+              "line": 732,
+              "matched": "MoHan",
+              "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "low",
+      "path": "presentation/ui_localization_en.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "product_identity",
+          "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
+          "locations": [
+            {
+              "line": 533,
+              "matched": "墨寒",
+              "text": "\"about_heading\": \"<b>墨寒について</b>\","
+            },
+            {
+              "line": 535,
+              "matched": "墨寒",
+              "text": "\"墨寒デスクトップアシスタント v{version}、Copyright © 2026\""
+            },
+            {
+              "line": 536,
+              "matched": "MoHan",
+              "text": "\" CHOU MING HUA および MoHan Desktop Assistant コントリビューター、\""
+            }
+          ],
+          "rule": "product_identity_literal",
+          "suggested_data_target": "infrastructure/app_resources.py"
+        }
+      ],
+      "estimated_difficulty": "medium",
+      "path": "presentation/ui_localization_ja.py",
+      "reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
+      "suggested_data_targets": [
+        "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    }
+  ],
+  "purpose": "measured_parallel_extraction_assignment",
+  "schema": "mohan.character-extraction-worklist.v1",
+  "schema_version": 1,
+  "source_inventory": "docs/character-pack/mohan-inventory.json",
+  "work_packages": []
+}

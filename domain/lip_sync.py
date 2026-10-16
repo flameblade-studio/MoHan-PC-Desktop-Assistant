@@ -84,7 +84,7 @@ class VisemeFrame:
 
 @dataclass(slots=True)
 class VisemeDynamics:
-    """Mutable acoustic state with no Qt or speech-provider dependency."""
+    """Mutable acoustic state with Qt and speech providers stay outside the domain boundary."""
 
     smoothed_level: float = 0.0
     candidate: str = "CLOSED"
@@ -197,7 +197,7 @@ def _target_aperture(viseme: str, smoothed_level: float) -> float:
 def validate_pcm16_analysis_request(
     pcm: object,
 ) -> pcm_audio.Pcm16Buffer:
-    """Validate a lip-analysis buffer without decoding or copying it."""
+    """Validate a lip-analysis buffer while preserving the source buffer."""
     validated = pcm_audio.validate_pcm16_buffer(pcm)
     if len(validated) // 2 > MAX_EXACT_PCM16_ANALYSIS_SAMPLES:
         raise pcm_audio.PcmAudioError(
@@ -293,7 +293,7 @@ def infer_vowel_pcm16(
     if len(raw) < MIN_VOWEL_SAMPLES:
         return level, "E"
     mean = sum(raw) / len(raw)
-    scale = max(1.0, max(abs(sample - mean) for sample in raw))
+    scale = max(1.0, *(abs(sample - mean) for sample in raw))
     windowed = [
         ((sample - mean) / scale)
         * (
@@ -333,8 +333,8 @@ def infer_vowel_pcm16(
     ]
     if not low_frequencies or not high_frequencies:
         return level, "E"
-    first_formant = max(low_frequencies, key=powers.get)
-    second_formant = max(high_frequencies, key=powers.get)
+    first_formant = max(low_frequencies, key=lambda frequency: powers[frequency])
+    second_formant = max(high_frequencies, key=lambda frequency: powers[frequency])
 
     def distance(formants: tuple[float, float]) -> float:
         first, second = formants

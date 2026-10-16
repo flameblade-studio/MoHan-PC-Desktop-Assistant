@@ -21,6 +21,10 @@ lazy from domain.theme_pack import install_theme_pack
 lazy from domain.theme_retint import retint_stylesheet
 lazy from infrastructure.db import StudioDB
 lazy from presentation.dashboard_composition import DashboardDependencies
+lazy from presentation.dashboard_theme_materials import (
+    external_theme_accent_stylesheet,
+    resolve_material_palette,
+)
 lazy from presentation.flagship_theme import _theme_stylesheet
 lazy from presentation.lingxiao_themes import (
     DEFAULT_THEME_ID,
@@ -161,7 +165,7 @@ def _write_external_theme_pack(path: Path) -> Path:
             "ja-JP": "外部の赤焔",
         },
         "colors": {"primary": "#d9481c"},
-        "font": "Microsoft JhengHei UI",
+        "font": "DLC Theme Display",
         "radius": 10,
         "background": None,
         "source": {
@@ -410,23 +414,50 @@ def test_external_theme_has_precedence_over_each_builtin_palette() -> None:
                         1.0,
                         high_contrast=False,
                         theme=DEFAULT_THEME_ID,
+                        font_family=external.font_family,
                     ),
                     external.tokens,
                 )
+                default_palette = palette_for_theme(
+                    DEFAULT_THEME_ID,
+                    high_contrast=False,
+                )
+                external_materials = resolve_material_palette(
+                    default_palette,
+                    external,
+                )
+                expected += external_theme_accent_stylesheet(
+                    external_materials,
+                    focus=external.tokens["focus"],
+                )
                 assert resolution.resolved_id == "external-crimson"
-                assert dashboard.styleSheet().startswith(expected)
+                assert dashboard.styleSheet() == expected
+                assert f'font-family: "{external.font_family}"' in dashboard.styleSheet()
                 if builtin_theme_id != DEFAULT_THEME_ID:
                     builtin_palette = palette_for_theme(
                         builtin_theme_id,
                         high_contrast=False,
                     )
                     assert builtin_palette.gold not in dashboard.styleSheet()
-                default_palette = palette_for_theme(
-                    DEFAULT_THEME_ID,
+                assert dashboard.ribbon_pulse._color == external_materials.muted
+                save_stylesheet = dashboard.save_settings_button.styleSheet()
+                assert external_materials.primary in save_stylesheet
+                assert external_materials.title in save_stylesheet
+                assert external_materials.on_primary in save_stylesheet
+
+                builtin_resolution = dashboard.theme_pack_service.resolve("builtin")
+                builtin_theme = builtin_resolution.payload
+                dashboard._apply_theme_resolution(builtin_resolution)
+                builtin_font = f'font-family: "{builtin_theme.font_family}"'
+                builtin_stylesheet = _theme_stylesheet(
+                    1.0,
                     high_contrast=False,
+                    theme=builtin_theme_id,
+                    font_family=builtin_theme.font_family,
                 )
-                assert dashboard.ribbon_pulse._color == default_palette.dim
-                assert default_palette.gold in dashboard.save_settings_button.styleSheet()
+                assert dashboard.styleSheet() == builtin_stylesheet
+                assert builtin_font in builtin_stylesheet
+                assert f'font-family: "{external.font_family}"' not in builtin_stylesheet
             finally:
                 close_dashboard(dashboard, db)
         application.processEvents()

@@ -7,6 +7,7 @@ lazy from pathlib import Path
 
 lazy import numpy as np
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from .constants import (
     BLINK_RECTS,
     CANVAS_SIZE,
@@ -29,15 +30,15 @@ def rgba(path: Path) -> np.ndarray:
 def rect_1254(x: int, y: int, width: int, height: int) -> tuple[int, int, int, int]:
     """將 465 空間矩形換算為只在內側取樣的 1254 空間矩形。"""
 
-    x0 = int(round(x * (CANVAS_SIZE / RUNTIME_SIZE))) + RECT_INSET_PIXELS
-    y0 = int(round(y * (CANVAS_SIZE / RUNTIME_SIZE))) + RECT_INSET_PIXELS
-    x1 = int(round((x + width) * (CANVAS_SIZE / RUNTIME_SIZE))) - RECT_INSET_PIXELS
-    y1 = int(round((y + height) * (CANVAS_SIZE / RUNTIME_SIZE))) - RECT_INSET_PIXELS
+    x0 = round(x * (CANVAS_SIZE / RUNTIME_SIZE)) + RECT_INSET_PIXELS
+    y0 = round(y * (CANVAS_SIZE / RUNTIME_SIZE)) + RECT_INSET_PIXELS
+    x1 = round((x + width) * (CANVAS_SIZE / RUNTIME_SIZE)) - RECT_INSET_PIXELS
+    y1 = round((y + height) * (CANVAS_SIZE / RUNTIME_SIZE)) - RECT_INSET_PIXELS
     return x0, y0, x1, y1
 
 
 def inner_feather_mask(height: int, width: int) -> np.ndarray:
-    """矩形內側羽化權重，權重永遠不會寫到矩形外。"""
+    """將羽化權重限定於矩形內側。"""
 
     yy = np.arange(height, dtype=np.float32)
     xx = np.arange(width, dtype=np.float32)
@@ -157,6 +158,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[2])
     args = build_parser().parse_args(argv)
     if args.mode == "speech":
         return _speech(

@@ -1,7 +1,9 @@
+"""MoHan hand-evidence adapter for the product-neutral Huapu pose audit."""
 from __future__ import annotations
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
+
 lazy import argparse
-lazy import hashlib
 lazy import json
 lazy import sys
 lazy from pathlib import Path
@@ -9,82 +11,60 @@ lazy from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-lazy from domain.character_pose import CANONICAL_YAWS, canonical_view_id
 lazy from domain.hand_asset_evidence import (
     HandAssetManifestEvidence,
     build_hand_asset_evidence,
 )
+lazy from huapu import pose_audit as _core
+
+PAIR_LENGTH = _core.PAIR_LENGTH
+AssetAuditCharacterSettings = _core.AssetAuditCharacterSettings
+
+DEFAULT_CHARACTER_SETTINGS = AssetAuditCharacterSettings(
+    schema="mohan.pose-atlas.working-audit.v1",
+    views=tuple((f"yaw{yaw:+04d}-pitch+00", yaw) for yaw in range(-180, 180, 15)),
+    width=1024,
+    height=1536,
+)
+
+load_character_settings = _core.load_character_settings
+_sha256 = _core._sha256
 
 
-def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+def _build_evidence(root: Path, evidence: _core.HandEvidence):
+    return build_hand_asset_evidence(
+        root,
+        HandAssetManifestEvidence(
+            evidence.view_id,
+            evidence.yaw_degrees,
+            evidence.image_path,
+            evidence.sidecar_path,
+            evidence.width,
+            evidence.height,
+            evidence.image_sha256,
+            evidence.sidecar_sha256,
+        ),
+    )
 
 
-def audit(root: Path) -> dict[str, object]:
-    resolved = root.resolve()
-    views = []
-    for yaw in CANONICAL_YAWS:
-        view_id = canonical_view_id(yaw)
-        png = resolved / f"{view_id}.png"
-        sidecar = resolved / f"{view_id}.hands.json"
-        if not png.is_file() or not sidecar.is_file():
-            views.append(
-                {
-                    "view_id": view_id,
-                    "passed": False,
-                    "issues": ["asset_missing"],
-                }
-            )
-            continue
-        result = build_hand_asset_evidence(
-            resolved,
-            HandAssetManifestEvidence(
-                view_id,
-                yaw,
-                png.name,
-                sidecar.name,
-                1024,
-                1536,
-                _sha256(png),
-                _sha256(sidecar),
-            ),
-        )
-        views.append(
-            {
-                "view_id": view_id,
-                "passed": result.passed,
-                "issues": list(result.problems),
-                "issue_details": [
-                    {
-                        "code": issue.code,
-                        "side": issue.side,
-                        "finger": issue.finger,
-                        "landmark_index": issue.landmark_index,
-                    }
-                    for issue in result.issues
-                ],
-                "visible_sides": sorted(result.visible_sides),
-                "occluded_sides": sorted(result.occluded_sides),
-                "skipped_checks": list(result.skipped_checks),
-            }
-        )
-    failed = [item for item in views if not item["passed"]]
-    return {
-        "schema": "mohan.pose-atlas.working-audit.v1",
-        "passed": not failed,
-        "view_count": len(views),
-        "passed_view_count": len(views) - len(failed),
-        "failed_view_count": len(failed),
-        "views": views,
-    }
+def audit(
+    root: Path,
+    *,
+    settings: AssetAuditCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+) -> dict[str, object]:
+    """Audit configured MoHan assets through the injected runtime adapter."""
+    return _core.audit(root, settings=settings, evidence_builder=_build_evidence)
 
 
 def main() -> int:
+    activate_product_character_runtime(ROOT)
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", required=True, type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--character-settings", type=Path)
     args = parser.parse_args()
-    report = audit(args.root)
+    settings = load_character_settings(args.character_settings) if args.character_settings else DEFAULT_CHARACTER_SETTINGS
+    report = audit(args.root, settings=settings)
     payload = json.dumps(
         report,
         ensure_ascii=False,
@@ -93,7 +73,7 @@ def main() -> int:
     ) + "\n"
     if args.output is not None:
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        args.output.write_text(payload, encoding="utf-8")
+        args.output.write_text(payload, encoding="utf-8", newline="\n")
     print(payload, end="")
     return 0 if report["passed"] else 1
 

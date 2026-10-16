@@ -11,6 +11,14 @@ lazy from pathlib import Path
 lazy from typing import Protocol
 
 from domain.python315_concurrency import Future, ThreadPoolExecutor
+lazy from domain.character_source import active_character_data, active_expression_catalog
+lazy from domain.sensory_synesthesia import runtime_dialogue_locale
+
+_BACKGROUND_APP_TEMPLATE = active_character_data().dialogues[
+    "zh-TW"
+].templates["background.app_launched"]
+_RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
+_EXPRESSIONS = active_expression_catalog().emotion_to_expression
 
 
 @dataclass(frozen=True)
@@ -18,7 +26,7 @@ class AgentObservation:
     worker_id: str
     event_key: str
     message: str
-    expression: str = "attentive_front"
+    expression: str = _EXPRESSIONS["attentive"]
     priority: int = 10
     metadata: dict[str, object] = field(default_factory=dict)
 
@@ -46,7 +54,7 @@ def is_quiet_time(
 class ManagerWorkerScheduler:
     """Run bounded read-only workers and arbitrate their observations.
 
-    Workers never touch the UI, expression system, or action executor.  The
+    Workers keep the UI, expression system, and action executor under their owning boundaries.  The
     main thread drains observations and remains the only authority that may
     display a message or request an expression through the existing arbiter.
     """
@@ -86,7 +94,7 @@ class ManagerWorkerScheduler:
                 return
             for worker_id, worker in self._workers.items():
                 future = self._futures.get(worker_id)
-                if future is not None and not future.done():
+                if future is not None:
                     continue
                 if now < self._next_due[worker_id]:
                     continue
@@ -127,7 +135,7 @@ class ManagerWorkerScheduler:
                             message=(
                                 f"{worker_id} 無法完成檢查：{type(error).__name__}"
                             ),
-                            expression="worried_front",
+                            expression=_EXPRESSIONS["worried"],
                             priority=1,
                             metadata={
                                 "status": "failed",
@@ -197,8 +205,8 @@ class VisibleAppWorker:
             AgentObservation(
                 worker_id=self.worker_id,
                 event_key=f"launched:{name.casefold()}",
-                message=f"主上已開啟 {name}。妾會在旁留意，不打擾您工作。",
-                expression="attentive_front",
+                message=_BACKGROUND_APP_TEMPLATE.format(name=name),
+                expression=_EXPRESSIONS["attentive"],
                 priority=10,
                 metadata={"application": name, "status": "launched"},
             )
@@ -230,24 +238,24 @@ class DiagnosticReportWorker:
         signature = (str(resolved), stat.st_mtime_ns, stat.st_size)
         if signature == self._last_signature:
             return ()
-        self._last_signature = signature
         with resolved.open("rb") as handle:
             if stat.st_size > self.max_bytes:
                 handle.seek(-self.max_bytes, 2)
             raw = handle.read(self.max_bytes)
         text = raw.decode("utf-8", errors="replace")
         issues = sum(bool(self._ISSUE.search(line)) for line in text.splitlines())
+        self._last_signature = signature
         if issues <= 0:
             return ()
         return (
             AgentObservation(
                 worker_id=self.worker_id,
                 event_key=f"changed:{resolved}",
-                message=(
-                    f"妾在您指定的診斷報告 {resolved.name} 中看見 "
-                    f"{issues} 行錯誤或警告；只做了唯讀檢查，尚未修改任何檔案。"
+                message=str(_RUNTIME_DIALOGUE["background_diagnostic"]).format(
+                    report_name=resolved.name,
+                    issues=issues,
                 ),
-                expression="attentive_front",
+                expression=_EXPRESSIONS["attentive"],
                 priority=20,
                 metadata={
                     "path": str(resolved),

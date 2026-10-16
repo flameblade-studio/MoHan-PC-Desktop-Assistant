@@ -27,10 +27,10 @@ jobs:
         run: |
           # Release Please 的標題是可控的版本識別資料，必須通過四語標題檢查，
           # 才能讓自動發版在 main 歷史中留下四語標題。
-          # Release Please 的說明是機器產生的變更清單，不是人寫的敘述，
-          # 因此只豁免 body 的四語章節檢查，不豁免標題。
-          # 豁免仍須同時符合 release-please 分支與 github-actions[bot] 作者；
-          # 單靠分支名不能繞過治理。
+          # Release Please 的說明是機器產生的變更清單，屬於自動生成資料；
+          # 因此只豁免 body 的四語章節檢查，標題仍沿用四語治理。
+          # 豁免同時需要 release-please 分支與 github-actions[bot] 作者，
+          # 讓治理條件保持完整。
           head_ref=$(jq -r '.pull_request.head.ref // ""' "$GITHUB_EVENT_PATH")
           pr_author=$(jq -r '.pull_request.user.login // ""' "$GITHUB_EVENT_PATH")
           title=$(jq -r '.pull_request.title // ""' "$GITHUB_EVENT_PATH")
@@ -40,9 +40,9 @@ jobs:
           title=${title//$'\r'/}
           body=${body//$'\r'/}
           # Dependabot title normalization writes through a separate trusted
-          # workflow.  GITHUB_TOKEN edits do not create an automatic `edited`
-          # workflow run, so read the live title before validating this run.
-          # Human and other bot PRs keep the original event-driven behavior.
+          # workflow.  GITHUB_TOKEN edits leave the automatic `edited` workflow
+          # trigger unchanged, so read the live title before validating this
+          # run. Human and other bot PRs keep the original event-driven flow.
           if [[ "$pr_author" == "dependabot[bot]" && "$title" != *'／'* ]]; then
             live_title="$title"
             for attempt in {1..12}; do
@@ -71,7 +71,7 @@ jobs:
           fi
           for part in "${title_parts[@]}"; do
             if [[ -z "${part//[[:space:]]/}" ]]; then
-              echo "四語標題不得留白 / 四语标题不得留白 / Title translations cannot be empty / タイトルの翻訳を空欄にできません" >&2
+              echo "四語標題需要文字 / 四语标题需要文字 / Title translations require text / タイトルの翻訳には文字が必要です" >&2
               exit 1
             fi
           done
@@ -93,7 +93,7 @@ jobs:
               inside && /[^[:space:]]/ { found = 1 }
               END { exit (started && found) ? 0 : 1 }
             '; then
-              echo "缺少非空白四語章節 / 缺少非空白四语章节 / Missing non-empty language section / 空でない四言語セクションが必要です: $heading" >&2
+              echo "四語章節需要內容 / 四语章节需要内容 / Language sections require content / 四言語セクションには内容が必要です: $heading" >&2
               exit 1
             fi
           done
@@ -107,7 +107,7 @@ jobs:
           fi
           for index in "${!headings[@]}"; do
             if [[ "${actual_headings[$index]}" != "${headings[$index]}" ]]; then
-              echo "四語順序錯誤 / 四语顺序错误 / Incorrect language order / 四言語の順序が正しくありません" >&2
+              echo "四語章節依序排列 / 四语章节按顺序排列 / Language sections follow the required order / 四言語セクションは指定順に並びます" >&2
               exit 1
             fi
           done

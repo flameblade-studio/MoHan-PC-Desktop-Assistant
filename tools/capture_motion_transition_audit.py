@@ -13,6 +13,7 @@ lazy from PySide6.QtGui import QColor, QFont, QImage, QPainter
 lazy from PySide6.QtTest import QTest
 lazy from PySide6.QtWidgets import QApplication
 
+lazy from application.character_runtime_bootstrap import activate_product_character_runtime
 lazy from presentation.companion_window import CompanionWindow
 lazy from infrastructure.app_resources import STYLE
 lazy from infrastructure.db import StudioDB
@@ -48,13 +49,15 @@ def capture_frames(
                 window.eye_overlay,
             )
         )
-        frames.append(
+        frame = (
             window
-            .grab()
+            .grab(QRect(0, window.character_base_y, window.width(), 465))
             .toImage()
             .convertToFormat(QImage.Format_ARGB32)
-            .copy(QRect(0, window.character_base_y, window.width(), 465))
+            .scaled(window.width(), 465, Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
         )
+        frame.setDevicePixelRatio(1.0)
+        frames.append(frame)
     return frames
 
 
@@ -136,6 +139,7 @@ def save_audit_canvas(canvas: QImage, output: Path) -> None:
 
 
 def main() -> int:
+    activate_product_character_runtime(Path(__file__).resolve().parents[1])
     output = Path(sys.argv[1])
     with TemporaryDirectory(ignore_cleanup_errors=True) as temp_dir:
         app, window = create_audit_window(temp_dir)

@@ -4,7 +4,7 @@ lazy import math
 lazy from dataclasses import dataclass
 lazy from enum import StrEnum
 
-lazy from domain.constants import FLOAT_COMPARISON_EPSILON
+lazy from domain.core_constants import FLOAT_COMPARISON_EPSILON
 
 
 class IdentityState(StrEnum):
