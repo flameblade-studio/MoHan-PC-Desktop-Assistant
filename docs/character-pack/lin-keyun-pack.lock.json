@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.4.zip",
-    "bytes": 85049973,
-    "sha256": "10fce4ecc12087c8ef538b864f79d3466f43efaba236a2762368d8b975a8723a"
+    "bytes": 71884560,
+    "sha256": "628131077ff1f151581d6bac4d523794e57bf9c9f1f5de36c46962d164b60433"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -892,16 +892,6 @@
       "sha256": "f6d8ac9d84834852a4481fca73f7a0ffbed7c1c912e2667be77314d7e9fec3ff"
     },
     {
-      "bytes": 6175,
-      "path": "assets/expressions/layered/cheek-glance_oral_cavity.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
-    },
-    {
-      "bytes": 6175,
-      "path": "assets/expressions/layered/cheek-glance_teeth_tongue.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
-    },
-    {
       "bytes": 10514,
       "path": "assets/expressions/layered/cheek_eyelid_left.png",
       "sha256": "2d97b0eea981249c39b567600c91cef847e777b04024c994fd0d86abee1a0e22"
@@ -1025,6 +1015,106 @@
       "bytes": 1051,
       "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
       "sha256": "c5167db328cb9cc765513594de7c96e56fca9a799548f5ea6765d3231aabb704"
+    },
+    {
+      "bytes": 7691,
+      "path": "assets/front-makeup-rigs/cheek-caught-neutral_lip_lower.png",
+      "sha256": "7f6af0f20ceeec96788978fa8bc172090fc76709c4674b97ac1390ebe3556af4"
+    },
+    {
+      "bytes": 7638,
+      "path": "assets/front-makeup-rigs/cheek-caught-neutral_lip_upper.png",
+      "sha256": "7f3a4f7f397616e8970b80e300aa809422a05f8dd6de92b3707d1f67abbc2bf2"
+    },
+    {
+      "bytes": 7157,
+      "path": "assets/front-makeup-rigs/cheek-caught-neutral_oral_cavity.png",
+      "sha256": "d90b33545c75ce49e243005adf3770ddb108d1333d229e6e98c0acde5c594c57"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/cheek-caught-neutral_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7049,
+      "path": "assets/front-makeup-rigs/cheek-glance-neutral_lip_lower.png",
+      "sha256": "36de8d265670cc880924911134824ac2a8dc3c41fe7aa04b355966b6d7963742"
+    },
+    {
+      "bytes": 7792,
+      "path": "assets/front-makeup-rigs/cheek-glance-neutral_lip_upper.png",
+      "sha256": "8158f6a64a714f7c9c8c68c226ceeaa37984be50a2f07d00bd2dda6261f31439"
+    },
+    {
+      "bytes": 6744,
+      "path": "assets/front-makeup-rigs/cheek-glance-neutral_oral_cavity.png",
+      "sha256": "8da6eb1f8f9176c1f83987c6956fc810cbc28f668eb2f47576a2c442aa9c20ce"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/cheek-glance-neutral_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 8230,
+      "path": "assets/front-makeup-rigs/cheek-happy-neutral_lip_lower.png",
+      "sha256": "ae6a9f71f649a4b4b0736ae01fa371d4a17b5fb68b742ad4a0081b94a048e8ac"
+    },
+    {
+      "bytes": 7948,
+      "path": "assets/front-makeup-rigs/cheek-happy-neutral_lip_upper.png",
+      "sha256": "77e668b7c20bab46cdc4d5cf29513929b05fd0196c44a336a5424087558df8fe"
+    },
+    {
+      "bytes": 7296,
+      "path": "assets/front-makeup-rigs/cheek-happy-neutral_oral_cavity.png",
+      "sha256": "73980f01f4da60d02d47609123f1f5370c32d46f9b9adcebb2630d3b27cdb759"
+    },
+    {
+      "bytes": 6855,
+      "path": "assets/front-makeup-rigs/cheek-happy-neutral_teeth_tongue.png",
+      "sha256": "c0d8e60b9a669c3cca620a6a80c9edc65eca8fd5cf5e1b63fe3e6388ce7b0c13"
+    },
+    {
+      "bytes": 7356,
+      "path": "assets/front-makeup-rigs/cheek-reminder-neutral_lip_lower.png",
+      "sha256": "872051bd0fbd3279b4c56c3522bbbe2495e378c79b1b1326f1c4e638da86b370"
+    },
+    {
+      "bytes": 7300,
+      "path": "assets/front-makeup-rigs/cheek-reminder-neutral_lip_upper.png",
+      "sha256": "68d831b78e13c7260c19cf784a840aeb697c4c22dbd78270b939a28a78d5ec51"
+    },
+    {
+      "bytes": 6389,
+      "path": "assets/front-makeup-rigs/cheek-reminder-neutral_oral_cavity.png",
+      "sha256": "2b8e6b88f6d7b84fb27fdff48ca5b72302dc5b0c6c796c99090d3aa54af50f19"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/cheek-reminder-neutral_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7161,
+      "path": "assets/front-makeup-rigs/cheek-worried-neutral_lip_lower.png",
+      "sha256": "c27ecd94a6aab9310671387133d654efe08c437892f5baae2c86124782ce6e2c"
+    },
+    {
+      "bytes": 7816,
+      "path": "assets/front-makeup-rigs/cheek-worried-neutral_lip_upper.png",
+      "sha256": "13842934eb2d2d0917d60d3a798f02c08dcabb1416b7237e7e1efdfd8a601748"
+    },
+    {
+      "bytes": 6705,
+      "path": "assets/front-makeup-rigs/cheek-worried-neutral_oral_cavity.png",
+      "sha256": "cabd954c26a8784252efc73723e95dc8fe161c79ec5c97b67a9be8f476abc8d7"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/cheek-worried-neutral_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
     },
     {
       "bytes": 6175,
@@ -1697,24 +1787,24 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 160057,
+      "bytes": 166201,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "1ece63b1a0c148fcc16e9225e2c4cd0b4cbd2d20e91bcc83dae4e7effa223616"
+      "sha256": "2a36f9c594a85e6cefa73a134ff4dc42094ceedb185f2cafcadf904a0329f7a0"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6584,
+      "bytes": 8570,
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-half.png",
-      "sha256": "0ba336d2631420d7aa6af8f97eb83e9c49342c7d6fb828d6e259294c4564d5fe"
+      "sha256": "13b0e0e74bc7f19c2ebde525fc2e9e319aae972253f1797b2db0f1d9bba78ac5"
     },
     {
-      "bytes": 6837,
+      "bytes": 8582,
       "path": "assets/makeup-safe-regions/cheek-caught/cheek-caught-eye-aperture-rest.png",
-      "sha256": "44a4d834f41a52a257c66df15421f32562f79fc8434ffa37329f6c0335c16c85"
+      "sha256": "14a726288ea47165500ab6f22f884a14a0c50da67a3b513d70f72dff1d55fad9"
     },
     {
       "bytes": 7967,
@@ -1732,19 +1822,19 @@
       "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6475,
+      "bytes": 8525,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-half.png",
-      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+      "sha256": "85554c42e08768e34c0ac3fce274b6f833141c019240921e84ce39d9517264a0"
     },
     {
-      "bytes": 6500,
+      "bytes": 8584,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-closed-eye-aperture-rest.png",
-      "sha256": "4e73524829a61178de8172ad3ef6a6ca62c89fd6a3598d434e4f75f21099cd1f"
+      "sha256": "e0401ffa655f1fa7e6f29e9076d91cefc4390897b23fe6e6ddf7d0a8f7bf09c3"
     },
     {
       "bytes": 8152,
@@ -1762,19 +1852,19 @@
       "sha256": "fd51a12645f821656b8bfebbea852cdaa767349fbd346f1a45ecc23abcb4cd3f"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6475,
+      "bytes": 8525,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-half.png",
-      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+      "sha256": "85554c42e08768e34c0ac3fce274b6f833141c019240921e84ce39d9517264a0"
     },
     {
-      "bytes": 6500,
+      "bytes": 8584,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-eye-aperture-rest.png",
-      "sha256": "4e73524829a61178de8172ad3ef6a6ca62c89fd6a3598d434e4f75f21099cd1f"
+      "sha256": "e0401ffa655f1fa7e6f29e9076d91cefc4390897b23fe6e6ddf7d0a8f7bf09c3"
     },
     {
       "bytes": 8152,
@@ -1792,19 +1882,19 @@
       "sha256": "09a20bf07e50c00a0346aebbbe9eb6f3eb83db75c4753dc608d82c33ecfd6a4c"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6475,
+      "bytes": 8525,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-half.png",
-      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+      "sha256": "85554c42e08768e34c0ac3fce274b6f833141c019240921e84ce39d9517264a0"
     },
     {
-      "bytes": 6475,
+      "bytes": 8584,
       "path": "assets/makeup-safe-regions/cheek-glance/cheek-glance-half-eye-aperture-rest.png",
-      "sha256": "f548b8eadde6b0c01c637e8267ceaab996808ff6b4861e4a67b45c24903bc0c0"
+      "sha256": "e0401ffa655f1fa7e6f29e9076d91cefc4390897b23fe6e6ddf7d0a8f7bf09c3"
     },
     {
       "bytes": 8152,
@@ -1822,19 +1912,19 @@
       "sha256": "e6b46b8d25e7aac46c43dcf696cef404815de3a1d4e6e36a5aa22ff7636efc0d"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6621,
+      "bytes": 8527,
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-half.png",
-      "sha256": "4638d0882846d4144b26821ea8a89c9aeb9c823b5526137bd7a5794ddd8ffdf1"
+      "sha256": "8a7a70a7dce1f9ca2fdcf67899486a02577a95922c874f250d022e6d491fda72"
     },
     {
-      "bytes": 6718,
+      "bytes": 8529,
       "path": "assets/makeup-safe-regions/cheek-happy/cheek-happy-eye-aperture-rest.png",
-      "sha256": "c1dda93d223bfb49b097ab7389075357cebf35c788180a1f887e14a01371a9f7"
+      "sha256": "10b32aa193220bb3aa6e37a6a31a532379433933bac4b4ef20a3a98e38004159"
     },
     {
       "bytes": 7967,
@@ -1852,19 +1942,19 @@
       "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6635,
+      "bytes": 8560,
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-half.png",
-      "sha256": "4a57797b6b1b414b66669a3aee741d204e29dbd5dfea8c006f8456fc76ad2a00"
+      "sha256": "5454386f010826bad84dab065844dd89de076994f9b2b446e6b854e3f102f564"
     },
     {
-      "bytes": 6858,
+      "bytes": 8575,
       "path": "assets/makeup-safe-regions/cheek-reminder/cheek-reminder-eye-aperture-rest.png",
-      "sha256": "fed00e42b1216a05aaa2f7a27991d2e126d22602536f74058726a094bb9196c0"
+      "sha256": "f7928b6db7d9b02aa85724de068692834bf1ab537b8b29bfe8aef440d3a1120a"
     },
     {
       "bytes": 7967,
@@ -1882,19 +1972,19 @@
       "sha256": "35184a7d951edd4d5e456c355df9fab62212df09e83a66ab094efd7c92ce58cf"
     },
     {
-      "bytes": 6175,
+      "bytes": 8375,
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-closed.png",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 6623,
+      "bytes": 8541,
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-half.png",
-      "sha256": "01ce08198df4cc1b8dd37cb4e8ca825e496ce2e2f44987ff2c3dbe2719493a67"
+      "sha256": "56292b0ee289dae6ae65cd9b8df4a04a197ff02fa9b79b47aafa6fe0906ff6e9"
     },
     {
-      "bytes": 6863,
+      "bytes": 8562,
       "path": "assets/makeup-safe-regions/cheek-worried/cheek-worried-eye-aperture-rest.png",
-      "sha256": "2c12eb356122d76380181ab6a809c86b3b9a94f688c1a0de34872827ab1491d7"
+      "sha256": "34f12c9c9173a96d57bbf42800f3e0f98c73d476609a456712503a203a0ceb49"
     },
     {
       "bytes": 7967,
@@ -2482,9 +2572,9 @@
       "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 36644319,
+      "bytes": 23292261,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "10da32ab10fb8a98daf01c4e7b5266cb151d1a96bc431c8da8e880aaa51a5a44"
+      "sha256": "f161b5c36b318975d3bf46b46e9d9e1a8ecbb930d9d179fda864e72f5e38ddd4"
     },
     {
       "bytes": 6550,
@@ -3449,7 +3539,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.4",
-  "package_hash": "b9b319adb425f2a97e547c4e3c6fe37c5853d24645e10250e787e8a9d573292d",
+  "package_hash": "60d2e4ffb53181b9952b192e5faeafeb4c69612b6a10cd8b6d3a5f80d207b9d3",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
