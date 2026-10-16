@@ -458,7 +458,7 @@ jobs:
           }
 
       - name: Upload verified Windows packages
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-windows
           path: release-artifacts/*
@@ -573,7 +573,7 @@ jobs:
             --require-pose-atlas
 
       - name: Upload verified macOS Preview
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-macos-preview-${{ matrix.architecture }}
           path: release-artifacts/*
@@ -699,7 +699,7 @@ jobs:
             --require-pose-atlas
 
       - name: Upload verified Linux Preview
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-linux-preview
           path: release-artifacts/*
@@ -784,7 +784,7 @@ jobs:
             --repository "${{ github.repository }}"
 
       - name: Upload read-only generated metadata
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-metadata
           path: |
