@@ -2019,15 +2019,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/cheek-glance-oral-small.png",
-          "sha256": "6c3aefb0f71b91d1585f3e4da224268e7a91bf16ed8e7f93cde64d898165f883"
+          "sha256": "06464d654a01916e660c6c7dec3070a9dd98bda1453dc3b38fa57420ea98e3ad"
         },
         "a": {
           "path": "masks/cheek-glance-oral-a.png",
-          "sha256": "c3177587954fc08afb5c90e2d299a7d04d4ffafe1860870aece09c3262d5f382"
+          "sha256": "e5dcde31a9dd330dc4595f7268f77f00e0d62466fe543049b8420f355221e390"
         },
         "o": {
           "path": "masks/cheek-glance-oral-o.png",
-          "sha256": "b830e581bf14b58a785a69755824fa0de7c9fe1b77652b71136af3b70bd3e096"
+          "sha256": "44453c1f38c7bac72f8327634d5fcfcd276075f2927e0cc126d4fb7590056384"
         }
       }
     },
@@ -2410,19 +2410,19 @@
         "oral_masks": {
           "small": {
             "path": "masks/cheek-caught-oral-small.png",
-            "sha256": "aead27b965e3ef9f71695923fd8681ba805e5996f47b74b7490e3eaaba1b1f94",
+            "sha256": "f43d09b9f5840c4001afaf10358241585da10f901fa29367a8e78855e8b89ad5",
             "nonzero_alpha_pixels": 492,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "a": {
             "path": "masks/cheek-caught-oral-a.png",
-            "sha256": "302d7509f47fa8f3273140b0818560df84e201cabf24bb31cffa6df9e3e12f69",
+            "sha256": "c8dfd1af1fc9582b525da479763147d1bfaa26e527f8da91bb5c2c7b9b181163",
             "nonzero_alpha_pixels": 733,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "o": {
             "path": "masks/cheek-caught-oral-o.png",
-            "sha256": "8fb063576864bfc097b339199db6503702253c2aa63ab128c4237a81ef41154f",
+            "sha256": "fe9eae9e0c8413206798b597be9239bb9c82d1772b3d39434ac279e1600ae3d2",
             "nonzero_alpha_pixels": 289,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           }
@@ -2436,15 +2436,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/cheek-caught-oral-small.png",
-          "sha256": "aead27b965e3ef9f71695923fd8681ba805e5996f47b74b7490e3eaaba1b1f94"
+          "sha256": "f43d09b9f5840c4001afaf10358241585da10f901fa29367a8e78855e8b89ad5"
         },
         "a": {
           "path": "masks/cheek-caught-oral-a.png",
-          "sha256": "302d7509f47fa8f3273140b0818560df84e201cabf24bb31cffa6df9e3e12f69"
+          "sha256": "c8dfd1af1fc9582b525da479763147d1bfaa26e527f8da91bb5c2c7b9b181163"
         },
         "o": {
           "path": "masks/cheek-caught-oral-o.png",
-          "sha256": "8fb063576864bfc097b339199db6503702253c2aa63ab128c4237a81ef41154f"
+          "sha256": "fe9eae9e0c8413206798b597be9239bb9c82d1772b3d39434ac279e1600ae3d2"
         }
       }
     },
@@ -2827,19 +2827,19 @@
         "oral_masks": {
           "small": {
             "path": "masks/cheek-happy-oral-small.png",
-            "sha256": "78a50b61c9799ae57c1fa8b9198370ba8e322fa610f4156d7172931c5cb4ac0e",
+            "sha256": "e2a4c646c31360edf9874911e111c73163d7cd3055da569f8ab91bd1956bf85a",
             "nonzero_alpha_pixels": 785,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "a": {
             "path": "masks/cheek-happy-oral-a.png",
-            "sha256": "49abeafeaa6c438e76ee91cc2892b75da56f6e0b3ad25275790bd03bedffdc41",
+            "sha256": "d9aa2543652f6e654edf20db5f0fbb78261414e3f8685277a421c58a2cf27b96",
             "nonzero_alpha_pixels": 827,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "o": {
             "path": "masks/cheek-happy-oral-o.png",
-            "sha256": "66208b4ff5f8552d0675b07631ea58cf477c505e91ac7ed18cc8662f4fb8a458",
+            "sha256": "8dd55c109ed9bf74bca562cf5e030e613418236bebc92e47efa6071e55a6b111",
             "nonzero_alpha_pixels": 465,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           }
@@ -2853,15 +2853,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/cheek-happy-oral-small.png",
-          "sha256": "78a50b61c9799ae57c1fa8b9198370ba8e322fa610f4156d7172931c5cb4ac0e"
+          "sha256": "e2a4c646c31360edf9874911e111c73163d7cd3055da569f8ab91bd1956bf85a"
         },
         "a": {
           "path": "masks/cheek-happy-oral-a.png",
-          "sha256": "49abeafeaa6c438e76ee91cc2892b75da56f6e0b3ad25275790bd03bedffdc41"
+          "sha256": "d9aa2543652f6e654edf20db5f0fbb78261414e3f8685277a421c58a2cf27b96"
         },
         "o": {
           "path": "masks/cheek-happy-oral-o.png",
-          "sha256": "66208b4ff5f8552d0675b07631ea58cf477c505e91ac7ed18cc8662f4fb8a458"
+          "sha256": "8dd55c109ed9bf74bca562cf5e030e613418236bebc92e47efa6071e55a6b111"
         }
       }
     },
@@ -3244,19 +3244,19 @@
         "oral_masks": {
           "small": {
             "path": "masks/cheek-worried-oral-small.png",
-            "sha256": "744512bfd492bd82a8e9b93bc034d343f389f551d4d14979fbbd63fc2ecc1fd1",
+            "sha256": "7d8353de97e9c282d8de6d732d2ee997837e2da935ea2ea5b22de8898cd4abab",
             "nonzero_alpha_pixels": 538,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "a": {
             "path": "masks/cheek-worried-oral-a.png",
-            "sha256": "9bd25f3792936aefe37b827b01d7d4e518560ed90df1322b582cdb5ea1526bb7",
+            "sha256": "5093c74b0fa2e64f71c33efff7f4d62294631383c165c2178c2e208eb086bfbc",
             "nonzero_alpha_pixels": 1037,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "o": {
             "path": "masks/cheek-worried-oral-o.png",
-            "sha256": "d0d52f9eb24a499438a86dcb261f12230ab9eb78ae5154c1163b8ae36b21799f",
+            "sha256": "adc69ba4e6b9d1810950dfa6cff5fb43cdb45c3fcb923cf9e5e1d04b33ee32ef",
             "nonzero_alpha_pixels": 425,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           }
@@ -3270,15 +3270,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/cheek-worried-oral-small.png",
-          "sha256": "744512bfd492bd82a8e9b93bc034d343f389f551d4d14979fbbd63fc2ecc1fd1"
+          "sha256": "7d8353de97e9c282d8de6d732d2ee997837e2da935ea2ea5b22de8898cd4abab"
         },
         "a": {
           "path": "masks/cheek-worried-oral-a.png",
-          "sha256": "9bd25f3792936aefe37b827b01d7d4e518560ed90df1322b582cdb5ea1526bb7"
+          "sha256": "5093c74b0fa2e64f71c33efff7f4d62294631383c165c2178c2e208eb086bfbc"
         },
         "o": {
           "path": "masks/cheek-worried-oral-o.png",
-          "sha256": "d0d52f9eb24a499438a86dcb261f12230ab9eb78ae5154c1163b8ae36b21799f"
+          "sha256": "adc69ba4e6b9d1810950dfa6cff5fb43cdb45c3fcb923cf9e5e1d04b33ee32ef"
         }
       }
     },
@@ -3661,19 +3661,19 @@
         "oral_masks": {
           "small": {
             "path": "masks/cheek-reminder-oral-small.png",
-            "sha256": "fa45d766699fb41e6f506f9213f63aa12f7343562ab84ea641b01ffb12408189",
+            "sha256": "4000bdbbf946754ed5b50b813702f370f54f69fbe8225f40cd1200389c79e287",
             "nonzero_alpha_pixels": 500,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "a": {
             "path": "masks/cheek-reminder-oral-a.png",
-            "sha256": "b56db2d4f8a1bb104d1a605aa0983900c045d6d191fbcc3cb892e158fe1c4cd6",
+            "sha256": "4d16aa97f8f9567d2ee4450ef9d713dacff484291643ff0034c6ab70c2b93280",
             "nonzero_alpha_pixels": 946,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           },
           "o": {
             "path": "masks/cheek-reminder-oral-o.png",
-            "sha256": "673c16417b5fe932ee34e5cccd852d16289648444ea8d50b06c486aa7b878e1f",
+            "sha256": "1f685a283879923b34c06981f58367260275424e41b22ba55e031169213b242c",
             "nonzero_alpha_pixels": 348,
             "method": "owner mouth endpoint dark-cavity pixels inside disjoint mouth rectangle"
           }
@@ -3687,15 +3687,15 @@
       "oral_masks": {
         "small": {
           "path": "masks/cheek-reminder-oral-small.png",
-          "sha256": "fa45d766699fb41e6f506f9213f63aa12f7343562ab84ea641b01ffb12408189"
+          "sha256": "4000bdbbf946754ed5b50b813702f370f54f69fbe8225f40cd1200389c79e287"
         },
         "a": {
           "path": "masks/cheek-reminder-oral-a.png",
-          "sha256": "b56db2d4f8a1bb104d1a605aa0983900c045d6d191fbcc3cb892e158fe1c4cd6"
+          "sha256": "4d16aa97f8f9567d2ee4450ef9d713dacff484291643ff0034c6ab70c2b93280"
         },
         "o": {
           "path": "masks/cheek-reminder-oral-o.png",
-          "sha256": "673c16417b5fe932ee34e5cccd852d16289648444ea8d50b06c486aa7b878e1f"
+          "sha256": "1f685a283879923b34c06981f58367260275424e41b22ba55e031169213b242c"
         }
       }
     },
