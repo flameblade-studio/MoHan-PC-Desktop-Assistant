@@ -526,17 +526,10 @@ def check_baseline(
     images = render_scenes(selected_names)
     by_name = {spec.name: spec for spec in specs}
     diff_root.mkdir(parents=True, exist_ok=True)
-    reports: list[DifferenceReport] = []
-    for name in selected_names:
-        reports.append(
-            _compare_scene(
-                by_name[name],
-                images[name],
-                baseline_root,
-                diff_root,
-            )
-        )
-    return tuple(reports)
+    return tuple(
+        _compare_scene(by_name[name], images[name], baseline_root, diff_root)
+        for name in selected_names
+    )
 
 
 def _shown(path: Path) -> str:
