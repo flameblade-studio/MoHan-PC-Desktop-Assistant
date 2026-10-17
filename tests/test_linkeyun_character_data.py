@@ -437,7 +437,7 @@ def test_linkeyun_pack_source_declares_public_access_and_default_outfit() -> Non
     )
     assert lock["pack_version"] == source["pack_version"]
     assert lock["package_hash"] == (
-        "da5aca6d55807c425804eabf67c7a994d597b3c2ee020a0ba2724945a4d9018f"
+        "2965dcf143288098bf9b829ab818b931de7cb8174d2b45e5afbfffd8adec2e7b"
     )
     assert source["distribution"]["access"] == "public"
     assert source["distribution"]["redistribution"] == "allowed"

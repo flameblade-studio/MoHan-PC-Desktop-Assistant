@@ -98,6 +98,9 @@ def _declared_makeup_assets(manifest: dict) -> tuple[tuple[str, dict], ...]:
             for state_poses in variant.get("eye_states", {}).values():
                 for silhouette, assets in state_poses.items():
                     entries.extend((silhouette, asset) for asset in assets)
+            for state_poses in variant.get("mouth_states", {}).values():
+                for silhouette, assets in state_poses.items():
+                    entries.extend((silhouette, asset) for asset in assets)
     return tuple(entries)
 
 
@@ -377,7 +380,11 @@ def test_safe_region_document_matches_the_rigs() -> None:
     )
     # Rest-state front regions exist exactly for the installed complete front poses.
     front_poses = {pose for pose in complete["poses"] if pose in FRONT_MAKEUP_SILHOUETTES}
-    assert set(regions) == set(REQUIRED_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES) | front_poses
+    assert set(regions) == (
+        set(REQUIRED_SILHOUETTES + COMPLETE_EXPRESSION_MAKEUP_SILHOUETTES)
+        | front_poses
+        | {"official-cheek-rest"}
+    )
     for silhouette, region in regions.items():
         assert region.canvas == canvas_for(silhouette)
         for slot in ("eyes", "cheeks", "lips"):
@@ -654,6 +661,13 @@ def test_committed_authoring_rebuild_includes_all_declared_makeup_members(tmp_pa
         asset.path
         for variant in item.variants
         for state_poses in variant.eye_states.values()
+        for assets in state_poses.values()
+        for asset in assets
+    )
+    parsed_paths.extend(
+        asset.path
+        for variant in item.variants
+        for state_poses in variant.mouth_states.values()
         for assets in state_poses.values()
         for asset in assets
     )

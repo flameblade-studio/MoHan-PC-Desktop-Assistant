@@ -53,7 +53,7 @@
   "source_refs": [
     {
       "path": "assets/characters/mohan/body/manifest.json",
-      "scope": "Owner-approved Stage 1 MoHan body layer-view manifest; body fingerprint and every declared layer hash are preserved."
+      "scope": "Owner-approved Stage 1 body layer-view bindings and preserved non-cheek bytes; OFFICIAL-CHEEK-1 candidate adds the posture-B cheek-rest family from the owner-approved target snapshot."
     },
     {
       "path": "assets/pose-atlas/v5-base/BUILD-METADATA.json",
@@ -71,7 +71,7 @@
   "approval_refs": [
     {
       "path": "assets/characters/mohan/body/approval.json",
-      "scope": "Owner-approved Stage 1 official-look body layers; cheek-rest remains on the established main product route."
+      "scope": "Owner-approved Stage 1 official-look body layers; OFFICIAL-CHEEK-1 submits the posture-B cheek-rest family while preserving the Stage 1 non-cheek surface."
     },
     {
       "path": "assets/expressions/source-bound-exasperated/approval/garment-approval.json",
@@ -260,7 +260,7 @@
     "max_compression_ratio": 100
   },
   "body_pack": {
-    "fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+    "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
     "id": "mohan-body-v2",
     "version": "1.0.0"
   },
@@ -662,7 +662,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -672,7 +672,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -681,7 +681,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -690,7 +690,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -699,7 +699,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -708,7 +708,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -727,7 +727,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -737,7 +737,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -746,7 +746,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -755,7 +755,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -764,7 +764,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -773,7 +773,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -792,7 +792,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -802,7 +802,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -811,7 +811,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -820,7 +820,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -829,7 +829,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -838,7 +838,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -857,7 +857,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -867,7 +867,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -876,7 +876,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -885,7 +885,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -894,7 +894,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -903,7 +903,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -922,7 +922,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -932,7 +932,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -941,7 +941,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -950,7 +950,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -959,7 +959,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -968,7 +968,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -987,7 +987,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -997,7 +997,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -1006,7 +1006,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -1015,7 +1015,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -1024,7 +1024,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -1033,7 +1033,462 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek-caught": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek-glance": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek-happy": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek-reminder": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek-rest": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
+        }
+      ],
+      "order": [
+        "base",
+        "hair-back",
+        "body-fix",
+        "garment",
+        "hair-front",
+        "ornament"
+      ]
+    },
+    "cheek-worried": {
+      "base_hide": {
+        "anchor": [
+          0,
+          0
+        ],
+        "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
+      },
+      "layers": [
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-back",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "body-fix",
+          "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "garment",
+          "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "hair-front",
+          "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
+        },
+        {
+          "anchor": [
+            0,
+            0
+          ],
+          "kind": "ornament",
+          "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -3912,7 +4367,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -3922,7 +4377,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -3931,7 +4386,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -3940,7 +4395,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -3949,7 +4404,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -3958,7 +4413,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -3977,7 +4432,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -3987,7 +4442,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -3996,7 +4451,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4005,7 +4460,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4014,7 +4469,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4023,7 +4478,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4042,7 +4497,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4052,7 +4507,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4061,7 +4516,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4070,7 +4525,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4079,7 +4534,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4088,7 +4543,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4107,7 +4562,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4117,7 +4572,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4126,7 +4581,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4135,7 +4590,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4144,7 +4599,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4153,7 +4608,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4172,7 +4627,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4182,7 +4637,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4191,7 +4646,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4200,7 +4655,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4209,7 +4664,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4218,7 +4673,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4237,7 +4692,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4247,7 +4702,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4256,7 +4711,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4265,7 +4720,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4274,7 +4729,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4283,7 +4738,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4302,7 +4757,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4312,7 +4767,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4321,7 +4776,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4330,7 +4785,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4339,7 +4794,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4348,7 +4803,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4367,7 +4822,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4377,7 +4832,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4386,7 +4841,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4395,7 +4850,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4404,7 +4859,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4413,7 +4868,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4432,7 +4887,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4442,7 +4897,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4451,7 +4906,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4460,7 +4915,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4469,7 +4924,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4478,7 +4933,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4497,7 +4952,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4507,7 +4962,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4516,7 +4971,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4525,7 +4980,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4534,7 +4989,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4543,7 +4998,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4562,7 +5017,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4572,7 +5027,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4581,7 +5036,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4590,7 +5045,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4599,7 +5054,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4608,7 +5063,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -4627,7 +5082,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -4637,7 +5092,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -4646,7 +5101,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -4655,7 +5110,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -4664,7 +5119,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -4673,7 +5128,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -7422,7 +7877,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -7432,7 +7887,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -7441,7 +7896,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -7450,7 +7905,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -7459,7 +7914,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -7468,7 +7923,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -7487,7 +7942,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -7497,7 +7952,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -7506,7 +7961,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -7515,7 +7970,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -7524,7 +7979,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -7533,7 +7988,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -7552,7 +8007,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -7562,7 +8017,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -7571,7 +8026,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -7580,7 +8035,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -7589,7 +8044,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -7598,7 +8053,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -7617,7 +8072,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -7627,7 +8082,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -7636,7 +8091,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -7645,7 +8100,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -7654,7 +8109,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -7663,7 +8118,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -7682,7 +8137,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -7692,7 +8147,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -7701,7 +8156,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -7710,7 +8165,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -7719,7 +8174,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -7728,7 +8183,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -7747,7 +8202,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -7757,7 +8212,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -7766,7 +8221,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -7775,7 +8230,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -7784,7 +8239,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -7793,7 +8248,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -10672,7 +11127,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -10682,7 +11137,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -10691,7 +11146,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -10700,7 +11155,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -10709,7 +11164,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -10718,7 +11173,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -11127,7 +11582,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -11137,7 +11592,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -11146,7 +11601,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -11155,7 +11610,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -11164,7 +11619,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -11173,7 +11628,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -11192,7 +11647,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -11202,7 +11657,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -11211,7 +11666,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -11220,7 +11675,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -11229,7 +11684,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -11238,7 +11693,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -11257,7 +11712,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -11267,7 +11722,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -11276,7 +11731,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -11285,7 +11740,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -11294,7 +11749,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -11303,7 +11758,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -11322,7 +11777,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -11332,7 +11787,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -11341,7 +11796,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -11350,7 +11805,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -11359,7 +11814,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -11368,7 +11823,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [
@@ -11387,7 +11842,7 @@
           0
         ],
         "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-        "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+        "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
       },
       "layers": [
         {
@@ -11397,7 +11852,7 @@
           ],
           "kind": "hair-back",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-          "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+          "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
         },
         {
           "anchor": [
@@ -11406,7 +11861,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-          "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+          "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
         },
         {
           "anchor": [
@@ -11415,7 +11870,7 @@
           ],
           "kind": "garment",
           "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-          "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+          "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
         },
         {
           "anchor": [
@@ -11424,7 +11879,7 @@
           ],
           "kind": "hair-front",
           "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-          "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+          "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
         },
         {
           "anchor": [
@@ -11433,7 +11888,7 @@
           ],
           "kind": "ornament",
           "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-          "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+          "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
         }
       ],
       "order": [

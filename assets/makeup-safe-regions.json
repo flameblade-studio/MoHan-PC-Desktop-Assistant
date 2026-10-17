@@ -6295,6 +6295,115 @@
         "eyes": [],
         "lips": []
       }
+    },
+    "official-cheek-rest": {
+      "canvas": [
+        1254,
+        1254
+      ],
+      "eye_aperture_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-rest.png",
+          "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-half.png",
+          "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-closed.png",
+          "sha256": "2b02b18d69cac95c8561ebdf980f44501fdd172394a1f82038ff03083e388f6c",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "foundation_masks": {
+        "rest": {
+          "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-rest.png",
+          "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "half": {
+          "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-half.png",
+          "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        },
+        "closed": {
+          "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-closed.png",
+          "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077",
+          "width": 1254,
+          "height": 1254,
+          "anchor": [
+            0,
+            0
+          ]
+        }
+      },
+      "rig": "assets/front-makeup-rigs/official-cheek-rest-neutral",
+      "slots": {
+        "cheeks": [
+          [
+            405,
+            420,
+            180,
+            145
+          ],
+          [
+            600,
+            420,
+            205,
+            155
+          ]
+        ],
+        "eyes": [
+          [
+            429,
+            339,
+            182,
+            118
+          ],
+          [
+            586,
+            349,
+            204,
+            149
+          ]
+        ],
+        "lips": [
+          [
+            504,
+            513,
+            135,
+            71
+          ]
+        ]
+      }
     }
   },
   "source_sha256": "4ca78a577d93ba65d5d6af0d9aaee6d999d59b9fa6f6222d953d91afa19b7552"
