@@ -8,7 +8,7 @@ source.json 固定素體版本、來源檔案的 bytes/SHA-256、上游 sidecar 
 
 更新 lock 時執行 python tools/verify_body_pack_lock.py --update；靜態檢查執行 python tools/verify_body_pack_lock.py。更新會由 source.json 讀取版本，建立 mohan-body-v2 manifest 與可重現 ZIP，並寫入 lock 的檔案、大小及 SHA-256。CI 只重建並比對，不發布或上傳。
 
-來源核對硬性要求 body fingerprint 為 6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891。上游歷史 metadata 與 9 筆 gestures PNG hash 漂移保留在 source receipt；它們不會被覆寫成已通過的舊 manifest。完整 CC BY-NC-ND 4.0 法律條文和四語 NOTICE 隨套件提供。
+來源核對硬性要求 body fingerprint 為 efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac。上游歷史 metadata 與 9 筆 gestures PNG hash 漂移保留在 source receipt；它們不會被覆寫成已通過的舊 manifest。完整 CC BY-NC-ND 4.0 法律條文和四語 NOTICE 隨套件提供。
 
 ## 简体中文
 
@@ -18,7 +18,7 @@ source.json 固定素体版本、来源文件的 bytes/SHA-256、上游 sidecar 
 
 更新 lock 时运行 python tools/verify_body_pack_lock.py --update；静态检查运行 python tools/verify_body_pack_lock.py。更新会从 source.json 读取版本，生成 mohan-body-v2 manifest 与可重现 ZIP，并写入 lock 的文件、大小及 SHA-256。CI 只重建并比对，不发布或上传。
 
-来源核对要求 body fingerprint 必须为 6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891。上游历史 metadata 与 9 条 gestures PNG hash 漂移保留在 source receipt；不会被改写成旧 manifest 已通过。套件附带完整 CC BY-NC-ND 4.0 法律条文及四语 NOTICE。
+来源核对要求 body fingerprint 必须为 efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac。上游历史 metadata 与 9 条 gestures PNG hash 漂移保留在 source receipt；不会被改写成旧 manifest 已通过。套件附带完整 CC BY-NC-ND 4.0 法律条文及四语 NOTICE。
 
 ## English
 
@@ -28,7 +28,7 @@ source.json pins the body-pack version, source-file byte counts and SHA-256 dige
 
 Run python tools/verify_body_pack_lock.py --update to update the lock, or python tools/verify_body_pack_lock.py for static verification. The update reads the version from source.json, rebuilds the mohan-body-v2 manifest and reproducible ZIP, then records file paths, sizes, and SHA-256 digests in the lock. CI rebuilds and compares without publishing or uploading.
 
-The source check requires body fingerprint 6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891. Historical upstream metadata and nine stale gesture PNG hashes remain recorded in the source receipt; they are not rewritten as passing historical manifests. The pack includes the complete CC BY-NC-ND 4.0 legal code and a four-language NOTICE.
+The source check requires body fingerprint efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac. Historical upstream metadata and nine stale gesture PNG hashes remain recorded in the source receipt; they are not rewritten as passing historical manifests. The pack includes the complete CC BY-NC-ND 4.0 legal code and a four-language NOTICE.
 
 ## 日本語
 
@@ -38,4 +38,4 @@ source.json はボディパックのバージョン、各ソースファイル�
 
 lock 更新には python tools/verify_body_pack_lock.py --update、静的検証には python tools/verify_body_pack_lock.py を実行します。更新処理は source.json からバージョンを読み、mohan-body-v2 manifest と再現可能な ZIP を再構築して、lock にファイルパス、サイズ、SHA-256 を記録します。CI は再構築と照合のみを行い、公開・アップロードは行いません。
 
-ソース検証では body fingerprint 6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891 を必須とします。上流の履歴 metadata と gestures PNG の古い hash 9 件は source receipt に記録し、過去の manifest を合格扱いに書き換えません。パックには CC BY-NC-ND 4.0 の法的条文全文と四言語 NOTICE を含めます。
+ソース検証では body fingerprint efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac を必須とします。上流の履歴 metadata と gestures PNG の古い hash 9 件は source receipt に記録し、過去の manifest を合格扱いに書き換えません。パックには CC BY-NC-ND 4.0 の法的条文全文と四言語 NOTICE を含めます。
