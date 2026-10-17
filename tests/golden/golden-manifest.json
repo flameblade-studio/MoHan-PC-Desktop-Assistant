@@ -1,7 +1,7 @@
 {
   "approval": {
     "path": "docs/release-evidence/yaw045-hem-skirt-golden-approval.json",
-    "sha256": "ba2021dd2346f3704de36de8f3c152eec7093e61fb782180d6792b5f2af3fc06"
+    "sha256": "321e96f74d6448d95e3704bbaefe464fae500cad31e5f0364cbed2e766b2aa3b"
   },
   "cells": [
     {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "602b712d765981dc187ceda99aaf9a59a9dd3740"
+  "source_revision": "5e3936536f4b02d2133025f7fed20c4e54d3c37e"
 }
