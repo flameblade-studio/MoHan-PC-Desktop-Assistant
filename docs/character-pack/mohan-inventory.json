@@ -12937,7 +12937,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "6e271a76cbdc5aba8d365ed345f11798d1da0a30c5179188ed20b9dde030ee0f"
+      "sha256": "99257e40d8fbbd7eef5c69e2092ff9f83a78e423b19b39c5f5342e0ca0b6a16e"
     },
     {
       "bytes": 370793,
@@ -12954,7 +12954,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "caddce561533f1ef6d2d41f005309cd0d25dad3e07217b94542d7216653d0875"
+      "sha256": "39c46a007b4b50f83ea3ddc443bd8f03c6a3666ba740aea31946d17d3b0c0485"
     },
     {
       "bytes": 7845,
@@ -14321,7 +14321,7 @@
       "sha256": "5abc5bd194bfb86f0d8f5580de38665e31755b7361fbd93023bfaa45c3ad3804"
     },
     {
-      "bytes": 650722,
+      "bytes": 679974,
       "category": "character_layer_view",
       "image": {
         "height": 1536,
@@ -14340,7 +14340,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "7cefdc88dfe60dad47aef09d8eb735d699e0877487c167cafa780626cb6937b6"
+      "sha256": "edef3c7ca2e89ea842c8d640ec4434e75955ef77a0c5a7f6575e133bcdf2f708"
     },
     {
       "bytes": 35370,
@@ -17176,7 +17176,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "36b38d009d20bd46e2ff1c8f58b6138a979c9d2cbb8f9177787d715441af394c"
+      "sha256": "e05d3f299d2aea7265f8cc94cc4d83251706b9c16212db52687835d1a8a05fc2"
     },
     {
       "bytes": 3149,
@@ -82820,7 +82820,7 @@
       "sha256": "2ca82b77eecb936705efd41a3b6888dfc340ac2c6a4347714c3604ff8b649b82"
     },
     {
-      "bytes": 29245749,
+      "bytes": 29245764,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -82834,7 +82834,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "68eb0783416c40485e63170539685500d408a489a71447f33e21ee9d0330ad3e"
+      "sha256": "55c55c89f24863f018f77327688a955746eedec2764cb544d3b4f65b9df56e49"
     },
     {
       "appearance_categories": [
@@ -83070,7 +83070,7 @@
       "appearance_categories": [
         "looks"
       ],
-      "bytes": 680954,
+      "bytes": 680692,
       "category": "appearance_pack_member",
       "image": {
         "height": 1536,
@@ -83087,7 +83087,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "042d7aa99202a514cbafd7fc4d991f5458f3721a439861cf9c0404f2a1004daa"
+      "sha256": "7d506262f7f4e3a3361b13fbb711e9af02d34399adab367164f76ed38c7664ff"
     },
     {
       "appearance_categories": [
@@ -85690,7 +85690,7 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 76672,
+      "bytes": 76673,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit!manifest.json",
@@ -85702,7 +85702,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "ac7a40375b2db0e69f0ab6d56b6fbf6c223e98e30ef4447d00f7571e0ac9a7b3"
+      "sha256": "dd994a7a75c0379debcdb771e4f1949f99c3dfd8b497a42dc6cd40231cf9a370"
     },
     {
       "bytes": 1422107,

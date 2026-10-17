@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.6.zip",
-    "bytes": 981622258,
-    "sha256": "79bcb4e5a4ba933d5c472c52c7c8a83df1c303733507735719aa58a4ef2b497e"
+    "bytes": 981651525,
+    "sha256": "ba26cbf797e4be55b9b07c8d8783651bdfbf0bf154014045916a9d2c636722a3"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,12 +24,12 @@
     {
       "bytes": 3014,
       "path": "assets/characters/mohan/body/approval.json",
-      "sha256": "6e271a76cbdc5aba8d365ed345f11798d1da0a30c5179188ed20b9dde030ee0f"
+      "sha256": "99257e40d8fbbd7eef5c69e2092ff9f83a78e423b19b39c5f5342e0ca0b6a16e"
     },
     {
       "bytes": 370793,
       "path": "assets/characters/mohan/body/manifest.json",
-      "sha256": "caddce561533f1ef6d2d41f005309cd0d25dad3e07217b94542d7216653d0875"
+      "sha256": "39c46a007b4b50f83ea3ddc443bd8f03c6a3666ba740aea31946d17d3b0c0485"
     },
     {
       "bytes": 7845,
@@ -342,9 +342,9 @@
       "sha256": "5abc5bd194bfb86f0d8f5580de38665e31755b7361fbd93023bfaa45c3ad3804"
     },
     {
-      "bytes": 650722,
+      "bytes": 679974,
       "path": "assets/characters/mohan/body/views/yaw+045-pitch+00/garment.png",
-      "sha256": "7cefdc88dfe60dad47aef09d8eb735d699e0877487c167cafa780626cb6937b6"
+      "sha256": "edef3c7ca2e89ea842c8d640ec4434e75955ef77a0c5a7f6575e133bcdf2f708"
     },
     {
       "bytes": 35370,
@@ -5742,9 +5742,9 @@
       "sha256": "f161b5c36b318975d3bf46b46e9d9e1a8ecbb930d9d179fda864e72f5e38ddd4"
     },
     {
-      "bytes": 29245749,
+      "bytes": 29245764,
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
-      "sha256": "68eb0783416c40485e63170539685500d408a489a71447f33e21ee9d0330ad3e"
+      "sha256": "55c55c89f24863f018f77327688a955746eedec2764cb544d3b4f65b9df56e49"
     },
     {
       "bytes": 1422107,
@@ -11054,7 +11054,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.6",
-  "package_hash": "6fe84b61d94b6277758d1d4c8b9fd9d730a2b8f6ffef50711d743593577d7d80",
+  "package_hash": "9028adec1f9e8c84793cb0c2d7d71cb73d8e9b3195b815dd992b3611591e17d1",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
