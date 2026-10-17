@@ -60,7 +60,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "825398a3caadace8d8ba1420b1292177654386b7f7d59e0456dec1e558bf2089"
+      "sha256": "32be2d696c891be5c826e9effa489d61e2d7cdaf758dcecff696b013b52fb9b4"
     },
     {
       "bytes": 326038,
@@ -77,7 +77,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "2266f50e7883464ffb66bed51bfc1ddf3ed7662c5a7972387873aa3ab229e7f0"
+      "sha256": "4cf5046ff831ed4122b08c67cef071d3058d8953014f5d3816de4ba049c4a668"
     },
     {
       "bytes": 11871,
@@ -8564,7 +8564,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "5aaebd4f84888d5e8456c7e8c61f28e17c5dffb7d511cca937572a93da32f3bd"
+      "sha256": "e8e9645729455f3193602a236a279ffed40a9ab5a729d54a61df62ed06426664"
     },
     {
       "bytes": 2163,
@@ -10475,6 +10475,70 @@
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/front-makeup-rigs/front-worried_front_teeth_tongue.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_lower.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_upper.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_oral_cavity.png",
+      "readers": [],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_teeth_tongue.png",
       "readers": [],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
@@ -12587,7 +12651,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 165949,
+      "bytes": 169026,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -12601,7 +12665,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "b4921475c1186ad04f4b66ae511f46129f0616f2278f70b20ba2ff81d94b5e8d"
+      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
     },
     {
       "bytes": 8375,
@@ -17008,7 +17072,169 @@
       "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 23292261,
+      "bytes": 9021,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "2b02b18d69cac95c8561ebdf980f44501fdd172394a1f82038ff03083e388f6c"
+    },
+    {
+      "bytes": 10219,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 10219,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 14939,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "Declared runtime makeup component, approval or safety dependency.",
+      "scope": "runtime_data",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 36302777,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -17022,7 +17248,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "f161b5c36b318975d3bf46b46e9d9e1a8ecbb930d9d179fda864e72f5e38ddd4"
+      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
     },
     {
       "bytes": 6550,
@@ -21255,6 +21481,6 @@
   "schema_version": 1,
   "scope_counts": {
     "excluded_support": 2,
-    "runtime_data": 920
+    "runtime_data": 930
   }
 }

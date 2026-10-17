@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.6.zip",
-    "bytes": 981651525,
-    "sha256": "ba26cbf797e4be55b9b07c8d8783651bdfbf0bf154014045916a9d2c636722a3"
+    "bytes": 994900498,
+    "sha256": "8d75174a164f3713f72d5bd2327bfecc3101edab4eb1b90395819e4425aa0392"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,42 +24,42 @@
     {
       "bytes": 3014,
       "path": "assets/characters/mohan/body/approval.json",
-      "sha256": "99257e40d8fbbd7eef5c69e2092ff9f83a78e423b19b39c5f5342e0ca0b6a16e"
+      "sha256": "75901bf13f9a9ad623b5d36fccc79297e894f11c46ddac1b8650d141f5ad1146"
     },
     {
-      "bytes": 370793,
+      "bytes": 383848,
       "path": "assets/characters/mohan/body/manifest.json",
-      "sha256": "39c46a007b4b50f83ea3ddc443bd8f03c6a3666ba740aea31946d17d3b0c0485"
+      "sha256": "b657fc3eb88adcb67e9c36c2d860b9d818e85c54a549d50bb5faa6681b448a55"
     },
     {
-      "bytes": 7845,
+      "bytes": 9942,
       "path": "assets/characters/mohan/body/views/cheek-rest/base-hide-mask.png",
-      "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+      "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
     },
     {
-      "bytes": 33448,
+      "bytes": 74533,
       "path": "assets/characters/mohan/body/views/cheek-rest/body-fix.png",
-      "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+      "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
     },
     {
-      "bytes": 788830,
+      "bytes": 1133244,
       "path": "assets/characters/mohan/body/views/cheek-rest/garment.png",
-      "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+      "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
     },
     {
-      "bytes": 559021,
+      "bytes": 238544,
       "path": "assets/characters/mohan/body/views/cheek-rest/hair-back.png",
-      "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+      "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
     },
     {
-      "bytes": 98748,
+      "bytes": 155236,
       "path": "assets/characters/mohan/body/views/cheek-rest/hair-front.png",
-      "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+      "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
     },
     {
-      "bytes": 56736,
+      "bytes": 64696,
       "path": "assets/characters/mohan/body/views/cheek-rest/ornament.png",
-      "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+      "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
     },
     {
       "bytes": 11368,
@@ -4947,9 +4947,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 165949,
+      "bytes": 169026,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "b4921475c1186ad04f4b66ae511f46129f0616f2278f70b20ba2ff81d94b5e8d"
+      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
     },
     {
       "bytes": 8375,
@@ -5732,14 +5732,44 @@
       "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
+      "bytes": 9021,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-closed.png",
+      "sha256": "2b02b18d69cac95c8561ebdf980f44501fdd172394a1f82038ff03083e388f6c"
+    },
+    {
+      "bytes": 10219,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-half.png",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 10219,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-rest.png",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 14939,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-closed.png",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-half.png",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-rest.png",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
       "bytes": 419110,
       "path": "assets/mohan-halfbody.ico",
       "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
     },
     {
-      "bytes": 23292261,
+      "bytes": 36302777,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "f161b5c36b318975d3bf46b46e9d9e1a8ecbb930d9d179fda864e72f5e38ddd4"
+      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
     },
     {
       "bytes": 29245764,
@@ -11054,7 +11084,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.6",
-  "package_hash": "9028adec1f9e8c84793cb0c2d7d71cb73d8e9b3195b815dd992b3611591e17d1",
+  "package_hash": "561e7557940b3d9f9fbb26102014ec66b33c72ef5412dcd18926aceb951cef1d",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

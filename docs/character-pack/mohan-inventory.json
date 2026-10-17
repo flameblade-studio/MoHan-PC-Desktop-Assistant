@@ -414,7 +414,7 @@
       "work_package": null
     },
     {
-      "bytes": 30529,
+      "bytes": 30286,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
@@ -425,7 +425,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 434,
+          "line": 430,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -435,7 +435,7 @@
         {
           "content_kind": "rig_assets",
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
-          "line": 435,
+          "line": 431,
           "matched": "assets/expressions/",
           "path": "application/service_container.py",
           "rule": "character_asset_path_literal",
@@ -455,7 +455,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "ad66b69ba85e6c32dcceda62206c68d31492b5d9076331456eadf43d81c8fffa",
+      "sha256": "3801bdb8b2d34db26c8f94515e89d288a26f5d85327aeeecd605ae6eb1e637f8",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
@@ -506,58 +506,58 @@
           "name": "create_presentation_ports"
         },
         {
-          "end_line": 475,
+          "end_line": 471,
           "line": 323,
           "name": "_create_presentation_ports"
         },
         {
-          "end_line": 481,
-          "line": 478,
+          "end_line": 477,
+          "line": 474,
           "name": "_VisionProviderPort"
         },
         {
-          "end_line": 487,
-          "line": 484,
+          "end_line": 483,
+          "line": 480,
           "name": "VisionProviderFactory"
         },
         {
-          "end_line": 529,
-          "line": 490,
+          "end_line": 525,
+          "line": 486,
           "name": "_SecretBackedVisionProvider"
         },
         {
-          "end_line": 542,
-          "line": 532,
+          "end_line": 538,
+          "line": 528,
           "name": "_UnavailableVisionProvider"
         },
         {
-          "end_line": 562,
-          "line": 545,
+          "end_line": 558,
+          "line": 541,
           "name": "_default_vision_provider_factory"
         },
         {
-          "end_line": 583,
-          "line": 565,
+          "end_line": 579,
+          "line": 561,
           "name": "create_cloud_vision_service_factory"
         },
         {
-          "end_line": 602,
-          "line": 586,
+          "end_line": 598,
+          "line": 582,
           "name": "_local_speech_engine"
         },
         {
-          "end_line": 622,
-          "line": 605,
+          "end_line": 618,
+          "line": 601,
           "name": "_realtime_speech_output"
         },
         {
-          "end_line": 642,
-          "line": 625,
+          "end_line": 638,
+          "line": 621,
           "name": "_initialize_backup_manager"
         },
         {
-          "end_line": 797,
-          "line": 645,
+          "end_line": 793,
+          "line": 641,
           "name": "create_default_services"
         }
       ],
@@ -821,7 +821,7 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 16168,
+      "bytes": 22233,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -834,7 +834,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "e91d662bc347da6cadcce98706beb02e63808745695911840326cea3308ccab1"
+      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
     },
     {
       "bytes": 23949,
@@ -1621,7 +1621,7 @@
       "sha256": "85a9763d182822d18253634e46202ed12936144c84c1bb2103cf293fd202ea86"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1634,10 +1634,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1650,10 +1650,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1666,10 +1666,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1875878,
+      "bytes": 1890370,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1682,10 +1682,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "1eac10438737ae98664c0fed2f3cbf68ce75c4d421ea75209daf120f420a0816"
+      "sha256": "ed09721c73ebf9751ddde95c783415d8c81af0175b7f92818e8fcc9dee8951ec"
     },
     {
-      "bytes": 1878421,
+      "bytes": 1892798,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1698,10 +1698,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8"
     },
     {
-      "bytes": 1878421,
+      "bytes": 1892798,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1714,10 +1714,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1730,10 +1730,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1746,10 +1746,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1762,10 +1762,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1778,10 +1778,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1794,10 +1794,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -1810,7 +1810,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
       "bytes": 1875645,
@@ -2005,7 +2005,7 @@
       "sha256": "20e24957988e5bdf1d19ebcdfcc7aa2d1c3afab20865782c041ef88fcb808f49"
     },
     {
-      "bytes": 48918,
+      "bytes": 77892,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -2013,7 +2013,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "9486047300258a32b4d69b35425478fd30f29f5e9f25b2e7f13e1e21b07b2ac3"
+      "sha256": "1aceb15a4b124e4df7821356d2aabbfd2695a9eeaef62419deb15dd39d5bc429"
     },
     {
       "bytes": 1985259,
@@ -4218,7 +4218,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "825398a3caadace8d8ba1420b1292177654386b7f7d59e0456dec1e558bf2089"
+      "sha256": "32be2d696c891be5c826e9effa489d61e2d7cdaf758dcecff696b013b52fb9b4"
     },
     {
       "bytes": 326038,
@@ -4235,7 +4235,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "2266f50e7883464ffb66bed51bfc1ddf3ed7662c5a7972387873aa3ab229e7f0"
+      "sha256": "4cf5046ff831ed4122b08c67cef071d3058d8953014f5d3816de4ba049c4a668"
     },
     {
       "bytes": 11871,
@@ -12722,7 +12722,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "5aaebd4f84888d5e8456c7e8c61f28e17c5dffb7d511cca937572a93da32f3bd"
+      "sha256": "e8e9645729455f3193602a236a279ffed40a9ab5a729d54a61df62ed06426664"
     },
     {
       "bytes": 2163,
@@ -12937,10 +12937,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "99257e40d8fbbd7eef5c69e2092ff9f83a78e423b19b39c5f5342e0ca0b6a16e"
+      "sha256": "75901bf13f9a9ad623b5d36fccc79297e894f11c46ddac1b8650d141f5ad1146"
     },
     {
-      "bytes": 370793,
+      "bytes": 383848,
       "category": "character_layer_view",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -12954,10 +12954,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "39c46a007b4b50f83ea3ddc443bd8f03c6a3666ba740aea31946d17d3b0c0485"
+      "sha256": "b657fc3eb88adcb67e9c36c2d860b9d818e85c54a549d50bb5faa6681b448a55"
     },
     {
-      "bytes": 7845,
+      "bytes": 9942,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -12976,10 +12976,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "3ee67c1ab7c2e07c9a26a8045b494d6d4d3667b146b5238d2e805f09ed5344a3"
+      "sha256": "40fa8fabf1a2b4996f9820f634adc12e2e610810ad4cfe2e7e218273b4e7fb67"
     },
     {
-      "bytes": 33448,
+      "bytes": 74533,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -12998,10 +12998,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "33fcad2cbbbf172669dd3d309ad47a0d839e7bcb70824e1df6b11774431b0c4d"
+      "sha256": "2de9d3b49937a118a255209b3ee466b6e093ea776c9b2db5bfa5d69bc7eef375"
     },
     {
-      "bytes": 788830,
+      "bytes": 1133244,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -13020,10 +13020,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "a8f0a28e5e8737b42ef2e93c6a2451b1bc6e50aa51d7c22a44838c25d0a4ba18"
+      "sha256": "ad5726c75c2ed77634f3b18c387e83088f043a18b93a3eb353b8a66e9b959e8e"
     },
     {
-      "bytes": 559021,
+      "bytes": 238544,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -13042,10 +13042,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "6d7fcb723e87e5da660730dc32739428a758a82ab94e05965ee92a86adfc48d3"
+      "sha256": "aa379ef76a8736281b4a08de345b84969aa9d6685ddf9b1aa6590430a8167bbc"
     },
     {
-      "bytes": 98748,
+      "bytes": 155236,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -13064,10 +13064,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "656571ea2f9a22ad928a85fb725a28c20592a9967260de3ed88824461de2ed46"
+      "sha256": "51374d9dc68987b4185391e8d8fbeb624c47e7fbf923f36d34d7ba66688d71d7"
     },
     {
-      "bytes": 56736,
+      "bytes": 64696,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -13086,7 +13086,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "d5102bbab60f91092335b91c3e9fe5c84392422b7fd76175de92ed6058c6b321"
+      "sha256": "4c2f96d2d73e2960d0809f6a0c2fa18e1c0830d7105ab9ebcde485d3573b94ae"
     },
     {
       "bytes": 11368,
@@ -17168,7 +17168,7 @@
       "sha256": "4ee53d7df4fe075ab099f0facde2a1d20079433ee83c3f7b346139e0f0bd0c31"
     },
     {
-      "bytes": 379442,
+      "bytes": 392611,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -17176,7 +17176,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "e05d3f299d2aea7265f8cc94cc4d83251706b9c16212db52687835d1a8a05fc2"
+      "sha256": "16bf883b3df247b5337626d203da949b500703538ff41008a0db3555918a8bff"
     },
     {
       "bytes": 3149,
@@ -38018,6 +38018,262 @@
       "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
     },
     {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
       "bytes": 6178,
       "category": "makeup_eye_aperture",
       "image": {
@@ -40124,7 +40380,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 165949,
+      "bytes": 169026,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -40138,7 +40394,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "b4921475c1186ad04f4b66ae511f46129f0616f2278f70b20ba2ff81d94b5e8d"
+      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
     },
     {
       "bytes": 8375,
@@ -44545,6 +44801,168 @@
       "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
+      "bytes": 9021,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/eye_aperture_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "2b02b18d69cac95c8561ebdf980f44501fdd172394a1f82038ff03083e388f6c"
+    },
+    {
+      "bytes": 10219,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/eye_aperture_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 10219,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/eye_aperture_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 14939,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/foundation_masks/closed/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-closed.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/foundation_masks/half/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-half.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "category": "makeup_safe_mask",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [
+        {
+          "path": "assets/makeup-safe-regions.json",
+          "pointer": "/silhouettes/official-cheek-rest/foundation_masks/rest/path"
+        }
+      ],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-rest.png",
+      "readers": [
+        {
+          "line": 193,
+          "path": "domain/outfit_pack_makeup.py",
+          "text": "data = mask_path.read_bytes()"
+        }
+      ],
+      "reason": "執行期 manifest 引用",
+      "scope": "runtime_data",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
       "bytes": 20172,
       "category": "makeup_authoring_mirror",
       "image": {
@@ -47521,7 +47939,7 @@
       "sha256": "6bc40b7ea882984f474d4d4abdd88212035e274a6c0927cc8c7151557e6502fd"
     },
     {
-      "bytes": 72499,
+      "bytes": 741876,
       "category": "makeup_authoring_mirror",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -47529,7 +47947,7 @@
       "readers": [],
       "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
       "scope": "excluded_authoring_mirror",
-      "sha256": "aeb2278c271cd6fdb1d39bf9b46c7f68178fa6a3de9514889bfa0fe607230699"
+      "sha256": "66b7e0155dc14246f63fd10e35b1e7b34d4e691311ef86de782b9b8b794e6359"
     },
     {
       "bytes": 419110,
@@ -47568,6 +47986,22 @@
       "reason": "Windows 圖示建置產物；執行期讀取 mohan-halfbody.ico",
       "scope": "excluded_product_build_output",
       "sha256": "b84c800c546af3793c69c414cf09d6fc0761a14225f7a07a8804ff3fe8c93422"
+    },
+    {
+      "bytes": 1494894,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0"
     },
     {
       "bytes": 1428856,
@@ -47666,7 +48100,7 @@
       "sha256": "3f11fcddfb321c3c370cbd9113e72955c50cc103a26aad203747d46700ccd4e5"
     },
     {
-      "bytes": 23292261,
+      "bytes": 36302777,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -47680,7 +48114,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "f161b5c36b318975d3bf46b46e9d9e1a8ecbb930d9d179fda864e72f5e38ddd4"
+      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
     },
     {
       "appearance_categories": [
@@ -74550,7 +74984,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 33213,
+      "bytes": 20172,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -74567,13 +75001,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "e2c90a6815cf585ff6b247d37872c1bcc9d1fa9dc475b447188e6e619aa51d9b"
+      "sha256": "a6711de0da5d50df4dfc4a5b86991c5230e9146add61a0efc1aa02020ab23b71"
     },
     {
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 37917,
+      "bytes": 39809,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -74590,13 +75024,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "ca5c446afd3cbb4ac589d400682f604a6605adc7786e2e540b7141486f6970d7"
+      "sha256": "c56028ac3150bf744fdceb1d8324eab7a2b8b07c163ae1a025e7ea986ec079a3"
     },
     {
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 14235,
+      "bytes": 18010,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -74613,7 +75047,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "1dbc1d97877bc8101a6b8d8543c4de84c7f6c264ab9d08082253a2e348dfb343"
+      "sha256": "a047ef1f04bdeca0d1d1a9324acfef6a862c9ef062b5d10bc29ee3e6924cb80b"
     },
     {
       "appearance_categories": [
@@ -78414,7 +78848,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 25590,
+      "bytes": 19579,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -78431,13 +78865,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "c205c146083950ba53dc5a3f8c61008b4c9695ab81d580bc46b96d3fa7aae039"
+      "sha256": "adb8dff633c67bcc854959c1faad9e9ea16c8f696ce0d63ff98cdd90dc03009b"
     },
     {
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 35438,
+      "bytes": 38527,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -78454,13 +78888,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "130163b88becf32cb83a2f3959778c5b78db167ad5a7e3e15ad990edc4be09d6"
+      "sha256": "27d4394e7bf366cf00ba7f8966324dd35a6e0e42610068a47c70dfaabdd4ecda"
     },
     {
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 15024,
+      "bytes": 17618,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -78477,7 +78911,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "49e42118baccd489aaf68fca03df1856756cfd97a9e5b9ad22efea18e638d30f"
+      "sha256": "15fbeff9b9f29f4cb5e326285707ef12cdfba766eab3d8b74d11075e0c76c5d1"
     },
     {
       "appearance_categories": [
@@ -80387,6 +80821,972 @@
       ],
       "scope": "runtime_data",
       "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 1575995,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-cheeks.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "41ec61bb78dd216c287c9df04c9183c5c43cc69a209a05a022f0efb99342ad08"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 183549,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-closed-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b646ef4f0d295aca234cc3aa866ac990ffc486655d80e5158a6b3a5a7625acba"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 34133,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5eb3327fe798ffdfe0177310bc64ec56d8b932eddf00b963d56b30f39369c6cb"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184523,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "53ade42a4ffab290f1f40be8a103e3da2ca38c3a99532fb50282ef20f35727f7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184523,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-half-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "53ade42a4ffab290f1f40be8a103e3da2ca38c3a99532fb50282ef20f35727f7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 1538807,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "4fcb03841578df9f820e190f5e8b3e58f78fe4c986d2fcdd08430fcc22a93e38"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-a-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19909,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-a-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-o-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19909,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-o-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-small-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19909,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-small-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 33403,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-closed-classic-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "ff9b1df33dad135ca3c67d4994a107334f8db6a4d7cbd857b86742db613d128c"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 81934,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-closed-glamorous-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "a5715f3781dc26eb9c2f5d61129b501c23ec8595fcd53e6072b182de000f97e9"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 32664,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-closed-light-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "874f7b668bc3a7d8475250f515114d2d142ee6a61ef133ca49a56bce34a6e844"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 1570649,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-cheeks.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "760352fd800b7b2f644e75a0214172e5144fecc3565a6c13146e60899cd120f5"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 183549,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-closed-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b646ef4f0d295aca234cc3aa866ac990ffc486655d80e5158a6b3a5a7625acba"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 77350,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "c8c525cb44e5119fd3e080d0746adfabdf5a9ab6da649e55cf28c78f63756bb7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184523,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "53ade42a4ffab290f1f40be8a103e3da2ca38c3a99532fb50282ef20f35727f7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184523,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-half-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "53ade42a4ffab290f1f40be8a103e3da2ca38c3a99532fb50282ef20f35727f7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 1507012,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "3e9e686c0596037bd2fee4c99d15c43f9fddaeb5719f712bf8d23b41f17d1ff0"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-a-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19899,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-a-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-o-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19899,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-o-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-small-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19899,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-small-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 34129,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-half-classic-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "8515f13b27793baa441cf3b8fa2f2d40903ab1ec46bc55ba4f62d07ab0f5b9ec"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 85281,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-half-glamorous-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5259ac38f481af7f3ffdd900ac567314d8e7ca1d87572eed2441e5e75edf725e"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 33343,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-half-light-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5861ebade5997a056c1139bdb94522098ca4e8ea16e276c0a70fcdee61d64181"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 1585679,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-cheeks.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "d7c4145a2ca5604af95105ca243dc44bd6d290878a6976228afffa917b0d6d66"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 183549,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-closed-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b646ef4f0d295aca234cc3aa866ac990ffc486655d80e5158a6b3a5a7625acba"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 33307,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-eyes.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "86e598c8360572ce6ff388f3bd60316cd9a2a8963681b30ae6fe8b8bc4505720"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184523,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "53ade42a4ffab290f1f40be8a103e3da2ca38c3a99532fb50282ef20f35727f7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184523,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-half-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "53ade42a4ffab290f1f40be8a103e3da2ca38c3a99532fb50282ef20f35727f7"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 1576299,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "8e7207de2aa45f3f4d32677ba9c3e384211114faae585f7bfa7b0b2ec77a02cb"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-a-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19884,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-a-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-o-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19884,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-o-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-small-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19884,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-small-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
     },
     {
       "appearance_categories": [
@@ -82805,7 +84205,7 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 722421,
+      "bytes": 741876,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!manifest.json",
@@ -82817,7 +84217,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "2ca82b77eecb936705efd41a3b6888dfc340ac2c6a4347714c3604ff8b649b82"
+      "sha256": "66b7e0155dc14246f63fd10e35b1e7b34d4e691311ef86de782b9b8b794e6359"
     },
     {
       "bytes": 29245764,
@@ -125226,7 +126626,7 @@
           "text": "lazy from domain.outfit_pack_official import official_outfit_pack_id"
         },
         {
-          "line": 18,
+          "line": 17,
           "path": "infrastructure/body_pack_presentation.py",
           "text": "lazy from domain.outfit_pack_official import OFFICIAL_BODY_PACK_ENSEMBLE_ID"
         },
@@ -125710,7 +127110,7 @@
       "work_package": null
     },
     {
-      "bytes": 19772,
+      "bytes": 16760,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
@@ -125721,22 +127121,22 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 148,
+          "line": 431,
           "matched": "cheek-rest",
           "path": "infrastructure/body_pack_presentation.py",
           "rule": "character_pose_name_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+          "text": "if view == \"official-cheek-rest\" and not overlay.makeup_declares_view(view):"
         },
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 149,
+          "line": 432,
           "matched": "cheek-rest",
           "path": "infrastructure/body_pack_presentation.py",
           "rule": "character_pose_name_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "and \"cheek-rest\" not in self._views"
+          "text": "makeup_view = \"cheek-rest\""
         }
       ],
       "estimated_difficulty": "high",
@@ -125747,110 +127147,105 @@
         {
           "line": 83,
           "path": "application/service_container.py",
-          "text": "lazy from infrastructure.body_pack_presentation import create_body_pack_rendering_state, create_body_pack_routes, legacy_mohan_presentation_ports"
+          "text": "lazy from infrastructure.body_pack_presentation import create_body_pack_rendering_state, create_body_pack_routes"
         },
         {
-          "line": 20,
+          "line": 19,
           "path": "infrastructure/ensemble_body_pack.py",
           "text": "lazy from infrastructure.body_pack_presentation import ("
         }
       ],
       "scope": "embedded_code",
-      "sha256": "15d48f0feb5ebd901a12511a958b1811c1ae729e7d45ea050ac802e7fbcbf2ba",
+      "sha256": "750ed29376f0f60d7e43107cf38153b446307fb0b4b07181125ee8710c767334",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 40,
-          "line": 25,
+          "end_line": 39,
+          "line": 24,
           "name": "outfit_selection_token"
         },
         {
-          "end_line": 72,
-          "line": 43,
+          "end_line": 71,
+          "line": 42,
           "name": "_official_body_pack_selection"
         },
         {
-          "end_line": 95,
-          "line": 75,
+          "end_line": 94,
+          "line": 74,
           "name": "body_pack_selection_factory"
         },
         {
-          "end_line": 125,
-          "line": 98,
+          "end_line": 124,
+          "line": 97,
           "name": "active_selection_matches_ensemble"
         },
         {
-          "end_line": 194,
-          "line": 128,
-          "name": "_BodyPackWithCheekFallback"
-        },
-        {
-          "end_line": 251,
-          "line": 197,
+          "end_line": 181,
+          "line": 127,
           "name": "_SelectionAwareFaceRenderer"
         },
         {
-          "end_line": 280,
-          "line": 254,
+          "end_line": 210,
+          "line": 184,
           "name": "_SelectionAwareFullBodyRenderer"
         },
         {
-          "end_line": 296,
-          "line": 283,
+          "end_line": 226,
+          "line": 213,
           "name": "selection_aware_face_renderer"
         },
         {
-          "end_line": 312,
-          "line": 299,
+          "end_line": 242,
+          "line": 229,
           "name": "selection_aware_full_body_renderer"
         },
         {
-          "end_line": 322,
-          "line": 315,
+          "end_line": 252,
+          "line": 245,
           "name": "legacy_mohan_presentation_ports"
         },
         {
-          "end_line": 368,
-          "line": 325,
+          "end_line": 298,
+          "line": 255,
           "name": "create_body_pack_outfit_overlay_factory"
         },
         {
-          "end_line": 411,
-          "line": 371,
+          "end_line": 337,
+          "line": 301,
           "name": "create_body_pack_rendering_state"
         },
         {
-          "end_line": 429,
-          "line": 414,
+          "end_line": 355,
+          "line": 340,
           "name": "create_body_pack_face_renderer"
         },
         {
-          "end_line": 447,
-          "line": 432,
+          "end_line": 373,
+          "line": 358,
           "name": "create_body_pack_full_body_renderer"
         },
         {
-          "end_line": 488,
-          "line": 450,
+          "end_line": 414,
+          "line": 376,
           "name": "create_body_pack_routes"
         },
         {
-          "end_line": 506,
-          "line": 491,
+          "end_line": 435,
+          "line": 417,
           "name": "_body_pack_makeup_applier"
         },
         {
-          "end_line": 540,
-          "line": 509,
+          "end_line": 463,
+          "line": 438,
           "name": "body_pack_renderer_factory"
         }
       ],
       "work_package": null
     },
     {
-      "bytes": 19674,
+      "bytes": 17526,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
@@ -125861,7 +127256,7 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 75,
+          "line": 74,
           "matched": "front-exasperated",
           "path": "infrastructure/ensemble_body_pack.py",
           "rule": "character_pose_name_literal",
@@ -125871,32 +127266,12 @@
         {
           "content_kind": "rig",
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 76,
+          "line": 75,
           "matched": "front-exasperated",
           "path": "infrastructure/ensemble_body_pack.py",
           "rule": "character_pose_name_literal",
           "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
           "text": "aliases[\"exasperated\"] = \"front-exasperated\""
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 289,
-          "matched": "cheek-rest",
-          "path": "infrastructure/ensemble_body_pack.py",
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
-        },
-        {
-          "content_kind": "rig",
-          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
-          "line": 290,
-          "matched": "cheek-rest",
-          "path": "infrastructure/ensemble_body_pack.py",
-          "rule": "character_pose_name_literal",
-          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json",
-          "text": "and \"cheek-rest\" not in selected.render.layer_views"
         }
       ],
       "estimated_difficulty": "high",
@@ -125911,74 +127286,74 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "eed4a595da309b3af540a4d7df0aa568fdda5901924feb347c31c55de94070ef",
+      "sha256": "1d144b455fe62e7c45e7ce1d772813c64b9d433777997719f21ae8d8bb1ed38c",
       "suggested_data_targets": [
         "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "symbols": [
         {
-          "end_line": 31,
-          "line": 31,
+          "end_line": 30,
+          "line": 30,
           "name": "_UNSET"
         },
         {
-          "end_line": 44,
-          "line": 34,
+          "end_line": 43,
+          "line": 33,
           "name": "FaceRendererProtocol"
         },
         {
-          "end_line": 50,
-          "line": 47,
+          "end_line": 49,
+          "line": 46,
           "name": "FullBodyRendererProtocol"
         },
         {
-          "end_line": 58,
-          "line": 53,
+          "end_line": 57,
+          "line": 52,
           "name": "_file_token"
         },
         {
-          "end_line": 77,
-          "line": 61,
+          "end_line": 76,
+          "line": 60,
           "name": "_layer_view_aliases"
         },
         {
-          "end_line": 291,
-          "line": 80,
+          "end_line": 273,
+          "line": 79,
           "name": "EnsembleBodyPackRouter"
         },
         {
-          "end_line": 355,
-          "line": 294,
+          "end_line": 324,
+          "line": 276,
           "name": "EnsembleFaceRenderer"
         },
         {
-          "end_line": 371,
-          "line": 358,
+          "end_line": 340,
+          "line": 327,
           "name": "EnsembleFullBodyRenderer"
         },
         {
-          "end_line": 378,
-          "line": 374,
+          "end_line": 347,
+          "line": 343,
           "name": "route_face_renderer"
         },
         {
-          "end_line": 390,
-          "line": 381,
+          "end_line": 359,
+          "line": 350,
           "name": "route_full_body_renderer"
         },
         {
-          "end_line": 423,
-          "line": 393,
+          "end_line": 387,
+          "line": 362,
           "name": "create_body_pack_presentation_context"
         },
         {
-          "end_line": 458,
-          "line": 426,
+          "end_line": 415,
+          "line": 390,
           "name": "create_body_pack_context"
         },
         {
-          "end_line": 468,
-          "line": 461,
+          "end_line": 425,
+          "line": 418,
           "name": "__all__"
         }
       ],
@@ -126015,7 +127390,7 @@
           "text": "lazy from infrastructure.installed_body_packs import installed_body_pack_root"
         },
         {
-          "line": 27,
+          "line": 26,
           "path": "infrastructure/ensemble_body_pack.py",
           "text": "lazy from infrastructure.installed_body_packs import installed_body_pack_root"
         },
@@ -128664,7 +130039,7 @@
     "makeup_eye_aperture": 39,
     "makeup_foundation_mask": 39,
     "makeup_region_rules": 1,
-    "makeup_safe_mask": 156,
+    "makeup_safe_mask": 162,
     "native_garment_motion": 55,
     "source_bound_expression": 77,
     "ui_background": 2,
@@ -128682,9 +130057,9 @@
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 414,
+    "excluded_support": 431,
     "product_validation_data": 48,
-    "runtime_data": 4204
+    "runtime_data": 4252
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

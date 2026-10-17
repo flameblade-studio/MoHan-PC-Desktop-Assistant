@@ -5,6 +5,7 @@ lazy import hashlib
 lazy import logging
 lazy from collections import OrderedDict
 lazy from collections.abc import Callable, Mapping
+lazy from functools import cache
 lazy from PySide6.QtCore import Qt
 lazy from PySide6.QtGui import QPixmap
 lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
@@ -26,6 +27,18 @@ MAX_PIXMAP_CACHE_BYTES = 32 * 1024 * 1024
 MAX_LAYER_BYTES_CACHE_BYTES = 8 * 1024 * 1024
 REST_ONLY_FAMILY = "rest-only"
 MakeupApplier = Callable[[QPixmap, str, str, str | None], QPixmap]
+
+
+@cache
+def _authored_official_makeup_views() -> frozenset[str]:
+    """Read the optional official makeup silhouettes from authored rig data."""
+    try:
+        from domain.outfit_pack_makeup import load_makeup_safe_regions
+
+        regions = load_makeup_safe_regions()
+    except (ImportError, KeyError, OSError, RuntimeError, TypeError, UnicodeError, ValueError):
+        return frozenset()
+    return frozenset(view for view in regions if view.startswith("official-"))
 
 
 class BodyPackRenderer:
@@ -71,6 +84,7 @@ class BodyPackRenderer:
         self._pixmap_cache_bytes = 0
         self._layer_bytes: OrderedDict[str, bytes] = OrderedDict()
         self._layer_bytes_cache_bytes = 0
+        self._official_makeup_views: frozenset[str] | None = None
 
     def clear_cache(self) -> None:
         """Discard composed, decoded and verified layer data after selection changes."""
@@ -258,9 +272,20 @@ class BodyPackRenderer:
         the makeup geometry, exactly as on the non-ensemble path.
         """
         source = self._source_pose(view)
+        official_view = f"official-{source}"
+        if official_view in self._authored_official_makeup_views():
+            # An official body-pack face is a distinct calibration target.  The
+            # makeup port probes the active pack and the presentation layer
+            # falls back to the source silhouette when it is not declared.
+            return official_view
         if source in COMPLETE_CHEEK_POSES and eye != "rest":
             return f"{source}-{eye}"
         return layer_view if layer_view and layer_view != view else source
+
+    def _authored_official_makeup_views(self) -> frozenset[str]:
+        if self._official_makeup_views is None:
+            self._official_makeup_views = _authored_official_makeup_views()
+        return self._official_makeup_views
 
     @staticmethod
     def _expression_view_id(expression: str) -> str:

@@ -1,14 +1,14 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-body-v2-1.0.0.zip",
-    "bytes": 413070065,
-    "sha256": "55f9954e272fcab14630bdca06127ccb3c88fa980c205e81b1517ecc802751e9"
+    "bytes": 413249882,
+    "sha256": "fa822a7ad58fc943a302ebf1a0afb43892e7e117842f5689e5ebdf7ddb63af0e"
   },
   "body_pack": {
-    "fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+    "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
     "id": "mohan-body-v2",
     "manifest_bytes": 447981,
-    "manifest_sha256": "a01beee4805c5e4e50e88d637ec883bc739b4fa79ad540deb332ed15a9025d2e",
+    "manifest_sha256": "f3d0c92319c392ba6424f538a648c438eda4a7d5fb3fa9463da0b2dce4b5b937",
     "version": "1.0.0"
   },
   "files": [
@@ -43,9 +43,9 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 16168,
+      "bytes": 22233,
       "path": "face-core/cheek-rest.png",
-      "sha256": "e91d662bc347da6cadcce98706beb02e63808745695911840326cea3308ccab1"
+      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
     },
     {
       "bytes": 23949,
@@ -1278,64 +1278,64 @@
       "sha256": "85a9763d182822d18253634e46202ed12936144c84c1bb2103cf293fd202ea86"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "path": "half-body/cheek-rest/a-closed.png",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "half-body/cheek-rest/a-half.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "half-body/cheek-rest/a-rest.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1875878,
+      "bytes": 1890370,
       "path": "half-body/cheek-rest/neutral-closed.png",
-      "sha256": "1eac10438737ae98664c0fed2f3cbf68ce75c4d421ea75209daf120f420a0816"
+      "sha256": "ed09721c73ebf9751ddde95c783415d8c81af0175b7f92818e8fcc9dee8951ec"
     },
     {
-      "bytes": 1878421,
+      "bytes": 1892798,
       "path": "half-body/cheek-rest/neutral-half.png",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8"
     },
     {
-      "bytes": 1878421,
+      "bytes": 1892798,
       "path": "half-body/cheek-rest/neutral-rest.png",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "path": "half-body/cheek-rest/o-closed.png",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "half-body/cheek-rest/o-half.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "half-body/cheek-rest/o-rest.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "path": "half-body/cheek-rest/small-closed.png",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "half-body/cheek-rest/small-half.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "half-body/cheek-rest/small-rest.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
       "bytes": 1875645,
@@ -2540,13 +2540,13 @@
     {
       "bytes": 447981,
       "path": "manifest.json",
-      "sha256": "a01beee4805c5e4e50e88d637ec883bc739b4fa79ad540deb332ed15a9025d2e"
+      "sha256": "f3d0c92319c392ba6424f538a648c438eda4a7d5fb3fa9463da0b2dce4b5b937"
     }
   ],
   "license": "CC-BY-NC-ND-4.0",
   "pack_id": "mohan-body-v2",
   "pack_version": "1.0.0",
-  "package_hash": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+  "package_hash": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
   "schema": "flameblade.body-pack-lock.v1",
   "schema_version": 1,
   "source": {
@@ -2554,9 +2554,9 @@
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "source_manifest": {
-    "bytes": 60945,
+    "bytes": 60958,
     "path": "docs/body-pack/source.json",
-    "sha256": "4b2fb6c7d268950f89a84199cbf0bd145db8cde2e097b9742008af1ad29c06ad"
+    "sha256": "4f79db3c3ac1eaab02f0f618c798ed262b89d229af2d30f920e3e487a1e36a7d"
   },
   "validation_limits": {
     "max_archive_bytes": 1073741824,
