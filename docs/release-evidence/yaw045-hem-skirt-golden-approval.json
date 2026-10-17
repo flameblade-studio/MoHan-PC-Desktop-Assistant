@@ -2,11 +2,6 @@
   "schema": "mohan.golden-render-approval.v1",
   "owner": "CHOU MING HUA",
   "date": "2026-10-17",
-  "quote": "右轉 45° 下擺：擁有者先指示「右轉45度下擺接縫也一起派工」「白裙鋸齒也一起派工」「白裙整段重畫也一起派工」，看過 9/11 核准原圖／修改前／新版三欄 6 倍對照（差異只在膝下接縫與白色內裙）後回覆「白裙同意」；變動僅限 yaw+045 全身 4 格。",
-  "cells": [
-    "full__yaw+045-pitch+00__classic__rest",
-    "full__yaw+045-pitch+00__glamorous__rest",
-    "full__yaw+045-pitch+00__light__rest",
-    "full__yaw+045-pitch+00__none__rest"
-  ]
+  "quote": "右轉 45° 下擺：擁有者先指示「右轉45度下擺接縫也一起派工」「白裙鋸齒也一起派工」「白裙整段重畫也一起派工」，看過 9/11 核准原圖／修改前／新版三欄 6 倍對照（差異只在膝下接縫與白色內裙）後回覆「白裙同意」；實際變動僅 yaw+045 全身 4 格（none／light／classic／glamorous rest），其餘 348 格未變動，沿用前次核准。",
+  "cells": "*"
 }
