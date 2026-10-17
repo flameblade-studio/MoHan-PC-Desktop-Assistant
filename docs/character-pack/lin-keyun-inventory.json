@@ -60,7 +60,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "7f77c69a3a15525f59122208f27064867d2f77a84774558935460cd39728699a"
+      "sha256": "993d408bc9989c724a6fefa5b9e17c758e1f8e523b01fa16ecf567c6646d8934"
     },
     {
       "bytes": 326038,
@@ -77,10 +77,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "2f3170c41b10964336c1e6b049d14b9613ba9303c91f8363636adc544a9272a3"
+      "sha256": "2266f50e7883464ffb66bed51bfc1ddf3ed7662c5a7972387873aa3ab229e7f0"
     },
     {
-      "bytes": 12007,
+      "bytes": 11871,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -99,10 +99,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "fbc204cf6531ebd5ace5de0040ca154a195505bbe4e18208772e4c65f459d8fd"
+      "sha256": "5d30f044a378495d26e438f06157763dcf27b85bd468df73825274e21349bb0e"
     },
     {
-      "bytes": 248225,
+      "bytes": 6175,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -121,10 +121,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "ddd611792404dc593841af2dff6d63ec62c5a7da8da7d7026c342c445950b233"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 414838,
+      "bytes": 1121543,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -143,10 +143,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "232ee3f1ccb00c59004cd17fcf53d55dc0aac49dfd7c493826666eab3ea83b9f"
+      "sha256": "2a3c78203215741684a0cd426fb16610330850f8d47587e98c4e69515664ceec"
     },
     {
-      "bytes": 55280,
+      "bytes": 6175,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -165,10 +165,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "e9d962c7cb45186b7b74a66e14f85fb5b9e95f5ac9d66e25a9a8e7665bcb0dd2"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 331837,
+      "bytes": 6175,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -187,7 +187,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "3e0dbaf2015366fec10d978eccaabbe38ff68f87fb939b6c665967e84088b6af"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
       "bytes": 11648,
@@ -8564,7 +8564,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "a60b97b6ba0668eff840be3fcabcf7b40930396f587dfdc258570ee6c5dac08c"
+      "sha256": "5aaebd4f84888d5e8456c7e8c61f28e17c5dffb7d511cca937572a93da32f3bd"
     },
     {
       "bytes": 2163,
