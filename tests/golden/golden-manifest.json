@@ -1,7 +1,7 @@
 {
   "approval": {
-    "path": "docs/release-evidence/cheek-makeup-pose-b-approval.json",
-    "sha256": "6da3da8ca031e3bab05331f9c665b70684f0cec3f3b31db7d0fa6c163e37a50f"
+    "path": "docs/release-evidence/yaw045-hem-skirt-golden-approval.json",
+    "sha256": "321e96f74d6448d95e3704bbaefe464fae500cad31e5f0364cbed2e766b2aa3b"
   },
   "cells": [
     {
@@ -183,7 +183,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "3eff46bcca559c7b4334a9f074ad4cb7fd4cd9d27e6e84f6980ab394e060bcfa",
+      "pixel_sha256": "c000fd24839d7165a3aae6455e8b86234c0c42e07cffa7b0484adfbdd2cf54e6",
       "width": 1024
     },
     {
@@ -197,7 +197,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "6960d20a450abf1c5fb68bb8092759b4a654986938e23ceb5d9dd937223db973",
+      "pixel_sha256": "2d9c17f58ab9db79078cbbbf9a1e5a15570618b8ec7caa9d7b2b67dc1ce606a9",
       "width": 1024
     },
     {
@@ -211,7 +211,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "068072d3324c0fc4ca59c76cfbce64ba45d28a27a7e9b081acbbd81d01f22527",
+      "pixel_sha256": "c1969d7e9547f610ecf1368603cd0c12233ec246cd1d8415bfa609bf1ae0600f",
       "width": 1024
     },
     {
@@ -225,7 +225,7 @@
         "view_id": "yaw+045-pitch+00"
       },
       "mode": "RGBA",
-      "pixel_sha256": "06a9b74b8a87fa3a3dc2ad60ba2050a12e8385eb2a6841fac8017496e677a3d5",
+      "pixel_sha256": "4288815f263de07de1af14fbfbb750daac273d56fc7c1b64c8199dcf9e3d751c",
       "width": 1024
     },
     {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "2ec97f464ea4f46cd295ae4ebf6ef541a7e8bf6e"
+  "source_revision": "5e3936536f4b02d2133025f7fed20c4e54d3c37e"
 }
