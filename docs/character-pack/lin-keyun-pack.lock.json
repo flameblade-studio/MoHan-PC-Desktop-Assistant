@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.4.zip",
-    "bytes": 71884308,
-    "sha256": "edcb9976cb0c00f898468ed4b2d3756cefbae8fb4356406b9787ee9c3887aceb"
+    "bytes": 85005361,
+    "sha256": "db4386032128aed6715165dd6171914c8151a004a680eed44d406a257b89c5b8"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,12 +24,12 @@
     {
       "bytes": 3950,
       "path": "assets/characters/lin-keyun/body/approval.json",
-      "sha256": "7f77c69a3a15525f59122208f27064867d2f77a84774558935460cd39728699a"
+      "sha256": "3d0aad25f7ae46a4d65246041913fd2a2aa33e38bd14ed942d2122a2fe5656e1"
     },
     {
       "bytes": 326038,
       "path": "assets/characters/lin-keyun/body/manifest.json",
-      "sha256": "2f3170c41b10964336c1e6b049d14b9613ba9303c91f8363636adc544a9272a3"
+      "sha256": "739b77295fe90cd9b91e764a0b16a5f7e2e93899be95ed1455c72fcda0ac5a26"
     },
     {
       "bytes": 12007,
@@ -1397,6 +1397,26 @@
       "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
     },
     {
+      "bytes": 7785,
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_lower.png",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_upper.png",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_oral_cavity.png",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_teeth_tongue.png",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
       "bytes": 6178,
       "path": "assets/makeup-eye-apertures/yaw+000-pitch+00-closed.png",
       "sha256": "1913847bf9091720c48139f49dfbb3aa70c4d20de82f2718e3dcd8348c6e5e9c"
@@ -1787,9 +1807,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 165949,
+      "bytes": 169026,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "b4921475c1186ad04f4b66ae511f46129f0616f2278f70b20ba2ff81d94b5e8d"
+      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
     },
     {
       "bytes": 8375,
@@ -2572,9 +2592,39 @@
       "sha256": "b2d3a9d410052c4de6c7c3260451236139619666ec079a9f31a907d990fc6edf"
     },
     {
-      "bytes": 23292261,
+      "bytes": 9021,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-closed.png",
+      "sha256": "2b02b18d69cac95c8561ebdf980f44501fdd172394a1f82038ff03083e388f6c"
+    },
+    {
+      "bytes": 10219,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-half.png",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 10219,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-eye-aperture-rest.png",
+      "sha256": "71d706cbc58040f1532c8cc79983e17301ce23c4c8fce65f1a4d9e4adfc93d0c"
+    },
+    {
+      "bytes": 14939,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-closed.png",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-half.png",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 14939,
+      "path": "assets/makeup-safe-regions/official-cheek-rest/official-cheek-rest-foundation-rest.png",
+      "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
+    },
+    {
+      "bytes": 36302777,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "f161b5c36b318975d3bf46b46e9d9e1a8ecbb930d9d179fda864e72f5e38ddd4"
+      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
     },
     {
       "bytes": 6550,
@@ -3539,7 +3589,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.4",
-  "package_hash": "da5aca6d55807c425804eabf67c7a994d597b3c2ee020a0ba2724945a4d9018f",
+  "package_hash": "6902f6d4da09214282739c5b4616f1c6a9d7cd05f9b0b7bc66ece39b0dfa5174",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

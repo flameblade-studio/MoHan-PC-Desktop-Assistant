@@ -13,7 +13,7 @@ lazy from infrastructure.bundled_character_source import LegacyMohanCharacterSou
 
 ROOT = Path(__file__).resolve().parents[1]
 BODY_ROOT = ROOT / "assets/characters/mohan/body"
-EXPECTED_LAYER_VIEW_COUNT = 196
+EXPECTED_LAYER_VIEW_COUNT = 203
 EXPECTED_LAYER_PNG_COUNT = 186
 
 
@@ -28,7 +28,16 @@ def test_mohan_body_layers_use_the_lin_keyun_scattered_contract() -> None:
     assert source["body_pack"] == manifest["body_pack"]
     assert source["layer_views"] == layer_views
     assert len(layer_views) == EXPECTED_LAYER_VIEW_COUNT
-    assert "cheek-rest" not in layer_views
+    cheek_views = (
+        "cheek", "cheek-rest", "cheek-happy", "cheek-caught", "cheek-worried",
+        "cheek-glance", "cheek-reminder", "happy", "caught", "worried",
+        "glance", "reminder",
+    )
+    assert set(cheek_views) <= set(layer_views)
+    assert {
+        json.dumps(layer_views[view], sort_keys=True)
+        for view in cheek_views
+    } == {json.dumps(layer_views["cheek-rest"], sort_keys=True)}
 
     pngs = sorted(BODY_ROOT.glob("views/*/*.png"))
     assert len(pngs) == EXPECTED_LAYER_PNG_COUNT

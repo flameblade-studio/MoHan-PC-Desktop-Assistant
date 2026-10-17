@@ -31,14 +31,12 @@ SOURCE_KINDS = {"hair-back": "back-hair", "body-fix": "look-fix",
                 "hair-front": "front-hair", "ornament": "ornaments"}
 HALF_ROUNDS = {"front-eureka": "round2", "front-mock-scold": "round2",
                "left-neutral": "round3", "front-mock-hit": "round3",
-               "front-exasperated": "round3"}
-# The stage-one official body ensemble deliberately leaves the cheek family on
-# the product's established route.  The body renderer treats an absent plan as
-# a route decision, while the native pack keeps the already-reviewed pixels.
-EXCLUDED_PRODUCT_LAYER_VIEWS = frozenset({
+               "front-exasperated": "round3", "cheek-rest": "round7-cheek"}
+CHEEK_LAYER_VIEWS = (
     "cheek", "cheek-rest", "cheek-happy", "cheek-caught", "cheek-worried",
     "cheek-glance", "cheek-reminder",
-})
+)
+CHEEK_EXPRESSION_ALIASES = ("happy", "caught", "worried", "glance", "reminder")
 BODY_LAYER_PATH_PARTS = 4
 
 
@@ -202,8 +200,36 @@ def resolve_semantic_source(source: Path) -> Path:
     return source
 
 
-def build(body_root: Path, official_root: Path, half_root: Path, output: Path,
-          semantic_root: Path | None = None) -> dict:
+def established_layer_view_bindings() -> dict[str, str]:
+    """Retain the Stage 1 alias contract while regenerating physical pixels.
+
+    The body pack's fixed facial-core masks are allowed to differ between
+    approved generations.  Reclassifying every existing expression alias from
+    those masks would silently change the #303 product surface, so the
+    repository manifest remains the authority for already-delivered bindings.
+    """
+    manifest_path = ROOT / "assets/characters/mohan/body/manifest.json"
+    if not manifest_path.is_file():
+        return {}
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    bindings = {}
+    for view, plan in manifest.get("layer_views", {}).items():
+        paths = [plan.get("base_hide", {}).get("path")]
+        paths.extend(record.get("path") for record in plan.get("layers", []))
+        physical = {
+            Path(path).parts[5]
+            for path in paths
+            if isinstance(path, str)
+            and Path(path).parts[:5] == ("assets", "characters", "mohan", "body", "views")
+        }
+        if len(physical) == 1:
+            bindings[view] = next(iter(physical))
+    return bindings
+
+
+def build(  # ruff: ignore[too-many-branches] - ordered build orchestration
+        body_root: Path, official_root: Path, half_root: Path, output: Path,
+        semantic_root: Path | None = None) -> dict:
     if output.exists():
         raise ValueError("Use a fresh output directory to preserve existing evidence")
     manifest = json.loads((body_root / "manifest.json").read_text(encoding="utf-8"))
@@ -213,6 +239,10 @@ def build(body_root: Path, official_root: Path, half_root: Path, output: Path,
     receipts = []
     for source in sorted(official_root.iterdir()):
         if not source.is_dir():
+            continue
+        if source.name == "cheek-rest":
+            # The product cheek source is the posture-B fixed-frame input below;
+            # never consume the retained stage-one exact-delivery cheek source.
             continue
         view = source.name + "-pitch+00" if source.name.startswith("yaw") else source.name
         plan, receipt = build_view(body, source, output, view,
@@ -235,19 +265,58 @@ def build(body_root: Path, official_root: Path, half_root: Path, output: Path,
                     == dict(body.manifest.face_core_masks).get(pose.view_id)):
                 plans[selected.view_id] = plans[pose.view_id]
                 break
-    excluded_views = sorted(
-        view for view in plans
-        if view in EXCLUDED_PRODUCT_LAYER_VIEWS or view.startswith("cheek-")
-    )
-    for view in excluded_views:
-        del plans[view]
+    for view, physical in established_layer_view_bindings().items():
+        if physical in plans:
+            plans[view] = plans[physical]
+    cheek_plan = plans.get("cheek-rest")
+    if cheek_plan is None:
+        raise ValueError("The posture-B cheek-rest target did not produce a layer plan")
+    half_views = {view.view_id for view in body.manifest.half_body}
+    for view in (*CHEEK_LAYER_VIEWS, *CHEEK_EXPRESSION_ALIASES):
+        if view in half_views:
+            plans[view] = cheek_plan
     reference = {"id": body.manifest.id, "version": body.manifest.version,
                  "fingerprint": body.manifest.fingerprint}
+    preserved_physical_views = []
+    existing_root = ROOT / "assets/characters/mohan/body"
+    existing_manifest_path = existing_root / "manifest.json"
+    if existing_manifest_path.is_file():
+        existing_manifest = json.loads(existing_manifest_path.read_text(encoding="utf-8"))
+        if existing_manifest.get("body_pack") == reference:
+            seen_plans: set[int] = set()
+            for plan in plans.values():
+                if not plan.get("layers"):
+                    continue
+                physical = Path(plan["layers"][0]["path"]).parts[2]
+                if physical == "cheek-rest" or id(plan) in seen_plans:
+                    continue
+                seen_plans.add(id(plan))
+                source_dir = existing_root / "views" / physical
+                if not source_dir.is_dir():
+                    continue
+                for record in [*plan["layers"], plan["base_hide"]]:
+                    filename = Path(record["path"]).name
+                    source_name = "base-hide-mask.png" if filename == "base-hide.png" else filename
+                    source_path = source_dir / source_name
+                    destination = output / record["path"]
+                    if not source_path.is_file():
+                        raise FileNotFoundError(source_path)
+                    shutil.copyfile(source_path, destination)
+                    record["sha256"] = hashlib.sha256(destination.read_bytes()).hexdigest()
+                preserved_physical_views.append(physical)
     result = {"body_pack": reference, "layer_views": plans}
     write_json(output / "layers.json", result)
     write_json(output / "build-receipt.json", {"views": receipts, "physical_views": len(receipts),
                                                "declared_views": len(plans),
-                                               "excluded_product_layer_views": excluded_views})
+                                               "excluded_product_layer_views": [],
+                                               "cheek_shared_layer_views": [
+                                                   view for view in (*CHEEK_LAYER_VIEWS,
+                                                                     *CHEEK_EXPRESSION_ALIASES)
+                                                   if view in plans
+                                               ],
+                                               "preserved_existing_physical_views": sorted(
+                                                   preserved_physical_views
+                                               )})
     return result
 
 
@@ -297,10 +366,7 @@ def assemble_character_body_layers(layer_root: Path, output: Path) -> dict:
         "layer_png_bytes": sum((output / Path(*path.split("/"))).stat().st_size for path in copied),
         "declared_layer_views": len(layer_views),
         "physical_views": len(physical_views),
-        "excluded_product_layer_views": sorted(
-            view for view in layer_views
-            if view in EXCLUDED_PRODUCT_LAYER_VIEWS or view.startswith("cheek-")
-        ),
+        "excluded_product_layer_views": [],
     })
     return result
 

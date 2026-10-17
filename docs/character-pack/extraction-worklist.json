@@ -220,12 +220,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 434,
+              "line": 430,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 435,
+              "line": 431,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }
@@ -438,14 +438,14 @@
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 148,
+              "line": 431,
               "matched": "cheek-rest",
-              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+              "text": "if view == \"official-cheek-rest\" and not overlay.makeup_declares_view(view):"
             },
             {
-              "line": 149,
+              "line": 432,
               "matched": "cheek-rest",
-              "text": "and \"cheek-rest\" not in self._views"
+              "text": "makeup_view = \"cheek-rest\""
             }
           ],
           "rule": "character_pose_name_literal",
@@ -468,24 +468,14 @@
           "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
           "locations": [
             {
-              "line": 75,
+              "line": 74,
               "matched": "front-exasperated",
               "text": "if \"exasperated\" in half_views and \"front-exasperated\" in layer_views:"
             },
             {
-              "line": 76,
+              "line": 75,
               "matched": "front-exasperated",
               "text": "aliases[\"exasperated\"] = \"front-exasperated\""
-            },
-            {
-              "line": 289,
-              "matched": "cheek-rest",
-              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
-            },
-            {
-              "line": 290,
-              "matched": "cheek-rest",
-              "text": "and \"cheek-rest\" not in selected.render.layer_views"
             }
           ],
           "rule": "character_pose_name_literal",

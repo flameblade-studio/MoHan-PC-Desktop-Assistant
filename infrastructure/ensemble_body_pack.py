@@ -11,7 +11,6 @@ lazy from PySide6.QtGui import QPixmap
 lazy from domain.body_pack import BodyPackMismatchError, BodyPackSource
 lazy from domain.character_layer_plan import CharacterLayerAsset, CharacterLayerMask, CharacterLayerPlan
 lazy from domain.character_pose import canonical_view_id
-lazy from domain.companion_animation_contract import outfit_silhouette
 lazy from domain.character_source import CharacterSource
 lazy from domain.face_rig import FaceMotionFrame
 lazy from domain.character_renderer_compatibility import validated_renderer_rig
@@ -273,23 +272,6 @@ class EnsembleBodyPackRouter:
             view_aliases=aliases,
         )
 
-    def should_fallback_cheek_to_legacy(self, motion: FaceMotionFrame) -> bool:
-        """Keep cheek portraits on the established product route when excluded.
-
-        Stage-one official body packs intentionally omit ``cheek-rest``.  The
-        omitted declaration covers the cheek expression and its blink states;
-        returning the legacy renderer here preserves the reviewed main pixels
-        while leaving full-body and approved half-body views on the candidate.
-        """
-        self._refresh_selection()
-        selected = self._selection
-        if selected is None or selected.render is None:
-            return False
-        return (
-            outfit_silhouette(motion.expression, motion.pose.value) == "cheek-rest"
-            and "cheek-rest" not in selected.render.layer_views
-        )
-
 
 class EnsembleFaceRenderer:
     """Face-renderer port that follows the currently explicit ensemble."""
@@ -297,7 +279,6 @@ class EnsembleFaceRenderer:
     def __init__(self, legacy: FaceRendererProtocol, router: EnsembleBodyPackRouter) -> None:
         self._legacy = legacy
         self._router = router
-        self._last_render_used_legacy = False
 
     def _current(self) -> FaceRendererProtocol:
         return cast(FaceRendererProtocol, self._router.renderer_for(self._legacy))
@@ -319,16 +300,9 @@ class EnsembleFaceRenderer:
         self, base: QPixmap, motion: FaceMotionFrame, layers: object,
         *, aperture: float | None = None,
     ) -> QPixmap:
-        if self._router.should_fallback_cheek_to_legacy(motion):
-            self._last_render_used_legacy = True
-            return self._legacy.render(base, motion, layers, aperture=aperture)
-        self._last_render_used_legacy = False
         return self._current().render(base, motion, layers, aperture=aperture)
 
     def render_complete_blink(self, base: QPixmap, eye_state: str) -> QPixmap | None:
-        if self._last_render_used_legacy:
-            method = getattr(self._legacy, "render_complete_blink", None)
-            return cast(QPixmap | None, method(base, eye_state)) if callable(method) else None
         renderer = self._current()
         method = getattr(renderer, "render_complete_blink", None)
         return cast(QPixmap | None, method(base, eye_state)) if callable(method) else None
@@ -344,11 +318,6 @@ class EnsembleFaceRenderer:
         view_id: str | None = None,
         makeup_view_id: str | None = None,
     ) -> QPixmap:
-        if self._last_render_used_legacy:
-            return self._legacy.render_overlay(
-                base, source, mask=mask, opacity=opacity, eye_state=eye_state,
-                view_id=view_id, makeup_view_id=makeup_view_id,
-            )
         return self._current().render_overlay(
             base, source, mask=mask, opacity=opacity, eye_state=eye_state,
             view_id=view_id, makeup_view_id=makeup_view_id,
@@ -394,9 +363,6 @@ def create_body_pack_presentation_context(
     character_source: CharacterSource,
     data_root: Path,
     official_pack_roots: OfficialPackRoots,
-    *,
-    default_character_id: str,
-    cheek_fallback_factory: Callable[[], object],
 ) -> tuple[Path, Callable[[], bool], Any, bool, Any, Callable[[], Any], Any, bool]:
     """Build the shared body route and its official-selection predicate."""
 
@@ -410,8 +376,6 @@ def create_body_pack_presentation_context(
     )
     body_pack, fallback_active, body_error, body_renderer, ensemble_router = create_body_pack_context(
         character_source, data_root, official_pack_roots,
-        default_character_id=default_character_id,
-        cheek_fallback_factory=cheek_fallback_factory,
         official_selection=official_selection,
     )
     selection_aware = body_pack is not None and hasattr(
@@ -428,8 +392,6 @@ def create_body_pack_context(
     data_root: Path,
     official_pack_roots: OfficialPackRoots,
     *,
-    default_character_id: str,
-    cheek_fallback_factory: Callable[[], object],
     official_selection: Callable[[], bool] | None = None,
 ) -> tuple[BodyPackReader | None, bool, BodyPackMismatchError | None, Callable[[], BodyPackRenderer], EnsembleBodyPackRouter | None]:
     body_pack = cast(BodyPackReader | None, getattr(source, "resolved_body_pack", None))
@@ -443,11 +405,6 @@ def create_body_pack_context(
         body_pack,
         data_root / "outfits",
         pack_roots,
-        cheek_fallback_factory=(
-            cast(Callable[[], FaceRendererProtocol], cheek_fallback_factory)
-            if body_pack is not None and getattr(source, "character_id", None) == default_character_id
-            else None
-        ),
         official_selection=official_selection,
     )
     router = (

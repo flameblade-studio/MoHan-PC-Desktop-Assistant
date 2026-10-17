@@ -1928,6 +1928,7 @@
         "test_outfit_generation_ui_bridge.py",
         "test_outfit_hand_occlusion.py",
         "test_outfit_overlay_hardening.py",
+        "test_outfit_pack_makeup.py",
         "test_outfit_phase_counts.py",
         "test_packaged_migration.py",
         "test_performance_preferences_store.py",
@@ -2755,6 +2756,7 @@
         "test_official_default_pack.py",
         "test_outfit_hand_occlusion.py",
         "test_outfit_overlay_hardening.py",
+        "test_outfit_pack_makeup.py",
         "test_outfit_phase_counts.py",
         "test_rear_hair_composition.py",
         "test_render_marketing_portraits.py",
@@ -4754,6 +4756,7 @@
         "test_four_look_makeup_pack.py",
         "test_golden_render.py",
         "test_outfit_pack_legacy_silhouettes.py",
+        "test_outfit_pack_makeup.py",
         "test_preview_packaging.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -8125,6 +8128,7 @@
     },
     {
       "paths": [
+        "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-rest.png",
         "assets/makeup/builtin/manifest.json",
         "domain/outfit_pack_pose_assets.py",
         "tools/scaffold_makeup_pack_manifest.py"

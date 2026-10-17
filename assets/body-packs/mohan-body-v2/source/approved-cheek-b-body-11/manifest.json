@@ -21,14 +21,14 @@
       "half",
       "closed"
     ],
-    "face_core_algorithm": "Union facial motion across the 12 source states, 3x3 opening, connected components area >= 40 px, 17x17 elliptical dilation, intersection with pixels where abs(G-cleaned RGB - B RGB) <= 3 and both alpha values are 255, binary_fill_holes, then 12 px distance-transform smoothstep alpha feather.",
+    "face_core_algorithm": "Round 9 accepted face core retained byte-for-byte; each cheek-rest state uses the exact official R.png face partition, then copies only the eye and mouth rectangles from the corresponding pre-round9 product state. No face pixels are generated and no layer/compositor rule changes.",
     "families": [
       "neutral",
       "small",
       "a",
       "o"
     ],
-    "frame_source_policy": "cheek-rest uses the body-4 pose-B source; the other five poses use same-pose complete-expression frames; all six poses are locked as fixed-frame payloads.",
+    "frame_source_policy": "For all 4 mouth families x 3 eye states, official R.png supplies the accepted face base; the eye box [420,320,820,470] and mouth box [420,470,760,640] are copied pixel-for-pixel from the matching .quality-tmp/official-cheek-9/product-before/bare state, restricted to the retained face-core mask.",
     "poses": [
       "cheek-rest",
       "cheek-happy",
@@ -38,7 +38,549 @@
       "cheek-reminder"
     ],
     "reason": "直接採用擁有者核准的固定影格，保留候選 PNG bytes，避免重編碼或重算造成位元差異。",
-    "route": "fixed-frame"
+    "route": "fixed-frame",
+    "round9_source_records": [
+      {
+        "family": "neutral",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-rest.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0"
+        ],
+        "sha256": "8d386b6069c36ac16dc32450c0b43b3c13a72049b830ed1afa33bab16352c9cb",
+        "bytes": 1892371,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "neutral",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-half.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034"
+        ],
+        "sha256": "8d386b6069c36ac16dc32450c0b43b3c13a72049b830ed1afa33bab16352c9cb",
+        "bytes": 1892371,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "neutral",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-closed.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf"
+        ],
+        "sha256": "357a3e29679122efc2448aba97757ef78cc09eb4d96bf16bf4868f1489e007f3",
+        "bytes": 1893237,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "small",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-rest.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/small-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "bytes": 1892514,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "small",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-half.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/small-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "bytes": 1892514,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "small",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-closed.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/small-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "1ba88ce046b7b30a970695c6d1fd1bffd8a937338b7604e1b8bc42c40c7f96a5",
+        "bytes": 1893350,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "a",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-rest.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/a-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "bytes": 1892514,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "a",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-half.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/a-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "bytes": 1892514,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "a",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-closed.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/a-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "1ba88ce046b7b30a970695c6d1fd1bffd8a937338b7604e1b8bc42c40c7f96a5",
+        "bytes": 1893350,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "o",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-rest.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/o-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "bytes": 1892514,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "o",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-half.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/o-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "bytes": 1892514,
+        "replaced_pixels": 113842
+      },
+      {
+        "family": "o",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-closed.png",
+        "source_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        "source_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "source_paths": [
+          "assets/official-look-targets/halfbody/cheek-rest/R.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png",
+          ".quality-tmp/official-cheek-9/product-before/bare/o-rest.png"
+        ],
+        "source_sha256s": [
+          "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+          "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf",
+          "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+        ],
+        "sha256": "1ba88ce046b7b30a970695c6d1fd1bffd8a937338b7604e1b8bc42c40c7f96a5",
+        "bytes": 1893350,
+        "replaced_pixels": 113842
+      }
+    ],
+    "round10_source_records": [
+      {
+        "family": "neutral",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-rest.png",
+        "before_sha256": "8d386b6069c36ac16dc32450c0b43b3c13a72049b830ed1afa33bab16352c9cb",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/neutral-rest.png",
+        "state_source_sha256": "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8",
+        "bytes": 1892798,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "neutral",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-half.png",
+        "before_sha256": "8d386b6069c36ac16dc32450c0b43b3c13a72049b830ed1afa33bab16352c9cb",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png",
+        "state_source_sha256": "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8",
+        "bytes": 1892798,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "neutral",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-closed.png",
+        "before_sha256": "357a3e29679122efc2448aba97757ef78cc09eb4d96bf16bf4868f1489e007f3",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png",
+        "state_source_sha256": "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "ed09721c73ebf9751ddde95c783415d8c81af0175b7f92818e8fcc9dee8951ec",
+        "bytes": 1890370,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "small",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-rest.png",
+        "before_sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/small-rest.png",
+        "state_source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+        "bytes": 1892891,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "small",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-half.png",
+        "before_sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/small-half.png",
+        "state_source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+        "bytes": 1892891,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "small",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-closed.png",
+        "before_sha256": "1ba88ce046b7b30a970695c6d1fd1bffd8a937338b7604e1b8bc42c40c7f96a5",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/small-closed.png",
+        "state_source_sha256": "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749",
+        "bytes": 1890454,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "a",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-rest.png",
+        "before_sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/a-rest.png",
+        "state_source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+        "bytes": 1892891,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "a",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-half.png",
+        "before_sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/a-half.png",
+        "state_source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+        "bytes": 1892891,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "a",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-closed.png",
+        "before_sha256": "1ba88ce046b7b30a970695c6d1fd1bffd8a937338b7604e1b8bc42c40c7f96a5",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/a-closed.png",
+        "state_source_sha256": "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749",
+        "bytes": 1890454,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "o",
+        "eye": "rest",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-rest.png",
+        "before_sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/o-rest.png",
+        "state_source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+        "bytes": 1892891,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "o",
+        "eye": "half",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-half.png",
+        "before_sha256": "7cbe868b02415c85a3706ebaba389dc295abd133c4aee74872600381a3611934",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/o-half.png",
+        "state_source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+        "bytes": 1892891,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      },
+      {
+        "family": "o",
+        "eye": "closed",
+        "path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-closed.png",
+        "before_sha256": "1ba88ce046b7b30a970695c6d1fd1bffd8a937338b7604e1b8bc42c40c7f96a5",
+        "state_source": ".quality-tmp/official-cheek-9/product-before/bare/o-closed.png",
+        "state_source_sha256": "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65",
+        "official_target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "after_sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749",
+        "bytes": 1890454,
+        "face_pixels_from_official_target": 113842,
+        "eye_box": [
+          420,
+          320,
+          820,
+          470
+        ],
+        "mouth_box": [
+          420,
+          470,
+          760,
+          640
+        ],
+        "eye_pixels_from_product_before": 44742,
+        "mouth_pixels_from_product_before": 47108
+      }
+    ]
   },
   "files": [
     {
@@ -74,12 +616,12 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 16168,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/face-core/cheek-rest.png",
+      "bytes": 22233,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/face-core/cheek-rest.png",
       "kind": "face_core",
       "path": "face-core/cheek-rest.png",
       "pose": "cheek-rest",
-      "sha256": "e91d662bc347da6cadcce98706beb02e63808745695911840326cea3308ccab1"
+      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
     },
     {
       "bytes": 23949,
@@ -666,148 +1208,244 @@
       "source_sha256": "e76d78ba7bffd02daef9a44ec371e4cf568e51774e9d0820eb538b544a18b454"
     },
     {
-      "bytes": 1875868,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/a-closed.png",
+      "bytes": 1890454,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-closed.png",
       "eye": "closed",
       "family": "a",
       "kind": "half_body",
       "path": "half-body/cheek-rest/a-closed.png",
       "pose": "cheek-rest",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/a-closed.png",
-      "source_sha256": "5da8ec3ec7eaf3d48b4eb36c75bc0b4009c7da13171061668f8ea50186dccef7"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/a-closed.png",
+      "source_sha256": "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/a-closed.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65"
+      ]
     },
     {
-      "bytes": 1878433,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/a-half.png",
+      "bytes": 1892891,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-half.png",
       "eye": "half",
       "family": "a",
       "kind": "half_body",
       "path": "half-body/cheek-rest/a-half.png",
       "pose": "cheek-rest",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/a-half.png",
-      "source_sha256": "10ac1f81e065a9c09abc17dc77e736bc537674d1735908c9c926c19ecdd2b1a3"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/a-half.png",
+      "source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/a-half.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+      ]
     },
     {
-      "bytes": 1878433,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/a-rest.png",
+      "bytes": 1892891,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/a-rest.png",
       "eye": "rest",
       "family": "a",
       "kind": "half_body",
       "path": "half-body/cheek-rest/a-rest.png",
       "pose": "cheek-rest",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/a-rest.png",
-      "source_sha256": "10ac1f81e065a9c09abc17dc77e736bc537674d1735908c9c926c19ecdd2b1a3"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/a-rest.png",
+      "source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/a-rest.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+      ]
     },
     {
-      "bytes": 1875878,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/neutral-closed.png",
+      "bytes": 1890370,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-closed.png",
       "eye": "closed",
       "family": "neutral",
       "kind": "half_body",
       "path": "half-body/cheek-rest/neutral-closed.png",
       "pose": "cheek-rest",
-      "sha256": "1eac10438737ae98664c0fed2f3cbf68ce75c4d421ea75209daf120f420a0816",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/neutral-closed.png",
-      "source_sha256": "16124a513a62ffd45a3d3cf0c15b2416f4739c4cab497a7d62b49918d637e63f"
+      "sha256": "ed09721c73ebf9751ddde95c783415d8c81af0175b7f92818e8fcc9dee8951ec",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png",
+      "source_sha256": "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/neutral-closed.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "2c1c4d403ff9f93fc5f7d04dd28f0ee027b66d73f82320475cccd5cc95fc9fbf"
+      ]
     },
     {
-      "bytes": 1878421,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/neutral-half.png",
+      "bytes": 1892798,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-half.png",
       "eye": "half",
       "family": "neutral",
       "kind": "half_body",
       "path": "half-body/cheek-rest/neutral-half.png",
       "pose": "cheek-rest",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/neutral-half.png",
-      "source_sha256": "1189bf48056966a9576aa38fb9570c843b426a2f6166b89f4aea9d3df8543a1d"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png",
+      "source_sha256": "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/neutral-half.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034"
+      ]
     },
     {
-      "bytes": 1878421,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/neutral-rest.png",
+      "bytes": 1892798,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/neutral-rest.png",
       "eye": "rest",
       "family": "neutral",
       "kind": "half_body",
       "path": "half-body/cheek-rest/neutral-rest.png",
       "pose": "cheek-rest",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/neutral-rest.png",
-      "source_sha256": "1189bf48056966a9576aa38fb9570c843b426a2f6166b89f4aea9d3df8543a1d"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/neutral-rest.png",
+      "source_sha256": "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/neutral-rest.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "d92f1c3b2e574b86c0af62e15322aa266660868ad7b06a3043a54f8729dfa034"
+      ]
     },
     {
-      "bytes": 1875868,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/o-closed.png",
+      "bytes": 1890454,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-closed.png",
       "eye": "closed",
       "family": "o",
       "kind": "half_body",
       "path": "half-body/cheek-rest/o-closed.png",
       "pose": "cheek-rest",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/o-closed.png",
-      "source_sha256": "5da8ec3ec7eaf3d48b4eb36c75bc0b4009c7da13171061668f8ea50186dccef7"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/o-closed.png",
+      "source_sha256": "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/o-closed.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65"
+      ]
     },
     {
-      "bytes": 1878433,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/o-half.png",
+      "bytes": 1892891,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-half.png",
       "eye": "half",
       "family": "o",
       "kind": "half_body",
       "path": "half-body/cheek-rest/o-half.png",
       "pose": "cheek-rest",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/o-half.png",
-      "source_sha256": "10ac1f81e065a9c09abc17dc77e736bc537674d1735908c9c926c19ecdd2b1a3"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/o-half.png",
+      "source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/o-half.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+      ]
     },
     {
-      "bytes": 1878433,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/o-rest.png",
+      "bytes": 1892891,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/o-rest.png",
       "eye": "rest",
       "family": "o",
       "kind": "half_body",
       "path": "half-body/cheek-rest/o-rest.png",
       "pose": "cheek-rest",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/o-rest.png",
-      "source_sha256": "10ac1f81e065a9c09abc17dc77e736bc537674d1735908c9c926c19ecdd2b1a3"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/o-rest.png",
+      "source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/o-rest.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+      ]
     },
     {
-      "bytes": 1875868,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/small-closed.png",
+      "bytes": 1890454,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-closed.png",
       "eye": "closed",
       "family": "small",
       "kind": "half_body",
       "path": "half-body/cheek-rest/small-closed.png",
       "pose": "cheek-rest",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/small-closed.png",
-      "source_sha256": "5da8ec3ec7eaf3d48b4eb36c75bc0b4009c7da13171061668f8ea50186dccef7"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/small-closed.png",
+      "source_sha256": "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/small-closed.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "d19d6ca74beca58bce0db17a4c2a13a1720c2f675e6b87a1c16884904afdbb65"
+      ]
     },
     {
-      "bytes": 1878433,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/small-half.png",
+      "bytes": 1892891,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-half.png",
       "eye": "half",
       "family": "small",
       "kind": "half_body",
       "path": "half-body/cheek-rest/small-half.png",
       "pose": "cheek-rest",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/small-half.png",
-      "source_sha256": "10ac1f81e065a9c09abc17dc77e736bc537674d1735908c9c926c19ecdd2b1a3"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/small-half.png",
+      "source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/small-half.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+      ]
     },
     {
-      "bytes": 1878433,
-      "candidate_path": "mohan-official-bp/.quality-tmp/cheek-b-body-11/body-pack-cheek/half-body/cheek-rest/small-rest.png",
+      "bytes": 1892891,
+      "candidate_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/half-body/cheek-rest/small-rest.png",
       "eye": "rest",
       "family": "small",
       "kind": "half_body",
       "path": "half-body/cheek-rest/small-rest.png",
       "pose": "cheek-rest",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c",
-      "source_path": "mohan-official-bp/.quality-tmp/cheek-b-body-4/body-pack-cheek/half-body/cheek-rest/small-rest.png",
-      "source_sha256": "10ac1f81e065a9c09abc17dc77e736bc537674d1735908c9c926c19ecdd2b1a3"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f",
+      "source_path": ".quality-tmp/official-cheek-9/product-before/bare/small-rest.png",
+      "source_sha256": "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca",
+      "source_paths": [
+        "assets/official-look-targets/halfbody/cheek-rest/R.png",
+        ".quality-tmp/official-cheek-9/product-before/bare/small-rest.png"
+      ],
+      "source_sha256s": [
+        "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+        "90aa8372c66ed9f739a1cbd22e27376c78a8c117a550e04a9cc1aea57ae9cfca"
+      ]
     },
     {
       "bytes": 1875645,
@@ -968,5 +1606,34 @@
   "schema": "mohan.approved-cheek-body.v1",
   "schema_version": 1,
   "status": "owner-approved-fixed-frames",
-  "work_package": "CHEEK-INSTALL-1"
+  "work_package": "CHEEK-INSTALL-1",
+  "round9_official_cheek_rest": {
+    "target_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+    "target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+    "face_core_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/face-core/cheek-rest.png",
+    "face_core_sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72",
+    "face_pixels_generated": false,
+    "states": "4 mouth families x 3 eye states"
+  },
+  "round10_official_cheek_rest": {
+    "target_path": "assets/official-look-targets/halfbody/cheek-rest/R.png",
+    "target_sha256": "94398ecfabb853b695b5d07b133e69db635e0b4febd86a56f8c2594830690ae0",
+    "face_core_path": "assets/body-packs/mohan-body-v2/source/approved-cheek-b-body-11/face-core/cheek-rest.png",
+    "face_core_sha256_before_and_after": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72",
+    "face_core_retained_from_round9": true,
+    "state_source_root": ".quality-tmp/official-cheek-9/product-before/bare",
+    "eye_box": [
+      420,
+      320,
+      820,
+      470
+    ],
+    "mouth_box": [
+      420,
+      470,
+      760,
+      640
+    ],
+    "states": "4 mouth families x 3 eye states"
+  }
 }

@@ -1,10 +1,10 @@
 {
   "build_provenance": {
     "approval_scope": "BODY-RELEASE-1 designates the source roots and seventh-round 28-view/3-gesture approval. Historical metadata is retained as evidence and is not upgraded to a round-9 approval.",
-    "candidate_fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
-    "candidate_manifest_bytes": 447897,
-    "candidate_manifest_sha256": "2851fcdc75d9cbc05e07691ae19bda7d3a7f956bae430cdbf8ab2d7e8bfb2f46",
-    "candidate_manifest_source_id": "mohan-body-install/.quality-tmp/body-pack-build/mohan-body-v2/manifest.json",
+    "candidate_fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+    "candidate_manifest_bytes": 447981,
+    "candidate_manifest_sha256": "936ead4dd59560498c9b8e230e465c0dc795152e0a4bc76353d8751c77f97693",
+    "candidate_manifest_source_id": ".quality-tmp/official-cheek-9/body-pack-build/public-rebuild/mohan-body-v2/manifest.json",
     "dynamic_face_core_recalculation": false,
     "fixed_final_core_masks": 31,
     "historical_gesture_manifest_drift_rows": 9,
@@ -14,7 +14,7 @@
     },
     "approved_cheek_fixed_frames": {
       "approval": "托腮素體同意",
-      "candidate_manifest_sha256": "d3beaec914358f8714149bab11bc8aec62624baf4f5337bad28d84eba57951d1",
+      "candidate_manifest_sha256": "28ac76cc582ec0f6accad6693d7d195e6d30f55fe05b96b6ee053979feed7029",
       "source_id": "approved-cheek-b-body-11-fixed-frames",
       "fixed_half_body_frames": 72,
       "fixed_face_core_masks": 6,
@@ -758,9 +758,9 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 16168,
+      "bytes": 22233,
       "path": "approved-cheek-b-body-11/face-core/cheek-rest.png",
-      "sha256": "e91d662bc347da6cadcce98706beb02e63808745695911840326cea3308ccab1"
+      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
     },
     {
       "bytes": 23949,
@@ -1008,64 +1008,64 @@
       "sha256": "85a9763d182822d18253634e46202ed12936144c84c1bb2103cf293fd202ea86"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/a-closed.png",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/a-half.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/a-rest.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1875878,
+      "bytes": 1890370,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/neutral-closed.png",
-      "sha256": "1eac10438737ae98664c0fed2f3cbf68ce75c4d421ea75209daf120f420a0816"
+      "sha256": "ed09721c73ebf9751ddde95c783415d8c81af0175b7f92818e8fcc9dee8951ec"
     },
     {
-      "bytes": 1878421,
+      "bytes": 1892798,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/neutral-half.png",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8"
     },
     {
-      "bytes": 1878421,
+      "bytes": 1892798,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/neutral-rest.png",
-      "sha256": "dba1bd0d9c48a6ba3e92c2278938adeb37d95b6f388a4c9db59c8f2d3ed4bd3f"
+      "sha256": "650a41601579fb91f3fa6dabe2b698f89fc25c6ae81d2f7198ae3dfaeb1148c8"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/o-closed.png",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/o-half.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/o-rest.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1875868,
+      "bytes": 1890454,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/small-closed.png",
-      "sha256": "4e0c76bf6c90a5f8300c589b6c193f735b7bade115ae0de36ec67b377cd6832f"
+      "sha256": "bd7206b1b7d371eaf8f619da9a8ddd54c9c2f28018fa30c6a936956997f19749"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/small-half.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
-      "bytes": 1878433,
+      "bytes": 1892891,
       "path": "approved-cheek-b-body-11/half-body/cheek-rest/small-rest.png",
-      "sha256": "c206c629aede81c3c7f8ea001e51ea6881651d4158dcfd95bb09e7f9d05cdd8c"
+      "sha256": "0565cf12581f031caabe16ee7d383a27af350cdf3bbe9a75796365e265e8172f"
     },
     {
       "bytes": 1875645,
@@ -1128,14 +1128,14 @@
       "sha256": "20e24957988e5bdf1d19ebcdfcc7aa2d1c3afab20865782c041ef88fcb808f49"
     },
     {
-      "bytes": 48918,
+      "bytes": 77892,
       "path": "approved-cheek-b-body-11/manifest.json",
-      "sha256": "9486047300258a32b4d69b35425478fd30f29f5e9f25b2e7f13e1e21b07b2ac3"
+      "sha256": "1aceb15a4b124e4df7821356d2aabbfd2695a9eeaef62419deb15dd39d5bc429"
     }
   ],
   "layer_dependency": {
     "body_pack": {
-      "fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+      "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
       "id": "mohan-body-v2",
       "version": "1.0.0"
     },
@@ -1382,7 +1382,7 @@
     }
   ],
   "pack": {
-    "expected_fingerprint": "6436a12ff10f12224d2906dbb12df2554df527e6e26961542526ef2b0a317891",
+    "expected_fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
     "id": "mohan-body-v2",
     "license": "CC-BY-NC-ND-4.0",
     "version": "1.0.0"

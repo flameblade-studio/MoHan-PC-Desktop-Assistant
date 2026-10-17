@@ -29,7 +29,6 @@ lazy from application import service_container
 lazy from application.service_container import _create_presentation_ports
 lazy from infrastructure import body_pack_presentation
 lazy from infrastructure.body_pack_presentation import (
-    _BodyPackWithCheekFallback,
     _SelectionAwareFaceRenderer,
     _SelectionAwareFullBodyRenderer,
     body_pack_selection_factory,
@@ -330,7 +329,8 @@ def test_fullbody_render_does_not_replace_halfbody_wink_context(qapp):
     ]
 
 
-def test_body_pack_cheek_fallback_survives_fullbody_render_before_blink(qapp):
+def test_body_pack_official_cheek_uses_native_route_after_fullbody_before_blink(qapp):
+    """Stage 2 keeps cheek-rest on the selected official body renderer."""
     class Body:
         def __init__(self):
             self.calls = []
@@ -377,18 +377,56 @@ def test_body_pack_cheek_fallback_survives_fullbody_render_before_blink(qapp):
 
     body = Body()
     legacy = Legacy()
-    renderer = _BodyPackWithCheekFallback(body, {}, lambda: legacy)
+    renderer = _SelectionAwareFaceRenderer(
+        lambda: body, lambda: legacy, lambda: True,
+    )
+    fullbody = _SelectionAwareFullBodyRenderer(
+        lambda: body, lambda: legacy, lambda: True,
+    )
     cheek = _motion()
     cheek.pose = FacePose.CHEEK
 
     half = renderer.render(QPixmap(), cheek, None)
-    renderer.render_view("back", _motion())
+    fullbody.render_view("back", _motion())
     blink = renderer.render_complete_blink(half, "closed")
 
-    assert half.toImage().pixelColor(0, 0).name() == "#ff0000"
-    assert blink.toImage().pixelColor(0, 0).name() == "#ffff00"
-    assert legacy.calls == ["render", "blink"]
-    assert body.calls == ["view"]
+    assert half.toImage().pixelColor(0, 0).name() == "#0000ff"
+    assert blink.toImage().pixelColor(0, 0).name() == "#0000ff"
+    assert fullbody.body_pack_required is True
+    assert legacy.calls == []
+    assert body.calls == ["render", "view", "blink"]
+
+
+def test_body_pack_makeup_applier_falls_back_to_cheek_rest_when_unlisted(qapp, monkeypatch):
+    calls = []
+
+    class Overlay:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def set_active_mouth_state(self, viseme):
+            calls.append(("mouth", viseme))
+
+        def makeup_declares_view(self, view):
+            calls.append(("declares", view))
+            return False
+
+        def apply_makeup(self, frame, view, *, eye_state):
+            calls.append(("apply", view, eye_state))
+            return frame
+
+    monkeypatch.setattr(body_pack_presentation, "ActiveOutfitOverlay", Overlay)
+    applier = body_pack_presentation._body_pack_makeup_applier(
+        Path("outfits"), Path("assets"), (),
+    )
+    frame = QPixmap(2, 2)
+
+    assert applier(frame, "official-cheek-rest", "closed", "A") is frame
+    assert calls == [
+        ("mouth", "A"),
+        ("declares", "official-cheek-rest"),
+        ("apply", "cheek-rest", "closed"),
+    ]
 
 
 def test_body_pack_selection_router_switches_face_and_fullbody_immediately(qapp):
