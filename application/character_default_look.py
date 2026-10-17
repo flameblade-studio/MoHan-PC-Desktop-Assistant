@@ -124,6 +124,8 @@ def resolved_body_pack_for_source(source: CharacterSource) -> BodyPackSource | N
     body = getattr(source.appearance, "resolved_body_pack", None) if hasattr(source, "appearance") else None
     reference = getattr(getattr(source, "manifest", None), "body_pack", None)
     if reference is not None and body is None:
+        if getattr(source, "body_pack_fallback_active", False):
+            return None
         raise BodyPackMismatchError("body_pack_missing", "Resolve the declared body pack before rendering")
     return body
 

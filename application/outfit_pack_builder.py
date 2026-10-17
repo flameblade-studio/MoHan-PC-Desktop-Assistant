@@ -4,6 +4,7 @@ lazy import hashlib
 lazy import json
 lazy import os
 lazy import zipfile
+lazy from collections.abc import Iterator
 lazy from pathlib import Path
 
 lazy from domain.outfit_pack import (
@@ -41,6 +42,33 @@ def _asset_bytes(asset_root: Path, archive_path: str) -> bytes:
     return source.read_bytes()
 
 
+def _ensemble_layer_entries(manifest: dict[str, object]) -> Iterator[dict[str, object]]:
+    """Yield mutable layer and base-hide records declared by ensemble render plans."""
+    ensembles = manifest.get("ensembles", [])
+    if not isinstance(ensembles, list):
+        raise OutfitPackError("Ensembles must be a list.")
+    for ensemble in ensembles:
+        if not isinstance(ensemble, dict):
+            continue
+        render = ensemble.get("render")
+        if not isinstance(render, dict) or render.get("type") != "body_pack":
+            continue
+        layer_views = render.get("layer_views")
+        if not isinstance(layer_views, dict):
+            continue
+        for plan in layer_views.values():
+            if not isinstance(plan, dict):
+                continue
+            layers = plan.get("layers", [])
+            if isinstance(layers, list):
+                for record in layers:
+                    if isinstance(record, dict):
+                        yield record
+            base_hide = plan.get("base_hide")
+            if isinstance(base_hide, dict):
+                yield base_hide
+
+
 def _sealed_manifest(
     source_manifest: Path,
     asset_root: Path,
@@ -61,6 +89,12 @@ def _sealed_manifest(
         entry["sha256"] = hashlib.sha256(data).hexdigest()
         entry["width"] = width
         entry["height"] = height
+    for record in _ensemble_layer_entries(manifest):
+        path = record.get("path")
+        if not isinstance(path, str):
+            raise OutfitPackError("Every body-pack layer requires a path.")
+        data = assets.setdefault(path, _asset_bytes(asset_root, path))
+        record["sha256"] = hashlib.sha256(data).hexdigest()
     for expression in manifest.get("source_bound_expressions", []):
         receipt = expression.get("receipt")
         if isinstance(receipt, dict):

@@ -11,9 +11,11 @@ lazy from domain.outfit_pack_store import (
     copy_pack_archive, inspect_cached_pack,
 )
 lazy from domain import _outfit_pack_models
+lazy from domain.outfit_pack_ensembles import EnsembleParser, parse_ensembles, render_layer_paths
 # Resolve the public facade now so ``from ... import`` callers receive dataclasses.
 AppearanceAsset = _outfit_pack_models.AppearanceAsset
 AppearanceEnsemble = _outfit_pack_models.AppearanceEnsemble
+EnsembleRender = _outfit_pack_models.EnsembleRender
 AppearanceItem = _outfit_pack_models.AppearanceItem
 AppearanceVariant = _outfit_pack_models.AppearanceVariant
 AutonomousStyleProfile = _outfit_pack_models.AutonomousStyleProfile
@@ -448,60 +450,6 @@ def _item(value: object, category: str, archive: zipfile.ZipFile, names: set[str
     return AppearanceItem(actual_category, _identifier(value["id"], "item"), _names(value["display_names"]), parsed, attachment, safe_mask)
 
 
-def _available_variants(items: list[AppearanceItem]) -> set[tuple[str, str, str]]:
-    return {
-        *((item.category, item.item_id, variant.variant_id) for variant in item.variants)
-        for item in items
-    }
-
-
-def _ensemble_selection(
-    category: str,
-    selection: object,
-    available: set[tuple[str, str, str]],
-) -> EnsembleSelection:
-    if selection is None:
-        if category not in {"headwear", "makeup", *ACCESSORY_KINDS}:
-            raise OutfitPackError("Garment and hairstyle require a selected variant.")
-        return EnsembleSelection(category, None, None)
-    if not isinstance(selection, dict) or set(selection) != {"item_id", "variant_id"}:
-        raise OutfitPackError("Provide a supported ensemble selection.")
-    identity = (
-        category,
-        _identifier(selection["item_id"], "ensemble item"),
-        _identifier(selection["variant_id"], "ensemble variant"),
-    )
-    if identity not in available:
-        raise OutfitPackError("Ensemble must reference an item in the same pack.")
-    return EnsembleSelection(*identity)
-
-
-def _ensemble(
-    entry: object,
-    available: set[tuple[str, str, str]],
-) -> AppearanceEnsemble:
-    if not isinstance(entry, dict) or set(entry) != {"id", "display_names", "selections", "autonomous_profile"}:
-        raise OutfitPackError("Provide a supported ensemble declaration.")
-    selections = entry["selections"]
-    required = set(SELECTION_CATEGORIES) - OPTIONAL_ENSEMBLE_CATEGORIES
-    # An ensemble that stays silent about makeup leaves the user's makeup alone;
-    # an explicit ``null`` means a bare face.
-    if not isinstance(selections, dict) or not required <= set(selections) <= set(SELECTION_CATEGORIES):
-        raise OutfitPackError("Ensemble must declare every appearance category.")
-    typed = tuple(
-        _ensemble_selection(category, selections[category], available)
-        for category in SELECTION_CATEGORIES
-        if category in selections
-    )
-    profile = _autonomous_profile(entry["autonomous_profile"])
-    return AppearanceEnsemble(
-        _identifier(entry["id"], "ensemble"),
-        _names(entry["display_names"]),
-        typed,
-        profile,
-    )
-
-
 def _autonomous_profile(value: object) -> AutonomousStyleProfile:
     keys = {"thermal_bands", "weather", "moods", "occasions", "priority"}
     if not isinstance(value, dict) or set(value) != keys:
@@ -530,16 +478,6 @@ def _autonomous_profile(value: object) -> AutonomousStyleProfile:
     )
 
 
-def _ensembles(value: object, items: list[AppearanceItem]) -> tuple[AppearanceEnsemble, ...]:
-    if not isinstance(value, list):
-        raise OutfitPackError("Ensembles must be a list.")
-    available = _available_variants(items)
-    parsed = tuple(_ensemble(entry, available) for entry in value)
-    if len({ensemble.ensemble_id for ensemble in parsed}) != len(parsed):
-        raise OutfitPackError("Duplicate ensemble identifier.")
-    return parsed
-
-
 def _parse_outfit_pack(
     archive: zipfile.ZipFile,
     names: set[str],
@@ -553,8 +491,20 @@ def _parse_outfit_pack(
         names,
     )
     validate_source_bound_bindings(source_bound, items)
-    ensembles = _ensembles(manifest["ensembles"], items)
-    validate_declared_assets(items, names, source_bound_asset_paths(source_bound))
+    ensembles = parse_ensembles(
+        manifest["ensembles"], items, archive, names,
+        EnsembleParser(
+            identifier=_identifier,
+            localized_names=_names,
+            autonomous_profile=_autonomous_profile,
+            selection_categories=SELECTION_CATEGORIES,
+            optional_categories=OPTIONAL_ENSEMBLE_CATEGORIES,
+        ),
+    )
+    render_paths = render_layer_paths(ensembles)
+    validate_declared_assets(
+        items, names, (*source_bound_asset_paths(source_bound), *render_paths),
+    )
     pack_id = _identifier(manifest["id"], "pack")
     pack_version_value, app_range = pack_version(manifest)
     return OutfitPack(
@@ -628,7 +578,10 @@ def list_installed_ensembles(
     store: Path, *, official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
 ) -> tuple[InstalledEnsemble, ...]:
     return tuple(
-        InstalledEnsemble(pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names, ensemble.selections, ensemble.autonomous_profile)
+        InstalledEnsemble(
+            pack.pack_id, ensemble.ensemble_id, pack.display_names, ensemble.display_names,
+            ensemble.selections, ensemble.autonomous_profile, ensemble.render,
+        )
         for pack in list_installed_outfits(store, official_pack_root=official_pack_root)
         for ensemble in pack.ensembles
     )
@@ -655,7 +608,8 @@ def apply_appearance_selection(
         raise OutfitPackError("The selected appearance variant is not installed.")
     active_path = Path(store) / "active.json"
     active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
-    active.pop("_ensemble", None)
+    if selection.category != "makeup":
+        active.pop("_ensemble", None)
     active[selection.category] = {"pack_id": selection.pack_id, "item_id": selection.item_id, "variant_id": selection.variant_id}
     _atomic_json(active_path, active)
 
@@ -667,9 +621,49 @@ def clear_appearance_selection(store: Path, category: str) -> None:
     active = json.loads(active_path.read_text(encoding="utf-8")) if active_path.is_file() else {}
     if not isinstance(active, dict):
         raise OutfitPackError("Provide a supported saved appearance state.")
-    active.pop("_ensemble", None)
+    if category != "makeup":
+        active.pop("_ensemble", None)
     active[category] = {"pack_id": "builtin", "item_id": "none", "variant_id": "none"}
     _atomic_json(active_path, active)
+
+
+def resolve_active_ensemble(
+    store: Path,
+    *,
+    official_pack_root: OfficialPackRoots = OFFICIAL_PACK_ROOT,
+) -> InstalledEnsemble | None:
+    """Resolve only the explicitly selected ensemble marker; built-in sentinels stay legacy."""
+    active_path = Path(store) / "active.json"
+    if not active_path.is_file():
+        return None
+    try:
+        active = json.loads(active_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        raise OutfitPackError("Provide a supported saved appearance state.") from None
+    if not isinstance(active, dict):
+        raise OutfitPackError("Provide a supported saved appearance state.")
+    selected = active.get("_ensemble")
+    if selected is None:
+        return None
+    if (
+        not isinstance(selected, dict)
+        or set(selected) != {"pack_id", "ensemble_id"}
+        or any(not isinstance(selected[key], str) for key in selected)
+    ):
+        raise OutfitPackError("Provide a supported active ensemble marker.")
+    identity = (selected["pack_id"], selected["ensemble_id"])
+    match = next(
+        (
+            item for item in list_installed_ensembles(
+                store, official_pack_root=official_pack_root,
+            )
+            if (item.pack_id, item.ensemble_id) == identity
+        ),
+        None,
+    )
+    if match is None:
+        raise OutfitPackError("The explicitly selected ensemble is no longer installed.")
+    return match
 
 
 def apply_ensemble(

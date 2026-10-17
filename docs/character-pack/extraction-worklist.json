@@ -6,11 +6,11 @@
     "ui_text_reference": "此檔的介面文字直接提到角色；應由角色身分資料以佔位符代入。"
   },
   "counts": {
-    "actual_embedded_code_files": 22,
+    "actual_embedded_code_files": 24,
     "engine_extract_files": 0,
     "manual_review_hint_only_files": 64,
     "persisted_identifier_files": 2,
-    "product_shell_allowed_files": 22,
+    "product_shell_allowed_files": 24,
     "true_extraction_files": 0,
     "ui_text_reference_files": 0,
     "work_packages": 0
@@ -60,6 +60,16 @@
       "path": "infrastructure/backup_manager.py",
       "reason": "墨寒使用者備份檔名與產品資料位置屬產品殼相容契約。",
       "status": "no_current_content_evidence"
+    },
+    {
+      "path": "infrastructure/body_pack_presentation.py",
+      "reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
+      "status": "allowed_content_present"
+    },
+    {
+      "path": "infrastructure/ensemble_body_pack.py",
+      "reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
+      "status": "allowed_content_present"
     },
     {
       "path": "infrastructure/installed_body_packs.py",
@@ -210,12 +220,12 @@
           "description": "墨寒專屬素材路徑仍由程式直接指定。",
           "locations": [
             {
-              "line": 439,
+              "line": 434,
               "matched": "assets/expressions/",
               "text": "bindings.get(\"halfbody_complete\", \"assets/expressions/complete-expressions\")"
             },
             {
-              "line": 440,
+              "line": 435,
               "matched": "assets/expressions/",
               "text": "!= \"assets/expressions/complete-expressions\""
             }
@@ -240,7 +250,7 @@
           "description": "自 v2 起寫入 active_outfit_id 的不透明產品殼識別碼；必須保持位元相同以相容既有使用者設定。",
           "locations": [
             {
-              "line": 55,
+              "line": 56,
               "matched": "mohan.default.blue-silver",
               "text": "BUILTIN_OUTFIT_ID = \"mohan.default.blue-silver\""
             }
@@ -417,6 +427,76 @@
         "assets/characters/mohan/persona/profile.json",
         "assets/characters/mohan/rig/rig-manifest.json",
         "infrastructure/app_resources.py"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "locations": [
+            {
+              "line": 148,
+              "matched": "cheek-rest",
+              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+            },
+            {
+              "line": 149,
+              "matched": "cheek-rest",
+              "text": "and \"cheek-rest\" not in self._views"
+            }
+          ],
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/body_pack_presentation.py",
+      "reason": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
+      ],
+      "work_package": null
+    },
+    {
+      "classification": "product_shell_allowed",
+      "content": [
+        {
+          "content_kind": "rig",
+          "description": "墨寒專屬姿勢或輪廓名稱仍寫在程式流程。",
+          "locations": [
+            {
+              "line": 75,
+              "matched": "front-exasperated",
+              "text": "if \"exasperated\" in half_views and \"front-exasperated\" in layer_views:"
+            },
+            {
+              "line": 76,
+              "matched": "front-exasperated",
+              "text": "aliases[\"exasperated\"] = \"front-exasperated\""
+            },
+            {
+              "line": 289,
+              "matched": "cheek-rest",
+              "text": "outfit_silhouette(motion.expression, motion.pose.value) == \"cheek-rest\""
+            },
+            {
+              "line": 290,
+              "matched": "cheek-rest",
+              "text": "and \"cheek-rest\" not in selected.render.layer_views"
+            }
+          ],
+          "rule": "character_pose_name_literal",
+          "suggested_data_target": "assets/characters/mohan/rig/rig-manifest.json"
+        }
+      ],
+      "estimated_difficulty": "high",
+      "path": "infrastructure/ensemble_body_pack.py",
+      "reason": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
+      "suggested_data_targets": [
+        "assets/characters/mohan/rig/rig-manifest.json"
       ],
       "work_package": null
     },
@@ -1032,17 +1112,17 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 540,
+              "line": 542,
               "matched": "墨寒",
               "text": "'about_heading': '<b>关于墨寒</b>',"
             },
             {
-              "line": 542,
+              "line": 544,
               "matched": "墨寒",
               "text": "'墨寒桌面助手 v{version}，Copyright © 2026 CHOU MING HUA 与'"
             },
             {
-              "line": 543,
+              "line": 545,
               "matched": "MoHan",
               "text": "' MoHan Desktop Assistant 贡献者，依 MIT License 发行。<br>'"
             }
@@ -1067,12 +1147,12 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 730,
+              "line": 732,
               "matched": "MoHan",
               "text": "\"about_heading\": \"<b>About MoHan</b>\","
             },
             {
-              "line": 732,
+              "line": 734,
               "matched": "MoHan",
               "text": "\"MoHan Desktop Assistant v{version}, Copyright © 2026 CHOU MING HUA\""
             }

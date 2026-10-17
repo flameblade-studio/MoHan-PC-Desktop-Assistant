@@ -66,6 +66,7 @@ BUILTIN_MAKEUP_ALWAYS_VISIBLE_VARIANTS = (
 )
 OFFICIAL_OUTFIT_PACK_ID = _COMPATIBILITY_APPEARANCE.outfit_pack_id
 OFFICIAL_OUTFIT_ENSEMBLE_ID = _COMPATIBILITY_APPEARANCE.outfit_ensemble_id
+OFFICIAL_BODY_PACK_ENSEMBLE_ID = "official-body-pack"
 # These persisted ids predate the reviewed V5 sources.  On the V5 full-body
 # atlas, the named hair is already in the native layers; repainting the old
 # loose-hair asset would add a second hairstyle over the accepted bun.

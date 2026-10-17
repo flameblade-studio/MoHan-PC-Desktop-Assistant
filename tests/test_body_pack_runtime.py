@@ -5,6 +5,7 @@ lazy import io
 lazy import hashlib
 lazy import os
 lazy import time
+lazy from pathlib import Path
 lazy from types import SimpleNamespace
 lazy import pytest
 lazy from PIL import Image, ImageColor
@@ -15,6 +16,8 @@ lazy from domain.character_layer_plan import (
     CharacterLayerAsset, CharacterLayerMask, CharacterLayerPlan, DEFAULT_CHARACTER_LAYER_ORDER,
 )
 lazy from domain.face_rig import FacePose, Viseme
+lazy from infrastructure.ensemble_body_pack import EnsembleFaceRenderer
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 lazy from infrastructure.body_pack_renderer import (
     MAX_LAYER_BYTES_CACHE_BYTES,
     MAX_PIXMAP_CACHE_BYTES,
@@ -22,7 +25,15 @@ lazy from infrastructure.body_pack_renderer import (
 )
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from application.character_default_look import CharacterDefaultLook
+lazy from application import service_container
 lazy from application.service_container import _create_presentation_ports
+lazy from infrastructure import body_pack_presentation
+lazy from infrastructure.body_pack_presentation import (
+    _BodyPackWithCheekFallback,
+    _SelectionAwareFaceRenderer,
+    _SelectionAwareFullBodyRenderer,
+    body_pack_selection_factory,
+)
 
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
@@ -141,6 +152,51 @@ def test_body_motion_and_halfbody_blink_use_owned_frames(qapp):
     assert blink.toImage().pixelColor(0, 0).name() == "#0000ff"
     assert body.calls == [("back", "a-rest", False), ("front", "neutral-rest", True),
                           ("front", "neutral-closed", True)]
+
+
+def test_shared_layer_silhouette_aliases_follow_the_active_body_pose(qapp):
+    renderer = BodyPackRenderer(
+        _Body(), {}, lambda record: b"",
+        view_aliases={"front": "front-crossed", "idle_front": "front-crossed"},
+    )
+
+    assert renderer._alias_body_views["front-crossed"] == ("front", "idle_front")
+    assert renderer._body_view_for_alias("front-crossed", "front") == "front"
+    assert renderer._body_view_for_alias("front-crossed", "idle_front") == "idle_front"
+    with pytest.raises(BodyPackMismatchError, match="ambiguous_layer_view"):
+        renderer._body_view_for_alias("front-crossed", None)
+
+
+def test_explicit_body_view_layer_plan_precedes_pose_silhouette(qapp, monkeypatch):
+    body = _Body()
+    body.manifest = SimpleNamespace(half_body=(
+        SimpleNamespace(view_id="front"),
+        SimpleNamespace(view_id="front-eureka"),
+    ))
+    plan = CharacterLayerPlan(("base",), ())
+    renderer = BodyPackRenderer(
+        body,
+        {"front-eureka": plan, "front-crossed": plan},
+        lambda record: b"",
+        view_aliases={"front-eureka": "front-crossed"},
+    )
+    captured = {}
+
+    def compose(view, state, *, halfbody=False, expression="", layer_view=None):
+        captured.update(view=view, state=state, halfbody=halfbody, layer_view=layer_view)
+        result = QPixmap(4, 4)
+        result.fill(QColor("red"))
+        return result
+
+    monkeypatch.setattr(renderer, "_compose", compose)
+    motion = _motion()
+    motion.expression = "front-eureka"
+
+    renderer.render(QPixmap(), motion, None)
+
+    assert captured["view"] == "front-eureka"
+    assert captured["layer_view"] == "front-eureka"
+    assert captured["halfbody"] is True
 
 
 def test_rest_only_blink_recomposes_the_remembered_body_and_hair(qapp):
@@ -274,6 +330,158 @@ def test_fullbody_render_does_not_replace_halfbody_wink_context(qapp):
     ]
 
 
+def test_body_pack_cheek_fallback_survives_fullbody_render_before_blink(qapp):
+    class Body:
+        def __init__(self):
+            self.calls = []
+
+        def render(self, *_args, **_kwargs):
+            self.calls.append("render")
+            frame = QPixmap(2, 2)
+            frame.fill(QColor("blue"))
+            return frame
+
+        def render_view(self, *_args, **_kwargs):
+            self.calls.append("view")
+            frame = QPixmap(2, 2)
+            frame.fill(QColor("green"))
+            return frame
+
+        def render_complete_blink(self, *_args, **_kwargs):
+            self.calls.append("blink")
+            frame = QPixmap(2, 2)
+            frame.fill(QColor("blue"))
+            return frame
+
+        def clear_cache(self):
+            self.calls.append("clear")
+
+    class Legacy:
+        def __init__(self):
+            self.calls = []
+
+        def render(self, *_args, **_kwargs):
+            self.calls.append("render")
+            frame = QPixmap(2, 2)
+            frame.fill(QColor("red"))
+            return frame
+
+        def render_complete_blink(self, *_args, **_kwargs):
+            self.calls.append("blink")
+            frame = QPixmap(2, 2)
+            frame.fill(QColor("yellow"))
+            return frame
+
+        def clear_cache(self):
+            self.calls.append("clear")
+
+    body = Body()
+    legacy = Legacy()
+    renderer = _BodyPackWithCheekFallback(body, {}, lambda: legacy)
+    cheek = _motion()
+    cheek.pose = FacePose.CHEEK
+
+    half = renderer.render(QPixmap(), cheek, None)
+    renderer.render_view("back", _motion())
+    blink = renderer.render_complete_blink(half, "closed")
+
+    assert half.toImage().pixelColor(0, 0).name() == "#ff0000"
+    assert blink.toImage().pixelColor(0, 0).name() == "#ffff00"
+    assert legacy.calls == ["render", "blink"]
+    assert body.calls == ["view"]
+
+
+def test_body_pack_selection_router_switches_face_and_fullbody_immediately(qapp):
+    class Renderer:
+        def __init__(self, color, overlay):
+            self.color = color
+            self._outfit_overlay = overlay
+            self.calls = []
+
+        def _frame(self):
+            frame = QPixmap(2, 2)
+            frame.fill(QColor(self.color))
+            return frame
+
+        def render(self, *_args, **_kwargs):
+            self.calls.append("render")
+            return self._frame()
+
+        def render_view(self, *_args, **_kwargs):
+            self.calls.append("view")
+            return self._frame()
+
+    selected = [True]
+    body = Renderer("blue", sentinel("official-overlay"))
+    legacy = Renderer("magenta", sentinel("selected-outfit-overlay"))
+    face = _SelectionAwareFaceRenderer(
+        lambda: body, lambda: legacy, lambda: selected[0],
+    )
+    fullbody = _SelectionAwareFullBodyRenderer(
+        lambda: body, lambda: legacy, lambda: selected[0],
+    )
+
+    assert face.render(QPixmap(), _motion(), None).toImage().pixelColor(0, 0).name() == "#0000ff"
+    assert fullbody.render_view("front", _motion()).toImage().pixelColor(0, 0).name() == "#0000ff"
+    assert fullbody.body_pack_required is True
+
+    selected[0] = False
+    assert face.render(QPixmap(), _motion(), None).toImage().pixelColor(0, 0).name() == "#ff00ff"
+    assert face._outfit_overlay is legacy._outfit_overlay
+    assert fullbody.render_view("front", _motion()).toImage().pixelColor(0, 0).name() == "#ff00ff"
+    assert fullbody.body_pack_required is False
+    assert body.calls == ["render", "view"]
+    assert legacy.calls == ["render", "view"]
+
+
+def test_body_pack_selection_accepts_default_or_official_ensemble_and_refreshes(monkeypatch):
+    default = SimpleNamespace(
+        pack_id="mohan.official.blue-white-hanfu",
+        ensemble_id="blue-white-hanfu",
+    )
+    source = SimpleNamespace(
+        appearance=SimpleNamespace(
+            appearance_defaults=SimpleNamespace(
+                outfit_pack_id=default.pack_id,
+                outfit_ensemble_id=default.ensemble_id,
+            ),
+        ),
+    )
+    active_ensemble = {"id": "other-ensemble"}
+    matches_default = {"value": True}
+    monkeypatch.setattr(
+        body_pack_presentation, "list_installed_ensembles",
+        lambda *_args, **_kwargs: (default,),
+    )
+    monkeypatch.setattr(
+        body_pack_presentation, "active_selection_matches_ensemble",
+        lambda *_args, **_kwargs: matches_default["value"],
+    )
+    monkeypatch.setattr(
+        body_pack_presentation, "resolve_active_ensemble",
+        lambda *_args, **_kwargs: SimpleNamespace(ensemble_id=active_ensemble["id"]),
+    )
+    tokens = iter((
+        (("active.json", 1, 15),),
+        (("active.json", 2, 24),),
+        (("active.json", 3, 30),),
+    ))
+    monkeypatch.setattr(
+        body_pack_presentation, "outfit_selection_token",
+        lambda *_args: next(tokens),
+    )
+    selector = body_pack_selection_factory(source, Path("unused-outfit-store"), ())
+
+    assert selector() is True
+
+    matches_default["value"] = False
+    active_ensemble["id"] = "modern-city-day"
+    assert selector() is False
+
+    active_ensemble["id"] = "official-body-pack"
+    assert selector() is True
+
+
 def test_last_context_applies_to_copied_and_scaled_frame(qapp):
     body = _Body()
     renderer = _renderer(body)
@@ -306,12 +514,31 @@ def test_missing_motion_endpoint_raises_without_shared_fallback(qapp):
         renderer.render_view("back", _motion(Viseme.A, blink=1.0))
 
 
+def test_ensemble_face_renderer_preserves_legacy_outfit_overlay_identity():
+    overlay = sentinel('legacy_overlay')
+    legacy = SimpleNamespace(_outfit_overlay=overlay)
+
+    class FixedRouter:
+        current = legacy
+
+        def renderer_for(self, _legacy):
+            return self.current
+
+    renderer = EnsembleFaceRenderer(legacy, FixedRouter())
+
+    assert renderer._outfit_overlay is overlay
+
+
 def test_declared_body_routes_both_factories_before_legacy_assets(tmp_path):
     body = _Body()
     assets = SimpleNamespace(asset_root=tmp_path, load_character_layer=lambda record: b"")
     appearance = SimpleNamespace(resolved_body_pack=body, character_layer_views={},
                                  runtime_bindings=SimpleNamespace(asset_paths={}))
-    source = SimpleNamespace(assets=assets, appearance=appearance)
+    source = SimpleNamespace(
+        assets=assets,
+        appearance=appearance,
+        resolved_body_pack=body,
+    )
     ports = _create_presentation_ports(source)
     face_renderer = ports.face_renderer_factory()
     fullbody_renderer = ports.full_body_renderer_factory()
@@ -323,6 +550,37 @@ def test_declared_body_routes_both_factories_before_legacy_assets(tmp_path):
     assert overlay.apply(frame, "yaw+000-pitch+00") is frame
     with pytest.raises(BodyPackMismatchError, match="body_pack_renderer_required"):
         CharacterDefaultLook(source, tmp_path, ())
+
+
+def test_selection_aware_body_source_keeps_active_outfit_overlay(monkeypatch):
+    tmp_path = Path.cwd() / ".quality-tmp" / "review-fix-1" / "service-wiring"
+    body = _Body()
+    assets = SimpleNamespace(
+        asset_root=tmp_path,
+        official_pack_roots=(),
+        load_character_layer=lambda record: b"",
+    )
+    appearance = SimpleNamespace(
+        resolved_body_pack=body,
+        appearance_defaults=SimpleNamespace(
+            outfit_pack_id="mohan.official.blue-white-hanfu",
+            outfit_ensemble_id="blue-white-hanfu",
+        ),
+        character_layer_views={},
+        runtime_bindings=SimpleNamespace(asset_paths={}),
+    )
+    source = SimpleNamespace(assets=assets, appearance=appearance, resolved_body_pack=body)
+    monkeypatch.setattr(service_container, "default_data_dir", lambda: tmp_path)
+    monkeypatch.setattr(service_container, "load_core_hand_regions", lambda _root: None)
+
+    ports = service_container._create_presentation_ports(source)
+    overlay = ports.outfit_overlay_factory()
+    assert isinstance(overlay, ActiveOutfitOverlay)
+    assert isinstance(ports.face_renderer_factory(), _SelectionAwareFaceRenderer)
+    assert isinstance(
+        ports.full_body_renderer_factory(outfit_overlay=overlay),
+        _SelectionAwareFullBodyRenderer,
+    )
 
 
 def test_unresolved_declared_dependency_rejects_before_factory_creation(tmp_path):

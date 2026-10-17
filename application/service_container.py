@@ -10,7 +10,6 @@ lazy from pathlib import Path
 lazy from typing import Protocol
 
 lazy from PySide6.QtCore import QObject
-lazy from PySide6.QtGui import QRegion
 
 lazy from integrations.speech import (
     OpenAITTS,
@@ -80,7 +79,8 @@ lazy from domain.vision_provider_contracts import (
 )
 lazy from infrastructure.app_resources import resource_path, set_autostart
 lazy from infrastructure.backup_manager import BackupManager
-lazy from infrastructure.body_pack_presentation import body_pack_renderer_factory
+lazy from infrastructure.ensemble_body_pack import create_body_pack_presentation_context, route_face_renderer, route_full_body_renderer
+lazy from infrastructure.body_pack_presentation import create_body_pack_rendering_state, create_body_pack_routes, legacy_mohan_presentation_ports
 lazy from infrastructure.character_fullbody_factory import create_character_fullbody_renderer
 lazy from infrastructure.bundled_character_source import (
     LegacyMohanCharacterSource,
@@ -111,7 +111,6 @@ lazy from application.character_default_look import (
     CharacterDefaultLook,
     character_frame_paths as _character_frame_paths,
     complete_halfbody_path as _complete_halfbody_path,
-    resolved_body_pack_for_source,
 )
 lazy from infrastructure.exasperated_candidate_appearance import ExasperatedCandidateAppearance
 lazy from infrastructure.exasperated_candidate_assets import (
@@ -327,40 +326,34 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
     official_pack_roots = getattr(
         character_source.assets, "official_pack_roots", (asset_root / "assets" / "official-packs",),
     )
-    body_pack = resolved_body_pack_for_source(character_source)
-    bindings, native_frames = _character_frame_paths(character_source)
-    default_look = (CharacterDefaultLook(
-        character_source, default_data_dir() / "outfits", official_pack_roots,
-    ) if body_pack is None and "default_look_fullbody" in bindings else None)
-    shared_hand_region_provider: Callable[[str], QRegion] | None = None
-    hand_region_loaded = False
-
-    def shared_hand_regions() -> Callable[[str], QRegion] | None:
-        nonlocal hand_region_loaded, shared_hand_region_provider
-        if not hand_region_loaded:
-            shared_hand_region_provider = load_core_hand_regions(asset_root)
-            hand_region_loaded = True
-        return shared_hand_region_provider
-
-    def outfit_overlay_factory(on_stale_body_profile=None):
-        if body_pack is not None:
-            return no_outfit_overlay_factory()
-        return ActiveOutfitOverlay(
-            default_data_dir() / "outfits",
-            asset_root,
-            on_stale_body_profile=on_stale_body_profile,
-            visible_hand_region=shared_hand_regions(),
-            official_pack_root=official_pack_roots,
-            native_frames=default_look.native_frames if default_look is not None else native_frames,
-        )
-
-    body_renderer = body_pack_renderer_factory(
-        character_source, body_pack, default_data_dir() / "outfits", official_pack_roots,
+    (
+        _outfit_dir, official_selection, body_pack, body_pack_error, body_renderer,
+        ensemble_body_router, selection_aware_body_pack, bindings, native_frames,
+        default_look, outfit_overlay_factory,
+    ) = create_body_pack_rendering_state(
+        character_source, default_data_dir(), official_pack_roots,
+        default_character_id=DEFAULT_CHARACTER_ID,
+        context_factory=create_body_pack_presentation_context,
+        cheek_fallback_factory=lambda: legacy_mohan_presentation_ports(
+            asset_root, _create_presentation_ports,
+        ).face_renderer_factory(),
+        # The overlay class and hand-region loader resolve at call time so
+        # this composition root stays their one replaceable seam.
+        render_callbacks=(
+            _character_frame_paths, CharacterDefaultLook, no_outfit_overlay_factory,
+            lambda *args, **kwargs: ActiveOutfitOverlay(*args, **kwargs),
+            lambda root: load_core_hand_regions(root),
+        ),
+    )
+    body_face_route, body_full_route = create_body_pack_routes(
+        body_pack, body_renderer, asset_root, _create_presentation_ports,
+        official_selection, selection_aware=selection_aware_body_pack,
+        outfit_overlay_factory=outfit_overlay_factory,
     )
 
     def face_renderer_factory():
-        if body_pack is not None:
-            return body_renderer()
+        if body_face_route is not None:
+            return body_face_route()
         source_bound = hasattr(character_source, "appearance")
         if source_bound:
             validated_renderer_rig(character_source)
@@ -422,39 +415,45 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
             candidate_appearance.store = default_data_dir() / "outfits"
         elif candidate_dir is not None and configured is None:
             raise FileNotFoundError(f"Default exasperated appearance is missing: {appearance_dir}")
-        return LayeredParametricFaceRenderer(
-            manifest=face_manifest,
-            outfit_overlay=outfit_overlay_factory(),
-            authority_dir=authority_dir,
-            detachable_dir=detachable_dir,
-            use_detachable=detachable_dir is not None,
-            exasperated_candidate_dir=candidate_dir,
-            exasperated_source_bindings=ExasperatedSourceBindings(
-                complete_halfbody_supplement=complete_halfbody_supplement,
-                complete_halfbody_root=complete_halfbody_root,
-                complete_halfbody_provider=default_look.halfbody_root if default_look is not None else None,
-                native_frames=default_look.native_frames if default_look is not None else None,
-                require_complete_halfbody=(
-                    default_look.halfbody_root()[1] if default_look is not None else
-                    bindings.get("halfbody_complete", "assets/expressions/complete-expressions")
-                    != "assets/expressions/complete-expressions"
-                ),
-                appearance_overlay=candidate_appearance,
-                expression_provider=None if native_frames and default_look is None else OutfitSourceBoundExpressionProvider(
-                    default_data_dir() / "outfits",
-                    official_pack_root=official_pack_roots,
+        return route_face_renderer(
+            ensemble_body_router,
+            LayeredParametricFaceRenderer(
+                manifest=face_manifest,
+                outfit_overlay=outfit_overlay_factory(),
+                authority_dir=authority_dir,
+                detachable_dir=detachable_dir,
+                use_detachable=detachable_dir is not None,
+                exasperated_candidate_dir=candidate_dir,
+                exasperated_source_bindings=ExasperatedSourceBindings(
+                    complete_halfbody_supplement=complete_halfbody_supplement,
+                    complete_halfbody_root=complete_halfbody_root,
+                    complete_halfbody_provider=default_look.halfbody_root if default_look is not None else None,
+                    native_frames=default_look.native_frames if default_look is not None else None,
+                    require_complete_halfbody=(
+                        default_look.halfbody_root()[1] if default_look is not None else
+                        bindings.get("halfbody_complete", "assets/expressions/complete-expressions")
+                        != "assets/expressions/complete-expressions"
+                    ),
+                    appearance_overlay=candidate_appearance,
+                    expression_provider=None if native_frames and default_look is None else OutfitSourceBoundExpressionProvider(
+                        default_data_dir() / "outfits",
+                        official_pack_root=official_pack_roots,
+                    ),
                 ),
             ),
         )
 
     def full_body_renderer_factory(outfit_overlay=None):
-        if body_pack is not None:
-            return body_renderer()
-        return create_character_fullbody_renderer(
-            character_source, bindings, outfit_overlay, default_look,
-            renderer_factory=LayeredFullBodyRenderer,
-            manifest_loader=load_layered_full_body_assets,
-            placement_loader=load_full_body_display_placement,
+        if body_full_route is not None:
+            return body_full_route(outfit_overlay)
+        return route_full_body_renderer(
+            ensemble_body_router,
+            create_character_fullbody_renderer(
+                character_source, bindings, outfit_overlay, default_look,
+                renderer_factory=LayeredFullBodyRenderer,
+                manifest_loader=load_layered_full_body_assets,
+                placement_loader=load_full_body_display_placement,
+            ),
         )
 
     return PresentationPorts(
@@ -471,6 +470,8 @@ def _create_presentation_ports(character_source: CharacterSource) -> Presentatio
         outfit_overlay_factory=outfit_overlay_factory,
         full_body_renderer_factory=full_body_renderer_factory,
         body_pack_required=body_pack is not None,
+        body_pack_download_hint=bool(getattr(character_source, "body_pack_download_required", False)),
+        body_pack_diagnostic=getattr(body_pack_error, "code", None) if body_pack_error is not None else None,
     )
 
 

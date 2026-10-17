@@ -65,6 +65,7 @@ FEATURE_COMPOSITION_IMPORTS: Final = {
         "infrastructure.app_resources",
         "infrastructure.backup_manager",
         "infrastructure.body_pack_presentation",
+        "infrastructure.ensemble_body_pack",
         "infrastructure.character_fullbody_factory",
         "infrastructure.bundled_character_source",
         "infrastructure.core_hand_regions",

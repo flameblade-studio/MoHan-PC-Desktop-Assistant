@@ -384,6 +384,15 @@ def _assert_ensemble_contract(store: Path, official_pack_root: Path) -> None:
         "pack_id": "modern-collection",
         "ensemble_id": "city-day",
     }
+    apply_ensemble(
+        store,
+        "modern-collection",
+        "city-day",
+        official_pack_root=official_pack_root,
+    )
+    clear_appearance_selection(store, "makeup")
+    cleared_makeup = json.loads((store / "active.json").read_text(encoding="utf-8"))
+    assert cleared_makeup["_ensemble"] == active["_ensemble"]
     _expect_remove_error(
         store,
         "modern-collection",

@@ -120,6 +120,7 @@ GROUPS = (
     Group("assets/expressions/", "halfbody_expression", "presentation/companion_visual_dynamics.py", "CHARACTER_ASSET_PATHS['halfbody_root']"),
     Group("assets/characters/lin-keyun/official-packs/", "appearance_pack", "tools/build_character_pack.py", "inspect_outfit_pack(path)"),
     Group("assets/characters/lin-keyun/body/", "character_layer_view", "infrastructure/character_source_pack.py", "Read a manifest-declared character layer and recheck its SHA-256."),
+    Group("assets/characters/mohan/body/", "character_layer_view", "infrastructure/bundled_character_source.py", "def load_character_layer"),
     Group("assets/characters/mohan/appearance/", "character_appearance_defaults", "domain/character_pack/appearance_data.py", 'Path(path).read_text(encoding="utf-8")'),
     Group("assets/characters/mohan/persona/ui-identifiers.json", "character_ui_identifier_data", "domain/service_status_localization.py", '_UI_IDENTIFIERS_PATH = active_character_data_path("persona/ui-identifiers.json")'),
     Group("assets/characters/mohan/persona/", "character_persona_data", "domain/character_pack/character_data_loader.py", 'root / "persona"'),
@@ -348,6 +349,8 @@ CONTENT_RULES = (
 PRODUCT_SHELL_ALLOWLIST = {
     "application/character_runtime_bootstrap.py": '產品角色選擇入口提供鎖定素體包的安裝指引與預設相容身分。',
     "infrastructure/installed_body_packs.py": '產品使用者目錄與預設素體包 ID 屬安裝相容契約；通用 reader 仍由宣告的 reference 驗證。',
+    "infrastructure/body_pack_presentation.py": "素體包展示組裝器是產品殼的 body-pack 與既有外觀回退邊界；姿勢名稱只描述已核准的執行期組裝，不是未來引擎抽離內容。",
+    "infrastructure/ensemble_body_pack.py": "服裝 ensemble 路由器是產品殼的明確素體包組裝邊界；姿勢別名與托腮回退只服務既有角色包路由，對照林可芸 body 檔的執行期資料契約保留。",
     "application/character_default_look.py": "墨寒產品殼的預設外觀組裝保留共用半身影格相容路徑；原生影格依角色 runtime bindings 選擇。",
     "application/service_container.py": "墨寒產品組裝根保留共用半身影格相容路徑，用於判斷角色宣告與既有影格回退。",
     "application/application_bootstrap.py": "墨寒最外層組裝入口保留產品程序名稱。",
@@ -361,6 +364,11 @@ PRODUCT_SHELL_ALLOWLIST = {
     "presentation/auxiliary_ui_localization.py": "更新、備份與攜帶檔中的墨寒產品名稱屬產品殼文案。",
     "presentation/preview_app.py": "墨寒預覽封裝入口的視窗名與內建產品素材屬產品殼。",
 }
+
+PRODUCT_SHELL_RIG_ALLOWLIST = frozenset({
+    "infrastructure/body_pack_presentation.py",
+    "infrastructure/ensemble_body_pack.py",
+})
 
 # Exact product-identity literals: the MoHan product name, About heading, the
 # network User-Agent, and secure-storage labels. They identify the MoHan product
@@ -804,6 +812,8 @@ def _source_classification(path: str, evidence: list[dict[str, Any]]) -> str:
         "infrastructure/installed_body_packs.py",
     }:
         shell_rules = shell_rules | {"character_body_profile_literal"}
+    if path in PRODUCT_SHELL_RIG_ALLOWLIST:
+        shell_rules = shell_rules | {"character_pose_name_literal"}
     if path in PRODUCT_SHELL_ALLOWLIST and rules <= shell_rules:
         return "product_shell_allowed"
     ui_rules = {"character_name_literal", "character_title_or_dialogue_literal"}

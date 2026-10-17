@@ -1,7 +1,12 @@
 from __future__ import annotations
 
-lazy from dataclasses import dataclass
+lazy from collections.abc import Mapping
+lazy from dataclasses import dataclass, field
 lazy from pathlib import Path
+lazy from types import MappingProxyType
+
+lazy from domain.body_pack import BodyPackReference
+lazy from domain.character_layer_plan import CharacterLayerPlan
 
 
 @dataclass(frozen=True, slots=True)
@@ -119,11 +124,24 @@ class AutonomousStyleProfile:
 
 
 @dataclass(frozen=True, slots=True)
+class EnsembleRender:
+    """Optional rendering source bound to one complete appearance ensemble."""
+
+    type: str
+    body_pack: BodyPackReference
+    layer_views: Mapping[str, CharacterLayerPlan] = field(
+        default_factory=lambda: MappingProxyType({}),
+        hash=False,
+    )
+
+
+@dataclass(frozen=True, slots=True)
 class AppearanceEnsemble:
     ensemble_id: str
     display_names: frozendict[str, str]
     selections: tuple[EnsembleSelection, ...]
     autonomous_profile: AutonomousStyleProfile
+    render: EnsembleRender | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -134,6 +152,7 @@ class InstalledEnsemble:
     ensemble_display_names: frozendict[str, str]
     selections: tuple[EnsembleSelection, ...]
     autonomous_profile: AutonomousStyleProfile
+    render: EnsembleRender | None = None
 
 
 @dataclass(frozen=True, slots=True)

@@ -127,3 +127,16 @@ def test_body_preview_error_state_exposes_diagnostic_code(qapp):
     assert preview._wardrobe_preview_state == STATE_ERROR
     assert not preview.wardrobe_preview_state_label.isHidden()
     assert "file_hash_mismatch" in preview.wardrobe_preview_state_label.text()
+
+
+def test_body_preview_missing_pack_prompt_requests_download_and_install(qapp):
+    preview = _Preview(None)
+    preview._t = lambda key, fallback: fallback
+    preview.wardrobe_preview_state_label = QLabel()
+    preview._wardrobe_body_pack_error = "body_pack_missing"
+
+    preview._set_wardrobe_preview_state(STATE_ERROR)
+
+    text = preview.wardrobe_preview_state_label.text()
+    assert "\u4e0b\u8f09" in text
+    assert "\u5b89\u88dd" in text

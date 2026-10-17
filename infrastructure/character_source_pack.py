@@ -45,6 +45,7 @@ lazy from domain.character_source import (
     CharacterVoice,
 )
 lazy from domain.character_pack.character_data_models import CharacterAppearanceDefaults
+lazy from domain.body_pack import BodyPackMismatchError
 lazy from domain.language_support import canonical_ui_language
 lazy from infrastructure.character_pack_files import (
     CharacterPackReadError,
@@ -54,8 +55,9 @@ lazy from infrastructure.character_pack_files import (
 )
 lazy from infrastructure.body_pack_reader import (
     BodyPackReader,
-    resolve_character_body_binding,
 )
+lazy from infrastructure.character_source_body_pack import resolve_body_binding_with_fallback
+
 
 IDENTITY_SCHEMA = "flameblade.character-identity-profile.v1"
 PERSONA_SCHEMA = "flameblade.character-persona.v1"
@@ -178,11 +180,8 @@ class CharacterPackReader(
                 "The character rig requires a body-profile binding.",
                 rig_component.path,
             )
-        body_binding = resolve_character_body_binding(
-            manifest.body_pack,
-            rig,
-            body_pack_roots,
-            manifest.layer_views,
+        body_binding, body_pack_resolution_error = resolve_body_binding_with_fallback(
+            manifest, rig, body_pack_roots,
         )
 
         # Assign only after every outer and child contract has passed. A rejected
@@ -217,6 +216,7 @@ class CharacterPackReader(
         self._rig_manifest = rig
         self._runtime_bindings = runtime_bindings
         self._resolved_body_pack = body_binding.resolved_body_pack
+        self._body_pack_resolution_error = body_pack_resolution_error
         self._character_layer_views = manifest.layer_views
 
     @property
@@ -231,6 +231,26 @@ class CharacterPackReader(
     def resolved_body_pack(self) -> BodyPackReader | None:
         """Return the verified external body pack declared by this character."""
         return self._resolved_body_pack
+
+    @property
+    def body_pack_fallback_active(self) -> bool:
+        """Return whether MoHan is using the current look after body validation."""
+        return (
+            self._manifest.character_id == "mohan"
+            and self._manifest.body_pack is not None
+            and self._body_pack_resolution_error is not None
+            and self._resolved_body_pack is None
+        )
+
+    @property
+    def body_pack_download_required(self) -> bool:
+        """Expose the product-safe download hint for a missing or invalid pack."""
+        return self.body_pack_fallback_active
+
+    @property
+    def body_pack_resolution_error(self) -> BodyPackMismatchError | None:
+        """Retain the body-pack diagnostic for the presentation layer."""
+        return self._body_pack_resolution_error
 
     @property
     def character_layer_views(self) -> Mapping[str, CharacterLayerPlan]:

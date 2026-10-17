@@ -81,6 +81,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_body_profile_outdated": (
         "This outfit requires generation-2 body assets; regenerate it with one-click outfit creation."
     ),
+    "wardrobe_body_pack_download_hint": "Download the body pack to get the complete standard look.",
     "wardrobe_builtin_applied": "Built-in default outfit applied.",
     "wardrobe_outfit_applied": "Selected complete outfit applied.",
     "wardrobe_autonomous_enabled": "Allow {character_name} to choose outfits autonomously",
@@ -145,6 +146,7 @@ ENGLISH_UI_TEXT: Mapping[str, str] = deep_freeze({
     "wardrobe_view_right": "Right",
     "wardrobe_view_back": "Back",
     "wardrobe_preview_body_pack_error": "Body-pack preview failed to load. Check the character’s required body pack.",
+    "wardrobe_preview_body_pack_missing": "The outfit needs a missing or damaged body or outfit package. Download and install the required package before previewing.",
     "wardrobe_preview_composing": "Composing the appearance preview through the runtime…",
     "wardrobe_preview_fallback": 'Appearance composition requires attention. The preview currently shows the bare base; the desktop companion keeps its current appearance.',
     "wardrobe_upload_single_file": "Upload one file",

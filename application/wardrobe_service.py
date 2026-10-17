@@ -46,6 +46,7 @@ lazy from domain.outfit_pack_official import (
     OFFICIAL_OUTFIT_PACK_ID,
     _load_official_appearance,
     official_outfit_pack_id,
+    official_outfit_ensemble_id,
     official_outfit_ensemble,
 )
 
@@ -116,7 +117,9 @@ def _localized_name(selection: InstalledSelection, language: str) -> str:
 
 
 def _ensemble_id(ensemble: InstalledEnsemble) -> str:
-    if ensemble.pack_id == official_outfit_pack_id():
+    if (ensemble.pack_id, ensemble.ensemble_id) == (
+        official_outfit_pack_id(), official_outfit_ensemble_id(),
+    ):
         return BUILTIN_OUTFIT_ID
     return "/".join((ensemble.pack_id, ensemble.ensemble_id))
 
@@ -188,10 +191,12 @@ class WardrobeService:
             official_pack_root=self.official_pack_root,
         )
         official = official_outfit_ensemble(every_ensemble)
-        official_pack_id = official_outfit_pack_id()
+        default_ensemble = (
+            None if official is None else (official.pack_id, official.ensemble_id)
+        )
         installed_ensembles = tuple(
             ensemble for ensemble in every_ensemble
-            if ensemble.pack_id != official_pack_id
+            if (ensemble.pack_id, ensemble.ensemble_id) != default_ensemble
         )
         built_in = InstalledOutfit(
             BUILTIN_OUTFIT_ID,
