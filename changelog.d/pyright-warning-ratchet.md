@@ -1,4 +1,0 @@
-### Pyright 警告棘輪與型別修正／Pyright 警告棘轮与类型修正／Pyright warning ratchet and typing fixes／Pyright 警告ラチェットと型修正
-
-- 品質閘門新增逐檔警告基準與只能下修的更新指令，綁定 CI 的 typed wheel 環境；合併 main 並修正新增的真實型別問題後，basic 實測為 0 個錯誤、51 個警告／质量闸门新增逐文件警告基准与只能下调的更新命令，绑定 CI 的 typed wheel 环境；合并 main 并修复新增的真实类型问题后，basic 实测为 0 个错误、51 个警告／Add a per-file decrease-only warning baseline and bind CI's typed-wheel environment; after merging main and fixing its new genuine typing issues, basic measures 0 errors and 51 warnings／品質ゲートにファイル別で減少のみ可能な警告基準を追加して CI の typed wheel 環境を結び付け、main のマージ後に新しい実際の型問題を修正した basic の実測値をエラー 0 件・警告 51 件としました
-- 收斂動態資料、Optional 回傳與 Protocol 契約，同時保留既有執行行為／收敛动态数据、Optional 返回值与 Protocol 契约，同时保留现有运行行为／Narrow dynamic data, Optional returns, and Protocol contracts while preserving existing runtime behavior／動的データ、Optional 戻り値、Protocol 契約を絞り込み、既存の実行動作を維持
