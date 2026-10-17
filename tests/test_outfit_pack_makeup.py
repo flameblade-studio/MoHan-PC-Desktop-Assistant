@@ -21,7 +21,8 @@ sys.path.insert(0, str(TESTS))
 
 lazy import pytest
 lazy from PySide6.QtCore import QBuffer, QByteArray, QIODevice
-lazy from PySide6.QtGui import QColor, QImage
+lazy from PySide6.QtGui import QColor, QImage, QPixmap
+lazy from PySide6.QtWidgets import QApplication
 
 lazy from application.outfit_pack_builder import build_outfit_pack
 lazy from domain.outfit_pack_pose_assets import (
@@ -58,6 +59,7 @@ lazy from test_outfit_pack import _manifest, _names, _pack, _png
 lazy from tools.build_makeup_safe_regions import silhouette_regions
 lazy from tools.assemble_official_default_pack import makeup_authoring_mode, makeup_layer_paths
 lazy from tools.scaffold_makeup_pack_manifest import main as scaffold_main
+lazy from infrastructure.active_outfit_overlay import ActiveOutfitOverlay
 
 SLOT_Z = {"cheeks": 0, "eyes": 1, "lips": 2}
 RED = QColor(220, 30, 40, 255)
@@ -451,6 +453,53 @@ def test_safe_region_document_matches_the_rigs() -> None:
             expected["slots"] = {**authored["slots"], "eyes": derived["slots"]["eyes"]}
         assert derived == expected
         assert set(authored) - set(derived) <= {"foundation_masks", "eye_aperture_masks"}
+
+
+def test_native_mouth_frames_have_all_official_cheek_rest_mouth_states() -> None:
+    manifest = json.loads(
+        (ROOT / "assets" / "makeup" / "builtin" / "manifest.json").read_text(encoding="utf-8")
+    )
+    source_root = (
+        ROOT / "assets" / "body-packs" / "mohan-body-v2" / "source"
+        / "approved-cheek-b-body-11" / "half-body" / "cheek-rest"
+    )
+    shapes = ("a", "o", "small")
+    for variant in manifest["makeup"][0]["variants"]:
+        assert "official-cheek-rest" in variant["poses"]
+        assert all((source_root / f"{shape}-rest.png").is_file() for shape in shapes)
+        for shape in shapes:
+            assert "official-cheek-rest" in variant["mouth_states"][shape]
+
+
+def test_official_cheek_rest_a_mouth_standard_makeup_renders_lips(tmp_path: Path) -> None:
+    QApplication.instance() or QApplication([])
+    store = tmp_path / "store"
+    official_root = ROOT / "assets" / "official-packs"
+    select_builtin_makeup(store, "classic", official_pack_root=official_root)
+    overlay = ActiveOutfitOverlay(store, ROOT, official_pack_root=official_root)
+    body_path = (
+        ROOT / "assets" / "body-packs" / "mohan-body-v2" / "source"
+        / "approved-cheek-b-body-11" / "half-body" / "cheek-rest" / "a-rest.png"
+    )
+    frame = QPixmap(str(body_path))
+    assert not frame.isNull()
+    overlay.set_active_mouth_state("A")
+    rendered = overlay.apply_makeup(frame, "official-cheek-rest").toImage()
+
+    # The loose authoring tree is not committed; read the shipped pack member.
+    with zipfile.ZipFile(official_root / "mohan.makeup.builtin.mohan-outfit") as pack:
+        lips = QImage.fromData(pack.read("assets/official-cheek-rest-classic-ms-a-lips.png"))
+    assert not lips.isNull()
+    probe: tuple[int, int] | None = None
+    probe_alpha = -1
+    for y in range(513, 584):
+        for x in range(504, 639):
+            alpha = lips.pixelColor(x, y).alpha()
+            if alpha > probe_alpha:
+                probe = (x, y)
+                probe_alpha = alpha
+    assert probe is not None and probe_alpha > 0
+    assert rendered.pixelColor(*probe) != frame.toImage().pixelColor(*probe)
 
 
 def test_fresh_profile_defaults_to_builtin_classic_and_bare_is_selectable(

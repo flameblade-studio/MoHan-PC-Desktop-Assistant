@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.6.zip",
-    "bytes": 993182352,
-    "sha256": "3202a69fb9d345f213aa67a762aecc41a4f458da0553d78acafd086f469a3b39"
+    "bytes": 994900498,
+    "sha256": "8d75174a164f3713f72d5bd2327bfecc3101edab4eb1b90395819e4425aa0392"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -4947,9 +4947,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 168799,
+      "bytes": 169026,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "3e1cf1e23ffa14a10df1fc41fdceeca4292852bbaca2d9fc6eea71ea08d11975"
+      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
     },
     {
       "bytes": 8375,
@@ -5767,9 +5767,9 @@
       "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
     },
     {
-      "bytes": 34584858,
+      "bytes": 36302777,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "05c0c7cc9b4bd24e448ce4c1bd3164cbc0f3ef7fde8381b61eaaced93b72df63"
+      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
     },
     {
       "bytes": 29245764,
@@ -11084,7 +11084,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.6",
-  "package_hash": "29383871835e903052dac64bb3651fc6788b1e97e7c9778e5f431ec4d24248cc",
+  "package_hash": "561e7557940b3d9f9fbb26102014ec66b33c72ef5412dcd18926aceb951cef1d",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

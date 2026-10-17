@@ -2906,6 +2906,32 @@
                   "width": 1024,
                   "z_order": 0
                 }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-classic-ms-a-lips.png",
+                  "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-classic-ms-a-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
+                }
               ]
             },
             "o": {
@@ -3660,6 +3686,32 @@
                   "width": 1024,
                   "z_order": 0
                 }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-classic-ms-o-lips.png",
+                  "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-classic-ms-o-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
+                }
               ]
             },
             "small": {
@@ -4413,6 +4465,32 @@
                   "slot": "lips",
                   "width": 1024,
                   "z_order": 0
+                }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-classic-ms-small-lips.png",
+                  "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-classic-ms-small-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
                 }
               ]
             }
@@ -9742,6 +9820,32 @@
                   "width": 1024,
                   "z_order": 0
                 }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-light-ms-a-lips.png",
+                  "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-light-ms-a-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
+                }
               ]
             },
             "o": {
@@ -10484,6 +10588,32 @@
                   "width": 1024,
                   "z_order": 0
                 }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-light-ms-o-lips.png",
+                  "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-light-ms-o-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
+                }
               ]
             },
             "small": {
@@ -11225,6 +11355,32 @@
                   "slot": "lips",
                   "width": 1024,
                   "z_order": 0
+                }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-light-ms-small-lips.png",
+                  "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-light-ms-small-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
                 }
               ]
             }
@@ -16579,6 +16735,32 @@
                   "width": 1024,
                   "z_order": 0
                 }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-glamorous-ms-a-lips.png",
+                  "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-glamorous-ms-a-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
+                }
               ]
             },
             "o": {
@@ -17333,6 +17515,32 @@
                   "width": 1024,
                   "z_order": 0
                 }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-glamorous-ms-o-lips.png",
+                  "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-glamorous-ms-o-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
+                }
               ]
             },
             "small": {
@@ -18086,6 +18294,32 @@
                   "slot": "lips",
                   "width": 1024,
                   "z_order": 0
+                }
+              ],
+              "official-cheek-rest": [
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-glamorous-ms-small-lips.png",
+                  "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334",
+                  "slot": "lips",
+                  "width": 1254,
+                  "z_order": 2
+                },
+                {
+                  "anchor": [
+                    0,
+                    0
+                  ],
+                  "height": 1254,
+                  "path": "assets/official-cheek-rest-glamorous-ms-small-foundation.png",
+                  "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6",
+                  "slot": "foundation",
+                  "width": 1254,
+                  "z_order": -1
                 }
               ]
             }

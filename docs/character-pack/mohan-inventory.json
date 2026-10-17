@@ -38027,6 +38027,70 @@
       },
       "manifest_references": [],
       "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-a_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
       "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_lip_lower.png",
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
@@ -38076,6 +38140,134 @@
       "manifest_references": [],
       "migration": "純資料可直接搬",
       "path": "assets/front-makeup-rigs/official-cheek-rest-neutral_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-o_teeth_tongue.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+    },
+    {
+      "bytes": 7785,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_lip_lower.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+    },
+    {
+      "bytes": 7737,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_lip_upper.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+    },
+    {
+      "bytes": 6217,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_oral_cavity.png",
+      "readers": [],
+      "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
+      "scope": "excluded_support",
+      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+    },
+    {
+      "bytes": 6175,
+      "category": "archive_or_support",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/front-makeup-rigs/official-cheek-rest-small_teeth_tongue.png",
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
@@ -40188,7 +40380,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 168799,
+      "bytes": 169026,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -40202,7 +40394,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "3e1cf1e23ffa14a10df1fc41fdceeca4292852bbaca2d9fc6eea71ea08d11975"
+      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
     },
     {
       "bytes": 8375,
@@ -47747,7 +47939,295 @@
       "sha256": "6bc40b7ea882984f474d4d4abdd88212035e274a6c0927cc8c7151557e6502fd"
     },
     {
-      "bytes": 733338,
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-classic-ms-a-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19909,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-classic-ms-a-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-classic-ms-o-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19909,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-classic-ms-o-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-classic-ms-small-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19909,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-classic-ms-small-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-glamorous-ms-a-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19899,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-glamorous-ms-a-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-glamorous-ms-o-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19899,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-glamorous-ms-o-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-glamorous-ms-small-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19899,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-glamorous-ms-small-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-light-ms-a-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19884,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-light-ms-a-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-light-ms-o-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19884,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-light-ms-o-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "bytes": 184829,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-light-ms-small-foundation.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "bytes": 19884,
+      "category": "makeup_authoring_mirror",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "manifest_references": [],
+      "migration": "純資料可直接搬",
+      "path": "assets/makeup/builtin/assets/official-cheek-rest-light-ms-small-lips.png",
+      "readers": [],
+      "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
+      "scope": "excluded_authoring_mirror",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "bytes": 741876,
       "category": "makeup_authoring_mirror",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -47755,7 +48235,7 @@
       "readers": [],
       "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
       "scope": "excluded_authoring_mirror",
-      "sha256": "c035c2c7283593f19ac4bcd0db9358fb0eab420426161f5b372d8026840a778a"
+      "sha256": "66b7e0155dc14246f63fd10e35b1e7b34d4e691311ef86de782b9b8b794e6359"
     },
     {
       "bytes": 419110,
@@ -47908,7 +48388,7 @@
       "sha256": "3f11fcddfb321c3c370cbd9113e72955c50cc103a26aad203747d46700ccd4e5"
     },
     {
-      "bytes": 34584858,
+      "bytes": 36302777,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -47922,7 +48402,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "05c0c7cc9b4bd24e448ce4c1bd3164cbc0f3ef7fde8381b61eaaced93b72df63"
+      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
     },
     {
       "appearance_categories": [
@@ -80772,6 +81252,144 @@
       "appearance_categories": [
         "makeup"
       ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-a-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19909,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-a-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-o-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19909,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-o-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-small-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19909,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-classic-ms-small-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
       "bytes": 33403,
       "category": "appearance_pack_member",
       "image": {
@@ -80979,6 +81597,144 @@
       "appearance_categories": [
         "makeup"
       ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-a-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19899,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-a-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-o-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19899,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-o-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-small-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19899,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-glamorous-ms-small-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
       "bytes": 34129,
       "category": "appearance_pack_member",
       "image": {
@@ -81181,6 +81937,144 @@
       ],
       "scope": "runtime_data",
       "sha256": "8e7207de2aa45f3f4d32677ba9c3e384211114faae585f7bfa7b0b2ec77a02cb"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-a-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19884,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-a-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-o-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19884,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-o-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 184829,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-small-foundation.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "88884951b58c939dc8905a097999bc4adacd80e1cd5cd2d7bf799c6ed3980bd6"
+    },
+    {
+      "appearance_categories": [
+        "makeup"
+      ],
+      "bytes": 19884,
+      "category": "appearance_pack_member",
+      "image": {
+        "height": 1254,
+        "mode": "RGBA",
+        "width": 1254
+      },
+      "migration": "純資料可直接搬",
+      "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!assets/official-cheek-rest-light-ms-small-lips.png",
+      "readers": [
+        {
+          "line": 755,
+          "path": "infrastructure/active_outfit_overlay.py",
+          "text": "encoded = archive.read(declaration.path)"
+        }
+      ],
+      "scope": "runtime_data",
+      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
     },
     {
       "appearance_categories": [
@@ -83599,7 +84493,7 @@
     },
     {
       "appearance_categories": [],
-      "bytes": 733338,
+      "bytes": 741876,
       "category": "appearance_pack_member",
       "migration": "純資料可直接搬",
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit!manifest.json",
@@ -83611,7 +84505,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "c035c2c7283593f19ac4bcd0db9358fb0eab420426161f5b372d8026840a778a"
+      "sha256": "66b7e0155dc14246f63fd10e35b1e7b34d4e691311ef86de782b9b8b794e6359"
     },
     {
       "bytes": 29245764,
@@ -129445,15 +130339,15 @@
   "schema_version": 1,
   "scope_counts": {
     "embedded_code": 24,
-    "excluded_authoring_mirror": 187,
+    "excluded_authoring_mirror": 205,
     "excluded_calibration_archive": 810,
     "excluded_marketing": 30,
     "excluded_product_build_output": 1,
     "excluded_provenance": 21,
     "excluded_review_source": 39,
-    "excluded_support": 419,
+    "excluded_support": 431,
     "product_validation_data": 48,
-    "runtime_data": 4234
+    "runtime_data": 4252
   },
   "scope_notes": [
     "runtime_data 包含正常與選配正式讀取；不是目前某一影格的追蹤",

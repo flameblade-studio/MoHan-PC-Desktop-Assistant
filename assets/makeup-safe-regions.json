@@ -6403,6 +6403,11 @@
             71
           ]
         ]
+      },
+      "mouth_rigs": {
+        "a": "assets/front-makeup-rigs/official-cheek-rest-a",
+        "o": "assets/front-makeup-rigs/official-cheek-rest-o",
+        "small": "assets/front-makeup-rigs/official-cheek-rest-small"
       }
     }
   },
