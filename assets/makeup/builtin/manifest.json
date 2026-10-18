@@ -2915,7 +2915,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-classic-ms-a-lips.png",
-                  "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa",
+                  "sha256": "a42d23bd7164ae975176f4f310e8560ef77cb99d2b9051d6a8354746418f31e2",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -3695,7 +3695,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-classic-ms-o-lips.png",
-                  "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa",
+                  "sha256": "a42d23bd7164ae975176f4f310e8560ef77cb99d2b9051d6a8354746418f31e2",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -4475,7 +4475,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-classic-ms-small-lips.png",
-                  "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa",
+                  "sha256": "a42d23bd7164ae975176f4f310e8560ef77cb99d2b9051d6a8354746418f31e2",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -6970,7 +6970,7 @@
               {
                 "slot": "lips",
                 "path": "assets/official-cheek-rest-classic-lips.png",
-                "sha256": "4fcb03841578df9f820e190f5e8b3e58f78fe4c986d2fcdd08430fcc22a93e38",
+                "sha256": "218e11dcba806eec8e9dc4347ce30d128af8beb49cc1f66df90cff37f41c913d",
                 "width": 1254,
                 "height": 1254,
                 "anchor": [
@@ -9829,7 +9829,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-light-ms-a-lips.png",
-                  "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c",
+                  "sha256": "1ecff8261179aa054cbf78a100a2a190a00cc9f6e0790beaaea904352462a52c",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -10597,7 +10597,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-light-ms-o-lips.png",
-                  "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c",
+                  "sha256": "1ecff8261179aa054cbf78a100a2a190a00cc9f6e0790beaaea904352462a52c",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -11365,7 +11365,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-light-ms-small-lips.png",
-                  "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c",
+                  "sha256": "1ecff8261179aa054cbf78a100a2a190a00cc9f6e0790beaaea904352462a52c",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -13848,7 +13848,7 @@
               {
                 "slot": "lips",
                 "path": "assets/official-cheek-rest-light-lips.png",
-                "sha256": "8e7207de2aa45f3f4d32677ba9c3e384211114faae585f7bfa7b0b2ec77a02cb",
+                "sha256": "95babfc8044b2ce8fdb9a83b6415241ddc15b42284c6e178cbd854e80412d93b",
                 "width": 1254,
                 "height": 1254,
                 "anchor": [
@@ -16744,7 +16744,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-glamorous-ms-a-lips.png",
-                  "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334",
+                  "sha256": "6a0fecae02964aa79f614ab219809d2d2b2ecb96e164574a31eff12588a70e24",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -17524,7 +17524,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-glamorous-ms-o-lips.png",
-                  "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334",
+                  "sha256": "6a0fecae02964aa79f614ab219809d2d2b2ecb96e164574a31eff12588a70e24",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -18304,7 +18304,7 @@
                   ],
                   "height": 1254,
                   "path": "assets/official-cheek-rest-glamorous-ms-small-lips.png",
-                  "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334",
+                  "sha256": "6a0fecae02964aa79f614ab219809d2d2b2ecb96e164574a31eff12588a70e24",
                   "slot": "lips",
                   "width": 1254,
                   "z_order": 2
@@ -20799,7 +20799,7 @@
               {
                 "slot": "lips",
                 "path": "assets/official-cheek-rest-glamorous-lips.png",
-                "sha256": "3e9e686c0596037bd2fee4c99d15c43f9fddaeb5719f712bf8d23b41f17d1ff0",
+                "sha256": "1dafae3a278debc85f113cbc2fd4cf63f6c443e1d693c80b8560f34f59bdf074",
                 "width": 1254,
                 "height": 1254,
                 "anchor": [

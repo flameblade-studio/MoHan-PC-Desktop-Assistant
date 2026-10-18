@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.6.zip",
-    "bytes": 994900498,
-    "sha256": "8d75174a164f3713f72d5bd2327bfecc3101edab4eb1b90395819e4425aa0392"
+    "bytes": 990287684,
+    "sha256": "f799863704a6ea94a819ed65360e4450c12465edecf6f4a3ed0ffceacb454142"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,12 +24,12 @@
     {
       "bytes": 3014,
       "path": "assets/characters/mohan/body/approval.json",
-      "sha256": "75901bf13f9a9ad623b5d36fccc79297e894f11c46ddac1b8650d141f5ad1146"
+      "sha256": "a38ef99aeb36747a55d227298320685f1d02a55b15451bbf9f07e4c669648639"
     },
     {
       "bytes": 383848,
       "path": "assets/characters/mohan/body/manifest.json",
-      "sha256": "b657fc3eb88adcb67e9c36c2d860b9d818e85c54a549d50bb5faa6681b448a55"
+      "sha256": "34315a94cf1c2a374456bca6f689ffebb03aa2d66c70e991a67fe9dd2d7dc855"
     },
     {
       "bytes": 9942,
@@ -4947,9 +4947,9 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 169026,
+      "bytes": 169025,
       "path": "assets/makeup-safe-regions.json",
-      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
+      "sha256": "b97b337eb97579301356d944c2d13a3742344d02c172b4a97781d3edeb2a4280"
     },
     {
       "bytes": 8375,
@@ -5767,9 +5767,9 @@
       "sha256": "861b525be4cdd83333753eac8480cac40009209ae575c2cb0bffb722a2c18f60"
     },
     {
-      "bytes": 36302777,
+      "bytes": 31689964,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
+      "sha256": "7d40b7938a52e3a8accbe0cf3be569dc384cf756d00bfa195aa589a5c4cc2c0b"
     },
     {
       "bytes": 29245764,
@@ -11084,7 +11084,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.6",
-  "package_hash": "561e7557940b3d9f9fbb26102014ec66b33c72ef5412dcd18926aceb951cef1d",
+  "package_hash": "bd247a9d6f65efb99edf8f747c1422f8bc49b92ac17c39f2847140fbef799f57",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

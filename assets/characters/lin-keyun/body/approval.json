@@ -14,7 +14,7 @@
     }
   },
   "body_pack": {
-    "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+    "fingerprint": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
     "id": "mohan-body-v2",
     "version": "1.0.0"
   },
@@ -59,7 +59,7 @@
   "semantic_cleanup": {
     "authority": "Owner WARDROBE-BASE-1 second-round instruction, 2026-10-12",
     "clothed_rgba_max": 0,
-    "current_layer_png_bytes": 19446791,
+    "current_layer_png_bytes": 19430644,
     "layer_manifest_sha256": "4cf5046ff831ed4122b08c67cef071d3058d8953014f5d3816de4ba049c4a668",
     "physical_views": 31,
     "rule": "Base mode composes body plus hair-back, hair-front and ornament only. Clothing edge pixels move from hair to garment with native RGBA unchanged."

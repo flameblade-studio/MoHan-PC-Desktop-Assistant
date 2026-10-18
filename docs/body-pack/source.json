@@ -1,10 +1,10 @@
 {
   "build_provenance": {
     "approval_scope": "BODY-RELEASE-1 designates the source roots and seventh-round 28-view/3-gesture approval. Historical metadata is retained as evidence and is not upgraded to a round-9 approval.",
-    "candidate_fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+    "candidate_fingerprint": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
     "candidate_manifest_bytes": 447981,
-    "candidate_manifest_sha256": "936ead4dd59560498c9b8e230e465c0dc795152e0a4bc76353d8751c77f97693",
-    "candidate_manifest_source_id": ".quality-tmp/official-cheek-9/body-pack-build/public-rebuild/mohan-body-v2/manifest.json",
+    "candidate_manifest_sha256": "f13a1008d85c203804d8d5cf2101da9976726e7019a44de2e569c61cb0b3f0fc",
+    "candidate_manifest_source_id": ".quality-tmp/cheek-rest-facecore/build/mohan-body-v2/manifest.json",
     "dynamic_face_core_recalculation": false,
     "fixed_final_core_masks": 31,
     "historical_gesture_manifest_drift_rows": 9,
@@ -758,9 +758,9 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 22233,
+      "bytes": 21818,
       "path": "approved-cheek-b-body-11/face-core/cheek-rest.png",
-      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
+      "sha256": "1db7d4adf020e0de8f7a974fb9c4550e6835abd594da521a0dc77494adb603bc"
     },
     {
       "bytes": 23949,
@@ -1130,12 +1130,12 @@
     {
       "bytes": 77892,
       "path": "approved-cheek-b-body-11/manifest.json",
-      "sha256": "1aceb15a4b124e4df7821356d2aabbfd2695a9eeaef62419deb15dd39d5bc429"
+      "sha256": "c919abad9dac4991c649366a1a4681b7ae643c3b3c0c9224df992a2fdafbf4f2"
     }
   ],
   "layer_dependency": {
     "body_pack": {
-      "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+      "fingerprint": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
       "id": "mohan-body-v2",
       "version": "1.0.0"
     },
@@ -1382,7 +1382,7 @@
     }
   ],
   "pack": {
-    "expected_fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+    "expected_fingerprint": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
     "id": "mohan-body-v2",
     "license": "CC-BY-NC-ND-4.0",
     "version": "1.0.0"

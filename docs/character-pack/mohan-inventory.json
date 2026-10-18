@@ -821,7 +821,7 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 22233,
+      "bytes": 21818,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -834,7 +834,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
+      "sha256": "1db7d4adf020e0de8f7a974fb9c4550e6835abd594da521a0dc77494adb603bc"
     },
     {
       "bytes": 23949,
@@ -2013,7 +2013,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "1aceb15a4b124e4df7821356d2aabbfd2695a9eeaef62419deb15dd39d5bc429"
+      "sha256": "c919abad9dac4991c649366a1a4681b7ae643c3b3c0c9224df992a2fdafbf4f2"
     },
     {
       "bytes": 1985259,
@@ -4218,7 +4218,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "32be2d696c891be5c826e9effa489d61e2d7cdaf758dcecff696b013b52fb9b4"
+      "sha256": "14de63077453f1d2291874eb9bc6364841872b0957e182927bbf9f405b1fd1b5"
     },
     {
       "bytes": 326038,
@@ -4235,10 +4235,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "4cf5046ff831ed4122b08c67cef071d3058d8953014f5d3816de4ba049c4a668"
+      "sha256": "51f339695460166d30e1a6aeb2b27eae83b4b5234bfcecc590907953cf5dfe7c"
     },
     {
-      "bytes": 11871,
+      "bytes": 11978,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -4257,7 +4257,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "5d30f044a378495d26e438f06157763dcf27b85bd468df73825274e21349bb0e"
+      "sha256": "16d7eec795e3c81d62965268bbebe38a28c59444a2de72f32df29f68ef955d29"
     },
     {
       "bytes": 6175,
@@ -4282,7 +4282,7 @@
       "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 1121543,
+      "bytes": 1105289,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -4301,7 +4301,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "2a3c78203215741684a0cd426fb16610330850f8d47587e98c4e69515664ceec"
+      "sha256": "ac47b411a9ba09efc69a178fd5ac219a5a1b470fce91cb852ef193d859a02aa9"
     },
     {
       "bytes": 6175,
@@ -12722,7 +12722,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "e8e9645729455f3193602a236a279ffed40a9ab5a729d54a61df62ed06426664"
+      "sha256": "e33385e96eaf01b6d91cf97931c9aa9470e0a7f45b61b123bb67269efc0c29b1"
     },
     {
       "bytes": 2163,
@@ -12937,7 +12937,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "75901bf13f9a9ad623b5d36fccc79297e894f11c46ddac1b8650d141f5ad1146"
+      "sha256": "a38ef99aeb36747a55d227298320685f1d02a55b15451bbf9f07e4c669648639"
     },
     {
       "bytes": 383848,
@@ -12954,7 +12954,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "b657fc3eb88adcb67e9c36c2d860b9d818e85c54a549d50bb5faa6681b448a55"
+      "sha256": "34315a94cf1c2a374456bca6f689ffebb03aa2d66c70e991a67fe9dd2d7dc855"
     },
     {
       "bytes": 9942,
@@ -17176,7 +17176,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "16bf883b3df247b5337626d203da949b500703538ff41008a0db3555918a8bff"
+      "sha256": "e784b1e9bb7106e764213d5d10d030c5447c471e810352dec0aa876375ac26da"
     },
     {
       "bytes": 3149,
@@ -38018,7 +38018,7 @@
       "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
     },
     {
-      "bytes": 7785,
+      "bytes": 12025,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38031,10 +38031,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+      "sha256": "11702d3314ff1d1dac935dfe9508109913f3c15f2c6e7996f7407a74f4709332"
     },
     {
-      "bytes": 7737,
+      "bytes": 11192,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38047,10 +38047,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+      "sha256": "beff2aa077727e0a08f839c935f247f9cff49db568d85d1ada9c6791fd50b72c"
     },
     {
-      "bytes": 6217,
+      "bytes": 8095,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38063,10 +38063,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+      "sha256": "8d01973335742658cc37c088580442b0d8bdb5c3379b9d3a16bda990ec970882"
     },
     {
-      "bytes": 6175,
+      "bytes": 7666,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38079,10 +38079,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "0022bcd6956cc5362923e3ab480bfb1e701fd8fc66e35cf1f2df6b90c053e685"
     },
     {
-      "bytes": 7785,
+      "bytes": 12147,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38095,10 +38095,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+      "sha256": "d7e24ac8b1c74d71147043be8b23f4e88c0195ae1ccedc188e6859f727a01826"
     },
     {
-      "bytes": 7737,
+      "bytes": 11282,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38111,10 +38111,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+      "sha256": "5fe0f7465c368f44a894879d2a1c9c5e0ccaa007c8467446f0da3c53408dbd60"
     },
     {
-      "bytes": 6217,
+      "bytes": 6175,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38127,7 +38127,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
       "bytes": 6175,
@@ -38143,10 +38143,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 7785,
+      "bytes": 12025,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38159,10 +38159,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+      "sha256": "11702d3314ff1d1dac935dfe9508109913f3c15f2c6e7996f7407a74f4709332"
     },
     {
-      "bytes": 7737,
+      "bytes": 11192,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38175,10 +38175,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+      "sha256": "beff2aa077727e0a08f839c935f247f9cff49db568d85d1ada9c6791fd50b72c"
     },
     {
-      "bytes": 6217,
+      "bytes": 8095,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38191,10 +38191,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+      "sha256": "8d01973335742658cc37c088580442b0d8bdb5c3379b9d3a16bda990ec970882"
     },
     {
-      "bytes": 6175,
+      "bytes": 7666,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38207,10 +38207,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "0022bcd6956cc5362923e3ab480bfb1e701fd8fc66e35cf1f2df6b90c053e685"
     },
     {
-      "bytes": 7785,
+      "bytes": 12025,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38223,10 +38223,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+      "sha256": "11702d3314ff1d1dac935dfe9508109913f3c15f2c6e7996f7407a74f4709332"
     },
     {
-      "bytes": 7737,
+      "bytes": 11192,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38239,10 +38239,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+      "sha256": "beff2aa077727e0a08f839c935f247f9cff49db568d85d1ada9c6791fd50b72c"
     },
     {
-      "bytes": 6217,
+      "bytes": 8095,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38255,10 +38255,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+      "sha256": "8d01973335742658cc37c088580442b0d8bdb5c3379b9d3a16bda990ec970882"
     },
     {
-      "bytes": 6175,
+      "bytes": 7666,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -38271,7 +38271,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "0022bcd6956cc5362923e3ab480bfb1e701fd8fc66e35cf1f2df6b90c053e685"
     },
     {
       "bytes": 6178,
@@ -40380,7 +40380,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 169026,
+      "bytes": 169025,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -40394,7 +40394,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
+      "sha256": "b97b337eb97579301356d944c2d13a3742344d02c172b4a97781d3edeb2a4280"
     },
     {
       "bytes": 8375,
@@ -47947,7 +47947,7 @@
       "readers": [],
       "reason": "正式讀取 official-packs 封存包；此目錄是製作鏡像",
       "scope": "excluded_authoring_mirror",
-      "sha256": "66b7e0155dc14246f63fd10e35b1e7b34d4e691311ef86de782b9b8b794e6359"
+      "sha256": "1b90f502f4e15b2f0bc7fcb84c119e3360a85a5fa3872bd3b1fd5159549f8888"
     },
     {
       "bytes": 419110,
@@ -48100,7 +48100,7 @@
       "sha256": "3f11fcddfb321c3c370cbd9113e72955c50cc103a26aad203747d46700ccd4e5"
     },
     {
-      "bytes": 36302777,
+      "bytes": 31689964,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -48114,7 +48114,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
+      "sha256": "7d40b7938a52e3a8accbe0cf3be569dc384cf756d00bfa195aa589a5c4cc2c0b"
     },
     {
       "appearance_categories": [
@@ -80941,7 +80941,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 1538807,
+      "bytes": 16062,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -80958,7 +80958,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "4fcb03841578df9f820e190f5e8b3e58f78fe4c986d2fcdd08430fcc22a93e38"
+      "sha256": "218e11dcba806eec8e9dc4347ce30d128af8beb49cc1f66df90cff37f41c913d"
     },
     {
       "appearance_categories": [
@@ -80987,7 +80987,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19909,
+      "bytes": 15950,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81004,7 +81004,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+      "sha256": "a42d23bd7164ae975176f4f310e8560ef77cb99d2b9051d6a8354746418f31e2"
     },
     {
       "appearance_categories": [
@@ -81033,7 +81033,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19909,
+      "bytes": 15950,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81050,7 +81050,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+      "sha256": "a42d23bd7164ae975176f4f310e8560ef77cb99d2b9051d6a8354746418f31e2"
     },
     {
       "appearance_categories": [
@@ -81079,7 +81079,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19909,
+      "bytes": 15950,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81096,7 +81096,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "b0874c75dabe63640e52e167b34ecd35d29e7b4b7eb759ec70ee202fcb0f55fa"
+      "sha256": "a42d23bd7164ae975176f4f310e8560ef77cb99d2b9051d6a8354746418f31e2"
     },
     {
       "appearance_categories": [
@@ -81286,7 +81286,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 1507012,
+      "bytes": 15807,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81303,7 +81303,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "3e9e686c0596037bd2fee4c99d15c43f9fddaeb5719f712bf8d23b41f17d1ff0"
+      "sha256": "1dafae3a278debc85f113cbc2fd4cf63f6c443e1d693c80b8560f34f59bdf074"
     },
     {
       "appearance_categories": [
@@ -81332,7 +81332,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19899,
+      "bytes": 15696,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81349,7 +81349,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+      "sha256": "6a0fecae02964aa79f614ab219809d2d2b2ecb96e164574a31eff12588a70e24"
     },
     {
       "appearance_categories": [
@@ -81378,7 +81378,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19899,
+      "bytes": 15696,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81395,7 +81395,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+      "sha256": "6a0fecae02964aa79f614ab219809d2d2b2ecb96e164574a31eff12588a70e24"
     },
     {
       "appearance_categories": [
@@ -81424,7 +81424,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19899,
+      "bytes": 15696,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81441,7 +81441,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "5992609df744dc9aa5f7576defd168dd41fe81ef5787df6383ec45bf3ccf4334"
+      "sha256": "6a0fecae02964aa79f614ab219809d2d2b2ecb96e164574a31eff12588a70e24"
     },
     {
       "appearance_categories": [
@@ -81631,7 +81631,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 1576299,
+      "bytes": 16237,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81648,7 +81648,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "8e7207de2aa45f3f4d32677ba9c3e384211114faae585f7bfa7b0b2ec77a02cb"
+      "sha256": "95babfc8044b2ce8fdb9a83b6415241ddc15b42284c6e178cbd854e80412d93b"
     },
     {
       "appearance_categories": [
@@ -81677,7 +81677,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19884,
+      "bytes": 16103,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81694,7 +81694,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+      "sha256": "1ecff8261179aa054cbf78a100a2a190a00cc9f6e0790beaaea904352462a52c"
     },
     {
       "appearance_categories": [
@@ -81723,7 +81723,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19884,
+      "bytes": 16103,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81740,7 +81740,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+      "sha256": "1ecff8261179aa054cbf78a100a2a190a00cc9f6e0790beaaea904352462a52c"
     },
     {
       "appearance_categories": [
@@ -81769,7 +81769,7 @@
       "appearance_categories": [
         "makeup"
       ],
-      "bytes": 19884,
+      "bytes": 16103,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -81786,7 +81786,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "89f12031425a427e323d5e9f6ce75fcd2cde81e85282264b5508419ed548e68c"
+      "sha256": "1ecff8261179aa054cbf78a100a2a190a00cc9f6e0790beaaea904352462a52c"
     },
     {
       "appearance_categories": [
@@ -84217,7 +84217,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "66b7e0155dc14246f63fd10e35b1e7b34d4e691311ef86de782b9b8b794e6359"
+      "sha256": "ee367a5457c11bcc0be859437d46e1ddf5ad59076c0cea9b8cbf76b101b681cc"
     },
     {
       "bytes": 29245764,
