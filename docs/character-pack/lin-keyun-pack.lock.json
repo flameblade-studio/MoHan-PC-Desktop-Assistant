@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.4.zip",
-    "bytes": 85005361,
-    "sha256": "db4386032128aed6715165dd6171914c8151a004a680eed44d406a257b89c5b8"
+    "bytes": 85095109,
+    "sha256": "a7aeba37d1e76d0c5d8ca07b912790e91fdcfd677f8c16a5aa7b463fe8e1e6aa"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,37 +24,37 @@
     {
       "bytes": 3950,
       "path": "assets/characters/lin-keyun/body/approval.json",
-      "sha256": "3d0aad25f7ae46a4d65246041913fd2a2aa33e38bd14ed942d2122a2fe5656e1"
+      "sha256": "32be2d696c891be5c826e9effa489d61e2d7cdaf758dcecff696b013b52fb9b4"
     },
     {
       "bytes": 326038,
       "path": "assets/characters/lin-keyun/body/manifest.json",
-      "sha256": "739b77295fe90cd9b91e764a0b16a5f7e2e93899be95ed1455c72fcda0ac5a26"
+      "sha256": "4cf5046ff831ed4122b08c67cef071d3058d8953014f5d3816de4ba049c4a668"
     },
     {
-      "bytes": 12007,
+      "bytes": 11871,
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/base-hide-mask.png",
-      "sha256": "fbc204cf6531ebd5ace5de0040ca154a195505bbe4e18208772e4c65f459d8fd"
+      "sha256": "5d30f044a378495d26e438f06157763dcf27b85bd468df73825274e21349bb0e"
     },
     {
-      "bytes": 248225,
+      "bytes": 6175,
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/body-fix.png",
-      "sha256": "ddd611792404dc593841af2dff6d63ec62c5a7da8da7d7026c342c445950b233"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 414838,
+      "bytes": 1121543,
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/garment.png",
-      "sha256": "232ee3f1ccb00c59004cd17fcf53d55dc0aac49dfd7c493826666eab3ea83b9f"
+      "sha256": "2a3c78203215741684a0cd426fb16610330850f8d47587e98c4e69515664ceec"
     },
     {
-      "bytes": 55280,
+      "bytes": 6175,
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/hair-back.png",
-      "sha256": "e9d962c7cb45186b7b74a66e14f85fb5b9e95f5ac9d66e25a9a8e7665bcb0dd2"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 331837,
+      "bytes": 6175,
       "path": "assets/characters/lin-keyun/body/views/cheek-rest/hair-front.png",
-      "sha256": "3e0dbaf2015366fec10d978eccaabbe38ff68f87fb939b6c665967e84088b6af"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
       "bytes": 11648,
@@ -3589,7 +3589,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.4",
-  "package_hash": "6902f6d4da09214282739c5b4616f1c6a9d7cd05f9b0b7bc66ece39b0dfa5174",
+  "package_hash": "ba7c7fae4717e995ae0b3e563eaf6d384a92a87d0f2e2bef1b4dc7f60b455ed6",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
