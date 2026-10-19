@@ -1,3 +1,3 @@
-
+### 托腮提醒腮紅去除紅斑／托腮提醒腮红去除红斑／Cheek-reminder blush without red patches／頬杖リマインダーの頬紅から赤い斑点を除去
 
 * 清除托腮提醒 12 張表情與二代素體包畫格的臉頰紅斑，重建最新內建妝容包三種妝級的托腮腮紅層，並同步相關 manifest 與素體包 fingerprint／清除托腮提醒 12 张表情与二代素体包画格的脸颊红斑，重建最新内置妆容包三种妆级的托腮腮红层，并同步相关 manifest 与素体包 fingerprint／Removed the baked cheek blotches from all 12 cheek-reminder expressions and generation-2 body-pack frames, rebuilt the cheek-reminder blush layers for all three makeup looks on the latest built-in makeup pack, and synchronized the related manifests and body-pack fingerprint／托腮提醒の表情 12 枚と第二世代素体パックの画格に焼き込まれた頬の赤斑を除去し、最新の内蔵メイクパックで 3 種類のメイク段階の托腮リマインダー頬紅レイヤーを再構築し、関連 manifest と素体パック fingerprint を同期しました
