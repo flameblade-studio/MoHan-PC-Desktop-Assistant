@@ -1,0 +1,3 @@
+### GitHub Actions 五項升級／GitHub Actions 五项升级／Five GitHub Actions upgrades／GitHub Actions の更新5件
+
+* 將 actions/cache 升至 6.1.0、CodeQL init 與 analyze 同步升至 4.38.3、upload-artifact 升至 7.0.2、download-artifact 升至 8.0.2，並同步治理測試的釘選雜湊；每個雜湊都已核對官方版本標籤／将 actions/cache 升至 6.1.0、CodeQL init 与 analyze 同步升至 4.38.3、upload-artifact 升至 7.0.2、download-artifact 升至 8.0.2，并同步治理测试的钉选哈希；每个哈希都已核对官方版本标签／Upgraded actions/cache to 6.1.0, CodeQL init and analyze together to 4.38.3, upload-artifact to 7.0.2 and download-artifact to 8.0.2, and synchronized the governance test's pinned hashes; every hash was verified against its official release tag／actions/cache を 6.1.0、CodeQL の init と analyze を同時に 4.38.3、upload-artifact を 7.0.2、download-artifact を 8.0.2 へ更新し、ガバナンステストの固定ハッシュも同期しました。各ハッシュは公式リリースタグと照合済みです

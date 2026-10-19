@@ -205,8 +205,8 @@ def test_funding_configuration() -> None:
 
 def test_security_workflows() -> None:
     codeql = read(".github/workflows/codeql.yml")
-    assert "github/codeql-action/init@cdf488f595d80d6e07e03d4674febd5ab45fa938" in codeql
-    assert "github/codeql-action/analyze@cdf488f595d80d6e07e03d4674febd5ab45fa938" in codeql
+    assert "github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d" in codeql
+    assert "github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d" in codeql
     assert "security-events: write" in codeql
     assert "pull_request_target" not in codeql
 
@@ -485,9 +485,9 @@ def test_preview_and_windows_workflows() -> None:
         "if: ${{ always() }}",
         "name: installer",
         "needs: test",
-        "actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830",
+        "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
         "hashFiles('rust-toolchain.toml', 'native/mohan_accel/Cargo.lock')",
-        "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+        "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
     ):
         assert required in windows_ci
     assert windows_ci.index(pinned_quality_install) < windows_ci.index(
