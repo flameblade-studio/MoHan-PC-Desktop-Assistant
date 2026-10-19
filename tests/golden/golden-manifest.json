@@ -1,7 +1,7 @@
 {
   "approval": {
-    "path": "docs/release-evidence/yaw045-hem-skirt-golden-approval.json",
-    "sha256": "321e96f74d6448d95e3704bbaefe464fae500cad31e5f0364cbed2e766b2aa3b"
+    "path": "docs/release-evidence/reminder-blush-golden-approval.json",
+    "sha256": "88b6b9b0ad64d9711d06b0b5f3bf9030591e056629b2f50b2ec6f2458aeeba0e"
   },
   "cells": [
     {
@@ -3624,7 +3624,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "1675a3c785913ae041b5977da0b4c4baecb89f00b70d4f7cd8efcb2d6ccc5f2e",
+      "pixel_sha256": "4a484b51024a248f30178940cb708aa4f33504e7bde9e193f854967e95f249aa",
       "width": 465
     },
     {
@@ -3639,7 +3639,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "25761b17bbcb9ad110c37f3761d52ff8d89e291d12eb5cd2b0993ebcbca7f469",
+      "pixel_sha256": "5d9b759b246886e62d597be2f17d874a11c2356c6c8a6aecabb60d9173d4ddb2",
       "width": 465
     },
     {
@@ -3654,7 +3654,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "da39739d1216e8ad43bacef58867727c9fe04cbeccf45d992b321648c01d8883",
+      "pixel_sha256": "6ca3b88d88783910e66d03d6122c738c69de8faece1bf3d0e431db8c03744b5d",
       "width": 465
     },
     {
@@ -3669,7 +3669,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "2e5549b13831d2f52d2d53eb1d9a130cda926c685462baec09833e4866fa1242",
+      "pixel_sha256": "879734cdc560cf56b0383854b1a62c895bc8315d0d25803b7da966cfd5f25d2f",
       "width": 465
     },
     {
@@ -3684,7 +3684,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "967b3c5deb06b0f052eb43979cf45388d858aec1ca309466cfedc522fa925e7b",
+      "pixel_sha256": "7b1ed369e62b8ec08a4ab0c04893137da34060f0c29ce4ceb70963619f04fbfd",
       "width": 465
     },
     {
@@ -3699,7 +3699,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "24c4ec84eb0a9d39db26392dec41cfdf0fb3bb7f161f5122642fe41b83de7250",
+      "pixel_sha256": "49db5430104c4ea5bcf6faced4ed3835028083e78422651c92eda9e22cc55bbb",
       "width": 465
     },
     {
@@ -3714,7 +3714,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "f418afe309f6abfc17705c8ccd6391f2fdd645842a9af62947b2d2055a886ebe",
+      "pixel_sha256": "ddb60887e81ad90d68287a77b08dd29fd87f39504a2e2ed3f7097dca7531d3d9",
       "width": 465
     },
     {
@@ -3729,7 +3729,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "e6240cccd6f98e9f55ebb59cfe0521e5ca7272f9c8abe7a9fec18337043ec12a",
+      "pixel_sha256": "b3387710b4eac835a256c2d5c01a5eb43aa6d389097b13f7a63ef3fb03ff83d4",
       "width": 465
     },
     {
@@ -3744,7 +3744,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "8393543b820285ad47029b55041161143f8cdb914e7cc59d30ab7494242e1d0c",
+      "pixel_sha256": "853794066e38629b439ce140456d65432b035586a36dd482528b5dab3d236b14",
       "width": 465
     },
     {
@@ -3759,7 +3759,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "456ea9c93908bc973a3bf1c16069fb185ab38fb9a4aef8b5bd418ec2412e15b1",
+      "pixel_sha256": "c5570a8dc17b95f85c97f4b693a23320f66430ae631739b07fa8ef3d28308733",
       "width": 465
     },
     {
@@ -3774,7 +3774,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "77dac03ee07693f6a2401e9a61533b09153a189b12974255a6bd9cde820d8598",
+      "pixel_sha256": "bf1554eea36e4e19a4bcc08c616a0ebe6fbde48be6ad2b5f9fd340b5e68098f7",
       "width": 465
     },
     {
@@ -3789,7 +3789,7 @@
         "pose": "cheek"
       },
       "mode": "RGBA",
-      "pixel_sha256": "44441038d9a2812ff610cb63c938c306450ae1c1e0fa4c362dd97a406f22fc01",
+      "pixel_sha256": "65a1d76a981237d3a1af5f811d7ac1944cbd3208f1ef5ce32a05867dfa80825c",
       "width": 465
     },
     {
@@ -5251,5 +5251,5 @@
   },
   "pixel_tolerance": 0,
   "schema": "mohan.golden-render.v1",
-  "source_revision": "5e3936536f4b02d2133025f7fed20c4e54d3c37e"
+  "source_revision": "f00e6bf3482840e655dfac6f124a455f47b3f1fd"
 }

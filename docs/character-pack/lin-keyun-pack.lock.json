@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.4.zip",
-    "bytes": 80474015,
-    "sha256": "304e88a7aacd0b8da031fbbbf20c5cd0673512c9032fed7bd0e63da9f9bb5d54"
+    "bytes": 80471984,
+    "sha256": "90edb3a3dae3b53e3010d8f6faefd1c71c1ac89bde3777215c46417cf1cb9b56"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,12 +24,12 @@
     {
       "bytes": 3950,
       "path": "assets/characters/lin-keyun/body/approval.json",
-      "sha256": "f32f57012bd11769197e9d144fe3975b2b8690e1570207653117af12a8356e86"
+      "sha256": "bf0c6179c90520ce6bde2fe84816a5b0d90d765c8cbbd4d8bf31c684d7332351"
     },
     {
       "bytes": 326038,
       "path": "assets/characters/lin-keyun/body/manifest.json",
-      "sha256": "51f339695460166d30e1a6aeb2b27eae83b4b5234bfcecc590907953cf5dfe7c"
+      "sha256": "5c138ed8245f01252b56ca04751be06e3d18b8fa4e85c6630530c7a3ef5d8af5"
     },
     {
       "bytes": 11978,
@@ -2622,9 +2622,9 @@
       "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
     },
     {
-      "bytes": 31689964,
+      "bytes": 31687933,
       "path": "assets/official-packs/mohan.makeup.builtin.mohan-outfit",
-      "sha256": "7d40b7938a52e3a8accbe0cf3be569dc384cf756d00bfa195aa589a5c4cc2c0b"
+      "sha256": "13d2188b7cef992821b1c5855e2d25e43b2d09e84a0ebd5b007bffeb8bf2b15f"
     },
     {
       "bytes": 6550,
@@ -3589,7 +3589,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.4",
-  "package_hash": "4e7dcf9b2573ddad15a15e9f740d601714930fc87f72c305a921ec81b24aff51",
+  "package_hash": "cb176eb6b2ee4ddf7cde18c4333e07915f35564270d977dddd0b355393e03bb7",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
