@@ -60,7 +60,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "32be2d696c891be5c826e9effa489d61e2d7cdaf758dcecff696b013b52fb9b4"
+      "sha256": "f32f57012bd11769197e9d144fe3975b2b8690e1570207653117af12a8356e86"
     },
     {
       "bytes": 326038,
@@ -77,10 +77,10 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "4cf5046ff831ed4122b08c67cef071d3058d8953014f5d3816de4ba049c4a668"
+      "sha256": "51f339695460166d30e1a6aeb2b27eae83b4b5234bfcecc590907953cf5dfe7c"
     },
     {
-      "bytes": 11871,
+      "bytes": 11978,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -99,7 +99,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "5d30f044a378495d26e438f06157763dcf27b85bd468df73825274e21349bb0e"
+      "sha256": "16d7eec795e3c81d62965268bbebe38a28c59444a2de72f32df29f68ef955d29"
     },
     {
       "bytes": 6175,
@@ -124,7 +124,7 @@
       "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
-      "bytes": 1121543,
+      "bytes": 1105289,
       "category": "character_layer_view",
       "image": {
         "height": 1254,
@@ -143,7 +143,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "2a3c78203215741684a0cd426fb16610330850f8d47587e98c4e69515664ceec"
+      "sha256": "ac47b411a9ba09efc69a178fd5ac219a5a1b470fce91cb852ef193d859a02aa9"
     },
     {
       "bytes": 6175,
@@ -8564,7 +8564,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "e8e9645729455f3193602a236a279ffed40a9ab5a729d54a61df62ed06426664"
+      "sha256": "e33385e96eaf01b6d91cf97931c9aa9470e0a7f45b61b123bb67269efc0c29b1"
     },
     {
       "bytes": 2163,
@@ -10481,7 +10481,7 @@
       "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
     },
     {
-      "bytes": 7785,
+      "bytes": 12147,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -10494,10 +10494,10 @@
       "readers": [],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "0141fc85b6cd831390bb84baea94de564e55159f33285d38542559958f4ea4fe"
+      "sha256": "d7e24ac8b1c74d71147043be8b23f4e88c0195ae1ccedc188e6859f727a01826"
     },
     {
-      "bytes": 7737,
+      "bytes": 11282,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -10510,10 +10510,10 @@
       "readers": [],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "fbe4562b6ad529065eb7452c0c0e0df0f3d55d0076c64b6aca0138b3dd1c6197"
+      "sha256": "5fe0f7465c368f44a894879d2a1c9c5e0ccaa007c8467446f0da3c53408dbd60"
     },
     {
-      "bytes": 6217,
+      "bytes": 6175,
       "category": "archive_or_support",
       "image": {
         "height": 1254,
@@ -10526,7 +10526,7 @@
       "readers": [],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "ccf099b5755d07d1236e65af64ea0e0f596bf77261b338a5ffe789f70c377297"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
       "bytes": 6175,
@@ -10542,7 +10542,7 @@
       "readers": [],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "53d6488dbd5d165c379166e2184728081b9965d13c06505b266f7250cd6e6fd7"
+      "sha256": "d6ed27a2b5980b3c26d4bd1e591e7c806228d6a42ad8867f86cf39051d622bdd"
     },
     {
       "bytes": 6178,
@@ -12651,7 +12651,7 @@
       "sha256": "a9a682eb1a16aa8e9d9abe1dc81c3c6e2fb3d7d4abd83f16a76597efe8c89006"
     },
     {
-      "bytes": 169026,
+      "bytes": 169025,
       "category": "makeup_region_rules",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -12665,7 +12665,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "0dd57a69eb7970d06e5747a40fae25a29cf56046f3c4469b58f971faf627899a"
+      "sha256": "b97b337eb97579301356d944c2d13a3742344d02c172b4a97781d3edeb2a4280"
     },
     {
       "bytes": 8375,
@@ -17234,7 +17234,7 @@
       "sha256": "0814de92b06c33c41bac1300b3896efd2dbcf1ac2a788e70f448161415680077"
     },
     {
-      "bytes": 36302777,
+      "bytes": 31689964,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -17248,7 +17248,7 @@
       ],
       "reason": "Declared runtime makeup component, approval or safety dependency.",
       "scope": "runtime_data",
-      "sha256": "1f67815b0b6c1d5725a07147559d2be768f8eb365e12f2abfc3d83f9bd92b58d"
+      "sha256": "7d40b7938a52e3a8accbe0cf3be569dc384cf756d00bfa195aa589a5c4cc2c0b"
     },
     {
       "bytes": 6550,

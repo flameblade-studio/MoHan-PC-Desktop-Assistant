@@ -1,0 +1,2 @@
+### 托腮休息臉部核心保護區／托腮休息脸部核心保护区／Cheek-rest face-core protection area／托頬休息の顔核心保護範囲
+- 將托腮休息 face-core 縮小為眉眼、鼻、臉頰、嘴與下巴，讓額頭、髮際、耳朵與兩側髮絲可由角色造型覆蓋／将托腮休息 face-core 缩小为眉眼、鼻子、脸颊、嘴巴与下巴，让额头、发际、耳朵与两侧发丝可由角色造型覆盖／Narrow the cheek-rest face-core to the brows, eyes, nose, cheeks, mouth, and chin so character hair can cover the forehead, hairline, ears, and side strands／托頬休息の face-core を眉・目・鼻・頬・口・顎に縮小し、額・生え際・耳・両側の髪をキャラクターの髪で覆えるようにする

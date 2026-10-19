@@ -1,14 +1,14 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-body-v2-1.0.0.zip",
-    "bytes": 413249882,
-    "sha256": "fa822a7ad58fc943a302ebf1a0afb43892e7e117842f5689e5ebdf7ddb63af0e"
+    "bytes": 413249467,
+    "sha256": "2cdee34c64f60c5cae60d3ee2aadbde5f8e5831c9676f86feeff99ade195759d"
   },
   "body_pack": {
-    "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+    "fingerprint": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
     "id": "mohan-body-v2",
     "manifest_bytes": 447981,
-    "manifest_sha256": "f3d0c92319c392ba6424f538a648c438eda4a7d5fb3fa9463da0b2dce4b5b937",
+    "manifest_sha256": "f13a1008d85c203804d8d5cf2101da9976726e7019a44de2e569c61cb0b3f0fc",
     "version": "1.0.0"
   },
   "files": [
@@ -43,9 +43,9 @@
       "sha256": "19789c6a3eb63eb99f57c2e3280752325da41892cad900a0be77bd7df1b588d1"
     },
     {
-      "bytes": 22233,
+      "bytes": 21818,
       "path": "face-core/cheek-rest.png",
-      "sha256": "c0ae1bae324600c46f989069dc7bb95e5954e96adb0b4bb2d86a876a6d2e2f72"
+      "sha256": "1db7d4adf020e0de8f7a974fb9c4550e6835abd594da521a0dc77494adb603bc"
     },
     {
       "bytes": 23949,
@@ -2540,13 +2540,13 @@
     {
       "bytes": 447981,
       "path": "manifest.json",
-      "sha256": "f3d0c92319c392ba6424f538a648c438eda4a7d5fb3fa9463da0b2dce4b5b937"
+      "sha256": "f13a1008d85c203804d8d5cf2101da9976726e7019a44de2e569c61cb0b3f0fc"
     }
   ],
   "license": "CC-BY-NC-ND-4.0",
   "pack_id": "mohan-body-v2",
   "pack_version": "1.0.0",
-  "package_hash": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+  "package_hash": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
   "schema": "flameblade.body-pack-lock.v1",
   "schema_version": 1,
   "source": {
@@ -2554,9 +2554,9 @@
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "source_manifest": {
-    "bytes": 60958,
+    "bytes": 60936,
     "path": "docs/body-pack/source.json",
-    "sha256": "4f79db3c3ac1eaab02f0f618c798ed262b89d229af2d30f920e3e487a1e36a7d"
+    "sha256": "5f71f86857193eeaed277107fb63a063c244854fafb5fef97a3be57cb00a0973"
   },
   "validation_limits": {
     "max_archive_bytes": 1073741824,

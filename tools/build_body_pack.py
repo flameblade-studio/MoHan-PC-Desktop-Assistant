@@ -45,7 +45,7 @@ APPROVED_LAYER_DIRECTORY_COUNT = 31
 BODY_PACK_ZIP_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 EXPECTED_BODY_REFERENCE = {
     "id": "mohan-body-v2",
-    "fingerprint": "efa0ee1a7109fa56e06bfe94a47a918b347af398ae0e794ba472abbf4f31aaac",
+    "fingerprint": "2e9aa87c52b77946b517d18110a7e1bb5dad3961f66840a9d0bbbcaf4c7f6f39",
 }
 MOTION_THRESHOLD = 8
 OPAQUE_ALPHA = 255
