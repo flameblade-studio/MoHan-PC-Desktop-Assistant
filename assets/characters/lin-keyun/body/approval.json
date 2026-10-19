@@ -60,7 +60,7 @@
     "authority": "Owner WARDROBE-BASE-1 second-round instruction, 2026-10-12",
     "clothed_rgba_max": 0,
     "current_layer_png_bytes": 19430644,
-    "layer_manifest_sha256": "51f339695460166d30e1a6aeb2b27eae83b4b5234bfcecc590907953cf5dfe7c",
+    "layer_manifest_sha256": "5c138ed8245f01252b56ca04751be06e3d18b8fa4e85c6630530c7a3ef5d8af5",
     "physical_views": 31,
     "rule": "Base mode composes body plus hair-back, hair-front and ornament only. Clothing edge pixels move from hair to garment with native RGBA unchanged."
   },

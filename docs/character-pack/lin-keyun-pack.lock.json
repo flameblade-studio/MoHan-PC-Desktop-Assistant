@@ -2,7 +2,7 @@
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.4.zip",
     "bytes": 80471984,
-    "sha256": "876c306aa8d591a2fa8304e6bb11c70a4b8dd8f9da1ce102e7d24d4a85158f20"
+    "sha256": "90edb3a3dae3b53e3010d8f6faefd1c71c1ac89bde3777215c46417cf1cb9b56"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -24,7 +24,7 @@
     {
       "bytes": 3950,
       "path": "assets/characters/lin-keyun/body/approval.json",
-      "sha256": "77d7a8d7e24858a85eb063280357735be787157ec5d2d8aac6bc916c26f9c9f8"
+      "sha256": "bf0c6179c90520ce6bde2fe84816a5b0d90d765c8cbbd4d8bf31c684d7332351"
     },
     {
       "bytes": 326038,
@@ -3589,7 +3589,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.4",
-  "package_hash": "9cdae54b6303be1b68c01f78e85cba11986fba5e084def57378b62d17eb5b328",
+  "package_hash": "cb176eb6b2ee4ddf7cde18c4333e07915f35564270d977dddd0b355393e03bb7",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {
