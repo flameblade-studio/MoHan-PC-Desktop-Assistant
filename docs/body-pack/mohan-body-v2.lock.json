@@ -2554,9 +2554,9 @@
     "repository": "flameblade-studio/MoHan-PC-Desktop-Assistant"
   },
   "source_manifest": {
-    "bytes": 60942,
+    "bytes": 60943,
     "path": "docs/body-pack/source.json",
-    "sha256": "6f630da158a5bf759ff6377e23973c3f68c5db822deec9a28319f787535637c7"
+    "sha256": "4213751f6caf641f2d011230b37748420266818b0efd2cc537361d55dab903d6"
   },
   "validation_limits": {
     "max_archive_bytes": 1073741824,
