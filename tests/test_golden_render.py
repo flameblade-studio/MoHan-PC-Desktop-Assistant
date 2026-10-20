@@ -139,7 +139,12 @@ def test_fake_character_settings_drive_catalogs_and_asset_paths(
         return "fake-manifest"
 
     monkeypatch.setattr(golden_render, "_prepare_store", lambda *_args: None)
-    monkeypatch.setattr(golden_render, "ActiveOutfitOverlay", lambda *_args: object())
+
+    def fake_overlay(_store, _asset_root, *, official_pack_root):
+        observed["official_pack_root"] = official_pack_root
+        return object()
+
+    monkeypatch.setattr(golden_render, "ActiveOutfitOverlay", fake_overlay)
     monkeypatch.setattr(golden_render, "load_layered_full_body_assets", fake_load)
     monkeypatch.setattr(golden_render, "LayeredFullBodyRenderer", FakeFullRenderer)
     monkeypatch.setattr(
@@ -172,6 +177,7 @@ def test_fake_character_settings_drive_catalogs_and_asset_paths(
         "authority_root": (asset_root / "characters/example/full-authority").resolve(),
         "view_id": "profile-left",
         "layered_root": (asset_root / "characters/example/full-layers").resolve(),
+        "official_pack_root": (asset_root / "characters/example/appearance").resolve(),
     }
 
 
@@ -268,7 +274,11 @@ def test_fake_half_character_reads_its_portraits_layers_and_detachable(tmp_path,
     monkeypatch.setattr(golden_render, "LayeredParametricFaceRenderer", HalfRenderer)
     monkeypatch.setattr(golden_render, "_BlinkHarness", harness)
     monkeypatch.setattr(golden_render, "_prepare_store", lambda *_args: None)
-    monkeypatch.setattr(golden_render, "ActiveOutfitOverlay", lambda *_args: object())
+    monkeypatch.setattr(
+        golden_render,
+        "ActiveOutfitOverlay",
+        lambda *_args, **_kwargs: object(),
+    )
     assert isinstance(golden_render._scaled_expression(tmp_path, "sample", settings), QPixmap)
     result = render_matrix(tmp_path / "render", asset_root=tmp_path, settings=settings)
     assert result["matrix"]["total_cells"] == 1

@@ -24,11 +24,6 @@
         "variant_id": "blue-white"
       },
       "native_appearance_selections": {
-        "hairstyle": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "loose-hair",
-          "variant_id": "ink-black"
-        },
         "headwear": {
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "silver-hairpiece",

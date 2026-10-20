@@ -555,13 +555,20 @@ def render_matrix(
     with _render_environment(local_appdata), _network_disabled(), _official_pack_root(
         asset_root, settings,
     ):
+        official_pack_root = settings.resolve_asset_path(
+            asset_root, settings.official_pack_root,
+        )
         for makeup in settings.makeups:
             makeup_cells = tuple(cell for cell in selected if cell.makeup == makeup)
             if not makeup_cells:
                 continue
             store = runtime_root / "stores" / makeup
             _prepare_store(store, makeup, settings)
-            overlay = ActiveOutfitOverlay(store, asset_root)
+            overlay = ActiveOutfitOverlay(
+                store,
+                asset_root,
+                official_pack_root=official_pack_root,
+            )
             half_renderer = LayeredParametricFaceRenderer(
                 manifest=load_layered_face_assets(settings.resolve_asset_path(
                     asset_root, settings.half_layered_root,
