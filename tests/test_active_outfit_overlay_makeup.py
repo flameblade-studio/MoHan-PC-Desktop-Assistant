@@ -29,6 +29,8 @@ lazy from domain.outfit_pack import (
     OutfitPack,
 )
 lazy from domain.outfit_pack_makeup import (
+    EXCLUSION_RIG_LAYERS,
+    MakeupExclusionMaskError,
     SAFE_REGION_PATH,
     load_makeup_safe_regions,
     write_makeup_intensity,
@@ -106,7 +108,7 @@ def _garment(color: QColor = GARMENT_BLUE) -> bytes:
 
 
 def _authority(root: Path) -> None:
-    """Synthetic front rig: a protected face (400..800 x 100..450), one iris pixel, safe regions."""
+    """Synthetic front rig with every required exclusion mask and one visible iris pixel."""
     layered = root / "assets" / "expressions" / "layered"
     layered.mkdir(parents=True)
     face = QImage(CANVAS, CANVAS, QImage.Format_RGBA8888)
@@ -115,11 +117,17 @@ def _authority(root: Path) -> None:
         for x in range(400, 801):
             face.setPixelColor(x, y, QColor(255, 255, 255, 255))
     assert face.save(str(layered / "front_base.png"), "PNG")
-    iris = QImage(CANVAS, CANVAS, QImage.Format_RGBA8888)
-    iris.fill(QColor(0, 0, 0, 0))
-    iris.setPixelColor(*EYES_PIXEL, QColor(255, 255, 255, 255))
-    assert iris.save(str(layered / "front_iris_left.png"), "PNG")
+    for layer in (
+        "iris_left", "iris_right", "eyelid_left", "eyelid_right",
+        "oral_cavity", "teeth_tongue", "lip_upper", "lip_lower",
+    ):
+        mask = QImage(CANVAS, CANVAS, QImage.Format_RGBA8888)
+        mask.fill(QColor(0, 0, 0, 0))
+        if layer == "iris_left":
+            mask.setPixelColor(*EYES_PIXEL, QColor(255, 255, 255, 255))
+        assert mask.save(str(layered / f"front_{layer}.png"), "PNG")
     document = json.loads(SAFE_REGION_PATH.read_text(encoding="utf-8"))
+    document["silhouettes"]["front-crossed"]["rig"] = "assets/expressions/layered/front"
     document["silhouettes"]["front-crossed"]["slots"] = FRONT_SLOTS
     document_path = root / "assets" / "makeup-safe-regions.json"
     for silhouette, entry in document["silhouettes"].items():
@@ -139,7 +147,27 @@ def _authority(root: Path) -> None:
                     mask.setPixelColor(*EYES_PIXEL, QColor(255, 255, 255, 255))
                     assert mask.save(str(target), "PNG")
                     descriptor["sha256"] = hashlib.sha256(target.read_bytes()).hexdigest()
+    _copy_exclusion_rig_assets(document, root)
     document_path.write_text(json.dumps(document), encoding="utf-8", newline="\n")
+
+
+def _copy_exclusion_rig_assets(document: dict, root: Path) -> None:
+    layers = frozenset(
+        layer
+        for painted, covering in EXCLUSION_RIG_LAYERS
+        for group in (painted, covering)
+        for layer in group
+    )
+    for entry in document["silhouettes"].values():
+        rig = entry["rig"]
+        for layer in layers:
+            target = root / f"{rig}_{layer}.png"
+            if target.is_file():
+                continue
+            source = ROOT / f"{rig}_{layer}.png"
+            if source.is_file():
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, target)
 
 
 def _isolated_makeup_authority(root: Path) -> None:
@@ -155,6 +183,7 @@ def _isolated_makeup_authority(root: Path) -> None:
                 target = root / relative
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / relative, target)
+    _copy_exclusion_rig_assets(document, root)
 
 
 def _asset(path: str, payload: bytes, slot: str, z_order: int, size: int = CANVAS, anchor=(0, 0)) -> AppearanceAsset:
@@ -311,6 +340,27 @@ def test_visible_iris_is_excluded_from_eye_makeup(tmp_path: Path, monkeypatch: p
     result = ActiveOutfitOverlay(store, tmp_path).apply(_frame(), "front-crossed").toImage()
     assert result.pixelColor(*EYES_PIXEL) == BASE_GRAY
     assert result.pixelColor(EYES_PIXEL[0] - 2, EYES_PIXEL[1]) == LIP_RED
+
+
+@pytest.mark.parametrize("path", ("apply", "apply_makeup", "apply_animated"))
+def test_missing_makeup_exclusion_mask_fails_explicitly(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, path: str
+) -> None:
+    _app()
+    _authority(tmp_path)
+    missing = tmp_path / "assets" / "expressions" / "layered" / "front_oral_cavity.png"
+    missing.unlink()
+    store = _configure(monkeypatch, tmp_path, {"lips": _lips_block()})
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+    render = {
+        "apply": lambda: overlay.apply(_frame(), "front-crossed"),
+        "apply_makeup": lambda: overlay.apply_makeup(_frame(), "front-crossed"),
+        "apply_animated": lambda: overlay.apply_animated(
+            _frame(), "front-crossed", lambda _target: None
+        ),
+    }[path]
+    with pytest.raises(MakeupExclusionMaskError, match="front_oral_cavity.png"):
+        render()
 
 
 def _scaled_point(x: int, y: int) -> tuple[int, int]:
