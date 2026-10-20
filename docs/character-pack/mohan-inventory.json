@@ -3359,7 +3359,7 @@
       "sha256": "b8bd1b78fa3ae5060fbfea6947734125c74ffe7b9219a0b1091ef4a35bfa6176"
     },
     {
-      "bytes": 9437,
+      "bytes": 11522,
       "category": "archive_or_support",
       "image": {
         "height": 1536,
@@ -3372,10 +3372,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "09dcfc19dcce8f2ac776898bbc2897ac434e08349d5b81c7be39b4ba2ffc50d9"
+      "sha256": "89ed55233225ea53f20a6751d300640608470f54d7538026d7ccd93312b91c6b"
     },
     {
-      "bytes": 9372,
+      "bytes": 10994,
       "category": "archive_or_support",
       "image": {
         "height": 1536,
@@ -3388,10 +3388,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "26382d01d2cda8449c8e2e7432f7fa80c165660f0618fa829afc74009dcaed7f"
+      "sha256": "0e4229b7256dc0bd6754574409318c4d2f803b7395a0f3910c84002dd95ed872"
     },
     {
-      "bytes": 9429,
+      "bytes": 11273,
       "category": "archive_or_support",
       "image": {
         "height": 1536,
@@ -3404,7 +3404,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "07e461598c9ad6a865d1ae7cb70ee75440ecdcde5fec23fe1cf7c567e19f2976"
+      "sha256": "3ad628b17fa6a73056053f13d210a6a8d32c1e17d434698d03c46b77c92a0047"
     },
     {
       "bytes": 9476,
@@ -3535,7 +3535,7 @@
       "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
     },
     {
-      "bytes": 9167,
+      "bytes": 11054,
       "category": "archive_or_support",
       "image": {
         "height": 1536,
@@ -3548,10 +3548,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "249a26259add6cc11baf4339d326651e44e0e57e47cf0de9bdb8b35edd990291"
+      "sha256": "cec3a06e1000ec8e3b5b5cdef8c468f7e43eebffbc3f3d07a8d6fd1490dcd516"
     },
     {
-      "bytes": 9468,
+      "bytes": 11379,
       "category": "archive_or_support",
       "image": {
         "height": 1536,
@@ -3564,10 +3564,10 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "3d8194fc1bab47b39fce3ff467c6097d0b33c9de8b50d8107d307a04e3d05eed"
+      "sha256": "335c74c9e25df510e39fbbc5f8a6f725bc4ba7aaa5869ce8b2ddf452beb481f4"
     },
     {
-      "bytes": 9437,
+      "bytes": 11435,
       "category": "archive_or_support",
       "image": {
         "height": 1536,
@@ -3580,7 +3580,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "b5835be9619c855c79f6d1f1728955633bd53469d5ca3770ebab9b26a8a76c0c"
+      "sha256": "8d14201114a876359532e6c664fb1861a74f307eccc08f3d505293393c669ea4"
     },
     {
       "bytes": 9798,
@@ -4218,7 +4218,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "bf0c6179c90520ce6bde2fe84816a5b0d90d765c8cbbd4d8bf31c684d7332351"
+      "sha256": "fcbb3b5abfed9a52e4ff1a842c54aa4c8c2542a47d1cce0981218409bd755f54"
     },
     {
       "bytes": 326038,
@@ -4235,7 +4235,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "5c138ed8245f01252b56ca04751be06e3d18b8fa4e85c6630530c7a3ef5d8af5"
+      "sha256": "9a127a96e01055ac47327f812a770e3645415717fd5f7e5f3b867ffac3bf5232"
     },
     {
       "bytes": 11978,
@@ -12722,7 +12722,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "55c079a1233d4de2e3db6a6ab524488cd5bdf8334e085c1b2fd04118bf452cf1"
+      "sha256": "2fe5899e78956e78848a050201cd96f945f5b85ccb49192e22a611798cfb4e1c"
     },
     {
       "bytes": 2163,
@@ -12937,7 +12937,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "a0589b168dd2e23be46d14a71600b294e007c903af1fe9354829a17eb6394ce0"
+      "sha256": "b3bbff8cdb902d3ac3f02e1fb0d6991724d70e5187d526b74028e03f61c23949"
     },
     {
       "bytes": 383848,
@@ -12954,7 +12954,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "bfe82b164432bb98269c46cbe70c19773645d70c70a5df1d3ab071fa5d4a25b9"
+      "sha256": "268037b645a8a18cb21dacf99f31eb5498d26f2d2429e8b9c6ae81c8003f29e8"
     },
     {
       "bytes": 9942,
@@ -17176,7 +17176,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "3c054f912c72f3b559d51e1c9b22aea1bd37cf57b22b49019fb13d1983042093"
+      "sha256": "3527fd91c6c459cac01d7109c6be3e38708f5090d5653ebb9fee01ec4bf6f9b3"
     },
     {
       "bytes": 3149,
