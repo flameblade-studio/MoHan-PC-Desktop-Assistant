@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.lin-keyun-1.0.4.zip",
-    "bytes": 80471984,
-    "sha256": "13900ca4f07e3b953423eaf572570ea5ceb077bf967e4b56407ac0f1dbdbd6e2"
+    "bytes": 80473431,
+    "sha256": "9ee534eb1b35060e02c6f6e02f52cb6f4139e0c0022d4bdfa7e1e4c3d38128e0"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -22,14 +22,14 @@
       "sha256": "8f0074c6f21f5ed12b20b1a3656d2507b75b71e82cb55bbe57cfe4b54741c43f"
     },
     {
-      "bytes": 3950,
+      "bytes": 5332,
       "path": "assets/characters/lin-keyun/body/approval.json",
-      "sha256": "fcbb3b5abfed9a52e4ff1a842c54aa4c8c2542a47d1cce0981218409bd755f54"
+      "sha256": "54f34447bd3170fc7e9c1130e98c7c8f99e6f31d3272cea81831c7bc4eb8bd82"
     },
     {
       "bytes": 326038,
       "path": "assets/characters/lin-keyun/body/manifest.json",
-      "sha256": "9a127a96e01055ac47327f812a770e3645415717fd5f7e5f3b867ffac3bf5232"
+      "sha256": "eaaa7e5c1f99a77d7363e9d1081d1db90482aab067498ccb13e05f239bd39da5"
     },
     {
       "bytes": 11978,
@@ -562,9 +562,9 @@
       "sha256": "3ce46322ed36a426ab9f96e6c2bd101f1cb140bbd22c3cdf01a7ac5f598769c6"
     },
     {
-      "bytes": 68580,
+      "bytes": 68581,
       "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/body-fix.png",
-      "sha256": "31ed9f993c785437007b5d354e3a96b354035cbe81a65e7f35af80effc40b0a4"
+      "sha256": "2c24207d64490f039e893804f03e70d2fdee377d51e947ec256aad3751b27f9e"
     },
     {
       "bytes": 334571,
@@ -3589,7 +3589,7 @@
   ],
   "pack_id": "flameblade.lin-keyun",
   "pack_version": "1.0.4",
-  "package_hash": "b9729a15223f9ab66cb24b7bf8d3eece053cdc0b6f41b76924b86312f81d1d46",
+  "package_hash": "80cf5d49ded8158223247079b7e6b2741af1007156eaa28b5bc75e8fe9bed7ae",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

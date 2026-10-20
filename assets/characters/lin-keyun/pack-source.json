@@ -2,7 +2,7 @@
   "approval_refs": [
     {
       "path": "assets/characters/lin-keyun/body/approval.json",
-      "scope": "Owner-authorized prior approval for 28 views and three Lin Keyun gestures, plus separate GitHub Release download under CC BY-NC-ND 4.0; hashes and source authority are recorded in this evidence."
+      "scope": "Owner-authorized prior approval for 28 views and three Lin Keyun gestures, the 2026-10-20 owner-approved yaw-045 hair-tip color amendment, plus separate GitHub Release download under CC BY-NC-ND 4.0; hashes and source authority are recorded in this evidence."
     },
     {
       "path": "assets/expressions/source-bound-exasperated/approval/makeup-palette-approval.json",
@@ -10819,7 +10819,7 @@
           ],
           "kind": "body-fix",
           "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/body-fix.png",
-          "sha256": "31ed9f993c785437007b5d354e3a96b354035cbe81a65e7f35af80effc40b0a4"
+          "sha256": "2c24207d64490f039e893804f03e70d2fdee377d51e947ec256aad3751b27f9e"
         },
         {
           "anchor": [

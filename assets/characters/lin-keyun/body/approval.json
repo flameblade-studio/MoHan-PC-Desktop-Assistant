@@ -59,10 +59,34 @@
   "semantic_cleanup": {
     "authority": "Owner WARDROBE-BASE-1 second-round instruction, 2026-10-12",
     "clothed_rgba_max": 0,
-    "current_layer_png_bytes": 19430644,
-    "layer_manifest_sha256": "9a127a96e01055ac47327f812a770e3645415717fd5f7e5f3b867ffac3bf5232",
+    "current_layer_png_bytes": 19430645,
+    "layer_manifest_sha256": "eaaa7e5c1f99a77d7363e9d1081d1db90482aab067498ccb13e05f239bd39da5",
     "physical_views": 31,
     "rule": "Base mode composes body plus hair-back, hair-front and ornament only. Clothing edge pixels move from hair to garment with native RGBA unchanged."
   },
-  "ticket": "BODY-RELEASE-1"
+  "ticket": "BODY-RELEASE-1",
+  "appearance_amendments": [
+    {
+      "date": "2026-10-20",
+      "issue": "#289 item 5",
+      "scope": {
+        "traditional_chinese": "全身 yaw-045 眼角外髮尾：只調整 body-fix.png 中 162 個像素的色相與彩度，亮度、alpha、形狀不變；其餘 37 個產品格逐像素不變。",
+        "simplified_chinese": "全身 yaw-045 眼角外发尾：只调整 body-fix.png 中 162 个像素的色相与彩度，亮度、alpha、形状不变；其余 37 个产品格逐像素不变。",
+        "english": "Full-body yaw-045 hair tip beside the eye: only the hue and chroma of 162 pixels in body-fix.png changed; lightness, alpha and shape are unchanged, and the other 37 product cells are pixel-identical.",
+        "japanese": "全身 yaw-045 の目尻外側の毛先：body-fix.png の 162 ピクセルの色相と彩度のみ変更し、明度・alpha・形状は不変、他の 37 製品セルはピクセル単位で同一です。"
+      },
+      "files": [
+        {
+          "path": "assets/characters/lin-keyun/body/views/yaw-045-pitch+00/body-fix.png",
+          "sha256": "2c24207d64490f039e893804f03e70d2fdee377d51e947ec256aad3751b27f9e"
+        }
+      ],
+      "owner_quote": "核准",
+      "translations": {
+        "simplified_chinese": "核准",
+        "english": "Approved.",
+        "japanese": "承認します。"
+      }
+    }
+  ]
 }
