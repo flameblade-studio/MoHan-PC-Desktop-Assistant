@@ -21,7 +21,7 @@ MoHan Desktop Assistant 採用 MIT License，但其原始碼及 Release 安裝�
 
 ### MPL 元件與原始碼取得
 
-certifi 2026.7.22（MPL-2.0）是 Azure 相依鏈的間接元件，現已明確固定版本並列入 Windows SBOM。tqdm 4.70.0（MPL-2.0 AND MIT）及 orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）用於本機美術工具。完整授權、原通知、對應原始碼 ZIP 與逐檔雜湊見 [MPL 原始碼說明](third_party_licenses/mpl/README.md) 及 `third_party_licenses/mpl/components.json`；收件者可直接解開隨附 ZIP 取得源碼。墨寒的 MIT 授權不取代或限制這些第三方條款。套件更新、修改或封裝前必須通過 `tools/mpl_compliance.py`。
+certifi 2026.10.19（MPL-2.0）是 Azure 相依鏈的間接元件，現已明確固定版本並列入 Windows SBOM。tqdm 4.70.0（MPL-2.0 AND MIT）及 orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）用於本機美術工具。完整授權、原通知、對應原始碼 ZIP 與逐檔雜湊見 [MPL 原始碼說明](third_party_licenses/mpl/README.md) 及 `third_party_licenses/mpl/components.json`；收件者可直接解開隨附 ZIP 取得源碼。墨寒的 MIT 授權不取代或限制這些第三方條款。套件更新、修改或封裝前必須通過 `tools/mpl_compliance.py`。
 
 ### 建置專用工具鏈
 
@@ -114,7 +114,7 @@ MoHan Desktop Assistant 采用 MIT License，但其源代码及 Release 安装�
 
 ### MPL 组件与源代码获取
 
-certifi 2026.7.22（MPL-2.0）是 Azure 依赖链的间接组件，现已明确固定版本并列入 Windows SBOM。tqdm 4.70.0（MPL-2.0 AND MIT）及 orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）用于本地美术工具。完整授权、原通知、对应源代码 ZIP 与逐文件哈希见 [MPL 源代码说明](third_party_licenses/mpl/README.md) 及 `third_party_licenses/mpl/components.json`；接收者可直接解开附带 ZIP 获取源代码。墨寒的 MIT 授权不取代或限制这些第三方条款。组件更新、修改或打包前必须通过 `tools/mpl_compliance.py`。
+certifi 2026.10.19（MPL-2.0）是 Azure 依赖链的间接组件，现已明确固定版本并列入 Windows SBOM。tqdm 4.70.0（MPL-2.0 AND MIT）及 orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）用于本地美术工具。完整授权、原通知、对应源代码 ZIP 与逐文件哈希见 [MPL 源代码说明](third_party_licenses/mpl/README.md) 及 `third_party_licenses/mpl/components.json`；接收者可直接解开附带 ZIP 获取源代码。墨寒的 MIT 授权不取代或限制这些第三方条款。组件更新、修改或打包前必须通过 `tools/mpl_compliance.py`。
 
 ### 构建专用工具链
 
@@ -207,7 +207,7 @@ MoHan Desktop Assistant is MIT licensed, but its source and Release packages use
 
 ### MPL components and source access
 
-certifi 2026.7.22 (MPL-2.0) is a transitive Azure dependency, now explicitly pinned and included in the Windows SBOM. tqdm 4.70.0 (MPL-2.0 AND MIT) and orjson 3.12.0 (MPL-2.0 AND (Apache-2.0 OR MIT)) serve local art tooling. Complete licenses, original notices, corresponding source ZIPs and per-file hashes are available in [MPL source instructions](third_party_licenses/mpl/README.md) and `third_party_licenses/mpl/components.json`; recipients can obtain sources by directly unpacking the included ZIPs. MoHan's MIT license does not replace or restrict these third-party terms. Updates, modifications and packaging must pass `tools/mpl_compliance.py`.
+certifi 2026.10.19 (MPL-2.0) is a transitive Azure dependency, now explicitly pinned and included in the Windows SBOM. tqdm 4.70.0 (MPL-2.0 AND MIT) and orjson 3.12.0 (MPL-2.0 AND (Apache-2.0 OR MIT)) serve local art tooling. Complete licenses, original notices, corresponding source ZIPs and per-file hashes are available in [MPL source instructions](third_party_licenses/mpl/README.md) and `third_party_licenses/mpl/components.json`; recipients can obtain sources by directly unpacking the included ZIPs. MoHan's MIT license does not replace or restrict these third-party terms. Updates, modifications and packaging must pass `tools/mpl_compliance.py`.
 
 ### Build-only toolchain
 
@@ -300,7 +300,7 @@ MoHan Desktop Assistant は MIT License で提供されますが、そのソー�
 
 ### MPL コンポーネントとソースの取得
 
-certifi 2026.7.22（MPL-2.0）は Azure の間接依存であり、バージョンを明示的に固定し Windows SBOM に登録しました。tqdm 4.70.0（MPL-2.0 AND MIT）と orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）はローカル美術ツールで使用します。ライセンス全文、元の通知、対応ソース ZIP とファイル別ハッシュは [MPL ソース説明](third_party_licenses/mpl/README.md) および `third_party_licenses/mpl/components.json` にあります。受領者は同梱 ZIP を展開してソースを取得できます。墨寒の MIT ライセンスは第三者の条件を置換または制限しません。更新、変更、パッケージ化の前に `tools/mpl_compliance.py` を通過する必要があります。
+certifi 2026.10.19（MPL-2.0）は Azure の間接依存であり、バージョンを明示的に固定し Windows SBOM に登録しました。tqdm 4.70.0（MPL-2.0 AND MIT）と orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)）はローカル美術ツールで使用します。ライセンス全文、元の通知、対応ソース ZIP とファイル別ハッシュは [MPL ソース説明](third_party_licenses/mpl/README.md) および `third_party_licenses/mpl/components.json` にあります。受領者は同梱 ZIP を展開してソースを取得できます。墨寒の MIT ライセンスは第三者の条件を置換または制限しません。更新、変更、パッケージ化の前に `tools/mpl_compliance.py` を通過する必要があります。
 
 ### ビルド専用ツールチェーン
 

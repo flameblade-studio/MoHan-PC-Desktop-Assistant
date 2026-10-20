@@ -183,7 +183,7 @@ def test_every_requirements_profile_and_project_dependency_is_exactly_pinned() -
     assert _project_dependency_versions() == _pinned_requirements(
         "requirements-runtime.txt"
     )
-    assert _pinned_requirements("requirements-runtime.txt")["pillow"] == "12.3.0"
+    assert _pinned_requirements("requirements-runtime.txt")["pillow"] == "13.0.0"
     assert "pillow" not in _pinned_requirements("requirements-dev.txt")
 
     components = tomllib.loads(_read("sbom/components.toml"))["component"]
@@ -192,7 +192,7 @@ def test_every_requirements_profile_and_project_dependency_is_exactly_pinned() -
         for component in components
         if component.get("scope") == "runtime"
     }
-    assert runtime_components["pillow"]["version"] == "12.3.0"
+    assert runtime_components["pillow"]["version"] == "13.0.0"
     assert runtime_components["pillow"]["license"] == "MIT-CMU"
     assert "certifi" in runtime_components
 
