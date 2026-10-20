@@ -607,14 +607,10 @@ class ActiveOutfitLayerMixin:
         for layer in layers:
             path = self._rig_layer_path(rig, layer)
             if not path.is_file():
-                raise MakeupExclusionMaskError(
-                    f"Missing makeup exclusion mask: {path}"
-                )
+                raise MakeupExclusionMaskError(f"Missing makeup exclusion mask: {path}")
             source = QPixmap(str(path))
             if source.isNull() or source.size().toTuple() != canvas:
-                raise MakeupExclusionMaskError(
-                    f"Invalid makeup exclusion mask: {path}"
-                )
+                raise MakeupExclusionMaskError(f"Invalid makeup exclusion mask: {path}")
             union = union.united(QRegion(source.mask()))
         return union
 
@@ -622,9 +618,7 @@ class ActiveOutfitLayerMixin:
         """Resolve a relative safe-region rig prefix without dropping its root."""
         relative = Path(rig)
         if relative.is_absolute() or ".." in relative.parts or not relative.name:
-            raise MakeupExclusionMaskError(
-                f"Invalid makeup exclusion rig path: {rig!r}"
-            )
+            raise MakeupExclusionMaskError(f"Invalid makeup exclusion rig path: {rig!r}")
         return self._asset_root / relative.parent / f"{relative.name}_{layer}.png"
 
     def _validate_alpha(

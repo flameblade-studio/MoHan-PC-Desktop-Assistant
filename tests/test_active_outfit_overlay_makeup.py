@@ -342,16 +342,25 @@ def test_visible_iris_is_excluded_from_eye_makeup(tmp_path: Path, monkeypatch: p
     assert result.pixelColor(EYES_PIXEL[0] - 2, EYES_PIXEL[1]) == LIP_RED
 
 
+@pytest.mark.parametrize("path", ("apply", "apply_makeup", "apply_animated"))
 def test_missing_makeup_exclusion_mask_fails_explicitly(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, path: str
 ) -> None:
     _app()
     _authority(tmp_path)
     missing = tmp_path / "assets" / "expressions" / "layered" / "front_oral_cavity.png"
     missing.unlink()
     store = _configure(monkeypatch, tmp_path, {"lips": _lips_block()})
+    overlay = ActiveOutfitOverlay(store, tmp_path)
+    render = {
+        "apply": lambda: overlay.apply(_frame(), "front-crossed"),
+        "apply_makeup": lambda: overlay.apply_makeup(_frame(), "front-crossed"),
+        "apply_animated": lambda: overlay.apply_animated(
+            _frame(), "front-crossed", lambda _target: None
+        ),
+    }[path]
     with pytest.raises(MakeupExclusionMaskError, match="front_oral_cavity.png"):
-        ActiveOutfitOverlay(store, tmp_path).apply(_frame(), "front-crossed")
+        render()
 
 
 def _scaled_point(x: int, y: int) -> tuple[int, int]:

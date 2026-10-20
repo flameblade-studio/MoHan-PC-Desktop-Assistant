@@ -56,8 +56,13 @@ RECT_FIELDS = 4
 CANVAS_FIELDS = 2
 
 
-class MakeupExclusionMaskError(OutfitPackError):
-    """A required layered-rig mask for makeup exclusion is unavailable."""
+class MakeupExclusionMaskError(RuntimeError):
+    """A required layered-rig mask for makeup exclusion is unavailable.
+
+    Deliberately not an OutfitPackError: pack errors fall back to the bare
+    frame, while a damaged bundled exclusion mask must fail closed instead of
+    silently painting makeup over eyes or the mouth.
+    """
 
 
 FOUNDATION_STATES = frozenset({"rest", "half", "closed"})
