@@ -1,10 +1,10 @@
 {
   "build_provenance": {
     "approval_scope": "BODY-RELEASE-1 designates the source roots and seventh-round 28-view/3-gesture approval. Historical metadata is retained as evidence and is not upgraded to a round-9 approval.",
-    "candidate_fingerprint": "ccf5807396e751cecbf7ec6b227110b904d29a96f71a650354f66212bb577ba6",
+    "candidate_fingerprint": "ad81efee0c4adc07d0fb2fc8490634205d75f051d045131612434ca79029e922",
     "candidate_manifest_bytes": 447981,
-    "candidate_manifest_sha256": "f13a1008d85c203804d8d5cf2101da9976726e7019a44de2e569c61cb0b3f0fc",
-    "candidate_manifest_source_id": ".quality-tmp/cheek-rest-facecore/build/mohan-body-v2/manifest.json",
+    "candidate_manifest_sha256": "2f2b14a293cbeaa365664c17094d2ca0a49f9435ca658ebd62b36c35bc0788c9",
+    "candidate_manifest_source_id": ".quality-tmp/lk-temple2/body-pack-final/mohan-body-v2/manifest.json",
     "dynamic_face_core_recalculation": false,
     "fixed_final_core_masks": 31,
     "historical_gesture_manifest_drift_rows": 9,
@@ -488,19 +488,19 @@
       "sha256": "b8bd1b78fa3ae5060fbfea6947734125c74ffe7b9219a0b1091ef4a35bfa6176"
     },
     {
-      "bytes": 9437,
+      "bytes": 11522,
       "path": "final-core-masks/yaw+015-pitch+00.png",
-      "sha256": "09dcfc19dcce8f2ac776898bbc2897ac434e08349d5b81c7be39b4ba2ffc50d9"
+      "sha256": "89ed55233225ea53f20a6751d300640608470f54d7538026d7ccd93312b91c6b"
     },
     {
-      "bytes": 9372,
+      "bytes": 10994,
       "path": "final-core-masks/yaw+030-pitch+00.png",
-      "sha256": "26382d01d2cda8449c8e2e7432f7fa80c165660f0618fa829afc74009dcaed7f"
+      "sha256": "0e4229b7256dc0bd6754574409318c4d2f803b7395a0f3910c84002dd95ed872"
     },
     {
-      "bytes": 9429,
+      "bytes": 11273,
       "path": "final-core-masks/yaw+045-pitch+00.png",
-      "sha256": "07e461598c9ad6a865d1ae7cb70ee75440ecdcde5fec23fe1cf7c567e19f2976"
+      "sha256": "3ad628b17fa6a73056053f13d210a6a8d32c1e17d434698d03c46b77c92a0047"
     },
     {
       "bytes": 9476,
@@ -543,19 +543,19 @@
       "sha256": "62cd4557a58ee0cb5dac86f3067c12b295f20ef43ceb25e36e8d00d4ae7fbf62"
     },
     {
-      "bytes": 9167,
+      "bytes": 11054,
       "path": "final-core-masks/yaw-015-pitch+00.png",
-      "sha256": "249a26259add6cc11baf4339d326651e44e0e57e47cf0de9bdb8b35edd990291"
+      "sha256": "cec3a06e1000ec8e3b5b5cdef8c468f7e43eebffbc3f3d07a8d6fd1490dcd516"
     },
     {
-      "bytes": 9468,
+      "bytes": 11379,
       "path": "final-core-masks/yaw-030-pitch+00.png",
-      "sha256": "3d8194fc1bab47b39fce3ff467c6097d0b33c9de8b50d8107d307a04e3d05eed"
+      "sha256": "335c74c9e25df510e39fbbc5f8a6f725bc4ba7aaa5869ce8b2ddf452beb481f4"
     },
     {
-      "bytes": 9437,
+      "bytes": 11435,
       "path": "final-core-masks/yaw-045-pitch+00.png",
-      "sha256": "b5835be9619c855c79f6d1f1728955633bd53469d5ca3770ebab9b26a8a76c0c"
+      "sha256": "8d14201114a876359532e6c664fb1861a74f307eccc08f3d505293393c669ea4"
     },
     {
       "bytes": 9798,
@@ -1135,7 +1135,7 @@
   ],
   "layer_dependency": {
     "body_pack": {
-      "fingerprint": "ccf5807396e751cecbf7ec6b227110b904d29a96f71a650354f66212bb577ba6",
+      "fingerprint": "ad81efee0c4adc07d0fb2fc8490634205d75f051d045131612434ca79029e922",
       "id": "mohan-body-v2",
       "version": "1.0.0"
     },
@@ -1382,7 +1382,7 @@
     }
   ],
   "pack": {
-    "expected_fingerprint": "ccf5807396e751cecbf7ec6b227110b904d29a96f71a650354f66212bb577ba6",
+    "expected_fingerprint": "ad81efee0c4adc07d0fb2fc8490634205d75f051d045131612434ca79029e922",
     "id": "mohan-body-v2",
     "license": "CC-BY-NC-ND-4.0",
     "version": "1.0.0"
