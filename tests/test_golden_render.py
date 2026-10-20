@@ -388,6 +388,24 @@ def test_capture_resets_existing_makeup_intensities(tmp_path: Path) -> None:
     ) == DEFAULT_SLOT_INTENSITIES_V2
 
 
+def test_capture_selects_makeup_from_candidate_official_pack_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from tools import golden_render
+
+    calls: list[tuple[str, Path]] = []
+
+    def record(store: Path, variant_id: str, *, official_pack_root: Path) -> None:
+        calls.append((variant_id, official_pack_root))
+
+    monkeypatch.setattr(golden_render, "select_builtin_makeup", record)
+    candidate_root = tmp_path / "candidate" / "official-packs"
+    golden_render._prepare_store(
+        tmp_path / "store", "classic", golden_render.DEFAULT_CHARACTER_SETTINGS, candidate_root,
+    )
+    assert calls == [("classic", candidate_root)]
+
+
 def _clone_assets_for_mutation(target_root: Path) -> None:
     # Copies support pytest temporary roots on another volume and keep any
     # fixture mutation isolated from the approved production assets.

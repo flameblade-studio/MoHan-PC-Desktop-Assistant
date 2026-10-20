@@ -397,6 +397,7 @@ def _official_pack_root(asset_root: Path, settings: GoldenCharacterSettings):
 def _prepare_store(
     store: Path, makeup: str,
     settings: GoldenCharacterSettings = DEFAULT_CHARACTER_SETTINGS,
+    official_pack_root: Path | None = None,
 ) -> None:
     store.mkdir(parents=True, exist_ok=True)
     restore_builtin_outfit(store)
@@ -405,8 +406,11 @@ def _prepare_store(
         write_makeup_slot_intensity(store, slot, intensity)
     if makeup == settings.bare_makeup:
         clear_appearance_selection(store, "makeup")
-    else:
+    elif official_pack_root is None:
         select_builtin_makeup(store, makeup)
+    else:
+        # A candidate asset root must validate its own optional makeup packs.
+        select_builtin_makeup(store, makeup, official_pack_root=official_pack_root)
 
 
 @contextmanager
@@ -563,7 +567,7 @@ def render_matrix(
             if not makeup_cells:
                 continue
             store = runtime_root / "stores" / makeup
-            _prepare_store(store, makeup, settings)
+            _prepare_store(store, makeup, settings, official_pack_root)
             overlay = ActiveOutfitOverlay(
                 store,
                 asset_root,
