@@ -12937,7 +12937,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "b3bbff8cdb902d3ac3f02e1fb0d6991724d70e5187d526b74028e03f61c23949"
+      "sha256": "eab3c55aaac197eaaf64e7fe616c72825ca698a186e57e001cba9fa78d6b8e7d"
     },
     {
       "bytes": 383848,
@@ -17176,7 +17176,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "3527fd91c6c459cac01d7109c6be3e38708f5090d5653ebb9fee01ec4bf6f9b3"
+      "sha256": "8163ef9261c57ee527f04c5d5c59225e0b6d80b5fa46b7f24fb245521340905c"
     },
     {
       "bytes": 3149,
@@ -32158,7 +32158,7 @@
       "sha256": "5cf12a44ae74de1733eca425e1b6bdb659c24603f4bcca28f798056ba9c11355"
     },
     {
-      "bytes": 9232,
+      "bytes": 9066,
       "category": "native_garment_motion",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -32172,7 +32172,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "e455133fe2b86a727e69e99694e0b96ce84132579e7acfaefd789a9ab1ba7e49"
+      "sha256": "59d89129fce07aaa476303027ce393b1aef83563899eedbeec4f2ca819c521bb"
     },
     {
       "bytes": 730241,
@@ -84220,7 +84220,7 @@
       "sha256": "cead2ded89aa7185803edb15751ac9edbf7a5eae57e219d75a6e0f819862479a"
     },
     {
-      "bytes": 29245764,
+      "bytes": 29154210,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -84234,7 +84234,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "55c55c89f24863f018f77327688a955746eedec2764cb544d3b4f65b9df56e49"
+      "sha256": "95a0ed2d943eb1df62bd40970220e15537a6c228abd6fbbf801d3908a67cbd93"
     },
     {
       "appearance_categories": [
@@ -84976,7 +84976,7 @@
       "appearance_categories": [
         "hairstyles"
       ],
-      "bytes": 186374,
+      "bytes": 103353,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -84993,7 +84993,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "2fef3df93c24f4a02bcf49807987cbb233b3a75d1ce8cc9ffb90d686d5a1ca44"
+      "sha256": "a5d79c5c19d64db213cd42db9d4b8a69003c990e0ebe1767e8baae5f61d4c0bd"
     },
     {
       "appearance_categories": [
@@ -87102,7 +87102,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "dd994a7a75c0379debcdb771e4f1949f99c3dfd8b497a42dc6cd40231cf9a370"
+      "sha256": "4ee16d62e1d85d147bec3a91a857384df46606aa951fba3541b685bac19291ac"
     },
     {
       "bytes": 1422107,

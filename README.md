@@ -53,7 +53,7 @@
 
 兩個角色包都在本專案的 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 獨立提供，需另外下載，不隨安裝檔附帶。下載不需金鑰，安裝前會核對大小、`SHA-256`、manifest 與逐檔內容。
 
-截至 2026-10-12，最新已發布角色包為墨寒 `1.0.4` 與林可芸 `1.0.1`；待發布版本為墨寒 `1.0.6` 與林可芸 `1.0.4`。角色包版號與程式版號分開，主線更新將隨後續發布提供。
+截至 2026-10-21，最新已發布角色包為墨寒 `1.0.6`、林可芸 `1.0.4` 與素體包 `mohan-body-v2` `1.0.0`；待發布版本為墨寒 `1.0.7`。角色包版號與程式版號分開，主線更新將隨後續發布提供。
 
 #### 主線已合併、待發布的更新
 
@@ -292,7 +292,7 @@ Windows 正式封裝規格以 Rust 1.97.1、Maturin 1.14.1 與 PyO3 0.29.2 建�
 
 两个角色包都在本项目的 [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) 独立提供，需要另外下载，不随安装文件附带。下载无需密钥，安装前会核对大小、`SHA-256`、manifest 与逐文件内容。
 
-截至 2026-10-12，最新已发布角色包为墨寒 `1.0.4` 与林可芸 `1.0.1`；待发布版本为墨寒 `1.0.6` 与林可芸 `1.0.4`。角色包版本号与程序版本号分开，主线更新将在后续发布中提供。
+截至 2026-10-21，最新已发布角色包为墨寒 `1.0.6`、林可芸 `1.0.4` 与素体包 `mohan-body-v2` `1.0.0`；待发布版本为墨寒 `1.0.7`。角色包版本号与程序版本号分开，主线更新将在后续发布中提供。
 
 #### 主线已合并、待发布的更新
 
@@ -531,7 +531,7 @@ MoHan retains its name, URL, versions, and users as the installable product. The
 
 Both packs are separately available from this project's [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) and must be downloaded in addition to the installer. Downloads require no key; size, `SHA-256`, manifest, and every file are verified before installation.
 
-As of October 12, 2026, the latest published character packs are MoHan `1.0.4` and Lin Keyun `1.0.1`; MoHan `1.0.6` and Lin Keyun `1.0.4` await release. Pack and application versions are separate; main-branch updates will be delivered in subsequent releases.
+As of October 21, 2026, the latest published packs are MoHan `1.0.6`, Lin Keyun `1.0.4` and the `mohan-body-v2` body pack `1.0.0`; MoHan `1.0.7` awaits release. Pack and application versions are separate; main-branch updates will be delivered in subsequent releases.
 
 #### Updates merged into main and awaiting release
 
@@ -770,7 +770,7 @@ The formal Windows packaging contract builds its first-party native module with 
 
 両パックは本プロジェクトの [Releases](https://github.com/flameblade-studio/MoHan-PC-Desktop-Assistant/releases) から個別に取得します。インストーラーには同梱されないため、別途ダウンロードしてください。取得にキーは不要で、導入前にサイズ、`SHA-256`、manifest、全ファイルの内容を検証します。
 
-2026 年 10 月 12 日時点の最新公開済みキャラクターパックは墨寒 `1.0.4` と林可芸 `1.0.1` です。墨寒 `1.0.6` と林可芸 `1.0.4` は公開待ちです。パックとアプリのバージョンは別で、main の更新は今後のリリースで提供されます。
+2026 年 10 月 21 日時点の最新公開済みパックは墨寒 `1.0.6`、林可芸 `1.0.4`、素体パック `mohan-body-v2` `1.0.0` です。墨寒 `1.0.7` は公開待ちです。パックとアプリのバージョンは別で、main の更新は今後のリリースで提供されます。
 
 #### main に統合済み・公開待ちの更新
 
