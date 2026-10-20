@@ -46,7 +46,7 @@
       "sha256": "8f0074c6f21f5ed12b20b1a3656d2507b75b71e82cb55bbe57cfe4b54741c43f"
     },
     {
-      "bytes": 3950,
+      "bytes": 5332,
       "category": "character_layer_view",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -60,7 +60,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "5cc3755a3432ab8fef8cb110f18634566dcba6f83026382ff6f008f6bdcc717f"
+      "sha256": "54f34447bd3170fc7e9c1130e98c7c8f99e6f31d3272cea81831c7bc4eb8bd82"
     },
     {
       "bytes": 326038,
@@ -8556,7 +8556,7 @@
       "sha256": "60205421659aed3837f2282ef1bc8c18f9d883f74b29e63ad35d368c9cdf858c"
     },
     {
-      "bytes": 333376,
+      "bytes": 333440,
       "category": "archive_or_support",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -8564,7 +8564,7 @@
       "readers": [],
       "reason": "來源、審閱或非角色依賴；未列入執行期讀取範圍",
       "scope": "excluded_support",
-      "sha256": "68170accecd318df06d6ba6032994716ad2ad7e576d4750079c5a8b431892644"
+      "sha256": "f3b62a5dfc5e493556e243f1cce2fb0fff4ed82a962fcb39a8588ba713be0a36"
     },
     {
       "bytes": 2163,
