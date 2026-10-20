@@ -27,7 +27,10 @@ lazy from domain.outfit_pack import (
     restore_builtin_outfit,
 )
 lazy from domain.outfit_pack_store import OFFICIAL_PACK_ROOT
-lazy from domain.outfit_pack_makeup import MAKEUP_STATE_FILE
+lazy from domain.outfit_pack_makeup import (
+    MAKEUP_STATE_FILE,
+    MakeupExclusionMaskError,
+)
 lazy from domain.outfit_pack_store import OfficialPackRoots
 lazy from domain.qt_image_io import image_from_png
 lazy from domain.outfit_pack_official import native_overlay_is_redundant
@@ -330,6 +333,8 @@ class ActiveOutfitOverlay(
             self._reject_stale_active_pack()
             record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
             return frame
+        except MakeupExclusionMaskError:
+            raise
         except (OSError, ValueError, OutfitPackError, zipfile.BadZipFile) as error:
             self._invalidate_view(view_id)
             record_outfit_fallback(error, view_id=view_id, seen=self._logged_fallbacks)
