@@ -2771,17 +2771,6 @@
     },
     {
       "paths": [
-        "assets/expressions/layered/front_iris_left.png"
-      ],
-      "tests": [
-        "test_active_outfit_overlay.py",
-        "test_active_outfit_overlay_makeup.py",
-        "test_face_layer_asymmetry_audit.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "assets/expressions/layered/front_base.png"
       ],
       "tests": [
@@ -2831,6 +2820,16 @@
     },
     {
       "paths": [
+        "assets/expressions/layered/front_iris_left.png"
+      ],
+      "tests": [
+        "test_active_outfit_overlay.py",
+        "test_face_layer_asymmetry_audit.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/layered_full_body_renderer.py"
       ],
       "tests": [
@@ -2868,6 +2867,15 @@
       "tests": [
         "test_active_outfit_overlay.py",
         "test_source_bound_garment_visibility.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/expressions/layered/front_oral_cavity.png"
+      ],
+      "tests": [
+        "test_active_outfit_overlay_makeup.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -3769,7 +3777,8 @@
         "test_japanese_localization.py",
         "test_portable_secret_wiring.py",
         "test_presentation_owner_contract.py",
-        "test_wardrobe_preview_composite.py"
+        "test_wardrobe_preview_composite.py",
+        "test_wardrobe_ui.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5170,6 +5179,16 @@
       ],
       "tests": [
         "test_capture_tools.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "assets/pose-atlas/v5-base/yaw+000-pitch+00.png"
+      ],
+      "tests": [
+        "test_capture_tools.py",
+        "test_official_default_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7977,15 +7996,6 @@
       ],
       "tests": [
         "test_official_body_layers_builder.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "assets/pose-atlas/v5-base/yaw+000-pitch+00.png"
-      ],
-      "tests": [
-        "test_official_default_pack.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

@@ -27,12 +27,12 @@ distributed_in_installer = false
 # Windows runtime copy is recorded in sbom/components.toml.
 [[component]]
 name = "certifi"
-version = "2026.7.22"
+version = "2026.10.19"
 license = "MPL-2.0"
 scope = "offline-art-production"
 profiles = ["local-art-tooling"]
 license_file = "third_party_licenses/mpl/MPL-2.0.txt"
-source_archive = "third_party_licenses/mpl/sources/certifi-2026.7.22.zip"
+source_archive = "third_party_licenses/mpl/sources/certifi-2026.10.19.zip"
 evidence_manifest = "third_party_licenses/mpl/components.json"
 distributed_in_runtime = false
 distributed_in_installer = false

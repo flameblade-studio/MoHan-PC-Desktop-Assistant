@@ -7,8 +7,8 @@
 - 文件版本：2026-09-07。
 - 文件狀態：條件與作業規範，不是目前已驗證合規證明。本文件不加入白名單、不改 runtime，也不把套件級驗證證據擴張成完整正式發行驗收。
 - 規範來源：[MPL-2.0 正式授權文本](https://www.mozilla.org/en-US/MPL/2.0/)；[Mozilla MPL-2.0 FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/)（Q5、Q6、Q8、Q11）。FAQ 是導讀，不取代授權文本、適用法律或律師意見。
-- 正式套件級 manifest：third_party_licenses/mpl/components.json（schema mohan.mpl-compliance.v1；SHA-256 66902730587ea554a0d54421cdb683037543e88ad6e64f179e4ba114e09b2ba2）。它記錄 certifi 2026.7.22（MPL-2.0，Windows runtime 與 local art tooling）、tqdm 4.70.0（MPL-2.0 AND MIT，local art tooling）、orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)，local art tooling）。
-- scope 紀錄：certifi 2026.7.22 是 Azure Speech → azure-core → requests 的間接 Windows runtime 依賴，也被 local-art-tooling 使用；root 已另行 pin 並補 Windows SBOM。tqdm 與 orjson 只列 local-art-tooling。這是 root 提供的證據索引，不等於完整正式發行驗收。
+- 正式套件級 manifest：third_party_licenses/mpl/components.json（schema mohan.mpl-compliance.v1；SHA-256 0fe5754ee83ce0ddccc444081f41bb271e088feeea2dbdb62bb57ac77ab7b5cb）。它記錄 certifi 2026.10.19（MPL-2.0，Windows runtime 與 local art tooling）、tqdm 4.70.0（MPL-2.0 AND MIT，local art tooling）、orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)，local art tooling）。
+- scope 紀錄：certifi 2026.10.19 是 Azure Speech → azure-core → requests 的間接 Windows runtime 依賴，也被 local-art-tooling 使用；root 已另行 pin 並補 Windows SBOM。tqdm 與 orjson 只列 local-art-tooling。這是 root 提供的證據索引，不等於完整正式發行驗收。
 - 正式 license text：third_party_licenses/mpl/MPL-2.0.txt；source archive 位於 third_party_licenses/mpl/sources/，各檔案 SHA 以 manifest 為準；實際 source／notice 是否足以發行，仍以 root receipt 與正式發行閘門為準。
 
 ### 1. 定義、授權與商業使用
@@ -50,8 +50,8 @@ root 在改 allowlist、恢復 runtime 或允許對外發行前，須取得套�
 - 文档版本：2026-09-07。
 - 文档状态：条件和操作规范，不是当前已验证合规证明。本文件不加入白名单、不改 runtime，也不把软件包级验证证据扩展成完整正式发布验收。
 - 规范来源：[MPL-2.0 正式许可证文本](https://www.mozilla.org/en-US/MPL/2.0/)；[Mozilla MPL-2.0 FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/)（Q5、Q6、Q8、Q11）。FAQ 是导读，不取代许可证文本、适用法律或律师意见。
-- 正式软件包级 manifest：third_party_licenses/mpl/components.json（schema mohan.mpl-compliance.v1；SHA-256 66902730587ea554a0d54421cdb683037543e88ad6e64f179e4ba114e09b2ba2）。它记录 certifi 2026.7.22（MPL-2.0，Windows runtime 与 local art tooling）、tqdm 4.70.0（MPL-2.0 AND MIT，local art tooling）、orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)，local art tooling）。
-- scope 记录：certifi 2026.7.22 是 Azure Speech → azure-core → requests 的间接 Windows runtime 依赖，也被 local-art-tooling 使用；root 已另行 pin 并补 Windows SBOM。tqdm 与 orjson 只列 local-art-tooling。这是 root 提供的证据索引，不等于完整正式发布验收。
+- 正式软件包级 manifest：third_party_licenses/mpl/components.json（schema mohan.mpl-compliance.v1；SHA-256 0fe5754ee83ce0ddccc444081f41bb271e088feeea2dbdb62bb57ac77ab7b5cb）。它记录 certifi 2026.10.19（MPL-2.0，Windows runtime 与 local art tooling）、tqdm 4.70.0（MPL-2.0 AND MIT，local art tooling）、orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)，local art tooling）。
+- scope 记录：certifi 2026.10.19 是 Azure Speech → azure-core → requests 的间接 Windows runtime 依赖，也被 local-art-tooling 使用；root 已另行 pin 并补 Windows SBOM。tqdm 与 orjson 只列 local-art-tooling。这是 root 提供的证据索引，不等于完整正式发布验收。
 - 正式 license text：third_party_licenses/mpl/MPL-2.0.txt；source archive 位于 third_party_licenses/mpl/sources/，各文件 SHA 以 manifest 为准；实际 source／notice 是否足以发布，仍以 root receipt 与正式发布闸门为准。
 
 ### 1. 定义、许可与商业使用
@@ -93,8 +93,8 @@ root 在改 allowlist、恢复 runtime 或允许对外发布前，须取得软�
 - Document version: 2026-09-07.
 - Document status: conditional operational policy, not a present compliance certification. This document does not change the allowlist or runtime and does not expand package-level verification evidence into complete formal release acceptance.
 - Normative sources: [MPL-2.0 legal text](https://www.mozilla.org/en-US/MPL/2.0/) and [Mozilla MPL-2.0 FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/) (Q5, Q6, Q8, Q11). The FAQ is guidance and does not replace the license, applicable law, or legal advice.
-- Formal package-level manifest: third_party_licenses/mpl/components.json (schema mohan.mpl-compliance.v1; SHA-256 66902730587ea554a0d54421cdb683037543e88ad6e64f179e4ba114e09b2ba2). It records certifi 2026.7.22 (MPL-2.0, Windows runtime and local-art tooling), tqdm 4.70.0 (MPL-2.0 AND MIT, local-art tooling), and orjson 3.12.0 (MPL-2.0 AND (Apache-2.0 OR MIT), local-art tooling).
-- Scope record: certifi 2026.7.22 is an indirect Windows runtime dependency in the Azure Speech → azure-core → requests chain and is also used by local-art tooling; root separately pinned it and added the Windows SBOM. tqdm and orjson are listed only for local-art tooling. This is a root-provided evidence index, not complete formal release acceptance.
+- Formal package-level manifest: third_party_licenses/mpl/components.json (schema mohan.mpl-compliance.v1; SHA-256 0fe5754ee83ce0ddccc444081f41bb271e088feeea2dbdb62bb57ac77ab7b5cb). It records certifi 2026.10.19 (MPL-2.0, Windows runtime and local-art tooling), tqdm 4.70.0 (MPL-2.0 AND MIT, local-art tooling), and orjson 3.12.0 (MPL-2.0 AND (Apache-2.0 OR MIT), local-art tooling).
+- Scope record: certifi 2026.10.19 is an indirect Windows runtime dependency in the Azure Speech → azure-core → requests chain and is also used by local-art tooling; root separately pinned it and added the Windows SBOM. tqdm and orjson are listed only for local-art tooling. This is a root-provided evidence index, not complete formal release acceptance.
 - Formal license text: third_party_licenses/mpl/MPL-2.0.txt; source archives are under third_party_licenses/mpl/sources/ and their SHA values are governed by the manifest. Whether source and notices are sufficient for release remains subject to root’s receipt and formal release gate.
 
 ### 1. Definitions, rights, and commercial use
@@ -136,8 +136,8 @@ Decision recorded here: allowlist_change_by_this_document = false; full_release_
 - 文書バージョン：2026-09-07。
 - 文書状態：条件付き運用規程であり、現時点の適合証明ではない。本書は allowlist や runtime を変更せず、パッケージ単位の検証証拠を完全な正式リリース受入れへ拡張しない。
 - 規範資料：[MPL-2.0 正式ライセンス本文](https://www.mozilla.org/en-US/MPL/2.0/) および [Mozilla MPL-2.0 FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/)（Q5、Q6、Q8、Q11）。FAQ は補足であり、ライセンス本文、適用法、法律意見を置き換えない。
-- 正式なパッケージ単位 manifest：third_party_licenses/mpl/components.json（schema mohan.mpl-compliance.v1、SHA-256 66902730587ea554a0d54421cdb683037543e88ad6e64f179e4ba114e09b2ba2）。certifi 2026.7.22（MPL-2.0、Windows runtime と local-art tooling）、tqdm 4.70.0（MPL-2.0 AND MIT、local-art tooling）、orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)、local-art tooling）を記録する。
-- scope 記録：certifi 2026.7.22 は Azure Speech → azure-core → requests の間接的な Windows runtime 依存であり、local-art tooling でも使用される。root は別途 pin と Windows SBOM の追加を行った。tqdm と orjson は local-art tooling のみである。これは root が提供した証拠インデックスであり、完全な正式リリース受入れではない。
+- 正式なパッケージ単位 manifest：third_party_licenses/mpl/components.json（schema mohan.mpl-compliance.v1、SHA-256 0fe5754ee83ce0ddccc444081f41bb271e088feeea2dbdb62bb57ac77ab7b5cb）。certifi 2026.10.19（MPL-2.0、Windows runtime と local-art tooling）、tqdm 4.70.0（MPL-2.0 AND MIT、local-art tooling）、orjson 3.12.0（MPL-2.0 AND (Apache-2.0 OR MIT)、local-art tooling）を記録する。
+- scope 記録：certifi 2026.10.19 は Azure Speech → azure-core → requests の間接的な Windows runtime 依存であり、local-art tooling でも使用される。root は別途 pin と Windows SBOM の追加を行った。tqdm と orjson は local-art tooling のみである。これは root が提供した証拠インデックスであり、完全な正式リリース受入れではない。
 - 正式 license text：third_party_licenses/mpl/MPL-2.0.txt。source archive は third_party_licenses/mpl/sources/ にあり、各 SHA は manifest に従う。source と notice がリリースに十分かどうかは、root の receipt と正式リリースゲートに従う。
 
 ### 1. 定義、権利、商用利用
