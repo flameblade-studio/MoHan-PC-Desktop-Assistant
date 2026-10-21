@@ -36,6 +36,7 @@ TWO_HOURS_SECONDS = 2 * 60 * 60
 
 lazy from infrastructure.db import StudioDB
 lazy from application.wardrobe_service import WardrobeService
+lazy from presentation.dashboard_composition import DashboardDependencies
 lazy from presentation.dashboard_window import Dashboard
 lazy from presentation.wardrobe_turntable import TURN_TABLE_VIEWS
 
@@ -109,6 +110,7 @@ def build_language_dashboard(
     language: str,
     *,
     official_pack_root: Path | None = None,
+    dashboard_dependencies: DashboardDependencies | None = None,
 ) -> tuple[StudioDB, Dashboard]:
     db = StudioDB(root / f"mohan-{language}.db")
     for key, value in (
@@ -123,7 +125,7 @@ def build_language_dashboard(
     ):
         db.set_setting(key, value)
     with patch.object(QTimer, "start", return_value=None):
-        dashboard = Dashboard(db, dependencies(root))
+        dashboard = Dashboard(db, dashboard_dependencies or dependencies(root))
     if official_pack_root is not None:
         dashboard.wardrobe_service = WardrobeService(
             root / "outfits", official_pack_root=official_pack_root

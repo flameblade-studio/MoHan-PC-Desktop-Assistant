@@ -54,6 +54,17 @@ MAKEUP_READ_FAILURE_MESSAGE = "妝容設定無法讀取，已保留上一個有�
 INTENSITY_DECIMALS = 2
 RECT_FIELDS = 4
 CANVAS_FIELDS = 2
+
+
+class MakeupExclusionMaskError(RuntimeError):
+    """A required layered-rig mask for makeup exclusion is unavailable.
+
+    Deliberately not an OutfitPackError: pack errors fall back to the bare
+    frame, while a damaged bundled exclusion mask must fail closed instead of
+    silently painting makeup over eyes or the mouth.
+    """
+
+
 FOUNDATION_STATES = frozenset({"rest", "half", "closed"})
 FOUNDATION_MASK_FIELDS = frozenset({"path", "sha256", "width", "height", "anchor"})
 EYE_APERTURE_MASK_FIELDS = FOUNDATION_MASK_FIELDS
