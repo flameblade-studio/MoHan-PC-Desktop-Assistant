@@ -166,7 +166,6 @@ class ActiveOutfitOverlay(
     @property
     def render_cache_token(self) -> int:
         """Return a generation that changes whenever appearance inputs change."""
-
         self._refresh_state()
         return self._render_cache_generation
 
@@ -448,10 +447,8 @@ class ActiveOutfitOverlay(
             return frame
         if eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
-        # Viseme/oral-mask substitutions affect makeup only. Keep that
-        # identity out of the appearance-phase key so static layers such as
-        # headwear are decoded and composed once per view, not once per
-        # speaking frame; makeup still keeps its full state-specific key.
+        # Visemes affect makeup only: static layers such as headwear compose
+        # once per view, not once per speaking frame.
         key = OutfitLayerCacheKey.for_phase(
             view_id, phase, suppress_makeup_slots, eye_state,
             self._active_mouth_cache_identity if phase == "makeup" else None,
