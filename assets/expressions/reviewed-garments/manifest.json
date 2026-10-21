@@ -23,13 +23,7 @@
         "item_id": "hanfu-robe",
         "variant_id": "blue-white"
       },
-      "native_appearance_selections": {
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
-        }
-      },
+      "native_appearance_selections": {},
       "motion_required": true,
       "approved_source_sha256": "1e6a1cfaaca55e37f602f4f1672adbe3dd71df06a42ea359ded40315d7cb6d50"
     },
@@ -56,11 +50,6 @@
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "loose-hair",
           "variant_id": "ink-black"
-        },
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
         }
       },
       "motion_required": true,
@@ -90,11 +79,6 @@
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "loose-hair",
           "variant_id": "ink-black"
-        },
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
         }
       },
       "motion_required": true,
@@ -124,11 +108,6 @@
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "loose-hair",
           "variant_id": "ink-black"
-        },
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
         }
       },
       "motion_required": true,
@@ -158,11 +137,6 @@
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "loose-hair",
           "variant_id": "ink-black"
-        },
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
         }
       },
       "motion_required": true,
@@ -192,11 +166,6 @@
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "loose-hair",
           "variant_id": "ink-black"
-        },
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
         }
       },
       "motion_required": true,
@@ -226,11 +195,6 @@
           "pack_id": "mohan.official.blue-white-hanfu",
           "item_id": "loose-hair",
           "variant_id": "ink-black"
-        },
-        "headwear": {
-          "pack_id": "mohan.official.blue-white-hanfu",
-          "item_id": "silver-hairpiece",
-          "variant_id": "silver"
         }
       },
       "motion_required": true,
