@@ -25,6 +25,7 @@ lazy from infrastructure.complete_halfbody_expressions import (
 # These entries hold only cache keys and labels, not image buffers.
 MAX_FRAME_CONTEXTS = 2 * len(COMPLETE_POSES) * len(FAMILIES) * len(EYES)
 MAX_DECODED_FRAMES = 24
+MAX_COMPOSED_FRAMES = 24
 CLOSED_APERTURE = 0.01
 _CHEEK_SILHOUETTE = character_rig_manifest().pose_silhouettes["cheek"]
 _FRONT_SILHOUETTE = character_rig_manifest().pose_silhouettes["front"]
@@ -57,6 +58,8 @@ class CompleteHalfbodyRenderer:
         self._supplement = supplement
         self._contexts: OrderedDict[int, tuple[str, str]] = OrderedDict()
         self._pixmaps: OrderedDict[tuple[str, str, str], QPixmap] = OrderedDict()
+        self._composed_pixmaps: OrderedDict[tuple[object, ...], QPixmap] = OrderedDict()
+        self._composed_cache_token: object = None
         self._oral_pixmaps: dict[tuple[str, str], QPixmap] = {}
         if self._explicit_complete:
             self._load()
@@ -73,6 +76,8 @@ class CompleteHalfbodyRenderer:
                 self._assets = None
                 self._contexts.clear()
                 self._pixmaps.clear()
+                self._composed_pixmaps.clear()
+                self._composed_cache_token = None
                 self._oral_pixmaps.clear()
         if not self._loaded:
             self._assets = load_complete_halfbody_frames(self._root)
@@ -210,7 +215,11 @@ class CompleteHalfbodyRenderer:
             if image.isNull():
                 raise ValueError(f"Cannot decode complete half-body oral mask: {key}")
             self._oral_pixmaps[key] = QPixmap.fromImage(image)
-        return QPixmap(self._oral_pixmaps[key])
+        # The cached pixmap is immutable to the renderer: consumers only read
+        # its alpha mask. Returning this instance keeps cacheKey() stable, so
+        # the makeup layer cache can reuse the decoded mouth layers across
+        # repeated frames of the same viseme.
+        return self._oral_pixmaps[key]
 
     @staticmethod
     def _makeup_view_id(pose: str, eye: str) -> str | None:
@@ -249,6 +258,25 @@ class CompleteHalfbodyRenderer:
             self._set_active_mouth_state(viseme, self._oral_mask(pose, family))
         else:
             self._set_active_mouth_state(None, None)
+        render_cache_token = getattr(self._overlay, "render_cache_token", None)
+        composed_key: tuple[object, ...] | None = None
+        if render_cache_token is not None:
+            if render_cache_token != self._composed_cache_token:
+                self._composed_pixmaps.clear()
+                self._composed_cache_token = render_cache_token
+            composed_key = (
+                render_cache_token,
+                pose,
+                family,
+                eye,
+                base.size().toTuple(),
+            )
+            cached = self._composed_pixmaps.get(composed_key)
+            if cached is not None:
+                frame = QPixmap(cached)
+                self._composed_pixmaps.move_to_end(composed_key)
+                self._remember_context(frame, (pose, family))
+                return frame
         appearance_view_id = pose
         appearance_declares = getattr(
             self._overlay, "appearance_declares_view", None,
@@ -277,5 +305,10 @@ class CompleteHalfbodyRenderer:
         )
         if not base.isNull() and frame.size() != base.size():
             frame = frame.scaled(base.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        if composed_key is not None:
+            self._composed_pixmaps[composed_key] = QPixmap(frame)
+            self._composed_pixmaps.move_to_end(composed_key)
+            while len(self._composed_pixmaps) > MAX_COMPOSED_FRAMES:
+                self._composed_pixmaps.popitem(last=False)
         self._remember_context(frame, (pose, family))
         return frame

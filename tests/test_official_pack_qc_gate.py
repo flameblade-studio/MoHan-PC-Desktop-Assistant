@@ -28,14 +28,6 @@ LOW_ALPHA_DEFECT_REASON = (
     "官方包 front-crossed-front 有 990 個、front-crossed-headwear 有 21 個低 alpha 殘留；"
     "以 tools/qc_official_pack.py 的 low_alpha_1_30 判定追蹤，待官方包重封後移除 xfail"
 )
-TASSEL_HEIGHT_DEFECT_REASON = (
-    "官方包頭飾流蘇最高 alpha 元件僅 43 px，未達 80 px 門檻；"
-    "以 tools/qc_official_pack.py 的 TASSEL_HEIGHT 判定追蹤，待官方包重封後移除 xfail"
-)
-TOP_RESIDUE_DEFECT_REASON = (
-    "官方包頭飾髮髻頂部仍有 1 個 104 px 殘留元件（x633..663、y115..125）；"
-    "以 tools/qc_official_pack.py 的 TOP_RESIDUE 判定追蹤，待官方包重封後移除 xfail"
-)
 
 
 @pytest.mark.xfail(strict=True, reason=ISOLATED_SPECKS_DEFECT_REASON)
@@ -66,7 +58,6 @@ def test_official_composite_stays_within_base_speck_budget() -> None:
     assert measured <= qc.COMPOSITE_MAX_ISOLATED_SPECKS, measured
 
 
-@pytest.mark.xfail(strict=True, reason=TASSEL_HEIGHT_DEFECT_REASON)
 def test_official_headwear_tassel_height() -> None:
     layers = qc.load_pack_full_canvas_alphas(OFFICIAL_PACK)
     measured = qc.judge_tassel_height(layers[qc.HEADWEAR_LAYER_KEY])
@@ -74,7 +65,6 @@ def test_official_headwear_tassel_height() -> None:
     assert measured.heights and measured.heights[0] >= qc.TASSEL_MIN_HEIGHT, measured
 
 
-@pytest.mark.xfail(strict=True, reason=TOP_RESIDUE_DEFECT_REASON)
 def test_official_headwear_top_residue() -> None:
     layers = qc.load_pack_full_canvas_alphas(OFFICIAL_PACK)
     measured = qc.judge_top_residue(layers[qc.HEADWEAR_LAYER_KEY])
