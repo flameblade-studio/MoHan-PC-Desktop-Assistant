@@ -1,8 +1,8 @@
 {
   "archive": {
     "asset_name": "flameblade.mohan-1.0.7.zip",
-    "bytes": 990172585,
-    "sha256": "5601f243c95efacabc126a0bf11324d093563559435db09165a0884cac4af748"
+    "bytes": 990269559,
+    "sha256": "55c6d59967a4023974c2f24b65200b6d886f0a3a38131b8ae240acb8a5f64ba7"
   },
   "engine_compatibility": {
     "api_version": 1,
@@ -3822,9 +3822,9 @@
       "sha256": "5cf12a44ae74de1733eca425e1b6bdb659c24603f4bcca28f798056ba9c11355"
     },
     {
-      "bytes": 9066,
+      "bytes": 7883,
       "path": "assets/expressions/reviewed-garments/manifest.json",
-      "sha256": "59d89129fce07aaa476303027ce393b1aef83563899eedbeec4f2ca819c521bb"
+      "sha256": "385989729818fa58043ae816b0120f809fc046b9f7428f28a0e94a4ed57baae6"
     },
     {
       "bytes": 730241,
@@ -5772,9 +5772,9 @@
       "sha256": "13d2188b7cef992821b1c5855e2d25e43b2d09e84a0ebd5b007bffeb8bf2b15f"
     },
     {
-      "bytes": 29154210,
+      "bytes": 29252367,
       "path": "assets/official-packs/mohan.official.blue-white-hanfu.mohan-outfit",
-      "sha256": "95a0ed2d943eb1df62bd40970220e15537a6c228abd6fbbf801d3908a67cbd93"
+      "sha256": "6e0a97a715ea3ad81d50d2bb29f089d31b1c099ce0b263ca77a4f106b2235053"
     },
     {
       "bytes": 1422107,
@@ -11084,7 +11084,7 @@
   ],
   "pack_id": "flameblade.mohan",
   "pack_version": "1.0.7",
-  "package_hash": "72b193bccdbb02364d340d07fe98731322925f902725c8af5dfa48d17de78ab1",
+  "package_hash": "4527c34763ae23baa0c001d96b137c1593d520cabb9cdc11a937170000e4a585",
   "schema": "flameblade.character-pack-lock.v1",
   "schema_version": 1,
   "source": {

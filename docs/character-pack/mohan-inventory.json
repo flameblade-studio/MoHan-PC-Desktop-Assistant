@@ -32158,7 +32158,7 @@
       "sha256": "5cf12a44ae74de1733eca425e1b6bdb659c24603f4bcca28f798056ba9c11355"
     },
     {
-      "bytes": 9066,
+      "bytes": 7883,
       "category": "native_garment_motion",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -32172,7 +32172,7 @@
       ],
       "reason": "執行期 manifest 引用",
       "scope": "runtime_data",
-      "sha256": "59d89129fce07aaa476303027ce393b1aef83563899eedbeec4f2ca819c521bb"
+      "sha256": "385989729818fa58043ae816b0120f809fc046b9f7428f28a0e94a4ed57baae6"
     },
     {
       "bytes": 730241,
@@ -84220,7 +84220,7 @@
       "sha256": "cead2ded89aa7185803edb15751ac9edbf7a5eae57e219d75a6e0f819862479a"
     },
     {
-      "bytes": 29154210,
+      "bytes": 29252367,
       "category": "appearance_pack",
       "manifest_references": [],
       "migration": "純資料可直接搬",
@@ -84234,7 +84234,7 @@
       ],
       "reason": "正式載入資料；純資料搬移仍須後續調整路徑接線",
       "scope": "runtime_data",
-      "sha256": "95a0ed2d943eb1df62bd40970220e15537a6c228abd6fbbf801d3908a67cbd93"
+      "sha256": "6e0a97a715ea3ad81d50d2bb29f089d31b1c099ce0b263ca77a4f106b2235053"
     },
     {
       "appearance_categories": [
@@ -86379,7 +86379,7 @@
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 48884,
+      "bytes": 56459,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86396,13 +86396,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "3332805beb31e5cfd7f91b693ffee70d829a6c65523bfd992a7b40c883ae5dd0"
+      "sha256": "98d6b96c6fc804739ee77afeadb9af25236a3604fcff012794be55a966632f63"
     },
     {
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 38597,
+      "bytes": 59721,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86419,13 +86419,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "fad87b99d53fe2131fd427d5ba8605310185657fdb55af53f121d27148d51759"
+      "sha256": "d793cc74a01ddc4efbcdcb07bbc47923dcef008e8ea2ed20eea0af6d03b51402"
     },
     {
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 43971,
+      "bytes": 56589,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86442,13 +86442,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "4324288844e78695e2ec108fd26b277f8d7a9a145f4ad9eab66ac89060f483ca"
+      "sha256": "f1dd27b7b5236071cdebc7d66d2e8307e7b50760d5d530cca89f2878149018f2"
     },
     {
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 36119,
+      "bytes": 50997,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86465,13 +86465,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "9c6a1fd3c7df8925453f74584881cf704ddffe445ca6224409674f65a5dd90a8"
+      "sha256": "a169fd8f5a6443ad35ce1d0490a4a9333c3865c8beebaefd20c8ffa52be5feaf"
     },
     {
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 36536,
+      "bytes": 58459,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86488,13 +86488,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "128e4137890b20884a348fa0caa2803df6f41e7057becd1fe816641735f12af2"
+      "sha256": "9c055b41616f620cdaf471a84d90014cea2642bc4e330d7311a71dcdc95be22c"
     },
     {
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 34855,
+      "bytes": 56871,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86511,13 +86511,13 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "fc76630bcda42d3dc941ec7bfdca6c41fe8948bc527068a473d9adcc2f5d0ed5"
+      "sha256": "5eb28510b81f46c469a4519fc6f3f8a01a18cbfaaddce276be12a7c6a3823a6d"
     },
     {
       "appearance_categories": [
         "headwear"
       ],
-      "bytes": 54664,
+      "bytes": 59762,
       "category": "appearance_pack_member",
       "image": {
         "height": 1254,
@@ -86534,7 +86534,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "816ebcd13defdcaf75d01a149e623991d9598e86f94c92a2ff71234ec92916b7"
+      "sha256": "569837627ffc0d022eddbcdeeb28bf4442209b8e9a5318399e7122b5bf2f7873"
     },
     {
       "appearance_categories": [
@@ -87102,7 +87102,7 @@
         }
       ],
       "scope": "runtime_data",
-      "sha256": "4ee16d62e1d85d147bec3a91a857384df46606aa951fba3541b685bac19291ac"
+      "sha256": "173b0c4579dc576c893b26e649a1a65356d9a0357606e50b7f36395ebcf254a5"
     },
     {
       "bytes": 1422107,
