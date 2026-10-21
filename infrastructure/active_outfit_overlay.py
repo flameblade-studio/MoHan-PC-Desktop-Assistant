@@ -120,6 +120,7 @@ class ActiveOutfitOverlay(
         self._generic_base_clear_by_view: dict[str, tuple[QRegion | None, bool]] = {}
         self._garment_active_cache: bool | None = None
         self._official_outfit_active_cache: bool | None = None
+        self._render_cache_generation = 0
         self._safe_regions = None
         self._render_size_by_view: dict[str, tuple[int, int]] = {}
         # The viseme currently being rendered (mouth_states substitution),
@@ -161,6 +162,13 @@ class ActiveOutfitOverlay(
     def _native_frames(self) -> bool:
         provider = self._native_frames_provider
         return provider() if callable(provider) else provider
+
+    @property
+    def render_cache_token(self) -> int:
+        """Return a generation that changes whenever appearance inputs change."""
+
+        self._refresh_state()
+        return self._render_cache_generation
 
     def _resolve_base_clear_selection(self, category: str):
         """Keep base-clear selection reads on this module's patchable boundary."""
@@ -440,9 +448,14 @@ class ActiveOutfitOverlay(
             return frame
         if eye_state not in {"rest", "half", "closed"}:
             raise ValueError("Use a recognized makeup eye state")
+        # Viseme/oral-mask substitutions affect makeup only. Keep that
+        # identity out of the appearance-phase key so static layers such as
+        # headwear are decoded and composed once per view, not once per
+        # speaking frame; makeup still keeps its full state-specific key.
         key = OutfitLayerCacheKey.for_phase(
             view_id, phase, suppress_makeup_slots, eye_state,
-            self._active_mouth_cache_identity, makeup_view_id,
+            self._active_mouth_cache_identity if phase == "makeup" else None,
+            makeup_view_id if phase == "makeup" else None,
         )
         include_core = phase == "appearance"
         before_front_hair, replace_body = callbacks.before_front_hair, callbacks.replace_body
@@ -600,6 +613,7 @@ class ActiveOutfitOverlay(
         self._layers_by_view_without_makeup_slots.clear()
         self._phase_layers_by_view.clear()
         self._generic_base_clear_by_view.clear()
+        self._render_cache_generation += 1
         getattr(self, "_reviewed_layer_counts", {}).clear()
         getattr(self, "_reviewed_native_frames", {}).clear()
         getattr(self, "_reviewed_native_eyes", {}).clear()

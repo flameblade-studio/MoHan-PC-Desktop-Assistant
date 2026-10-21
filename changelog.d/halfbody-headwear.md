@@ -1,3 +1,4 @@
 ### 半身補回銀髮冠與垂穗髮簪／半身补回银发冠与垂穗发簪／Silver hairpiece and tasselled hairpin restored on half-body poses／半身に銀の髪冠と房付き簪を復元
 
 * 半身七姿勢 25 個表情補回標準造型的銀髮冠、髮簪、藍色花飾與垂穗流蘇，髮冠層直接取自核准原圖；修正誤以為畫格已含髮冠的原生髮飾宣告／半身七姿势 25 个表情补回标准造型的银发冠、发簪、蓝色花饰与垂穗流苏，发冠层直接取自批准原图；修正误以为画格已含发冠的原生发饰声明／Restored the canonical silver hairpiece, hairpin, blue flower ornament and tassels on all 25 expressions of the seven half-body poses, with the layers taken directly from the approved originals, and fixed the native headwear declaration that wrongly claimed the frames already contained the hairpiece／半身 7 ポーズの 25 表情に標準スタイルの銀の髪冠、簪、青い花飾り、房を復元し、髪冠レイヤーは承認済み原画から直接取得しました。フレームに髪冠が含まれていると誤って宣言していたネイティブ髪飾り宣言を修正しました
+* 說話動畫的靜態髮冠與其他外觀層改用跨發音快取，僅讓妝容層隨發音狀態重建／说话动画的静态发冠与其他外观层改用跨发音缓存，仅让妆容层随发音状态重建／Cached static headwear and other appearance layers across visemes so only makeup layers rebuild for speech animation／発話アニメーションの静的な髪冠と外観レイヤーを音素間でキャッシュし、発話状態ごとに再構築するのはメイクアップ層だけにしました

@@ -1009,7 +1009,8 @@ def test_empty_combined_cache_does_not_reuse_phase_layers(
     view = "yaw+000-pitch+00"
     overlay._active_viseme = viseme
     layer = (QPixmap(), 0, 0, QRegion(), 1.0)
-    phase_key = OutfitLayerCacheKey.for_phase(view, "appearance", active_viseme=viseme)
+    # The appearance phase is written without mouth identity; only makeup is viseme-specific.
+    phase_key = OutfitLayerCacheKey.for_phase(view, "appearance")
     overlay._phase_layers_by_view[phase_key] = (layer,)
     assert overlay.layer_count(view) == 1
     combined_key = OutfitLayerCacheKey.combined(view, active_viseme=viseme)

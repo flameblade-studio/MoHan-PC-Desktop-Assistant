@@ -55,9 +55,8 @@ def test_runtime_cache_writers_are_visible_and_invalidated(
 
 def test_nondefault_appearance_phase_count_uses_the_written_identity(tmp_path: Path) -> None:
     overlay = ActiveOutfitOverlay(tmp_path, tmp_path, visible_hand_region=None)
-    key = OutfitLayerCacheKey.for_phase(
-        "view", "appearance", frozenset({"eyes"}), "closed", "open", "complete-expression",
-    )
+    # The appearance phase is written without mouth or makeup-view identity.
+    key = OutfitLayerCacheKey.for_phase("view", "appearance", frozenset({"eyes"}), "closed")
     overlay.set_active_mouth_state("open")
     overlay._phase_layers_by_view[key] = (object(),)
     assert overlay.layer_count(

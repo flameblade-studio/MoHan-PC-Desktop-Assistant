@@ -49,13 +49,11 @@ class OutfitLayerCacheMixin:
         )
         if cache_key in cache:
             return len(cache[cache_key]) + reviewed_count
+        # The appearance phase is keyed without mouth or makeup-view identity
+        # (see ActiveOutfitOverlay._apply_phase): those only affect makeup.
         appearance = self._phase_layers_by_view.get(
-            OutfitLayerCacheKey.for_phase(
-                view_id, "appearance", suppressed, eye_state, self._active_mouth_cache_identity, makeup_view_id,
-            ),
-            self._phase_layers_by_view.get(
-                OutfitLayerCacheKey.for_phase(view_id, "appearance", active_viseme=self._active_mouth_cache_identity), (),
-            ),
+            OutfitLayerCacheKey.for_phase(view_id, "appearance", suppressed, eye_state),
+            self._phase_layers_by_view.get(OutfitLayerCacheKey.for_phase(view_id, "appearance"), ()),
         )
         makeup = self._phase_layers_by_view.get(
             OutfitLayerCacheKey.for_phase(

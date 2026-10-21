@@ -176,22 +176,12 @@ def test_gesture_expression_composites_its_own_portrait_and_silhouette(tmp_path:
     assert not rendered.isNull() and rendered.size() == bare.size()
     silhouette = GESTURE_OUTFIT_SILHOUETTES[expression]
     assert overlay.views == [silhouette]
-    # PR #200 (commit a3cdd7d) installed a reviewed native garment for each of
-    # these 4 gestures, each declaring hairstyle/headwear as
-    # native_appearance_selections -- baked into the reviewed portrait itself
-    # rather than drawn as separate runtime layers, to avoid double-drawing
-    # hair (see reviewed_garment_overlay.py's ReviewedGarmentOverlayMixin
-    # docstring). MIN_DRESSED_LAYERS>=5 predates that: it counted hair front
-    # and the hairpiece as independent appearance layers, which they no
-    # longer are for any of these 4 -- confirmed empirically (2026-09-29,
-    # `git show HEAD` shadow-copy re-run of this exact test scenario against
-    # the last COMMITTED python sources still gives layer_count==4 with the
-    # CURRENT reviewed-garment assets from PR #200, proving the mismatch is
-    # the PR #200 asset/contract change, not a regression in this PR's
-    # python edits) and confirmed visually (review/gesture-dressed-v1-*.png:
-    # hair, hairpiece, robe and hand all present and correctly drawn).
-    # The reviewed path's real completeness contract is therefore checked
-    # directly instead of a total layer count:
+    # Each reviewed pose may bake selected appearance categories into its
+    # portrait. PR #316 deliberately removed the incorrect native headwear
+    # claim, so the selected headwear is again a detachable runtime layer.
+    # Keep the reviewed-pose checks below, then derive the expected total from
+    # the actual active appearance selection instead of hard-coding that extra
+    # layer as a number.
     reviewed_assets = getattr(overlay.inner, "_reviewed_assets", None)
     pose = reviewed_assets.poses.get(silhouette) if reviewed_assets is not None else None
     if pose is not None and pose.native_appearance_selections:
@@ -209,11 +199,8 @@ def test_gesture_expression_composites_its_own_portrait_and_silhouette(tmp_path:
         #    "pass" here can never mean "this pack simply has no hair/
         #    headwear asset at all". hairstyle/headwear are the ONLY
         #    appearance categories that ever apply to a gesture portrait, so
-        #    with both confirmed native+matching, total layer_count reduces
-        #    to exactly makeup (the pack's own declared slot count) plus the
-        #    reviewed portrait's own layers -- proven visually too, see
-        #    review/gesture-dressed-v1-*.png: hair, hairpiece, robe and hand
-        #    all present and correctly drawn, none silently missing.
+        #    the remaining detachable appearance layers are counted below from
+        #    the live selection rather than assumed from a fixed total.
         for category, native_selection in pose.native_appearance_selections.items():
             current = resolve_active_selection(store, category)
             matches = native_selection.matches(
@@ -228,7 +215,17 @@ def test_gesture_expression_composites_its_own_portrait_and_silhouette(tmp_path:
             )
             assert len(unexcluded) >= 1, f"{category} has no real asset to be excluded in favour of -- nothing to bake in"
         declared_makeup = _declared_makeup_layer_count(store, silhouette)
-        assert overlay.layer_count(silhouette) == declared_makeup + len(pose.ordered_layers)
+        native_categories = frozenset(pose.native_appearance_selections)
+        detachable_categories = frozenset({"hairstyle", "headwear"}) - native_categories
+        detachable_layers = overlay.inner._active_layers(
+            silhouette,
+            (1254, 1254),
+            categories=detachable_categories,
+        )
+        expected_layers = (
+            declared_makeup + len(pose.ordered_layers) + len(detachable_layers)
+        )
+        assert overlay.layer_count(silhouette) == expected_layers
     else:
         assert overlay.layer_count(silhouette) >= MIN_DRESSED_LAYERS
     assert overlay.layer_count("front-crossed") == 0
