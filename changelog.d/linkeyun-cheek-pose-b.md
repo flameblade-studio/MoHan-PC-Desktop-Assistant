@@ -1,3 +1,0 @@
-### 林可芸托腮改為姿勢 B 完整造型／林可芸托腮改为姿势 B 完整造型／Lin Keyun cheek pose rebuilt on pose B／林可芸の頬杖を姿勢 B で再構築
-
-- 林可芸托腮改用畫在姿勢 B 素體上的完整造型（頭髮、白襯衫一次繪製，擁有者 2026-10-18 核可），修正雙五官與光頭頂；臉部中央沿用素體，六個托腮表情照常變化／林可芸托腮改用画在姿势 B 素体上的完整造型（头发、白衬衫一次绘制，所有者 2026-10-18 核可），修正双五官与光头顶；脸部中央沿用素体，六个托腮表情照常变化／Lin Keyun's cheek pose now uses one complete look drawn on the pose-B body (hair and white shirt in a single pass, owner-approved 2026-10-18), fixing the doubled features and bald crown; the central face stays on the body so all six cheek expressions still animate／林可芸の頬杖を姿勢 B の素体上に一度で描いた完全な外観（髪と白シャツ、オーナー 2026-10-18 承認）に置き換え、二重の顔立ちと禿げた頭頂を修正。顔の中央は素体を使い、6つの頬杖表情はそのまま変化

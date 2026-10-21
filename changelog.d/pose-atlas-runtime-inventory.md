@@ -1,6 +1,0 @@
-### 全身圖層與來源一致性／全身图层与来源一致性／Full-body layer and source consistency／全身レイヤーと参照元の整合性
-
-- 前面與側面視角的載入條件要求標準圖層齊全；背面保留既有透明臉層省略規則。／正面与侧面视角的加载条件要求标准图层齐全；背面保留现有透明脸层省略规则。／Require complete standard layers for front and side views while retaining the existing rear-view omission rule for invisible facial layers.／正面と側面では標準レイヤーの完備を読み込み条件とし、背面で不可視の顔レイヤーを省略できる既存規則を維持します。
-- PoseAtlas 素材目錄對齊目前渲染器的來源，讓各世代中繼資料與實際畫面保持一致。／PoseAtlas 素材目录对齐当前渲染器的来源，让各代元数据与实际画面保持一致。／Keep the PoseAtlas metadata directory aligned with the current renderer authority so metadata and rendered content stay within the same generation.／PoseAtlas のメタデータディレクトリを現在のレンダラーの参照元に合わせ、メタデータと描画内容を同じ世代に保ちます。
-- 檢查 24 筆視角是否唯一且與角度相符，確保完整視角由互異紀錄構成。／检查 24 条视角是否唯一且与角度相符，确保完整视角由互异记录构成。／Validate unique canonical view identities and matching yaw values, ensuring that a complete view ring consists of unique records.／24 件の視点が重複せず正規の角度と一致することを検証し、重複レコードによる完全な視点集合の誤認を防ぎます。
-- 載入時檢查圖層 PNG 結構與 RGBA 格式，首次渲染解碼失敗會報錯並保留明確診斷，讓每個圖層結果都可追蹤。／加载时检查图层 PNG 结构与 RGBA 格式，首次渲染解码失败会报错并保留明确诊断，让每个图层结果都可追踪。／Check layer PNG structure and RGBA format on load, and report decoding failures on first render with explicit diagnostics so every layer result remains traceable.／読み込み時にレイヤー PNG の構造と RGBA 形式を検証し、初回描画でデコードに失敗した場合は明示的な診断を報告して、各レイヤーの結果を追跡可能にします。

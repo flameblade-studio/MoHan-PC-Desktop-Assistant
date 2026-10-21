@@ -1,3 +1,0 @@
-### 手部遮擋資料共用／手部遮挡数据共用／Shared hand-region data／手の遮蔽領域の共有
-
-- 角色與衣櫃共用同一組裝邊界已驗證的手部遮擋資料，減少重複讀取。每次取得的區域仍可各自修改；省略資料時沿用既有處理，左右配對完整為載入條件。新增單次載入、修改隔離及錯誤回歸測試。／角色与衣柜共用同一组装边界已验证的手部遮挡数据，减少重复读取。每次取得的区域仍可各自修改；缺失数据沿用既有处理，不完整的左右配对仍拒绝加载。新增单次加载、修改隔离及错误回归测试。／Character and wardrobe overlays share validated hand-region data within one composition root. Returned regions remain independently mutable. Omitted data retains legacy handling, and complete left/right pairs remain the loading condition. Regression tests cover one load, mutation isolation, and errors.／同一コンポジションルート内で、キャラクターと衣装表示が検証済みの手の遮蔽領域を共有し、重複読み込みを減らします。取得した領域は個別に変更でき、データ省略時の既存処理を維持し、左右ペアの完備を読み込み条件とします。読み込み回数、変更の分離、エラーを回帰テストで検証します。

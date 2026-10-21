@@ -1,5 +1,0 @@
-### 外觀包畫布與透明通道契約／外观包画布与透明通道契约／Outfit-pack canvas and alpha contract／外観パックのキャンバスとアルファ契約
-
-- 封裝與匯入時即核對 runtime appearance PNG 的透明通道、garment 可見像素，以及每一視角的 half-body/full-body 畫布邊界；保留裁切圖、正 anchor 與合法空白 hairstyle back 的相容性。／封装与导入时即核对 runtime appearance PNG 的透明通道、garment 可见像素，以及每一视角的 half-body/full-body 画布边界；保留裁切图、正 anchor 与合法空白 hairstyle back 的兼容性。／Validate runtime appearance PNG alpha, visible garment pixels, and per-view half-body/full-body canvas bounds during sealing and import, while retaining cropped tiles, positive anchors, and intentionally empty hairstyle back layers.／パックの封印・取り込み時に、runtime appearance PNG のアルファ、衣装の可視ピクセル、視点ごとの half-body/full-body キャンバス境界を検証します。切り抜きタイル、正の anchor、意図的に空の hairstyle back レイヤーとの互換性は維持します。
-
-- 妝容先驗證整張畫布及原點對齊要求，保留既有明確錯誤，再執行共用邊界與 PNG 檢查。／妆容先验证整张画布及原点对齐要求，保留既有明确错误，再执行共用边界与 PNG 检查。／Makeup validates its full-canvas, zero-anchor contract before shared bounds and PNG checks, preserving the existing precise error.／メイクは共通の境界と PNG 検証の前に全面キャンバスと原点配置を検証し、従来の明確なエラーを維持します。

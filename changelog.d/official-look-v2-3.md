@@ -1,4 +1,0 @@
-### 官方造型圖層散檔與預設外觀／官方造型图层散档与默认外观／Scattered Official-Look Layers and Default Appearance／公式外観レイヤーの分散配置と既定外観
-
-- 將墨寒第一階段官方造型圖層移至角色 body 散檔，並讓標準造型成為六個半身姿勢與全身的預設路徑；托腮維持既有畫素／将墨寒第一阶段官方造型图层移至角色 body 散档，并让标准造型成为六个半身姿势与全身的默认路径；托腮维持既有像素／Moved MoHan Stage 1 official-look layers into the character-owned body tree and made the standard look the default route for six half-body poses and full body; cheek-rest pixels remain unchanged／墨寒の第1段階公式外観レイヤーをキャラクター所有の body ツリーへ移し、6つの半身ポーズと全身の既定経路を標準外観に変更。頬杖の画素は変更しない
-- 素體包存在且驗證成功時使用正式標準造型；墨寒缺少或驗證失敗時保留診斷並回到目前外觀，雲裳閣提示下載素體包，且不改寫 `active.json`／素体包存在且验证成功时使用正式标准造型；墨寒缺少或验证失败时保留诊断并回到当前外观，云裳阁提示下载素体包，且不改写 `active.json`／Use the formal standard look when the body pack is present and verified; when MoHan lacks it or validation fails, retain the diagnostic, keep the current appearance, show the Wardrobe download hint, and do not rewrite `active.json`／素体パックが存在して検証に成功した場合は正式な標準外観を使用し、墨寒で欠落または検証に失敗した場合は診断を保持して現在の外観を維持し、雲裳閣にダウンロード案内を表示し、`active.json` を書き換えない
