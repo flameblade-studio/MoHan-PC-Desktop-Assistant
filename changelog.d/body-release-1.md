@@ -1,3 +1,0 @@
-### 林可芸素體依附與圖層 1.0.4／林可芸素体依附与图层 1.0.4／Lin Keyun body dependency and layers 1.0.4／林可芸の素体依存とレイヤー 1.0.4
-
-- 新增可獨立下載的 CC BY-NC-ND 4.0 素體包；林可芸 1.0.4 依附 `mohan-body-v2` 1.0.0 並封裝第七輪角色分層，移除共用 MoHan 原生完整影格／新增可单独下载的 CC BY-NC-ND 4.0 素体包；林可芸 1.0.4 依赖 `mohan-body-v2` 1.0.0 并封装第七轮角色分层，移除共用 MoHan 原生完整帧／Add a separately downloadable CC BY-NC-ND 4.0 body pack; Lin Keyun 1.0.4 depends on `mohan-body-v2` 1.0.0 and includes seventh-round character layers, without shared MoHan native full frames／CC BY-NC-ND 4.0 の独立ダウンロード可能な素体パックを追加します。林可芸 1.0.4 は `mohan-body-v2` 1.0.0 に依存し、第七ラウンドのキャラクターレイヤーを含め、墨寒の共有ネイティブ完全フレームを除外します。
