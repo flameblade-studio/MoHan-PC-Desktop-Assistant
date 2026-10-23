@@ -15,6 +15,18 @@ lazy from infrastructure.secret_store import SecretStore
 lazy from integrations.ai_client import ActionPlannerWorker
 lazy from domain.safe_error import sanitize_error
 
+MAX_RESPONSE_BYTES = 1024 * 1024
+
+
+def _read_bounded_response(response) -> bytes:
+    announced = getattr(response, "headers", {}).get("Content-Length")
+    if announced and int(announced) > MAX_RESPONSE_BYTES:
+        raise ValueError("OpenAI response exceeds the safety limit")
+    payload = response.read(MAX_RESPONSE_BYTES + 1)
+    if len(payload) > MAX_RESPONSE_BYTES:
+        raise ValueError("OpenAI response exceeds the safety limit")
+    return payload
+
 
 def main(data_path_text: str) -> int:
     activate_product_character_runtime(Path(__file__).resolve().parents[1])
@@ -45,7 +57,8 @@ def main(data_path_text: str) -> int:
     started = time.monotonic()
     try:
         with urlopen(model_request, timeout=15) as response:
-            payload = json.load(response)
+            raw = _read_bounded_response(response)
+            payload = json.loads(raw.decode("utf-8")) if raw else {}
         print(
             f"MODEL_CHECK=ok,id={payload.get('id')},"
             f"elapsed={time.monotonic() - started:.2f}s"

@@ -21,6 +21,21 @@ SUPPORTED_IMAGE_MEDIA_TYPES = frozenset({
     "image/webp",
 })
 RATE_LIMIT_STATUS = 429
+MAX_RESPONSE_BYTES = 8 * 1024 * 1024
+
+
+def _read_bounded_response(response, limit: int = MAX_RESPONSE_BYTES) -> bytes:
+    announced = getattr(response, "headers", {}).get("Content-Length")
+    if announced:
+        try:
+            if int(announced) > limit:
+                raise ValueError("vision response exceeds the safety limit")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("vision response length is invalid") from exc
+    payload = response.read(limit + 1)
+    if len(payload) > limit:
+        raise ValueError("vision response exceeds the safety limit")
+    return payload
 
 
 lazy from domain.openai_vision_preferences import VisionDetail
@@ -370,7 +385,8 @@ class _HttpResponsesEndpoint:
                 method="POST",
             )
             with urlopen(api_request, timeout=timeout) as response:
-                document = json.load(response)
+                raw = _read_bounded_response(response)
+                document = json.loads(raw.decode("utf-8")) if raw else {}
             return _ResponsePayload(_response_output_text(document))
         except HTTPError as error:
             raise VisionServiceError(_classify_http_status(error.code)) from None
@@ -382,6 +398,8 @@ class _HttpResponsesEndpoint:
                 else VisionResultStatus("network_unavailable")
             )
             raise VisionServiceError(status) from None
+        except (UnicodeError, ValueError, json.JSONDecodeError):
+            raise VisionServiceError(VisionResultStatus.INVALID_RESPONSE) from None
 
 
 class _HttpResponsesClient:

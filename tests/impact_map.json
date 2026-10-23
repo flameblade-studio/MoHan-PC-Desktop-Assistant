@@ -1258,6 +1258,7 @@
         "test_scene_semantics.py",
         "test_secure_updater.py",
         "test_security_audit_redaction_regression.py",
+        "test_security_p3_fix1.py",
         "test_security_theme_svg_finite_regression.py",
         "test_security_website_allowlist_regression.py",
         "test_security_wordpress_redirect_regression.py",
@@ -1435,6 +1436,7 @@
         "test_remote_tool_error_safety.py",
         "test_runtime_async_regressions.py",
         "test_safe_error_integration.py",
+        "test_security_p3_fix1.py",
         "test_service_status_localization.py",
         "test_silent_failures_and_audit_data.py",
         "test_speech_capture_endpoint.py",
@@ -1737,6 +1739,7 @@
         "test_satiety.py",
         "test_sbom_validation.py",
         "test_scene_semantics.py",
+        "test_security_p3_fix1.py",
         "test_security_theme_svg_finite_regression.py",
         "test_security_website_allowlist_regression.py",
         "test_self_generating_wardrobe.py",
@@ -1970,6 +1973,7 @@
         "test_runtime_async_regressions.py",
         "test_runtime_preserved_settings_rollback.py",
         "test_secure_updater.py",
+        "test_security_p3_fix1.py",
         "test_security_website_allowlist_regression.py",
         "test_service_language_wiring.py",
         "test_shared_hand_region_provider.py",
@@ -2036,6 +2040,7 @@
         "test_outfit_pack_makeup.py",
         "test_outfit_phase_counts.py",
         "test_reviewed_garment_overlay.py",
+        "test_security_p3_fix1.py",
         "test_self_generating_wardrobe.py",
         "test_shared_hand_region_provider.py",
         "test_source_bound_garment_visibility.py",
@@ -2229,6 +2234,7 @@
         "test_runtime_async_regressions.py",
         "test_safe_error_integration.py",
         "test_security_audit_redaction_regression.py",
+        "test_security_p3_fix1.py",
         "test_self_generating_wardrobe.py",
         "test_service_language_wiring.py",
         "test_service_status_localization.py",
@@ -4200,6 +4206,7 @@
         "test_auxiliary_ui_localization.py",
         "test_external_error_boundaries.py",
         "test_secure_updater.py",
+        "test_security_p3_fix1.py",
         "test_update_manifest_signature.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -5156,6 +5163,7 @@
         "test_integrations_audit2_gaps.py",
         "test_remote_tool_error_safety.py",
         "test_security_audit_redaction_regression.py",
+        "test_security_p3_fix1.py",
         "test_silent_failures_and_audit_data.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -5544,7 +5552,8 @@
         "test_cloud_health.py",
         "test_integrations_audit2_gaps.py",
         "test_integrations_silent_failures.py",
-        "test_python315_runtime.py"
+        "test_python315_runtime.py",
+        "test_security_p3_fix1.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -5558,7 +5567,8 @@
         "test_home_routine_risk_grading.py",
         "test_integrations_audit2_gaps.py",
         "test_integrations_silent_failures.py",
-        "test_python315_runtime.py"
+        "test_python315_runtime.py",
+        "test_security_p3_fix1.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6766,6 +6776,7 @@
         "test_flagship_core_layering.py",
         "test_input_validation_boundaries.py",
         "test_layered_import_checker.py",
+        "test_security_p3_fix1.py",
         "test_security_website_allowlist_regression.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -6815,7 +6826,8 @@
       ],
       "tests": [
         "test_flagship_safety.py",
-        "test_infrastructure_audit3.py"
+        "test_infrastructure_audit3.py",
+        "test_security_p3_fix1.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6830,6 +6842,7 @@
         "test_remote_file_access.py",
         "test_remote_rate_limit.py",
         "test_remote_tool_error_safety.py",
+        "test_security_p3_fix1.py",
         "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"

@@ -5,6 +5,7 @@ lazy import json
 lazy import os
 lazy import re
 lazy import struct
+lazy import tempfile
 lazy import zipfile
 lazy from dataclasses import dataclass
 lazy from pathlib import Path, PurePosixPath
@@ -501,12 +502,29 @@ def inspect_pose_pack(source: Path) -> PosePack:
 
 
 def install_pose_pack(source: Path, store: Path) -> PosePack:
-    pack = inspect_pose_pack(source)
+    try:
+        with Path(source).open("rb") as handle:
+            payload = handle.read(MAX_ARCHIVE_BYTES + 1)
+    except OSError:
+        raise PosePackError("Provide a supported pose archive.") from None
+    if len(payload) > MAX_ARCHIVE_BYTES:
+        raise PosePackError("Pose archive size needs a supported value.")
+    with tempfile.NamedTemporaryFile(
+        "wb", suffix=".archive", delete=False
+    ) as handle:
+        snapshot = Path(handle.name)
+        handle.write(payload)
+        handle.flush()
+        os.fsync(handle.fileno())
+    try:
+        pack = inspect_pose_pack(snapshot)
+    finally:
+        snapshot.unlink(missing_ok=True)
     packages = Path(store) / "packages"
     packages.mkdir(parents=True, exist_ok=True)
     destination = packages / f"{pack.pack_id}.mohan-pose"
     with NamedTemporaryFile("wb", dir=packages, delete=False) as temporary:
-        temporary.write(Path(source).read_bytes())
+        temporary.write(payload)
         temporary.flush()
         os.fsync(temporary.fileno())
         temporary_path = Path(temporary.name)

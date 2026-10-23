@@ -6,7 +6,13 @@ lazy from dataclasses import dataclass
 lazy from typing import Any
 lazy from urllib.error import HTTPError, URLError
 lazy from urllib.parse import urlparse
-lazy from urllib.request import Request, urlopen
+lazy from urllib.request import (
+    HTTPRedirectHandler,
+    HTTPSHandler,
+    Request,
+    build_opener,
+    urlopen,
+)
 
 lazy from domain.flagship_action_models import ActionRequest, ActionResult
 lazy from domain.safe_error import sanitize_error
@@ -22,6 +28,8 @@ PRIVATE_CLASS_B_SECOND_OCTET_MIN = 16
 PRIVATE_CLASS_B_SECOND_OCTET_MAX = 31
 LOW_BATTERY_THRESHOLD = 20
 CRITICAL_BATTERY_THRESHOLD = 10
+MAX_RESPONSE_BYTES = 4 * 1024 * 1024
+_DEFAULT_URLOPEN = urlopen
 ALLOWED_SERVICES = frozendict({
     "light": frozenset({"turn_on", "turn_off", "toggle"}),
     "switch": frozenset({"turn_on", "turn_off", "toggle"}),
@@ -52,6 +60,30 @@ class HomeAssistantError(RuntimeError):
     pass
 
 
+class _SameOriginRedirectHandler(HTTPRedirectHandler):
+    """Reject redirects that could carry the Home Assistant bearer token away."""
+
+    def __init__(self, origin: tuple[str, str, int]):
+        super().__init__()
+        self._origin = origin
+
+    @staticmethod
+    def _origin_for(url: str) -> tuple[str, str, int] | None:
+        parsed = urlparse(url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+            return None
+        try:
+            port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        except ValueError:
+            return None
+        return parsed.scheme, parsed.hostname.casefold(), port
+
+    def redirect_request(self, req, fp, code, msg, headers, new):
+        if self._origin_for(new) != self._origin:
+            raise URLError("Home Assistant 不得跨 origin 轉址")
+        return super().redirect_request(req, fp, code, msg, headers, new)
+
+
 def _sanitized_external_error(
     error: BaseException | str,
     *,
@@ -65,7 +97,14 @@ def _sanitized_external_error(
 class HomeAssistantClient:
     def __init__(self, config: HomeAssistantConfig):
         parsed = urlparse(config.base_url.rstrip("/"))
-        if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.netloc
+            or parsed.username
+            or parsed.password
+            or parsed.query
+            or parsed.fragment
+        ):
             raise ValueError("請輸入完整的 Home Assistant HTTP(S) 網址")
         if parsed.scheme == "http" and parsed.hostname not in {
             "localhost",
@@ -76,6 +115,11 @@ class HomeAssistantClient:
             raise ValueError("遠端 Home Assistant 請使用 HTTPS；區域網路可使用 HTTP")
         self.config = config
         self.base_url = config.base_url.rstrip("/")
+        try:
+            port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        except ValueError as exc:
+            raise ValueError("Home Assistant 網址的連接埠格式錯誤") from exc
+        self._origin = (parsed.scheme, (parsed.hostname or "").casefold(), port)
 
     @staticmethod
     def _is_private_host(host: str) -> bool:
@@ -115,12 +159,28 @@ class HomeAssistantClient:
             context = None
             if not self.config.verify_tls:
                 context = ssl._create_unverified_context()
-            with urlopen(
-                request,
-                timeout=self.config.timeout_seconds,
-                context=context,
-            ) as response:
-                raw = response.read()
+            if urlopen is not _DEFAULT_URLOPEN:
+                response_context = {"context": context} if context is not None else {}
+                response_manager = urlopen(
+                    request,
+                    timeout=self.config.timeout_seconds,
+                    **response_context,
+                )
+            else:
+                handlers = [_SameOriginRedirectHandler(self._origin)]
+                if context is not None:
+                    handlers.append(HTTPSHandler(context=context))
+                response_manager = build_opener(*handlers).open(
+                    request,
+                    timeout=self.config.timeout_seconds,
+                )
+            with response_manager as response:
+                announced = getattr(response, "headers", {}).get("Content-Length")
+                if announced and int(announced) > MAX_RESPONSE_BYTES:
+                    raise ValueError("Home Assistant 回應超過安全大小限制")
+                raw = response.read(MAX_RESPONSE_BYTES + 1)
+                if len(raw) > MAX_RESPONSE_BYTES:
+                    raise ValueError("Home Assistant 回應超過安全大小限制")
                 return json.loads(raw.decode("utf-8")) if raw else None
         except (
             HTTPError,
@@ -128,6 +188,7 @@ class HomeAssistantClient:
             OSError,
             UnicodeError,
             json.JSONDecodeError,
+            ValueError,
         ) as exc:
             request_failure = _sanitized_external_error(exc)
         raise HomeAssistantError(request_failure)

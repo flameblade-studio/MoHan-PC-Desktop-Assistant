@@ -548,17 +548,17 @@
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
           "locations": [
             {
-              "line": 145,
+              "line": 163,
               "matched": "MoHan",
               "text": "\"User-Agent\": \"MoHan-Desktop-Assistant-Updater\","
             },
             {
-              "line": 271,
+              "line": 289,
               "matched": "MoHan",
               "text": "manifest_name = f\"MoHan-Desktop-Assistant-{tag}-update.json\""
             },
             {
-              "line": 391,
+              "line": 417,
               "matched": "MoHan",
               "text": "headers={\"User-Agent\": \"MoHan-Desktop-Assistant-Updater\"},"
             }
@@ -583,12 +583,12 @@
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
           "locations": [
             {
-              "line": 499,
+              "line": 508,
               "matched": "MoHan",
               "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
             },
             {
-              "line": 532,
+              "line": 540,
               "matched": "MoHan",
               "text": "\"User-Agent\": \"MoHan-Desktop-Assistant/2.0\","
             }

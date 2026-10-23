@@ -31,6 +31,21 @@ DOWNLOAD_LABELS = {
     "dmg": "macOS DMG（功能受限 Preview）",
     "appimage": "Linux AppImage（功能受限 Preview）",
 }
+MAX_RESPONSE_BYTES = 4 * 1024 * 1024
+
+
+def _read_bounded_response(response) -> bytes:
+    announced = getattr(response, "headers", {}).get("Content-Length")
+    if announced:
+        try:
+            if int(announced) > MAX_RESPONSE_BYTES:
+                raise ValueError("WordPress response exceeds the safety limit")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("WordPress response length is invalid") from exc
+    payload = response.read(MAX_RESPONSE_BYTES + 1)
+    if len(payload) > MAX_RESPONSE_BYTES:
+        raise ValueError("WordPress response exceeds the safety limit")
+    return payload
 
 
 class _NoRedirectHandler(HTTPRedirectHandler):
@@ -111,7 +126,8 @@ def _read_wordpress_json(request: Request) -> object:
     result: object | None = None
     try:
         with urlopen(request, timeout=30) as response:
-            result = json.load(response)
+            raw = _read_bounded_response(response)
+            result = json.loads(raw.decode("utf-8")) if raw else None
     except HTTPError:
         response_failure = "WordPress API request was rejected"
     except (URLError, TimeoutError, OSError):
