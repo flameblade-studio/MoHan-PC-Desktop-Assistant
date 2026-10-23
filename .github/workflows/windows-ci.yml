@@ -59,7 +59,8 @@ jobs:
       - name: Install pinned dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          -r requirements.txt
+          --require-hashes
+          -r requirements-windows-lock.txt
 
       - name: Verify official Qt runtime and wheel provenance
         run: >-
@@ -189,7 +190,8 @@ jobs:
       - name: Install pinned dependencies from official wheels
         run: >-
           python -m pip install --only-binary=:all:
-          -r requirements.txt
+          --require-hashes
+          -r requirements-windows-lock.txt
 
       - name: Verify official Qt runtime and wheel provenance
         run: >-
@@ -294,7 +296,8 @@ jobs:
         shell: pwsh
         run: >-
           & $env:MOHAN_JIT_PYTHON -m pip install --only-binary=:all:
-          -r requirements.txt
+          --require-hashes
+          -r requirements-windows-lock.txt
       - name: Verify JIT-default official Qt runtime and wheel provenance
         shell: pwsh
         run: >-
