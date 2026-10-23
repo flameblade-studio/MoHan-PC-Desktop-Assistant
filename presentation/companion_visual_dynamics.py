@@ -22,8 +22,8 @@ lazy from application.background_agents import (
 )
 lazy from application.multisensory_interaction import MultisensoryInteractionArbiter
 lazy from domain.app_profile import profile_setting, profile_window_title
-lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.character_source import active_expression_catalog
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data, active_expression_catalog
 lazy from domain.constants import CHARACTER_ASSET_PATHS
 lazy from domain.companion_animation_contract import (
     CHARACTER_BASE_Y,
@@ -52,7 +52,6 @@ GAZE_DISTANCE_THRESHOLD = 1050
 MOTION_ZERO_THRESHOLD = 0.015
 _EXPRESSION_CATALOG = active_expression_catalog()
 _EXPRESSIONS = _EXPRESSION_CATALOG.emotion_to_expression
-_STARTUP_DIALOGUE = load_mohan_character_data().dialogues["zh-TW"].templates
 
 
 class CompanionVisualDynamicsMixin:
@@ -151,7 +150,8 @@ class CompanionVisualDynamicsMixin:
             returning = bool(self.db.setting("onboarding_complete", False))
             event = "startup.returning" if returning else "startup.first"
             expression = "idle" if returning else _EXPRESSIONS["gentle"]
-            line = _STARTUP_DIALOGUE[event].format(
+            locale = canonical_character_locale(profile_setting(self.db, "ui_language"))
+            line = active_character_data().dialogues[locale].templates[event].format(
                 user_title=profile_setting(self.db, "user_title")
             )
             self.speak(line, expression)
@@ -598,17 +598,19 @@ class CompanionVisualDynamicsMixin:
             if name.strip()
         ][:12]
         workers = []
+        language = profile_setting(self.db, "ui_language")
         if watched_names and proactive_mode != "quiet":
-            workers.append(
-                VisibleAppWorker(
-                    self.presentation_ports.visible_windows,
-                    {name: (name,) for name in watched_names},
-                )
+            workers.append(VisibleAppWorker(
+                self.presentation_ports.visible_windows,
+                {name: (name,) for name in watched_names}, language=language,
+            )
             )
         report_text = str(self.db.setting("background_diagnostic_report", "")).strip()
         if report_text:
             report_path = Path(report_text)
-            workers.append(DiagnosticReportWorker(lambda path=report_path: path))
+            workers.append(DiagnosticReportWorker(
+                lambda path=report_path: path, language=language,
+            ))
         if not workers:
             return
         event_cooldown = (
@@ -619,10 +621,8 @@ class CompanionVisualDynamicsMixin:
             else 900.0
         )
         self.background_scheduler = ManagerWorkerScheduler(
-            workers,
-            max_workers=2,
-            event_cooldown_seconds=event_cooldown,
-            global_cooldown_seconds=max(180.0, event_cooldown / 3),
+            workers, max_workers=2, event_cooldown_seconds=event_cooldown,
+            global_cooldown_seconds=max(180.0, event_cooldown / 3), language=language,
         )
 
     def _background_agent_tick(self) -> None:

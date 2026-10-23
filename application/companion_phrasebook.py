@@ -109,10 +109,8 @@ class CompanionPhrasebook:
         if custom:
             return custom
         locale = canonical_ui_language(language)
-        return (
-            PUBLIC_COMPANION_LINES[locale].get(key, ())
-            or WARDROBE_PUBLIC_LINES[locale].get(key, ())
-        )
+        dialogue = active_character_data().dialogues[locale]
+        return dialogue.phrasebook.get(key, ())
 
 
 def public_companion_line(
@@ -127,7 +125,10 @@ def public_companion_line(
 
 
 def _label(key: str) -> str:
-    return _DIALOGUES["zh-TW"].labels[key]
+    data = active_character_data()
+    if key == "occasion.mohan_birthday":
+        return f"{data.personas['zh-TW'].identity.display_name}的生日"
+    return data.dialogues["zh-TW"].labels[key]
 
 
 def phrasebook_categories() -> tuple[tuple[str, str], ...]:

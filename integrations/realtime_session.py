@@ -316,7 +316,7 @@ class RealtimeSessionMethods:
         full_instructions = self._compose_instructions(
             request.instructions,
             request.memory_context,
-            request.recent_context,
+            request.recent_context, self._locale,
         )
         ws.send(
             json.dumps(
@@ -430,9 +430,9 @@ class RealtimeSessionMethods:
     def _compose_instructions(
         instructions: str,
         memory_context: str,
-        recent_context: str,
+        recent_context: str, locale: str = "zh-TW",
     ) -> str:
-        dialogue = runtime_dialogue_locale("zh-TW")
+        dialogue = runtime_dialogue_locale(canonical_ui_language(locale))
         return str(dialogue["realtime_context"]).format(
             instructions=instructions,
             memory_context=(

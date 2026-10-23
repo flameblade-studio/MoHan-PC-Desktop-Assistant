@@ -382,8 +382,12 @@ def test_built_mohan_pack_reader_matches_legacy_source(tmp_path: Path) -> None:
     assert source.halfbody_canvas == legacy.halfbody_canvas
     assert source.layer_order == legacy.layer_order
     for language in LANGUAGES:
-        assert source.display_name(language) == legacy.display_name(language)
-        assert source.default_user_title(language) == legacy.default_user_title(language)
+        assert source.display_name(language) == (
+            source.character_data.personas[language].identity.display_name
+        )
+        assert source.default_user_title(language) == (
+            source.character_data.personas[language].identity.default_user_title
+        )
         assert source.persona_prompt(language) == legacy.persona_prompt(language)
         for variation_index in (0, 1):
             assert source.dialogue_line(

@@ -440,10 +440,10 @@ _TEXT: Mapping[ServiceStatus, Mapping[str, str]] = frozendict({
         "Windows 音声認識の起動に失敗しました：{detail}",
     ),
     ServiceStatus.SPEECH_NOT_UNDERSTOOD: _text(
-        "寒方才未聽清，請再說一次。",
-        "寒刚才没有听清，请再说一次。",
-        "I did not hear that clearly. Please try again.",
-        "よく聞き取れませんでした。もう一度お話しください。",
+        "{self_reference}方才未聽清，請再說一次。",
+        "{self_reference}刚才没有听清，请再说一次。",
+        "{self_reference} did not hear that clearly. Please try again.",
+        "{self_reference}はよく聞き取れませんでした。もう一度お話しください。",
     ),
 })
 

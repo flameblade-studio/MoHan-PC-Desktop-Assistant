@@ -19,9 +19,8 @@ lazy from PySide6.QtWidgets import (
 
 lazy from application.presentation_ports import PlatformServicePort, fallback_platform_services
 lazy from application.service_contracts import PresentationDatabasePort
-lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.constants import CHARACTER_ASSET_PATHS
-lazy from domain.character_source import active_character_source
+lazy from domain.character_source import active_character_data, active_character_source
 lazy from domain.app_profile import default_persona_for_language, profile_setting
 lazy from domain.language_support import (
     is_english,
@@ -51,8 +50,6 @@ lazy from presentation.ui_localization import (
 lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS
 
 __all__ = ("FirstRunWizard",)
-
-_CHARACTER_DATA = load_mohan_character_data()
 
 
 class FirstRunWizard(QDialog):
@@ -334,8 +331,11 @@ class FirstRunWizard(QDialog):
             locale = "ja-JP"
         else:
             locale = "zh-CN" if self.language in {"zh-CN", "zh-SG", "zh-Hans"} else "zh-TW"
-        identities = tuple(persona.identity for persona in _CHARACTER_DATA.personas.values())
-        target = _CHARACTER_DATA.personas[locale].identity
+        character_data = active_character_data()
+        identities = tuple(
+            persona.identity for persona in character_data.personas.values()
+        )
+        target = character_data.personas[locale].identity
         replacements = (
             ("assistant_name", {value.display_name for value in identities}, target.display_name),
             ("user_title", {value.default_user_title for value in identities}, target.default_user_title),

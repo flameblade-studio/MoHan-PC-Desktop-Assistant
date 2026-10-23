@@ -379,12 +379,12 @@ class CharacterPackReader(
         return self._identity.defaults
 
     def display_name(self, language: str) -> str:
-        canonical_ui_language(language)
-        return self._canonical_name
+        locale = canonical_ui_language(language)
+        return self._character_data.personas[locale].identity.display_name
 
     def default_user_title(self, language: str) -> str:
-        canonical_ui_language(language)
-        return self._default_user_title
+        locale = canonical_ui_language(language)
+        return self._character_data.personas[locale].identity.default_user_title
 
     def persona_prompt(self, language: str) -> str:
         return self._persona_prompts[canonical_ui_language(language)]

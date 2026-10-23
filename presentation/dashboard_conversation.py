@@ -21,9 +21,8 @@ lazy from domain.core_constants import DEFAULT_TEXT_MODEL
 lazy from domain.app_profile import (
     persona_for_profile, personalize_text, profile_setting,
 )
-lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_pack.character_data_models import canonical_character_locale
-lazy from domain.character_source import active_expression_catalog
+lazy from domain.character_source import active_character_data, active_expression_catalog
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
 lazy from domain.expression_system import parse_internal_emotion, plan_wait_expressions
 lazy from domain.sensory_synesthesia import (
@@ -37,9 +36,8 @@ __all__ = ("DashboardConversationMixin", "classify_memory_text")
 
 MIN_CHAT_ZOOM_PERCENT = 60
 MAX_CHAT_ZOOM_PERCENT = 200
-_CHARACTER_DATA = load_mohan_character_data()
+_CHARACTER_DATA = active_character_data()
 _EXPRESSIONS = active_expression_catalog().emotion_to_expression
-_RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
 _REPLY_EXPRESSION_RULES = runtime_reply_expression_rules()
 _ZH_TW_IDENTITY = _CHARACTER_DATA.personas["zh-TW"].identity
 _EN_IDENTITY = _CHARACTER_DATA.personas["en"].identity
@@ -65,6 +63,22 @@ EMERGENCY_COMMANDS = frozenset(
         "すべて止めて",
     }
 )
+
+
+def _emergency_commands() -> frozenset[str]:
+    data = active_character_data()
+    zh_tw = data.personas["zh-TW"].identity
+    english = data.personas["en"].identity
+    japanese = data.personas["ja-JP"].identity
+    return EMERGENCY_COMMANDS | frozenset(
+        {
+            f"{zh_tw.display_name}停手", f"{zh_tw.assistant_alias}停手",
+            f"{english.display_name} stop".casefold(),
+            f"{english.assistant_alias} stop".casefold(),
+            f"{japanese.display_name}止まって", f"{japanese.assistant_alias}止まって",
+        }
+    )
+
 
 TEASING_COMMAND_MARKERS = (
     "妳在看我",
@@ -529,6 +543,9 @@ class DashboardConversationMixin:
             or self._handle_tool_instruction(text, source)
         )
 
+    def _runtime_dialogue(self):
+        return runtime_dialogue_locale(canonical_character_locale(self.ui_language))
+
     def _handle_outfit_origin_question(self, text: str) -> bool:
         revealed = str(
             self.db.setting(LAST_REVEALED_OUTFIT_KEY, "") or ""
@@ -552,7 +569,7 @@ class DashboardConversationMixin:
     def _handle_emergency_command(self, text: str) -> bool:
         comma_free = text.replace("，", "").replace(",", "").replace("、", "")
         normalized = " ".join(comma_free.split()).casefold()
-        if normalized not in EMERGENCY_COMMANDS:
+        if normalized not in _emergency_commands():
             return False
         self._emergency_stop()
         return True
@@ -561,7 +578,7 @@ class DashboardConversationMixin:
         if not any(marker in text for marker in TEASING_COMMAND_MARKERS):
             return False
         self._reply(
-            str(_RUNTIME_DIALOGUE["dashboard_teasing"]),
+            str(self._runtime_dialogue()["dashboard_teasing"]),
             _EXPRESSIONS["caught_gaze"],
         )
         return True
@@ -579,7 +596,7 @@ class DashboardConversationMixin:
                 self.ui_language,
             )
             self._reply(
-                str(_RUNTIME_DIALOGUE["dashboard_work_duration"]).format(
+                str(self._runtime_dialogue()["dashboard_work_duration"]).format(
                     duration=duration,
                 ),
                 "speaking",
@@ -595,7 +612,7 @@ class DashboardConversationMixin:
         content = text.split(marker, 1)[1].lstrip("：:，, ").strip()
         if not content:
             self._reply(
-                str(_RUNTIME_DIALOGUE["dashboard_quick_capture_prompt"]),
+                str(self._runtime_dialogue()["dashboard_quick_capture_prompt"]),
                 "worried",
             )
         elif any(marker in content for marker in IDEA_CAPTURE_MARKERS):
@@ -620,7 +637,7 @@ class DashboardConversationMixin:
             return False
         flagship_center.plan_instruction(text, source=source)
         self._reply(
-            str(_RUNTIME_DIALOGUE["dashboard_tool_plan"]),
+            str(self._runtime_dialogue()["dashboard_tool_plan"]),
             _EXPRESSIONS["thinking"],
         )
         return True
@@ -664,7 +681,7 @@ class DashboardConversationMixin:
         try:
             self._finish_ai_wait_expression()
             tagged = parse_internal_emotion(text)
-            clean = tagged.text or str(_RUNTIME_DIALOGUE["dashboard_ai_empty"])
+            clean = tagged.text or str(self._runtime_dialogue()["dashboard_ai_empty"])
             expression = (
                 tagged.expression
                 if tagged.valid_tag and tagged.expression is not None
@@ -730,7 +747,7 @@ class DashboardConversationMixin:
         self.set_voice_phase(
             self._t("voice_ready_short", "準備就緒")
         )
-        self.append_chat("寒", message)
+        self.append_chat(self.assistant_name, message)
         self.speak_requested.emit(message, "worried")
 
     def _listening_changed(self, listening: bool) -> None:
