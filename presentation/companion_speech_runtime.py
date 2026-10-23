@@ -23,8 +23,8 @@ lazy from domain.app_profile import (
     profile_setting,
 )
 lazy from domain.command_parser import is_start_work_command, is_stop_work_command
-lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 lazy from domain.companion_animation_contract import (
     CHEEK_SPEECH_CLOSED_EXPRESSION,
     EXPRESSION_POSES,
@@ -71,9 +71,6 @@ lazy from presentation.companion_speech_queue import enqueue_bounded_speech
 lazy from presentation.ui_localization import ui_text
 lazy import contextlib
 __all__ = ("CompanionSpeechRuntimeMixin",)
-_CHARACTER_DATA = load_mohan_character_data()
-_DIALOGUES = _CHARACTER_DATA.dialogues
-_VOICE_FALLBACKS = _CHARACTER_DATA.voice.fallback_provider_order
 # Compatibility boundary for integrations and tests that imported the mapping
 # from this former owner before the speech runtime was split into focused
 # modules. Keep one implementation in companion_speech_emotion.
@@ -458,7 +455,7 @@ class CompanionSpeechRuntimeMixin:
         language = profile_setting(self.db, "ui_language")
         locale = canonical_character_locale(language)
         self.speak(
-            _DIALOGUES[locale].templates["voice.preview"].format(
+            active_character_data().dialogues[locale].templates["voice.preview"].format(
                 user_title=profile_setting(self.db, "user_title"),
             ),
             "happy",
@@ -965,7 +962,9 @@ class CompanionSpeechRuntimeMixin:
         safe_message = safe_error_message(language, message)
         credentials = self._speech_credentials()
         configured = set(self._configured_speech_providers(credentials))
-        candidates = _VOICE_FALLBACKS[failed_provider_id]
+        candidates = active_character_data().voice.fallback_provider_order[
+            failed_provider_id
+        ]
         fallback_provider_id = next(
             (
                 provider_id

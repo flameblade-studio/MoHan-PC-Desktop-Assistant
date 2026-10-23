@@ -413,9 +413,9 @@ class AIWorker(QRunnable):
         if not key:
             # 金鑰設定待完成時走離線內建回覆，並以明確前綴標示目前模式；
             # 使用者可依提示設定金鑰，再連接模型。
-            notice = OFFLINE_NOTICE.get(
-                request_data.response_language, OFFLINE_NOTICE["zh-TW"]
-            )
+            locale = canonical_character_locale(request_data.response_language)
+            notice_locale = "ja" if locale == "ja-JP" else locale
+            notice = OFFLINE_NOTICE.get(notice_locale, OFFLINE_NOTICE["zh-TW"])
             self.signals.done.emit(
                 notice
                 + self._personalize(

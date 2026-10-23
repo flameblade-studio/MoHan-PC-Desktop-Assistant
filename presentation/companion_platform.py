@@ -13,8 +13,8 @@ lazy from application.proactive_companion_app_bridge import ProactiveAppDisposit
 lazy from application.wellbeing_app_bridge import ReminderTrigger
 lazy from application.wellbeing_app_bridge import SpeakRequest as ProactiveSpeakRequest
 lazy from domain.app_profile import profile_setting, profile_window_title
-lazy from domain.character_pack.character_data import load_mohan_character_data
-lazy from domain.language_support import localized_reminder_line
+lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data
 lazy from domain.time_utils import local_wall_time
 lazy from presentation.presentation_resources import LIGHT_MENU_STYLE, application_icon
 lazy from presentation.ui_localization import ui_text
@@ -27,15 +27,12 @@ __all__ = (
 
 MIN_OVERLAP_AREA = 256
 
-REMINDER_LINES = load_mohan_character_data().dialogues["zh-TW"].reminder_lines
+REMINDER_LINES = active_character_data().dialogues["zh-TW"].reminder_lines
 
 
 def reminder_line(language: str, kind: str) -> str:
-    return localized_reminder_line(
-        language,
-        kind,
-        REMINDER_LINES[kind],
-    )
+    locale = canonical_character_locale(language)
+    return active_character_data().dialogues[locale].reminder_lines[kind]
 
 
 class CompanionPlatformMixin:

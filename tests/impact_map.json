@@ -939,6 +939,7 @@
         "test_dashboard_visual_consistency.py",
         "test_db_port_integrity.py",
         "test_debug1004_ui_runtime_regressions.py",
+        "test_debug1023_character_i18n.py",
         "test_debug_fix_art_contracts.py",
         "test_debug_fix_capture_threshold.py",
         "test_debug_fix_geometry_queue.py",
@@ -1394,6 +1395,7 @@
         "test_cloud_vision_runtime.py",
         "test_core.py",
         "test_cross_platform_core.py",
+        "test_debug1023_character_i18n.py",
         "test_dependency_injection.py",
         "test_english_localization.py",
         "test_external_boundary_faults.py",
@@ -1458,6 +1460,7 @@
         "test_character_persona_data.py",
         "test_core.py",
         "test_cross_platform_core.py",
+        "test_debug1023_character_i18n.py",
         "test_english_localization.py",
         "test_japanese_localization.py",
         "test_persona_dialogue_voice_extraction.py",
@@ -1548,6 +1551,7 @@
         "test_cross_platform_core.py",
         "test_dashboard_artwork.py",
         "test_dashboard_theme_materials.py",
+        "test_debug1023_character_i18n.py",
         "test_deferred_startup.py",
         "test_dependency_injection.py",
         "test_discrete_blink_runtime.py",
@@ -1833,6 +1837,7 @@
         "test_dashboard_resize_contract.py",
         "test_db_port_integrity.py",
         "test_debug1004_ui_runtime_regressions.py",
+        "test_debug1023_character_i18n.py",
         "test_dependency_injection.py",
         "test_drag_click.py",
         "test_duration_localization.py",
@@ -2139,6 +2144,7 @@
         "test_cross_platform_core.py",
         "test_dashboard_control_consistency.py",
         "test_db_port_integrity.py",
+        "test_debug1023_character_i18n.py",
         "test_dependency_injection.py",
         "test_desktop_presence.py",
         "test_domain_application_physical_ownership.py",
@@ -2282,6 +2288,7 @@
         "test_character_runtime_data.py",
         "test_character_source.py",
         "test_check_pose_atlas_release.py",
+        "test_debug1023_character_i18n.py",
         "test_engine_identity_parameterization.py",
         "test_fetch_body_pack.py",
         "test_fetch_character_pack.py",
@@ -2994,6 +3001,7 @@
         "test_dashboard_visual_consistency.py",
         "test_db_port_integrity.py",
         "test_debug1004_ui_runtime_regressions.py",
+        "test_debug1023_character_i18n.py",
         "test_deferred_startup.py",
         "test_dependency_injection.py",
         "test_discrete_blink_runtime.py",
@@ -3696,6 +3704,7 @@
         "test_build_character_inventory.py",
         "test_character_persona_data.py",
         "test_character_source.py",
+        "test_debug1023_character_i18n.py",
         "test_english_localization.py",
         "test_extracted_ui_equivalence.py",
         "test_first_run_wizard.py",
@@ -3753,6 +3762,7 @@
       "tests": [
         "test_app_module_boundaries.py",
         "test_character_persona_data.py",
+        "test_debug1023_character_i18n.py",
         "test_english_localization.py",
         "test_presentation_owner_contract.py",
         "test_proactive_companion_app_wiring.py",
@@ -3789,6 +3799,7 @@
       "tests": [
         "test_app_module_boundaries.py",
         "test_companion_animation_contract.py",
+        "test_debug1023_character_i18n.py",
         "test_emotion_semantic_mapping.py",
         "test_layered_facade_cycles.py",
         "test_preference_reader_wiring.py",
@@ -3824,6 +3835,7 @@
       "tests": [
         "test_app_module_boundaries.py",
         "test_dashboard_conversation_security.py",
+        "test_debug1023_character_i18n.py",
         "test_memory_management.py",
         "test_persona_dialogue_voice_extraction.py",
         "test_presentation_owner_contract.py",
@@ -4194,6 +4206,20 @@
     },
     {
       "paths": [
+        "presentation/auxiliary_ui_localization.py"
+      ],
+      "tests": [
+        "test_auxiliary_ui_localization.py",
+        "test_debug1023_character_i18n.py",
+        "test_presentation_owner_contract.py",
+        "test_profile_transfer_ui.py",
+        "test_translation_completeness.py",
+        "test_ui_localization_completeness.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
         "infrastructure/updater.py"
       ],
       "tests": [
@@ -4247,19 +4273,6 @@
       "tests": [
         "test_auxiliary_ui_localization.py",
         "test_presentation_owner_contract.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "presentation/auxiliary_ui_localization.py"
-      ],
-      "tests": [
-        "test_auxiliary_ui_localization.py",
-        "test_presentation_owner_contract.py",
-        "test_profile_transfer_ui.py",
-        "test_translation_completeness.py",
-        "test_ui_localization_completeness.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -4338,6 +4351,7 @@
         "test_build_character_inventory.py",
         "test_character_persona_data.py",
         "test_debug1004_ui_runtime_regressions.py",
+        "test_debug1023_character_i18n.py",
         "test_english_localization.py",
         "test_extracted_ui_equivalence.py",
         "test_japanese_localization.py",
@@ -4372,6 +4386,7 @@
         "test_background_agent_ui.py",
         "test_background_agents.py",
         "test_concurrent_futures_asyncio_compat.py",
+        "test_debug1023_character_i18n.py",
         "test_persona_dialogue_voice_extraction.py",
         "test_runtime_async_regressions.py",
         "test_silent_failures_and_audit_data.py"
@@ -4460,6 +4475,7 @@
       "tests": [
         "test_body_pack_reader.py",
         "test_character_source.py",
+        "test_debug1023_character_i18n.py",
         "test_linkeyun_character_data.py",
         "test_renderer_profile_injection.py"
       ],
@@ -4641,6 +4657,7 @@
         "test_character_persona_data.py",
         "test_character_source.py",
         "test_companion_phrasebook.py",
+        "test_debug1023_character_i18n.py",
         "test_flagship_proactivity_ui.py",
         "test_outfit_reveal.py",
         "test_proactive_companion_app_bridge.py",
@@ -5307,6 +5324,7 @@
         "test_character_persona_data.py",
         "test_character_runtime_data.py",
         "test_character_source.py",
+        "test_debug1023_character_i18n.py",
         "test_engine_identity_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -5900,6 +5918,7 @@
       "tests": [
         "test_core.py",
         "test_cross_platform_core.py",
+        "test_debug1023_character_i18n.py",
         "test_native_product_wiring.py",
         "test_renderer_profile_injection.py",
         "test_runtime_async_regressions.py",
@@ -6081,6 +6100,7 @@
       ],
       "tests": [
         "test_debug1004_ui_runtime_regressions.py",
+        "test_debug1023_character_i18n.py",
         "test_flagship_localization.py",
         "test_flagship_localization_owners.py",
         "test_flagship_vision_localization.py",
@@ -6104,6 +6124,34 @@
         "test_debug1004_ui_runtime_regressions.py",
         "test_flagship_ui_decoupling_contract.py",
         "test_home_routine_risk_grading.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "integrations/realtime_session.py"
+      ],
+      "tests": [
+        "test_debug1023_character_i18n.py",
+        "test_integrations_audit2_gaps.py",
+        "test_persona_dialogue_voice_extraction.py",
+        "test_realtime_transcription_config.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "domain/service_status_localization.py"
+      ],
+      "tests": [
+        "test_debug1023_character_i18n.py",
+        "test_openai_tts_cancellation.py",
+        "test_preview_packaging.py",
+        "test_safe_error_integration.py",
+        "test_safe_error_localization.py",
+        "test_service_status_localization.py",
+        "test_translation_completeness.py",
+        "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7593,17 +7641,6 @@
     },
     {
       "paths": [
-        "integrations/realtime_session.py"
-      ],
-      "tests": [
-        "test_integrations_audit2_gaps.py",
-        "test_persona_dialogue_voice_extraction.py",
-        "test_realtime_transcription_config.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         "tools/jit_launcher.py"
       ],
       "tests": [
@@ -8034,21 +8071,6 @@
       ],
       "tests": [
         "test_openai_fashion_trend_scout.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
-        "domain/service_status_localization.py"
-      ],
-      "tests": [
-        "test_openai_tts_cancellation.py",
-        "test_preview_packaging.py",
-        "test_safe_error_integration.py",
-        "test_safe_error_localization.py",
-        "test_service_status_localization.py",
-        "test_translation_completeness.py",
-        "test_ui_name_parameterization.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

@@ -12,13 +12,31 @@ lazy from typing import Protocol
 
 from domain.python315_concurrency import Future, ThreadPoolExecutor
 lazy from domain.character_source import active_character_data, active_expression_catalog
+lazy from domain.language_support import canonical_ui_language
 lazy from domain.sensory_synesthesia import runtime_dialogue_locale
 
-_BACKGROUND_APP_TEMPLATE = active_character_data().dialogues[
-    "zh-TW"
-].templates["background.app_launched"]
-_RUNTIME_DIALOGUE = runtime_dialogue_locale("zh-TW")
 _EXPRESSIONS = active_expression_catalog().emotion_to_expression
+
+_WORKER_FAILURE_TEMPLATES = frozendict({
+    "zh-TW": "{character_name}無法完成背景檢查：{worker_id}（{error}）。",
+    "zh-CN": "{character_name}无法完成后台检查：{worker_id}（{error}）。",
+    "en": "{character_name} could not complete the background check: {worker_id} ({error}).",
+    "ja-JP": "{character_name}はバックグラウンド検査を完了できませんでした：{worker_id}（{error}）。",
+})
+
+
+def _character_dialogue(language: str):
+    return active_character_data().dialogues[canonical_ui_language(language)]
+
+
+def _worker_failure_message(language: str, worker_id: str, error: str) -> str:
+    locale = canonical_ui_language(language)
+    character_name = active_character_data().personas[locale].identity.display_name
+    return _WORKER_FAILURE_TEMPLATES[locale].format(
+        character_name=character_name,
+        worker_id=worker_id,
+        error=error,
+    )
 
 
 @dataclass(frozen=True)
@@ -66,6 +84,7 @@ class ManagerWorkerScheduler:
         max_workers: int = 2,
         event_cooldown_seconds: float = 900.0,
         global_cooldown_seconds: float = 300.0,
+        language: str = "zh-TW",
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
         self._workers = {worker.worker_id: worker for worker in workers}
@@ -79,6 +98,7 @@ class ManagerWorkerScheduler:
         self._last_delivery = float("-inf")
         self._event_cooldown = max(0.0, event_cooldown_seconds)
         self._global_cooldown = max(0.0, global_cooldown_seconds)
+        self._language = canonical_ui_language(language)
         self._clock = clock
         self._closed = False
         self._lock = threading.RLock()
@@ -133,7 +153,11 @@ class ManagerWorkerScheduler:
                             worker_id=worker_id,
                             event_key="worker-failed",
                             message=(
-                                f"{worker_id} 無法完成檢查：{type(error).__name__}"
+                                _worker_failure_message(
+                                    self._language,
+                                    worker_id,
+                                    type(error).__name__,
+                                )
                             ),
                             expression=_EXPRESSIONS["worried"],
                             priority=1,
@@ -179,10 +203,12 @@ class VisibleAppWorker:
         window_provider: Callable[[], list[dict]],
         watched_apps: dict[str, tuple[str, ...]],
         interval_seconds: float = 8.0,
+        language: str = "zh-TW",
     ) -> None:
         self.window_provider = window_provider
         self.watched_apps = watched_apps
         self.interval_seconds = interval_seconds
+        self.language = canonical_ui_language(language)
         self._previous: set[str] | None = None
 
     def poll(self) -> Iterable[AgentObservation]:
@@ -205,7 +231,14 @@ class VisibleAppWorker:
             AgentObservation(
                 worker_id=self.worker_id,
                 event_key=f"launched:{name.casefold()}",
-                message=_BACKGROUND_APP_TEMPLATE.format(name=name),
+                message=_character_dialogue(self.language).templates[
+                    "background.app_launched"
+                ].format(
+                    name=name,
+                    user_title=active_character_data()
+                    .personas[self.language]
+                    .identity.default_user_title,
+                ),
                 expression=_EXPRESSIONS["attentive"],
                 priority=10,
                 metadata={"application": name, "status": "launched"},
@@ -223,10 +256,12 @@ class DiagnosticReportWorker:
         report_path_provider: Callable[[], Path | None],
         interval_seconds: float = 12.0,
         max_bytes: int = 256 * 1024,
+        language: str = "zh-TW",
     ) -> None:
         self.report_path_provider = report_path_provider
         self.interval_seconds = interval_seconds
         self.max_bytes = max(4096, int(max_bytes))
+        self.language = canonical_ui_language(language)
         self._last_signature: tuple[str, int, int] | None = None
 
     def poll(self) -> Iterable[AgentObservation]:
@@ -251,7 +286,11 @@ class DiagnosticReportWorker:
             AgentObservation(
                 worker_id=self.worker_id,
                 event_key=f"changed:{resolved}",
-                message=str(_RUNTIME_DIALOGUE["background_diagnostic"]).format(
+                message=str(
+                    runtime_dialogue_locale(self.language)[
+                        "background_diagnostic"
+                    ]
+                ).format(
                     report_name=resolved.name,
                     issues=issues,
                 ),

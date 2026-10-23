@@ -2,14 +2,14 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.service_status_localization import render_character_ui_template
+lazy from domain.character_source import active_character_data
 from presentation.ui_localization_en import ENGLISH_UI_TEXT as _ENGLISH
 from presentation.ui_localization_ja import JAPANESE_UI
 lazy from domain.immutable_config import deep_freeze
 lazy from domain.language_support import is_english, is_japanese, is_simplified_chinese
 
-_CHARACTER_DIALOGUES = load_mohan_character_data().dialogues
+_CHARACTER_DIALOGUES = active_character_data().dialogues
 
 _SIMPLIFIED_CHINESE: Mapping[str, str] = deep_freeze(
 {'first_run_title': '首次启动设置',
@@ -718,7 +718,7 @@ def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
         locale = "ja-JP"
     else:
         locale = "zh-TW"
-    dialogue = _CHARACTER_DIALOGUES[locale]
+    dialogue = active_character_data().dialogues[locale]
     character_text = dialogue.labels.get(f"ui.{key}")
     if character_text is None:
         character_text = dialogue.templates.get(f"ui.{key}")
@@ -731,7 +731,9 @@ def ui_text(language: str, key: str, chinese: str, **values: object) -> str:
     elif is_japanese(language):
         text = _JAPANESE.get(key, chinese)
     elif key == "caught_glance_dialogue":
-        text = _CHARACTER_DIALOGUES["zh-TW"].templates["caught_glance"]
+        text = active_character_data().dialogues["zh-TW"].templates[
+            "caught_glance"
+        ]
     else:
         text = chinese
     text = render_character_ui_template(locale, text)

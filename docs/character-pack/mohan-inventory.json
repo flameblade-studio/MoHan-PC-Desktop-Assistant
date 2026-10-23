@@ -87117,7 +87117,7 @@
       "path": "assets/onboarding/first-run-ink-tech.png",
       "readers": [
         {
-          "line": 116,
+          "line": 113,
           "path": "presentation/first_run_wizard.py",
           "text": "CHARACTER_ASSET_PATHS[\"onboarding_artwork\"]"
         }
@@ -125966,7 +125966,7 @@
           "text": "lazy from domain.constants import POSE_ATLAS_RELATIVE_ROOT"
         },
         {
-          "line": 23,
+          "line": 22,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from domain.constants import CHARACTER_ASSET_PATHS"
         },
@@ -127885,7 +127885,7 @@
       "work_package": null
     },
     {
-      "bytes": 42141,
+      "bytes": 42270,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "更新、備份與攜帶檔中的墨寒產品名稱屬產品殼文案。",
@@ -128451,7 +128451,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "6bc8e2073b8ad377e8a8962b6c660be883175e224f5eceb42ed30d7f33fb136f",
+      "sha256": "9f2f3777dcd632b6af1e3cd390cc31ac1c9c79112715492a264e576f22992dfc",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
       ],
@@ -128502,28 +128502,28 @@
           "name": "_EXPECTED_KEYS"
         },
         {
-          "end_line": 660,
+          "end_line": 663,
           "line": 652,
           "name": "auxiliary_text"
         },
         {
-          "end_line": 701,
-          "line": 663,
+          "end_line": 704,
+          "line": 666,
           "name": "_update_error_key"
         },
         {
-          "end_line": 732,
-          "line": 704,
+          "end_line": 735,
+          "line": 707,
           "name": "_profile_error_key"
         },
         {
-          "end_line": 758,
-          "line": 735,
+          "end_line": 761,
+          "line": 738,
           "name": "localized_operation_error"
         },
         {
-          "end_line": 767,
-          "line": 761,
+          "end_line": 770,
+          "line": 764,
           "name": "__all__"
         }
       ],
@@ -128982,7 +128982,7 @@
       "work_package": null
     },
     {
-      "bytes": 52122,
+      "bytes": 52149,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -129077,7 +129077,7 @@
           "text": "lazy from presentation.ui_localization import ("
         },
         {
-          "line": 45,
+          "line": 44,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from presentation.ui_localization import ("
         },
@@ -129088,7 +129088,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "09580561bd6b0a222e9fc467d7ec21b82df59f5c782f275949d9aa64b29087b6",
+      "sha256": "4ea35ba820757cb5f9a54c825ff334def0c0288d769de10d1f262e438f92fe91",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -129109,25 +129109,25 @@
           "name": "_JAPANESE"
         },
         {
-          "end_line": 738,
+          "end_line": 740,
           "line": 712,
           "name": "ui_text"
         },
         {
-          "end_line": 754,
-          "line": 741,
+          "end_line": 756,
+          "line": 743,
           "name": "display_label"
         },
         {
-          "end_line": 771,
-          "line": 757,
+          "end_line": 773,
+          "line": 759,
           "name": "__all__"
         }
       ],
       "work_package": null
     },
     {
-      "bytes": 42109,
+      "bytes": 42088,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -129168,7 +129168,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "eae727c68fc91b1e7344a24ae5545bf5916e313899f820b49671f81aa35aef5e",
+      "sha256": "41b093bd3ce00e93430f4be7f1ab0cf1babad1aeddd63a2bdb8a75d8e2bf5904",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -129192,7 +129192,7 @@
       "work_package": null
     },
     {
-      "bytes": 37138,
+      "bytes": 37117,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -129262,7 +129262,7 @@
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_MODE_LABELS"
         },
         {
-          "line": 51,
+          "line": 50,
           "path": "presentation/first_run_wizard.py",
           "text": "lazy from presentation.ui_localization_ja import JAPANESE_WORK_TYPE_LABELS"
         },
@@ -129273,7 +129273,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "6c2825cdcb6a5cf3a7814c372434f679d1dfdaef902b5be59f08a56e1a0d5fbe",
+      "sha256": "7f9cef91172dd4abf19e94bf06a5cd3540e9c1019d322460da00c076bdb1c79a",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],

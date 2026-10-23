@@ -2,10 +2,10 @@ from __future__ import annotations
 
 lazy from collections.abc import Mapping
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.immutable_config import deep_freeze
 
-_DIALOGUE = load_mohan_character_data().dialogues["ja-JP"]
+_DIALOGUE = active_character_data().dialogues["ja-JP"]
 
 JAPANESE_UI: Mapping[str, str] = deep_freeze({
     "first_run_title": "初回セットアップ",

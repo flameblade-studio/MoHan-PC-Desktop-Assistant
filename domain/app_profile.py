@@ -2,18 +2,11 @@ from __future__ import annotations
 
 lazy from dataclasses import dataclass
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
 lazy from domain.character_pack.character_data_models import canonical_character_locale
+lazy from domain.character_source import active_character_data, active_character_source
 lazy from domain.contracts import ProfileDatabasePort
-lazy from domain.language_support import is_english, is_japanese, is_simplified_chinese
-lazy from domain.persona_defaults import (
-    ENGLISH_PERSONA,
-    JAPANESE_PERSONA,
-    PERSONA,
-    SIMPLIFIED_CHINESE_PERSONA,
-)
 
-_IDENTITY = load_mohan_character_data().identity
+_IDENTITY = active_character_data().identity
 DEFAULT_PROFILE = frozendict(_IDENTITY.defaults)
 
 
@@ -60,13 +53,9 @@ class ProfileSettingsValues:
 
 
 def default_persona_for_language(language: str) -> str:
-    if is_english(language):
-        return ENGLISH_PERSONA
-    if is_simplified_chinese(language):
-        return SIMPLIFIED_CHINESE_PERSONA
-    if is_japanese(language):
-        return JAPANESE_PERSONA
-    return PERSONA
+    return active_character_source().persona.persona_prompt(
+        canonical_character_locale(language)
+    )
 
 
 def profile_setting(db: ProfileDatabasePort, key: str) -> str:

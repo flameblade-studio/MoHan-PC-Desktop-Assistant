@@ -366,8 +366,18 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
     "久坐提醒・克制加強": translations(
         "久坐提醒・克制加强", "Sitting・Restrained follow-up", "長時間の着席・控えめな再通知"
     ),
+    "{character_name}的生日・含蓄暗示": translations(
+        "{character_name}的生日・含蓄提示",
+        "{character_name}'s birthday・Subtle hint",
+        "{character_name}の誕生日・控えめな合図",
+    ),
     "{character_name}生日・含蓄暗示": translations(
         "{character_name}生日・含蓄提示", "{character_name}'s birthday・Subtle hint", "{character_name}の誕生日・控えめな合図"
+    ),
+    "{character_name}的生日・小聲埋怨": translations(
+        "{character_name}的生日・小声埋怨",
+        "{character_name}'s birthday・Quiet grumble",
+        "{character_name}の誕生日・小さな不満",
     ),
     "{character_name}生日・小聲埋怨": translations(
         "{character_name}生日・小声埋怨", "{character_name}'s birthday・Quiet grumble", "{character_name}の誕生日・小さな不満"
@@ -454,6 +464,21 @@ REMOTE_VISION_TRANSLATIONS: TranslationCatalog = frozendict({
         "尚无可用的程序窗口画面",
         "An app-window image is required",
         "利用可能なアプリ画面がありません",
+    ),
+    "新裝互動": translations(
+        "新装互动",
+        "Outfit interactions",
+        "新しい衣装とのやり取り",
+    ),
+    "新裝初見・詢問": translations(
+        "新装初见・询问",
+        "First look at the new outfit・Question",
+        "新しい衣装を初めて見て・問いかけ",
+    ),
+    "新裝初見・來歷": translations(
+        "新装初见・来历",
+        "First look at the new outfit・Origin",
+        "新しい衣装を初めて見て・由来",
     ),
 })
 

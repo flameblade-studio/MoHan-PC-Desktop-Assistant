@@ -19,7 +19,7 @@ try {
     } | Select-Object -First 1
     if (-not $info) { $info = $installed | Select-Object -First 1 }
 
-    $engine = New-Object System.Speech.Recognition.SpeechRecognitionEngine
+    $engine = [System.Speech.Recognition.SpeechRecognitionEngine]::new($info)
     if ($InputPath) {
         $engine.SetInputToWaveFile($InputPath)
     } else {

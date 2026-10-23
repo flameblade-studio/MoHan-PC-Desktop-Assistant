@@ -3,7 +3,7 @@ from __future__ import annotations
 lazy from collections.abc import Mapping
 lazy from enum import StrEnum
 
-lazy from domain.character_pack.character_data import load_mohan_character_data
+lazy from domain.character_source import active_character_data
 lazy from domain.language_support import canonical_ui_language
 lazy from domain.safe_error import SafeError
 lazy from domain.safe_error_localization import safe_error_message
@@ -94,7 +94,7 @@ class AuxiliaryOperation(StrEnum):
     UPDATE = "update"
 
 
-_PERSONAS = load_mohan_character_data().personas
+_PERSONAS = active_character_data().personas
 
 
 _ZH_TW: Mapping[AuxiliaryText, str] = frozendict({
@@ -656,7 +656,10 @@ def auxiliary_text(
 ) -> str:
     """Return one localized auxiliary-UI string from the complete key set."""
 
-    template = TRANSLATIONS[canonical_ui_language(language)][key]
+    locale = canonical_ui_language(language)
+    if key is AuxiliaryText.DEFAULT_ASSISTANT_NAME:
+        return active_character_data().personas[locale].identity.display_name
+    template = TRANSLATIONS[locale][key]
     return template.format(**values) if values else template
 
 
