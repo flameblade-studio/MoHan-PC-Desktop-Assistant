@@ -153,6 +153,21 @@ def offline_reply(text: str, mode: str, response_language: str = "zh-TW") -> str
 # Chat/planner read timeout. The 150s window covers slow reasoning turns while
 # the worker's failure path surfaces real errors (v4.5.1, 2026-08-29).
 REQUEST_TIMEOUT_SECONDS = 150
+MAX_RESPONSE_BYTES = 8 * 1024 * 1024
+
+
+def _read_bounded_response(response, limit: int = MAX_RESPONSE_BYTES) -> bytes:
+    announced = getattr(response, "headers", {}).get("Content-Length")
+    if announced:
+        try:
+            if int(announced) > limit:
+                raise ValueError("OpenAI response exceeds the safety limit")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("OpenAI response length is invalid") from exc
+    payload = response.read(limit + 1)
+    if len(payload) > limit:
+        raise ValueError("OpenAI response exceeds the safety limit")
+    return payload
 
 
 class AIWorkerSignals(QObject):
@@ -312,7 +327,8 @@ class ActionPlannerWorker(QRunnable):
         )
         try:
             with urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
-                data = json.load(response)
+                raw = _read_bounded_response(response)
+                data = json.loads(raw.decode("utf-8")) if raw else {}
             calls = [
                 item
                 for item in data.get("output", [])
@@ -504,7 +520,8 @@ class AIWorker(QRunnable):
         )
         try:
             with urlopen(req, timeout=REQUEST_TIMEOUT_SECONDS) as response:
-                data = json.load(response)
+                raw = _read_bounded_response(response)
+                data = json.loads(raw.decode("utf-8")) if raw else {}
             self._report_prompt_cache_telemetry(data)
             text = data.get("output_text", "").strip()
             if not text:

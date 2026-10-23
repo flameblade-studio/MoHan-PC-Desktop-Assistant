@@ -4,7 +4,9 @@ lazy import hashlib
 lazy import json
 lazy import os
 lazy import re
+lazy import secrets
 lazy import ssl
+lazy import stat
 lazy from collections.abc import Callable
 lazy from dataclasses import dataclass
 lazy from pathlib import Path
@@ -22,6 +24,7 @@ lazy from infrastructure.update_manifest_signature import (
 
 MAX_MANIFEST_BYTES = 256 * 1024
 MAX_INSTALLER_BYTES = 750 * 1024 * 1024
+WINDOWS_REPARSE_POINT = 0x0400
 HTTP_NOT_FOUND = 404
 ALLOWED_DOWNLOAD_HOSTS = frozenset(
     {
@@ -42,6 +45,21 @@ SEMVER_RE = re.compile(
 
 class UpdateError(RuntimeError):
     """A safe, user-displayable updater attention event."""
+
+
+def _contains_reparse_point(path: Path) -> bool:
+    try:
+        for candidate in (path, *path.parents):
+            if not os.path.lexists(candidate):
+                continue
+            metadata = os.lstat(candidate)
+            if stat.S_ISLNK(metadata.st_mode) or bool(
+                getattr(metadata, "st_file_attributes", 0) & WINDOWS_REPARSE_POINT
+            ):
+                return True
+    except OSError:
+        return True
+    return False
 
 
 @dataclass(frozen=True)
@@ -355,8 +373,16 @@ class UpdateManager:
         progress: Callable[[int, int], None] | None = None,
     ) -> Path:
         self._validate_url(asset.url)
+        try:
+            self.download_dir.mkdir(parents=True, exist_ok=True)
+            if _contains_reparse_point(self.download_dir):
+                raise UpdateError("更新暫存目錄包含不受信任的 reparse point。")
+        except OSError:
+            raise UpdateError("更新暫存目錄無法安全建立。") from None
         target = self.download_dir / asset.name
-        partial = target.with_suffix(target.suffix + ".part")
+        if _contains_reparse_point(target):
+            raise UpdateError("更新目標包含不受信任的 reparse point。")
+        partial = self.download_dir / f".mohan-update-{secrets.token_hex(16)}.part"
         received, actual_digest, failure = self._download_to_partial(
             asset,
             partial,
@@ -390,12 +416,11 @@ class UpdateManager:
                 asset.url,
                 headers={"User-Agent": "MoHan-Desktop-Assistant-Updater"},
             )
-            self.download_dir.mkdir(parents=True, exist_ok=True)
             with self._opener(
                 request,
                 timeout=30,
                 context=self._ssl_context,
-            ) as response, partial.open("wb") as handle:
+            ) as response, partial.open("xb") as handle:
                 self._validate_url(response.geturl())
                 while True:
                     chunk = response.read(1024 * 1024)
@@ -427,6 +452,8 @@ class UpdateManager:
     @staticmethod
     def _replace_partial(partial: Path, target: Path) -> bool:
         try:
+            if _contains_reparse_point(partial.parent) or _contains_reparse_point(target):
+                return False
             os.replace(partial, target)
         except (OSError, TypeError, ValueError):
             return False

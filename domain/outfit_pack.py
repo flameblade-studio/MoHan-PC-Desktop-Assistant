@@ -4,6 +4,7 @@ lazy import json
 lazy import os
 lazy import re
 lazy import struct
+lazy import tempfile
 lazy import zipfile
 lazy from pathlib import Path
 lazy from domain.outfit_pack_store import (
@@ -111,7 +112,6 @@ ACCESSORY_ASSET_SLOTS = frozendict({
     "weapon": frozenset({"weapon", "sheath"}), "handheld": frozenset({"handheld"}),
     "jewelry": frozenset({"jewelry"}), "foreground-effect": frozenset({"foreground-effect"}),
 })
-# Official pack identities live in domain.outfit_pack_official; re-bound here for the importers of this module.
 BUILTIN_MAKEUP_PACK_ID = outfit_pack_official.BUILTIN_MAKEUP_PACK_ID
 BUILTIN_MAKEUP_ITEM_ID = outfit_pack_official.BUILTIN_MAKEUP_ITEM_ID
 BUILTIN_MAKEUP_VARIANTS = outfit_pack_official.BUILTIN_MAKEUP_VARIANTS
@@ -465,7 +465,6 @@ def _autonomous_profile(value: object) -> AutonomousStyleProfile:
         if len(result) != len(items) or not result.issubset(allowed):
             raise OutfitPackError("Provide a supported autonomous outfit tags.")
         return result
-
     priority = value["priority"]
     if not isinstance(priority, int) or isinstance(priority, bool) or not MIN_Z_ORDER <= priority <= MAX_Z_ORDER:
         raise OutfitPackError("Provide a supported autonomous outfit priority.")
@@ -588,10 +587,21 @@ def list_installed_ensembles(
 
 
 def install_outfit_pack(source: Path, store: Path) -> OutfitPack:
-    pack = inspect_outfit_pack(source)
+    try:
+        with Path(source).open("rb") as handle:
+            payload = handle.read(MAX_ARCHIVE_BYTES + 1)
+    except OSError:
+        raise OutfitPackError("Provide a supported appearance archive.") from None
+    with tempfile.NamedTemporaryFile("wb", suffix=".archive", delete=False) as handle:
+        snapshot = Path(handle.name)
+        handle.write(payload)
+    try:
+        pack = inspect_outfit_pack(snapshot)
+    finally:
+        snapshot.unlink(missing_ok=True)
     if not official_pack_id_reservations_complete() or pack.pack_id in official_pack_ids():
         raise OutfitPackError("Official pack ids are reserved for the archives shipped with the app.")
-    copy_pack_archive(source, store, pack.pack_id)
+    copy_pack_archive(Path(source), store, pack.pack_id, payload=payload)
     return pack
 
 

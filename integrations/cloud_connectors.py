@@ -69,6 +69,7 @@ PROVIDERS = frozendict({
 })
 
 _CLOUD_PROVIDER_ALIASES: dict[str, str] = {}
+MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 
 
 def register_cloud_provider_alias(provider: str, *aliases: str) -> None:
@@ -196,6 +197,16 @@ def _sanitized_external_error(
     """Keep provider detail inside the cloud boundary after sanitization."""
     safe_input = UnicodeError() if isinstance(error, json.JSONDecodeError) else error
     return str(sanitize_error(safe_input, http_status=http_status))
+
+
+def _read_bounded_json(response, limit: int = MAX_RESPONSE_BYTES) -> Any:
+    announced = getattr(response, "headers", {}).get("Content-Length")
+    if announced and int(announced) > limit:
+        raise ValueError("cloud response exceeds the safety limit")
+    payload = response.read(limit + 1)
+    if len(payload) > limit:
+        raise ValueError("cloud response exceeds the safety limit")
+    return json.loads(payload.decode("utf-8")) if payload else None
 
 
 def _callback_handler(
@@ -403,7 +414,7 @@ class OAuthPKCEFlow:
                 method="POST",
             )
             with urlopen(request, timeout=30) as response:
-                token = json.load(response)
+                token = _read_bounded_json(response)
         except (
             HTTPError,
             URLError,
@@ -414,7 +425,6 @@ class OAuthPKCEFlow:
             exchange_failure = _sanitized_external_error(exc)
         if exchange_failure is not None:
             raise OAuthError(exchange_failure)
-
         if not isinstance(token, dict) or not token.get("access_token"):
             raise OAuthError("授權服務需要存取權杖，請重新連線")
         token["obtained_at"] = int(time.time())
@@ -451,12 +461,11 @@ def refresh_oauth_token(
             method="POST",
         )
         with urlopen(request, timeout=30) as response:
-            updated = json.load(response)
+            updated = _read_bounded_json(response)
     except (HTTPError, URLError, OSError, UnicodeError, json.JSONDecodeError) as exc:
         refresh_failure = _sanitized_external_error(exc)
     if refresh_failure is not None:
         raise OAuthError(refresh_failure)
-
     if not isinstance(updated, dict) or not updated.get("access_token"):
         raise OAuthError("服務商需要提供新的存取權杖，請重新連線")
     merged = dict(token)
@@ -500,8 +509,7 @@ class JsonApiClient:
                 },
             )
             with urlopen(request, timeout=30) as response:
-                raw = response.read()
-                return json.loads(raw.decode("utf-8")) if raw else None
+                return _read_bounded_json(response)
         except (
             HTTPError,
             URLError,
@@ -533,8 +541,7 @@ class JsonApiClient:
                 },
             )
             with urlopen(request, timeout=45) as response:
-                raw = response.read()
-                return json.loads(raw.decode("utf-8")) if raw else None
+                return _read_bounded_json(response)
         except (
             HTTPError,
             URLError,
@@ -687,7 +694,7 @@ class GoogleDriveConnector(JsonApiClient):
                 },
             )
             with urlopen(request, timeout=45) as response:
-                result = json.load(response)
+                result = _read_bounded_json(response)
         except (
             HTTPError,
             URLError,

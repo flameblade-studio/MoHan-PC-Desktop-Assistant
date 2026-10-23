@@ -126606,7 +126606,7 @@
           "text": "lazy from domain.outfit_pack_official import ("
         },
         {
-          "line": 34,
+          "line": 35,
           "path": "domain/outfit_pack.py",
           "text": "from domain.outfit_pack_official import builtin_makeup_resolution, official_pack_id_reservations_complete, official_pack_ids as _active_official_pack_ids, reserved_official_pack_ids as official_pack_ids, resolve_builtin_sentinel, set_official_pack_id_reservations as set_official_pack_id_reservations"
         },
@@ -127450,7 +127450,7 @@
       "work_package": null
     },
     {
-      "bytes": 38365,
+      "bytes": 38916,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒攜帶檔名稱與既有使用者匯入格式屬產品殼相容契約。",
@@ -127481,7 +127481,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "d18279d80a9a420fcdeb0f7d2b505f9cfe979ed0c903ec410f220b0446805d94",
+      "sha256": "de33274acbe2e40ffb22d35db39141759c40a416681b6d93c81ed14c90d104c4",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
       ],
@@ -127592,7 +127592,7 @@
           "name": "normalized_profile_path"
         },
         {
-          "end_line": 1070,
+          "end_line": 1079,
           "line": 257,
           "name": "PortableProfileManager"
         }
@@ -127600,7 +127600,7 @@
       "work_package": null
     },
     {
-      "bytes": 16001,
+      "bytes": 17073,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "墨寒更新端點、User-Agent 與發行資產名稱屬產品殼。",
@@ -127611,7 +127611,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 145,
+          "line": 163,
           "matched": "MoHan",
           "path": "infrastructure/updater.py",
           "rule": "character_name_literal",
@@ -127621,7 +127621,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 271,
+          "line": 289,
           "matched": "MoHan",
           "path": "infrastructure/updater.py",
           "rule": "character_name_literal",
@@ -127631,7 +127631,7 @@
         {
           "content_kind": "identity",
           "description": "角色名字仍是原始碼字串；引擎或介面應由角色身分資料代入。",
-          "line": 391,
+          "line": 417,
           "matched": "MoHan",
           "path": "infrastructure/updater.py",
           "rule": "character_name_literal",
@@ -127651,76 +127651,86 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "1e2a6bcd87e8fa1ed708ec3c39af0ec01605e758119304b4a3784e1de362eceb",
+      "sha256": "aac81d6616b7170971219405581b0cb0d5f0ffe74f752c92dfdc41619820be83",
       "suggested_data_targets": [
         "assets/characters/mohan/persona/profile.json"
       ],
       "symbols": [
         {
-          "end_line": 23,
-          "line": 23,
+          "end_line": 25,
+          "line": 25,
           "name": "MAX_MANIFEST_BYTES"
         },
         {
-          "end_line": 24,
-          "line": 24,
+          "end_line": 26,
+          "line": 26,
           "name": "MAX_INSTALLER_BYTES"
         },
         {
-          "end_line": 25,
-          "line": 25,
+          "end_line": 27,
+          "line": 27,
+          "name": "WINDOWS_REPARSE_POINT"
+        },
+        {
+          "end_line": 28,
+          "line": 28,
           "name": "HTTP_NOT_FOUND"
         },
         {
-          "end_line": 33,
-          "line": 26,
+          "end_line": 36,
+          "line": 29,
           "name": "ALLOWED_DOWNLOAD_HOSTS"
         },
         {
-          "end_line": 40,
-          "line": 34,
+          "end_line": 43,
+          "line": 37,
           "name": "SEMVER_RE"
         },
         {
-          "end_line": 44,
-          "line": 43,
+          "end_line": 47,
+          "line": 46,
           "name": "UpdateError"
         },
         {
-          "end_line": 53,
-          "line": 48,
-          "name": "InstallerAsset"
+          "end_line": 62,
+          "line": 50,
+          "name": "_contains_reparse_point"
         },
         {
           "end_line": 71,
-          "line": 57,
+          "line": 66,
+          "name": "InstallerAsset"
+        },
+        {
+          "end_line": 89,
+          "line": 75,
           "name": "ReleaseInfo"
         },
         {
-          "end_line": 78,
-          "line": 74,
+          "end_line": 96,
+          "line": 92,
           "name": "_prerelease_key"
         },
         {
-          "end_line": 92,
-          "line": 81,
+          "end_line": 110,
+          "line": 99,
           "name": "semantic_version_key"
         },
         {
-          "end_line": 96,
-          "line": 95,
+          "end_line": 114,
+          "line": 113,
           "name": "is_newer_version"
         },
         {
-          "end_line": 441,
-          "line": 99,
+          "end_line": 468,
+          "line": 117,
           "name": "UpdateManager"
         }
       ],
       "work_package": null
     },
     {
-      "bytes": 27492,
+      "bytes": 27902,
       "category": "embedded_character_content",
       "classification": "product_shell_allowed",
       "classification_reason": "命中內容只有墨寒產品名、「關於」標題、連網 User-Agent 或安全儲存標籤，屬墨寒產品殼識別。",
@@ -127731,7 +127741,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 499,
+          "line": 508,
           "matched": "MoHan",
           "path": "integrations/cloud_connectors.py",
           "rule": "product_identity_literal",
@@ -127741,7 +127751,7 @@
         {
           "content_kind": "product_identity",
           "description": "墨寒產品殼識別字串（產品名、關於、User-Agent、安全儲存標籤），依產品契約保留。",
-          "line": 532,
+          "line": 540,
           "matched": "MoHan",
           "path": "integrations/cloud_connectors.py",
           "rule": "product_identity_literal",
@@ -127771,7 +127781,7 @@
         }
       ],
       "scope": "embedded_code",
-      "sha256": "3faea55894c930d99b36d736bcab861a93938f4531cf6f7dc8cd9b4ab1f2bfd2",
+      "sha256": "5ded6d6ceb4f2a80e5f299ce929d400fe39508b374b7e2b4c70fe486618348ca",
       "suggested_data_targets": [
         "infrastructure/app_resources.py"
       ],
@@ -127792,93 +127802,103 @@
           "name": "_CLOUD_PROVIDER_ALIASES"
         },
         {
-          "end_line": 82,
-          "line": 74,
+          "end_line": 72,
+          "line": 72,
+          "name": "MAX_RESPONSE_BYTES"
+        },
+        {
+          "end_line": 83,
+          "line": 75,
           "name": "register_cloud_provider_alias"
         },
         {
-          "end_line": 135,
-          "line": 112,
+          "end_line": 136,
+          "line": 113,
           "name": "normalize_cloud_provider"
         },
         {
-          "end_line": 139,
-          "line": 138,
+          "end_line": 140,
+          "line": 139,
           "name": "OAuthError"
         },
         {
-          "end_line": 155,
-          "line": 142,
+          "end_line": 156,
+          "line": 143,
           "name": "_require_identified"
         },
         {
-          "end_line": 164,
-          "line": 158,
+          "end_line": 165,
+          "line": 159,
           "name": "_is_identifier"
         },
         {
-          "end_line": 188,
-          "line": 167,
+          "end_line": 189,
+          "line": 168,
           "name": "_require_collection"
         },
         {
-          "end_line": 198,
-          "line": 191,
+          "end_line": 199,
+          "line": 192,
           "name": "_sanitized_external_error"
         },
         {
-          "end_line": 229,
-          "line": 201,
+          "end_line": 209,
+          "line": 202,
+          "name": "_read_bounded_json"
+        },
+        {
+          "end_line": 240,
+          "line": 212,
           "name": "_callback_handler"
         },
         {
-          "end_line": 255,
-          "line": 232,
+          "end_line": 266,
+          "line": 243,
           "name": "_wait_for_callback"
         },
         {
-          "end_line": 267,
-          "line": 258,
+          "end_line": 278,
+          "line": 269,
           "name": "_authorization_code"
         },
         {
-          "end_line": 423,
-          "line": 270,
+          "end_line": 433,
+          "line": 281,
           "name": "OAuthPKCEFlow"
         },
         {
-          "end_line": 465,
-          "line": 426,
+          "end_line": 474,
+          "line": 436,
           "name": "refresh_oauth_token"
         },
         {
-          "end_line": 546,
-          "line": 468,
+          "end_line": 553,
+          "line": 477,
           "name": "JsonApiClient"
         },
         {
-          "end_line": 589,
-          "line": 549,
+          "end_line": 596,
+          "line": 556,
           "name": "GmailConnector"
         },
         {
-          "end_line": 627,
-          "line": 592,
+          "end_line": 634,
+          "line": 599,
           "name": "GoogleCalendarConnector"
         },
         {
-          "end_line": 704,
-          "line": 630,
+          "end_line": 711,
+          "line": 637,
           "name": "GoogleDriveConnector"
         },
         {
-          "end_line": 771,
-          "line": 707,
+          "end_line": 778,
+          "line": 714,
           "name": "MicrosoftGraphConnector"
         },
         {
-          "end_line": 793,
-          "line": 774,
+          "end_line": 800,
+          "line": 781,
           "name": "GitHubConnector"
         }
       ],

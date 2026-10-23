@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 lazy import webbrowser
+lazy import os
+lazy import stat
 lazy from pathlib import Path
 lazy from typing import Protocol
 lazy from urllib.parse import ParseResult, unquote, urlparse
@@ -14,6 +16,7 @@ lazy from infrastructure.platform_services import current_platform_services
 __all__ = ("WindowsToolbox",)
 
 MAX_SEARCH_RESULTS = 200
+WINDOWS_REPARSE_POINT = 0x0400
 
 
 class ActionRegistrar(Protocol):
@@ -129,7 +132,10 @@ class WindowsToolbox:
     ) -> Path:
         if not self.allowed_folders:
             raise PermissionError("尚未設定允許操作的資料夾")
-        target = Path(raw).expanduser().resolve()
+        raw_path = Path(raw).expanduser()
+        if self._contains_reparse_point(raw_path):
+            raise PermissionError("路徑包含不受信任的 reparse point")
+        target = raw_path.resolve()
         if not any(
             root == target or root in target.parents
             for root in self.allowed_folders
@@ -143,6 +149,35 @@ class WindowsToolbox:
         if must_exist and not target.exists():
             raise FileNotFoundError(target)
         return target
+
+    @staticmethod
+    def _contains_reparse_point(path: Path) -> bool:
+        """Reject symlink/junction components before a path operation."""
+        try:
+            for candidate in (path, *path.parents):
+                if not os.path.lexists(candidate):
+                    continue
+                metadata = os.lstat(candidate)
+                if stat.S_ISLNK(metadata.st_mode) or bool(
+                    getattr(metadata, "st_file_attributes", 0)
+                    & WINDOWS_REPARSE_POINT
+                ):
+                    return True
+        except OSError:
+            return True
+        return False
+
+    def _opened_file_is_allowed(self, target: Path, handle) -> bool:
+        try:
+            resolved = target.resolve(strict=True)
+            if not any(
+                root == resolved or root in resolved.parents
+                for root in self.allowed_folders
+            ):
+                return False
+            return os.path.samefile(handle.fileno(), resolved)
+        except (OSError, RuntimeError, ValueError):
+            return False
 
     def open_web(self, request: ActionRequest) -> ActionResult:
         value = str(request.arguments.get("url", "")).strip()
@@ -189,7 +224,10 @@ class WindowsToolbox:
             raise FileExistsError("預設禁止覆寫既有檔案")
         target.parent.mkdir(parents=True, exist_ok=True)
         content = str(request.arguments.get("content", ""))
-        target.write_text(content, encoding="utf-8")
+        with target.open("x", encoding="utf-8") as handle:
+            if not self._opened_file_is_allowed(target, handle):
+                raise PermissionError("建立後的檔案身分不在允許清單內")
+            handle.write(content)
         return ActionResult(
             request.request_id,
             True,
@@ -250,7 +288,18 @@ class WindowsToolbox:
         if destination.exists():
             raise FileExistsError("目的地已存在，預設禁止覆寫")
         destination.parent.mkdir(parents=True, exist_ok=True)
+        with source.open("rb") as source_handle:
+            if not self._opened_file_is_allowed(source, source_handle):
+                raise PermissionError("來源檔案身分不在允許清單內")
+            source_identity = os.fstat(source_handle.fileno())
         source.replace(destination)
+        try:
+            with destination.open("rb") as destination_handle:
+                destination_identity = os.fstat(destination_handle.fileno())
+        except OSError as exc:
+            raise PermissionError("搬移後的檔案無法安全驗證") from exc
+        if not os.path.samestat(source_identity, destination_identity):
+            raise PermissionError("搬移後的檔案身分不在允許清單內")
         return ActionResult(
             request.request_id,
             True,

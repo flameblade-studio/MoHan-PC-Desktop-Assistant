@@ -762,6 +762,10 @@ class PortableProfileManager:
                 temporary,
                 database_bytes,
             )
+            if sensitive_bytes is not None:
+                (Path(temporary.name) / SENSITIVE_FILENAME).write_bytes(
+                    sensitive_bytes
+                )
             self._validate_incoming_database(database_path, manifest)
             result = manifest, database_path, temporary
         except (
@@ -965,8 +969,13 @@ class PortableProfileManager:
         failure: ProfileTransferError | None = None
         result: ProfileImportResult | None = None
         try:
-            _payload, _database_bytes, sensitive_bytes = self._read_archive(
-                Path(source)
+            # inspect_profile materializes the exact bytes it validated.  Do
+            # not read the caller-controlled archive a second time: a swap
+            # between validation and import would otherwise mix manifests,
+            # databases, and sensitive envelopes from different archives.
+            sensitive_path = Path(temporary.name) / SENSITIVE_FILENAME
+            sensitive_bytes = (
+                sensitive_path.read_bytes() if sensitive_path.is_file() else None
             )
             sensitive_payload = None
             if sensitive_bytes is not None:

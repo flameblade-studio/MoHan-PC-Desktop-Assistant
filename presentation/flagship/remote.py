@@ -21,6 +21,7 @@ lazy from PySide6.QtWidgets import (
 )
 
 lazy from domain.safe_error_localization import safe_error_message
+lazy from application.flagship_action_runtime import redact_audit_payload
 lazy from domain.service_status_localization import character_ui_values
 lazy from domain.time_utils import local_wall_time
 lazy from domain.qt_image_io import save_image_png
@@ -348,7 +349,9 @@ class FlagshipRemoteMixin:
                 return
             self.db.audit_event(
                 "remote_command_received",
-                {"device": device, "text": text[:500]},
+                redact_audit_payload(
+                    {"device": device, "text": text[:500]}
+                ),
             )
             self.remote_command_received.emit(
                 self._t(

@@ -130,12 +130,18 @@ def inspect_cached_pack(
     return cached[1]
 
 
-def copy_pack_archive(source: Path, store: Path, pack_id: str) -> None:
+def copy_pack_archive(
+    source: Path,
+    store: Path,
+    pack_id: str,
+    *,
+    payload: bytes | None = None,
+) -> None:
     packages = Path(store) / "packages"
     packages.mkdir(parents=True, exist_ok=True)
     destination = packages / f"{pack_id}.mohan-outfit"
     with NamedTemporaryFile("wb", dir=packages, delete=False) as temporary:
-        temporary.write(Path(source).read_bytes())
+        temporary.write(Path(source).read_bytes() if payload is None else payload)
         temporary.flush()
         os.fsync(temporary.fileno())
         temporary_path = Path(temporary.name)

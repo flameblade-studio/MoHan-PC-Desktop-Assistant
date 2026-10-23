@@ -334,6 +334,23 @@ class RemoteControlServer:
                     seen.add(target_key)
                     yield target
 
+    def _opened_file_is_allowed(self, target: Path, stream: BinaryIO) -> bool:
+        """Re-check the object behind the already-open handle.
+
+        The catalogue is only a permission lookup.  The handle is the object
+        that will actually be streamed, so a replacement symlink/junction
+        between lookup and open must fail closed.
+        """
+        try:
+            resolved = target.resolve(strict=True)
+            with self._allowed_folders_lock:
+                roots = tuple(root.resolve(strict=True) for root in self.allowed_folders)
+            if not any(resolved == root or root in resolved.parents for root in roots):
+                return False
+            return os.path.samefile(stream.fileno(), resolved)
+        except (OSError, RuntimeError, ValueError):
+            return False
+
     @staticmethod
     def _is_sensitive_file(target: Path) -> bool:
         lowered = {part.casefold() for part in target.parts}
@@ -517,7 +534,9 @@ class RemoteRequestHandler(BaseHTTPRequestHandler):
             target = owner._allowed_file(raw_path)
             stream = target.open("rb")
             opened_file = os.fstat(stream.fileno())
-            if stat.S_ISREG(opened_file.st_mode):
+            if stat.S_ISREG(opened_file.st_mode) and owner._opened_file_is_allowed(
+                target, stream
+            ):
                 content_length = opened_file.st_size
             else:
                 open_failed = True
