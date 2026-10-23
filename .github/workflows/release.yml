@@ -245,6 +245,16 @@ jobs:
             --install
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+      - name: Install and run pinned cargo-audit
+        shell: pwsh
+        run: |
+          cargo install cargo-audit --version 0.22.2 --locked --force
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo audit --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          cargo audit --file native/mohan_accel/Cargo.lock
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Install pinned Windows installer toolchains
         env:
           GH_TOKEN: ${{ github.token }}

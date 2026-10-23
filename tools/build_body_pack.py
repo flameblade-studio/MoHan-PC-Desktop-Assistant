@@ -6,11 +6,13 @@ lazy import hashlib
 lazy import json
 lazy import sys
 lazy import stat
+lazy import shutil
+lazy import tempfile
 lazy import zipfile
 lazy from io import BytesIO
 lazy from math import ceil
 lazy from pathlib import Path, PurePosixPath
-lazy from dataclasses import dataclass
+lazy from dataclasses import dataclass, replace
 lazy from PIL import Image, ImageChops, ImageFilter
 lazy import numpy as np
 lazy import cv2
@@ -958,7 +960,7 @@ class _Builder:
                     self.layer_views[expression] = self.layer_views[pose]
 
 
-def _build_body_pack_request(request: BuildRequest) -> dict:
+def _build_body_pack_request_into(request: BuildRequest) -> dict:
     """Build reviewed views and expression aliases from one validated request."""
     product_root = request.product_root
     bald_root = request.bald_root
@@ -1028,6 +1030,46 @@ def _build_body_pack_request(request: BuildRequest) -> dict:
              "approved_gestures": sorted(builder.gestures),
              "face_core_precleared": False}
     write_json(receipt, stats)
+    return stats
+
+
+def _validate_build_output_location(request: BuildRequest, output: Path) -> None:
+    _check_output_path(output)
+    roots = [(request.product_root / "assets").resolve(), request.bald_root.resolve(),
+             request.layers_root.resolve()]
+    roots.extend(root.resolve() for root in (
+        request.fixed_core_root, request.character_layers_root, request.fixed_half_root
+    ) if root is not None)
+    resolved_output = output.resolve()
+    if any(resolved_output.is_relative_to(root) or root.is_relative_to(resolved_output)
+           for root in roots):
+        raise ValueError("Output must be separate from every read-only input root")
+
+
+def _replace_build_output(staged: Path, destination: Path) -> None:
+    if destination.is_symlink() or destination.is_junction():
+        raise ValueError(f"Body-pack output must be a regular directory: {destination}")
+    if destination.exists():
+        if not destination.is_dir():
+            raise ValueError(f"Body-pack output must be a directory: {destination}")
+        shutil.rmtree(destination)
+    staged.rename(destination)
+
+
+def _build_body_pack_request(request: BuildRequest) -> dict:
+    """Build into a fresh sibling directory, then replace stale output."""
+    destination = request.output
+    if destination.is_symlink() or destination.is_junction():
+        raise ValueError(f"Body-pack output must be a regular directory: {destination}")
+    destination = destination.absolute()
+    _validate_build_output_location(request, destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix=f".{destination.name}-", dir=destination.parent
+    ) as temporary:
+        staged = Path(temporary) / "output"
+        stats = _build_body_pack_request_into(replace(request, output=staged))
+        _replace_build_output(staged, destination)
     return stats
 
 

@@ -12,6 +12,7 @@ lazy from tempfile import TemporaryDirectory
 ROOT = Path(__file__).resolve().parents[1]
 MIN_PREVIEW_BYTES = 100_000
 LANGUAGE_COUNT = 4
+DEPENDABOT_ECOSYSTEM_COUNT = 3
 
 
 def read(relative: str) -> str:
@@ -442,8 +443,13 @@ def test_preview_and_windows_workflows() -> None:
         "tools/build_python315_jit_runtime.py",
         "repository: python/cpython",
         "uses: ./.github/actions/setup-llvm21",
+        'tomllib.load(open("pyproject.toml", "rb"))',
+        'version="$("$MOHAN_JIT_PYTHON" -c',
+        "--expected-version \"$version\"",
+        "dpkg -s libegl1 >/dev/null 2>&1",
     ):
         assert required in preview_packages
+    assert "continuing with the available runtime" not in preview_packages
     for required in (
         "https://apt.llvm.org/llvm-snapshot.gpg.key",
         "6084F3CF814B57C1CF12EFD515CF4D18AF4F7421",
@@ -488,14 +494,19 @@ def test_preview_and_windows_workflows() -> None:
         "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
         "hashFiles('rust-toolchain.toml', 'native/mohan_accel/Cargo.lock')",
         "actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+        "MOHAN_PROJECT_VERSION",
+        "tomllib.load(open('pyproject.toml', 'rb'))",
     ):
         assert required in windows_ci
+    assert "4.0.0-rc.1" not in windows_ci
     assert windows_ci.index(pinned_quality_install) < windows_ci.index(
         repository_quality_gate
     )
     release_workflow = read(".github/workflows/release.yml")
     assert_external_actions_pinned(release_workflow)
     assert pinned_quality_install in release_workflow
+    assert "cargo install cargo-audit --version 0.22.2 --locked --force" in release_workflow
+    assert "cargo audit --file native/mohan_accel/Cargo.lock" in release_workflow
     assert release_workflow.index(pinned_quality_install) < release_workflow.index(
         "python -m ruff check ."
     )
@@ -525,6 +536,10 @@ def test_preview_and_windows_workflows() -> None:
         "Accept: application/octet-stream",
     ):
         assert required in release_workflow
+    dependabot = read(".github/dependabot.yml")
+    assert 'package-ecosystem: cargo' in dependabot
+    assert 'directory: "/native/mohan_accel"' in dependabot
+    assert dependabot.count("interval: weekly") == DEPENDABOT_ECOSYSTEM_COUNT
 
 
 def test_secret_defense_and_community_files() -> None:

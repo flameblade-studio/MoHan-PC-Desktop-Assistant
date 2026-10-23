@@ -5,6 +5,7 @@ from __future__ import annotations
 lazy import hashlib
 lazy import json
 lazy import os
+lazy import zipfile
 lazy from pathlib import Path
 lazy from types import SimpleNamespace
 
@@ -461,6 +462,34 @@ def test_build_body_pack_assembles_small_synthetic_sources_deterministically(
     assert first_files == _body_pack_tree_bytes(second_output)
     assert "build-receipt.json" in first_files
     _assert_body_pack_assembly(first_output, view)
+
+
+def test_build_body_pack_replaces_stale_output_before_packaging(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(builder, "FULL_VIEW_COUNT", 1)
+    product_root, bald_root, layers_root, _view = _make_body_pack_fixture_inputs(
+        tmp_path / "inputs"
+    )
+    output = tmp_path / "output"
+    stale = output / "mohan-body-v2" / "stale-from-previous-build.txt"
+    stale.parent.mkdir(parents=True)
+    stale.write_text("stale", encoding="utf-8")
+
+    builder.build_body_pack(
+        product_root,
+        bald_root,
+        layers_root,
+        output,
+        "Synthetic fixture license",
+    )
+
+    assert not stale.exists()
+    archive = tmp_path / "body-pack.zip"
+    builder.build_reproducible_zip(output / "mohan-body-v2", archive)
+    with zipfile.ZipFile(archive) as handle:
+        assert "stale-from-previous-build.txt" not in handle.namelist()
 
 
 def test_complete_gesture_sources_build_independent_approved_body_poses(

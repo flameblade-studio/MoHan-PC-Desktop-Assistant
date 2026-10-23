@@ -168,10 +168,14 @@ def test_windows_release_verifies_every_distributed_package_form() -> None:
         "Installer requires layered PoseAtlas v5-base assets",
         '_internal\\assets\\pose-atlas\\v5-base"',
         '_internal\\assets\\pose-atlas\\v5-base-layered"',
-        'if ($LayeredViews.Count -ne 600)',
+        "FULL_BODY_LAYER_Z_ORDER",
+        "ExpectedLayeredPaths",
+        "ExpectedHalfBodyRigs",
         "Installer requires layered half-body expression assets",
-        'if ($HalfBodyLayers.Count -ne 75)',
+        "ExpectedHalfBodyPaths",
         'foreach ($Authority in @("idle.png", "idle_lean.png", "idle_front.png"))',
+        "ProcessStartInfo",
+        "ArgumentList.Add",
     ):
         assert required in installer_test
     assert installer_test.count("Invoke-NativeVerification `") == NATIVE_VERIFICATION_INVOCATION_COUNT

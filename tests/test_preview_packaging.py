@@ -290,7 +290,10 @@ def test_release_gate_is_pinned() -> None:
     assert 'Contents" / "Resources" / "LICENSE' in read(
         "tools/smoke_preview_package.py"
     )
-    assert "--expected-version 2.3.0-rc.0" in preview
+    assert 'tomllib.load(open("pyproject.toml", "rb"))' in preview
+    assert '--expected-version "$version"' in preview
+    assert "2.3.0-rc.0" not in preview
+    assert "continuing with the available runtime" not in preview
     assert "--preview-expected-version" in read("application/preview_app.py")
     assert release.count("--require-pose-atlas") == POSE_ATLAS_FLAG_COUNT
     # This asserts the source template, so braces must remain literal.

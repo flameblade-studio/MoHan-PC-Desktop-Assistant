@@ -97,16 +97,15 @@ def _copy_asset_directory(source: Path, destination: Path, *, canonical_root: Pa
             target.mkdir()
             _copy_asset_directory(entry, target, canonical_root=canonical_root)
         elif stat.S_ISREG(metadata.st_mode):
-            _link_or_copy(entry, target)
+            _copy_asset(entry, target)
         else:
             raise InstallerAssetStageError(f"Installer assets must contain only regular files: {entry}")
 
 
-def _link_or_copy(source: Path, destination: Path) -> None:
-    try:
-        os.link(source, destination)
-    except OSError:
-        shutil.copy2(source, destination)
+def _copy_asset(source: Path, destination: Path) -> None:
+    # Installer staging is an independent build tree.  Hard links would let a
+    # later packaging step mutate the canonical asset tree through the stage.
+    shutil.copy2(source, destination)
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
