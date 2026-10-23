@@ -1250,6 +1250,7 @@
         "test_run_all_tiers.py",
         "test_runtime_async_regressions.py",
         "test_runtime_preserved_settings_rollback.py",
+        "test_runtime_wheel_lock.py",
         "test_safe_error.py",
         "test_safe_error_integration.py",
         "test_safe_error_localization.py",
@@ -6190,16 +6191,6 @@
     },
     {
       "paths": [
-        "requirements-dev.txt"
-      ],
-      "tests": [
-        "test_development_dependency_governance.py",
-        "test_github_governance.py"
-      ],
-      "origin": "tools/generate_test_impact_map.py"
-    },
-    {
-      "paths": [
         ".github/workflows/release.yml"
       ],
       "tests": [
@@ -6223,6 +6214,7 @@
         "test_native_packaging_contract.py",
         "test_readme_media.py",
         "test_release_automation.py",
+        "test_runtime_wheel_lock.py",
         "test_v312_release_consistency.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -6236,6 +6228,17 @@
         "test_github_governance.py",
         "test_pytest_collection_contract.py",
         "test_quality_gate.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "requirements-dev.txt"
+      ],
+      "tests": [
+        "test_development_dependency_governance.py",
+        "test_github_governance.py",
+        "test_runtime_wheel_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -6305,6 +6308,7 @@
         "test_official_qt_runtime.py",
         "test_openai_vision_release_gate.py",
         "test_quality_gate.py",
+        "test_runtime_wheel_lock.py",
         "test_v4_vision_architecture_contracts.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
@@ -7342,7 +7346,8 @@
         "test_native_packaging_contract.py",
         "test_official_qt_runtime.py",
         "test_quality_gate.py",
-        "test_release_automation.py"
+        "test_release_automation.py",
+        "test_runtime_wheel_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7394,13 +7399,24 @@
     },
     {
       "paths": [
-        ".github/workflows/security-audit.yml",
         "PUBLISHING.md"
       ],
       "tests": [
         "test_github_governance.py",
         "test_readme_media.py",
         "test_release_automation.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        ".github/workflows/security-audit.yml"
+      ],
+      "tests": [
+        "test_github_governance.py",
+        "test_readme_media.py",
+        "test_release_automation.py",
+        "test_runtime_wheel_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -8704,6 +8720,16 @@
       ],
       "tests": [
         "test_run_all_tiers.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "requirements-windows-lock.txt",
+        "tools/lock_runtime_requirements.py"
+      ],
+      "tests": [
+        "test_runtime_wheel_lock.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },

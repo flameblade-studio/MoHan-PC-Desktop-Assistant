@@ -1,0 +1,3 @@
+### 執行期套件以檔案指紋鎖定／运行期套件以文件指纹锁定／Hash-locked runtime wheels／ランタイムの wheel をハッシュで固定
+
+- Windows 正式包與 CI 改由 `requirements-windows-lock.txt` 以 `--require-hashes` 安裝 Qt 以外的全部執行期套件（含間接依賴），並納入 pip-audit／Windows 正式包与 CI 改由 `requirements-windows-lock.txt` 以 `--require-hashes` 安装 Qt 以外的全部运行期套件（含间接依赖），并纳入 pip-audit／Windows release and CI builds install every non-Qt runtime wheel, including transitive dependencies, from `requirements-windows-lock.txt` with `--require-hashes`, and pip-audit covers that lock／Windows の正式パッケージと CI は Qt 以外のすべてのランタイム wheel（間接依存を含む）を `requirements-windows-lock.txt` から `--require-hashes` でインストールし、pip-audit の対象にも追加
