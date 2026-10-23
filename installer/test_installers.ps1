@@ -127,9 +127,16 @@ function Invoke-PackagedSelfTest {
         [int]$TimeoutSeconds = 600
     )
     Remove-Item -LiteralPath $OutputPath -Force -ErrorAction SilentlyContinue
-    $Process = Start-Process $Executable -ArgumentList @(
-        "--self-test", "--self-test-output=$OutputPath"
-    ) -PassThru
+    $StartInfo = [Diagnostics.ProcessStartInfo]::new()
+    $StartInfo.FileName = $Executable
+    $StartInfo.UseShellExecute = $false
+    [void]$StartInfo.ArgumentList.Add("--self-test")
+    [void]$StartInfo.ArgumentList.Add("--self-test-output=$OutputPath")
+    $Process = [Diagnostics.Process]::new()
+    $Process.StartInfo = $StartInfo
+    if (-not $Process.Start()) {
+        throw "$Label application self-test could not start"
+    }
     if (-not $Process.WaitForExit($TimeoutSeconds * 1000)) {
         # Python 3.15rc1 JIT/Qt interpreter finalization can hold the process
         # after the self-test finishes and writes its marker file.  This
@@ -172,12 +179,22 @@ function Assert-PackagedPoseAtlas {
     if (-not (Test-Path -LiteralPath $AtlasRoot)) {
         throw "Installer requires PoseAtlas v5-base assets"
     }
-    $Views = Get-ChildItem -LiteralPath $AtlasRoot -Filter "yaw*-pitch+00.png"
-    if ($Views.Count -ne 24) {
-        throw "Installer PoseAtlas view count is $($Views.Count); 24 views are required"
+    $CatalogJson = & $Python -c "import json; from domain.constants import FULL_BODY_LAYER_Z_ORDER; from infrastructure.layered_full_body_assets import VIEW_IDS; from domain.outfit_pack_makeup import HALF_BODY_RIGS; print(json.dumps({'view_ids': list(VIEW_IDS), 'layer_names': list(FULL_BODY_LAYER_Z_ORDER), 'half_body_rigs': sorted(set(HALF_BODY_RIGS.values()))}))"
+    if ($LASTEXITCODE -ne 0) {
+        throw "Installer asset catalog could not be loaded"
     }
-    foreach ($View in $Views) {
-        $Base = [IO.Path]::GetFileNameWithoutExtension($View.Name)
+    $Catalog = ($CatalogJson -join "`n") | ConvertFrom-Json
+    $ExpectedViewIds = @($Catalog.view_ids)
+    $ExpectedLayerNames = @($Catalog.layer_names)
+    $ExpectedHalfBodyRigs = @($Catalog.half_body_rigs)
+    $Views = @($ExpectedViewIds | Where-Object {
+        Test-Path -LiteralPath (Join-Path $AtlasRoot ("{0}.png" -f $_)) -PathType Leaf
+    })
+    if ($Views.Count -ne $ExpectedViewIds.Count) {
+        throw "Installer PoseAtlas view count is $($Views.Count); $($ExpectedViewIds.Count) views are required"
+    }
+    foreach ($View in $ExpectedViewIds) {
+        $Base = $View
         foreach ($Suffix in @(".landmarks.json", ".hands.json")) {
             if (-not (Test-Path -LiteralPath (Join-Path $AtlasRoot ($Base + $Suffix)))) {
                 throw "Installer PoseAtlas sidecar is required: $Base$Suffix"
@@ -188,17 +205,35 @@ function Assert-PackagedPoseAtlas {
     if (-not (Test-Path -LiteralPath $LayeredAtlasRoot)) {
         throw "Installer requires layered PoseAtlas v5-base assets"
     }
-    $LayeredViews = Get-ChildItem -LiteralPath $LayeredAtlasRoot -Filter "yaw*-pitch+00_*.png"
-    if ($LayeredViews.Count -ne 600) {
-        throw "Installer layered PoseAtlas view count is $($LayeredViews.Count); 600 views are required"
+    $ExpectedLayeredPaths = @(
+        foreach ($View in $ExpectedViewIds) {
+            foreach ($Layer in $ExpectedLayerNames) {
+                Join-Path $LayeredAtlasRoot ("{0}_{1}.png" -f $View, $Layer)
+            }
+        }
+    )
+    $LayeredViews = @($ExpectedLayeredPaths | Where-Object {
+        Test-Path -LiteralPath $_ -PathType Leaf
+    })
+    if ($LayeredViews.Count -ne $ExpectedLayeredPaths.Count) {
+        throw "Installer layered PoseAtlas view count is $($LayeredViews.Count); $($ExpectedLayeredPaths.Count) views are required"
     }
     $LayeredExpressions = Join-Path $PackageRoot "_internal\assets\expressions\layered"
     if (-not (Test-Path -LiteralPath $LayeredExpressions)) {
         throw "Installer requires layered half-body expression assets"
     }
-    $HalfBodyLayers = Get-ChildItem -LiteralPath $LayeredExpressions -Filter "*.png"
-    if ($HalfBodyLayers.Count -ne 75) {
-        throw "Installer layered half-body count is $($HalfBodyLayers.Count); 75 layers are required"
+    $ExpectedHalfBodyPaths = @(
+        foreach ($Rig in $ExpectedHalfBodyRigs) {
+            foreach ($Layer in $ExpectedLayerNames) {
+                Join-Path $LayeredExpressions ("{0}_{1}.png" -f $Rig, $Layer)
+            }
+        }
+    )
+    $HalfBodyLayers = @($ExpectedHalfBodyPaths | Where-Object {
+        Test-Path -LiteralPath $_ -PathType Leaf
+    })
+    if ($HalfBodyLayers.Count -ne $ExpectedHalfBodyPaths.Count) {
+        throw "Installer layered half-body count is $($HalfBodyLayers.Count); $($ExpectedHalfBodyPaths.Count) layers are required"
     }
     foreach ($Authority in @("idle.png", "idle_lean.png", "idle_front.png")) {
         $AuthorityPath = Join-Path $PackageRoot "_internal\assets\expressions\$Authority"

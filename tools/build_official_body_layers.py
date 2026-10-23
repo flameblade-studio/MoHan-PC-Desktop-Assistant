@@ -38,6 +38,7 @@ CHEEK_LAYER_VIEWS = (
 )
 CHEEK_EXPRESSION_ALIASES = ("happy", "caught", "worried", "glance", "reminder")
 BODY_LAYER_PATH_PARTS = 4
+SHA256_HEX_LENGTH = 64
 
 
 def write_json(path: Path, value: object) -> None:
@@ -57,6 +58,32 @@ def image_record(root: Path, relative: str, data: np.ndarray) -> dict:
     Image.fromarray(data).save(path)
     return {"path": relative, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "anchor": [0, 0]}
+
+
+def _validate_existing_layer_hash(
+    existing_manifest: dict, relative_path: str, source_path: Path
+) -> str:
+    """Require a reused file to match exactly one declared manifest hash."""
+    declarations = []
+    for plan in existing_manifest.get("layer_views", {}).values():
+        declarations.extend(plan.get("layers", []))
+        declarations.append(plan.get("base_hide", {}))
+    hashes = {
+        record.get("sha256")
+        for record in declarations
+        if record.get("path") == relative_path
+    }
+    if len(hashes) != 1:
+        raise ValueError(f"Existing layer manifest has no unique SHA-256: {relative_path}")
+    declared = next(iter(hashes))
+    if not isinstance(declared, str) or len(declared) != SHA256_HEX_LENGTH:
+        raise ValueError(f"Existing layer manifest SHA-256 is invalid: {relative_path}")
+    actual = hashlib.sha256(source_path.read_bytes()).hexdigest()
+    if actual != declared:
+        raise ValueError(
+            f"Existing layer hash differs from manifest: {relative_path}"
+        )
+    return declared
 
 
 def semantic_owners(source: Path, shape: tuple[int, ...]) -> np.ndarray:
@@ -301,8 +328,10 @@ def build(  # ruff: ignore[too-many-branches] - ordered build orchestration
                     destination = output / record["path"]
                     if not source_path.is_file():
                         raise FileNotFoundError(source_path)
+                    record["sha256"] = _validate_existing_layer_hash(
+                        existing_manifest, record["path"], source_path
+                    )
                     shutil.copyfile(source_path, destination)
-                    record["sha256"] = hashlib.sha256(destination.read_bytes()).hexdigest()
                 preserved_physical_views.append(physical)
     result = {"body_pack": reference, "layer_views": plans}
     write_json(output / "layers.json", result)

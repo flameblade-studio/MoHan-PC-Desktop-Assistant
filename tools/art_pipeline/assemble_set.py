@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 lazy import argparse
+lazy import shutil
+lazy import tempfile
 lazy from pathlib import Path
 
 lazy import numpy as np
@@ -177,10 +179,10 @@ def _assemble_expressions(
         _save(destination, EXPRESSION_BLINK_FRAMES[expression], variant)
 
 
-def assemble(
+def _assemble_into(
     input_directory: Path, destination: Path
 ) -> tuple[int, list[str], list[str]]:
-    """組裝一批素材，回傳 (寫出數量, 缺件, 契約問題)。"""
+    """將一批素材寫入全新的目錄，回傳 (寫出數量, 缺件, 契約問題)。"""
 
     destination.mkdir(parents=True, exist_ok=True)
     missing: list[str] = []
@@ -201,6 +203,36 @@ def assemble(
     return len(written), sorted(set(missing)), problems
 
 
+def _replace_output(staged: Path, destination: Path) -> None:
+    if destination.is_symlink() or destination.is_junction():
+        raise ValueError(f"Assembly output must be a regular directory: {destination}")
+    if destination.exists():
+        if not destination.is_dir():
+            raise ValueError(f"Assembly output must be a directory: {destination}")
+        shutil.rmtree(destination)
+    staged.rename(destination)
+
+
+def assemble(
+    input_directory: Path, destination: Path
+) -> tuple[int, list[str], list[str]]:
+    """在暫存目錄組裝，成功後才替換輸出。"""
+
+    if destination.is_symlink() or destination.is_junction():
+        raise ValueError(f"Assembly output must be a regular directory: {destination}")
+    destination = destination.absolute()
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix=f".{destination.name}-", dir=destination.parent
+    ) as temporary:
+        staged = Path(temporary) / "output"
+        written, missing, problems = _assemble_into(input_directory, staged)
+        if missing or problems:
+            return written, missing, problems
+        _replace_output(staged, destination)
+    return len(tuple(destination.glob("*.png"))), [], []
+
+
 def main(argv: list[str] | None = None) -> int:
     activate_product_character_runtime(Path(__file__).resolve().parents[2])
     parser = argparse.ArgumentParser(description=__doc__)
@@ -213,6 +245,7 @@ def main(argv: list[str] | None = None) -> int:
         print("缺素材：", ", ".join(missing))
     if problems:
         print("契約違反：", "; ".join(problems))
+    if missing or problems:
         return 1
     return 0
 

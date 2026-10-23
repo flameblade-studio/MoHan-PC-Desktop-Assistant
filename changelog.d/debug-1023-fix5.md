@@ -1,0 +1,5 @@
+### 建置與發版工具契約修復／修复构建与发布工具契约／Build and release tool contract fixes／ビルドとリリースツールの契約を修正
+
+- 修復安裝素材 staging 的硬連結隔離、建置缺件回傳非零、過期輸出清理與 manifest SHA-256 重用驗證／修复安装素材 staging 的硬链接隔离、构建缺件返回非零、过期输出清理与 manifest SHA-256 重用验证／Fix installer staging hard-link isolation, non-zero missing-input builds, stale-output cleanup, and manifest SHA-256 verification for reused layers／インストーラー staging のハードリンク隔離、入力不足時の非ゼロ終了、古い出力の除去、再利用レイヤーの manifest SHA-256 検証を修正
+- 讓 Windows CI 與 Preview 從專案版本來源建包，並為 release workflow 與 Dependabot 補上釘選的 Rust cargo audit／让 Windows CI 与 Preview 从项目版本来源构建，并为 release workflow 与 Dependabot 补上固定版本的 Rust cargo audit／Derive Windows CI and Preview package versions from the project source and add pinned Rust cargo audit coverage to the release workflow and Dependabot／Windows CI と Preview のパッケージバージョンをプロジェクトの正本から導出し、release workflow と Dependabot に固定版 Rust cargo audit 対応を追加
+- 修復安裝自測含空白路徑的參數傳遞，並讓 EGL 依賴安裝失敗時明確中止／修复安装自测含空格路径的参数传递，并让 EGL 依赖安装失败时明确中止／Fix self-test argument passing for paths with spaces and fail closed when the EGL dependency cannot be installed／空白を含むパスの self-test 引数渡しを修正し、EGL 依存関係のインストール失敗時に確実に停止

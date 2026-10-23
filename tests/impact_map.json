@@ -856,6 +856,7 @@
         "test_architecture_contracts.py",
         "test_art_material_registration.py",
         "test_art_pipeline.py",
+        "test_assemble_set.py",
         "test_audio_buffer.py",
         "test_audit_pose_atlas_working.py",
         "test_autonomous_wardrobe.py",
@@ -3998,6 +3999,7 @@
         "test_approved_cosmetics.py",
         "test_art_material_registration.py",
         "test_art_pipeline.py",
+        "test_assemble_set.py",
         "test_consolidate_partitions.py",
         "test_consolidation_intake_integrity.py",
         "test_cosmetic_residual.py",
@@ -4098,6 +4100,15 @@
         "test_art_pipeline.py",
         "test_partition_layers.py",
         "test_qc_drift.py"
+      ],
+      "origin": "tools/generate_test_impact_map.py"
+    },
+    {
+      "paths": [
+        "tools/art_pipeline/assemble_set.py"
+      ],
+      "tests": [
+        "test_assemble_set.py"
       ],
       "origin": "tools/generate_test_impact_map.py"
     },
@@ -7303,6 +7314,7 @@
         ".github/CODEOWNERS",
         ".github/FUNDING.yml",
         ".github/actions/setup-llvm21/action.yml",
+        ".github/dependabot.yml",
         ".github/pull_request_template.md",
         ".github/release.yml",
         ".github/workflows/dependabot-title-normalization.yml",

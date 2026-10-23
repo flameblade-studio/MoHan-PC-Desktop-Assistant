@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+lazy import hashlib
 lazy from pathlib import Path
 
 lazy import pytest
@@ -29,6 +30,21 @@ def test_installer_staging_excludes_only_the_canonical_body_pack_root(
     assert (
         staged / "characters" / "lin-keyun" / "body-packs" / "metadata.json"
     ).read_bytes() == b"character data"
+
+
+def test_installer_staging_never_links_canonical_files(tmp_path: Path) -> None:
+    assets = tmp_path / "assets"
+    canonical = assets / "pose-atlas" / "v5-base" / "front.png"
+    canonical.parent.mkdir(parents=True)
+    canonical.write_bytes(b"canonical payload")
+    before = hashlib.sha256(canonical.read_bytes()).hexdigest()
+
+    staged = stage_installer_assets(assets, tmp_path / "stage")
+    staged_file = staged / "pose-atlas" / "v5-base" / "front.png"
+    staged_file.write_bytes(b"staged mutation")
+
+    assert hashlib.sha256(canonical.read_bytes()).hexdigest() == before
+    assert canonical.read_bytes() == b"canonical payload"
 
 
 def test_installer_staging_rejects_reused_destination(

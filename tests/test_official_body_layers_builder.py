@@ -4,9 +4,27 @@ from __future__ import annotations
 lazy import hashlib
 lazy from io import BytesIO
 lazy from pathlib import Path
+lazy import pytest
 lazy import numpy as np
 lazy from PIL import Image
 lazy from tools import build_official_body_layers as builder
+
+
+def test_existing_reuse_hash_mismatch_fails_closed(tmp_path: Path) -> None:
+    relative = "assets/characters/mohan/body/views/front/hair-back.png"
+    source = tmp_path / "hair-back.png"
+    source.write_bytes(b"changed layer")
+    manifest = {
+        "layer_views": {
+            "front": {
+                "layers": [{"path": relative, "sha256": "0" * 64}],
+                "base_hide": {"path": "assets/characters/mohan/body/views/front/base-hide.png"},
+            }
+        }
+    }
+
+    with pytest.raises(ValueError, match="hash"):
+        builder._validate_existing_layer_hash(manifest, relative, source)
 
 
 def test_soft_alpha_is_repainted_even_when_identical_to_bald_base(tmp_path: Path) -> None:
